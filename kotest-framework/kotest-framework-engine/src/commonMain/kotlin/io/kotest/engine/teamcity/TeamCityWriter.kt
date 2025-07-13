@@ -87,7 +87,6 @@ internal class TeamCityWriter(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         .locationHint(Locations.location(testCase.source))
          .withException(result.errorOrNull, details)
          .result(result)
          .build()
@@ -118,7 +117,6 @@ internal class TeamCityWriter(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()
       println(msg)
@@ -157,7 +155,6 @@ internal class TeamCityWriter(
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
-         .locationHint(Locations.location(testCase.source))
          .result(result)
          .build()
       println(msg)
@@ -170,7 +167,6 @@ internal class TeamCityWriter(
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatter.format(ref.kclass))
          .id(ref.kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(ref))
          .build()
       println(msg)
    }
