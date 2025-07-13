@@ -11,6 +11,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
+import io.kotest.engine.spec.interceptor.ContainerContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -50,7 +51,12 @@ class TestCaseExecutorTest : FunSpec({
       }
       val executor = TestCaseExecutor(listener, EngineContext(null, Platform.JVM))
       val testCase = Materializer().materialize(Tests()).first { it.name.name == "a" }
-      executor.execute(testCase, context(testCase), SpecContext.create()).isSuccess shouldBe true
+      executor.execute(
+         testCase = testCase,
+         testScope = context(testCase),
+         specContext = SpecContext.create(),
+         containerContext = ContainerContext.create(),
+      ).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
    }
@@ -71,7 +77,12 @@ class TestCaseExecutorTest : FunSpec({
       }
       val executor = TestCaseExecutor(listener, EngineContext(null, Platform.JVM))
       val testCase = Materializer().materialize(Tests()).first { it.name.name == "b" }
-      val result = executor.execute(testCase, context(testCase), SpecContext.create())
+      val result = executor.execute(
+         testCase,
+         context(testCase),
+         specContext = SpecContext.create(),
+         containerContext = ContainerContext.create(),
+      )
       result.isError shouldBe true
       result.errorOrNull shouldBe TestTimeoutException(100.milliseconds, "b")
       started shouldBe true
@@ -86,7 +97,12 @@ class TestCaseExecutorTest : FunSpec({
       }, EngineContext(null, Platform.JVM))
       val spec = BeforeTest()
       val testCase = Materializer().materialize(spec).shuffled().first()
-      executor.execute(testCase, context(testCase), SpecContext.create())
+      executor.execute(
+         testCase = testCase,
+         testScope = context(testCase),
+         specContext = SpecContext.create(),
+         containerContext = ContainerContext.create(),
+      )
       spec.before.shouldBeTrue()
    }
 
@@ -98,7 +114,12 @@ class TestCaseExecutorTest : FunSpec({
       }, EngineContext(null, Platform.JVM))
       val spec = AfterTest()
       val testCase = Materializer().materialize(spec).shuffled().first()
-      executor.execute(testCase, context(testCase), SpecContext.create())
+      executor.execute(
+         testCase = testCase,
+         testScope = context(testCase),
+         specContext = SpecContext.create(),
+         containerContext = ContainerContext.create(),
+      )
       spec.after.shouldBeTrue()
    }
 
@@ -116,7 +137,12 @@ class TestCaseExecutorTest : FunSpec({
          }
       }, EngineContext(null, Platform.JVM))
       val testCase = Materializer().materialize(BeforeTestWithException()).shuffled().first()
-      val result = executor.execute(testCase, context(testCase), SpecContext.create())
+      val result = executor.execute(
+         testCase = testCase,
+         testScope = context(testCase),
+         specContext = SpecContext.create(),
+         containerContext = ContainerContext.create(),
+      )
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
       started shouldBe true
@@ -137,7 +163,12 @@ class TestCaseExecutorTest : FunSpec({
          }
       }, EngineContext(null, Platform.JVM))
       val testCase = Materializer().materialize(AfterTestWithException()).shuffled().first()
-      val result = executor.execute(testCase, context(testCase), SpecContext.create())
+      val result = executor.execute(
+         testCase = testCase,
+         testScope = context(testCase),
+         specContext = SpecContext.create(),
+         containerContext = ContainerContext.create(),
+      )
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
       started shouldBe true

@@ -8,6 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
+import io.kotest.engine.spec.interceptor.ContainerContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
@@ -53,7 +54,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
          rootTests.forEach { root ->
             launch {
                semaphore.withPermit {
-                  executeTest(root, specContext)
+                  executeTest(root, specContext, ContainerContext.create())
                }
             }
          }
@@ -61,26 +62,29 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
    }
 
    /**
-    * Executes the given [TestCase] using a [io.kotest.engine.test.TestCaseExecutor].
+    * Executes the given [TestCase] using a [TestCaseExecutor].
     * Logs the results in the results tree.
     *
     * @return the result of this single test.
     */
-   private suspend fun executeTest(testCase: TestCase, specContext: SpecContext) {
+   private suspend fun executeTest(testCase: TestCase, specContext: SpecContext, containerContext: ContainerContext) {
 
       val duplicateTestNameHandler = DuplicateTestNameHandler()
       val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
 
-      val testExecutor = TestCaseExecutor(context)
-      val result = testExecutor.execute(
+      val executor = TestCaseExecutor(context)
+      val newContainerContext = ContainerContext.create()
+
+      val result: TestResult = executor.execute(
          testCase = testCase,
          testScope = DefaultTestScope(testCase) {
             val unique = duplicateTestNameHandler.unique(duplicateTestNameMode, it.name)
             val uniqueName = it.name.copy(name = unique)
             val nestedTestCase = materializer.materialize(it.copy(name = uniqueName), testCase)
-            executeTest(nestedTestCase, specContext)
+            executeTest(nestedTestCase, specContext, newContainerContext)
          },
-         specContext = specContext
+         specContext = specContext,
+         containerContext = containerContext,
       )
       results.completed(testCase, result)
    }

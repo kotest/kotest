@@ -11,6 +11,7 @@ import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.TestResults
+import io.kotest.engine.spec.interceptor.ContainerContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
@@ -75,7 +76,11 @@ internal class InstancePerRootSpecExecutor(
                       * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
                       * Eg, see https://github.com/kotest/kotest/issues/3490
                       */
-                     executeTest(testCase = root, specContext = specContext)
+                     executeTest(
+                        testCase = root,
+                        specContext = specContext,
+                        containerContext = ContainerContext.create()
+                     )
                   } else {
                      // for subsequent tests, we create a new instance of the spec
                      // and will re-run the pipelines etc
@@ -109,7 +114,7 @@ internal class InstancePerRootSpecExecutor(
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
          pipeline.execute(spec, specContext) {
-            val result = executeTest(freshRoot, specContext)
+            val result = executeTest(freshRoot, specContext, ContainerContext.create())
             Result.success(mapOf(freshRoot to result))
          }
       }
@@ -121,19 +126,28 @@ internal class InstancePerRootSpecExecutor(
     *
     * @return the result of this single test.
     */
-   private suspend fun executeTest(testCase: TestCase, specContext: SpecContext): TestResult {
+   private suspend fun executeTest(
+      testCase: TestCase,
+      specContext: SpecContext,
+      containerContext: ContainerContext
+   ): TestResult {
+
       val duplicateTestNameHandler = DuplicateTestNameHandler()
       val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
+
       val executor = TestCaseExecutor(context)
+      val newContainerContext = ContainerContext.create()
+
       val result = executor.execute(
          testCase = testCase,
          testScope = DefaultTestScope(testCase) {
             val unique = duplicateTestNameHandler.unique(duplicateTestNameMode, it.name)
             val uniqueName = it.name.copy(name = unique)
             val nestedTestCase = materializer.materialize(it.copy(name = uniqueName), testCase)
-            executeTest(nestedTestCase, specContext)
+            executeTest(nestedTestCase, specContext, newContainerContext)
          },
-         specContext = specContext
+         specContext = specContext,
+         containerContext = containerContext,
       )
       results.completed(testCase, result)
       return result

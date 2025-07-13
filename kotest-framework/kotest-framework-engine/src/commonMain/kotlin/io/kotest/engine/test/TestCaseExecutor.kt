@@ -8,6 +8,7 @@ import io.kotest.core.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.interceptor.ContainerContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
 import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
@@ -56,7 +57,12 @@ internal class TestCaseExecutor(
 
    private val logger = Logger(TestCaseExecutor::class)
 
-   suspend fun execute(testCase: TestCase, testScope: TestScope, specContext: SpecContext): TestResult {
+   suspend fun execute(
+      testCase: TestCase,
+      testScope: TestScope,
+      specContext: SpecContext,
+      containerContext: ContainerContext,
+   ): TestResult {
       logger.log { Pair(testCase.name.name, "Executing test with scope $testScope") }
 
       val timeMark = TimeSource.Monotonic.markNow()
@@ -66,7 +72,7 @@ internal class TestCaseExecutor(
       val interceptors = listOfNotNull(
          DescriptorPathContextInterceptor,
          TestNameContextInterceptor,
-         FailFastInterceptor(context, specContext),
+         FailFastInterceptor(context, containerContext),
          TestFinishedInterceptor(listener, context.testExtensions()),
          InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,

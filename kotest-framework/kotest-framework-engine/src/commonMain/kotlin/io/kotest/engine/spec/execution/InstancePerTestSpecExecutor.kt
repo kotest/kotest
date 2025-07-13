@@ -14,6 +14,7 @@ import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.TestResults
+import io.kotest.engine.spec.interceptor.ContainerContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -183,6 +184,7 @@ internal class InstancePerTestSpecExecutor(
          listener = TargetListeningListener(target, context.listener),
          context = context
       )
+      val containerContext = ContainerContext.create()
       val result = executor.execute(
          testCase = testCase,
          testScope = LaunchingTestScope(
@@ -192,7 +194,9 @@ internal class InstancePerTestSpecExecutor(
             ref = ref,
             coroutineContext = coroutineContext,
          ),
-         specContext = specContext
+         specContext = specContext,
+         containerContext = containerContext,
+
       )
       results.completed(testCase, result)
       return result
