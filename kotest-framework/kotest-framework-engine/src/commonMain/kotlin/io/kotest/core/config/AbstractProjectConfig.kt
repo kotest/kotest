@@ -201,8 +201,6 @@ abstract class AbstractProjectConfig {
     */
    open val testNameCase: TestNameCase? = null
 
-   open val testNameRemoveWhitespace: Boolean? = null
-
    open val testNameAppendTags: Boolean? = null
 
    /**
@@ -224,14 +222,6 @@ abstract class AbstractProjectConfig {
     * Set to true to enable enhanced tracing of coroutines when an error occurs.
     */
    open val coroutineDebugProbes: Boolean? = null
-
-   /**
-    * Set to false and if a spec has no active tests (all disabled due to config or tags say)
-    * then the spec itself will not appear as a node in output.
-    *
-    * Note: This only works for JUnit and IntelliJ runners.
-    */
-   open val displaySpecIfNoActiveTests: Boolean? = null
 
    /**
     * Returns true if the test name should be the full name including parent names.
