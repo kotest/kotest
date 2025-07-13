@@ -50,7 +50,7 @@ val launcher = TestEngineLauncher()
     """.trim()
          ).addCode("\n")
       specs.forEach {
-         function.addCode("""SpecRef.Function ({ `$it`() }, `$it`::class, `$it`), """)
+         function.addCode("""SpecRef.Function ({ `$it`() }, `$it`::class, "$it"), """)
          function.addCode("\n")
       }
       function
