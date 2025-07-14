@@ -934,7 +934,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getCoroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun getCoroutineTestScope ()Ljava/lang/Boolean;
 	public fun getDisplayFullTestPath ()Ljava/lang/Boolean;
-	public fun getDisplaySpecIfNoActiveTests ()Ljava/lang/Boolean;
 	public fun getDumpConfig ()Ljava/lang/Boolean;
 	public fun getDuplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
 	public fun getEnabledIf ()Lkotlin/jvm/functions/Function1;
@@ -966,7 +965,6 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun getTestExecutionMode ()Lio/kotest/engine/concurrency/TestExecutionMode;
 	public fun getTestNameAppendTags ()Ljava/lang/Boolean;
 	public fun getTestNameCase ()Lio/kotest/core/names/TestNameCase;
-	public fun getTestNameRemoveWhitespace ()Ljava/lang/Boolean;
 	public fun getTimeout-FghU774 ()Lkotlin/time/Duration;
 	public fun getWriteSpecFailureFile ()Ljava/lang/Boolean;
 }
