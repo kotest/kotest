@@ -7,7 +7,7 @@ import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 
 class FactoryConstrainedBeforeContainerListener(
   private val factoryId: FactoryId,

@@ -2,11 +2,11 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
-import io.kotest.engine.test.createTestResult
+import io.kotest.engine.test.TestResultBuilder
 import kotlin.time.TimeMark
 
 /**
@@ -26,9 +26,9 @@ import kotlin.time.TimeMark
  * or after code is returned as higher priority than the result from the test case itself.
  */
 internal class LifecycleInterceptor(
-  private val listener: TestCaseExecutionListener,
-  private val timeMark: TimeMark,
-  private val testExtensions: TestExtensions,
+   private val listener: TestCaseExecutionListener,
+   private val timeMark: TimeMark,
+   private val testExtensions: TestExtensions,
 ) : TestExecutionInterceptor {
 
    private val logger = Logger(LifecycleInterceptor::class)
@@ -51,11 +51,14 @@ internal class LifecycleInterceptor(
                   .afterTestAfterAnyAfterContainer(testCase, result)
                   .fold(
                      { result },
-                     { if (result.isErrorOrFailure) result else createTestResult(timeMark.elapsedNow(), it) }
+                     {
+                        if (result.isErrorOrFailure) result
+                        else TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(it).build()
+                     }
                   )
             },
             {
-               val result = createTestResult(timeMark.elapsedNow(), it)
+               val result = TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(it).build()
                // can ignore errors here as we already have the before errors to show
                testExtensions.afterTestAfterAnyAfterContainer(testCase, result)
                result

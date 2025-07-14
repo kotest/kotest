@@ -1,10 +1,10 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.core.test.TestScope
-import io.kotest.engine.test.createTestResult
 import io.kotest.core.Logger
+import io.kotest.core.test.TestCase
+import io.kotest.engine.test.TestResult
+import io.kotest.core.test.TestScope
+import io.kotest.engine.test.TestResultBuilder
 import kotlin.time.TimeMark
 
 /**
@@ -25,10 +25,10 @@ internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : T
          test(testCase, scope)
       } catch (t: Throwable) {
          logger.log { Pair(testCase.name.name, "Throwable $t") }
-         createTestResult(timeMark.elapsedNow(), t)
+         TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(t).build()
       } catch (e: AssertionError) {
          logger.log { Pair(testCase.name.name, "AssertionError $e") }
-         createTestResult(timeMark.elapsedNow(), e)
+         TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(e).build()
       }
    }
 }

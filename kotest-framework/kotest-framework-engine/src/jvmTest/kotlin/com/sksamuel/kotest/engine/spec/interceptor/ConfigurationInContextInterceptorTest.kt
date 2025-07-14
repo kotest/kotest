@@ -5,7 +5,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.projectConfigResolver
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor

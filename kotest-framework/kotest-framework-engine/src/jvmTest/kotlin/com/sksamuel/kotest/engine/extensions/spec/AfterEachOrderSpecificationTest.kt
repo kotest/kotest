@@ -4,7 +4,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 
 /**

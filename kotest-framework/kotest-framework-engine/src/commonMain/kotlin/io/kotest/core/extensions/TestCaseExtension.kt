@@ -1,7 +1,7 @@
 package io.kotest.core.extensions
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 
 /**
  * Extension point that intercepts calls to a [TestCase].

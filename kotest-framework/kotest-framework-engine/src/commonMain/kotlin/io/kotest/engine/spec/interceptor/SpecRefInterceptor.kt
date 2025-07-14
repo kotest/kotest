@@ -2,7 +2,7 @@ package io.kotest.engine.spec.interceptor
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 
 /**
  * Interceptors that are executed before a spec is instantiated.

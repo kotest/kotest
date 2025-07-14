@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.test.timeout
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldEndWith
 import kotlinx.coroutines.delay

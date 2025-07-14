@@ -2,13 +2,13 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.status.isEnabled
-import kotlin.time.Duration
 
 /**
  * Checks the enabled status of a [TestCase] before invoking it.
@@ -41,13 +41,13 @@ internal class TestEnabledCheckInterceptor(
 
                false -> {
                   logger.log { Pair(testCase.name.name, "Test is disabled: ${enabled.reason}") }
-                  TestResult.Ignored(enabled)
+                  TestResultBuilder.builder().withIgnoreEnabled(enabled).build()
                }
             }
          },
          { t ->
             logger.log { Pair(testCase.name.name, "Error running enabled checks") }
-            TestResult.Error(Duration.ZERO, t)
+            TestResultBuilder.builder().withError(t).build()
          }
       )
    }

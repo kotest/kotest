@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.spec.dsl.callbackorder
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 
 // tests that afterTest is called before the next beforeTest for single spec runner

@@ -9,7 +9,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger

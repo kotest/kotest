@@ -8,7 +8,7 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.SpecWrapperExtension

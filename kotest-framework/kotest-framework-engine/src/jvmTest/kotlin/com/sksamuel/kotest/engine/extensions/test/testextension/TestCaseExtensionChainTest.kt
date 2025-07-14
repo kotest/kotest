@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.engine.extensions.test.testextension
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.style.StringSpec
 

@@ -5,8 +5,8 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.engine.test.toTestResult
+import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.TestResultBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -114,7 +114,9 @@ object ExpectFailureExtension : TestCaseExtension {
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
       return when (val result = execute(testCase)) {
          is TestResult.Failure, is TestResult.Error -> TestResult.Success(result.duration)
-         else -> AssertionError("${testCase.descriptor.id.value} passed but should fail").toTestResult(result.duration)
+         else -> TestResultBuilder.builder()
+            .withError(AssertionError("${testCase.descriptor.id.value} passed but should fail"))
+            .build()
       }
    }
 }
