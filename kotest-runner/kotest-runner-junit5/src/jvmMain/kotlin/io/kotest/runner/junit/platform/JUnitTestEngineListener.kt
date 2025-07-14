@@ -5,14 +5,15 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.names.UniqueNames
+import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.mpp.bestName
 import org.junit.platform.engine.EngineExecutionListener
@@ -22,7 +23,6 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.reflect.KClass
-import kotlin.time.Duration
 
 /**
  * A Kotest [TestEngineListener] that forwards notifications to a JUnit Platform [EngineExecutionListener].
@@ -207,7 +207,10 @@ class JUnitTestEngineListener(
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
       listener.executionStarted(descriptor)
-      listener.executionFinished(descriptor, TestResult.Error(Duration.ZERO, cause).toTestExecutionResult())
+      listener.executionFinished(
+         descriptor,
+         TestResultBuilder.builder().withError(cause).build().toTestExecutionResult()
+      )
    }
 
    override suspend fun testStarted(testCase: TestCase) {

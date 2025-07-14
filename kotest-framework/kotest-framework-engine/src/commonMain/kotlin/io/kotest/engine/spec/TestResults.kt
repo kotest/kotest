@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.isRootTest
 
 /**

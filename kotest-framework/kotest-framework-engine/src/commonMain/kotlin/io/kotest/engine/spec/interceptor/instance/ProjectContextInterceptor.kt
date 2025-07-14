@@ -4,7 +4,7 @@ import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.ProjectContextElement
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor

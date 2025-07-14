@@ -8,7 +8,7 @@ import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory

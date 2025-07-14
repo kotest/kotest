@@ -6,7 +6,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.interceptors.EngineContext

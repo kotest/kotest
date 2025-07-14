@@ -8,7 +8,7 @@ import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue

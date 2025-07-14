@@ -2,7 +2,7 @@ package io.kotest.extensions.system
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 

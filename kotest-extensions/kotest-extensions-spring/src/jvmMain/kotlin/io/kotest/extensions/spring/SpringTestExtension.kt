@@ -6,7 +6,7 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.isRootTest
 import kotlinx.coroutines.withContext

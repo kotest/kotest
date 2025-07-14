@@ -12,7 +12,7 @@ import io.kotest.core.listeners.InstantiationListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.extensions.ExtensionException

@@ -4,7 +4,7 @@ import io.kotest.common.NonDeterministicTestVirtualTimeEnabled
 import io.kotest.common.testCoroutineSchedulerOrNull
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.coroutines.TestScopeElement

@@ -3,7 +3,7 @@ package io.kotest.core.listeners
 import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 /**

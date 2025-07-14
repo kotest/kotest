@@ -17,12 +17,12 @@ public final class io/kotest/extensions/time/ConstantNowProjectListener : io/kot
 
 public final class io/kotest/extensions/time/ConstantNowTestListener : io/kotest/extensions/time/ConstantNowListener, io/kotest/core/listeners/TestListener {
 	public fun <init> (Ljava/time/temporal/Temporal;)V
-	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterInvocation (Lio/kotest/core/test/TestCase;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeContainer (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeEach (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

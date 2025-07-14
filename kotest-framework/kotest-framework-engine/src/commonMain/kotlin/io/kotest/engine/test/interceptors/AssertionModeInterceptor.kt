@@ -4,10 +4,11 @@ import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.getAndReset
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResultBuilder
 import kotlin.time.Duration
 
 /**
@@ -41,7 +42,7 @@ internal class AssertionModeInterceptor(
          assertionCounter.getAndReset() > 0 -> result
 
          assertionMode == AssertionMode.Error ->
-            TestResult.Failure(Duration.Companion.ZERO, ZeroAssertionsError(warningMessage))
+            TestResultBuilder.builder().withError(ZeroAssertionsError(warningMessage)).build()
 
          assertionMode == AssertionMode.Warn -> {
             println("Warning: $warningMessage")

@@ -2,7 +2,7 @@ package io.kotest.core.spec
 
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 
 /**
  * Returns a [TestListener] which passes lifecycle events through to the appropriate
