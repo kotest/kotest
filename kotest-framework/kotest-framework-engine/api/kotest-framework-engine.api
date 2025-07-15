@@ -3892,8 +3892,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {
 	public final fun locationHint (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun message (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun parent (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun result (Lio/kotest/core/test/TestResult;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun timestamp (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+	public final fun result (Lio/kotest/engine/test/TestResult;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun type (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun withException (Ljava/lang/Throwable;Z)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public static synthetic fun withException$default (Lio/kotest/engine/teamcity/TeamCityMessageBuilder;Ljava/lang/Throwable;ZILjava/lang/Object;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
