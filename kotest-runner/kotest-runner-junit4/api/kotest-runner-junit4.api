@@ -40,7 +40,7 @@ public abstract class io/kotest/runner/junit4/FunSpec : io/kotest/core/spec/styl
 
 public final class io/kotest/runner/junit4/JUnitTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public fun <init> (Lorg/junit/runner/notification/RunNotifier;)V
-	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

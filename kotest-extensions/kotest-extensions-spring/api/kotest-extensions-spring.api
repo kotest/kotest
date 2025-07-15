@@ -12,8 +12,8 @@ public final class io/kotest/extensions/spring/SpringExtension : io/kotest/core/
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;)V
 	public synthetic fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/core/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeAny (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getIgnoreSpringListenerOnFinalClassWarning ()Z

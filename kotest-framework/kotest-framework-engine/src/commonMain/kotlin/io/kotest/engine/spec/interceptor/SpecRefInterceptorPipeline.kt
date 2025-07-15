@@ -5,7 +5,7 @@ import io.kotest.core.Platform
 import io.kotest.core.platform
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ref.DescriptorFilterSpecRefInterceptor

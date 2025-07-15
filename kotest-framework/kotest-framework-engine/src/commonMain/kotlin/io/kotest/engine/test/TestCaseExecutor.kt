@@ -4,7 +4,7 @@ import io.kotest.core.Logger
 import io.kotest.core.Platform
 import io.kotest.core.platform
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
@@ -113,7 +113,7 @@ internal class TestCaseExecutor(
       val innerExecute = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.name, "Executing test") }
          tc.test(scope)
-         TestResult.Success(timeMark.elapsedNow())
+         TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).build()
       }
 
       return interceptors.foldRight(innerExecute) { ext, fn ->

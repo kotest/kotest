@@ -7,10 +7,10 @@ import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.descriptors.toDescriptor
-import io.kotest.engine.test.createTestResult
+import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
@@ -75,7 +75,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          listener.specStarted(SpecRef.Reference(JUnitTestRunnerListenerTest::class))
          listener.testStarted(test1)
          listener.testStarted(test2)
-         listener.testFinished(test2, createTestResult(0.milliseconds, AssertionError("boom")))
+         listener.testFinished(test2, TestResultBuilder.builder().withError(AssertionError("boom")).build())
          listener.testFinished(test1, TestResult.Success(0.milliseconds))
          listener.specFinished(SpecRef.Reference(JUnitTestRunnerListenerTest::class), TestResult.Success(0.seconds))
          listener.engineFinished(emptyList())

@@ -3,7 +3,7 @@ package io.kotest.core.listeners
 import io.kotest.common.SoftDeprecated
 import io.kotest.core.extensions.Extension
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 
 @SoftDeprecated("Use beforeAny")
 interface BeforeTestListener : Extension {

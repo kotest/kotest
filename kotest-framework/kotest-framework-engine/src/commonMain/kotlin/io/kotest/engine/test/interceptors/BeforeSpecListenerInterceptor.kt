@@ -2,12 +2,11 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecContext
-import io.kotest.engine.test.createTestResult
-import kotlin.time.Duration.Companion.seconds
+import io.kotest.engine.test.TestResultBuilder
 
 /**
  * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
@@ -42,14 +41,14 @@ internal class BeforeSpecListenerInterceptor(
                },
                {
                   specContext.beforeSpecError = it
-                  createTestResult(0.seconds, it)
+                  TestResultBuilder.builder().withError(it).build()
                }
             )
       } else {
          if (specContext.beforeSpecError == null)
             test(testCase, scope)
          else
-            TestResult.Ignored("Skipped due to beforeSpec failure")
+            TestResultBuilder.builder().withIgnoreReason("Skipped due to beforeSpec failure").build()
       }
    }
 }

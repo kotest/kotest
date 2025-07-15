@@ -3,7 +3,7 @@ package io.kotest.extensions.junitxml
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith

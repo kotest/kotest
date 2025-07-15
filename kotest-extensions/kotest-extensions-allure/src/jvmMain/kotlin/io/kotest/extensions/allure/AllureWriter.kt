@@ -3,7 +3,7 @@ package io.kotest.extensions.allure
 import io.kotest.common.DescriptorPath
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter

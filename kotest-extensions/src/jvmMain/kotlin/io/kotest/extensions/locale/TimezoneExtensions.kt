@@ -1,7 +1,7 @@
 package io.kotest.extensions.locale
 
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.listeners.ProjectListener
 import io.kotest.core.listeners.TestListener
 import java.util.TimeZone

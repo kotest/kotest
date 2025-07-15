@@ -2,10 +2,11 @@ package io.kotest.engine.spec.interceptor.ref.callbacks
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.test.TestResultBuilder
 import kotlin.time.measureTimedValue
 
 /**
@@ -19,7 +20,10 @@ internal class SpecFinishedInterceptor(private val listener: TestEngineListener)
          next.invoke(ref)
       }
       return value
-         .onSuccess { listener.specFinished(ref, TestResult.Success(duration)) }
-         .onFailure { listener.specFinished(ref, TestResult.Error(duration, it)) }
+         .onSuccess {
+            listener.specFinished(ref, TestResultBuilder.builder().withDuration(duration).build())
+         }.onFailure {
+            listener.specFinished(ref, TestResultBuilder.builder().withDuration(duration).withError(it).build())
+         }
    }
 }

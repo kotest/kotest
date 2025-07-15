@@ -7,7 +7,7 @@ import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.ExpectFailureException
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.runIf
 import io.kotest.engine.descriptors.toDescriptor

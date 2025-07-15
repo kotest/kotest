@@ -1,19 +1,6 @@
 package io.kotest.framework.gradle
 
-import org.gradle.api.provider.Property
-
 abstract class KotestExtension internal constructor() {
-
-   /**
-    * Set a tag expression directly in the plugin configuration.
-    * This can be useful if you want to run a subset of tests during development.
-    */
-   abstract val tagExpression: Property<String>
-
-   /**
-    * If true, then the build will fail if no tests are found by the plugin.
-    */
-   abstract val failOnNoTests: Property<Boolean>
 
    /**
     * The location of the compiled kotlin classes for Android builds.

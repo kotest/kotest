@@ -5,7 +5,7 @@ import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestResult
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecWrapperExtension
 import io.kotest.engine.flatMap
