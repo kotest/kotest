@@ -17,11 +17,14 @@ internal actual fun sourceRef(): SourceRef {
    if (stack.isEmpty()) return SourceRef.None
 
    val frame = stack.dropWhile {
-      it.className.startsWith("io.kotest") ||
-         it.className.startsWith("java.lang") ||
+      it.className.startsWith("java.") ||
+         it.className.startsWith("javax.") ||
+         it.className.startsWith("jdk.internal.") ||
          it.className.startsWith("com.sun") ||
          it.className.startsWith("kotlin.") ||
-         it.className.startsWith("kotlinx.")
+         it.className.startsWith("kotlinx.") ||
+         it.className.startsWith("io.kotest.core.") ||
+         it.className.startsWith("io.kotest.engine.")
    }.firstOrNull()
 
    // preference is given to the class name but we must try to find the enclosing spec

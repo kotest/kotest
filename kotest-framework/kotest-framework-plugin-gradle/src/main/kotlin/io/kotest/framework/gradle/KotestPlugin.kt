@@ -29,6 +29,8 @@ abstract class KotestPlugin : Plugin<Project> {
       const val DESCRIPTION = "Runs tests using Kotest"
       const val EXTENSION_NAME = "kotest"
 
+      // this is used when the project is JVM only, i.e. not multiplatform, so instead of jvmKotest
+      // we just use kotest to match the convention of test
       const val JVM_ONLY_TASK_NAME = "kotest"
 
       const val JS_TASK_NAME = "jsKotest"

@@ -44,12 +44,10 @@ class TeamCityMessageBuilder(
             .addAttribute(Attributes.DURATION_STRATEGY, "MANUAL")
       }
 
-      fun testSuiteStarted(name: String): TeamCityMessageBuilder = testSuiteStarted(TEAM_CITY_PREFIX, name)
       fun testSuiteStarted(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_STARTED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testSuiteFinished(name: String): TeamCityMessageBuilder = testSuiteFinished(TEAM_CITY_PREFIX, name)
       fun testSuiteFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_FINISHED).addAttribute(Attributes.NAME, name)
       }
@@ -63,19 +61,6 @@ class TeamCityMessageBuilder(
       fun testFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FINISHED).addAttribute(Attributes.NAME, name)
       }
-
-      fun testStdOut(name: String): TeamCityMessageBuilder = testStdOut(TEAM_CITY_PREFIX, name)
-      fun testStdOut(prefix: String, name: String): TeamCityMessageBuilder {
-         return TeamCityMessageBuilder(prefix, Messages.TEST_STD_OUT).addAttribute(Attributes.NAME, name)
-      }
-
-      fun testStdErr(name: String): TeamCityMessageBuilder = testStdErr(TEAM_CITY_PREFIX, name)
-      fun testStdErr(prefix: String, name: String): TeamCityMessageBuilder {
-         return TeamCityMessageBuilder(prefix, Messages.TEST_STD_ERR).addAttribute(Attributes.NAME, name)
-      }
-
-      // note it seems that not attaching a message renders test failed irrelevant
-      fun testFailed(name: String): TeamCityMessageBuilder = testFailed(TEAM_CITY_PREFIX, name)
 
       // note it seems that not attaching a message renders test failed irrelevant
       fun testFailed(prefix: String, name: String): TeamCityMessageBuilder {
@@ -95,7 +80,6 @@ class TeamCityMessageBuilder(
       const val NAME = "name"
       const val DURATION = "duration"
       const val DURATION_STRATEGY = "durationStrategy"
-      const val TIMESTAMP = "timestamp"
       const val TYPE = "type"
       const val DETAILS = "details"
       const val MESSAGE = "message"
@@ -105,14 +89,13 @@ class TeamCityMessageBuilder(
    }
 
    object Messages {
+      // https://youtrack.jetbrains.com/issue/IJPL-175931/set-duration-strategy-on-SMRootTestProxy
       const val TEST_REPORTER_ATTACHED = "enteredTheMatrix"
       const val TEST_SUITE_STARTED = "testSuiteStarted"
       const val TEST_SUITE_FINISHED = "testSuiteFinished"
       const val TEST_STARTED = "testStarted"
       const val TEST_FINISHED = "testFinished"
       const val TEST_IGNORED = "testIgnored"
-      const val TEST_STD_OUT = "testStdOut"
-      const val TEST_STD_ERR = "testStdErr"
       const val TEST_FAILED = "testFailed"
    }
 
@@ -186,6 +169,4 @@ class TeamCityMessageBuilder(
     * Returns the completed string.
     */
    fun build(): String = "$myText]"
-
-   fun timestamp(ts: String) = addAttribute(Attributes.TIMESTAMP, ts)
 }
