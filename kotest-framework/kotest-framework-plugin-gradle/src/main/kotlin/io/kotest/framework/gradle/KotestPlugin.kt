@@ -8,16 +8,23 @@ import io.kotest.framework.gradle.tasks.KotestNativeTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.tasks.StopExecutionException
+import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.create
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.KotlinDependencyHandler
+import org.jetbrains.kotlin.gradle.plugin.KotlinMultiplatformPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -55,6 +62,12 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // allows users to configure the test engine
       val kotestExtension = project.extensions.create<KotestExtension>(EXTENSION_NAME)
+
+      project.plugins.withType<KotlinMultiplatformPluginWrapper> {
+         project.extensions.configure<KotlinMultiplatformExtension> {
+            wireKotestKsp()
+         }
+      }
 
       configureTaskConventions(project)
 
@@ -98,7 +111,9 @@ abstract class KotestPlugin : Plugin<Project> {
                println("testable targetName ${this.targetName}")
                println("testable disambiguationClassifier ${this.disambiguationClassifier}")
 
-               if (name !in unsupportedTargets) {
+               //we don't want to wire stuff to non-buildable targets (i.e. ios target on a linux host)
+               //as this could make checkKotlinGradlePluginConfigurationErrors fail
+               if ((project.getBuildableTargets().contains(this)) && (name !in unsupportedTargets)) {
                   when (platformType) {
 
                      KotlinPlatformType.js -> {
@@ -113,6 +128,7 @@ abstract class KotestPlugin : Plugin<Project> {
                            tasks.add(JS_TASK_NAME)
                         }
                      }
+
                      KotlinPlatformType.wasm -> println("Todo wasm")
                      KotlinPlatformType.common -> println("Todo common")
                      KotlinPlatformType.jvm -> println("Todo jvm")
@@ -125,7 +141,7 @@ abstract class KotestPlugin : Plugin<Project> {
                         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                         // see https://docs.gradle.org/current/userguide/isolated_projects.html
                         val kotestTaskName = testableTarget.name + "Kotest"
-                        val linkDebugTestTaskName =  "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
+                        val linkDebugTestTaskName = "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
                         project.tasks.register(kotestTaskName, KotestNativeTask::class) {
                            target.set(testableTarget)
                            inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
@@ -154,6 +170,43 @@ abstract class KotestPlugin : Plugin<Project> {
          }
       }
    }
+
+   /**
+    * 1. Checks for the presence of KSP and stops execution if missing
+    * 2. Wires the Kotest symbol procesor for every configured KMP target
+    */
+   internal fun KotlinMultiplatformExtension.wireKotestKsp() {
+      if (!project.pluginManager.hasPlugin("com.google.devtools.ksp")) {
+         throw StopExecutionException(
+            "KSP neither found in root project nor ${project.name}, " +
+               "please add 'com.google.devtools.ksp' to the either project's plugins"
+         )
+      }
+
+      val version = System.getProperty("kotestVersion")
+      project.configurations.whenObjectAdded {
+         // there is probably a better way to do this, but how?
+         if (name.startsWith("ksp") && name.endsWith("Test")) {
+            val target = name.substring(3, name.length - 4).replaceFirstChar { it.lowercase() }
+            if (project.getBuildableTargets().firstOrNull { target == it.name } != null)
+               project.dependencies.add(name, "io.kotest:kotest-framework-symbol-processor-jvm:$version")
+         }
+      }
+   }
+
+   private fun Project.getBuildableTargets() =
+      project.extensions.getByType<KotlinMultiplatformExtension>().targets.filter { target ->
+         when {
+            // Non-native targets are always buildable
+            target.platformType != KotlinPlatformType.native -> true
+            else -> {
+               runCatching {
+                  val konanTarget = (target as? KotlinNativeTarget)
+                  konanTarget?.publishable == true
+               }.getOrElse { false }
+            }
+         }
+      }
 
    private fun handleKotlinAndroid(
       project: Project
