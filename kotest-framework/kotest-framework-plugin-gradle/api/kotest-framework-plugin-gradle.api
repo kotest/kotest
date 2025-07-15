@@ -1,7 +1,5 @@
 public abstract class io/kotest/framework/gradle/KotestExtension {
 	public final fun getAndroidTestSource ()Ljava/lang/String;
-	public abstract fun getFailOnNoTests ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTagExpression ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
