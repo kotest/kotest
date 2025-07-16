@@ -34,6 +34,9 @@ testcontainers = "1.20.6"
 asm = "9.7.1"
 nmcp = "1.0.0-rc.1"
 kotlin-poet = "2.2.0"
+kotlinx-io-core = "0.7.0"
+xmlutil = "0.91.1"
+agp = "8.10.0"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -86,6 +89,8 @@ kotlinx-coroutines-jdk8 = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-j
 kotlinx-coroutines-debug = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-debug", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 
+kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.ref = "kotlinx-io-core" }
+
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 konform = { module = "io.konform:konform", version.ref = "konform" }
@@ -126,6 +131,8 @@ mysql-driver = { module = "mysql:mysql-connector-java", version = "8.0.33" }
 
 wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremock" }
 
+xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
+
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
@@ -143,3 +150,4 @@ kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compat
 allure = { id = "io.qameta.allure", version = "2.12.0" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
 power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
+android-library = {id = "com.android.library", version.ref = "agp"}
