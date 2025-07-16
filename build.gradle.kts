@@ -5,6 +5,7 @@ plugins {
    id("com.gradleup.nmcp.aggregation")
    java
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
+   //TODO this fails. why?? alias(libs.plugins.android.library) apply false
 }
 
 apiValidation {
