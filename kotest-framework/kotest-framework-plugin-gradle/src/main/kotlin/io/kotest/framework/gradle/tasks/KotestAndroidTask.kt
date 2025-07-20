@@ -2,13 +2,14 @@ package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
-import org.gradle.api.GradleException
+import org.gradle.api.attributes.Attribute
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
@@ -21,6 +22,17 @@ abstract class KotestAndroidTask @Inject internal constructor(
    private val objects: ObjectFactory,
 ) : AbstractKotestTask() {
 
+   companion object {
+      // unsure why this is needed, but without it the resolver complains about too many candidates for AGP plugin
+      val ARTIFACT_TYPE = Attribute.of("artifactType", String::class.java)
+
+      // types published by an Android library
+      const val TYPE_CLASSES_JAR = "android-classes-jar"; // In AAR
+      const val TYPE_CLASSES_DIR = "android-classes-directory"; // Not in AAR
+   }
+
+   // this is the name of the compilation to run, usually "debugUnitTest" or "releaseUnitTest"
+   // each configured KotestAndroidTask will run tests for a single compilation
    @get:Input
    abstract val compilationName: Property<String>
 
@@ -28,36 +40,45 @@ abstract class KotestAndroidTask @Inject internal constructor(
    protected fun execute() {
 
       val ext = project.extensions.getByType(KotlinAndroidExtension::class.java)
-      val target = ext.target
-      if (target is KotlinAndroidTarget) {
-
+      if (ext.target is KotlinAndroidTarget) {
          // example compilations for a typical project:
          // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
-
-         ext.target.compilations
+         val compilation = ext.target.compilations
             .matching { it.name == compilationName.get() }
-            .forEach {
-               executeCompilation(it)
-            }
-
+            .single()
+         executeCompilation(compilation)
       }
    }
 
+   @OptIn(ExperimentalKotlinGradlePluginApi::class)
    private fun executeCompilation(compilation: KotlinCompilation<*>) {
 
-      // this is all the transitive dependencies declared in the module
-      val rt = compilation.allAssociatedCompilations
-         .mapNotNull { it.runtimeDependencyConfigurationName }
-         .mapNotNull { project.configurations.findByName(it) }
+      val runtimeDependencyConfigurationName = compilation.runtimeDependencyConfigurationName
+         ?: error("No runtimeDependencyConfigurationName defined for compilation ${compilation.name}")
 
-      // this contains our tests and resources
-      val testOutputs = compilation.output.allOutputs
+      val rt = project.configurations.findByName(runtimeDependencyConfigurationName)
+         ?: error("No configuration found for $runtimeDependencyConfigurationName")
 
+      val runtimeFiles = rt.incoming.artifactView { attributes { attribute(ARTIFACT_TYPE, TYPE_CLASSES_JAR) } }.files
+
+      //    The following types/formats are supported:
+      //    - A String or CharSequence path, for example 'src/main/java' or '/usr/include'.
+      //    - A String or CharSequence URI, for example 'file:/usr/include'.
+      //    - A File instance.
+      //    - A Path instance.
+      //    - A Directory instance.
+      //    - A RegularFile instance.
+      //    - A URI or URL instance of file.
+      //    - A TextResource instance.
       val classpathWithTests = objects.fileCollection()
-         .from(rt)
-         .from(testOutputs)
+         .from(runtimeFiles)
+         .from(compilation.output.allOutputs) // this is the compiled output from this compilation
 
       val specs = SpecsResolver.specs(specs, packages, classpathWithTests)
+      if (specs.isEmpty()) {
+         println("No specs found for ${compilation.name}, skipping")
+         return
+      }
 
       val result = executors.javaexec {
          TestLauncherJavaExecConfiguration()
@@ -69,8 +90,8 @@ abstract class KotestAndroidTask @Inject internal constructor(
       }
 
       if (result.exitValue != 0) {
-         throw GradleException("There were test failures")
+         println("There were test failures")
+         result.rethrowFailure()
       }
    }
-
 }
