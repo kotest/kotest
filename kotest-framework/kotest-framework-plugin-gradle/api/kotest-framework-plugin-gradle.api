@@ -1,5 +1,4 @@
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
-	public static final field ANDROID_UNIT_TEST_SUFFIX Ljava/lang/String;
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
 	public static final field DESCRIPTION Ljava/lang/String;
 	public static final field EXTENSION_NAME Ljava/lang/String;

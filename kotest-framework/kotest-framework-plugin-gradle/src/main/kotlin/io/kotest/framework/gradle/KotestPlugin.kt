@@ -47,8 +47,6 @@ abstract class KotestPlugin : Plugin<Project> {
       private const val KOTLIN_MULTIPLATFORM_PLUGIN = "org.jetbrains.kotlin.multiplatform"
       private const val KOTLIN_ANDROID_PLUGIN = "org.jetbrains.kotlin.android"
 
-      const val ANDROID_UNIT_TEST_SUFFIX = "UnitTest"
-
       private val unsupportedTargets = listOf(
          "metadata"
       )
@@ -156,7 +154,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
                // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                // see https://docs.gradle.org/current/userguide/isolated_projects.html
-               val task = project.tasks.register(AndroidKotestTaskName(this), KotestAndroidTask::class) {
+               val task = project.tasks.register(androidKotestTaskName(this), KotestAndroidTask::class) {
                   compilationName.set(compilation.name)
                   // we depend on the standard android test task to ensure compilation has happened
                   dependsOn(androidTestTaskName(compilation))
@@ -170,16 +168,12 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun androidBuildType(compilation: KotlinCompilation<*>): String {
-      return compilation.name.removeSuffix(ANDROID_UNIT_TEST_SUFFIX) // so debugUnitTest becomes debug to get the build type
-   }
-
    private fun androidTestTaskName(compilation: KotlinCompilation<*>): String {
       // this will result in something like testDebugUnitTest
       return "test" + compilation.name.replaceFirstChar { it.uppercase() }
    }
 
-   private fun AndroidKotestTaskName(compilation: KotlinCompilation<*>): String {
+   private fun androidKotestTaskName(compilation: KotlinCompilation<*>): String {
       val capitalTarget = compilation.name.replaceFirstChar { it.uppercase() }
       // this will result in something like kotestDebugUnitTest, which is analogous to the
       // standard test task called testDebugUnitTest
