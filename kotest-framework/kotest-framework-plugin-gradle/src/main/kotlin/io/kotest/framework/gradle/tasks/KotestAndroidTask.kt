@@ -1,18 +1,17 @@
 package io.kotest.framework.gradle.tasks
 
-import io.kotest.framework.gradle.KotestExtension
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
 import org.gradle.api.GradleException
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
-import org.gradle.kotlin.dsl.get
 import org.gradle.process.ExecOperations
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinCompilation
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import javax.inject.Inject
 
 // gradle requires the class be extendable
@@ -23,39 +22,40 @@ abstract class KotestAndroidTask @Inject internal constructor(
 ) : AbstractKotestTask() {
 
    @get:Input
-   abstract val compilationNames: ListProperty<String>
+   abstract val compilationName: Property<String>
 
    @TaskAction
    protected fun execute() {
+
       val ext = project.extensions.getByType(KotlinAndroidExtension::class.java)
-      ext.target.compilations
-         .matching { it.name.endsWith("UnitTest") }
-         .matching { compilationNames.get().contains(it.name) }
-         .forEach {
-            executeCompilation(it)
-         }
+      val target = ext.target
+      if (target is KotlinAndroidTarget) {
+
+         // example compilations for a typical project:
+         // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
+
+         ext.target.compilations
+            .matching { it.name == compilationName.get() }
+            .forEach {
+               executeCompilation(it)
+            }
+
+      }
    }
 
    private fun executeCompilation(compilation: KotlinCompilation<*>) {
 
-      // TODO do not use Project during task execution
-      val ext = project.extensions.getByType(KotestExtension::class.java)
+      // this is all the transitive dependencies declared in the module
+      val rt = compilation.allAssociatedCompilations
+         .mapNotNull { it.runtimeDependencyConfigurationName }
+         .mapNotNull { project.configurations.findByName(it) }
 
-      // todo how do we get a handle to this location without hard coding the path ?
-      val testClassesDir = "${ext.androidTestSource}/${compilation.compilationName}"
-      val testClassesPath = project.layout.buildDirectory.get().asFile.resolve(testClassesDir)
-
-      // todo how do we get a handle to this location without hard coding the path ?
-      val classesDir = "${ext.androidTestSource}/${compilation.compilationName.removeSuffix("UnitTest")}"
-      val classesPath = project.layout.buildDirectory.get().asFile.resolve(classesDir)
-
-      val runtimeName = compilation.runtimeDependencyConfigurationName ?: error("No runtimeDependencyConfigurationName")
-      val runtimeClasspath = project.configurations[runtimeName]
+      // this contains our tests and resources
+      val testOutputs = compilation.output.allOutputs
 
       val classpathWithTests = objects.fileCollection()
-         .from(runtimeClasspath)
-         .from(classesPath)
-         .from(testClassesPath)
+         .from(rt)
+         .from(testOutputs)
 
       val specs = SpecsResolver.specs(specs, packages, classpathWithTests)
 
