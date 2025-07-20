@@ -104,7 +104,6 @@ fun main(args: Array<String>) {
    // there could be threads in the background that will stop the launcher shutting down
    // for example if a test keeps a thread running,
    // so we must force the exit
-   println("Exiting process with 0")
    if (collector.errors) exitProcess(-1) else exitProcess(0)
 }
 
