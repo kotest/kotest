@@ -47,6 +47,7 @@ internal data class TestLauncherJavaExecConfiguration(
    }
 
    fun withSpecs(specs: List<String>): TestLauncherJavaExecConfiguration {
+      require(specs.isNotEmpty()) { "Specs must be provided by the gradle plugin" }
       return copy(specs = specs)
    }
 
@@ -111,10 +112,11 @@ internal data class TestLauncherJavaExecConfiguration(
     * Returns an arg to specify the spec classes.
     * This is a semi-colon separated list of fully qualified class names.
     *
-    * If the --spec arg was passed as a command line arg, then we use that as is, otherwise
+    * If the --specs arg was passed as a command line arg, then we use that as is, otherwise
     * the gradle plugin will have scanned the runtime classpath and found all the spec classes.
     */
    private fun specsArg(): List<String> {
-      return if (specs.isEmpty()) emptyList() else listOf(ARG_SPECS, specs.joinToString(";"))
+      require(specs.isNotEmpty()) { "Specs must be provided by the gradle plugin" }
+      return listOf(ARG_SPECS, specs.joinToString(";"))
    }
 }
