@@ -9,7 +9,6 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.kotlin.dsl.configure
-import org.gradle.kotlin.dsl.create
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
@@ -29,6 +28,8 @@ abstract class KotestPlugin : Plugin<Project> {
       const val DESCRIPTION = "Runs tests using Kotest"
       const val EXTENSION_NAME = "kotest"
 
+      // this is used when the project is JVM only, i.e. not multiplatform, so instead of jvmKotest
+      // we just use kotest to match the convention of test
       const val JVM_ONLY_TASK_NAME = "kotest"
 
       const val JS_TASK_NAME = "jsKotest"
@@ -53,9 +54,6 @@ abstract class KotestPlugin : Plugin<Project> {
 
    override fun apply(project: Project) {
 
-      // allows users to configure the test engine
-      val kotestExtension = project.extensions.create<KotestExtension>(EXTENSION_NAME)
-
       configureTaskConventions(project)
 
       // Configure Kotlin JVM projects
@@ -79,9 +77,11 @@ abstract class KotestPlugin : Plugin<Project> {
       project.plugins.withId(KOTLIN_JVM_PLUGIN) {
          // gradle best practice is to only apply to this project, and users add the plugin to each subproject
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
-         project.tasks.register(JVM_ONLY_TASK_NAME, KotestJvmTask::class) {
+         val task = project.tasks.register(JVM_ONLY_TASK_NAME, KotestJvmTask::class) {
             inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
          }
+         // this means this kotest task will be run when the user runs "gradle check"
+         project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
       }
    }
 
@@ -93,10 +93,6 @@ abstract class KotestPlugin : Plugin<Project> {
             this.testableTargets.configureEach { // are the targets that can run tests
 
                val testableTarget: KotlinTargetWithTests<*, *> = this
-
-               println("testable name ${this.name}")
-               println("testable targetName ${this.targetName}")
-               println("testable disambiguationClassifier ${this.disambiguationClassifier}")
 
                if (name !in unsupportedTargets) {
                   when (platformType) {
@@ -113,6 +109,7 @@ abstract class KotestPlugin : Plugin<Project> {
                            tasks.add(JS_TASK_NAME)
                         }
                      }
+
                      KotlinPlatformType.wasm -> println("Todo wasm")
                      KotlinPlatformType.common -> println("Todo common")
                      KotlinPlatformType.jvm -> println("Todo jvm")
@@ -125,32 +122,15 @@ abstract class KotestPlugin : Plugin<Project> {
                         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                         // see https://docs.gradle.org/current/userguide/isolated_projects.html
                         val kotestTaskName = testableTarget.name + "Kotest"
-                        val linkDebugTestTaskName =  "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
+                        val linkDebugTestTaskName = "linkDebugTest${testableTarget.name.uppercaseFirstChar()}"
                         project.tasks.register(kotestTaskName, KotestNativeTask::class) {
                            target.set(testableTarget)
                            inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
                         }
                      }
                   }
-//                  when (targetName) {
-//                     else -> {
-//                        val capitalTarget = name.replaceFirstChar { it.uppercase() }
-//                        // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-//                        // see https://docs.gradle.org/current/userguide/isolated_projects.html
-//                        project.tasks.register("testing_$name", AbstractKotestTask::class) {
-//                           inputs.files(project.tasks.named("${name}TestClasses").map { it.outputs.files })
-//                        }
-//                     }
-//                  }
                }
             }
-            // add one special task that runs all compilations
-            // todo can we just make a task that runs the other tasks above?
-//            project.tasks.register("kotest", AbstractKotestJvmTask::class) {
-//               group = JavaBasePlugin.VERIFICATION_GROUP
-//               description = DESCRIPTION
-//               dependsOn(":$JS_TASK_NAME")
-//            }
          }
       }
    }
@@ -161,37 +141,42 @@ abstract class KotestPlugin : Plugin<Project> {
       project.plugins.withId(KOTLIN_ANDROID_PLUGIN) {
          project.extensions.configure<KotlinAndroidExtension> {
 
-            // todo better way to detect the test compilations, or find a way to get android variants
-            // by default will be debugUnitTest and releaseUnitTest
-            val testCompilations = target.compilations.matching { it.name.endsWith("UnitTest") }
+            // example compilations for a typical project:
+            // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
 
-            testCompilations.configureEach {
+            // kotest only applies for unit tests, not instrumentation tests, so we can filter to
+            // compilations that ends with UnitTest. In a standard android project these would be debugUnitTest
+            // and releaseUnitTest, but if someone has custom build types then there could be more.
+            val unitTestCompilations = target.compilations.matching { it.name.endsWith("UnitTest") }
+            unitTestCompilations.configureEach {
+
                val compilation: KotlinCompilation<*> = this
-               val capitalTarget = name.replaceFirstChar { it.uppercase() }
+
                // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                // see https://docs.gradle.org/current/userguide/isolated_projects.html
-               project.tasks.register("kotest$capitalTarget", KotestAndroidTask::class) {
-                  compilationNames.set(listOf(compilation.name))
-                  inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
+               val task = project.tasks.register(androidKotestTaskName(this), KotestAndroidTask::class) {
+                  compilationName.set(compilation.name)
+                  // we depend on the standard android test task to ensure compilation has happened
+                  dependsOn(androidTestTaskName(compilation))
+                  inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
                }
-            }
 
-            // add one special task that runs all compilations
-            // todo can we just make a task that runs the other tasks above?
-//            project.tasks.register("kotest", AbstractKotestJvmTask::class) {
-//               group = JavaBasePlugin.VERIFICATION_GROUP
-//               description = DESCRIPTION
-//            }
+               // this means this kotest task will be run when the user runs "gradle check"
+               project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+            }
          }
       }
    }
 
-//   private fun handleNodeJS(project: Project) {
-//      project.rootProject.tasks.withType(NodeJsSetupTask::class).whenTaskAdded {
-//         project.tasks.register("jsKotest", KotestJsTask::class.java) {
-//            dependsOn(":kotlinNodeJsSetup")
-//            dependsOn(":build")
-//         }
-//      }
-//   }
+   private fun androidTestTaskName(compilation: KotlinCompilation<*>): String {
+      // this will result in something like testDebugUnitTest
+      return "test" + compilation.name.replaceFirstChar { it.uppercase() }
+   }
+
+   private fun androidKotestTaskName(compilation: KotlinCompilation<*>): String {
+      val capitalTarget = compilation.name.replaceFirstChar { it.uppercase() }
+      // this will result in something like kotestDebugUnitTest, which is analogous to the
+      // standard test task called testDebugUnitTest
+      return "kotest$capitalTarget"
+   }
 }

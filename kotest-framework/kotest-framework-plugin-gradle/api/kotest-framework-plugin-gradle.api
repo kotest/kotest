@@ -1,7 +1,3 @@
-public abstract class io/kotest/framework/gradle/KotestExtension {
-	public final fun getAndroidTestSource ()Ljava/lang/String;
-}
-
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
 	public static final field DESCRIPTION Ljava/lang/String;
@@ -46,8 +42,15 @@ public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestAndroidTask$Companion;
+	public static final field TYPE_CLASSES_DIR Ljava/lang/String;
+	public static final field TYPE_CLASSES_JAR Ljava/lang/String;
 	protected final fun execute ()V
-	public abstract fun getCompilationNames ()Lorg/gradle/api/provider/ListProperty;
+	public abstract fun getCompilationName ()Lorg/gradle/api/provider/Property;
+}
+
+public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion {
+	public final fun getARTIFACT_TYPE ()Lorg/gradle/api/attributes/Attribute;
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {

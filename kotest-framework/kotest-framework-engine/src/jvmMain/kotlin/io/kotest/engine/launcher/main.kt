@@ -62,10 +62,7 @@ object LauncherArgs {
 @Suppress("DEPRECATION")
 fun main(args: Array<String>) {
 
-   println("Starting Kotest launcher with args: ${args.joinToString(";")}")
-
    val launcherArgs = parseArgs(args.toList())
-   println("Parsed args: $launcherArgs")
 
    // The engine *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
@@ -80,7 +77,6 @@ fun main(args: Array<String>) {
 
    // we support --descriptor to support an exact descriptor path as a way to run a single test
    val descriptorFilter = buildDescriptorFilter(launcherArgs)
-   println("descriptorFilter: $descriptorFilter")
 
    // Kotest 5 supported --testpath and didn't support the descriptor selector, only the test name
    // but we can combine that with the --spec arg which we know must be present in kotest 5 if testpath is
