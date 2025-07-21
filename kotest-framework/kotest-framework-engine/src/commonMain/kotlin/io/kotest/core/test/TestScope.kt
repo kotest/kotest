@@ -45,10 +45,7 @@ class DefaultTestScope(
    }
 
    companion object {
-      suspend operator fun invoke(
-         testCase: TestCase,
-         onRegister: suspend (NestedTest) -> Unit
-      ): TestScope {
+      suspend operator fun invoke(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
          val cc = coroutineContext
          return DefaultTestScope(testCase, cc, onRegister)
       }
