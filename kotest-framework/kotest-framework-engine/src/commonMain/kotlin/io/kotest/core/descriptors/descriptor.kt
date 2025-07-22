@@ -82,6 +82,12 @@ sealed interface Descriptor {
 //      return path()
 //   }
 
+   /**
+    * Returns a parseable path to the test.
+    *
+    * For example, a test with name "my test" inside a context "my context" in a spec called "my spec"
+    * would have the path "my spec/my context -- my test".
+    */
    fun path(): DescriptorPath = DescriptorPaths.render(this)
 
    fun parts(): List<String> = when (this) {
