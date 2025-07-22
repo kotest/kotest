@@ -38,6 +38,7 @@ kotlin-poet = "2.2.0"
 kotlinx-io-core = "0.7.0"
 xmlutil = "0.91.1"
 agp = "8.10.0"
+binary-compatibility-validator = "0.18.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -107,7 +108,7 @@ ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref =
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
 
-ksp = { module = "com.google.devtools.ksp:symbol-processing", version.ref = "ksp" }
+ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
 
@@ -149,7 +150,7 @@ junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version = "0.14.0" }
+kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 allure = { id = "io.qameta.allure", version = "2.12.0" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
 power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
