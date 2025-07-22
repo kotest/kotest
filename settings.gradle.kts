@@ -119,7 +119,6 @@ include(
    ":kotest-extensions:kotest-extensions-allure",
    ":kotest-extensions:kotest-extensions-blockhound",
    ":kotest-extensions:kotest-extensions-htmlreporter",
-   ":kotest-extensions:kotest-extensions-junitxml",
 
    // adds support for mockserver - see more https://www.mock-server.com/
    ":kotest-extensions:kotest-extensions-mockserver",
