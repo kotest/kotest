@@ -61,7 +61,7 @@ public final class io/kotest/framework/multiplatform/FailureElement$Companion {
 }
 
 public final class io/kotest/framework/multiplatform/JUnitXmlWriter {
-	public fun <init> ()V
+	public fun <init> (Lkotlin/time/Clock;Z)V
 	public final fun generate (Lio/kotest/core/spec/Spec;Ljava/util/Map;)Lio/kotest/framework/multiplatform/TestSuite;
 	public final fun writeXml (Lio/kotest/core/spec/Spec;Ljava/util/Map;)Ljava/lang/String;
 }

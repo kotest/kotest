@@ -19,16 +19,6 @@ public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/P
 public final class io/kotest/framework/gradle/KotestPlugin$Companion {
 }
 
-public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinAndroid$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun execute (Ljava/lang/Object;)V
-}
-
-public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinMultiplatform$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun execute (Ljava/lang/Object;)V
-}
-
 public final class io/kotest/framework/gradle/SpecsResolver {
 	public static final field DELIMITER Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/framework/gradle/SpecsResolver;

@@ -508,7 +508,7 @@ public final class io/kotest/assertions/print/PathPrint : io/kotest/assertions/p
 }
 
 public abstract interface class io/kotest/assertions/print/Print {
-	public abstract fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 }
 
 public final class io/kotest/assertions/print/Print$DefaultImpls {
@@ -2885,9 +2885,9 @@ public final class io/kotest/matchers/InvokeMatcherKt {
 
 public abstract interface class io/kotest/matchers/Matcher {
 	public static final field Companion Lio/kotest/matchers/Matcher$Companion;
-	public abstract fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public abstract fun invert ()Lio/kotest/matchers/Matcher;
-	public abstract fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
 	public abstract fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 

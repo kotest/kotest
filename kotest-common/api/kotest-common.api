@@ -144,7 +144,7 @@ public final class io/kotest/mpp/ReflectionKt {
 public abstract interface class io/kotest/mpp/StackTraces {
 	public abstract fun cleanStackTrace (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 	public abstract fun root (Ljava/lang/Throwable;)Ljava/lang/Throwable;
-	public abstract fun throwableLocation (Ljava/lang/Throwable;)Ljava/lang/String;
+	public fun throwableLocation (Ljava/lang/Throwable;)Ljava/lang/String;
 	public abstract fun throwableLocation (Ljava/lang/Throwable;I)Ljava/util/List;
 }
 
