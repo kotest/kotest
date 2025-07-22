@@ -2,6 +2,7 @@ rootProject.name = "kotest"
 
 pluginManagement {
    repositories {
+      google()
       mavenCentral()
       gradlePluginPortal()
    }
@@ -12,6 +13,7 @@ dependencyResolutionManagement {
    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
 
    repositories {
+      google()
       mavenCentral()
       maven("https://oss.sonatype.org/content/repositories/snapshots/") {
          name = "SonatypeSnapshots"
@@ -63,6 +65,9 @@ include(
    // generates KMP tests
    ":kotest-framework:kotest-framework-symbol-processor",
 
+   // generates KMP test reports
+   ":kotest-framework:kotest-framework-multiplatform-reporter",
+
    // contains basic assertion building block such as shouldBe which are used by both
    // framework and assertion libraries;
    // no user should need to depend on this
@@ -99,7 +104,7 @@ include(
    ":kotest-property:kotest-property-lifecycle",
 
    ":kotest-property:kotest-property-arrow",
-   ":kotest-property:kotest-property-arrow-optics",
+//   ":kotest-property:kotest-property-arrow-optics",
 
    // support for executing tests via junit platform through gradle
    // this will also bring in the required libs for the intellij plugin

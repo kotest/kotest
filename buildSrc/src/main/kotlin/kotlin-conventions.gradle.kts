@@ -26,8 +26,8 @@ kotlin {
    compilerOptions {
       freeCompilerArgs.add("-Xexpect-actual-classes")
       freeCompilerArgs.add("-Xwhen-guards")
-      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
-      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_0)
+      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
 //      allWarningsAsErrors = true
    }
    sourceSets.configureEach {

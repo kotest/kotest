@@ -5,6 +5,7 @@ plugins {
    id("com.gradleup.nmcp.aggregation")
    java
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
+   //TODO this fails. why?? alias(libs.plugins.android.library) apply false
 }
 
 apiValidation {
@@ -82,7 +83,7 @@ dependencies {
    // Property
    nmcpAggregation(projects.kotestProperty)
    nmcpAggregation(projects.kotestProperty.kotestPropertyArrow)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
+//   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
    nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
    nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)

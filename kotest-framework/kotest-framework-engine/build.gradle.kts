@@ -77,6 +77,4 @@ tasks.withType<Test>().configureEach {
          }
       }
    })
-
-   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

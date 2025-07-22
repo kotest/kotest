@@ -1,0 +1,177 @@
+public final class io/kotest/framework/multiplatform/ErrorElement {
+	public static final field Companion Lio/kotest/framework/multiplatform/ErrorElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/multiplatform/ErrorElement;
+	public static synthetic fun copy$default (Lio/kotest/framework/multiplatform/ErrorElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/framework/multiplatform/ErrorElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getStack ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/framework/multiplatform/ErrorElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/ErrorElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/framework/multiplatform/ErrorElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/framework/multiplatform/ErrorElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/ErrorElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/FailureElement {
+	public static final field Companion Lio/kotest/framework/multiplatform/FailureElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/framework/multiplatform/FailureElement;
+	public static synthetic fun copy$default (Lio/kotest/framework/multiplatform/FailureElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/framework/multiplatform/FailureElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getStack ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/framework/multiplatform/FailureElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/FailureElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/framework/multiplatform/FailureElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/framework/multiplatform/FailureElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/FailureElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/JUnitXmlWriter {
+	public fun <init> (Lkotlin/time/Clock;Z)V
+	public final fun generate (Lio/kotest/core/spec/Spec;Ljava/util/Map;)Lio/kotest/framework/multiplatform/TestSuite;
+	public final fun writeXml (Lio/kotest/core/spec/Spec;Ljava/util/Map;)Ljava/lang/String;
+}
+
+public final class io/kotest/framework/multiplatform/SkippedElement {
+	public static final field Companion Lio/kotest/framework/multiplatform/SkippedElement$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getMessage ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/framework/multiplatform/SkippedElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/SkippedElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/framework/multiplatform/SkippedElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/framework/multiplatform/SkippedElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/SkippedElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/TestCaseElement {
+	public static final field Companion Lio/kotest/framework/multiplatform/TestCaseElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;DLio/kotest/framework/multiplatform/FailureElement;Lio/kotest/framework/multiplatform/ErrorElement;Lio/kotest/framework/multiplatform/SkippedElement;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;DLio/kotest/framework/multiplatform/FailureElement;Lio/kotest/framework/multiplatform/ErrorElement;Lio/kotest/framework/multiplatform/SkippedElement;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()D
+	public final fun component4 ()Lio/kotest/framework/multiplatform/FailureElement;
+	public final fun component5 ()Lio/kotest/framework/multiplatform/ErrorElement;
+	public final fun component6 ()Lio/kotest/framework/multiplatform/SkippedElement;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;DLio/kotest/framework/multiplatform/FailureElement;Lio/kotest/framework/multiplatform/ErrorElement;Lio/kotest/framework/multiplatform/SkippedElement;)Lio/kotest/framework/multiplatform/TestCaseElement;
+	public static synthetic fun copy$default (Lio/kotest/framework/multiplatform/TestCaseElement;Ljava/lang/String;Ljava/lang/String;DLio/kotest/framework/multiplatform/FailureElement;Lio/kotest/framework/multiplatform/ErrorElement;Lio/kotest/framework/multiplatform/SkippedElement;ILjava/lang/Object;)Lio/kotest/framework/multiplatform/TestCaseElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClassname ()Ljava/lang/String;
+	public final fun getError ()Lio/kotest/framework/multiplatform/ErrorElement;
+	public final fun getFailure ()Lio/kotest/framework/multiplatform/FailureElement;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSkipped ()Lio/kotest/framework/multiplatform/SkippedElement;
+	public final fun getTime ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/framework/multiplatform/TestCaseElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/TestCaseElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/framework/multiplatform/TestCaseElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/framework/multiplatform/TestCaseElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/TestCaseElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/TestSuite {
+	public static final field Companion Lio/kotest/framework/multiplatform/TestSuite$Companion;
+	public fun <init> (Ljava/lang/String;IIIILjava/lang/String;DLjava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()D
+	public final fun component8 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;IIIILjava/lang/String;DLjava/util/List;)Lio/kotest/framework/multiplatform/TestSuite;
+	public static synthetic fun copy$default (Lio/kotest/framework/multiplatform/TestSuite;Ljava/lang/String;IIIILjava/lang/String;DLjava/util/List;ILjava/lang/Object;)Lio/kotest/framework/multiplatform/TestSuite;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCases ()Ljava/util/List;
+	public final fun getErrors ()I
+	public final fun getFailures ()I
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSkipped ()I
+	public final fun getTests ()I
+	public final fun getTime ()D
+	public final fun getTimestamp ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/framework/multiplatform/TestSuite$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/TestSuite$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/framework/multiplatform/TestSuite;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/framework/multiplatform/TestSuite;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/TestSuite$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/framework/multiplatform/TimeSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Lio/kotest/framework/multiplatform/TimeSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Double;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;D)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+}
+

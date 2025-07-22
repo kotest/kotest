@@ -198,8 +198,8 @@ public final class io/kotest/property/PropTestConfig {
 }
 
 public abstract interface class io/kotest/property/PropTestListener {
-	public abstract fun afterTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun beforeTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/property/PropTestListener$DefaultImpls {
