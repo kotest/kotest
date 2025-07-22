@@ -67,7 +67,6 @@ dependencies {
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunitxml)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
