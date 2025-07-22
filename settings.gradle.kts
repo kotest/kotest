@@ -104,7 +104,7 @@ include(
    ":kotest-property:kotest-property-lifecycle",
 
    ":kotest-property:kotest-property-arrow",
-   ":kotest-property:kotest-property-arrow-optics",
+//   ":kotest-property:kotest-property-arrow-optics",
 
    // support for executing tests via junit platform through gradle
    // this will also bring in the required libs for the intellij plugin
