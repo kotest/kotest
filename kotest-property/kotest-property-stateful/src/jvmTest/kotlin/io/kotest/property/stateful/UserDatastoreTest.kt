@@ -55,4 +55,4 @@ fun updatePassword(newPassword: String) = object : Action<UserDatastore> {
    }
 }
 
-data class User(val username: String, val password: String, val age: Int)
+data class User(val username: String, val password: String, val department: String)
