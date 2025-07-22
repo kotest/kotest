@@ -61,3 +61,5 @@ class UserDatastore(ds: DataSource) {
       )
    }
 }
+
+data class User(val username: String, val password: String, val department: String)

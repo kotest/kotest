@@ -12,7 +12,7 @@ kotlin {
             implementation(libs.testcontainers.jdbc)
             implementation(libs.testcontainers.kafka)
             implementation(libs.testcontainers.elastic)
-            implementation(libs.hikari)
+            api(libs.hikari)
             implementation(libs.kafka.client)
          }
       }

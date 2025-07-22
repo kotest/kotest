@@ -50,9 +50,7 @@ val truncate = object : Action<UserDatastore> {
 fun updatePassword(newPassword: String) = object : Action<UserDatastore> {
 
    override fun apply(state: UserDatastore): UserDatastore {
-      state.updatePassword("user1", newPassword)
+      state.updatePassword("user1", newPassword, "department")
       return state
    }
 }
-
-data class User(val username: String, val password: String, val department: String)
