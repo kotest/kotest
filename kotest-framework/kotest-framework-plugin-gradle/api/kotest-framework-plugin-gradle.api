@@ -38,8 +38,12 @@ public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion 
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestJsTask$Companion;
 	protected final fun execute ()V
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
+}
+
+public final class io/kotest/framework/gradle/tasks/KotestJsTask$Companion {
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
@@ -50,5 +54,14 @@ public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest
 public abstract class io/kotest/framework/gradle/tasks/KotestNativeTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
 	public abstract fun getTarget ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class io/kotest/framework/gradle/tasks/KotestWasmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestWasmTask$Companion;
+	protected final fun execute ()V
+	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
+}
+
+public final class io/kotest/framework/gradle/tasks/KotestWasmTask$Companion {
 }
 
