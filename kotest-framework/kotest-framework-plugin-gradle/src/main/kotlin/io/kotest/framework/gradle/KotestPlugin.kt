@@ -84,9 +84,9 @@ abstract class KotestPlugin : Plugin<Project> {
       project.plugins.withType<KotlinPluginWrapper> {
          // gradle best practice is to only apply to this project, and users add the plugin to each subproject
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
-
          // when we have a JVM project, the task name is just "kotest" to match the standard "test" task name.
          val task = project.tasks.register("kotest", KotestJvmTask::class) {
+            sourceSetName.set("test")
             inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
          }
          // this means this kotest task will be run when the user runs "gradle check"
@@ -104,65 +104,76 @@ abstract class KotestPlugin : Plugin<Project> {
                .matching { it.publishable }
                .configureEach {
                   val testableTarget: KotlinTargetWithTests<*, *> = this
-
                   if (name !in unsupportedTargets) {
                      when (platformType) {
-
-                        KotlinPlatformType.js -> {
-                           project.plugins.apply(NodeJsPlugin::class.java)
-                           project.extensions.configure(NodeJsEnvSpec::class.java) {
-                              val spec = this
-                              val task = project.tasks.register("jsKotest", KotestJsTask::class) {
-                                 nodeExecutable.set(spec.executable)
-                                 dependsOn(":kotlinNodeJsSetup")
-                                 inputs.files(
-                                    project.tasks.named("compileTestDevelopmentExecutableKotlinJs")
-                                       .map { it.outputs.files }
-                                 )
-                              }
-                              // the ksp plugin will create a configuration named kspJsTest that contains
-                              // the symbol processors used by the test configuration. We want to wire in
-                              // the kotest symbol processor to this configuration so the user doesn't have to manually
-                              wireKsp(project, kspConfigurationName(testableTarget))
-
-                              // this means this kotest task will be run when the user runs "gradle check"
-                              project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
-                           }
-                        }
-
+                        KotlinPlatformType.js -> handleJs(testableTarget)
                         KotlinPlatformType.wasm -> println("Todo wasm")
                         KotlinPlatformType.common -> Unit
-                        KotlinPlatformType.jvm -> println("Todo jvm")
+                        KotlinPlatformType.jvm -> handleJvm(testableTarget)
                         KotlinPlatformType.androidJvm -> println("Todo androidJvm")
-
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
                         // Testable target: mingwX64, platformType: native, disambiguationClassifier: mingwX64
-                        KotlinPlatformType.native -> {
-                           val kotestTaskName = nativeKotestTaskName(testableTarget)
-                           // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-                           // see https://docs.gradle.org/current/userguide/isolated_projects.html
-                           val task = project.tasks.register(kotestTaskName, KotestNativeTask::class) {
-                              target.set(testableTarget)
-                              // this is the task that runs the linker for the tests, so we depend on it to ensure
-                              // the tests are compiled before we run them
-                              val linkDebugTestTaskName = linkDebugNativeTestTaskName(testableTarget)
-                              inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
-                           }
-                           // the ksp plugin will create a configuration for each target that contains
-                           // the symbol processors used by the test configuration. We want to wire in
-                           // the kotest symbol processor to this configuration so the user doesn't have to manually
-                           // do it for every different native target (there could be many!)
-                           wireKsp(project, kspConfigurationName(testableTarget))
-
-                           // this means this kotest task will be run when the user runs "gradle check"
-                           project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
-                        }
+                        KotlinPlatformType.native -> handleNative(testableTarget)
                      }
                   }
                }
          }
       }
+   }
+
+   private fun handleJvm(testableTarget: KotlinTargetWithTests<*, *>) {
+      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // see https://docs.gradle.org/current/userguide/isolated_projects.html
+      val task = testableTarget.project.tasks.register("jvmKotest", KotestJvmTask::class) {
+         sourceSetName.set("jvmTest")
+         inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
+      }
+      // this means this kotest task will be run when the user runs "gradle check"
+      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+   }
+
+   private fun handleJs(testableTarget: KotlinTargetWithTests<*, *>) {
+      testableTarget.project.plugins.apply(NodeJsPlugin::class.java)
+      testableTarget.project.extensions.configure(NodeJsEnvSpec::class.java) {
+         val spec = this
+         val task = testableTarget.project.tasks.register("jsKotest", KotestJsTask::class) {
+            nodeExecutable.set(spec.executable)
+            dependsOn(":kotlinNodeJsSetup")
+            inputs.files(
+               project.tasks.named("compileTestDevelopmentExecutableKotlinJs")
+                  .map { it.outputs.files }
+            )
+         }
+         // the ksp plugin will create a configuration named kspJsTest that contains
+         // the symbol processors used by the test configuration. We want to wire in
+         // the kotest symbol processor to this configuration so the user doesn't have to manually
+         wireKsp(testableTarget.project, kspConfigurationName(testableTarget))
+
+         // this means this kotest task will be run when the user runs "gradle check"
+         testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+      }
+   }
+
+   private fun handleNative(testableTarget: KotlinTargetWithTests<*, *>) {
+      val kotestTaskName = nativeKotestTaskName(testableTarget)
+      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // see https://docs.gradle.org/current/userguide/isolated_projects.html
+      val task = testableTarget.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+         target.set(testableTarget)
+         // this is the task that runs the linker for the tests, so we depend on it to ensure
+         // the tests are compiled before we run them
+         val linkDebugTestTaskName = linkDebugNativeTestTaskName(testableTarget)
+         inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
+      }
+      // the ksp plugin will create a configuration for each target that contains
+      // the symbol processors used by the test configuration. We want to wire in
+      // the kotest symbol processor to this configuration so the user doesn't have to manually
+      // do it for every different native target (there could be many!)
+      wireKsp(testableTarget.project, kspConfigurationName(testableTarget))
+
+      // this means this kotest task will be run when the user runs "gradle check"
+      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    private fun handleKotlinAndroid(project: Project) {
