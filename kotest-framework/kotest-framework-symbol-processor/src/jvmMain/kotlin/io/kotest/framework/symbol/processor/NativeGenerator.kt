@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -77,6 +78,7 @@ when (listenerType) {
          .initializer("""runKotest()""")
 
       val file = FileSpec.builder("io.kotest.framework.runtime.native", "kotest.kt")
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
          .addFunction(function.build())
          .addProperty(invoker.build())
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
