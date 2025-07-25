@@ -44,6 +44,7 @@ public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/
 
 public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
+	public abstract fun getSourceSetName ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestNativeTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
