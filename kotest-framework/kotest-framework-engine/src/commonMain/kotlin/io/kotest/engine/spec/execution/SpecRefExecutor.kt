@@ -56,6 +56,7 @@ internal class SpecRefExecutor(
     * All other actions on the spec instance level are done by the [SpecExecutor] implementations,
     * including running the spec instance pipeline.
     */
+   @Suppress("DEPRECATION")
    private suspend fun innerExecute(ref: SpecRef): Result<Map<TestCase, TestResult>> {
       return inflator.inflate(ref).flatMap { spec ->
          try {
