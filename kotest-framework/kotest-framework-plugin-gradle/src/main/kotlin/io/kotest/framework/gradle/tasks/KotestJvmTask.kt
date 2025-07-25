@@ -2,7 +2,6 @@ package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
-import org.gradle.api.GradleException
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.TaskAction
@@ -34,7 +33,8 @@ abstract class KotestJvmTask @Inject internal constructor(
       }
 
       if (result.exitValue != 0) {
-         throw GradleException("There were test failures")
+         println("Test execution failed with exit code ${result.exitValue}")
+         result.rethrowFailure()
       }
    }
 }

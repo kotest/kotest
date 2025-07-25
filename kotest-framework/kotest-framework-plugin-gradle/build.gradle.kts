@@ -4,6 +4,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
+import java.nio.file.Files
 
 plugins {
    `kotlin-dsl`
@@ -42,7 +43,6 @@ tasks.withType<Test>().configureEach {
    }
 }
 
-@Suppress("UnstableApiUsage")
 gradlePlugin {
    isAutomatedPublishing = true
    website.set("https://kotest.io")
@@ -68,4 +68,20 @@ tasks.withType<KotlinCompile>().configureEach {
 
 tasks.withType<JavaCompile>().configureEach {
    options.release.set(11)
+}
+
+tasks {
+   val createPluginProperties = register("createPluginProperties") {
+      group = "kotest"
+      description = "Generates the version for the Kotest Gradle plugin"
+      val propFile = project.layout.buildDirectory.file("generated/kotest.gradle.properties").get()
+      outputs.file(propFile)
+      doLast {
+         mkdir(propFile.asFile.parentFile)
+         Files.writeString(propFile.asFile.toPath(), "version=${project.version}")
+      }
+   }
+   processResources {
+      from(files(createPluginProperties))
+   }
 }
