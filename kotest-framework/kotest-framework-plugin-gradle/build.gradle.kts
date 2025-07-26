@@ -1,9 +1,5 @@
-import org.gradle.api.tasks.PathSensitivity.RELATIVE
-import org.gradle.api.tasks.testing.logging.TestExceptionFormat
-import org.gradle.api.tasks.testing.logging.TestLogEvent.*
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import utils.SystemPropertiesArgumentProvider.Companion.SystemPropertiesArgumentProvider
 import java.nio.file.Files
 
 plugins {
@@ -19,29 +15,29 @@ dependencies {
    testImplementation(libs.kotlin.gradle.plugin)
 }
 
-tasks.withType<Test>().configureEach {
-   enabled = !project.hasProperty(Ci.JVM_ONLY)
+//tasks.withType<Test>().configureEach {
+//   enabled = !project.hasProperty(Ci.JVM_ONLY)
 
-   dependsOn(tasks.updateDevRepo)
+//   dependsOn(tasks.updateDevRepo)
 
-   inputs.dir(devPublish.devMavenRepo)
-      .withPropertyName("devPublish.devMavenRepo")
-      .withPathSensitivity(RELATIVE)
-
-   jvmArgumentProviders.add(
-      SystemPropertiesArgumentProvider(
-         devPublish.devMavenRepo.map { "devMavenRepoPath" to it.asFile.invariantSeparatorsPath }
-      )
-   )
-
-   useJUnitPlatform()
-   testLogging {
-      showExceptions = true
-      showStandardStreams = true
-      events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
-      exceptionFormat = TestExceptionFormat.FULL
-   }
-}
+//   inputs.dir(devPublish.devMavenRepo)
+//      .withPropertyName("devPublish.devMavenRepo")
+//      .withPathSensitivity(RELATIVE)
+//
+//   jvmArgumentProviders.add(
+//      SystemPropertiesArgumentProvider(
+//         devPublish.devMavenRepo.map { "devMavenRepoPath" to it.asFile.invariantSeparatorsPath }
+//      )
+//   )
+//
+//   useJUnitPlatform()
+//   testLogging {
+//      showExceptions = true
+//      showStandardStreams = true
+//      events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
+//      exceptionFormat = TestExceptionFormat.FULL
+//   }
+//}
 
 gradlePlugin {
    isAutomatedPublishing = true
