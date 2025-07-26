@@ -21,7 +21,7 @@ permissions:
    contents: read
 
 jobs:
-   run-tests:
+   gradle:
       runs-on: ${{ inputs.runs-on }}
       steps:
          -  name: "Redirect caches to fast D: drive for Windows runners"
