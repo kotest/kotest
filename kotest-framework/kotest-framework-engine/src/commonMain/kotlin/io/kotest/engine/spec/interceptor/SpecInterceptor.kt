@@ -26,10 +26,21 @@ internal interface SpecInterceptor {
 internal data class SpecContext(
    val beforeSpecInvoked: AtomicBoolean,
    var beforeSpecError: Throwable? = null,
-   var testFailed: Boolean = false,
 ) {
    companion object {
       fun create() = SpecContext(createAtomicBoolean(false), null)
+   }
+}
+
+/**
+ * The [ContainerContext] is a context that can be used by [TestInterceptor]s to share state between tests
+ * inside a common container (eg a context or describe block).
+ */
+internal data class ContainerContext(
+   var testFailed: Boolean,
+) {
+   companion object {
+      fun create() = ContainerContext(false)
    }
 }
 
