@@ -1,3 +1,4 @@
+import gradle.kotlin.dsl.accessors._a884ade656951c777051646224b58d52.kotlin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
@@ -21,12 +22,18 @@ kotlin {
          nodejs()
       }
 
+      @OptIn(ExperimentalWasmDsl::class)
+      wasmWasi {
+         nodejs()
+      }
+
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
             group("jsHosted") {
                withJs()
                withWasmJs()
+               withWasmWasi()
             }
          }
       }

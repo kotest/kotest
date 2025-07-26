@@ -110,9 +110,7 @@ internal class TestSuiteScheduler(
    private fun concurrency(): Int {
       return when (platform) {
          Platform.JVM -> context.projectConfigResolver.specExecutionMode().concurrency
-         Platform.JS,
-         Platform.Native,
-         Platform.WasmJs -> 1
+         Platform.JS, Platform.Native, Platform.WasmWasi, Platform.WasmJs -> 1
       }
    }
 }

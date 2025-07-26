@@ -1,5 +1,8 @@
 plugins {
-   id("kotest-multiplatform-library-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-js-wasm-conventions")
+   id("kotest-native-conventions")
+   id("kotest-publishing-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
 }
@@ -7,7 +10,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             // this is api because we want to expose `shouldBe` etc
             api(projects.kotestAssertions.kotestAssertionsShared)
@@ -18,19 +21,19 @@ kotlin {
          }
       }
 
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)

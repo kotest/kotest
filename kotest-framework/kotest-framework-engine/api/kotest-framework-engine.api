@@ -18,6 +18,7 @@ public final class io/kotest/core/Platform : java/lang/Enum {
 	public static final field JVM Lio/kotest/core/Platform;
 	public static final field Native Lio/kotest/core/Platform;
 	public static final field WasmJs Lio/kotest/core/Platform;
+	public static final field WasmWasi Lio/kotest/core/Platform;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/Platform;
 	public static fun values ()[Lio/kotest/core/Platform;
