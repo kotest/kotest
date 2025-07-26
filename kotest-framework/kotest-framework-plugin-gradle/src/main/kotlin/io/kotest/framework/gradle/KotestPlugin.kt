@@ -33,11 +33,7 @@ abstract class KotestPlugin : Plugin<Project> {
    companion object {
       const val TASK_DESCRIPTION = "Runs tests using Kotest"
 
-      const val KOTEST_TASK_NAME_WASM = "wasmJsKotest"
-      const val TARGET_NAME_WASM_JS = "wasmJs"
-
       const val TASK_BUILD = "build"
-      const val TASK_WASM_JS_TEST_CLASSES = "wasmJsTestClasses"
 
       private val unsupportedTargets = listOf(
          "metadata"
@@ -123,17 +119,18 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
+   //wasmJs and wasmWasi land here, so we must not use hardcoded names
    private fun handleWasm(testableTarget: KotlinTargetWithTests<*, *>) {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       testableTarget.project.plugins.apply(NodeJsPlugin::class.java)
       testableTarget.project.extensions.configure(NodeJsEnvSpec::class.java) {
          val spec = this
-         val task = testableTarget.project.tasks.register("wasmJsNodeKotest", KotestWasmTask::class) {
+         val task = testableTarget.project.tasks.register("${testableTarget.name}Kotest", KotestWasmTask::class) {
             nodeExecutable.set(spec.executable)
-            dependsOn(":wasmJsNodeTest")
+            dependsOn(":${testableTarget.name}Test")
             inputs.files(
-               project.tasks.named("wasmJsNodeTest")
+               project.tasks.named("${testableTarget.name}Test")
                   .map { it.outputs.files }
             )
          }
