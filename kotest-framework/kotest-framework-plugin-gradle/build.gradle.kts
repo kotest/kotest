@@ -4,10 +4,13 @@ import java.nio.file.Files
 
 plugins {
    `kotlin-dsl`
-//   id("kotest-publishing-conventions")
+   id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
    id("com.github.node-gradle.node") version "7.1.0"
 }
+
+group = "io.kotest"
+version = Ci.gradleRelease
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
