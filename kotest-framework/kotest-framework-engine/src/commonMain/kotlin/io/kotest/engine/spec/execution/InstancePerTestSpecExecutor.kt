@@ -62,6 +62,7 @@ import kotlin.coroutines.coroutineContext
  * spec3.innerTestB
  * ```
  */
+@Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
 internal class InstancePerTestSpecExecutor(
    private val context: EngineContext,

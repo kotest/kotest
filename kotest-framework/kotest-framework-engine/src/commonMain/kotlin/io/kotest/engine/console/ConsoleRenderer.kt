@@ -25,7 +25,7 @@ interface ConsoleRenderer {
  * An implementation of [ConsoleRenderer] that does not do any formatting, and just outputs
  * to std out using [kotlin.io.print] and [kotlin.io.println].
  */
-object PlainConsoleRenderer : ConsoleRenderer {
+internal object PlainConsoleRenderer : ConsoleRenderer {
 
    override fun print(str: String) = kotlin.io.print(str)
    override fun println() = kotlin.io.println()

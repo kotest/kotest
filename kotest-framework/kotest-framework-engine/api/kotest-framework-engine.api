@@ -3281,24 +3281,6 @@ public final class io/kotest/engine/console/MordantConsoleRenderer : io/kotest/e
 	public fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
 }
 
-public final class io/kotest/engine/console/PlainConsoleRenderer : io/kotest/engine/console/ConsoleRenderer {
-	public static final field INSTANCE Lio/kotest/engine/console/PlainConsoleRenderer;
-	public fun bold (Ljava/lang/String;)Ljava/lang/String;
-	public fun brightRed (Ljava/lang/String;)Ljava/lang/String;
-	public fun brightRedBold (Ljava/lang/String;)Ljava/lang/String;
-	public fun brightYellow (Ljava/lang/String;)Ljava/lang/String;
-	public fun brightYellowBold (Ljava/lang/String;)Ljava/lang/String;
-	public fun green (Ljava/lang/String;)Ljava/lang/String;
-	public fun greenBold (Ljava/lang/String;)Ljava/lang/String;
-	public fun print (Ljava/lang/String;)V
-	public fun println ()V
-	public fun println (Ljava/lang/String;)V
-	public fun red (Ljava/lang/String;)Ljava/lang/String;
-	public fun redBold (Ljava/lang/String;)Ljava/lang/String;
-	public fun yellow (Ljava/lang/String;)Ljava/lang/String;
-	public fun yellowBold (Ljava/lang/String;)Ljava/lang/String;
-}
-
 public final class io/kotest/engine/coroutines/BackgroundScopeKt {
 	public static final fun getBackgroundScope (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/CoroutineScope;
 }

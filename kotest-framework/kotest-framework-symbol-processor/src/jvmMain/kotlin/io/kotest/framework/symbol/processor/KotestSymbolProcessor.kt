@@ -69,10 +69,11 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
 
    override fun finish() {
       val files = visitor.specs.mapNotNull { it.containingFile }
-      when (environment.platforms.first()) {
+      when (val platform = environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
          is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         else -> Unit
+         else if platform.platformName.contains("wasm-js") -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
+         else -> error("Unsupported platform: ${environment.platforms.first()}")
       }
    }
 }
