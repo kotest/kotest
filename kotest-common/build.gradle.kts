@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
+
 plugins {
    id("kotest-jvm-conventions")
    id("kotest-js-wasm-conventions")
@@ -8,6 +11,20 @@ plugins {
 }
 
 kotlin {
+
+   @OptIn(ExperimentalKotlinGradlePluginApi::class)
+   applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
+      group("common") {
+         // contains no-op implemntations of reflection based functionality on non-jvm targets
+         group("basic") {
+            withJs()
+            withWasmJs()
+            withWasmWasi()
+            withNative()
+         }
+      }
+   }
+
    sourceSets {
 
       commonMain {

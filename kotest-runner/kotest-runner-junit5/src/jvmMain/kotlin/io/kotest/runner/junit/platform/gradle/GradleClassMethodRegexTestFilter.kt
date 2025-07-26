@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform.gradle
 
-import io.kotest.common.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult

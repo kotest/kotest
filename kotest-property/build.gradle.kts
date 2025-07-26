@@ -15,6 +15,7 @@ kotlin {
             implementation(libs.kotlin.reflect)
             api(projects.kotestCommon)
             api(projects.kotestAssertions.kotestAssertionsShared)
+            api(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlinx.coroutines.core)
          }
       }

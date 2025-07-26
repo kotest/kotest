@@ -1,7 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.mpp.stacktraces
-
 actual val errorCollector: ErrorCollector = JsErrorCollector
 
 object JsErrorCollector : BasicErrorCollector()

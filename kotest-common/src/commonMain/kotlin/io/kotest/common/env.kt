@@ -1,4 +1,4 @@
-package io.kotest.mpp
+package io.kotest.common
 
 fun sysprop(key: String, default: String): String = sysprop(key) ?: default
 fun <T> sysprop(key: String, default: T, converter: (String) -> T): T = sysprop(key)?.let { converter(it) } ?: default

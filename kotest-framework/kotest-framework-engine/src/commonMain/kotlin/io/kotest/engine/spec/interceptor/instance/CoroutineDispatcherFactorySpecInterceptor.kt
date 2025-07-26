@@ -7,7 +7,7 @@ import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.test.TestDispatcher
 import kotlin.coroutines.coroutineContext

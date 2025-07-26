@@ -1,6 +1,6 @@
 package io.kotest.data
 
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.reflection
 import kotlin.jvm.JvmName
 
 suspend fun <A, B> forAll(vararg rows: Row2<A, B>, testfn: suspend (A, B) -> Unit) {

@@ -1,11 +1,10 @@
 @file:JvmName("reflectionjvm")
 
-package io.kotest.mpp
+package io.kotest.common.reflection
 
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
-import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
 import kotlin.reflect.full.superclasses
@@ -66,10 +65,6 @@ object JvmReflection : Reflection {
       kclass.isData
    } catch (_: Throwable) {
       false
-   }
-
-   override fun isPublic(kclass: KClass<out Any>): Boolean {
-      return kclass.visibility == KVisibility.PUBLIC
    }
 
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = kclass.isSubclassOf(Enum::class)

@@ -5,7 +5,7 @@ import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.table
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.reflection
 
 fun <A, B, C, D, E, F, G, H, I, J> forAll(
    vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,

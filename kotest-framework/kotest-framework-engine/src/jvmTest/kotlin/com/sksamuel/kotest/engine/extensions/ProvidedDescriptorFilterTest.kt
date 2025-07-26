@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.extensions
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.engine.extensions.ProvidedDescriptorFilter
 import io.kotest.matchers.shouldBe

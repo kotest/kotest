@@ -13,7 +13,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 
 /**

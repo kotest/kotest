@@ -13,7 +13,7 @@ import io.kotest.engine.concurrency.isParallel
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.execution.SpecRefExecutor
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore

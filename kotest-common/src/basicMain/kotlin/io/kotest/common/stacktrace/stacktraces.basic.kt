@@ -1,3 +1,3 @@
-package io.kotest.mpp
+package io.kotest.common.stacktrace
 
 actual val stacktraces: StackTraces = BasicStackTraces

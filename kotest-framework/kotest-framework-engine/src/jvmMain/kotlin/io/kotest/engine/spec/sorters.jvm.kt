@@ -2,8 +2,8 @@ package io.kotest.engine.spec
 
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecRef
-import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.annotation
+import io.kotest.common.reflection.bestName
 import java.nio.file.Paths
 
 actual val FailureFirstSorter: SpecSorter = object : SpecSorter {

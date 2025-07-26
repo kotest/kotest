@@ -20,7 +20,7 @@ import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.DisabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.EnabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.IgnoredSpecInterceptor
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 internal class SpecRefInterceptorPipeline(
    private val context: EngineContext,

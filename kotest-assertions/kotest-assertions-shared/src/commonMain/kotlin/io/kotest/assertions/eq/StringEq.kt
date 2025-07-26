@@ -4,7 +4,7 @@ import io.kotest.assertions.*
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 import io.kotest.assertions.print.printWithType
-import io.kotest.mpp.sysprop
+import io.kotest.common.sysprop
 import io.kotest.submatching.StringPartialMatch
 
 /**

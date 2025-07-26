@@ -1,6 +1,6 @@
 package io.kotest.property.seed
 
-import io.kotest.common.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPath
 
 internal actual fun readSeed(path: DescriptorPath): Long? = null
 internal actual fun writeSeed(path: DescriptorPath, seed: Long) {}

@@ -7,7 +7,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -15,7 +15,7 @@ import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.names.UniqueNames
 import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult

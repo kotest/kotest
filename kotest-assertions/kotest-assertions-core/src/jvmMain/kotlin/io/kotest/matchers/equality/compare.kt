@@ -4,7 +4,7 @@ import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.isSubclassOf

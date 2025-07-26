@@ -4,7 +4,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.log
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.mpp.sysprop
+import io.kotest.common.sysprop
 
 /**
  * A [TestEnabledExtension] that disabled a test if the name of the test is prefixed with "!"

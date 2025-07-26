@@ -3,7 +3,7 @@
 package io.kotest.property
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.mpp.sysprop
+import io.kotest.common.sysprop
 import io.kotest.property.classifications.LabelsReporter
 import io.kotest.property.classifications.StandardClassificationReporter
 import io.kotest.property.statistics.DefaultStatisticsReporter

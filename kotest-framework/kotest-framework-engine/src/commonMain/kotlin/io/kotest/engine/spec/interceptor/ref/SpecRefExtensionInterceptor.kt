@@ -8,7 +8,7 @@ import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 /**
  * A [SpecRefInterceptor] that will invoke any [SpecRefExtension]s.

@@ -3,7 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.extensions.Extension
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor

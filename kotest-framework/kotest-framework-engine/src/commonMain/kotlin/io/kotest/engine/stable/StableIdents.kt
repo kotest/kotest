@@ -3,9 +3,9 @@ package io.kotest.engine.stable
 import io.kotest.core.Platform
 import io.kotest.core.platform
 import io.kotest.engine.names.WithDataTestName
-import io.kotest.mpp.bestName
-import io.kotest.mpp.hasAnnotation
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.bestName
+import io.kotest.common.reflection.hasAnnotation
+import io.kotest.common.reflection.reflection
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 

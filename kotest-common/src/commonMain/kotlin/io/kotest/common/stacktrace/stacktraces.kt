@@ -1,4 +1,6 @@
-package io.kotest.mpp
+package io.kotest.common.stacktrace
+
+import io.kotest.common.sysprop
 
 expect val stacktraces: StackTraces
 

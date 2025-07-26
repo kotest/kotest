@@ -1,6 +1,6 @@
 package io.kotest.assertions
 
-import io.kotest.mpp.sysprop
+import io.kotest.common.sysprop
 
 object AssertionsConfigSystemProperties {
    const val disableNaNEquality = "kotest.assertions.nan.equality.disable"

@@ -6,7 +6,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 infix fun Throwable.shouldHaveMessage(message: String) = this should haveMessage(message)
 infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveMessage(message)

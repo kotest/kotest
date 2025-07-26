@@ -4,7 +4,7 @@ import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.TestResultBuilder
 import io.kotest.framework.multiplatform.JUnitXmlWriter
 import io.kotest.matchers.shouldBe

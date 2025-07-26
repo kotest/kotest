@@ -1028,7 +1028,7 @@ public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
 	public fun parts ()Ljava/util/List;
-	public fun path ()Lio/kotest/common/DescriptorPath;
+	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
@@ -1048,7 +1048,7 @@ public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
 	public static fun isTestCase (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun parents (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 	public static fun parts (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
-	public static fun path (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/common/DescriptorPath;
+	public static fun path (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/DescriptorPath;
 	public static fun spec (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
@@ -1075,7 +1075,7 @@ public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kot
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
 	public fun parts ()Ljava/util/List;
-	public fun path ()Lio/kotest/common/DescriptorPath;
+	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 	public fun toString ()Ljava/lang/String;
 }
@@ -1105,7 +1105,7 @@ public final class io/kotest/core/descriptors/Descriptor$TestDescriptor : io/kot
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
 	public fun parts ()Ljava/util/List;
-	public fun path ()Lio/kotest/common/DescriptorPath;
+	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 	public fun toString ()Ljava/lang/String;
 }
@@ -1122,12 +1122,36 @@ public final class io/kotest/core/descriptors/DescriptorId {
 	public final fun wildCardMatch (Lio/kotest/core/descriptors/DescriptorId;)Z
 }
 
+public final class io/kotest/core/descriptors/DescriptorPath {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/core/descriptors/DescriptorPath;
+	public static synthetic fun copy$default (Lio/kotest/core/descriptors/DescriptorPath;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/descriptors/DescriptorPath;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/core/descriptors/DescriptorPathContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
+	public static final field Key Lio/kotest/core/descriptors/DescriptorPathContextElement$Key;
+	public fun <init> (Lio/kotest/core/descriptors/DescriptorPath;)V
+	public final fun getPath ()Lio/kotest/core/descriptors/DescriptorPath;
+}
+
+public final class io/kotest/core/descriptors/DescriptorPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
+}
+
 public final class io/kotest/core/descriptors/DescriptorPaths {
 	public static final field INSTANCE Lio/kotest/core/descriptors/DescriptorPaths;
 	public static final field SPEC_DELIMITER Ljava/lang/String;
 	public static final field TEST_DELIMITER Ljava/lang/String;
 	public final fun parse (Ljava/lang/String;)Lio/kotest/core/descriptors/Descriptor;
-	public final fun render (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/common/DescriptorPath;
+	public final fun render (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/DescriptorPath;
+}
+
+public final class io/kotest/core/descriptors/KclassesKt {
+	public static final fun toDescriptor (Lkotlin/reflect/KClass;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
 public abstract interface annotation class io/kotest/core/extensions/ApplyExtension : java/lang/annotation/Annotation {
@@ -3311,10 +3335,6 @@ public final class io/kotest/engine/coroutines/ThreadPerSpecCoroutineContextFact
 	public fun close ()V
 	public fun withDispatcher (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun withDispatcher (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/descriptors/KclassesKt {
-	public static final fun toDescriptor (Lkotlin/reflect/KClass;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
 }
 
 public final class io/kotest/engine/extensions/DefaultExtensionRegistry : io/kotest/engine/extensions/ExtensionRegistry {
