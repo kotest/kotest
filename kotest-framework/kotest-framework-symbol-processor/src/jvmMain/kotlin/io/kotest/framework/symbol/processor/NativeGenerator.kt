@@ -90,7 +90,7 @@ when (listenerType) {
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
       specs.forEach {
-         file.addImport(it.qualifiedName!!.asString().substringBeforeLast("."), it.simpleName.asString())
+         file.addImport(it.packageName.asString(), it.simpleName.asString())
       }
       return file.build()
    }
