@@ -129,11 +129,11 @@ abstract class KotestPlugin : Plugin<Project> {
       testableTarget.project.plugins.apply(NodeJsPlugin::class.java)
       testableTarget.project.extensions.configure(NodeJsEnvSpec::class.java) {
          val spec = this
-         val task = testableTarget.project.tasks.register("wasmJsNodeKotest", KotestWasmTask::class) {
+         val task = testableTarget.project.tasks.register(wasmKotestTaskName(testableTarget), KotestWasmTask::class) {
             nodeExecutable.set(spec.executable)
-            dependsOn(":wasmJsNodeTest")
+            dependsOn(":${testableTarget.name}NodeTest")
             inputs.files(
-               project.tasks.named("wasmJsNodeTest")
+               project.tasks.named("${testableTarget.name}NodeTest")
                   .map { it.outputs.files }
             )
          }
@@ -230,6 +230,10 @@ abstract class KotestPlugin : Plugin<Project> {
             }
          }
       }
+   }
+
+   private fun wasmKotestTaskName(testableTarget: KotlinTargetWithTests<*, *>): String {
+      return testableTarget.name + "NodeKotest"
    }
 
    private fun androidTestTaskName(compilation: KotlinCompilation<*>): String {
