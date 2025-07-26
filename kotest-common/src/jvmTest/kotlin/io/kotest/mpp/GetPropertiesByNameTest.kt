@@ -1,6 +1,7 @@
 package io.kotest.mpp
 
 import io.kotest.assertions.withClue
+import io.kotest.common.reflection.JvmReflection
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.matchers.shouldBe
