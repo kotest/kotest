@@ -62,19 +62,20 @@ private class ErrorCollectorContextElement(private val coroutineLocalErrorCollec
 }
 
 actual fun ErrorCollector.collectiveError(): AssertionError? {
-   fun prefixWithSubjectInformation(e: JvmAssertionFailedError, subject: Printed) =
-      JvmAssertionFailedError(
-         "The following assertion for ${subject.value} failed:\n" + e.message,
-         e.cause,
-         e.expectedValue,
-         e.actualValue
-      )
+   fun prefixWithSubjectInformation(e: AssertionError, subject: Printed) {
+      TODO()
+//      AssertionError(
+//         "The following assertion for ${subject.value} failed:\n" + e.message,
+//         e.expectedValue,
+//         e.actualValue
+//      )
+   }
 
    val failures = errors()
    clear()
 
-   return if (failures.size == 1 && failures[0] is JvmAssertionFailedError) {
-      val e = failures[0] as JvmAssertionFailedError
+   return if (failures.size == 1 && failures[0] is AssertionError) {
+      val e = failures[0] as AssertionError
       subject?.let { prefixWithSubjectInformation(e, it) } ?: e
    } else {
       failures.toAssertionError(depth, subject)

@@ -13,35 +13,24 @@ kotlin {
 
       commonMain {
          dependencies {
-            // this is api because we want to expose `shouldBe` etc
-            api(projects.kotestAssertions.kotestAssertionsShared)
-
             implementation(libs.kotlin.reflect)
             implementation(projects.kotestCommon)
-            implementation(libs.kotlinx.coroutines.core)
          }
       }
 
       commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
       jvmMain {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
-         }
-      }
-
-      jvmTest {
-         dependencies {
-            implementation(projects.kotestProperty)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.opentest4j) // used to create richer assertion errors that intellij uses for diffs
+            implementation(libs.diffutils)
+            implementation(libs.opentest4j)
             implementation(libs.apache.commons.lang)
-            implementation(libs.mockk)
          }
       }
    }

@@ -40,7 +40,7 @@ class CharTest : FunSpec({
          // Duplicate ranges
          row(listOf('A'..'C', 'A'..'C'), mapOf('A' to 0.33, 'B' to 0.33, 'C' to 0.33))
       ) { ranges, expectedRatioMap ->
-         val charGen = Arb.char(ranges)
+         val charGen = char(ranges)
          val actualRatioMap = (1..iterations)
             .map { charGen.next() }
             .groupBy { it }
@@ -68,7 +68,7 @@ class CharTest : FunSpec({
          row(listOf('B'..'A', 'C'..'B', 'A'..'B'))
       ) { ranges ->
          shouldThrow<IllegalArgumentException> {
-            Arb.char(ranges)
+            char(ranges)
          }
       }
    }

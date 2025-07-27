@@ -7,7 +7,7 @@ import io.kotest.inspectors.forOne
  *
  * The **simple example** shows how `extracting` helps with disjunct collection assertions:
  * ```
- * extracting(persons){ name }
+ * extracting(persons) { name }
  *   .shouldContainAll("John Doe", "Samantha Roes")
  * ```
  *
@@ -19,7 +19,7 @@ import io.kotest.inspectors.forOne
  *
  * `extracting` also allows to define complex return types shown in this **elaborate example**:
  * ```
- * extracting(persons){ Pair(name, age) }
+ * extracting(persons) { Pair(name, age) }
  *   .shouldContainAll(
  *     Pair("John Doe", 20),
  *     Pair("Samantha Roes", 19)

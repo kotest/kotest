@@ -1,7 +1,5 @@
 package io.kotest.data
 
-import io.kotest.assertions.fail
-
 internal data class StringTable(
    val headers: List<String>,
    val lines: List<String>,

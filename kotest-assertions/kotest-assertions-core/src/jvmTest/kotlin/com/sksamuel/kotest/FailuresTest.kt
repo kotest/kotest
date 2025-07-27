@@ -14,7 +14,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeInstanceOf
-import org.opentest4j.AssertionFailedError
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class FailuresTest : StringSpec({
@@ -37,7 +36,7 @@ class FailuresTest : StringSpec({
       val expected = Expected(Printed("1"))
       val actual = Actual(Printed("2"))
       val t = failure(expected, actual)
-      t.shouldBeInstanceOf<AssertionFailedError>()
+      t.shouldBeInstanceOf<AssertionError>()
       t.message shouldBe "expected:<1> but was:<2>"
    }
 

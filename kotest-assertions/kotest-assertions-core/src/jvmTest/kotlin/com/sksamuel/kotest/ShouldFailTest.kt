@@ -5,6 +5,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -30,3 +31,13 @@ class ShouldFailTest : FreeSpec({
       }
    }
 })
+
+class FooTest : FunSpec() {
+   init {
+      test("foo") {
+         "a" shouldBe "b"
+      }
+//      error("foo")
+//      throw JvmAssertionFailedError("foo", null, "a", "b")
+   }
+}

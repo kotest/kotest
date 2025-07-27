@@ -1,6 +1,5 @@
 package io.kotest.engine.teamcity
 
-import io.kotest.common.errors.ComparisonError
 import io.kotest.engine.test.TestResult
 import kotlin.time.Duration
 
@@ -143,9 +142,9 @@ class TeamCityMessageBuilder(
          details(escapeColons(stacktrace))
       }
 
-      when (error) {
-         is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
-      }
+//      when (error) {
+//         is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
+//      }
 
       return this
    }

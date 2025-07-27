@@ -7,7 +7,6 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
-import org.opentest4j.AssertionFailedError
 
 class MapEqTest : FunSpec({
    test("should give null for simple equal maps") {
@@ -23,7 +22,7 @@ class MapEqTest : FunSpec({
       val throwable = MapEq.equals(map1, map2, false)
 
       assertSoftly {
-         throwable.shouldBeInstanceOf<AssertionFailedError>()
+         throwable.shouldBeInstanceOf<AssertionError>()
          throwable.message shouldBe """
             Values differed at keys a
             expected:<{
@@ -36,8 +35,8 @@ class MapEqTest : FunSpec({
    }
 
    test("should give null for complex equal maps") {
-      val map1 = mapOf("a" to arrayOf(1,2))
-      val map2 = mapOf("a" to arrayOf(1,2))
+      val map1 = mapOf("a" to arrayOf(1, 2))
+      val map2 = mapOf("a" to arrayOf(1, 2))
 
       MapEq.equals(map1, map2, false).shouldBeNull()
    }

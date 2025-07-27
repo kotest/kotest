@@ -12,7 +12,6 @@ kotlin {
 
       commonMain {
          dependencies {
-            api(projects.kotestAssertions.kotestAssertionsShared)
             implementation(libs.kotlin.reflect)
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 

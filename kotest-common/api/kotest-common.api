@@ -56,11 +56,6 @@ public final class io/kotest/common/TestTimeSourceKt {
 	public static final fun testTimeSource (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/common/errors/ComparisonError {
-	public abstract fun getActualValue ()Ljava/lang/String;
-	public abstract fun getExpectedValue ()Ljava/lang/String;
-}
-
 public abstract interface class io/kotest/common/reflection/AnnotationSearchParameter {
 }
 

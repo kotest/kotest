@@ -59,9 +59,7 @@ fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = ob
              return MatcherResult(
                 passed,
                 { "Value mismatch at '$path': ${intellijFormatError(Expected(t.print()), Actual(actualValue.print()))}" },
-                {
-                   "$sub should not contain the element $path = $t"
-                }
+                { "$sub should not contain the element $path = $t" }
              )
           }
           is JsonPathNotFound -> {
@@ -77,9 +75,9 @@ internal fun extractByPath(json: String?, path: String, tClass: Class<*>): Extra
    return try {
       val extractedValue = parsedJson.read(path, tClass)
       ExtractedValue(extractedValue)
-   } catch (e: PathNotFoundException) {
+   } catch (_: PathNotFoundException) {
       JsonPathNotFound
-   } catch (e: InvalidPathException) {
+   } catch (_: InvalidPathException) {
       throw AssertionError("$path is not a valid JSON path")
    }
 }
@@ -106,7 +104,7 @@ internal fun findValidSubPath(json: String?, path: String): JsonSubPathSearchOut
       try {
          parsedJson.read(subPath, Any::class.java)
          return JsonSubPathFound(subPath)
-      } catch (e: PathNotFoundException) {
+      } catch (_: PathNotFoundException) {
          extractPossiblePathOfJsonArray(subPath)?.let { possiblePathOfJsonArray ->
             getPossibleSizeOfJsonArray(json, possiblePathOfJsonArray.pathToArray)?.let { sizeOfJsonArray ->
                return JsonSubPathJsonArrayTooShort(
@@ -128,7 +126,7 @@ internal fun getPossibleSizeOfJsonArray(json: String?, path: String): Int? {
       val parsedJson = JsonPath.parse(json)
       val possibleJsonArray = parsedJson.read(path, List::class.java)
       return possibleJsonArray.size
-   } catch (ignore: Exception) {
+   } catch (_: Exception) {
       null
    }
 }
