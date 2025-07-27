@@ -21,16 +21,14 @@ infix fun <A : CharSequence> A?.shouldNotEndWith(suffix: CharSequence): A {
 fun endWith(suffix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { value ->
    val passed = value.endsWith(suffix)
    val shortMessage = "${value.print().value} should end with ${suffix.print().value}"
-   val possibleSubmatches = if(passed) "" else describePartialMatchesInStringForSuffix(suffix.toString(), value.toString()).toString()
+   val possibleSubmatches =
+      if (passed) "" else describePartialMatchesInStringForSuffix(suffix.toString(), value.toString()).toString()
    val message = listOf(shortMessage, possibleSubmatches).filter { it.isNotEmpty() }.joinToString("\n")
    MatcherResult(
       passed,
-      {
-         message
-      },
-      {
-         "${value.print().value} should not end with ${suffix.print().value}"
-      })
+      { message },
+      { "${value.print().value} should not end with ${suffix.print().value}" }
+   )
 }
 
 infix fun <A : CharSequence?> A.shouldEndWith(regex: Regex): A {
@@ -43,7 +41,6 @@ fun endWith(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value matches endWithRegex,
       { "${value.print().value} should end with regex ${regex.pattern}" },
-      {
-         "${value.print().value} should not end with regex ${regex.pattern}"
-      })
+      { "${value.print().value} should not end with regex ${regex.pattern}" }
+   )
 }

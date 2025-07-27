@@ -28,6 +28,6 @@ class CollectionsPrintTest : FunSpec({
    }
 
    test("print should limit items") {
-      List(1000) { it }.print().value shouldBe "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ...and 980 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]"
+      List(1000) { it }.print().value shouldBe "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ...and 980 more (set 'kotest.assertions.collection.print.size' to see more / less items)]"
    }
 })

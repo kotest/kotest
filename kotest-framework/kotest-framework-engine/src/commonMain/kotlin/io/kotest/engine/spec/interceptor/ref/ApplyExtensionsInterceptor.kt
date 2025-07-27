@@ -1,18 +1,18 @@
 package io.kotest.engine.spec.interceptor.ref
 
 import io.kotest.common.JVMOnly
+import io.kotest.common.reflection.annotation
+import io.kotest.common.reflection.instantiations
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecWrapperExtension
 import io.kotest.engine.flatMap
-import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.common.reflection.annotation
+import io.kotest.engine.test.TestResult
 
 /**
  * If a [Spec] is annotated with the [ApplyExtension] annotation, registers any extensions
@@ -29,7 +29,7 @@ internal class ApplyExtensionsInterceptor(private val registry: ExtensionRegistr
       return runCatching {
          val classes = ref.kclass.annotation<ApplyExtension>()?.extensions?.toList() ?: emptyList()
          classes
-            .map { it.newInstanceNoArgConstructorOrObjectInstance() }
+            .map { instantiations.newInstanceNoArgConstructorOrObjectInstance(it) }
             .map { SpecWrapperExtension(it, ref.kclass) }
       }.flatMap { exts ->
          exts.forEach { registry.add(it) }

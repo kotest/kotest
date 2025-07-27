@@ -9,15 +9,13 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class ErrorCollectorTests : FreeSpec(
-   {
-      "Single assertion failed, returns the original failure" {
-         shouldThrow<AssertionFailedError> {
-            assertSoftly {
-               1 shouldBe 1
-               1 shouldBe 2
-            }
+class ErrorCollectorTests : FreeSpec({
+   "Single assertion failed, returns the original failure" {
+      shouldThrow<AssertionFailedError> {
+         assertSoftly {
+            1 shouldBe 1
+            1 shouldBe 2
          }
       }
    }
-)
+})

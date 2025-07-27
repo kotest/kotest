@@ -31,7 +31,5 @@ internal suspend fun clearFailedSeed() {
 }
 
 internal expect fun readSeed(path: DescriptorPath): Long?
-
 internal expect fun writeSeed(path: DescriptorPath, seed: Long)
-
 internal expect fun clearSeed(path: DescriptorPath)

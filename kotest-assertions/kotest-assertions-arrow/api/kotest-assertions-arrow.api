@@ -27,8 +27,8 @@ public final class io/kotest/assertions/arrow/core/NelKt {
 	public static final fun shouldBeSorted-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldBeUnique-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldContain-ZALtuoE (Ljava/util/List;Ljava/lang/Object;)V
-	public static final fun shouldContainAll-ZALtuoE (Ljava/util/List;Ljava/util/List;)V
-	public static final fun shouldContainAll-ZALtuoE (Ljava/util/List;[Ljava/lang/Object;)V
+	public static final fun shouldContainAll-ZALtuoE (Ljava/util/List;Ljava/util/List;)Ljava/util/Collection;
+	public static final fun shouldContainAll-ZALtuoE (Ljava/util/List;[Ljava/lang/Object;)Ljava/util/Collection;
 	public static final fun shouldContainDuplicates-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldContainNoNulls-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldContainNull-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
@@ -39,8 +39,8 @@ public final class io/kotest/assertions/arrow/core/NelKt {
 	public static final fun shouldNotBeSorted-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotBeUnique-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotContain-ZALtuoE (Ljava/util/List;Ljava/lang/Object;)V
-	public static final fun shouldNotContainAll-ZALtuoE (Ljava/util/List;Ljava/util/List;)V
-	public static final fun shouldNotContainAll-ZALtuoE (Ljava/util/List;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainAll-ZALtuoE (Ljava/util/List;Ljava/util/List;)Ljava/util/Collection;
+	public static final fun shouldNotContainAll-ZALtuoE (Ljava/util/List;[Ljava/lang/Object;)Ljava/util/Collection;
 	public static final fun shouldNotContainDuplicates-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotContainNoNulls-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotContainNull-GZgkXh4 (Ljava/util/List;)Ljava/util/List;

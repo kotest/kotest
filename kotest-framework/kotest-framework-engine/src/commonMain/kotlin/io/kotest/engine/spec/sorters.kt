@@ -1,10 +1,10 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
-import io.kotest.common.reflection.bestName
 import kotlin.random.Random
 
 /**
@@ -12,10 +12,6 @@ import kotlin.random.Random
  */
 interface SpecSorter {
    fun sort(specs: List<SpecRef>): List<SpecRef>
-}
-
-object NoopSpecSorter : SpecSorter {
-   override fun sort(specs: List<SpecRef>): List<SpecRef> = specs
 }
 
 /**

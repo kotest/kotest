@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.core.Platform
+import io.kotest.common.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.listeners.AfterTestListener

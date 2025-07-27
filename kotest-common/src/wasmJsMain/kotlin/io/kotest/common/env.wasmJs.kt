@@ -1,7 +1,5 @@
 package io.kotest.common
 
-actual fun sysprop(name: String): String? = null
-
 actual fun env(name: String): String? = try {
    jsProcessEnv("process.env[name]")
 } catch (_: Throwable) {
@@ -9,6 +7,7 @@ actual fun env(name: String): String? = try {
 }
 
 
+@Suppress("unused")
 private fun jsProcessEnv(name: String): String? = js(
    // Work around K/Wasm limitation:
    //     "The Kotlin try-catch expression can't catch JavaScript exceptions."

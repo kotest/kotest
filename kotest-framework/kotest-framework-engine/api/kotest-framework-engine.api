@@ -13,21 +13,6 @@ public final class io/kotest/core/NamedTag : io/kotest/core/Tag {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/core/Platform : java/lang/Enum {
-	public static final field JS Lio/kotest/core/Platform;
-	public static final field JVM Lio/kotest/core/Platform;
-	public static final field Native Lio/kotest/core/Platform;
-	public static final field WasmJs Lio/kotest/core/Platform;
-	public static final field WasmWasi Lio/kotest/core/Platform;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/Platform;
-	public static fun values ()[Lio/kotest/core/Platform;
-}
-
-public final class io/kotest/core/Platform_jvmKt {
-	public static final fun getPlatform ()Lio/kotest/core/Platform;
-}
-
 public abstract class io/kotest/core/Tag {
 	public static final field Companion Lio/kotest/core/Tag$Companion;
 	public fun <init> ()V
@@ -887,7 +872,7 @@ public abstract interface annotation class io/kotest/core/annotation/Parallel : 
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresPlatform : java/lang/annotation/Annotation {
-	public abstract fun values ()[Lio/kotest/core/Platform;
+	public abstract fun values ()[Lio/kotest/common/Platform;
 }
 
 public abstract interface annotation class io/kotest/core/annotation/RequiresTag : java/lang/annotation/Annotation {
@@ -3004,12 +2989,7 @@ public final class io/kotest/engine/EngineResult$Companion {
 }
 
 public final class io/kotest/engine/InterceptorsKt {
-	public static final fun testEngineInterceptors ()Ljava/util/List;
-}
-
-public final class io/kotest/engine/ReflectionKt {
-	public static final fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public static final fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public static final fun testEngineInterceptorsForPlatform ()Ljava/util/List;
 }
 
 public final class io/kotest/engine/ResultsKt {
@@ -3018,14 +2998,9 @@ public final class io/kotest/engine/ResultsKt {
 	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/RunBlockingKt {
-	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
-}
-
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/core/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
+	public fun <init> (Lio/kotest/common/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
 	public final fun addExtension (Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
@@ -3039,22 +3014,13 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withJvm ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withNative ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withPlatform (Lio/kotest/core/Platform;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withPlatform (Lio/kotest/common/Platform;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withProjectConfig (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withSpecRefs (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withSpecRefs ([Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/engine/tags/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
-}
-
-public abstract interface class io/kotest/engine/atomic/AtomicBoolean {
-	public abstract fun compareAndSet (ZZ)Z
-	public abstract fun get ()Z
-}
-
-public final class io/kotest/engine/atomic/AtomicBoolean_jvmKt {
-	public static final fun createAtomicBoolean (Z)Lio/kotest/engine/atomic/AtomicBoolean;
 }
 
 public abstract class io/kotest/engine/concurrency/SpecExecutionMode {
@@ -3479,8 +3445,8 @@ public final class io/kotest/engine/interceptors/EmptyTestSuiteException : java/
 
 public final class io/kotest/engine/interceptors/EngineContext$Companion {
 	public final fun getEmpty ()Lio/kotest/engine/interceptors/EngineContext;
-	public final fun invoke (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/core/Platform;)Lio/kotest/engine/interceptors/EngineContext;
-	public final fun invoke (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/engine/tags/TagExpression;Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/core/Platform;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/interceptors/EngineContext;
+	public final fun invoke (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/common/Platform;)Lio/kotest/engine/interceptors/EngineContext;
+	public final fun invoke (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/engine/tags/TagExpression;Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/common/Platform;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/interceptors/EngineContext;
 }
 
 public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/lang/Exception {
@@ -3690,11 +3656,6 @@ public final class io/kotest/engine/spec/Materializer {
 	public fun <init> (Lio/kotest/engine/config/SpecConfigResolver;)V
 	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
 	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
-}
-
-public final class io/kotest/engine/spec/NoopSpecSorter : io/kotest/engine/spec/SpecSorter {
-	public static final field INSTANCE Lio/kotest/engine/spec/NoopSpecSorter;
-	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class io/kotest/engine/spec/Sorters_jvmKt {

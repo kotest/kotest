@@ -722,8 +722,8 @@ class LargeArrayShouldBeTest : FunSpec({
 
       shouldThrowAny {
          a shouldBe b
-      }.message shouldBe """Element differ at index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ...and 279 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]
+      }.message shouldBe """Element differ at index: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, ...and 279 more (set 'kotest.assertions.collection.print.size' to see more / less items)]
                             |Unexpected elements from index 359
-                            |expected:<[0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6, 7, 6, 5, 8, 7, 7, 7, 9, ...and 324 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]> but was:<[-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, ...and 340 more (set the 'kotest.assertions.collection.print.size' JVM property to see more / less items)]>""".trimMargin()
+                            |expected:<[0, 1, 0, 0, -1, -37, 0, 67, 0, 8, 6, 6, 7, 6, 5, 8, 7, 7, 7, 9, ...and 324 more (set 'kotest.assertions.collection.print.size' to see more / less items)]> but was:<[-1, -40, -1, -32, 0, 16, 74, 70, 73, 70, 0, 1, 2, 0, 0, 1, 0, 1, 0, 0, ...and 340 more (set 'kotest.assertions.collection.print.size' to see more / less items)]>""".trimMargin()
    }
 })
