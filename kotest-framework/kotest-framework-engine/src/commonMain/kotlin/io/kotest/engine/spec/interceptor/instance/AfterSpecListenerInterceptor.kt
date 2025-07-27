@@ -3,12 +3,13 @@ package io.kotest.engine.spec.interceptor.instance
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.flatMap
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptor
+import io.kotest.engine.test.TestResult
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Invokes any [AfterSpecListener] callbacks for the given spec.
@@ -16,6 +17,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptor
  * These listeners are not invoked if no tests were executed for the spec (ie, all tests were ignored, or the
  * spec has no tests defined), or if any [io.kotest.core.listeners.BeforeSpecListener]s failed.
  */
+@OptIn(ExperimentalAtomicApi::class)
 internal class AfterSpecListenerInterceptor(
    private val specContext: SpecContext,
    private val specExtensions: SpecExtensions,
@@ -28,7 +30,7 @@ internal class AfterSpecListenerInterceptor(
       // we only invoke after spec listeners, if we determined that before spec listeners should have run
 
       return next.invoke(spec).flatMap { results ->
-         if (specContext.beforeSpecInvoked.get()) {
+         if (specContext.beforeSpecInvoked.load()) {
             specExtensions
                .afterSpec(spec)
                .map { results }

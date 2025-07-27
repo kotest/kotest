@@ -4,12 +4,6 @@ import io.kotest.common.sysprop
 
 expect val stacktraces: StackTraces
 
-object BasicStackTraces : StackTraces {
-   override fun throwableLocation(t: Throwable, n: Int): List<String>? = null
-   override fun <T : Throwable> cleanStackTrace(t: T): T = t
-   override fun root(t: Throwable): Throwable = t
-}
-
 interface StackTraces {
 
    /**

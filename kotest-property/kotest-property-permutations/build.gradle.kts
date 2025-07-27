@@ -1,5 +1,6 @@
 plugins {
-   id("kotest-multiplatform-library-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-js-wasm-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
    id("kotest-native-conventions")
@@ -9,7 +10,7 @@ plugins {
 kotlin {
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(libs.kotlin.reflect)
             api(projects.kotestCommon)
@@ -20,7 +21,7 @@ kotlin {
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)

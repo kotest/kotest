@@ -1,4 +1,3 @@
-import gradle.kotlin.dsl.accessors._a884ade656951c777051646224b58d52.kotlin
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.plugin.KotlinHierarchyTemplate
@@ -30,13 +29,20 @@ kotlin {
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
-            group("jsHosted") {
+            // many KMP functions boil down to "jvm" implementations and "other" implementations, for example
+            // anything that needs reflection will be jvm only, so we create a common group for all non-jvm targets
+            group("nonjvm") {
                withJs()
+               withWasmJs()
+               withWasmWasi()
+            }
+            group("wasm") {
                withWasmJs()
                withWasmWasi()
             }
          }
       }
+
    } else {
       // Make sure every project has at least one valid target, otherwise Kotlin compiler will complain
       jvm()

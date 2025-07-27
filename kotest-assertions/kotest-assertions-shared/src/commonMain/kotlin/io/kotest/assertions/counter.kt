@@ -27,18 +27,6 @@ object NoopAssertionsCounter : AssertionCounter {
    override fun inc() {}
 }
 
-open class BasicAssertionCounter : AssertionCounter {
-   private var counter = 0
-   override fun get(): Int = counter
-   override fun reset() {
-      counter = 0
-   }
-
-   override fun inc() {
-      counter++
-   }
-}
-
 fun AssertionCounter.inc(count: Int) = repeat(count) { inc() }
 
 fun AssertionCounter.getAndReset(): Int {

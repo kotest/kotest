@@ -68,20 +68,6 @@ data object IncludingAnnotations : AnnotationSearchParameter
  */
 data object IncludingSuperclasses : AnnotationSearchParameter
 
-object BasicReflection : Reflection {
-   override fun fqn(kclass: KClass<*>): String? = null
-   override fun annotations(kclass: KClass<*>, parameters: Set<AnnotationSearchParameter>): List<Annotation> =
-      emptyList()
-
-   override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = false
-   override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = false
-   override fun paramNames(fn: Function<*>): List<String>? = null
-   override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> = emptyList()
-   override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T = error("Unsupported on this platform")
-   override fun <T : Any> newInstanceNoArgConstructorOrObjectInstance(klass: KClass<T>): T =
-      error("Unsupported on this platform")
-}
-
 /**
  * Returns the longest possible name available for this class.
  * That is, in order, the FQN, the simple name, or toString.
