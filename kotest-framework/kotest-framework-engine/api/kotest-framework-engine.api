@@ -2992,11 +2992,6 @@ public final class io/kotest/engine/InterceptorsKt {
 	public static final fun testEngineInterceptorsForPlatform ()Ljava/util/List;
 }
 
-public final class io/kotest/engine/ReflectionKt {
-	public static final fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public static final fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/ResultsKt {
 	public static final fun collect (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun flatMap (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;

@@ -78,14 +78,20 @@ public final class io/kotest/common/reflection/IncludingSuperclasses : io/kotest
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/common/reflection/Instantiation_jvmKt {
+	public static final fun getInstantiations ()Lio/kotest/common/reflection/Instantiations;
+}
+
+public abstract interface class io/kotest/common/reflection/Instantiations {
+	public abstract fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
+}
+
 public final class io/kotest/common/reflection/JvmReflection : io/kotest/common/reflection/Reflection {
 	public static final field INSTANCE Lio/kotest/common/reflection/JvmReflection;
 	public fun annotations (Lkotlin/reflect/KClass;Ljava/util/Set;)Ljava/util/List;
 	public fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public fun isDataClass (Lkotlin/reflect/KClass;)Z
 	public fun isEnumClass (Lkotlin/reflect/KClass;)Z
-	public fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public fun paramNames (Lkotlin/Function;)Ljava/util/List;
 	public fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;
 }
@@ -110,10 +116,13 @@ public abstract interface class io/kotest/common/reflection/Reflection {
 	public abstract fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public abstract fun isDataClass (Lkotlin/reflect/KClass;)Z
 	public abstract fun isEnumClass (Lkotlin/reflect/KClass;)Z
-	public abstract fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public abstract fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 	public abstract fun paramNames (Lkotlin/Function;)Ljava/util/List;
 	public abstract fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;
+}
+
+public final class io/kotest/common/reflection/ReflectionInstantiations : io/kotest/common/reflection/Instantiations {
+	public static final field INSTANCE Lio/kotest/common/reflection/ReflectionInstantiations;
+	public fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
 }
 
 public final class io/kotest/common/reflection/ReflectionKt {

@@ -1,18 +1,19 @@
 package io.kotest.engine.spec.interceptor.ref.enabled
 
-import io.kotest.core.annotation.DisabledIf
-import io.kotest.core.spec.SpecRef
-import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
-import io.kotest.engine.flatMap
-import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.newInstanceNoArgConstructor
-import io.kotest.engine.spec.SpecExtensions
-import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
-import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.common.JVMOnly
 import io.kotest.common.reflection.IncludingAnnotations
 import io.kotest.common.reflection.IncludingSuperclasses
 import io.kotest.common.reflection.annotation
+import io.kotest.common.reflection.instantiations
+import io.kotest.core.annotation.DisabledIf
+import io.kotest.core.spec.SpecRef
+import io.kotest.core.test.TestCase
+import io.kotest.engine.flatMap
+import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.spec.SpecExtensions
+import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
+import io.kotest.engine.spec.interceptor.SpecRefInterceptor
+import io.kotest.engine.test.TestResult
 
 /**
  * Evaluates any spec annotated with [io.kotest.core.annotation.DisabledIf] if the condition is true, skips the spec
@@ -20,6 +21,7 @@ import io.kotest.common.reflection.annotation
  *
  * Note: annotations are only available on the JVM.
  */
+@JVMOnly
 internal class DisabledIfInterceptor(
    private val listener: TestEngineListener,
    private val specExtensions: SpecExtensions,
@@ -30,7 +32,7 @@ internal class DisabledIfInterceptor(
       val annotation = ref.kclass
          .annotation<DisabledIf>(IncludingAnnotations, IncludingSuperclasses)
          ?.condition
-         ?.newInstanceNoArgConstructor()
+         ?.let { instantiations.newInstanceNoArgConstructorOrObjectInstance(it) }
 
       val result = annotation?.evaluate(ref.kclass)
 

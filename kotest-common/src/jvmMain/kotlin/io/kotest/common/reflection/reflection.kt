@@ -92,19 +92,6 @@ object JvmReflection : Reflection {
    internal fun <T : Any> getPropertiesByName(klass: KClass<T>) = klass::members.get()
       .filterIsInstance<KProperty<*>>()
       .associateBy(KCallable<*>::name)
-
-   // ignored because on JDK 8 newInstance is the only option
-   @Suppress("DEPRECATION")
-   override fun <T : Any> newInstanceNoArgConstructor(klass: KClass<T>): T {
-      return klass.java.newInstance()
-   }
-
-   override fun <T : Any> newInstanceNoArgConstructorOrObjectInstance(klass: KClass<T>): T {
-      return when (val obj = klass.objectInstance) {
-         null -> newInstanceNoArgConstructor(klass)
-         else -> obj
-      }
-   }
 }
 
 actual val reflection: Reflection = JvmReflection
