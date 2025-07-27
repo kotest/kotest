@@ -1,10 +1,10 @@
 package io.kotest.engine
 
 import io.kotest.core.Logger
-import io.kotest.core.Platform
+import io.kotest.common.Platform
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
-import io.kotest.core.platform
+import io.kotest.common.platform
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.name

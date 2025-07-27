@@ -1,7 +1,7 @@
 package io.kotest.engine.stable
 
-import io.kotest.core.Platform
-import io.kotest.core.platform
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.engine.names.WithDataTestName
 import io.kotest.common.reflection.bestName
 import io.kotest.common.reflection.hasAnnotation

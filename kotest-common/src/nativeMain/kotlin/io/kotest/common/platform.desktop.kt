@@ -1,3 +1,3 @@
-package io.kotest.core
+package io.kotest.common
 
 actual val platform: Platform = Platform.Native

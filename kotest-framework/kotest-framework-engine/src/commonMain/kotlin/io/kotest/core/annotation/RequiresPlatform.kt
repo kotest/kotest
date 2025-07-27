@@ -1,6 +1,6 @@
 package io.kotest.core.annotation
 
-import io.kotest.core.Platform
+import io.kotest.common.Platform
 
 /**
  * Attach to a [io.kotest.core.spec.Spec], and that spec will only be instantiated when

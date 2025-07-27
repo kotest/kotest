@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec
 
-import io.kotest.core.Platform
+import io.kotest.common.Platform
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.BehaviorSpec

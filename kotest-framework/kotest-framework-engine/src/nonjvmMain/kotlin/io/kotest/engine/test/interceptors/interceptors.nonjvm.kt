@@ -1,7 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
-import io.kotest.core.platform
+import io.kotest.common.platform
 import io.kotest.engine.config.TestConfigResolver
 import kotlin.time.TimeMark
 
