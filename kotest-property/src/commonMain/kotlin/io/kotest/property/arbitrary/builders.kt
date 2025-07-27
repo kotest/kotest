@@ -325,6 +325,7 @@ class ArbitraryBuilder<A>(
 
    fun build() = object : Arb<A>() {
       override val classifier: Classifier<out A>? = this@ArbitraryBuilder.classifier
+      override val shrinker: Shrinker<A> = this@ArbitraryBuilder.shrinker ?: super.shrinker
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn?.invoke(rs)
       override fun sample(rs: RandomSource): Sample<A> {
          val sample = sampleFn(rs)
