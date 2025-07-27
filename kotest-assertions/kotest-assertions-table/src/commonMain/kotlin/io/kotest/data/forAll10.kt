@@ -3,6 +3,7 @@ package io.kotest.data
 import io.kotest.common.reflection.reflection
 import kotlin.jvm.JvmName
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A, B, C, D, E, F, G, H, I, J> forAll(
    vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J) -> Unit
@@ -22,11 +23,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> forAll(
       testfn(A, B, C, D, E, F, G, H, I, J)
    }
 }
-
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @JvmName("forall8")
 inline fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit) =
    table.forAll(testfn)
-
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forAll(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -38,7 +39,7 @@ inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.
    }
    collector.assertAll()
 }
-
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A, B, C, D, E, F, G, H, I, J> forNone(
    vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J) -> Unit
@@ -58,11 +59,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> forNone(
       testfn(A, B, C, D, E, F, G, H, I, J)
    }
 }
-
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @JvmName("fornone8")
 inline fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H, I, J>, testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit) =
    table.forNone(testfn)
-
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forNone(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
    for (row in rows) {
       try {

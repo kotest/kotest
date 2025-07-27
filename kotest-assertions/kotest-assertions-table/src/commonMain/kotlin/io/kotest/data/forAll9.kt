@@ -3,6 +3,7 @@ package io.kotest.data
 import io.kotest.common.reflection.reflection
 import kotlin.jvm.JvmName
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    vararg rows: Row9<A, B, C, D, E, F, G, H, I>,
    testfn: suspend (A, B, C, D, E, F, G, H, I) -> Unit
@@ -17,15 +18,23 @@ suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    val paramG = params.getOrElse(6) { "g" }
    val paramH = params.getOrElse(7) { "h" }
    val paramI = params.getOrElse(8) { "i" }
-   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI), *rows).forAll { A, B, C, D, E, F, G, H, I ->
+   table(
+      headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI),
+      *rows
+   ).forAll { A, B, C, D, E, F, G, H, I ->
       testfn(A, B, C, D, E, F, G, H, I)
    }
 }
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @JvmName("forall8")
-inline fun <A, B, C, D, E, F, G, H, I> forAll(table: Table9<A, B, C, D, E, F, G, H, I>, testfn: (A, B, C, D, E, F, G, H, I) -> Unit) =
+inline fun <A, B, C, D, E, F, G, H, I> forAll(
+   table: Table9<A, B, C, D, E, F, G, H, I>,
+   testfn: (A, B, C, D, E, F, G, H, I) -> Unit
+) =
    table.forAll(testfn)
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 inline fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forAll(fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -38,6 +47,7 @@ inline fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forAll(
    collector.assertAll()
 }
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    vararg rows: Row9<A, B, C, D, E, F, G, H, I>,
    testfn: suspend (A, B, C, D, E, F, G, H, I) -> Unit
@@ -52,15 +62,23 @@ suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    val paramG = params.getOrElse(6) { "g" }
    val paramH = params.getOrElse(7) { "h" }
    val paramI = params.getOrElse(8) { "i" }
-   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI), *rows).forNone { A, B, C, D, E, F, G, H, I ->
+   table(
+      headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI),
+      *rows
+   ).forNone { A, B, C, D, E, F, G, H, I ->
       testfn(A, B, C, D, E, F, G, H, I)
    }
 }
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @JvmName("fornone8")
-inline fun <A, B, C, D, E, F, G, H, I> forNone(table: Table9<A, B, C, D, E, F, G, H, I>, testfn: (A, B, C, D, E, F, G, H, I) -> Unit) =
+inline fun <A, B, C, D, E, F, G, H, I> forNone(
+   table: Table9<A, B, C, D, E, F, G, H, I>,
+   testfn: (A, B, C, D, E, F, G, H, I) -> Unit
+) =
    table.forNone(testfn)
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 inline fun <A, B, C, D, E, F, G, H, I> Table9<A, B, C, D, E, F, G, H, I>.forNone(fn: (A, B, C, D, E, F, G, H, I) -> Unit) {
    for (row in rows) {
       try {

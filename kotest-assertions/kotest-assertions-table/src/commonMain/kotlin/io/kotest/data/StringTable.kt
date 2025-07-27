@@ -1,5 +1,6 @@
 package io.kotest.data
 
+@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 internal data class StringTable(
    val headers: List<String>,
    val lines: List<String>,
