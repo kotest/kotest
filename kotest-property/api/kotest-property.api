@@ -111,6 +111,7 @@ public abstract class io/kotest/property/Gen {
 	public final fun generate (Lio/kotest/property/RandomSource;Lio/kotest/property/EdgeConfig;)Lkotlin/sequences/Sequence;
 	public static synthetic fun generate$default (Lio/kotest/property/Gen;Lio/kotest/property/RandomSource;Lio/kotest/property/EdgeConfig;ILjava/lang/Object;)Lkotlin/sequences/Sequence;
 	public fun getClassifier ()Lio/kotest/property/Classifier;
+	public fun getShrinker ()Lio/kotest/property/Shrinker;
 	public final fun minIterations ()I
 }
 
@@ -1059,7 +1060,7 @@ public final class io/kotest/property/arbitrary/JvmbindKt {
 }
 
 public final class io/kotest/property/arbitrary/ListShrinker : io/kotest/property/Shrinker {
-	public fun <init> (Lkotlin/ranges/IntRange;)V
+	public fun <init> (Lio/kotest/property/Shrinker;Lkotlin/ranges/IntRange;)V
 	public synthetic fun shrink (Ljava/lang/Object;)Ljava/util/List;
 	public fun shrink (Ljava/util/List;)Ljava/util/List;
 }
@@ -1167,7 +1168,7 @@ public final class io/kotest/property/arbitrary/SequencesKt {
 }
 
 public final class io/kotest/property/arbitrary/SetShrinker : io/kotest/property/Shrinker {
-	public fun <init> (Lkotlin/ranges/IntRange;)V
+	public fun <init> (Lio/kotest/property/Shrinker;Lkotlin/ranges/IntRange;)V
 	public final fun getListShrinker ()Lio/kotest/property/arbitrary/ListShrinker;
 	public synthetic fun shrink (Ljava/lang/Object;)Ljava/util/List;
 	public fun shrink (Ljava/util/Set;)Ljava/util/List;
