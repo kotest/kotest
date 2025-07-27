@@ -44,18 +44,6 @@ public abstract interface class io/kotest/common/errors/ComparisonError {
 public abstract interface class io/kotest/common/reflection/AnnotationSearchParameter {
 }
 
-public final class io/kotest/common/reflection/BasicReflection : io/kotest/common/reflection/Reflection {
-	public static final field INSTANCE Lio/kotest/common/reflection/BasicReflection;
-	public fun annotations (Lkotlin/reflect/KClass;Ljava/util/Set;)Ljava/util/List;
-	public fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
-	public fun isDataClass (Lkotlin/reflect/KClass;)Z
-	public fun isEnumClass (Lkotlin/reflect/KClass;)Z
-	public fun newInstanceNoArgConstructor (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public fun newInstanceNoArgConstructorOrObjectInstance (Lkotlin/reflect/KClass;)Ljava/lang/Object;
-	public fun paramNames (Lkotlin/Function;)Ljava/util/List;
-	public fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;
-}
-
 public final class io/kotest/common/reflection/IncludingAnnotations : io/kotest/common/reflection/AnnotationSearchParameter {
 	public static final field INSTANCE Lio/kotest/common/reflection/IncludingAnnotations;
 	public fun equals (Ljava/lang/Object;)Z
@@ -114,14 +102,6 @@ public final class io/kotest/common/reflection/ReflectionKt {
 
 public final class io/kotest/common/reflection/reflectionjvm {
 	public static final fun getReflection ()Lio/kotest/common/reflection/Reflection;
-}
-
-public final class io/kotest/common/stacktrace/BasicStackTraces : io/kotest/common/stacktrace/StackTraces {
-	public static final field INSTANCE Lio/kotest/common/stacktrace/BasicStackTraces;
-	public fun cleanStackTrace (Ljava/lang/Throwable;)Ljava/lang/Throwable;
-	public fun root (Ljava/lang/Throwable;)Ljava/lang/Throwable;
-	public fun throwableLocation (Ljava/lang/Throwable;)Ljava/lang/String;
-	public fun throwableLocation (Ljava/lang/Throwable;I)Ljava/util/List;
 }
 
 public abstract interface class io/kotest/common/stacktrace/StackTraces {

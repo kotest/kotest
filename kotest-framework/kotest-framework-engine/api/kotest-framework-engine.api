@@ -3004,7 +3004,7 @@ public final class io/kotest/engine/EngineResult$Companion {
 }
 
 public final class io/kotest/engine/InterceptorsKt {
-	public static final fun testEngineInterceptors ()Ljava/util/List;
+	public static final fun testEngineInterceptorsForPlatform ()Ljava/util/List;
 }
 
 public final class io/kotest/engine/ReflectionKt {
@@ -3046,15 +3046,6 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withTagExpression (Lio/kotest/engine/tags/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
-}
-
-public abstract interface class io/kotest/engine/atomic/AtomicBoolean {
-	public abstract fun compareAndSet (ZZ)Z
-	public abstract fun get ()Z
-}
-
-public final class io/kotest/engine/atomic/AtomicBoolean_jvmKt {
-	public static final fun createAtomicBoolean (Z)Lio/kotest/engine/atomic/AtomicBoolean;
 }
 
 public abstract class io/kotest/engine/concurrency/SpecExecutionMode {
@@ -3690,11 +3681,6 @@ public final class io/kotest/engine/spec/Materializer {
 	public fun <init> (Lio/kotest/engine/config/SpecConfigResolver;)V
 	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
 	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
-}
-
-public final class io/kotest/engine/spec/NoopSpecSorter : io/kotest/engine/spec/SpecSorter {
-	public static final field INSTANCE Lio/kotest/engine/spec/NoopSpecSorter;
-	public fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
 public final class io/kotest/engine/spec/Sorters_jvmKt {

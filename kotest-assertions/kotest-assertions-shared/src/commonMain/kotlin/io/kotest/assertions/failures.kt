@@ -31,7 +31,7 @@ fun failure(message: String): AssertionError = failure(message, null)
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(message: String, cause: Throwable?): AssertionError {
-   return Exceptions.createAssertionError(clueContextAsString() + message, cause)
+   return exceptions.createAssertionError(clueContextAsString() + message, cause)
 }
 
 /**
@@ -48,7 +48,7 @@ fun failure(message: String, cause: Throwable?): AssertionError {
  * then the stack is cleaned of `io.kotest` lines.
  */
 fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Throwable {
-   return Exceptions.createAssertionError(
+   return exceptions.createAssertionError(
       prependMessage + clueContextAsString() + intellijFormatError(expected, actual),
       null,
       expected,
@@ -57,7 +57,7 @@ fun failure(expected: Expected, actual: Actual, prependMessage: String = ""): Th
 }
 
 @KotestInternal
-fun<V> getFailureWithTypeInformation(
+fun <V> getFailureWithTypeInformation(
    expected: V,
    actual: V?,
    prependMessage: String = ""
@@ -77,7 +77,7 @@ fun failureWithTypeInformation(
       actual.toActual(),
       prependMessage
    )
-   return Exceptions.createAssertionError(
+   return exceptions.createAssertionError(
       prependMessage + clueContextAsString() + intellijFormatErrorWithTypeInformation(expected, actual),
       null,
       expected.toExpected(),

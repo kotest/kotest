@@ -186,7 +186,7 @@ class TestEngineLauncher(
                listener
             )
          ),
-         interceptors = testEngineInterceptors(),
+         interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,
          platform,
