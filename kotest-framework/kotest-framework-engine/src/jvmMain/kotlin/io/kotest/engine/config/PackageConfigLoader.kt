@@ -5,6 +5,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.instantiateOrObject
 import java.util.concurrent.ConcurrentHashMap
 
+internal actual fun loadPackageConfigs(spec: Spec): List<AbstractPackageConfig> = PackageConfigLoader.configs(spec)
+
 /**
  * A [PackageConfigLoader] is responsible for locating concrete implementations of [io.kotest.core.config.AbstractPackageConfig]
  * at runtime, based on a given spec's package, using reflection based lookups.

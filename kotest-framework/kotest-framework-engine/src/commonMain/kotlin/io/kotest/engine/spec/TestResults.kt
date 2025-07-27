@@ -1,8 +1,8 @@
 package io.kotest.engine.spec
 
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.isRootTest
+import io.kotest.engine.test.TestResult
 
 /**
  * A mutable store of results, which can be queried to check if a test has already been run,

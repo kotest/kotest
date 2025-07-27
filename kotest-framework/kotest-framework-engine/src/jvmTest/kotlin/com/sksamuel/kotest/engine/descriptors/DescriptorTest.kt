@@ -3,7 +3,7 @@ package com.sksamuel.kotest.engine.descriptors
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 

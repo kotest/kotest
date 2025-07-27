@@ -9,7 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.testCoroutineScheduler
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.TestDispatcherInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.booleans.shouldBeTrue

@@ -21,9 +21,8 @@ fun beUpperCase(): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.toString().uppercase() == value,
       { "${value.print().value} should be upper case" },
-      {
-         "${value.print().value} should not should be upper case"
-      })
+      { "${value.print().value} should not should be upper case" }
+   )
 }
 
 fun <A : CharSequence?> A.shouldBeLowerCase(): A {
@@ -40,7 +39,6 @@ fun beLowerCase(): Matcher<CharSequence?> = neverNullMatcher { value ->
    MatcherResult(
       value.toString().lowercase() == value,
       { "${value.print().value} should be lower case" },
-      {
-         "${value.print().value} should not should be lower case"
-      })
+      { "${value.print().value} should not should be lower case" }
+   )
 }

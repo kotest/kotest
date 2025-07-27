@@ -1,7 +1,7 @@
 package io.kotest.engine.interceptors
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.Platform
+import io.kotest.common.Platform
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite

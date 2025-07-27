@@ -1,6 +1,6 @@
 package io.kotest.engine
 
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.reflection
 import kotlin.reflect.KClass
 
 /**

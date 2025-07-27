@@ -12,7 +12,7 @@ import io.kotest.engine.flatMap
 import io.kotest.engine.newInstanceNoArgConstructorOrObjectInstance
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.mpp.annotation
+import io.kotest.common.reflection.annotation
 
 /**
  * If a [Spec] is annotated with the [ApplyExtension] annotation, registers any extensions

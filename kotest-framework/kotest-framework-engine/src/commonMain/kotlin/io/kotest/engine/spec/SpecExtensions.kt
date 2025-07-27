@@ -18,7 +18,7 @@ import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 
 /**

@@ -15,7 +15,7 @@ import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectConfigResolverSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.SpecExtensionInterceptor
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 /**
  * Executes [SpecInterceptor]s against a given spec instance.

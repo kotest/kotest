@@ -1,7 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
-import io.kotest.mpp.stacktraces
+import io.kotest.common.stacktrace.stacktraces
 
 expect val errorCollector: ErrorCollector
 
@@ -48,32 +48,6 @@ interface ErrorCollector {
     * That is all the clues nested to this point.
     */
    fun clueContext(): List<Clue>
-}
-
-object NoopErrorCollector : ErrorCollector {
-   override var depth = 0
-   override var subject: Printed? = null
-
-   override fun getCollectionMode(): ErrorCollectionMode = ErrorCollectionMode.Hard
-
-   override fun setCollectionMode(mode: ErrorCollectionMode) {
-   }
-
-   override fun errors(): List<Throwable> = emptyList()
-
-   override fun pushError(t: Throwable) {
-   }
-
-   override fun clear() {
-   }
-
-   override fun pushClue(clue: Clue) {
-   }
-
-   override fun popClue() {
-   }
-
-   override fun clueContext(): List<Clue> = emptyList()
 }
 
 open class BasicErrorCollector : ErrorCollector {
@@ -161,7 +135,6 @@ fun ErrorCollector.throwCollectedErrors() {
  * All errors currently collected in the [ErrorCollector] are returned as a single [MultiAssertionError].
  */
 expect fun ErrorCollector.collectiveError(): AssertionError?
-
 
 inline fun <reified T> ErrorCollector.runWithMode(mode: ErrorCollectionMode, block: () -> T): T =
    getCollectionMode().let { original ->

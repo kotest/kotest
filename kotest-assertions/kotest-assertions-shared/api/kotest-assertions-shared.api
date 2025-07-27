@@ -39,8 +39,8 @@ public abstract interface class io/kotest/assertions/AssertionCounter {
 	public abstract fun reset ()V
 }
 
-public final class io/kotest/assertions/AssertionFailedError : org/opentest4j/AssertionFailedError, io/kotest/common/errors/ComparisonError {
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;)V
+public final class io/kotest/assertions/AssertionFailedError : java/lang/AssertionError, io/kotest/common/errors/ComparisonError {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun getActualValue ()Ljava/lang/String;
 	public fun getExpectedValue ()Ljava/lang/String;
 }
@@ -68,13 +68,6 @@ public final class io/kotest/assertions/AssertionsConfig {
 public final class io/kotest/assertions/AssertionsConfigSystemProperties {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfigSystemProperties;
 	public static final field disableNaNEquality Ljava/lang/String;
-}
-
-public class io/kotest/assertions/BasicAssertionCounter : io/kotest/assertions/AssertionCounter {
-	public fun <init> ()V
-	public fun get ()I
-	public fun inc ()V
-	public fun reset ()V
 }
 
 public class io/kotest/assertions/BasicErrorCollector : io/kotest/assertions/ErrorCollector {
@@ -170,10 +163,13 @@ public final class io/kotest/assertions/ExceptionWithClue$Companion {
 	public final fun from (Ljava/lang/String;Ljava/lang/Exception;)Lio/kotest/assertions/ExceptionWithClue;
 }
 
-public final class io/kotest/assertions/Exceptions {
-	public static final field INSTANCE Lio/kotest/assertions/Exceptions;
-	public final fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;)Ljava/lang/AssertionError;
-	public final fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/Throwable;
+public abstract interface class io/kotest/assertions/Exceptions {
+	public abstract fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;)Ljava/lang/AssertionError;
+	public abstract fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/Throwable;
+}
+
+public final class io/kotest/assertions/ExceptionsKt {
+	public static final fun getExceptions ()Lio/kotest/assertions/Exceptions;
 }
 
 public final class io/kotest/assertions/Expected {
@@ -222,6 +218,18 @@ public final class io/kotest/assertions/IntellijFormatterKt {
 	public static final fun intellijFormatError (Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/String;
 }
 
+public final class io/kotest/assertions/JvmAssertionFailedError : org/opentest4j/AssertionFailedError, io/kotest/common/errors/ComparisonError {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;)V
+	public fun getActualValue ()Ljava/lang/String;
+	public fun getExpectedValue ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/JvmExceptions : io/kotest/assertions/Exceptions {
+	public static final field INSTANCE Lio/kotest/assertions/JvmExceptions;
+	public fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;)Ljava/lang/AssertionError;
+	public fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/Throwable;
+}
+
 public final class io/kotest/assertions/KotestConfigurationException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
 }
@@ -241,22 +249,6 @@ public final class io/kotest/assertions/NoopAssertionsCounter : io/kotest/assert
 	public fun get ()I
 	public fun inc ()V
 	public fun reset ()V
-}
-
-public final class io/kotest/assertions/NoopErrorCollector : io/kotest/assertions/ErrorCollector {
-	public static final field INSTANCE Lio/kotest/assertions/NoopErrorCollector;
-	public fun clear ()V
-	public fun clueContext ()Ljava/util/List;
-	public fun errors ()Ljava/util/List;
-	public fun getCollectionMode ()Lio/kotest/assertions/ErrorCollectionMode;
-	public fun getDepth ()I
-	public fun getSubject ()Lio/kotest/assertions/print/Printed;
-	public fun popClue ()V
-	public fun pushClue (Lkotlin/jvm/functions/Function0;)V
-	public fun pushError (Ljava/lang/Throwable;)V
-	public fun setCollectionMode (Lio/kotest/assertions/ErrorCollectionMode;)V
-	public fun setDepth (I)V
-	public fun setSubject (Lio/kotest/assertions/print/Printed;)V
 }
 
 public final class io/kotest/assertions/OneKt {
@@ -417,15 +409,6 @@ public final class io/kotest/assertions/print/CharRangePrint : io/kotest/asserti
 	public static final field INSTANCE Lio/kotest/assertions/print/CharRangePrint;
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 	public fun print (Lkotlin/ranges/CharRange;I)Lio/kotest/assertions/print/Printed;
-}
-
-public final class io/kotest/assertions/print/DataClassPrintJvm : io/kotest/assertions/print/Print {
-	public fun <init> ()V
-	public fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
-}
-
-public final class io/kotest/assertions/print/DataClassPrintKt {
-	public static final fun dataClassPrint ()Lio/kotest/assertions/print/Print;
 }
 
 public final class io/kotest/assertions/print/DoublePrint : io/kotest/assertions/print/Print {

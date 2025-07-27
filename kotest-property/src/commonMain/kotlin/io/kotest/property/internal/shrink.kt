@@ -1,7 +1,7 @@
 package io.kotest.property.internal
 
 import io.kotest.assertions.print.print
-import io.kotest.mpp.stacktraces
+import io.kotest.common.stacktrace.stacktraces
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree

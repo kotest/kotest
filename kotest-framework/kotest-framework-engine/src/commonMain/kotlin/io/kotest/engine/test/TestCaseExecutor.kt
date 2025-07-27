@@ -1,10 +1,9 @@
 package io.kotest.engine.test
 
 import io.kotest.core.Logger
-import io.kotest.core.Platform
-import io.kotest.core.platform
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener

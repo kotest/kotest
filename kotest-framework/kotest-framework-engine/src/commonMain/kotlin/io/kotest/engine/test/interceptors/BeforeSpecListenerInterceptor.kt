@@ -2,11 +2,12 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecContext
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Invokes any [BeforeSpecListener] callbacks by delegating to [SpecExtensions], if this is the first test that has
@@ -16,6 +17,7 @@ import io.kotest.engine.test.TestResultBuilder
  * there is at least one enabled test. And since tests can be disabled or enabled programatically,
  * we must defer execution until after the test blocks have been registered (if any).
  */
+@OptIn(ExperimentalAtomicApi::class)
 internal class BeforeSpecListenerInterceptor(
    private val specExtensions: SpecExtensions,
    private val specContext: SpecContext,
@@ -28,8 +30,8 @@ internal class BeforeSpecListenerInterceptor(
    ): TestResult {
 
       val shouldRun = specContext.beforeSpecInvoked.compareAndSet(
-         expect = false,
-         set = true,
+         expectedValue = false,
+         newValue = true,
       )
 
       return if (shouldRun) {

@@ -83,12 +83,18 @@ fun beGreaterThanOrEqualTo(x: Int) = object : Matcher<Int> {
 /**
  * Match that verifies a given integer is within the given [IntRange].
  */
-infix fun Int.shouldBeInRange(range: IntRange) = this should beInRange(range)
+infix fun Int.shouldBeInRange(range: IntRange): Int {
+   this should beInRange(range)
+   return this
+}
 
 /**
  * Match that verifies a given integer is not within the given [IntRange].
  */
-infix fun Int.shouldNotBeInRange(range: IntRange) = this shouldNot beInRange(range)
+infix fun Int.shouldNotBeInRange(range: IntRange): Int {
+   this shouldNot beInRange(range)
+   return this
+}
 
 /**
  * Match that verifies a given integer is within the given [IntRange].
@@ -98,18 +104,16 @@ fun beInRange(range: IntRange) = object : Matcher<Int> {
       MatcherResult(
          value in range,
          { "$value should be in range $range" },
-         {
-            "$value should not be in range $range"
-         })
+         { "$value should not be in range $range" }
+      )
 }
 
 fun exactly(x: Int) = object : Matcher<Int> {
    override fun test(value: Int) = MatcherResult(
       value == x,
       { "$value should be equal to $x" },
-      {
-         "$value should not be equal to $x"
-      })
+      { "$value should not be equal to $x" }
+   )
 }
 
 /**
@@ -120,9 +124,10 @@ fun exactly(x: Int) = object : Matcher<Int> {
  * 30.shouldBeWithinPercentageOf(100, 10.0)  // Fail
  *
  */
-fun Int.shouldBeWithinPercentageOf(other: Int, percentage: Double) {
+fun Int.shouldBeWithinPercentageOf(other: Int, percentage: Double): Int {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
+   return this
 }
 
 /**
@@ -133,9 +138,10 @@ fun Int.shouldBeWithinPercentageOf(other: Int, percentage: Double) {
  * 30.shouldNotBeWithinPercentageOf(100, 10.0)  // Passes
  *
  */
-fun Int.shouldNotBeWithinPercentageOf(other: Int, percentage: Double) {
+fun Int.shouldNotBeWithinPercentageOf(other: Int, percentage: Double): Int {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this shouldNot beWithinPercentageOf(other, percentage)
+   return this
 }
 
 fun beWithinPercentageOf(other: Int, percentage: Double) = object : Matcher<Int> {

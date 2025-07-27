@@ -1,6 +1,6 @@
 package io.kotest.engine.stable
 
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.uuid.ExperimentalUuidApi

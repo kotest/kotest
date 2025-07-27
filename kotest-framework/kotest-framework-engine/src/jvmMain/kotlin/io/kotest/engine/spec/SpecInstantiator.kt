@@ -10,7 +10,7 @@ import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.instantiateOrObject
 import io.kotest.engine.mapError
-import io.kotest.mpp.annotation
+import io.kotest.common.reflection.annotation
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.isSubclassOf

@@ -2,7 +2,6 @@ package io.kotest.matchers.maps
 
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.errorCollector
-import io.kotest.assertions.failureWithTypeInformation
 import io.kotest.assertions.getFailureWithTypeInformation
 import io.kotest.assertions.print.print
 import io.kotest.assertions.runWithMode

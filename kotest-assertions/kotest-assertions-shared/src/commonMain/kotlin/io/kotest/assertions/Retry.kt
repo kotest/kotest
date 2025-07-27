@@ -2,7 +2,7 @@ package io.kotest.assertions
 
 import io.kotest.common.KotestInternal
 import io.kotest.common.nonDeterministicTestTimeSource
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
 import kotlin.time.Duration

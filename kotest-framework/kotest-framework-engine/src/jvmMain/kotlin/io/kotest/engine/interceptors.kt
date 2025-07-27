@@ -16,7 +16,7 @@ import io.kotest.engine.interceptors.TestEngineStartedFinishedInterceptor
 import io.kotest.engine.interceptors.WriteFailuresInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 
-actual fun testEngineInterceptors(): List<EngineInterceptor> {
+actual fun testEngineInterceptorsForPlatform(): List<EngineInterceptor> {
    return listOfNotNull(
       // this must be first to allow other interceptors to be configured by system properties
       SystemPropertiesEngineInterceptor,

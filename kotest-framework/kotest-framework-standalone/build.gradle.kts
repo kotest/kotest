@@ -15,6 +15,14 @@ kotlin {
          }
       }
    }
+   sourceSets {
+      jvmMain {
+         dependencies {
+            implementation(libs.kotlin.reflect)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+         }
+      }
+   }
 }
 
 tasks {
@@ -34,9 +42,4 @@ tasks {
    withType<CreateStartScripts> {
       dependsOn(shadowJar)
    }
-}
-
-dependencies {
-   implementation(libs.kotlin.reflect)
-   implementation(projects.kotestFramework.kotestFrameworkEngine)
 }

@@ -20,7 +20,10 @@ import io.kotest.matchers.shouldNotBe
  * @see [Boolean?.shouldNotBeFalse]
  * @see [Boolean?.shouldBeFalse]
  */
-fun Boolean?.shouldBeTrue() = this shouldBe true
+fun Boolean?.shouldBeTrue(): Boolean? {
+   this shouldBe true
+   return this
+}
 
 /**
  * Asserts that this [Boolean] is not true
@@ -39,7 +42,10 @@ fun Boolean?.shouldBeTrue() = this shouldBe true
  * @see [Boolean?.shouldBeFalse]
  * @see [Boolean?.shouldNotBeFalse]
  */
-fun Boolean?.shouldNotBeTrue() = this shouldNotBe true
+fun Boolean?.shouldNotBeTrue(): Boolean? {
+   this shouldNotBe true
+   return this
+}
 
 /**
  * Asserts that this [Boolean] is false
@@ -58,7 +64,10 @@ fun Boolean?.shouldNotBeTrue() = this shouldNotBe true
  * @see [Boolean?.shouldNotBeTrue]
  * @see [Boolean?.shouldBeTrue]
  */
-fun Boolean?.shouldBeFalse() = this shouldBe false
+fun Boolean?.shouldBeFalse(): Boolean? {
+   this shouldBe false
+   return this
+}
 
 /**
  * Asserts that this [Boolean] is not false
@@ -77,4 +86,7 @@ fun Boolean?.shouldBeFalse() = this shouldBe false
  * @see [Boolean?.shouldBeTrue]
  * @see [Boolean?.shouldNotBeTrue]
  */
-fun Boolean?.shouldNotBeFalse() = this shouldNotBe false
+fun Boolean?.shouldNotBeFalse(): Boolean? {
+   this shouldNotBe false
+   return this
+}

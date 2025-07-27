@@ -2,8 +2,10 @@
 
 package io.kotest.engine
 
+import io.kotest.common.runBlocking
+import io.kotest.common.runPromise
 import io.kotest.core.Logger
-import io.kotest.core.Platform
+import io.kotest.common.Platform
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
@@ -186,7 +188,7 @@ class TestEngineLauncher(
                listener
             )
          ),
-         interceptors = testEngineInterceptors(),
+         interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,
          platform,

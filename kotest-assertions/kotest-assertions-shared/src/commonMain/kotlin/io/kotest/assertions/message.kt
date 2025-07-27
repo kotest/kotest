@@ -1,7 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
-import io.kotest.mpp.stacktraces
+import io.kotest.common.stacktrace.stacktraces
 
 private const val INDENT = "   "
 

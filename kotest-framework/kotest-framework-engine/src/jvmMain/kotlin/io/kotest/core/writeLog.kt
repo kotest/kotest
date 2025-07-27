@@ -1,6 +1,6 @@
 package io.kotest.core
 
-import io.kotest.mpp.syspropOrEnv
+import io.kotest.common.syspropOrEnv
 import java.io.FileWriter
 import java.lang.management.ManagementFactory
 import kotlin.time.TimeMark

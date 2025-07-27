@@ -1,15 +1,22 @@
 package io.kotest.matchers.throwable
 
 import io.kotest.assertions.print.print
+import io.kotest.common.reflection.bestName
 import io.kotest.matchers.ComparableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.mpp.bestName
 
-infix fun Throwable.shouldHaveMessage(message: String) = this should haveMessage(message)
-infix fun Throwable.shouldNotHaveMessage(message: String) = this shouldNot haveMessage(message)
+infix fun Throwable.shouldHaveMessage(message: String): Throwable {
+   this should haveMessage(message)
+   return this
+}
+
+infix fun Throwable.shouldNotHaveMessage(message: String): Throwable {
+   this shouldNot haveMessage(message)
+   return this
+}
 
 fun haveMessage(message: String) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = ComparableMatcherResult(
@@ -27,8 +34,15 @@ fun haveMessage(message: String) = object : Matcher<Throwable> {
    )
 }
 
-infix fun Throwable.shouldHaveMessage(message: Regex) = this should haveMessage(message)
-infix fun Throwable.shouldNotHaveMessage(message: Regex) = this shouldNot haveMessage(message)
+infix fun Throwable.shouldHaveMessage(message: Regex): Throwable {
+   this should haveMessage(message)
+   return this
+}
+
+infix fun Throwable.shouldNotHaveMessage(message: Regex): Throwable {
+   this shouldNot haveMessage(message)
+   return this
+}
 
 fun haveMessage(regex: Regex) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = MatcherResult(
@@ -38,18 +52,28 @@ fun haveMessage(regex: Regex) = object : Matcher<Throwable> {
 }
 
 
-fun Throwable.shouldHaveCause(block: (Throwable) -> Unit = {}) {
+fun Throwable.shouldHaveCause(block: (Throwable) -> Unit = {}): Throwable {
   this should haveCause()
   block.invoke(cause!!)
+  return this
 }
 
-fun Throwable.shouldNotHaveCause() = this shouldNot haveCause()
+fun Throwable.shouldNotHaveCause(): Throwable {
+  this shouldNot haveCause()
+  return this
+}
 fun haveCause() = object : Matcher<Throwable> {
   override fun test(value: Throwable) = resultForThrowable(value.cause)
 }
 
-infix fun Throwable.shouldHaveStackTraceContaining(substr: String) = this should haveStackTraceContaining(substr)
-infix fun Throwable.shouldNotHaveStackTraceContaining(substr: String) = this shouldNot haveStackTraceContaining(substr)
+infix fun Throwable.shouldHaveStackTraceContaining(substr: String): Throwable {
+  this should haveStackTraceContaining(substr)
+  return this
+}
+infix fun Throwable.shouldNotHaveStackTraceContaining(substr: String): Throwable {
+  this shouldNot haveStackTraceContaining(substr)
+  return this
+}
 fun haveStackTraceContaining(substr: String) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = MatcherResult(
       value.stackTraceToString().contains(substr),
@@ -57,8 +81,14 @@ fun haveStackTraceContaining(substr: String) = object : Matcher<Throwable> {
       { "Throwable stacktrace should not contain substring: ${substr.print().value}" })
 }
 
-infix fun Throwable.shouldHaveStackTraceContaining(regex: Regex) = this should haveStackTraceContaining(regex)
-infix fun Throwable.shouldNotHaveStackTraceContaining(regex: Regex) = this shouldNot haveStackTraceContaining(regex)
+infix fun Throwable.shouldHaveStackTraceContaining(regex: Regex): Throwable {
+  this should haveStackTraceContaining(regex)
+  return this
+}
+infix fun Throwable.shouldNotHaveStackTraceContaining(regex: Regex): Throwable {
+  this shouldNot haveStackTraceContaining(regex)
+  return this
+}
 fun haveStackTraceContaining(regex: Regex) = object : Matcher<Throwable> {
    override fun test(value: Throwable) = MatcherResult(
       value.stackTraceToString().contains(regex),
@@ -66,8 +96,14 @@ fun haveStackTraceContaining(regex: Regex) = object : Matcher<Throwable> {
       { "Throwable stacktrace should not contain regex: ${regex.print().value}" })
 }
 
-inline fun <reified T : Throwable> Throwable.shouldHaveCauseInstanceOf() = this should haveCauseInstanceOf<T>()
-inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseInstanceOf() = this shouldNot haveCauseInstanceOf<T>()
+inline fun <reified T : Throwable> Throwable.shouldHaveCauseInstanceOf(): Throwable {
+  this should haveCauseInstanceOf<T>()
+  return this
+}
+inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseInstanceOf(): Throwable {
+  this shouldNot haveCauseInstanceOf<T>()
+  return this
+}
 inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Throwable> {
    override fun test(value: Throwable) = when (val cause = value.cause) {
       null -> resultForThrowable(null)
@@ -78,8 +114,14 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
    }
 }
 
-inline fun <reified T : Throwable> Throwable.shouldHaveCauseOfType() = this should haveCauseOfType<T>()
-inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseOfType() = this shouldNot haveCauseOfType<T>()
+inline fun <reified T : Throwable> Throwable.shouldHaveCauseOfType(): Throwable {
+  this should haveCauseOfType<T>()
+  return this
+}
+inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseOfType(): Throwable {
+  this shouldNot haveCauseOfType<T>()
+  return this
+}
 inline fun <reified T : Throwable> haveCauseOfType() = object : Matcher<Throwable> {
    override fun test(value: Throwable) = when (val cause = value.cause) {
       null -> resultForThrowable(null)

@@ -6,7 +6,7 @@ import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 object LoggingTestEngineListener : AbstractTestEngineListener() {
 

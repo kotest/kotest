@@ -10,9 +10,9 @@ import io.kotest.engine.newInstanceNoArgConstructor
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.mpp.IncludingAnnotations
-import io.kotest.mpp.IncludingSuperclasses
-import io.kotest.mpp.annotation
+import io.kotest.common.reflection.IncludingAnnotations
+import io.kotest.common.reflection.IncludingSuperclasses
+import io.kotest.common.reflection.annotation
 
 /**
  * Evaluates any spec annotated with [io.kotest.core.annotation.DisabledIf] if the condition is true, skips the spec

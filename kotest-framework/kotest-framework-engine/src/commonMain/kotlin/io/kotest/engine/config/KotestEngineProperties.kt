@@ -20,7 +20,7 @@ object KotestEngineProperties {
    internal const val filterTests = "kotest.filter.tests"
 
    /**
-    * A regex expression that is used to match the [io.kotest.mpp.bestName] of a class
+    * A regex expression that is used to match the [io.kotest.common.reflection.bestName] of a class
     * to determine if a spec should be included in the test plan or not.
     */
    internal const val filterSpecs = "kotest.filter.specs"
