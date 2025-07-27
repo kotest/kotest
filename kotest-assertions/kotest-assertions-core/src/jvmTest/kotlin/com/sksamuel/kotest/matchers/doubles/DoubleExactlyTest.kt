@@ -51,7 +51,7 @@ class DoubleExactlyTest : FreeSpec() {
             }
 
             "should not be exactly NaN when NaN equality is disabled" {
-               withSystemProperty(AssertionsConfigSystemProperties.disableNaNEquality, "true") {
+               withSystemProperty(AssertionsConfigSystemProperties.DISABLE_NA_NEQUALITY, "true") {
                   Double.NaN shouldNotMatchExactly Double.NaN
                }
             }

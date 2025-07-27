@@ -48,26 +48,27 @@ public final class io/kotest/assertions/AssertionFailedError : java/lang/Asserti
 public final class io/kotest/assertions/AssertionsConfig {
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfig;
 	public final fun getDisableNaNEquality ()Z
-	public final fun getEnabledSubmatchesInStrings ()Lio/kotest/assertions/ConfigValue;
+	public final fun getEnabledSubmatchesInStrings ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMapDiffLimit ()I
 	public final fun getMaxCollectionEnumerateSize ()I
-	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/ConfigValue;
+	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxErrorsOutput ()I
-	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/ConfigValue;
-	public final fun getMaxSubtringSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
-	public final fun getMaxValueSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
-	public final fun getMinSubtringSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
-	public final fun getMinValueSubmatchingSize ()Lio/kotest/assertions/ConfigValue;
+	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxSubtringSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxValueSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMinSubtringSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMinValueSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMultiLineDiff ()Ljava/lang/String;
 	public final fun getShowDataClassDiff ()Z
-	public final fun getSimilarityThresholdInPercent ()Lio/kotest/assertions/ConfigValue;
-	public final fun getSimilarityThresholdInPercentForStrings ()Lio/kotest/assertions/ConfigValue;
+	public final fun getSimilarityThresholdInPercent ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getSimilarityThresholdInPercentForStrings ()Lio/kotest/assertions/EnvironmentConfigValue;
 }
 
 public final class io/kotest/assertions/AssertionsConfigSystemProperties {
+	public static final field COLLECTIONS_PRINT_SIZE Ljava/lang/String;
+	public static final field DISABLE_NA_NEQUALITY Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfigSystemProperties;
-	public static final field disableNaNEquality Ljava/lang/String;
 }
 
 public class io/kotest/assertions/BasicErrorCollector : io/kotest/assertions/ErrorCollector {
@@ -97,11 +98,6 @@ public final class io/kotest/assertions/CluesKt {
 	public static final fun withClue (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/assertions/ConfigValue {
-	public abstract fun getSourceDescription ()Ljava/lang/String;
-	public abstract fun getValue ()Ljava/lang/Object;
-}
-
 public final class io/kotest/assertions/CounterKt {
 	public static final fun getAndReset (Lio/kotest/assertions/AssertionCounter;)I
 	public static final fun inc (Lio/kotest/assertions/AssertionCounter;I)V
@@ -111,11 +107,10 @@ public final class io/kotest/assertions/DiffLargeStringKt {
 	public static final fun diffLargeString (Ljava/lang/String;Ljava/lang/String;)Lkotlin/Pair;
 }
 
-public final class io/kotest/assertions/EnvironmentConfigValue : io/kotest/assertions/ConfigValue {
+public final class io/kotest/assertions/EnvironmentConfigValue {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
 	public final fun getConverter ()Lkotlin/jvm/functions/Function1;
-	public fun getSourceDescription ()Ljava/lang/String;
-	public fun getValue ()Ljava/lang/Object;
+	public final fun getValue ()Ljava/lang/Object;
 }
 
 public final class io/kotest/assertions/ErrorCollectionMode : java/lang/Enum {
@@ -455,8 +450,8 @@ public final class io/kotest/assertions/print/KClassPrint : io/kotest/assertions
 
 public final class io/kotest/assertions/print/ListPrint : io/kotest/assertions/print/Print {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/assertions/ConfigValue;)V
-	public synthetic fun <init> (Lio/kotest/assertions/ConfigValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lio/kotest/assertions/EnvironmentConfigValue;)V
+	public synthetic fun <init> (Lio/kotest/assertions/EnvironmentConfigValue;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 	public fun print (Ljava/util/List;I)Lio/kotest/assertions/print/Printed;
 }

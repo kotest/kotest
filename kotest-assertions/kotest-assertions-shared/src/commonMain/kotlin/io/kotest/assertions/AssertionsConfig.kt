@@ -1,9 +1,11 @@
 package io.kotest.assertions
 
 import io.kotest.common.sysprop
+import io.kotest.common.syspropOrEnv
 
 object AssertionsConfigSystemProperties {
-   const val disableNaNEquality = "kotest.assertions.nan.equality.disable"
+   const val DISABLE_NA_NEQUALITY = "kotest.assertions.nan.equality.disable"
+   const val COLLECTIONS_PRINT_SIZE = "kotest.assertions.collection.print.size"
 }
 
 object AssertionsConfig {
@@ -27,64 +29,53 @@ object AssertionsConfig {
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
 
    val disableNaNEquality: Boolean
-      get() = sysprop(AssertionsConfigSystemProperties.disableNaNEquality)?.toBoolean() ?: false
+      get() = sysprop(AssertionsConfigSystemProperties.DISABLE_NA_NEQUALITY)?.toBoolean() ?: false
 
-   val maxCollectionPrintSize: ConfigValue<Int> =
-      EnvironmentConfigValue("kotest.assertions.collection.print.size", 20, String::toInt)
+   val maxCollectionPrintSize: EnvironmentConfigValue<Int> =
+      EnvironmentConfigValue(AssertionsConfigSystemProperties.COLLECTIONS_PRINT_SIZE, 20, String::toInt)
 
-   val maxSimilarityPrintSize: ConfigValue<Int> =
+   val maxSimilarityPrintSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.similarity.print.size", 5, String::toInt)
 
-   val similarityThresholdInPercent: ConfigValue<Int> =
+   val similarityThresholdInPercent: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.similarity.thresholdInPercent", 50, String::toInt)
 
-   val similarityThresholdInPercentForStrings: ConfigValue<Int> =
+   val similarityThresholdInPercentForStrings: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.similarity.thresholdInPercentForStrings", 66, String::toInt)
 
-   val minSubtringSubmatchingSize: ConfigValue<Int> =
+   val minSubtringSubmatchingSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.string.submatching.min.substring.size", 8, String::toInt)
 
-   val maxSubtringSubmatchingSize: ConfigValue<Int> =
+   val maxSubtringSubmatchingSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.string.submatching.max.substring.size", 1024, String::toInt)
 
-   val minValueSubmatchingSize: ConfigValue<Int> =
+   val minValueSubmatchingSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.string.submatching.min.value.size", 8, String::toInt)
 
-   val maxValueSubmatchingSize: ConfigValue<Int> =
+   val maxValueSubmatchingSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.string.submatching.max.value.size", 1024, String::toInt)
 
-   val enabledSubmatchesInStrings: ConfigValue<Boolean> =
+   val enabledSubmatchesInStrings: EnvironmentConfigValue<Boolean> =
       EnvironmentConfigValue("kotest.assertions.string.submatching.enabled", true, String::toBoolean)
 
-}
-
-interface ConfigValue<T> {
-   val sourceDescription: String?
-   val value: T
 }
 
 class EnvironmentConfigValue<T>(
    private val name: String,
    private val defaultValue: T,
    val converter: (String) -> T
-) : ConfigValue<T> {
-   override val sourceDescription: String? = ConfigurationLoader.getSourceDescription(name)
-   override val value: T = loadValue()
+) {
+
+   val value: T = loadValue()
 
    private fun loadValue(): T {
-      val loaded = ConfigurationLoader.getValue(name) ?: return defaultValue
-
+      val loaded = syspropOrEnv(name) ?: return defaultValue
       try {
          return converter(loaded)
       } catch (e: Exception) {
-         throw KotestConfigurationException("Could not load value from $sourceDescription: $e", e)
+         throw KotestConfigurationException("Could not load sysprop or envvar from $name: $e", e)
       }
    }
-}
-
-internal expect object ConfigurationLoader {
-   fun getValue(name: String): String?
-   fun getSourceDescription(name: String): String?
 }
 
 class KotestConfigurationException(message: String, cause: Throwable?) : RuntimeException(message, cause)
