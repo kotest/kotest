@@ -17,7 +17,7 @@ kotlin {
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
-            group("jsHosted") {
+            group("nonjvm") {
                withJs()
             }
          }
