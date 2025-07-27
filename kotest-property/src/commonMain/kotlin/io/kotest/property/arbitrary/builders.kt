@@ -328,7 +328,7 @@ class ArbitraryBuilder<A>(
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn?.invoke(rs)
       override fun sample(rs: RandomSource): Sample<A> {
          val sample = sampleFn(rs)
-         return if (shrinker == null) Sample(sample) else sampleOf(sample, shrinker)
+         return sampleOf(sample, this@ArbitraryBuilder.shrinker ?: shrinker)
       }
    }
 }
