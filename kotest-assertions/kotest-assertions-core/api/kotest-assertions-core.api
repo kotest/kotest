@@ -358,18 +358,18 @@ public final class io/kotest/matchers/collections/ContainAllKt {
 	public static final fun containAll (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
 	public static final fun containAll (Ljava/util/Collection;Lio/kotest/equals/Equality;)Lio/kotest/matchers/Matcher;
 	public static final fun containAll ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)V
-	public static final fun shouldContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)V
-	public static final fun shouldContainAll (Ljava/util/Collection;Ljava/util/Collection;)V
-	public static final fun shouldContainAll (Ljava/util/Collection;[Ljava/lang/Object;)V
-	public static final fun shouldContainAll ([Ljava/lang/Object;Ljava/util/Collection;)V
-	public static final fun shouldContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)V
-	public static final fun shouldNotContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainAll (Ljava/util/Collection;Ljava/util/Collection;)V
-	public static final fun shouldNotContainAll (Ljava/util/Collection;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainAll ([Ljava/lang/Object;Ljava/util/Collection;)V
-	public static final fun shouldNotContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldContainAll (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldContainAll (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldContainAll ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
+	public static final fun shouldContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)Ljava/lang/Iterable;
+	public static final fun shouldNotContainAll (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotContainAll (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldNotContainAll ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
+	public static final fun shouldNotContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
 }
 
 public final class io/kotest/matchers/collections/ContainExactlyInAnyOrderKt {
@@ -424,7 +424,7 @@ public final class io/kotest/matchers/collections/ContainOnlyKt {
 	public static final fun shouldContainOnly (Ljava/util/Collection;Ljava/util/Collection;)V
 	public static final fun shouldContainOnly (Ljava/util/Collection;[Ljava/lang/Object;)V
 	public static final fun shouldContainOnly ([Ljava/lang/Object;[Ljava/lang/Object;)V
-	public static final fun shouldContainOnly_array ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldContainOnly_array ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldContainOnly_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotContainOnly (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainOnly (Ljava/util/Collection;Ljava/util/Collection;)V
@@ -949,16 +949,16 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 	public static final fun gte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)V
-	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)V
-	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)V
-	public static final fun shouldBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
-	public static final fun shouldBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
-	public static final fun shouldBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
-	public static final fun shouldBeLessThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Object;
-	public static final fun shouldNotBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)V
-	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)V
-	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)V
+	public static final fun shouldBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)Ljava/lang/Comparable;
+	public static final fun shouldBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeLessThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeGreaterThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
@@ -1266,7 +1266,7 @@ public final class io/kotest/matchers/doubles/LessThanOrEqualKt {
 
 public final class io/kotest/matchers/doubles/MultipleKt {
 	public static final fun beMultipleOf (D)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeMultipleOf (Ljava/lang/Double;D)V
+	public static final fun shouldBeMultipleOf (Ljava/lang/Double;D)Ljava/lang/Double;
 }
 
 public final class io/kotest/matchers/doubles/NaNKt {
@@ -1304,8 +1304,8 @@ public final class io/kotest/matchers/doubles/ToleranceKt {
 	public static final fun getPercent (Ljava/lang/Number;)Lio/kotest/matchers/doubles/Percentage;
 	public static final fun plusOrMinus (DD)Lio/kotest/matchers/doubles/ToleranceMatcher;
 	public static final fun plusOrMinus (DLio/kotest/matchers/doubles/Percentage;)Lio/kotest/matchers/doubles/ToleranceMatcher;
-	public static final fun shouldBeWithinPercentageOf (DDD)V
-	public static final fun shouldNotBeWithinPercentageOf (DDD)V
+	public static final fun shouldBeWithinPercentageOf (DDD)D
+	public static final fun shouldNotBeWithinPercentageOf (DDD)D
 }
 
 public final class io/kotest/matchers/doubles/ToleranceMatcher : io/kotest/matchers/Matcher {
@@ -1606,18 +1606,18 @@ public final class io/kotest/matchers/floats/MatchersKt {
 	public static final fun lt (F)Lio/kotest/matchers/Matcher;
 	public static final fun lte (F)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeExactly (FF)F
-	public static final fun shouldBeGreaterThan (FF)Ljava/lang/Object;
-	public static final fun shouldBeGreaterThanOrEqual (FF)Ljava/lang/Object;
-	public static final fun shouldBeLessThan (FF)Ljava/lang/Object;
-	public static final fun shouldBeLessThanOrEqual (FF)Ljava/lang/Object;
-	public static final fun shouldBeWithinPercentageOf (FFD)V
+	public static final fun shouldBeGreaterThan (FF)F
+	public static final fun shouldBeGreaterThanOrEqual (FF)F
+	public static final fun shouldBeLessThan (FF)F
+	public static final fun shouldBeLessThanOrEqual (FF)F
+	public static final fun shouldBeWithinPercentageOf (FFD)F
 	public static final fun shouldBeZero (F)F
 	public static final fun shouldNotBeExactly (FF)F
 	public static final fun shouldNotBeGreaterThan (FF)F
 	public static final fun shouldNotBeGreaterThanOrEqual (FF)F
 	public static final fun shouldNotBeLessThan (FF)F
 	public static final fun shouldNotBeLessThanOrEqual (FF)F
-	public static final fun shouldNotBeWithinPercentageOf (FFD)V
+	public static final fun shouldNotBeWithinPercentageOf (FFD)F
 	public static final fun shouldNotBeZero (F)F
 }
 
@@ -1697,11 +1697,11 @@ public final class io/kotest/matchers/ints/IntMatchersKt {
 	public static final fun lt (I)Lio/kotest/matchers/Matcher;
 	public static final fun lte (I)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeBetween (III)Ljava/lang/Object;
-	public static final fun shouldBeInRange (ILkotlin/ranges/IntRange;)V
-	public static final fun shouldBeWithinPercentageOf (IID)V
+	public static final fun shouldBeInRange (ILkotlin/ranges/IntRange;)I
+	public static final fun shouldBeWithinPercentageOf (IID)I
 	public static final fun shouldNotBeBetween (III)V
-	public static final fun shouldNotBeInRange (ILkotlin/ranges/IntRange;)V
-	public static final fun shouldNotBeWithinPercentageOf (IID)V
+	public static final fun shouldNotBeInRange (ILkotlin/ranges/IntRange;)I
+	public static final fun shouldNotBeWithinPercentageOf (IID)I
 }
 
 public final class io/kotest/matchers/ints/UintKt {
@@ -1772,7 +1772,7 @@ public final class io/kotest/matchers/longs/LongMatchersKt {
 
 public final class io/kotest/matchers/longs/MultipleOfKt {
 	public static final fun beMultipleOf (J)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeMultipleOf (Ljava/lang/Long;J)V
+	public static final fun shouldBeMultipleOf (Ljava/lang/Long;J)Ljava/lang/Long;
 }
 
 public final class io/kotest/matchers/longs/UlongKt {
@@ -1820,43 +1820,43 @@ public final class io/kotest/matchers/maps/MapMatchesMatcher : io/kotest/matcher
 
 public final class io/kotest/matchers/maps/MatchersKt {
 	public static final fun beEmpty ()Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeEmpty (Ljava/util/Map;)V
-	public static final fun shouldContain (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)V
-	public static final fun shouldContain (Ljava/util/Map;Lkotlin/Pair;)V
-	public static final fun shouldContainAll (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldContainAnyKeysOf (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldContainAnyValuesOf (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldContainExactly (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldContainKey (Ljava/util/Map;Ljava/lang/Object;)V
-	public static final fun shouldContainKeys (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldContainValue (Ljava/util/Map;Ljava/lang/Object;)V
-	public static final fun shouldContainValues (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldHaveKey (Ljava/util/Map;Ljava/lang/Object;)V
-	public static final fun shouldHaveKeys (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldHaveSize (Ljava/util/Map;I)V
-	public static final fun shouldHaveValues (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldMatchAll (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldMatchAll (Ljava/util/Map;[Lkotlin/Pair;)V
-	public static final fun shouldMatchExactly (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldMatchExactly (Ljava/util/Map;[Lkotlin/Pair;)V
-	public static final fun shouldNotBeEmpty (Ljava/util/Map;)V
-	public static final fun shouldNotContain (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)V
-	public static final fun shouldNotContain (Ljava/util/Map;Lkotlin/Pair;)V
-	public static final fun shouldNotContainAll (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldNotContainAnyKeysOf (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainAnyValuesOf (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainExactly (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldNotContainKey (Ljava/util/Map;Ljava/lang/Object;)V
-	public static final fun shouldNotContainKeys (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldNotContainValue (Ljava/util/Map;Ljava/lang/Object;)V
-	public static final fun shouldNotContainValues (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldNotHaveKey (Ljava/util/Map;Ljava/lang/Object;)V
-	public static final fun shouldNotHaveKeys (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldNotHaveValues (Ljava/util/Map;[Ljava/lang/Object;)V
-	public static final fun shouldNotMatchAll (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldNotMatchAll (Ljava/util/Map;[Lkotlin/Pair;)V
-	public static final fun shouldNotMatchExactly (Ljava/util/Map;Ljava/util/Map;)V
-	public static final fun shouldNotMatchExactly (Ljava/util/Map;[Lkotlin/Pair;)V
+	public static final fun shouldBeEmpty (Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldContain (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldContain (Ljava/util/Map;Lkotlin/Pair;)Ljava/util/Map;
+	public static final fun shouldContainAll (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldContainAnyKeysOf (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldContainAnyValuesOf (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldContainExactly (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldContainKey (Ljava/util/Map;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldContainKeys (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldContainValue (Ljava/util/Map;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldContainValues (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldHaveKey (Ljava/util/Map;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldHaveKeys (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldHaveSize (Ljava/util/Map;I)Ljava/util/Map;
+	public static final fun shouldHaveValues (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldMatchAll (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldMatchAll (Ljava/util/Map;[Lkotlin/Pair;)Ljava/util/Map;
+	public static final fun shouldMatchExactly (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldMatchExactly (Ljava/util/Map;[Lkotlin/Pair;)Ljava/util/Map;
+	public static final fun shouldNotBeEmpty (Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldNotContain (Ljava/util/Map;Ljava/lang/Object;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotContain (Ljava/util/Map;Lkotlin/Pair;)Ljava/util/Map;
+	public static final fun shouldNotContainAll (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldNotContainAnyKeysOf (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotContainAnyValuesOf (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotContainExactly (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldNotContainKey (Ljava/util/Map;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotContainKeys (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotContainValue (Ljava/util/Map;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotContainValues (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotHaveKey (Ljava/util/Map;Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotHaveKeys (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotHaveValues (Ljava/util/Map;[Ljava/lang/Object;)Ljava/util/Map;
+	public static final fun shouldNotMatchAll (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldNotMatchAll (Ljava/util/Map;[Lkotlin/Pair;)Ljava/util/Map;
+	public static final fun shouldNotMatchExactly (Ljava/util/Map;Ljava/util/Map;)Ljava/util/Map;
+	public static final fun shouldNotMatchExactly (Ljava/util/Map;[Lkotlin/Pair;)Ljava/util/Map;
 }
 
 public final class io/kotest/matchers/nulls/MatchersKt {
@@ -1961,9 +1961,9 @@ public final class io/kotest/matchers/paths/PathsKt {
 
 public final class io/kotest/matchers/properties/PropertiesKt {
 	public static final fun haveValue (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldHaveValue (Lkotlin/reflect/KProperty0;Ljava/lang/Object;)V
+	public static final fun shouldHaveValue (Lkotlin/reflect/KProperty0;Ljava/lang/Object;)Lkotlin/reflect/KProperty0;
 	public static final fun shouldMatch (Lkotlin/reflect/KProperty0;Lkotlin/jvm/functions/Function1;)V
-	public static final fun shouldNotHaveValue (Lkotlin/reflect/KProperty0;Ljava/lang/Object;)V
+	public static final fun shouldNotHaveValue (Lkotlin/reflect/KProperty0;Ljava/lang/Object;)Lkotlin/reflect/KProperty0;
 }
 
 public final class io/kotest/matchers/property/MatchersKt {
@@ -2122,16 +2122,18 @@ public final class io/kotest/matchers/regex/RegexMatchersKt {
 	public static final fun haveSameRegexOptionsMatcher (Ljava/util/Set;)Lio/kotest/matchers/Matcher;
 	public static final fun includeOption (Lkotlin/text/RegexOption;)Lio/kotest/matchers/Matcher;
 	public static final fun includeOptions (Ljava/util/Set;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeRegex (Lkotlin/text/Regex;Lkotlin/text/Regex;)V
-	public static final fun shouldHaveExactRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)V
-	public static final fun shouldHavePattern (Lkotlin/text/Regex;Ljava/lang/String;)V
-	public static final fun shouldIncludeRegexOption (Lkotlin/text/Regex;Lkotlin/text/RegexOption;)V
-	public static final fun shouldIncludeRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)V
-	public static final fun shouldNotBeRegex (Lkotlin/text/Regex;Lkotlin/text/Regex;)V
-	public static final fun shouldNotHaveExactRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)V
-	public static final fun shouldNotHavePattern (Lkotlin/text/Regex;Ljava/lang/String;)V
-	public static final fun shouldNotIncludeRegexOption (Lkotlin/text/Regex;Lkotlin/text/RegexOption;)V
-	public static final fun shouldNotIncludeRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)V
+	public static final fun shouldBeRegex (Lkotlin/text/Regex;Lkotlin/text/Regex;)Lkotlin/text/Regex;
+	public static final fun shouldEqualRegex (Lkotlin/text/Regex;Lkotlin/text/Regex;)Lkotlin/text/Regex;
+	public static final fun shouldHaveExactRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)Lkotlin/text/Regex;
+	public static final fun shouldHavePattern (Lkotlin/text/Regex;Ljava/lang/String;)Lkotlin/text/Regex;
+	public static final fun shouldIncludeRegexOption (Lkotlin/text/Regex;Lkotlin/text/RegexOption;)Lkotlin/text/Regex;
+	public static final fun shouldIncludeRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)Lkotlin/text/Regex;
+	public static final fun shouldNotBeRegex (Lkotlin/text/Regex;Lkotlin/text/Regex;)Lkotlin/text/Regex;
+	public static final fun shouldNotEqualRegex (Lkotlin/text/Regex;Lkotlin/text/Regex;)Lkotlin/text/Regex;
+	public static final fun shouldNotHaveExactRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)Lkotlin/text/Regex;
+	public static final fun shouldNotHavePattern (Lkotlin/text/Regex;Ljava/lang/String;)Lkotlin/text/Regex;
+	public static final fun shouldNotIncludeRegexOption (Lkotlin/text/Regex;Lkotlin/text/RegexOption;)Lkotlin/text/Regex;
+	public static final fun shouldNotIncludeRegexOptions (Lkotlin/text/Regex;Ljava/util/Set;)Lkotlin/text/Regex;
 }
 
 public final class io/kotest/matchers/regex/StringsKt {
@@ -2166,14 +2168,6 @@ public final class io/kotest/matchers/resource/StringMatchersKt {
 	public static synthetic fun shouldNotMatchResource$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Ljava/lang/String;
 }
 
-public final class io/kotest/matchers/result/FailureKt {
-	public static final fun FailureMatcher ()Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeFailure (Ljava/lang/Object;)Ljava/lang/Throwable;
-	public static final fun shouldBeFailure (Ljava/lang/Object;Ljava/lang/Throwable;)Ljava/lang/Throwable;
-	public static final fun shouldBeFailure (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Throwable;
-	public static final fun shouldNotBeFailure (Ljava/lang/Object;)V
-}
-
 public final class io/kotest/matchers/result/FailureMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/lang/Throwable;)V
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
@@ -2192,13 +2186,12 @@ public final class io/kotest/matchers/result/FailureTypeMatcher : io/kotest/matc
 	public fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 
-public final class io/kotest/matchers/result/SuccessKt {
-	public static final fun beSuccess ()Lio/kotest/matchers/Matcher;
-	public static final fun beSuccess (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeSuccess (Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun shouldBeSuccess (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public static final fun shouldBeSuccess (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun shouldNotBeSuccess (Ljava/lang/Object;)V
+public final class io/kotest/matchers/result/FailuresKt {
+	public static final fun FailureMatcher ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeFailure (Ljava/lang/Object;)Ljava/lang/Throwable;
+	public static final fun shouldBeFailure (Ljava/lang/Object;Ljava/lang/Throwable;)Ljava/lang/Throwable;
+	public static final fun shouldBeFailure (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Throwable;
+	public static final fun shouldNotBeFailure (Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class io/kotest/matchers/result/SuccessMatcher : io/kotest/matchers/Matcher {
@@ -2208,6 +2201,15 @@ public final class io/kotest/matchers/result/SuccessMatcher : io/kotest/matchers
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Lio/kotest/matchers/Matcher;Z)Lio/kotest/matchers/Matcher;
 	public fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
+public final class io/kotest/matchers/result/SuccessesKt {
+	public static final fun beSuccess ()Lio/kotest/matchers/Matcher;
+	public static final fun beSuccess (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeSuccess (Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldBeSuccess (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldBeSuccess (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun shouldNotBeSuccess (Ljava/lang/Object;)Ljava/lang/Throwable;
 }
 
 public final class io/kotest/matchers/sequences/MatchersKt {
@@ -2302,10 +2304,10 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun sortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 }
 
-public final class io/kotest/matchers/sets/SetsIntersectionKt {
+public final class io/kotest/matchers/sets/IntersectionsKt {
 	public static final fun intersectWith (Ljava/util/Set;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldIntersect (Ljava/util/Set;Ljava/util/Set;)V
-	public static final fun shouldNotIntersect (Ljava/util/Set;Ljava/util/Set;)V
+	public static final fun shouldIntersect (Ljava/util/Set;Ljava/util/Set;)Ljava/util/Set;
+	public static final fun shouldNotIntersect (Ljava/util/Set;Ljava/util/Set;)Ljava/util/Set;
 }
 
 public final class io/kotest/matchers/short/ShortKt {
@@ -2476,6 +2478,7 @@ public final class io/kotest/matchers/string/MatchersKt {
 	public static final fun containOnlyDigits ()Lio/kotest/matchers/Matcher;
 	public static final fun containOnlyOnce (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun containOnlyWhitespace ()Lio/kotest/matchers/Matcher;
+	public static final fun haveSubstring (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun include (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeBlank (Ljava/lang/String;)Ljava/lang/String;
 	public static final fun shouldBeEmpty (Ljava/lang/String;)Ljava/lang/String;
@@ -2515,10 +2518,6 @@ public final class io/kotest/matchers/string/StartKt {
 	public static final fun startWith (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
 }
 
-public final class io/kotest/matchers/string/StringMatchersKt {
-	public static final fun haveSubstring (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
-}
-
 public final class io/kotest/matchers/string/TfKt {
 	public static final fun beFalsy ()Lio/kotest/matchers/Matcher;
 	public static final fun beTruthy ()Lio/kotest/matchers/Matcher;
@@ -2546,17 +2545,17 @@ public final class io/kotest/matchers/throwable/MatchersKt {
 	public static final fun haveStackTraceContaining (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun haveStackTraceContaining (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
 	public static final fun resultForThrowable (Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResult;
-	public static final fun shouldHaveCause (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;)V
-	public static synthetic fun shouldHaveCause$default (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)V
-	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
-	public static final fun shouldHaveStackTraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)V
-	public static final fun shouldHaveStackTraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
-	public static final fun shouldNotHaveCause (Ljava/lang/Throwable;)V
-	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)V
-	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
-	public static final fun shouldNotHaveStackTraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)V
-	public static final fun shouldNotHaveStackTraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)V
+	public static final fun shouldHaveCause (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Throwable;
+	public static synthetic fun shouldHaveCause$default (Ljava/lang/Throwable;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Ljava/lang/Throwable;
+	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Throwable;
+	public static final fun shouldHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)Ljava/lang/Throwable;
+	public static final fun shouldHaveStackTraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Throwable;
+	public static final fun shouldHaveStackTraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)Ljava/lang/Throwable;
+	public static final fun shouldNotHaveCause (Ljava/lang/Throwable;)Ljava/lang/Throwable;
+	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Throwable;
+	public static final fun shouldNotHaveMessage (Ljava/lang/Throwable;Lkotlin/text/Regex;)Ljava/lang/Throwable;
+	public static final fun shouldNotHaveStackTraceContaining (Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/Throwable;
+	public static final fun shouldNotHaveStackTraceContaining (Ljava/lang/Throwable;Lkotlin/text/Regex;)Ljava/lang/Throwable;
 }
 
 public final class io/kotest/matchers/time/DurationKt {
@@ -2565,13 +2564,13 @@ public final class io/kotest/matchers/time/DurationKt {
 	public static final fun haveMinutes (J)Lio/kotest/matchers/Matcher;
 	public static final fun haveSeconds (J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldHaveHours-VtjQ1oo (JJ)V
-	public static final fun shouldHaveMillis-VtjQ1oo (JJ)V
+	public static final fun shouldHaveMillis-VtjQ1oo (JJ)J
 	public static final fun shouldHaveMinutes-VtjQ1oo (JJ)V
-	public static final fun shouldHaveSeconds-VtjQ1oo (JJ)V
+	public static final fun shouldHaveSeconds-VtjQ1oo (JJ)J
 	public static final fun shouldNotHaveHours-VtjQ1oo (JJ)V
-	public static final fun shouldNotHaveMillis-VtjQ1oo (JJ)V
+	public static final fun shouldNotHaveMillis-VtjQ1oo (JJ)J
 	public static final fun shouldNotHaveMinutes-VtjQ1oo (JJ)V
-	public static final fun shouldNotHaveSeconds-VtjQ1oo (JJ)V
+	public static final fun shouldNotHaveSeconds-VtjQ1oo (JJ)J
 }
 
 public final class io/kotest/matchers/tuples/PairsKt {

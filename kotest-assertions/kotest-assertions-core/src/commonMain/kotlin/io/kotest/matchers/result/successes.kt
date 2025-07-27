@@ -3,7 +3,6 @@ package io.kotest.matchers.result
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldNot
 
 /**
  * Verifies that this result is not a success
@@ -13,7 +12,8 @@ import io.kotest.matchers.shouldNot
  *
  * @see [shouldBeFailure]
  */
-fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
+@Deprecated("Use shouldBeFailure instead", ReplaceWith("shouldBeFailure()"))
+fun <T> Result<T>.shouldNotBeSuccess(): Throwable = shouldBeFailure()
 
 /**
  * Verifies that this result is any success
@@ -22,8 +22,8 @@ fun <T> Result<T>.shouldNotBeSuccess() = this shouldNot beSuccess()
  * failure(MyException).shouldBeSuccess() // Assertion fails
  */
 fun <T> Result<T>.shouldBeSuccess(): T {
-  this should beSuccess()
-  return getOrThrow()
+   this should beSuccess()
+   return getOrThrow()
 }
 
 /**
@@ -34,8 +34,8 @@ fun <T> Result<T>.shouldBeSuccess(): T {
  * failure(MyException) shouldBeSuccess "abc" // Assertion fails
  */
 infix fun <T> Result<T>.shouldBeSuccess(expected: T): T {
-  this should beSuccess(expected)
-  return getOrThrow()
+   this should beSuccess(expected)
+   return getOrThrow()
 }
 
 /**
@@ -51,8 +51,8 @@ infix fun <T> Result<T>.shouldBeSuccess(expected: T): T {
  *
  */
 infix fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)): T {
-  this should beSuccess()
-  return getOrThrow().also { block(it) }
+   this should beSuccess()
+   return getOrThrow().also { block(it) }
 }
 
 fun <T> beSuccess(): Matcher<Result<T?>> = beSuccess(Unit)
@@ -60,16 +60,16 @@ fun <T> beSuccess(): Matcher<Result<T?>> = beSuccess(Unit)
 fun <T> beSuccess(expected: T?): Matcher<Result<T?>> = SuccessMatcher(expected)
 
 class SuccessMatcher<T>(val expected: T?) : Matcher<Result<T?>> {
-  override fun test(value: Result<T?>): MatcherResult {
-    if (value.isFailure) return MatcherResult(false, { "Expected to assert on a Success, but was $value" }, { "" })
-    val actual = value.getOrThrow()
+   override fun test(value: Result<T?>): MatcherResult {
+      if (value.isFailure) return MatcherResult(false, { "Expected to assert on a Success, but was $value" }, { "" })
+      val actual = value.getOrThrow()
 
-    if (expected == Unit) return MatcherResult(true, { "" }, { "" })
+      if (expected == Unit) return MatcherResult(true, { "" }, { "" })
 
-    return MatcherResult(
-      actual == expected,
-      { "Result should be Success($expected), but was Success($actual)" },
-      { "Result should not be a Success, but was Success($actual)" }
-    )
-  }
+      return MatcherResult(
+         actual == expected,
+         { "Result should be Success($expected), but was Success($actual)" },
+         { "Result should not be a Success, but was Success($actual)" }
+      )
+   }
 }

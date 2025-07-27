@@ -9,7 +9,10 @@ import io.kotest.matchers.should
  * Beware, has no tolerance handling so will fail for numbers where the orders of magnitude vary greatly.
  */
 @ExperimentalKotest
-infix fun Double?.shouldBeMultipleOf(other: Double) = this should beMultipleOf(other)
+infix fun Double?.shouldBeMultipleOf(other: Double): Double? {
+   this should beMultipleOf(other)
+   return this
+}
 
 /**
  * Beware, has no tolerance handling so will fail for numbers where the orders of magnitude vary greatly.

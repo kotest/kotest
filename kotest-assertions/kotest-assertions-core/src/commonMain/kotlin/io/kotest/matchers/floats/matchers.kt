@@ -63,17 +63,42 @@ fun beGreaterThanOrEqualTo(x: Float) = object : Matcher<Float> {
          { "$value should not be >= $x" })
 }
 
-infix fun Float.shouldBeLessThan(x: Float) = this shouldBe lt(x)
-infix fun Float.shouldNotBeLessThan(x: Float) = this shouldNotBe lt(x)
+infix fun Float.shouldBeLessThan(x: Float): Float {
+   this shouldBe lt(x)
+   return this
+}
 
-infix fun Float.shouldBeLessThanOrEqual(x: Float) = this shouldBe lte(x)
-infix fun Float.shouldNotBeLessThanOrEqual(x: Float) = this shouldNotBe lte(x)
+infix fun Float.shouldNotBeLessThan(x: Float): Float {
+   this shouldNotBe lt(x)
+   return this
+}
 
-infix fun Float.shouldBeGreaterThan(x: Float) = this shouldBe gt(x)
-infix fun Float.shouldNotBeGreaterThan(x: Float) = this shouldNotBe gt(x)
+infix fun Float.shouldBeLessThanOrEqual(x: Float): Float {
+   this shouldBe lte(x)
+   return this
+}
+infix fun Float.shouldNotBeLessThanOrEqual(x: Float): Float {
+   this shouldNotBe lte(x)
+   return this
+}
 
-infix fun Float.shouldBeGreaterThanOrEqual(x: Float) = this shouldBe gte(x)
-infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float) = this shouldNotBe gte(x)
+infix fun Float.shouldBeGreaterThan(x: Float): Float {
+   this shouldBe gt(x)
+   return this
+}
+infix fun Float.shouldNotBeGreaterThan(x: Float): Float {
+   this shouldNotBe gt(x)
+   return this
+}
+
+infix fun Float.shouldBeGreaterThanOrEqual(x: Float): Float {
+   this shouldBe gte(x)
+   return this
+}
+infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float): Float {
+   this shouldNotBe gte(x)
+   return this
+}
 
 infix fun Float.shouldBeExactly(x: Float): Float {
    if (AssertionsConfig.disableNaNEquality) {
@@ -93,8 +118,14 @@ infix fun Float.shouldNotBeExactly(x: Float): Float {
    return this
 }
 
-fun Float.shouldBeZero() = this shouldBeExactly 0f
-fun Float.shouldNotBeZero() = this shouldNotBeExactly 0f
+fun Float.shouldBeZero(): Float {
+   this shouldBeExactly 0f
+   return this
+}
+fun Float.shouldNotBeZero(): Float {
+   this shouldNotBeExactly 0f
+   return this
+}
 
 
 /**
@@ -105,9 +136,10 @@ fun Float.shouldNotBeZero() = this shouldNotBeExactly 0f
  * 30.0.shouldBeWithinPercentageOf(100.0, 10.0)  // Fail
  *
  */
-fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double) {
+fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double): Float {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
+   return this
 }
 
 /**
@@ -118,9 +150,10 @@ fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double) {
  * 30.0.shouldNotBeWithinPercentageOf(100.0, 10.0)  // Passes
  *
  */
-fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double) {
+fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double): Float {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this shouldNot beWithinPercentageOf(other, percentage)
+   return this
 }
 
 fun beWithinPercentageOf(other: Float, percentage: Double) = object : Matcher<Float> {
