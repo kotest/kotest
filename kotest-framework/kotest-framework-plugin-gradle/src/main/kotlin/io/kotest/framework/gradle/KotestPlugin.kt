@@ -32,9 +32,6 @@ abstract class KotestPlugin : Plugin<Project> {
 
    companion object {
       const val TASK_DESCRIPTION = "Runs tests using Kotest"
-
-      const val TASK_BUILD = "build"
-
       private val unsupportedTargets = listOf(
          "metadata"
       )

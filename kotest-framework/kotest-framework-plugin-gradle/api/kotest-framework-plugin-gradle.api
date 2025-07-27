@@ -1,10 +1,6 @@
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
-	public static final field KOTEST_TASK_NAME_WASM Ljava/lang/String;
-	public static final field TARGET_NAME_WASM_JS Ljava/lang/String;
-	public static final field TASK_BUILD Ljava/lang/String;
 	public static final field TASK_DESCRIPTION Ljava/lang/String;
-	public static final field TASK_WASM_JS_TEST_CLASSES Ljava/lang/String;
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
