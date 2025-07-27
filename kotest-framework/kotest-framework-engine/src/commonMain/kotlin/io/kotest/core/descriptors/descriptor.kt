@@ -1,6 +1,6 @@
 package io.kotest.core.descriptors
 
-import io.kotest.common.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPath
 
 /**
  * A stable, consistent identifier for a test element.

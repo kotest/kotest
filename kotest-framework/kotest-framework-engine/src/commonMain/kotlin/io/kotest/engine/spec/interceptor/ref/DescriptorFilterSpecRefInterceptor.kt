@@ -6,14 +6,14 @@ import io.kotest.core.spec.name
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 /**
  * Evaluates a spec against any registered [DescriptorFilter]s.

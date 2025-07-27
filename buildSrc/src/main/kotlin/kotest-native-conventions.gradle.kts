@@ -10,13 +10,17 @@ val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinNative.get()) {
+      iosX64()
+      iosArm64()
+      iosSimulatorArm64()
+
       linuxX64()
       linuxArm64()
 
-      mingwX64()
-
       macosX64()
       macosArm64()
+
+      mingwX64()
 
       tvosX64()
       tvosArm64()
@@ -26,10 +30,6 @@ kotlin {
       watchosArm64()
       watchosX64()
       watchosSimulatorArm64()
-
-      iosX64()
-      iosArm64()
-      iosSimulatorArm64()
 
       // FIXME: The "desktop" intermediate source set can be integrated into "native". In this case
       //     the following block can be replaced with `applyDefaultHierarchyTemplate()`.

@@ -1,5 +1,8 @@
 package io.kotest.mpp
 
+import io.kotest.common.reflection.IncludingSuperclasses
+import io.kotest.common.reflection.annotation
+import io.kotest.common.reflection.hasAnnotation
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.spec.style.FunSpec

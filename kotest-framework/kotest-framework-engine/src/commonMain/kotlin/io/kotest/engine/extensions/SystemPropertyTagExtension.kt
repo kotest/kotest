@@ -5,7 +5,7 @@ import io.kotest.core.Tag
 import io.kotest.engine.tags.TagExpression
 import io.kotest.core.extensions.TagExtension
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.mpp.syspropOrEnv
+import io.kotest.common.syspropOrEnv
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties:

@@ -6,7 +6,7 @@
 //import io.kotest.core.test.TestCase
 //import io.kotest.core.test.TestResult
 //import io.kotest.engine.config.KotestEngineProperties
-//import io.kotest.engine.descriptors.toDescriptor
+//import io.kotest.core.descriptors.toDescriptor
 //import io.kotest.engine.extensions.DescriptorFilter
 //import io.kotest.engine.extensions.DescriptorFilterResult
 //import io.kotest.engine.flatMap

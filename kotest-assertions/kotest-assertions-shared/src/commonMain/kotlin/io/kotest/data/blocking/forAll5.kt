@@ -5,7 +5,7 @@ import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.table
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.reflection
 
 fun <A, B, C, D, E> forAll(vararg rows: Row5<A, B, C, D, E>, testfn: (A, B, C, D, E) -> Unit) {
    val params = reflection.paramNames(testfn) ?: emptyList<String>()

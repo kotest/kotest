@@ -4,9 +4,9 @@ import io.kotest.assertions.Actual
 import io.kotest.assertions.Expected
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
-import io.kotest.mpp.Property
-import io.kotest.mpp.bestName
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.Property
+import io.kotest.common.reflection.bestName
+import io.kotest.common.reflection.reflection
 
 internal fun isDataClassInstance(obj: Any?): Boolean =
    obj != null && reflection.isDataClass(obj::class)

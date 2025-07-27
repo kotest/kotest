@@ -1,7 +1,7 @@
 package io.kotest.property.seed
 
 import io.kotest.assertions.print.print
-import io.kotest.common.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPath
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.createDirectories

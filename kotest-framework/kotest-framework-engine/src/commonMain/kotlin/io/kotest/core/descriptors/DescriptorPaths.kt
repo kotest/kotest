@@ -1,6 +1,5 @@
 package io.kotest.core.descriptors
 
-import io.kotest.common.DescriptorPath
 import io.kotest.core.descriptors.Descriptor.SpecDescriptor
 import io.kotest.core.descriptors.Descriptor.TestDescriptor
 import io.kotest.core.descriptors.DescriptorPaths.render
@@ -14,7 +13,7 @@ object DescriptorPaths {
    const val TEST_DELIMITER = " -- "
 
    /**
-    * Returns a string representation of the given [descriptor] wrapped in a [io.kotest.common.DescriptorPath].
+    * Returns a string representation of the given [descriptor] wrapped in a [DescriptorPath].
     *
     * Spec descriptors are separated by a slash (/) and test descriptors are separated by a double dash ( -- ).
     *

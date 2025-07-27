@@ -5,7 +5,7 @@ import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.mpp.annotation
+import io.kotest.common.reflection.annotation
 import kotlin.random.Random
 
 /**

@@ -21,19 +21,12 @@ kotlin {
          nodejs()
       }
 
-      /* FIXME: enable wasmWasi when there is support in kotlinx-coroutines-core (1.8.0-RC does only wasmJs)
-      wasmWasi {
-         nodejs()
-      }
-      */
-
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
             group("jsHosted") {
                withJs()
                withWasmJs()
-               withWasmWasi()
             }
          }
       }

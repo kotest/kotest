@@ -4,7 +4,7 @@ import io.kotest.core.spec.Order
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.random.Random
 
 /**

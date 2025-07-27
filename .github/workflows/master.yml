@@ -33,7 +33,7 @@ jobs:
          task: apiCheck
 
    validate-primary:
-      name: Validate on primary runner
+      name: Validate and publish on primary runner
       if: github.repository == 'kotest/kotest'
       needs: validate-api
       uses: ./.github/workflows/run-gradle.yml
@@ -41,10 +41,10 @@ jobs:
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
-         task: check -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
+         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
 
    validate-secondary:
-      name: Validate on secondary runners
+      name: Validate and publish on secondary runners
       if: github.repository == 'kotest/kotest'
       needs: [ validate-api, validate-primary ]
       strategy:
@@ -58,21 +58,4 @@ jobs:
       with:
          runs-on: ${{ matrix.os }}
          ref: ${{ inputs.ref }}
-         task: check -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
-
-   publish-sonatype:
-      name: Publish all artifacts to Sonatype (Maven Central)
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary, validate-secondary ]
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: macos-latest
-         ref: ${{ inputs.ref }}
-         # TODO remove `--continue` when Kotest Gradle Plugin publishing works
-         #      https://github.com/kotest/kotest/issues/4012#issuecomment-2241294938
-         task: >
-            publishToAppropriateCentralRepository
-            --continue
-            -P"kotest_enableKotlinJs"=true
-            -P"kotest_enableKotlinNative"=true
+         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true

@@ -1,6 +1,6 @@
 package io.kotest.property.resolution
 
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.byte

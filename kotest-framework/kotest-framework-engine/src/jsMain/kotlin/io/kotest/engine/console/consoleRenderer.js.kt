@@ -10,7 +10,7 @@ actual val consoleRenderer: ConsoleRenderer = MordantConsoleRenderer
 /**
  * An implementation of [ConsoleRenderer] that uses the [Mordant] library for ANSI colours.
  **/
-object MordantConsoleRenderer : ConsoleRenderer {
+internal object MordantConsoleRenderer : ConsoleRenderer {
 
    private val t = Terminal(AnsiLevel.ANSI256)
 

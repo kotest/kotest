@@ -1,7 +1,7 @@
 package io.kotest.permutations.seeds
 
-import io.kotest.common.DescriptorPath
-import io.kotest.common.DescriptorPathContextElement
+import io.kotest.core.descriptors.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPathContextElement
 import io.kotest.permutations.PermutationConfiguration
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource

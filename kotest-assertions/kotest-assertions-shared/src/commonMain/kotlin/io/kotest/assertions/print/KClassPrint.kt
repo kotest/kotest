@@ -1,6 +1,6 @@
 package io.kotest.assertions.print
 
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 
 object KClassPrint: Print<KClass<*>> {

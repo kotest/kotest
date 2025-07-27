@@ -3,13 +3,12 @@ package io.kotest.assertions.throwables
 import io.kotest.assertions.Actual
 import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.Expected
-import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.errorCollector
 import io.kotest.assertions.failure
 import io.kotest.assertions.print.print
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 
 /**
  * Verifies if a block of code throws a Throwable of type [T] or subtypes

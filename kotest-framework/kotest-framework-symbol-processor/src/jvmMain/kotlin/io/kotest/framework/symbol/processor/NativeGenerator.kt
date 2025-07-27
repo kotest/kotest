@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -50,7 +51,9 @@ val launcher = TestEngineLauncher()
     """.trim()
          ).addCode("\n")
       specs.forEach {
-         function.addCode("""SpecRef.Function ({ `$it`() }, `$it`::class, "$it"), """)
+         val sn = it.simpleName.asString()
+         val fqn = it.qualifiedName?.asString() ?: it.simpleName.asString()
+         function.addCode("""SpecRef.Function ({ `${sn}`() }, `${sn}`::class, "$fqn"), """)
          function.addCode("\n")
       }
       function
@@ -77,6 +80,7 @@ when (listenerType) {
          .initializer("""runKotest()""")
 
       val file = FileSpec.builder("io.kotest.framework.runtime.native", "kotest.kt")
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
          .addFunction(function.build())
          .addProperty(invoker.build())
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
@@ -86,7 +90,7 @@ when (listenerType) {
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
       specs.forEach {
-         file.addImport(it.qualifiedName!!.asString().substringBeforeLast("."), it.simpleName.asString())
+         file.addImport(it.packageName.asString(), it.simpleName.asString())
       }
       return file.build()
    }

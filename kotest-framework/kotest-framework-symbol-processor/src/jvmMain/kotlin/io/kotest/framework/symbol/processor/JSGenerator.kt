@@ -51,7 +51,9 @@ val launcher = TestEngineLauncher()
     """.trim()
          ).addCode("\n")
       specs.forEach {
-         function.addCode("""SpecRef.Function ({ `$it`() }, `$it`::class, "$it"), """)
+         val sn = it.simpleName.asString()
+         val fqn = it.qualifiedName?.asString() ?: it.simpleName.asString()
+         function.addCode("""SpecRef.Function ({ `${sn}`() }, `${sn}`::class, "$fqn"), """)
          function.addCode("\n")
       }
       function
@@ -78,7 +80,7 @@ when (listenerType) {
          .addImport("io.kotest.engine", "TestEngineLauncher")
          .addImport("io.kotest.core.spec", "SpecRef")
       specs.forEach {
-         file.addImport(it.qualifiedName!!.asString().substringBeforeLast("."), it.simpleName.asString())
+         file.addImport(it.packageName.asString(), it.simpleName.asString())
       }
       return file.build()
    }

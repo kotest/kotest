@@ -5,9 +5,9 @@ package io.kotest.engine.concurrency
 import io.kotest.core.annotation.DoNotParallelize
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
-import io.kotest.mpp.IncludingAnnotations
-import io.kotest.mpp.IncludingSuperclasses
-import io.kotest.mpp.hasAnnotation
+import io.kotest.common.reflection.IncludingAnnotations
+import io.kotest.common.reflection.IncludingSuperclasses
+import io.kotest.common.reflection.hasAnnotation
 import kotlin.reflect.KClass
 
 /**

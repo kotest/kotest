@@ -9,12 +9,12 @@ import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.isRootTest
-import io.kotest.mpp.AtomicReference
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 enum class LifecycleMode {
    Spec, EveryTest, Leaf, Root
@@ -105,6 +105,7 @@ class ResourceExtension<A>(
    }
 }
 
+@OptIn(ExperimentalAtomicApi::class)
 internal class ResourceLazyMaterialized<A>(
    private val resource: Resource<A>,
    private val configure: A.() -> Unit = {},
@@ -121,12 +122,12 @@ internal class ResourceLazyMaterialized<A>(
       data class Done<A>(val value: A, val finalizers: suspend (ExitCase) -> Unit) : State<A>
    }
 
-   private val state = AtomicReference<State<A>>(State.Empty)
+   private val state = kotlin.concurrent.atomics.AtomicReference<State<A>>(State.Empty)
 
    override suspend fun get(): A = init()
 
    @OptIn(DelicateCoroutinesApi::class)
-   tailrec suspend fun init(): A = when (val current = state.value) {
+   tailrec suspend fun init(): A = when (val current = state.load()) {
       is State.Done -> current.value
       is State.Loading -> current.acquiring.await()
       is State.Closed -> throw IllegalStateException("Resource already closed and cannot be re-opened.")
@@ -139,7 +140,7 @@ internal class ResourceLazyMaterialized<A>(
                   val finalizer: suspend (ExitCase) -> Unit = { finalizer(it) }
                   Pair(a, finalizer)
                }
-            state.value = State.Done(res, fin)
+            state.store(State.Done(res, fin))
             loading.acquiring.complete(res.also(configure))
             loading.finalizers.complete(fin)
             res
@@ -147,7 +148,7 @@ internal class ResourceLazyMaterialized<A>(
       }
    }
 
-   tailrec suspend fun release(): Unit = when (val current = state.value) {
+   tailrec suspend fun release(): Unit = when (val current = state.load()) {
       State.Empty -> Unit
       is State.Done -> if (state.compareAndSet(current, State.Empty)) current.finalizers(ExitCase.Completed)
       else release()
@@ -160,6 +161,6 @@ internal class ResourceLazyMaterialized<A>(
    }
 
    fun close() {
-      state.value = State.Closed
+      state.store(State.Closed)
    }
 }

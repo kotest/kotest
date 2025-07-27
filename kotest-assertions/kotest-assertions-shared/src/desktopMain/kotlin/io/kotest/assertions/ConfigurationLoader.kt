@@ -1,6 +1,6 @@
 package io.kotest.assertions
 
-import io.kotest.mpp.env
+import io.kotest.common.env
 
 internal actual object ConfigurationLoader {
    actual fun getValue(name: String): String? = env(environmentVariableName(name))

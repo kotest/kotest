@@ -3,7 +3,7 @@ package io.kotest.framework.multiplatform
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML
 import kotlin.time.Clock

@@ -8,8 +8,8 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.names.DisplayNameFormatter
-import io.kotest.mpp.annotation
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.annotation
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 
 /**

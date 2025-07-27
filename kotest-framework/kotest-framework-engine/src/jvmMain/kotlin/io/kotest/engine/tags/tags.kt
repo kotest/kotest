@@ -3,9 +3,9 @@ package io.kotest.engine.tags
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.annotation.Tags
-import io.kotest.mpp.IncludingAnnotations
-import io.kotest.mpp.IncludingSuperclasses
-import io.kotest.mpp.reflection
+import io.kotest.common.reflection.IncludingAnnotations
+import io.kotest.common.reflection.IncludingSuperclasses
+import io.kotest.common.reflection.reflection
 import kotlin.reflect.KClass
 import kotlin.reflect.full.declaredMemberProperties
 

@@ -7,7 +7,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult
-import io.kotest.mpp.syspropOrEnv
+import io.kotest.common.syspropOrEnv
 
 /**
  * Applies test and spec filters using sysprop or env vars from [KotestEngineProperties.filterTests]
