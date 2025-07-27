@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.platform
+import io.kotest.common.platform
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.extensions.ExtensionRegistry
