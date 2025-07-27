@@ -106,6 +106,22 @@ class ListShrinkerTest : FunSpec() {
          }
       }
 
+      test("ListShrinker shrinks recursively") {
+         val intArb = Arb.int()
+
+         checkAll(Arb.list(intArb, range = 4..100)) { list ->
+            if (list.isNotEmpty()) {
+               val shrinks = ListShrinker<Int>(intArb.shrinker, 4..100).rtree(list)
+               val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
+                  !it.any { it % 2 == 0 }
+               }
+
+               // Shrinker should always find minimal example
+               shrunk.shrink == listOf(0)
+            }
+         }
+      }
+
       test("ListShrinker in action") {
          val stdout = captureStandardOut {
             PropertyTesting.shouldPrintShrinkSteps = true
