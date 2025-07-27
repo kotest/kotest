@@ -36,10 +36,6 @@ kotlin {
                withWasmJs()
                withWasmWasi()
             }
-            group("wasm") {
-               withWasmJs()
-               withWasmWasi()
-            }
          }
       }
 
