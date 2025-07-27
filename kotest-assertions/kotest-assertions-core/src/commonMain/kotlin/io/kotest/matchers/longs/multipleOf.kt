@@ -4,7 +4,10 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
-infix fun Long?.shouldBeMultipleOf(other: Long) = this should beMultipleOf(other)
+infix fun Long?.shouldBeMultipleOf(other: Long): Long? {
+   this should beMultipleOf(other)
+   return this
+}
 
 fun beMultipleOf(other: Long) = Matcher<Long?> { value ->
    MatcherResult(

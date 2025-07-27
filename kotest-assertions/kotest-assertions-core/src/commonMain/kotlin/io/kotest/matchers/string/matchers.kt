@@ -231,6 +231,8 @@ infix fun String?.shouldNotInclude(substr: String): String? {
    return this
 }
 
+fun haveSubstring(substr: String) = include(substr)
+
 fun include(substr: String) = neverNullMatcher<String> { value ->
    val passed = value.contains(substr)
    val differencesDescription = listOf(

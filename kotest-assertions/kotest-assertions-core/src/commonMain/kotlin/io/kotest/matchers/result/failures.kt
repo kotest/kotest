@@ -3,7 +3,6 @@ package io.kotest.matchers.result
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldNot
 import kotlin.js.JsName
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
@@ -16,7 +15,8 @@ import kotlin.reflect.KClass
  *
  * @see shouldBeSuccess
  */
-fun Result<*>.shouldNotBeFailure() = this shouldNot FailureMatcher()
+@Deprecated("Use shouldBeSuccess instead. Deprecated since 6.0", ReplaceWith("shouldBeSuccess()"))
+fun <T> Result<T>.shouldNotBeFailure(): T = shouldBeSuccess()
 
 /**
  * Asserts that this result is any Failure
@@ -27,8 +27,8 @@ fun Result<*>.shouldNotBeFailure() = this shouldNot FailureMatcher()
  * @see shouldNotBeSuccess
  */
 fun Result<*>.shouldBeFailure(): Throwable {
-  this should FailureMatcher()
-  return exceptionOrNull()!!
+   this should FailureMatcher()
+   return exceptionOrNull()!!
 }
 
 /**
@@ -40,8 +40,8 @@ fun Result<*>.shouldBeFailure(): Throwable {
  *
  */
 infix fun Result<*>.shouldBeFailure(expected: Throwable): Throwable {
-  this should FailureMatcher(expected)
-  return exceptionOrNull()!!
+   this should FailureMatcher(expected)
+   return exceptionOrNull()!!
 }
 
 /**
@@ -52,8 +52,8 @@ infix fun Result<*>.shouldBeFailure(expected: Throwable): Throwable {
  * }
  */
 infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
-  this should FailureMatcher()
-  return exceptionOrNull()!!.also { block(it) }
+   this should FailureMatcher()
+   return exceptionOrNull()!!.also { block(it) }
 }
 
 /**
@@ -66,8 +66,8 @@ infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
  */
 @JvmName("shouldBeFailureT")
 inline fun <reified T : Throwable> Result<*>.shouldBeFailure(): T {
-  this should FailureTypeMatcher(T::class)
-  return exceptionOrNull() as T
+   this should FailureTypeMatcher(T::class)
+   return exceptionOrNull() as T
 }
 
 internal val AnyError = object : Throwable() {}
@@ -76,32 +76,32 @@ internal val AnyError = object : Throwable() {}
 @JsName("EmptyConstructorFailureMatcher")
 fun FailureMatcher(): Matcher<Result<*>> = FailureMatcher(AnyError)
 class FailureMatcher<T : Throwable>(val expected: T) : Matcher<Result<*>> {
-  override fun test(value: Result<*>): MatcherResult {
-    if (value.isSuccess) return MatcherResult(false, { "Expected a Failure, but got $value" }, { "" })
+   override fun test(value: Result<*>): MatcherResult {
+      if (value.isSuccess) return MatcherResult(false, { "Expected a Failure, but got $value" }, { "" })
 
-    val actual = value.exceptionOrNull()
-    if (expected === AnyError) {
-      return MatcherResult(true, { "" }, { "" })
-    }
+      val actual = value.exceptionOrNull()
+      if (expected === AnyError) {
+         return MatcherResult(true, { "" }, { "" })
+      }
 
-    return MatcherResult(
-      actual == expected,
-      { "Result should be Failure($expected) but was Failure($actual)" },
-      { "Result should not be a failure, but was $actual" }
-    )
-  }
+      return MatcherResult(
+         actual == expected,
+         { "Result should be Failure($expected) but was Failure($actual)" },
+         { "Result should not be a failure, but was $actual" }
+      )
+   }
 }
 
 class FailureTypeMatcher<T : Throwable>(val clazz: KClass<T>) : Matcher<Result<*>> {
-  override fun test(value: Result<*>): MatcherResult {
-    if (value.isSuccess) return MatcherResult(false, { "Expected a Failure, but got $value" }, { "" })
+   override fun test(value: Result<*>): MatcherResult {
+      if (value.isSuccess) return MatcherResult(false, { "Expected a Failure, but got $value" }, { "" })
 
-    val error = value.exceptionOrNull()!!
+      val error = value.exceptionOrNull()!!
 
-    return MatcherResult(
-      clazz.isInstance(error),
-      { "Result should be a failure of type $clazz but was ${error::class}" },
-      { "" }
-    )
-  }
+      return MatcherResult(
+         clazz.isInstance(error),
+         { "Result should be a failure of type $clazz but was ${error::class}" },
+         { "" }
+      )
+   }
 }

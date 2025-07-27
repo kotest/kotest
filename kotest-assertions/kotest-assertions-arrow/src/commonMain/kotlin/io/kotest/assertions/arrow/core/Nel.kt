@@ -2,7 +2,6 @@ package io.kotest.assertions.arrow.core
 
 import arrow.core.NonEmptyList
 import io.kotest.matchers.collections.shouldBeSorted
-import io.kotest.matchers.collections.shouldNotBeSorted
 import io.kotest.matchers.collections.shouldBeUnique
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
@@ -13,7 +12,7 @@ import io.kotest.matchers.collections.shouldContainOnlyNulls
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.collections.shouldNotHaveSize
+import io.kotest.matchers.collections.shouldNotBeSorted
 import io.kotest.matchers.collections.shouldNotBeUnique
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.collections.shouldNotContainAll
@@ -23,6 +22,7 @@ import io.kotest.matchers.collections.shouldNotContainNull
 import io.kotest.matchers.collections.shouldNotContainOnlyNulls
 import io.kotest.matchers.collections.shouldNotHaveElementAt
 import io.kotest.matchers.collections.shouldNotHaveSingleElement
+import io.kotest.matchers.collections.shouldNotHaveSize
 
 public fun <A> NonEmptyList<A>.shouldContainOnlyNulls(): NonEmptyList<A> =
   apply { all.shouldContainOnlyNulls() }
@@ -68,16 +68,16 @@ public fun <A> NonEmptyList<A>.shouldContainDuplicates(): NonEmptyList<A> =
 public fun <A> NonEmptyList<A>.shouldNotContainDuplicates(): NonEmptyList<A> =
   apply { all.shouldNotContainDuplicates() }
 
-public fun <A> NonEmptyList<A>.shouldContainAll(vararg ts: A): Unit =
+public fun <A> NonEmptyList<A>.shouldContainAll(vararg ts: A): Collection<A> =
   all.shouldContainAll(*ts)
 
-public fun <A> NonEmptyList<A>.shouldNotContainAll(vararg ts: A): Unit =
+public fun <A> NonEmptyList<A>.shouldNotContainAll(vararg ts: A): Collection<A> =
   all.shouldNotContainAll(*ts)
 
-public infix fun <A> NonEmptyList<A>.shouldContainAll(ts: List<A>): Unit =
+public infix fun <A> NonEmptyList<A>.shouldContainAll(ts: List<A>): Collection<A> =
   all.shouldContainAll(ts)
 
-public infix fun <A> NonEmptyList<A>.shouldNotContainAll(ts: List<A>): Unit =
+public infix fun <A> NonEmptyList<A>.shouldNotContainAll(ts: List<A>): Collection<A> =
   all.shouldNotContainAll(ts)
 
 public infix fun <A> NonEmptyList<A>.shouldHaveSize(size: Int): NonEmptyList<A> =
