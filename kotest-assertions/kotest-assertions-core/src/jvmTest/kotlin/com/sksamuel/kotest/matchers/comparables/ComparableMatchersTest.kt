@@ -3,7 +3,6 @@ package com.sksamuel.kotest.matchers.comparables
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowWithMessage
 import io.kotest.core.spec.style.FreeSpec
-import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
 import io.kotest.data.row
