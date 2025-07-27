@@ -132,7 +132,7 @@ class ListShrinkerTest : FunSpec() {
             }
          }
          println(stdout)
-         stdout.shouldContain("Shrink result (after 24 shrinks) => [1, 100, 96, 29")
+         stdout.shouldContain("Shrink result (after 36 shrinks) => [0, 0, 0, 0")
       }
    }
 }

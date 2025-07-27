@@ -11,6 +11,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
+import io.kotest.property.Shrinker
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.arbitrary.SetShrinker
 import io.kotest.property.arbitrary.int
@@ -35,8 +36,13 @@ class SetShrinkerTest : FunSpec() {
 
       test("SetShrinker should observe range") {
          val intArb = Arb.int()
+
+         // For this test to make sense, need to disable recursive shrinking
+         //  for the set.
+         val shrinker = Shrinker<Int> { listOf() }
+
          checkAll(Arb.set(intArb, range = 4..100)) { set ->
-            val shrinks = SetShrinker<Int>(intArb.shrinker, 4..100).rtree(set)
+            val shrinks = SetShrinker<Int>(shrinker, 4..100).rtree(set)
             val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
                it shouldHaveSize 0
             }
@@ -54,7 +60,7 @@ class SetShrinkerTest : FunSpec() {
             }
          }
          println(stdout)
-         stdout.shouldContain("Shrink result (after 24 shrinks) => [1, 100, 96, 29")
+         stdout.shouldContain("Shrink result (after 57 shrinks) => [0, 1, 2, 3")
       }
    }
 }
