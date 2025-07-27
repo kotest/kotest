@@ -1,13 +1,13 @@
 package io.kotest.assertions.print
 
-import io.kotest.assertions.ConfigValue
+import io.kotest.assertions.EnvironmentConfigValue
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class ListPrintTest : FunSpec({
    context("when a collection size limit has been set") {
       context("and a description of the source of the limit is available") {
-         val config = TestConfigValue(5, "the test config value")
+         val config = EnvironmentConfigValue("foo", 5) { it.toInt() }
          val printer = ListPrint<String>(config)
 
          test("should format an empty list correctly") {
@@ -27,12 +27,12 @@ class ListPrintTest : FunSpec({
          }
 
          test("should only include a limited number of items when formatting a list longer than the provided limit") {
-            printer.print(listOf("a", "b", "c", "d", "e", "f", "g"), 0).value shouldBe """["a", "b", "c", "d", "e", ...and 2 more (set the test config value to see more / less items)]"""
+            printer.print(listOf("a", "b", "c", "d", "e", "f", "g"), 0).value shouldBe """["a", "b", "c", "d", "e", ...and 2 more (set 'kotest.assertions.collection.print.size' to see more / less items)]"""
          }
       }
 
       context("and a description of the source of the limit is not available") {
-         val config = TestConfigValue(5, null)
+         val config = EnvironmentConfigValue("foo", 5) { it.toInt() }
          val printer = ListPrint<String>(config)
 
          test("should not include a hint on how to configure the limit when the list is longer than the limit") {
@@ -42,7 +42,7 @@ class ListPrintTest : FunSpec({
    }
 
    context("when the collection size limit has been disabled") {
-      val config = TestConfigValue(-1, "the test config value")
+      val config = EnvironmentConfigValue("foo", -1) { it.toInt() }
       val printer = ListPrint<String>(config)
 
       test("should format an empty list correctly") {
@@ -58,5 +58,3 @@ class ListPrintTest : FunSpec({
       }
    }
 })
-
-class TestConfigValue<T>(override val value: T, override val sourceDescription: String?) : ConfigValue<T>

@@ -3,6 +3,8 @@ package com.sksamuel.kotest.matchers.regex
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.regex.*
+import io.kotest.matchers.regex.shouldEqualRegex
+import io.kotest.matchers.regex.shouldNotEqualRegex
 import io.kotest.matchers.shouldBe
 import kotlin.text.RegexOption.*
 
@@ -13,28 +15,28 @@ class RegexMatchersTest : FreeSpec() {
       }
 
       "regex of different pattern should be different" {
-         "a*.js".toRegex() shouldNotBeRegex "bcs.js".toRegex()
+         "a*.js".toRegex() shouldNotEqualRegex "bcs.js".toRegex()
       }
 
       "regex of same pattern with same option should be same" {
-         "a*.js".toRegex(IGNORE_CASE) shouldBeRegex "a*.js".toRegex(IGNORE_CASE)
+         "a*.js".toRegex(IGNORE_CASE) shouldEqualRegex "a*.js".toRegex(IGNORE_CASE)
       }
 
       "regex of same pattern with different option should be different" {
-         "a*.js".toRegex(IGNORE_CASE) shouldNotBeRegex "a*.js".toRegex()
+         "a*.js".toRegex(IGNORE_CASE) shouldNotEqualRegex "a*.js".toRegex()
       }
 
       "regex assertion failure have proper failure message" {
          shouldThrow<AssertionError> {
-            "a*.js".toRegex() shouldBeRegex "b*.js".toRegex()
+            "a*.js".toRegex() shouldEqualRegex "b*.js".toRegex()
          }.message shouldBe "Regex should have pattern b*.js and regex options [], but has pattern a*.js and regex options []."
 
          shouldThrow<AssertionError> {
-            "a*.js".toRegex() shouldBeRegex "b*.js".toRegex(IGNORE_CASE)
+            "a*.js".toRegex() shouldEqualRegex "b*.js".toRegex(IGNORE_CASE)
          }.message shouldBe "Regex should have pattern b*.js and regex options [IGNORE_CASE], but has pattern a*.js and regex options []."
 
          shouldThrow<AssertionError> {
-            "a*.js".toRegex(IGNORE_CASE) shouldNotBeRegex "a*.js".toRegex(IGNORE_CASE)
+            "a*.js".toRegex(IGNORE_CASE) shouldNotEqualRegex "a*.js".toRegex(IGNORE_CASE)
          }.message shouldBe "Regex should not have pattern a*.js and regex options [IGNORE_CASE]."
       }
 

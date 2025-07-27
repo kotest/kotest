@@ -11,7 +11,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeRegex]
  * @see [beRegex]
  * */
-@Deprecated("Use `shouldEqualRegex` instead", ReplaceWith("this shouldEqualRegex anotherRegex"))
+@Deprecated("Use `shouldEqualRegex` instead. Deprecated in 6.0", ReplaceWith("this shouldEqualRegex anotherRegex"))
 infix fun Regex.shouldBeRegex(anotherRegex: Regex): Regex = shouldEqualRegex(anotherRegex)
 
 /**
@@ -31,7 +31,7 @@ infix fun Regex.shouldEqualRegex(anotherRegex: Regex): Regex {
  * @see [shouldBeRegex]
  * @see [beRegex]
  * */
-@Deprecated("Use `shouldNotEqualRegex` instead", ReplaceWith("this shouldNotEqualRegex anotherRegex"))
+@Deprecated("Use `shouldNotEqualRegex` instead. Deprecated in 6.0", ReplaceWith("this shouldNotEqualRegex anotherRegex"))
 infix fun Regex.shouldNotBeRegex(anotherRegex: Regex): Regex = shouldEqualRegex(anotherRegex)
 
 /**

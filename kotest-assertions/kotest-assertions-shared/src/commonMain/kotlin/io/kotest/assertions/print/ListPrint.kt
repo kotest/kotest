@@ -17,7 +17,7 @@ class ListPrint<T>(
          val remainingItems = a.size - limit
 
          val limitHint = when (platform) {
-            Platform.JVM, Platform.Native -> " (set ${AssertionsConfigSystemProperties.COLLECTIONS_PRINT_SIZE} to see more / less items)"
+            Platform.JVM, Platform.Native -> " (set '${AssertionsConfigSystemProperties.COLLECTIONS_PRINT_SIZE}' to see more / less items)"
             else -> null
          }
 
