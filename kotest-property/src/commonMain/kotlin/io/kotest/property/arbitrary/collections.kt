@@ -60,7 +60,7 @@ fun <A> Arb.Companion.set(gen: Gen<A>, size: Int, slippage: Int = 10): Arb<Set<A
 fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = 0..100, slippage: Int = 10): Arb<Set<A>> {
    check(!range.isEmpty())
    check(range.first >= 0)
-   return arbitrary(SetShrinker(range)) {
+   return arbitrary(SetShrinker(gen.shrinker, range)) {
       val genIter = gen.generate(it).iterator()
       val targetSize = it.random.nextInt(range)
       val set = mutableSetOf<A>()
@@ -116,7 +116,7 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = 0..100): Arb<List<A>> 
             ?.random(rs.random)
             ?.asSample()
       },
-      shrinker = ListShrinker(range),
+      shrinker = ListShrinker(gen.shrinker, range),
       sampleFn = { rs ->
          val targetSize = rs.random.nextInt(range)
          gen.generate(rs).take(targetSize).toList().map { it.value }
@@ -168,8 +168,11 @@ fun <A> Arb<A>.chunked(minSize: Int, maxSize: Int): Arb<List<A>> = Arb.list(this
 /**
  * A Shrinker for sets, utilizing the ListShrinker.
  */
-class SetShrinker<A>(private val range: IntRange) : Shrinker<Set<A>> {
-   val listShrinker = ListShrinker<A>(range)
+class SetShrinker<A>(
+   private val elementShrinker: Shrinker<A>,
+   private val range: IntRange
+) : Shrinker<Set<A>> {
+   val listShrinker = ListShrinker<A>(elementShrinker, range)
 
    override fun shrink(value: Set<A>): List<Set<A>> =
       listShrinker.shrink(value.toList())
@@ -183,7 +186,10 @@ class SetShrinker<A>(private val range: IntRange) : Shrinker<Set<A>> {
  *  - the input list with the head element removed
  *  - the first n / 2 elements
  */
-class ListShrinker<A>(private val range: IntRange) : Shrinker<List<A>> {
+class ListShrinker<A>(
+   private val elementShrinker: Shrinker<A>,
+   private val range: IntRange
+) : Shrinker<List<A>> {
    override fun shrink(value: List<A>): List<List<A>> = when {
       value.isEmpty() -> emptyList()
       value.size == 1 -> if (range.contains(0)) listOf(emptyList()) else emptyList()
@@ -192,6 +198,18 @@ class ListShrinker<A>(private val range: IntRange) : Shrinker<List<A>> {
          value.dropLast(1),
          value.take(value.size / 2),
          value.drop(1)
-      ).filter { it.size in range }
+      ).filter { it.size in range } + value.flatMapIndexed { i, item ->
+         // For each index of the list, we can try shrinking any of the arguments
+         // In all of the possible ways it can be shrunk.
+         elementShrinker.shrink(item).map { shrunkItem ->
+            val result = value.toMutableList()
+
+            result.removeAt(i)
+
+            result.add(i, shrunkItem)
+
+            result
+         }
+      }
    }
 }
