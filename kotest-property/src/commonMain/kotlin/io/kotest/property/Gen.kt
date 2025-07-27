@@ -60,6 +60,13 @@ sealed class Gen<out A> {
    open val classifier: Classifier<out A>? = null
 
    /**
+    * Returns the default shrinker associated with this generator.
+    *
+    * Performs no shrinking by default.
+    **/
+   open val shrinker: Shrinker<@UnsafeVariance A> get() = Shrinker { listOf() }
+
+   /**
     * The minimum iteration count required for this [Gen] to be invoked.
     * Requesting a property test with fewer than this will result in an exception.
     */
