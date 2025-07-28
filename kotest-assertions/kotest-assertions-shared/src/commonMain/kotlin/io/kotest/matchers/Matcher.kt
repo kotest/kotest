@@ -104,6 +104,10 @@ interface MatcherResult {
    }
 }
 
+/**
+ * An instance of [MatcherResult] that contains the actual and expected values
+ * as [Printed] values, along with the failure and negated failure messages.
+ */
 data class ValuesMatcherResult(
    @JsName("passed_val") val passed: Boolean,
    val actual: Printed,
