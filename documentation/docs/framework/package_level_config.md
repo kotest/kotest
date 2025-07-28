@@ -14,6 +14,10 @@ Package-level configuration was introduced in Kotest 6.0. If you are using an ea
 take advantage of this feature.
 :::
 
+:::caution
+Package-level configuration is a JVM only feature.
+:::
+
 ## Introduction
 
 When writing tests, you often need to apply the same configuration to multiple test files in the same package.
