@@ -2,7 +2,7 @@ package io.kotest.matchers.equality
 
 import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqCompare
-import io.kotest.assertions.failure
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
 import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
@@ -16,8 +16,8 @@ fun <T> compareUsingFields(
    config: FieldEqualityConfig,
 ): CompareResult {
    return when {
-      actual == null -> throw failure("Expected ${expected.print().value} but actual was null")
-      expected == null -> throw failure("Expected null but actual was ${actual.print().value}")
+      actual == null -> AssertionErrorBuilder.fail("Expected ${expected.print().value} but actual was null")
+      expected == null -> AssertionErrorBuilder.fail("Expected null but actual was ${actual.print().value}")
       else -> compareFields(actual, expected, null, config)
    }
 }
@@ -29,7 +29,7 @@ private fun compareFields(actual: Any?, expected: Any?, field: String?, config: 
 
    // types don't have to match but they should at least have the same fields
    if (props1 != props2)
-      throw failure("Comparing type ${actual!!::class.jvmName} to ${expected!!::class.jvmName} with mismatched properties")
+      AssertionErrorBuilder.fail("Comparing type ${actual!!::class.jvmName} to ${expected!!::class.jvmName} with mismatched properties")
 
    return props1.fold(CompareResult(emptyList(), emptyMap())) { acc, prop ->
       val actualValue = prop.getter.call(actual)
@@ -94,7 +94,7 @@ private fun compareCollections(
 ): CompareResult {
 
    return if (actual.size != expected.size)
-      CompareResult.single(field, failure("Collections differ in size: ${actual.size} != ${expected.size}"))
+      CompareResult.single(field, AssertionErrorBuilder.create().withMessage("Collections differ in size: ${actual.size} != ${expected.size}").build())
    else if (actual.isEmpty())
       CompareResult.empty
    else {
@@ -105,12 +105,12 @@ private fun compareCollections(
             value.first == null && value.second == null -> CompareResult.empty
             value.first == null -> CompareResult.single(
                elementName,
-               failure("Expected ${value.second.print().value} but actual was null")
+               AssertionErrorBuilder.create().withMessage("Expected ${value.second.print().value} but actual was null").build()
             )
 
             value.second == null -> CompareResult.single(
                elementName,
-               failure("Expected null but actual was ${value.first.print().value}")
+               AssertionErrorBuilder.create().withMessage("Expected null but actual was ${value.first.print().value}").build()
             )
 
             else -> compareValue(value.first, value.second, value.first!!::class, elementName, config, prop)
@@ -128,7 +128,7 @@ private fun compareMaps(
 ): CompareResult {
 
    return if (actual.size != expected.size)
-      CompareResult.single(field, failure("Maps differ in size: ${actual.size} != ${expected.size}"))
+      CompareResult.single(field, AssertionErrorBuilder.create().withMessage("Maps differ in size: ${actual.size} != ${expected.size}").build())
    else if (actual.isEmpty())
       CompareResult.empty
    else {

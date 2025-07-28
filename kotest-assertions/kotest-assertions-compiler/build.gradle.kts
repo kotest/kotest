@@ -7,7 +7,7 @@ kotlin {
    sourceSets {
       jvmMain {
          dependencies {
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            api(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlin.compiler.embeddable)
             implementation(libs.kotlin.compile.testing)
          }

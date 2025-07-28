@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test
 
-import io.kotest.assertions.exceptions
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.stacktrace.stacktraces
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -12,7 +12,7 @@ import io.mockk.mockk
 class MockedExceptionTest : FunSpec() {
    init {
       test("stacktraces should not error on mocked exception") {
-         exceptions.createAssertionError("foo", mockk<ArithmeticException>()).message shouldBe "foo"
+         AssertionErrorBuilder.create().withMessage("foo").withCause(mockk<ArithmeticException>()).build().message shouldBe "foo"
       }
 
       test("cleanStackTrace should not error on mocked exception") {

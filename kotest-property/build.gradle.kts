@@ -14,7 +14,7 @@ kotlin {
          dependencies {
             implementation(libs.kotlin.reflect)
             api(projects.kotestCommon)
-            api(projects.kotestAssertions.kotestAssertionsShared)
+            api(projects.kotestAssertions.kotestAssertionsCore)
             api(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlinx.coroutines.core)
          }
@@ -31,6 +31,7 @@ kotlin {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestAssertions.kotestAssertionsTable)
          }
       }
    }

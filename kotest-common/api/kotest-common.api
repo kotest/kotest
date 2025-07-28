@@ -56,11 +56,6 @@ public final class io/kotest/common/TestTimeSourceKt {
 	public static final fun testTimeSource (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/common/errors/ComparisonError {
-	public abstract fun getActualValue ()Ljava/lang/String;
-	public abstract fun getExpectedValue ()Ljava/lang/String;
-}
-
 public abstract interface class io/kotest/common/reflection/AnnotationSearchParameter {
 }
 
@@ -92,7 +87,6 @@ public final class io/kotest/common/reflection/JvmReflection : io/kotest/common/
 	public fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public fun isDataClass (Lkotlin/reflect/KClass;)Z
 	public fun isEnumClass (Lkotlin/reflect/KClass;)Z
-	public fun paramNames (Lkotlin/Function;)Ljava/util/List;
 	public fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;
 }
 
@@ -116,7 +110,6 @@ public abstract interface class io/kotest/common/reflection/Reflection {
 	public abstract fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
 	public abstract fun isDataClass (Lkotlin/reflect/KClass;)Z
 	public abstract fun isEnumClass (Lkotlin/reflect/KClass;)Z
-	public abstract fun paramNames (Lkotlin/Function;)Ljava/util/List;
 	public abstract fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;
 }
 
@@ -133,6 +126,14 @@ public final class io/kotest/common/reflection/reflectionjvm {
 	public static final fun getReflection ()Lio/kotest/common/reflection/Reflection;
 }
 
+public final class io/kotest/common/stacktrace/JvmStacktraces : io/kotest/common/stacktrace/StackTraces {
+	public static final field INSTANCE Lio/kotest/common/stacktrace/JvmStacktraces;
+	public fun cleanStackTrace (Ljava/lang/Throwable;)Ljava/lang/Throwable;
+	public fun root (Ljava/lang/Throwable;)Ljava/lang/Throwable;
+	public fun throwableLocation (Ljava/lang/Throwable;)Ljava/lang/String;
+	public fun throwableLocation (Ljava/lang/Throwable;I)Ljava/util/List;
+}
+
 public abstract interface class io/kotest/common/stacktrace/StackTraces {
 	public abstract fun cleanStackTrace (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 	public abstract fun root (Ljava/lang/Throwable;)Ljava/lang/Throwable;
@@ -144,18 +145,15 @@ public final class io/kotest/common/stacktrace/StackTraces$DefaultImpls {
 	public static fun throwableLocation (Lio/kotest/common/stacktrace/StackTraces;Ljava/lang/Throwable;)Ljava/lang/String;
 }
 
-public final class io/kotest/common/stacktrace/StacktracesKt {
-	public static final fun getShouldRemoveKotestElementsFromStacktrace ()Z
-	public static final fun setShouldRemoveKotestElementsFromStacktrace (Z)V
-}
-
 public final class io/kotest/common/stacktrace/UserStackTraceConverter {
 	public static final field INSTANCE Lio/kotest/common/stacktrace/UserStackTraceConverter;
 	public final fun getUserStacktrace ([Ljava/lang/StackTraceElement;)[Ljava/lang/StackTraceElement;
 }
 
 public final class io/kotest/common/stacktrace/stacktracesjvm {
+	public static final fun getShouldRemoveKotestElementsFromStacktrace ()Z
 	public static final fun getStacktraces ()Lio/kotest/common/stacktrace/StackTraces;
+	public static final fun setShouldRemoveKotestElementsFromStacktrace (Z)V
 }
 
 public final class io/kotest/common/syspropjvm {

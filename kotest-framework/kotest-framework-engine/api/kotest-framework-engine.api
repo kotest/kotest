@@ -2025,7 +2025,6 @@ public abstract class io/kotest/core/spec/style/ShouldSpec : io/kotest/core/spec
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
-	public final fun should (Ljava/lang/String;Lio/kotest/matchers/Matcher;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2998,6 +2997,12 @@ public final class io/kotest/engine/ResultsKt {
 	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
+public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getReason ()Ljava/lang/String;
+}
+
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/common/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
@@ -3903,6 +3908,10 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
 	public static final field TEST_STARTED Ljava/lang/String;
 	public static final field TEST_SUITE_FINISHED Ljava/lang/String;
 	public static final field TEST_SUITE_STARTED Ljava/lang/String;
+}
+
+public final class io/kotest/engine/teamcity/TeamCityMessageBuilder_jvmKt {
+	public static final fun handlePlatformComparisonExceptions (Lio/kotest/engine/teamcity/TeamCityMessageBuilder;Ljava/lang/Throwable;)V
 }
 
 public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : io/kotest/engine/test/TestCaseExecutionListener {

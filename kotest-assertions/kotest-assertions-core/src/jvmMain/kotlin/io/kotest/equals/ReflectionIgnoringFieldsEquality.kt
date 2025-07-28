@@ -1,5 +1,7 @@
 package io.kotest.equals
 
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.EqualityResult
 import io.kotest.matchers.equality.beEqualToIgnoringFields
 import kotlin.reflect.KProperty
 
@@ -8,6 +10,7 @@ class ReflectionIgnoringFieldsEquality<T : Any>(
    private val others: Array<out KProperty<*>>,
    private val ignorePrivateFields: Boolean = true,
 ) : Equality<T> {
+   
    override fun name(): String {
       val plural = if (others.isNotEmpty()) "s" else ""
       val ignoringPrivate = if (ignorePrivateFields) "ignoring" else "including"

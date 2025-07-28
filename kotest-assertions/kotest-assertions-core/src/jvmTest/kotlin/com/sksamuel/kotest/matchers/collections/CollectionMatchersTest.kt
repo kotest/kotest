@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.byObjectEquality
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.equals.Equality
-import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
 import io.kotest.matchers.collections.beLargerThan

@@ -1,14 +1,14 @@
 package io.kotest.matchers.string
 
-import io.kotest.assertions.failure
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
+import io.kotest.assertions.submatching.describePartialMatchesInStringForSlice
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.UUIDVersion.ANY
-import io.kotest.submatching.describePartialMatchesInStringForSlice
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
@@ -23,7 +23,7 @@ fun String?.shouldNotContainOnlyDigits(): String? {
 }
 
 fun containOnlyDigits() = neverNullMatcher<String> { value ->
-   val firstNonDigit = value.toCharArray().withIndex().firstOrNull { it.value !in '0'..'9'}
+   val firstNonDigit = value.toCharArray().withIndex().firstOrNull { it.value !in '0'..'9' }
    MatcherResult(
       firstNonDigit == null,
       { "${value.print().value} should contain only digits, but contained ${firstNonDigit?.let { it.value.print().value }} at index ${firstNonDigit?.index}" },
@@ -42,7 +42,7 @@ fun String?.shouldNotContainADigit(): String? {
 
 fun containADigit() = neverNullMatcher<String> { value ->
    val indexOfFirstDigit = value.asSequence().indexOfFirst { it in '0'..'9' }
-   val possibleFirstDigitMessage = if(indexOfFirstDigit > -1)
+   val possibleFirstDigitMessage = if (indexOfFirstDigit > -1)
       ", but contained ${value.getOrNull(indexOfFirstDigit).print().value} at index $indexOfFirstDigit"
    else ""
    MatcherResult(
@@ -161,7 +161,7 @@ fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
 fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
    val matchOutcome = matchSubstrings(value, substrings.toList())
 
-   val substringFoundEarlier = if(matchOutcome is ContainInOrderOutcome.Mismatch) {
+   val substringFoundEarlier = if (matchOutcome is ContainInOrderOutcome.Mismatch) {
       describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
    } else ""
 
@@ -173,13 +173,21 @@ fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value
 
    MatcherResult(
       matchOutcome.match,
-      { "${value.print().value} should include substrings ${substrings.print().value} in order${prefixIfNotEmpty(completeMismatchDescription, "\n")}" },
+      {
+         "${value.print().value} should include substrings ${substrings.print().value} in order${
+            prefixIfNotEmpty(
+               completeMismatchDescription,
+               "\n"
+            )
+         }"
+      },
       { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
 }
 
 internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty()) "" else "$prefix$value"
 
-internal fun joinNonEmpty(separator: String, vararg values: String) = values.filter { it.isNotEmpty() }.joinToString(separator)
+internal fun joinNonEmpty(separator: String, vararg values: String) =
+   values.filter { it.isNotEmpty() }.joinToString(separator)
 
 internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
    substrings.isEmpty() -> ContainInOrderOutcome.Match
@@ -241,9 +249,7 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
    )
    MatcherResult(
       passed,
-      {
-         differencesDescription.filter { it.isNotEmpty() }.joinToString("\n")
-      },
+      { differencesDescription.filter { it.isNotEmpty() }.joinToString("\n") },
       { "${value.print().value} should not include substring ${substr.print().value}" })
 }
 
@@ -393,7 +399,7 @@ fun String.shouldNotBeUUID(
 fun beUUID(
    version: UUIDVersion = ANY,
    considerNilValid: Boolean = true
-) = object : Matcher<String> {
+): Matcher<String> = object : Matcher<String> {
    override fun test(value: String) = MatcherResult(
       value.matches(version.uuidRegex) || (considerNilValid && value.isNilUUID()),
       { "String $value is not an UUID ($version), but should be" },
@@ -408,9 +414,9 @@ fun String?.shouldBeInteger(radix: Int = 10): Int {
    }
 
    return when (this) {
-      null -> throw failure("String is null, but it should be integer.")
+      null -> AssertionErrorBuilder.fail("String is null, but it should be integer.")
       else -> when (val integer = this.toIntOrNull(radix)) {
-         null -> throw failure("String '$this' is not integer, but it should be.")
+         null -> AssertionErrorBuilder.fail("String '$this' is not integer, but it should be.")
          else -> integer
       }
    }

@@ -1,11 +1,14 @@
 package io.kotest.equals
 
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.EqualityResult
 import io.kotest.matchers.equality.beEqualToUsingFields
 import kotlin.reflect.KProperty
 
 class ReflectionUsingFieldsEquality<T : Any>(
    private val fields: Array<out KProperty<*>>
 ) : Equality<T> {
+
    override fun name(): String {
       return "reflection equality using fields ${fields.map { it.name }}"
    }

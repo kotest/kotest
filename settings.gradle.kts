@@ -68,16 +68,22 @@ include(
    // generates KMP test reports
    ":kotest-framework:kotest-framework-multiplatform-reporter",
 
-   // contains basic assertion building block such as shouldBe which are used by both
-   // framework and assertion libraries;
-   // no user should need to depend on this
+   ":kotest-assertions:kotest-assertions-table",
+
+   // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
    ":kotest-assertions:kotest-assertions-shared",
 
-   // the core assertions that cover things like collections, strings, etc
+   // the core assertions that cover the basic types such as String, Int, Boolean, etc.
+   // it also defines the assertion error builders that create the intellij formatted assertion errors
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
+
+   // provides json matchers for comparing json strings, json objects, and json arrays
    ":kotest-assertions:kotest-assertions-json",
+
+   // provides matchers for ktor requests and responses
    ":kotest-assertions:kotest-assertions-ktor",
+
    ":kotest-assertions:kotest-assertions-yaml",
 
    // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing

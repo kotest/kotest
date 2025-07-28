@@ -10,7 +10,7 @@ kotlin {
    sourceSets {
       jvmTest {
          dependencies {
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestRunner.kotestRunnerJunit5)
          }

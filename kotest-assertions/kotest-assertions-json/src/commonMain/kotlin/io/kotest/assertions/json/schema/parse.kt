@@ -64,7 +64,7 @@ internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchema
 }
 
 private infix fun <T> Matcher<T>?.and(other: Matcher<T>) =
-   if (this != null) this and other else other
+   this?.and(other) ?: other
 
 @ExperimentalKotest
 internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
@@ -79,7 +79,7 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
             runCatching { decodeSerializableElement(descriptor, 5, ContainsSpecSerializer) }.getOrNull()
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               3 -> matcher = if (decodeBooleanElement(descriptor, index)) matcher and beUnique() else matcher
+               3 -> matcher = if (decodeBooleanElement(descriptor, index)) matcher.and(beUnique()) else matcher
                CompositeDecoder.DECODE_DONE -> break
             }
          }
@@ -108,9 +108,9 @@ internal object JsonSchemaStringSerializer : KSerializer<JsonSchema.JsonString> 
 
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               1 -> matcher = matcher and haveMinLength(decodeIntElement(descriptor, index))
-               2 -> matcher = matcher and haveMaxLength(decodeIntElement(descriptor, index))
-               3 -> matcher = matcher and match(decodeStringElement(descriptor, index).toRegex())
+               1 -> matcher = matcher.and(haveMinLength(decodeIntElement(descriptor, index)))
+               2 -> matcher = matcher.and(haveMaxLength(decodeIntElement(descriptor, index)))
+               3 -> matcher = matcher.and(match(decodeStringElement(descriptor, index).toRegex()))
                // Formats: https://json-schema.org/understanding-json-schema/reference/string.html#built-in-formats
                // TODO: Map formats to matchers
                4 -> println("Formats are currently not supported")
@@ -142,11 +142,11 @@ internal object JsonSchemaIntegerSerializer : KSerializer<JsonSchema.JsonInteger
 
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               1 -> matcher = matcher and beMultipleOf(decodeLongElement(descriptor, index))
-               2 -> matcher = matcher and beGreaterThanOrEqualTo(decodeLongElement(descriptor, index))
-               3 -> matcher = matcher and beGreaterThan(decodeLongElement(descriptor, index))
-               4 -> matcher = matcher and beLessThanOrEqualTo(decodeLongElement(descriptor, index))
-               5 -> matcher = matcher and beLessThan(decodeLongElement(descriptor, index))
+               1 -> matcher = matcher.and(beMultipleOf(decodeLongElement(descriptor, index)))
+               2 -> matcher = matcher.and(beGreaterThanOrEqualTo(decodeLongElement(descriptor, index)))
+               3 -> matcher = matcher.and(beGreaterThan(decodeLongElement(descriptor, index)))
+               4 -> matcher = matcher.and(beLessThanOrEqualTo(decodeLongElement(descriptor, index)))
+               5 -> matcher = matcher.and(beLessThan(decodeLongElement(descriptor, index)))
                CompositeDecoder.DECODE_DONE -> break
             }
          }
@@ -176,11 +176,11 @@ internal object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonDecimal>
 
          while (true) {
             when (val index = decodeElementIndex(descriptor)) {
-               1 -> matcher = matcher and beMultipleOf(decodeDoubleElement(descriptor, index))
-               2 -> matcher = matcher and beGreaterThanOrEqualTo(decodeDoubleElement(descriptor, index))
-               3 -> matcher = matcher and beGreaterThan(decodeDoubleElement(descriptor, index))
-               4 -> matcher = matcher and beLessThanOrEqualTo(decodeDoubleElement(descriptor, index))
-               5 -> matcher = matcher and beLessThan(decodeDoubleElement(descriptor, index))
+               1 -> matcher = matcher.and(beMultipleOf(decodeDoubleElement(descriptor, index)))
+               2 -> matcher = matcher.and(beGreaterThanOrEqualTo(decodeDoubleElement(descriptor, index)))
+               3 -> matcher = matcher.and(beGreaterThan(decodeDoubleElement(descriptor, index)))
+               4 -> matcher = matcher.and(beLessThanOrEqualTo(decodeDoubleElement(descriptor, index)))
+               5 -> matcher = matcher.and(beLessThan(decodeDoubleElement(descriptor, index)))
                CompositeDecoder.DECODE_DONE -> break
             }
          }

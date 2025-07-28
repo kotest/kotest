@@ -98,13 +98,13 @@ internal class TeamCityWriter(
     * This is used for placeholder tests.
     */
    internal fun outputTestFailed(name: String, cause: Throwable, details: Boolean, parent: String) {
-      val msg2 = TeamCityMessageBuilder
+      val msg = TeamCityMessageBuilder
          .testFailed(prefix, name)
          .id(name)
          .parent(parent)
          .withException(cause, details)
          .build()
-      println(msg2)
+      println(msg)
    }
 
    /**
@@ -123,12 +123,12 @@ internal class TeamCityWriter(
    }
 
    internal fun outputTestFinished(name: String, parent: String) {
-      val msg3 = TeamCityMessageBuilder
+      val msg = TeamCityMessageBuilder
          .testFinished(prefix, name)
          .id(name)
          .parent(parent)
          .build()
-      println(msg3)
+      println(msg)
    }
 
    /**

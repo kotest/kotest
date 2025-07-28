@@ -11,7 +11,6 @@ import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.SpecFinishedInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.SpecStartedInterceptor
 import io.kotest.matchers.shouldBe
-import kotlin.reflect.KClass
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecStartedFinishedInterceptorTest : FunSpec() {

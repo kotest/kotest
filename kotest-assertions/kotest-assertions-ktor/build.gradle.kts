@@ -10,7 +10,7 @@ kotlin {
 
       commonMain {
          dependencies {
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.ktor.client.core)
          }
       }

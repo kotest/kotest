@@ -43,17 +43,14 @@ val publishToAppropriateCentralRepository by tasks.registering {
 // List all projects which should be included in publishing
 dependencies {
    // Assertions
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrow)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsJson)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKonform)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKotlinxDatetime)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsShared)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsYaml)
 
    // bom
@@ -77,6 +74,7 @@ dependencies {
 
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
+   nmcpAggregation(projects.kotestFramework.kotestFrameworkMultiplatformReporter)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
 

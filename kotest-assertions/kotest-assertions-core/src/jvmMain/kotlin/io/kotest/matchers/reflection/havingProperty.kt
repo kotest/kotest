@@ -1,6 +1,6 @@
 package io.kotest.matchers.reflection
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import kotlin.reflect.KProperty1
@@ -18,7 +18,7 @@ fun <T : Any?> havingProperty(
       val result = runCatching {
          (matcher as Matcher<Any?>).test(prop(value))
       }.onFailure {
-         fail("Mismatching type of matcher for property ${prop.name}: ${it.message}")
+         AssertionErrorBuilder.fail("Mismatching type of matcher for property ${prop.name}: ${it.message}")
       }.getOrThrow()
 
       return MatcherResult(

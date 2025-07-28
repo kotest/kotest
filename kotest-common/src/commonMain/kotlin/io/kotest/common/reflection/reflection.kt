@@ -30,12 +30,6 @@ interface Reflection {
    fun <T : Any> isDataClass(kclass: KClass<T>): Boolean
 
    /**
-    * Returns the names of the parameters if supported. Eg, for `fun foo(a: String, b: Boolean)` on the JVM
-    * it would return a, b and on unsupported platforms an empty list.
-    */
-   fun paramNames(fn: Function<*>): List<String>?
-
-   /**
     * Returns a list of the class member properties defined in the primary constructor, if supported on
     * the platform, otherwise returns an empty list.
     */

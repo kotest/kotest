@@ -4,7 +4,6 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
@@ -78,7 +77,7 @@ class RangeTest : WordSpec() {
          }
 
          "true if common edge but not both are inclusive" {
-            forAll(
+            io.kotest.data.forAll(
                row(Range.openOpen(1, 2), Range.openOpen(2, 3), "both ends exclusive"),
                row(Range.openClosed(1, 2), Range.openOpen(2, 3), "left inclusive, right exclusive"),
                row(Range.openOpen(1, 2), Range.closedOpen(2, 3), "left exclusive, right inclusive"),
@@ -104,7 +103,7 @@ class RangeTest : WordSpec() {
 
          "edge with same value as start" {
             val rangeStart = 1
-            forAll(
+            io.kotest.data.forAll(
                row(RangeEdgeType.INCLUSIVE, RangeEdgeType.INCLUSIVE, true),
                row(RangeEdgeType.EXCLUSIVE, RangeEdgeType.INCLUSIVE, false),
                row(RangeEdgeType.INCLUSIVE, RangeEdgeType.EXCLUSIVE, true),
@@ -125,7 +124,7 @@ class RangeTest : WordSpec() {
 
          "edge with same value as end" {
             val rangeEnd = 1
-            forAll(
+            io.kotest.data.forAll(
                row(RangeEdgeType.INCLUSIVE, RangeEdgeType.INCLUSIVE, true),
                row(RangeEdgeType.EXCLUSIVE, RangeEdgeType.INCLUSIVE, false),
                row(RangeEdgeType.INCLUSIVE, RangeEdgeType.EXCLUSIVE, true),

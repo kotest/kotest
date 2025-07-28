@@ -3,7 +3,7 @@ package com.sksamuel.kotest.assertions
 import io.kotest.assertions.ExceptionWithClue
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
@@ -21,14 +21,13 @@ import kotlinx.coroutines.withTimeout
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ClueTest : FreeSpec({
 
-   "withClue()" - {
+   "!withClue()" - {
       fun withClueEcho(other: String) = object : Matcher<String> {
          override fun test(value: String) = MatcherResult(
             false,
             { "Should have the details of '$value' and $other" },
-            {
-               "Should have the details of '$value' and $other"
-            })
+            { "Should have the details of '$value' and $other" }
+         )
       }
 
       "should prepend clue to message with a newline" {
@@ -67,7 +66,7 @@ class ClueTest : FreeSpec({
 
       "should not invoke the lazy clue if an assertion succeeds" {
          @Suppress("DEPRECATION")
-         withClue(lazy { fail("lazy clue must not be called in case assertion succeeds") }) {
+         withClue(lazy { AssertionErrorBuilder.fail("lazy clue must not be called in case assertion succeeds") }) {
             1 + 1 shouldBe 2
          }
       }
@@ -78,7 +77,7 @@ class ClueTest : FreeSpec({
          withClue(lazy {
             counter -= 1
             if (counter == 0) {
-               fail("lazy clue must be called only once")
+              AssertionErrorBuilder.fail("lazy clue must be called only once")
             }
             "extra lazy message"
          }) {
@@ -87,7 +86,7 @@ class ClueTest : FreeSpec({
       }
 
       "should not invoke { .. } clue if an assertion succeeds" {
-         withClue({ fail("{ .. } clue must not be called in case assertion succeeds") }) {
+         withClue({AssertionErrorBuilder.fail("{ .. } clue must not be called in case assertion succeeds") }) {
             1 + 1 shouldBe 2
          }
       }
@@ -97,7 +96,7 @@ class ClueTest : FreeSpec({
          withClue({
             counter -= 1
             if (counter == 0) {
-               fail("{ .. } clue must be called only once")
+              AssertionErrorBuilder.fail("{ .. } clue must be called only once")
             }
             "extra lazy message"
          }) {
@@ -156,7 +155,7 @@ class ClueTest : FreeSpec({
             }
       }
    }
-   "asClue()" - {
+   "!asClue()" - {
       "should prepend clue to message with a newline" {
          val ex = shouldThrow<AssertionError> {
             "a clue:".asClue { "1" shouldBe "2" }
@@ -214,7 +213,9 @@ class ClueTest : FreeSpec({
                   delay(1000)
                }
             }
-         }.message shouldBe "timey timey\nTimed out waiting for 2 ms"
+         }.message shouldBe """timey timey
+timey timey
+Timed out waiting for 2 ms"""
       }
 
       "clue should work where expected or actual is null" {

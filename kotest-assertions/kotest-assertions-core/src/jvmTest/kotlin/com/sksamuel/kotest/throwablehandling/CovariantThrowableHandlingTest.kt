@@ -180,8 +180,7 @@ class CovariantThrowableHandlingTest : FreeSpec() {
                shouldThrowWithMessage<RuntimeException>("bar") {
                   throw instanceToThrow
                }
-            }
-               .exceptionOrNull() shouldBe AssertionError("Expected exception java.lang.RuntimeException but a Exception was thrown instead.")
+            }.exceptionOrNull()!!.message shouldBe "Expected exception java.lang.RuntimeException but a Exception was thrown instead."
          }
       }
    }

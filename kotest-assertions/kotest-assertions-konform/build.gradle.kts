@@ -9,7 +9,6 @@ kotlin {
 
       val commonMain by getting {
          dependencies {
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.konform)
          }

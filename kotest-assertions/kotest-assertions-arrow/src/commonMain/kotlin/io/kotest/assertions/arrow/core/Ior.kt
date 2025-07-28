@@ -4,7 +4,6 @@ import arrow.core.Ior
 import arrow.core.Ior.Left
 import arrow.core.Ior.Right
 import arrow.core.Ior.Both
-import arrow.core.identity
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
 import kotlin.contracts.ExperimentalContracts
@@ -12,7 +11,6 @@ import kotlin.contracts.contract
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldNot
 
 /**
  * smart casts to [Ior.Right] and fails with [failureMessage] otherwise.

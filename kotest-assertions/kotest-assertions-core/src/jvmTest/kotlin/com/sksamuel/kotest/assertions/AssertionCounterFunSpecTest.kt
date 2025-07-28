@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.assertions
 
-import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -10,6 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
+import io.kotest.matchers.assertionCounter
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)

@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.tag
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.Tag
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.engine.tags.TagExpression
 
 object Exclude : Tag()
 
@@ -26,7 +26,7 @@ class ExcludedTestByInlineTagTest : StringSpec({
    tags(Exclude)
 
    "should not run" {
-      fail("Shouldn't get here")
+      AssertionErrorBuilder.fail("Shouldn't get here")
    }
 })
 
@@ -42,7 +42,7 @@ class ExcludedTestByOverrideTagTest : StringSpec() {
 
    init {
       "should not run" {
-         fail("Shouldn't get here")
+         AssertionErrorBuilder.fail("Shouldn't get here")
       }
    }
 }

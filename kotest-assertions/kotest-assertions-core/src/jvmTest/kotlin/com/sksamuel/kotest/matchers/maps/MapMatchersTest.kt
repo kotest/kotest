@@ -14,7 +14,6 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldHaveLength
-import io.kotest.matchers.string.shouldStartWith
 import java.math.BigDecimal
 import java.util.LinkedList
 
@@ -96,7 +95,7 @@ class MapMatchersTest : WordSpec() {
          }
       }
 
-      "contain" should {
+      "!contain" should {
          "test that a map contains the given pair" {
             val map = mapOf(Pair(1, "a"), Pair(2, "b"))
             map shouldContain(1 to "a")

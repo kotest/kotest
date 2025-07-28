@@ -30,6 +30,7 @@ class ThrowableMatchersTest : FreeSpec() {
          "shouldNotHaveMessage" {
             shouldThrowAny { throw FileNotFoundException("this_file.txt not found") } shouldNotHaveMessage "random message"
             shouldThrowAny { throw TestException() } shouldNotHaveMessage "This is a complete test exception"
+            shouldThrowAny { throw TestException() } shouldNotHaveMessage "sillyregex".toRegex()
             shouldThrowAny { throw CompleteTestException() } shouldNotHaveMessage "This is a test exception"
          }
          "shouldHaveCause" {

@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.data
 
-import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf

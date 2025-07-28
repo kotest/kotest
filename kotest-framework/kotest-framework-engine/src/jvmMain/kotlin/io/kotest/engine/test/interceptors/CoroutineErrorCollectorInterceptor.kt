@@ -1,12 +1,12 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.assertions.assertionCounterContextElement
-import io.kotest.assertions.errorCollectorContextElement
 import io.kotest.common.JVMOnly
-import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
-import io.kotest.core.test.TestScope
 import io.kotest.core.Logger
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestScope
+import io.kotest.engine.test.TestResult
+import io.kotest.matchers.assertionCounterContextElement
+import io.kotest.matchers.errorCollectorContextElement
 import kotlinx.coroutines.withContext
 
 @JVMOnly
@@ -14,9 +14,12 @@ internal actual fun coroutineErrorCollectorInterceptor(): TestExecutionIntercept
    CoroutineErrorCollectorInterceptor
 
 /**
- * A [TestExecutionInterceptor] for keeping the error collector synchronized with thread-switching coroutines.
+ * A [TestExecutionInterceptor] for keeping the error collector and assertion counter
+ * synchronized with thread-switching coroutines.
+ *
  * Note: This is a JVM only option.
  */
+@JVMOnly
 internal object CoroutineErrorCollectorInterceptor : TestExecutionInterceptor {
 
    private val logger = Logger(CoroutineErrorCollectorInterceptor::class)

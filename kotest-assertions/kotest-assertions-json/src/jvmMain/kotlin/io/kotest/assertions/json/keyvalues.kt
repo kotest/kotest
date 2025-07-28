@@ -3,15 +3,14 @@ package io.kotest.assertions.json
 import com.jayway.jsonpath.InvalidPathException
 import com.jayway.jsonpath.JsonPath
 import com.jayway.jsonpath.PathNotFoundException
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
-import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.json.ExtractValueOutcome.ExtractedValue
 import io.kotest.assertions.json.ExtractValueOutcome.JsonPathNotFound
 import io.kotest.assertions.print.print
 import io.kotest.common.KotestInternal
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.ValuesMatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
@@ -56,12 +55,12 @@ fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = ob
           is ExtractedValue<*> -> {
              val actualValue = actualKeyValue.value
              val passed = t == actualValue
-             return MatcherResult(
-                passed,
-                { "Value mismatch at '$path': ${intellijFormatError(Expected(t.print()), Actual(actualValue.print()))}" },
-                {
-                   "$sub should not contain the element $path = $t"
-                }
+             return ValuesMatcherResult(
+                passed = passed,
+                expected = t.print(),
+                actual = actualValue.print(),
+                failureMessageFn = { "Value mismatch at '$path'" },
+                negatedFailureMessageFn = { "$sub should not contain the element $path = $t" }
              )
           }
           is JsonPathNotFound -> {
@@ -77,9 +76,9 @@ internal fun extractByPath(json: String?, path: String, tClass: Class<*>): Extra
    return try {
       val extractedValue = parsedJson.read(path, tClass)
       ExtractedValue(extractedValue)
-   } catch (e: PathNotFoundException) {
+   } catch (_: PathNotFoundException) {
       JsonPathNotFound
-   } catch (e: InvalidPathException) {
+   } catch (_: InvalidPathException) {
       throw AssertionError("$path is not a valid JSON path")
    }
 }
@@ -106,7 +105,7 @@ internal fun findValidSubPath(json: String?, path: String): JsonSubPathSearchOut
       try {
          parsedJson.read(subPath, Any::class.java)
          return JsonSubPathFound(subPath)
-      } catch (e: PathNotFoundException) {
+      } catch (_: PathNotFoundException) {
          extractPossiblePathOfJsonArray(subPath)?.let { possiblePathOfJsonArray ->
             getPossibleSizeOfJsonArray(json, possiblePathOfJsonArray.pathToArray)?.let { sizeOfJsonArray ->
                return JsonSubPathJsonArrayTooShort(
@@ -128,7 +127,7 @@ internal fun getPossibleSizeOfJsonArray(json: String?, path: String): Int? {
       val parsedJson = JsonPath.parse(json)
       val possibleJsonArray = parsedJson.read(path, List::class.java)
       return possibleJsonArray.size
-   } catch (ignore: Exception) {
+   } catch (_: Exception) {
       null
    }
 }
