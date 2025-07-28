@@ -105,7 +105,7 @@ executed in a new instance as it is a top level (aka root) test case.
 ## InstancePerTest
 
 ::::warning
-This mode is deprecated. It is recommended to use `InstancePerRoot` instead.
+This mode is deprecated due to undefined behavior on edge cases. It is recommended to use `InstancePerRoot` instead.
 ::::
 
 The next mode is `IsolationMode.InstancePerTest` where a new spec will be created for every test case, including inner
@@ -182,7 +182,7 @@ c=1
 ## InstancePerLeaf
 
 ::::warning
-This mode is deprecated. It is recommended to use `InstancePerRoot` instead.
+This mode is deprecated due to undefined behavior on edge cases. It is recommended to use `InstancePerRoot` instead.
 ::::
 
 The next mode is `IsolationMode.InstancePerLeaf` where a new spec will be created for every leaf test case - so
