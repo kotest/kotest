@@ -4,7 +4,11 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.inspectors.*
+import io.kotest.inspectors.forAny
+import io.kotest.inspectors.forExactly
+import io.kotest.inspectors.forNone
+import io.kotest.inspectors.forOne
+import io.kotest.inspectors.forSome
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.should

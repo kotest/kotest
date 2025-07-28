@@ -1,15 +1,14 @@
 package io.kotest.matchers.maps
 
-import io.kotest.assertions.ErrorCollectionMode
-import io.kotest.assertions.errorCollector
-import io.kotest.assertions.getFailureWithTypeInformation
+import io.kotest.assertions.collector.runWithMode
 import io.kotest.assertions.print.print
-import io.kotest.assertions.runWithMode
+import io.kotest.assertions.similarity.possibleMatchesDescription
+import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.errorCollector
 import io.kotest.matchers.string.Diff
 import io.kotest.matchers.string.stringify
-import io.kotest.similarity.possibleMatchesDescription
 
 fun <K> haveKey(key: K): Matcher<Map<K, Any?>> = object : Matcher<Map<K, Any?>> {
    override fun test(value: Map<K, Any?>): MatcherResult {
@@ -119,16 +118,17 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
       val passed = (key in value) && value[key] == v
       val mismatchDescription = {
          when {
-            key in value -> getFailureWithTypeInformation(
-               expected = v,
-               actual = value[key],
-               prependMessage = "value was different: "
-            ).message ?: ""
+            key in value -> "value was different: $key $v"
+//            getFailureWithTypeInformation(
+//               expected = v,
+//               actual = value[key],
+//               prependMessage =
+//            ).message ?: ""
 
             else -> "key was not in the map"
          }
       }
-      val possibleMatches = { if(passed) "" else describePossibleMatches(key, v, value) }
+      val possibleMatches = { if (passed) "" else describePossibleMatches(key, v, value) }
       return MatcherResult(
          passed,
          { "Map should contain mapping $key=$v but ${mismatchDescription()}${possibleMatches()}" },
@@ -137,10 +137,10 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
    }
 
    private fun describePossibleMatches(key: K, v: V, map: Map<K, V>): String {
-      val similarKeys = if(key in map) "" else possibleMatchesDescription(map.keys, key)
-      val similarOrSameMatches = if(v in map.values) sameValueForOtherKeys(v, map) else similarValues(v, map)
+      val similarKeys = if (key in map) "" else possibleMatchesDescription(map.keys, key)
+      val similarOrSameMatches = if (v in map.values) sameValueForOtherKeys(v, map) else similarValues(v, map)
       val matchesToInclude = listOf(similarKeys, similarOrSameMatches).filter { it.isNotEmpty() }
-      return if(matchesToInclude.isEmpty()) "" else "\n${matchesToInclude.joinToString("\n")}"
+      return if (matchesToInclude.isEmpty()) "" else "\n${matchesToInclude.joinToString("\n")}"
    }
 
    private fun sameValueForOtherKeys(v: V, map: Map<K, V>): String = prettyPrintIfNotEmpty(
@@ -156,11 +156,11 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
 }
 
 internal fun printIfNotEmpty(string: String, prefix: String = "", suffix: String = ""): String =
-   if(string.isEmpty()) "" else
+   if (string.isEmpty()) "" else
       "$prefix$string$suffix"
 
-internal fun<T> prettyPrintIfNotEmpty(list: List<T>, prefix: String = "", suffix: String = ""): String =
-   if(list.isEmpty()) "" else
+internal fun <T> prettyPrintIfNotEmpty(list: List<T>, prefix: String = "", suffix: String = ""): String =
+   if (list.isEmpty()) "" else
       "$prefix${list.print().value}$suffix"
 
 fun <K, V> containAll(expected: Map<K, V>): Matcher<Map<K, V>> =
@@ -190,7 +190,8 @@ class MapContainsMatcher<K, V>(
       val possibleMatchesDescription = possibleMatchesForMissingElements(
          (expected.keys - value.keys),
          value.keys,
-         "keys")
+         "keys"
+      )
       val (expectMsg, negatedExpectMsg) = if (ignoreExtraKeys) {
          "should contain all of" to "should not contain all of"
       } else {
@@ -234,11 +235,10 @@ internal fun <K> possibleMatchesForMissingElements(
    expected: Set<K>,
    elementTypeDescription: String
 ): String {
-   val possibleMatches = unexpected.
-      map {
-         possibleMatchesDescription(expected, it)
-      }.filter {
-         it.isNotEmpty()
+   val possibleMatches = unexpected.map {
+      possibleMatchesDescription(expected, it)
+   }.filter {
+      it.isNotEmpty()
    }.joinToString("\n")
    return if (possibleMatches.isEmpty()) ""
    else "\nPossible matches for missing $elementTypeDescription:\n$possibleMatches"

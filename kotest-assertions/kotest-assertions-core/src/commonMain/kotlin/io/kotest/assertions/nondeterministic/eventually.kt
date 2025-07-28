@@ -1,8 +1,8 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.ErrorCollectionMode
-import io.kotest.assertions.errorCollector
-import io.kotest.assertions.failure
+import io.kotest.matchers.ErrorCollectionMode
+import io.kotest.matchers.errorCollector
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.reflect.KClass
@@ -83,7 +83,9 @@ suspend fun <T> eventually(
       errorCollector.setCollectionMode(originalAssertionMode)
    }
 
-   throw failure(control.buildFailureMessage())
+   throw AssertionErrorBuilder.create()
+      .withMessage(control.buildFailureMessage())
+      .build()
 }
 
 fun eventuallyConfig(

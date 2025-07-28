@@ -2,7 +2,7 @@ package io.kotest.assertions.arrow.core
 
 import arrow.core.raise.Raise
 import arrow.core.raise.recover
-import io.kotest.assertions.failure
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
 
 /**
@@ -21,12 +21,12 @@ public inline fun <reified T> shouldRaise(block: Raise<Any?>.() -> Any?): T {
   val expectedRaiseClass = T::class
   return recover({
     block(this)
-    throw failure("Expected to raise ${expectedRaiseClass.simpleName} but nothing was raised.")
+     AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but nothing was raised.")
   }) { raised ->
     when (raised) {
       is T -> raised
-      null -> throw failure("Expected to raise ${expectedRaiseClass.simpleName} but <null> was raised instead.")
-      else -> throw failure("Expected to raise ${expectedRaiseClass.simpleName} but ${raised::class.simpleName} was raised instead.")
+      null -> AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but <null> was raised instead.")
+      else -> AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but ${raised::class.simpleName} was raised instead.")
     }
   }
 }
@@ -42,6 +42,6 @@ public inline fun <reified T> shouldRaise(block: Raise<Any?>.() -> Any?): T {
  */
 public inline fun <T> shouldNotRaise(block: Raise<Any?>.() -> T): T {
   return recover(block) { raised ->
-    throw failure("No raise expected, but ${raised.print().value} was raised.")
+     AssertionErrorBuilder.fail("No raise expected, but ${raised.print().value} was raised.")
   }
 }

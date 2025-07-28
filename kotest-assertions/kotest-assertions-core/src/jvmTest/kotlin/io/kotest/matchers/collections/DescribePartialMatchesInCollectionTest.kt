@@ -1,10 +1,10 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.submatching.MatchedCollectionElement
+import io.kotest.assertions.submatching.PartialCollectionMatch
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
-import io.kotest.submatching.MatchedCollectionElement
-import io.kotest.submatching.PartialCollectionMatch
 
 class DescribePartialMatchesInCollectionTest: WordSpec() {
    init {

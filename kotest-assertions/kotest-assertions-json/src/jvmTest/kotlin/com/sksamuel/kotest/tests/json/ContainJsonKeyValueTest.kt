@@ -87,7 +87,8 @@ class ContainJsonKeyValueTest : StringSpec({
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.book[0].price", 9.95)
       }.message shouldBe """
-         Value mismatch at '$.store.book[0].price': expected:<9.95> but was:<8.95>
+         Value mismatch at '$.store.book[0].price'
+         expected:<9.95> but was:<8.95>
       """.trimIndent()
    }
 

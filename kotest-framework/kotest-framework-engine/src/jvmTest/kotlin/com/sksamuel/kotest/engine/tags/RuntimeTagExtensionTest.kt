@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.tags
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
@@ -14,10 +14,10 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.tags.TagExpression
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
@@ -71,7 +71,7 @@ class RuntimeTagExtensionTest : StringSpec() {
 private class TestWithTag : FunSpec() {
    init {
       test("Test marked with a runtime excluded tag").config(tags = setOf(MyRuntimeExcludedTag)) {
-         fail("boom")
+        AssertionErrorBuilder.fail("boom")
       }
    }
 }

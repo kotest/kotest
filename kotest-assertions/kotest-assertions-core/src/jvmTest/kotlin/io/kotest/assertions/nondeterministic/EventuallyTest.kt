@@ -1,7 +1,7 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
@@ -247,9 +247,9 @@ class EventuallyTest : FunSpec() {
          val message = shouldFail {
             testEventually(400.milliseconds) {
                if (count++ == 0) {
-                  fail("first")
+                 AssertionErrorBuilder.fail("first")
                } else {
-                  fail("last")
+                 AssertionErrorBuilder.fail("last")
                }
             }
          }.message
@@ -268,7 +268,7 @@ class EventuallyTest : FunSpec() {
          val message = shouldFail {
             testEventually(config) {
                if (count++ == 0) {
-                  fail("first")
+                 AssertionErrorBuilder.fail("first")
                } else {
                   error("last")
                }
@@ -387,7 +387,7 @@ class EventuallyTest : FunSpec() {
                withClue("Eventually which should pass") {
                   testEventually(2.seconds) {
                      if (target.hasNotPassedNow()) {
-                        fail("target has not passed")
+                       AssertionErrorBuilder.fail("target has not passed")
                      }
                   }
                }
@@ -469,9 +469,9 @@ class EventuallyTest : FunSpec() {
             }
             testEventually(config) {
                if (count++ == 0) {
-                  fail("first")
+                 AssertionErrorBuilder.fail("first")
                } else {
-                  fail("last")
+                 AssertionErrorBuilder.fail("last")
                }
             }
          }.message shouldNotContain "The first error was caused by: first"

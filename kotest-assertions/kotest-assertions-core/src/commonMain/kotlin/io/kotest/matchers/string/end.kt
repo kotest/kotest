@@ -1,12 +1,12 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.print.print
+import io.kotest.assertions.submatching.describePartialMatchesInStringForSuffix
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.submatching.describePartialMatchesInStringForSuffix
 
 infix fun <A : CharSequence> A?.shouldEndWith(suffix: CharSequence): A {
    this should endWith(suffix)

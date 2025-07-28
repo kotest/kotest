@@ -23,6 +23,10 @@ import io.kotest.data.row
 import io.kotest.data.table
 import io.kotest.matchers.comparables.between
 import io.kotest.matchers.comparables.shouldBeBetween
+import io.kotest.matchers.ints.beGreaterThan
+import io.kotest.matchers.ints.beGreaterThanOrEqualTo
+import io.kotest.matchers.ints.lt
+import io.kotest.matchers.ints.lte
 
 class IntMatchersTest : StringSpec() {
    init {
@@ -85,7 +89,7 @@ class IntMatchersTest : StringSpec() {
          3.shouldBeGreaterThan(2)
 
          shouldThrow<AssertionError> {
-            2 should io.kotest.matchers.ints.beGreaterThan(3)
+            2 should beGreaterThan(3)
          }
       }
 
@@ -94,7 +98,7 @@ class IntMatchersTest : StringSpec() {
          1.shouldBeLessThan(2)
 
          shouldThrow<AssertionError> {
-            2 shouldBe io.kotest.matchers.ints.lt(1)
+            2 shouldBe lt(1)
          }
       }
 
@@ -103,7 +107,7 @@ class IntMatchersTest : StringSpec() {
          2.shouldBeLessThanOrEqual(3)
 
          shouldThrow<AssertionError> {
-            2 shouldBe io.kotest.matchers.ints.lte(1)
+            2 shouldBe lte(1)
          }
       }
 
@@ -112,7 +116,7 @@ class IntMatchersTest : StringSpec() {
          3.shouldBeGreaterThanOrEqual(1)
 
          shouldThrow<AssertionError> {
-            2 should io.kotest.matchers.ints.beGreaterThanOrEqualTo(3)
+            2 should beGreaterThanOrEqualTo(3)
          }
       }
 

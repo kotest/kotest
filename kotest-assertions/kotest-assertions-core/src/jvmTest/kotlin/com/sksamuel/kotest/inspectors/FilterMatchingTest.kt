@@ -9,10 +9,7 @@ import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.ints.shouldBeEven
 import io.kotest.matchers.sequences.shouldBeEmpty
 import io.kotest.matchers.sequences.shouldContainExactly
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldContain
-import io.kotest.matchers.string.shouldContainADigit
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.matchers.string.shouldNotContain

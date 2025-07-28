@@ -1,22 +1,20 @@
 package com.sksamuel.kotest.engine.listener
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
-import io.kotest.assertions.failure
-import io.kotest.assertions.print.Printed
+import io.kotest.assertions.KotestAssertionFailedError
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.listener.TeamCityTestEngineListener
+import io.kotest.engine.test.TestResult
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
+import org.opentest4j.AssertionFailedError
 import java.io.FileNotFoundException
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -310,7 +308,7 @@ a[testFinished name='Engine exception 2']
 """
       }
 
-      test("should use comparison values with a supported exception type") {
+      test("should use comparison values with kotest assertion failed error type") {
          val output = captureStandardOut {
             val listener = TeamCityTestEngineListener("a", details = false)
             listener.engineStarted()
@@ -322,7 +320,7 @@ a[testFinished name='Engine exception 2']
                c,
                TestResult.Error(
                   555.milliseconds,
-                  failure(Expected(Printed("expected")), Actual(Printed("actual")))
+                  KotestAssertionFailedError("boom", null, "expected", "actual")
                )
             )
             listener.testFinished(b, TestResult.Success(555.milliseconds))
@@ -338,7 +336,43 @@ a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineL
 a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://foo.bar.Test:12']
 a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest://foo.bar.Test:17']
 a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest://foo.bar.Test:33']
-a[testFailed name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' message='expected:<expected> but was:<actual>' type='comparisonFailure' actual='actual' expected='expected' result_status='Error']
+a[testFailed name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' message='boom' type='comparisonFailure' expected='expected' actual='actual' result_status='Error']
+a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' result_status='Error']
+a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' result_status='Success']
+a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("should use comparison values with opentest4j assertion failed error type") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(
+               c,
+               TestResult.Error(
+                  555.milliseconds,
+                  AssertionFailedError("boom", "expected", "actual"),
+               )
+            )
+            listener.testFinished(b, TestResult.Success(555.milliseconds))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://foo.bar.Test:12']
+a[testSuiteStarted name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest://foo.bar.Test:17']
+a[testStarted name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' locationHint='kotest://foo.bar.Test:33']
+a[testFailed name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' message='boom' type='comparisonFailure' expected='expected' actual='actual' result_status='Error']
 a[testFinished name='c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' duration='555' result_status='Error']
 a[testSuiteFinished name='b' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='555' result_status='Success']
 a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='324' result_status='Success']

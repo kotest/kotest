@@ -1,3 +1,5 @@
 package io.kotest.engine
 
-class TestAbortedException(val reason: String?) : Throwable()
+class TestAbortedException(val reason: String?) : Throwable() {
+   constructor() : this(null)
+}

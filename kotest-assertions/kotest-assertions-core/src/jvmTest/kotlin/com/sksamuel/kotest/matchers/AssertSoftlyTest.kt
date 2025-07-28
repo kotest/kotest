@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.matchers
 
-import io.kotest.assertions.AssertionFailedError
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
@@ -267,11 +266,13 @@ class AssertSoftlyTest : FreeSpec({
                }
             }
 
-            error.message shouldContain "1) simple strings\n" +
-               "expected:<\"b\"> but was:<\"a\">"
-            error.message shouldContain "2) data class diff for com.sksamuel.kotest.matchers.WithSimpleEnum\n" +
-               "└ enumValue: more complex with data class and enums\n" +
-               "expected:<Second> but was:<First>"
+            error.message shouldContain "The following 2 assertions failed:"
+            error.message shouldContain "1) simple strings"
+            error.message shouldContain """expected:<"b"> but was:<"a">"""
+            error.message shouldContain """at com.sksamuel.kotest.matchers.AssertSoftlyTest"""
+            error.message shouldContain """2) more complex with data class and enums"""
+            error.message shouldContain """expected:<Second> but was:<First>"""
+            error.message shouldContain """expected:<WithSimpleEnum(enumValue=Second)> but was:<WithSimpleEnum(enumValue=First)>"""
             error.message shouldNotContain "3) "
          }
       }
@@ -279,7 +280,7 @@ class AssertSoftlyTest : FreeSpec({
          // Added as a verification of https://github.com/kotest/kotest/issues/1831
          "single assertion failed with AssertionFailedError" {
             var lineNumber = 0
-            shouldThrow<AssertionFailedError> {
+            shouldThrow<AssertionError> {
                assertSoftly {
                   lineNumber = Thread.currentThread().stackTrace[1].lineNumber
                   1 shouldBe 2

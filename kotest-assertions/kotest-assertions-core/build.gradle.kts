@@ -13,7 +13,7 @@ kotlin {
 
       commonMain {
          dependencies {
-            // this is api because we want to expose `shouldBe` etc
+            // required for the base matcher interface
             api(projects.kotestAssertions.kotestAssertionsShared)
 
             implementation(libs.kotlin.reflect)
@@ -31,15 +31,16 @@ kotlin {
       jvmMain {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
+            implementation(libs.diffutils) // used for diffing large strings in assertions
          }
       }
 
       jvmTest {
          dependencies {
             implementation(projects.kotestProperty)
+            implementation(projects.kotestAssertions.kotestAssertionsTable)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.opentest4j) // used to create richer assertion errors that intellij uses for diffs
             implementation(libs.apache.commons.lang)
             implementation(libs.mockk)
          }

@@ -4,15 +4,15 @@ import io.kotest.data.Row7
 import io.kotest.data.forAll
 import io.kotest.data.forNone
 import io.kotest.data.headers
+import io.kotest.data.paramNames
 import io.kotest.data.table
-import io.kotest.common.reflection.reflection
 
 @Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun <A, B, C, D, E, F, G> forAll(
    vararg rows: Row7<A, B, C, D, E, F, G>,
    testfn: (A, B, C, D, E, F, G) -> Unit
 ) {
-   val params = reflection.paramNames(testfn) ?: emptyList<String>()
+   val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }
@@ -28,7 +28,7 @@ fun <A, B, C, D, E, F, G> forNone(
    vararg rows: Row7<A, B, C, D, E, F, G>,
    testfn: (A, B, C, D, E, F, G) -> Unit
 ) {
-   val params = reflection.paramNames(testfn) ?: emptyList<String>()
+   val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
    val paramB = params.getOrElse(1) { "b" }
    val paramC = params.getOrElse(2) { "c" }

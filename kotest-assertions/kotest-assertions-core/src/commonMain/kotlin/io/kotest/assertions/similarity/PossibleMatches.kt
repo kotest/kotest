@@ -1,6 +1,6 @@
 package io.kotest.assertions.similarity
 
-import io.kotest.equals.Equality
+import io.kotest.assertions.equals.Equality
 
 internal expect fun <T> possibleMatchesDescription(actual: Set<T>, expected: T): String
 

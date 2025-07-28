@@ -7,7 +7,7 @@ kotlin {
    sourceSets {
       commonMain {
          dependencies {
-            api(projects.kotestAssertions.kotestAssertionsShared)
+            api(projects.kotestAssertions.kotestAssertionsCore)
             api(projects.kotestAssertions.kotestAssertionsArrow)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.arrow.fx.coroutines)

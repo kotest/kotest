@@ -1,5 +1,6 @@
 package io.kotest.engine.teamcity
 
+import io.kotest.assertions.KotestAssertionFailedError
 import io.kotest.engine.test.TestResult
 import kotlin.time.Duration
 
@@ -118,14 +119,25 @@ class TeamCityMessageBuilder(
       if (value != null) addAttribute(Attributes.DETAILS, value.trim()) else this
 
    fun type(value: String): TeamCityMessageBuilder = addAttribute(Attributes.TYPE, value.trim())
-   fun actual(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ACTUAL, value.trim())
-   fun expected(value: String): TeamCityMessageBuilder = addAttribute(Attributes.EXPECTED, value.trim())
+
+   fun actual(value: String?): TeamCityMessageBuilder {
+      if (value != null)
+         addAttribute(Attributes.ACTUAL, value.trim())
+      return this
+   }
+
+   fun expected(value: String?): TeamCityMessageBuilder {
+      if (value != null)
+         addAttribute(Attributes.EXPECTED, value.trim())
+      return this
+   }
+
    fun result(value: TestResult): TeamCityMessageBuilder = addAttribute(Attributes.RESULT_STATUS, value.name)
 
    fun locationHint(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.LOCATION_HINT, value) else this
 
-   // note it seems that not attaching a message renders test failed irrelevant
+   // note it seems that test-failed messages require a message in order to be used
    fun withException(error: Throwable?, showDetails: Boolean = true): TeamCityMessageBuilder {
       if (error == null) return this
 
@@ -142,9 +154,10 @@ class TeamCityMessageBuilder(
          details(escapeColons(stacktrace))
       }
 
-//      when (error) {
-//         is ComparisonError -> type("comparisonFailure").actual(error.actualValue).expected(error.expectedValue)
-//      }
+      when (error) {
+         is KotestAssertionFailedError -> type("comparisonFailure").expected(error.expected).actual(error.actual)
+         else -> this.handlePlatformComparisonExceptions(error)
+      }
 
       return this
    }
@@ -169,3 +182,8 @@ class TeamCityMessageBuilder(
     */
    fun build(): String = "$myText]"
 }
+
+/**
+ * Used to handle platform specific types, namely opentest4j on the JVM
+ */
+expect fun TeamCityMessageBuilder.handlePlatformComparisonExceptions(error: Throwable)

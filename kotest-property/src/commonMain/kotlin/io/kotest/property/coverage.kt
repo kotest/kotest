@@ -1,6 +1,6 @@
 package io.kotest.property
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 
 /**
  * Asserts that the given [label] was applied to at least [percentage] number of tests.
@@ -24,7 +24,7 @@ suspend fun checkCoverage(label: String, percentage: Double, f: suspend () -> Pr
    val attempts = context.attempts()
    val actual = (labelled.toDouble() / attempts.toDouble()) * 100.0
    if (actual < percentage)
-      fail("Property test required coverage of $percentage% for [$label] but was [${actual.toInt()}%]")
+      AssertionErrorBuilder.fail("Property test required coverage of $percentage% for [$label] but was [${actual.toInt()}%]")
    return context
 }
 
@@ -50,7 +50,7 @@ suspend fun checkCoverage(vararg pairs: Pair<String, Double>, f: suspend () -> P
       val actualCount = classifications[label] ?: 0
       val actual = (actualCount.toDouble() / attempts.toDouble()) * 100.0
       if (actual < required)
-         fail("Property test required coverage of $required% for [$label] but was [${actual.toInt()}%]")
+         AssertionErrorBuilder.fail("Property test required coverage of $required% for [$label] but was [${actual.toInt()}%]")
    }
    return context
 }

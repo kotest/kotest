@@ -1,5 +1,7 @@
 package io.kotest.data
 
+import io.kotest.assertions.AssertionErrorBuilder
+
 @Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 internal data class StringTable(
    val headers: List<String>,
@@ -34,7 +36,7 @@ internal data class StringTable(
          }
       val andMore = if (invalidRows.size <= maxRows) "" else "... and ${invalidRows.size - maxRows} other rows"
 
-      if (invalidRows.isNotEmpty()) fail(
+      if (invalidRows.isNotEmpty()) AssertionErrorBuilder.fail(
          """
          |Expected all rows to have $size columns, but ${invalidRows.size} rows differed
          |$formattedRows

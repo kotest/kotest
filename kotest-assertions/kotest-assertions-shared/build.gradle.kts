@@ -13,9 +13,14 @@ kotlin {
 
       commonMain {
          dependencies {
-            implementation(libs.kotlin.reflect)
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.coroutines.core)
+         }
+      }
+
+      jvmMain {
+         dependencies {
+            implementation(libs.opentest4j) // used to create richer assertion errors that intellij uses for diffs
          }
       }
 
@@ -23,15 +28,6 @@ kotlin {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-         }
-      }
-
-      jvmMain {
-         dependencies {
-            implementation(libs.kotlinx.coroutines.jdk8)
-            implementation(libs.diffutils)
-            implementation(libs.opentest4j)
-            implementation(libs.apache.commons.lang)
          }
       }
    }

@@ -46,30 +46,30 @@ class OptionalMatchersTest : ShouldSpec({
             optional.shouldBePresent()
             optional should bePresent()
         }
-        
+
         should("Return the present value for usage in more assertions") {
             optional.shouldBePresent() shouldBe "A"
-        } 
+        }
 
         should("Allow matchers with present value as a receiver") {
             optional shouldBePresent {
                 this shouldBe "A"
             }
         }
-        
+
         should("Allow matchers with present value as parameter") {
             optional shouldBePresent {
                 it shouldBe "A"
             }
         }
-        
+
         should("Execute code inside the receiver") {
             shouldThrow<RuntimeException> {
                 optional shouldBePresent {
                     throw RuntimeException("Ensuring the block is actually executed")
                 }
             } shouldHaveMessage "Ensuring the block is actually executed"
-            
+
             shouldThrow<AssertionError> {
                 optional shouldBePresent {
                     this shouldBe "B"
@@ -77,4 +77,4 @@ class OptionalMatchersTest : ShouldSpec({
             }
         }
     }
-}) 
+})

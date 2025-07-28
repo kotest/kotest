@@ -1,7 +1,5 @@
 package io.kotest.common.stacktrace
 
-import io.kotest.common.sysprop
-
 expect val stacktraces: StackTraces
 
 interface StackTraces {
@@ -30,25 +28,3 @@ interface StackTraces {
     */
    fun root(t: Throwable): Throwable
 }
-
-/**
- * JVM supported only.
- *
- * Whether Kotest-related frames will be removed from the stack traces of thrown [AssertionError]s.
- *
- * This defaults to `true`. You can change it by setting the system property `kotest.failures.stacktrace.clean`
- * or at runtime, by reassigning this var.
- *
- * E.g.:
- *
- * ```
- *     -Dkotest.failures.stacktrace.clean=false
- * ```
- *
- * or
- *
- * ```
- *     StackTraces.shouldRemoveKotestElementsFromStacktrace = false
- * ```
- */
-var shouldRemoveKotestElementsFromStacktrace: Boolean = sysprop("kotest.failures.stacktrace.clean", "true") == "true"

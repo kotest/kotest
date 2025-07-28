@@ -1,11 +1,10 @@
 package io.kotest.data
 
-import io.kotest.common.reflection.reflection
 import kotlin.jvm.JvmName
 
 @Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A> forAll(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
-   val params = reflection.paramNames(testfn) ?: emptyList<String>()
+   val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
    table(headers(paramA), *rows).forAll { a -> testfn(a) }
 }
@@ -29,7 +28,7 @@ inline fun <A> Table1<A>.forAll(fn: (A) -> Unit) {
 
 @Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A> forNone(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
-   val params = reflection.paramNames(testfn) ?: emptyList<String>()
+   val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
    table(headers(paramA), *rows).forNone { a -> testfn(a) }
 }

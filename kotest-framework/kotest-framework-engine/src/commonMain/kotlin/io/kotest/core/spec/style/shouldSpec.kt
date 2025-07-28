@@ -5,8 +5,6 @@ import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.style.scopes.ShouldSpecRootScope
-import io.kotest.matchers.Matcher
-import io.kotest.matchers.should as shouldAssertion
 
 /**
  * Creates a [TestFactory] from the given block.
@@ -30,5 +28,5 @@ abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {}) : DslDrivenSpec(), S
 
    // need to overload this so that when doing "string" should <matcher> in a should spec, we don't
    // clash with the other should method
-   infix fun String.should(matcher: Matcher<String>) = this shouldAssertion matcher
+//   infix fun String.should(matcher: Matcher<String>) = this shouldAssertion matcher
 }

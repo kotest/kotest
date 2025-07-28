@@ -12,6 +12,9 @@ kotlin {
 
       commonMain {
          dependencies {
+            // this pulls in the should DSL, which is used in the engine to track assertion usage
+            implementation(projects.kotestAssertions.kotestAssertionsShared)
+
             implementation(libs.kotlin.reflect)
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
@@ -43,10 +46,16 @@ kotlin {
          }
       }
 
+      commonTest {
+         dependencies {
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestAssertions.kotestAssertionsTable)
+         }
+      }
+
       jvmTest {
          dependencies {
             implementation(kotlin("stdlib"))
-            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)

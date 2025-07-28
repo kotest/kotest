@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.interceptors
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FreeSpec
@@ -13,7 +13,7 @@ import org.opentest4j.TestAbortedException
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class AbortedExceptionTest : FreeSpec({
-   "TestAbortedException is handled" {
+   "opentest4j TestAbortedException is handled" {
       val collector = CollectingTestEngineListener()
 
       TestEngineLauncher(collector)
@@ -22,7 +22,11 @@ class AbortedExceptionTest : FreeSpec({
 
       collector.tests.toList().shouldMatchEach(
          {
-            it.first.name.name shouldBe "Test should be marked as Ignored"
+            it.first.name.name shouldBe "opentest4j TestAbortedException should be marked as Ignored"
+            it.second.isIgnored.shouldBeTrue()
+         },
+         {
+            it.first.name.name shouldBe "kotest TestAbortedException should be marked as Ignored"
             it.second.isIgnored.shouldBeTrue()
          },
          {
@@ -38,12 +42,17 @@ class AbortedExceptionTest : FreeSpec({
 })
 
 private class DummySpec : FreeSpec({
-   "Test should be marked as Ignored" {
+
+   "opentest4j TestAbortedException should be marked as Ignored" {
       throw TestAbortedException()
    }
 
+   "kotest TestAbortedException should be marked as Ignored" {
+      throw io.kotest.engine.TestAbortedException()
+   }
+
    "Failure is not reclassified" {
-      fail("should not be ignored")
+      AssertionErrorBuilder.fail("should not be ignored")
    }
 
    "Successful test is not reclassified" {

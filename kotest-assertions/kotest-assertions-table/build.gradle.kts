@@ -14,7 +14,7 @@ kotlin {
       commonMain {
          dependencies {
             implementation(libs.kotlin.reflect)
-            implementation(projects.kotestCommon)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
@@ -27,9 +27,6 @@ kotlin {
 
       jvmMain {
          dependencies {
-            implementation(libs.kotlinx.coroutines.jdk8)
-            implementation(libs.diffutils)
-            implementation(libs.opentest4j)
             implementation(libs.apache.commons.lang)
          }
       }

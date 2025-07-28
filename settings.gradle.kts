@@ -68,12 +68,10 @@ include(
    // generates KMP test reports
    ":kotest-framework:kotest-framework-multiplatform-reporter",
 
-   // contains basic assertion building block such as shouldBe which are used by both
-   // framework and assertion libraries;
-   // no user should need to depend on this
-   ":kotest-assertions:kotest-assertions-shared",
-
    ":kotest-assertions:kotest-assertions-table",
+
+   // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
+   ":kotest-assertions:kotest-assertions-shared",
 
    // the core assertions that cover the basic types such as String, Int, Boolean, etc.
    // it also defines the assertion error builders that create the intellij formatted assertion errors
