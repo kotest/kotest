@@ -5,32 +5,33 @@ slug: project-config.html
 
 :::warn
 This document describes project-level configuration in Kotest 6.0.
-If you were using project-level configuration in Kotest 5.x, please note that the location of the project class instance
-is now required to be `io.kotest.provided.ProjectConfig`, otherwise it will not be picked up by the framework.
+If you were using project-level configuration in Kotest 5.x, note that the location of the project config instance
+is now **required** to be `io.kotest.provided.ProjectConfig`, otherwise it will not be picked up by the framework.
 :::
 
 Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec, or how
 test classes are created. Sometimes you may want to set this at a global level and for that you need to use
 project-level-config.
 
-Project level configuration can be used by creating a class that extends from `AbstractProjectConfig`.
+Project wide configuration can be used by creating a class that extends from `AbstractProjectConfig`.
 On the JVM and JS platforms, an object is also supported if you prefer to a class.
 
 Any configuration set at the spec level or directly on a test will override config specified at the project level. Some
-configuration options are only available at the project level because they change how the test engine runs all tests (eg
-spec concurrency settings).
+configuration options are only available at the project level because they change how the test engine runs the entire
+test suite (eg spec concurrency settings).
 
-Some configuration options available in `AbstractProjectConfig` include concurrency of specs, failing specs with ignored
-tests, global `AssertSoftly`, and reusable listeners or extensions.
+Some configuration options available in `AbstractProjectConfig` include assertions modes, timeouts, failing specs with
+ignored tests, global `AssertSoftly`, and reusable listeners or extensions and so on.
 
-## Runtime Detection
+## Setup
 
-On the JVM, Kotest will scan the classpath for a class `io.kotest.provided.ProjectConfig` that extends
-`AbstractProjectConfig` and instantiate it. On native and JS platforms, the config class can be located anywhere but
+On the JVM, Kotest will inspect the classpath for a class with a FQN of `io.kotest.provided.ProjectConfig` that extends
+`AbstractProjectConfig` and will instantiate it. On native and JS platforms, the config class can be located anywhere but
 must still extend `AbstractProjectConfig`.
 
 :::tip
 You should only create a single project config class, otherwise the behavior is undefined.
+If you want to have different configurations per package, see [package level config](./package_level_config.md).
 :::
 
 ## Examples
@@ -51,8 +52,7 @@ object KotestProjectConfig : AbstractProjectConfig() {
 
 :::caution
 Assertion mode only works for Kotest assertions and not other assertion libraries. This is because the assertions need
-to opt-in
-to the assertion mode when enabled.
+to be aware of the assertion detection framework that Kotest provides.
 :::
 
 ### Global Assert Softly
@@ -67,6 +67,17 @@ object KotestProjectConfig : AbstractProjectConfig() {
   override val globalAssertSoftly = true
 }
 ```
+
+### Timeouts
+
+You can set a default timeout for all tests in your project by setting the `timeout` property in your project config.
+
+```kotlin
+object KotestProjectConfig : AbstractProjectConfig() {
+  override val timeout = 5.seconds
+}
+```
+
 
 ### Duplicate Test Name Handling
 
