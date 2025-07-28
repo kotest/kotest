@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.data
 
 import kotlin.jvm.JvmName
@@ -42,7 +44,7 @@ inline fun <A> Table1<A>.forNone(fn: (A) -> Unit) {
    for (row in rows) {
       try {
          fn(row.a)
-      } catch (e: AssertionError) {
+      } catch (_: AssertionError) {
          continue
       }
       throw forNoneError(headers.values(), row.values())
