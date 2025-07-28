@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.data
 
 import kotlin.jvm.JvmName

@@ -118,6 +118,7 @@ module.exports = {
       ]
     },
     "framework/isolation_mode",
+    "framework/concurrency6",
     "framework/lifecycle_hooks",
     {
       "type": "category",
@@ -196,6 +197,8 @@ module.exports = {
       "items": [
         "framework/test_case_config",
         "framework/project_config",
+        "framework/package_level_config",
+        "framework/shared_test_config",
         "framework/framework_config_props"
       ]
     },
