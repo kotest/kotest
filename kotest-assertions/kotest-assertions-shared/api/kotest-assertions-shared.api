@@ -1,3 +1,66 @@
+public final class io/kotest/assertions/Actual {
+	public fun <init> (Lio/kotest/assertions/print/Printed;)V
+	public final fun component1 ()Lio/kotest/assertions/print/Printed;
+	public final fun copy (Lio/kotest/assertions/print/Printed;)Lio/kotest/assertions/Actual;
+	public static synthetic fun copy$default (Lio/kotest/assertions/Actual;Lio/kotest/assertions/print/Printed;ILjava/lang/Object;)Lio/kotest/assertions/Actual;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Lio/kotest/assertions/print/Printed;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/AssertSoftlyKt {
+	public static final fun assertSoftly (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+}
+
+public final class io/kotest/assertions/AssertionErrorBuilder {
+	public static final field Companion Lio/kotest/assertions/AssertionErrorBuilder$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)V
+	public final fun build ()Ljava/lang/AssertionError;
+	public final fun copy (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Lio/kotest/assertions/AssertionErrorBuilder;
+	public static synthetic fun copy$default (Lio/kotest/assertions/AssertionErrorBuilder;Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;ILjava/lang/Object;)Lio/kotest/assertions/AssertionErrorBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withCause (Ljava/lang/Throwable;)Lio/kotest/assertions/AssertionErrorBuilder;
+	public final fun withMessage (Ljava/lang/String;)Lio/kotest/assertions/AssertionErrorBuilder;
+	public final fun withValues (Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Lio/kotest/assertions/AssertionErrorBuilder;
+}
+
+public final class io/kotest/assertions/AssertionErrorBuilder$Companion {
+	public final fun create ()Lio/kotest/assertions/AssertionErrorBuilder;
+	public final fun fail (Ljava/lang/String;)Ljava/lang/Void;
+}
+
+public final class io/kotest/assertions/AssertionErrorBuilder_jvmKt {
+	public static final fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/AssertionError;
+	public static final fun intellijFormattedComparison (Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/String;
+}
+
+public final class io/kotest/assertions/CollectorKt {
+	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
+	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
+	public static final fun getAndReplace (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)Ljava/util/List;
+	public static final fun pushErrorAndMaybeThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
+	public static final fun pushErrors (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
+	public static final fun throwCollectedErrors (Lio/kotest/matchers/ErrorCollector;)V
+}
+
+public final class io/kotest/assertions/Collector_jvmKt {
+	public static final fun collectErrors (Lio/kotest/matchers/ErrorCollector;)Ljava/lang/AssertionError;
+}
+
+public final class io/kotest/assertions/Expected {
+	public fun <init> (Lio/kotest/assertions/print/Printed;)V
+	public final fun component1 ()Lio/kotest/assertions/print/Printed;
+	public final fun copy (Lio/kotest/assertions/print/Printed;)Lio/kotest/assertions/Expected;
+	public static synthetic fun copy$default (Lio/kotest/assertions/Expected;Lio/kotest/assertions/print/Printed;ILjava/lang/Object;)Lio/kotest/assertions/Expected;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getValue ()Lio/kotest/assertions/print/Printed;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/assertions/KotestAssertionFailedError : java/lang/AssertionError {
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Ljava/lang/String;Ljava/lang/String;)V
 	public final fun component1 ()Ljava/lang/String;
@@ -15,15 +78,30 @@ public final class io/kotest/assertions/KotestAssertionFailedError : java/lang/A
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/assertions/MultiAssertionError : java/lang/AssertionError {
+	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
+	public final fun getErrors ()Ljava/util/List;
+}
+
+public final class io/kotest/assertions/MultiAssertionErrorBuilder {
+	public static final field Companion Lio/kotest/assertions/MultiAssertionErrorBuilder$Companion;
+	public fun <init> (Ljava/util/List;)V
+	public final fun build ()Lio/kotest/assertions/MultiAssertionError;
+}
+
+public final class io/kotest/assertions/MultiAssertionErrorBuilder$Companion {
+	public final fun create (Ljava/util/List;)Lio/kotest/assertions/MultiAssertionErrorBuilder;
+}
+
 public final class io/kotest/assertions/print/Printed {
 	public fun <init> (Ljava/lang/String;)V
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Lkotlin/reflect/KClass;)V
 	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/assertions/print/Printed;
-	public static synthetic fun copy$default (Lio/kotest/assertions/print/Printed;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/assertions/print/Printed;
+	public final fun component2 ()Lkotlin/reflect/KClass;
+	public final fun copy (Ljava/lang/String;Lkotlin/reflect/KClass;)Lio/kotest/assertions/print/Printed;
+	public static synthetic fun copy$default (Lio/kotest/assertions/print/Printed;Ljava/lang/String;Lkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/assertions/print/Printed;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getType ()Ljava/lang/String;
+	public final fun getType ()Lkotlin/reflect/KClass;
 	public final fun getValue ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -112,11 +190,6 @@ public abstract interface class io/kotest/matchers/ErrorCollector {
 
 public final class io/kotest/matchers/ErrorCollectorKt {
 	public static final fun clueContextAsString ()Ljava/lang/String;
-	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
-	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
-	public static final fun getAndReplace (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)Ljava/util/List;
-	public static final fun pushErrors (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
-	public static final fun throwCollectedErrors (Lio/kotest/matchers/ErrorCollector;)V
 }
 
 public abstract interface class io/kotest/matchers/Matcher {
@@ -154,8 +227,29 @@ public final class io/kotest/matchers/MatcherResult$Companion {
 	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResult;
 }
 
+public final class io/kotest/matchers/ValuesMatcherResult : io/kotest/matchers/MatcherResult {
+	public fun <init> (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lio/kotest/assertions/print/Printed;
+	public final fun component3 ()Lio/kotest/assertions/print/Printed;
+	public final fun component4 ()Lkotlin/jvm/functions/Function0;
+	public final fun component5 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/ValuesMatcherResult;
+	public static synthetic fun copy$default (Lio/kotest/matchers/ValuesMatcherResult;ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/matchers/ValuesMatcherResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureMessage ()Ljava/lang/String;
+	public final fun getActual ()Lio/kotest/assertions/print/Printed;
+	public final fun getExpected ()Lio/kotest/assertions/print/Printed;
+	public final fun getFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getNegatedFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getPassed ()Z
+	public fun hashCode ()I
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/matchers/jvmerrorcollector {
-	public static final fun collectiveError (Lio/kotest/matchers/ErrorCollector;)Ljava/lang/AssertionError;
 	public static final fun getErrorCollector ()Lio/kotest/matchers/ErrorCollector;
 	public static final fun getErrorCollectorContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
 }

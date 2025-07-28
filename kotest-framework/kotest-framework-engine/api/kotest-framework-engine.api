@@ -2998,6 +2998,7 @@ public final class io/kotest/engine/ResultsKt {
 }
 
 public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
+	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun getReason ()Ljava/lang/String;
 }
@@ -3907,6 +3908,10 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
 	public static final field TEST_STARTED Ljava/lang/String;
 	public static final field TEST_SUITE_FINISHED Ljava/lang/String;
 	public static final field TEST_SUITE_STARTED Ljava/lang/String;
+}
+
+public final class io/kotest/engine/teamcity/TeamCityMessageBuilder_jvmKt {
+	public static final fun handlePlatformComparisonExceptions (Lio/kotest/engine/teamcity/TeamCityMessageBuilder;Ljava/lang/Throwable;)V
 }
 
 public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : io/kotest/engine/test/TestCaseExecutionListener {

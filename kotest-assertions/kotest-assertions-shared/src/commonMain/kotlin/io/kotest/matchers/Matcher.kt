@@ -1,6 +1,7 @@
 package io.kotest.matchers
 
 import io.kotest.assertions.print.Printed
+import kotlin.js.JsName
 
 /**
  * A [Matcher] is the main abstraction in the assertions library.
@@ -104,7 +105,7 @@ interface MatcherResult {
 }
 
 data class ValuesMatcherResult(
-   val passed: Boolean,
+   @JsName("passed_val") val passed: Boolean,
    val actual: Printed,
    val expected: Printed,
    val failureMessageFn: () -> String,

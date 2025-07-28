@@ -2,7 +2,6 @@ public final class io/kotest/assertions/AllKt {
 	public static final fun all (Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun all (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun assertSoftly (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public static final fun assertSoftly (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
 public final class io/kotest/assertions/AnyKt {
@@ -38,7 +37,6 @@ public final class io/kotest/assertions/AssertionsConfigSystemProperties {
 
 public final class io/kotest/assertions/CluesKt {
 	public static final fun asClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun forEachAsClue (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)V
 	public static final fun withClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun withClue (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
@@ -280,67 +278,6 @@ public final class io/kotest/assertions/equals/SimpleEqualityResultDetail : io/k
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/assertions/errors/Actual {
-	public fun <init> (Lio/kotest/assertions/print/Printed;)V
-	public final fun component1 ()Lio/kotest/assertions/print/Printed;
-	public final fun copy (Lio/kotest/assertions/print/Printed;)Lio/kotest/assertions/errors/Actual;
-	public static synthetic fun copy$default (Lio/kotest/assertions/errors/Actual;Lio/kotest/assertions/print/Printed;ILjava/lang/Object;)Lio/kotest/assertions/errors/Actual;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getValue ()Lio/kotest/assertions/print/Printed;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/errors/AssertionErrorBuilder {
-	public static final field Companion Lio/kotest/assertions/errors/AssertionErrorBuilder$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/errors/Actual;)V
-	public final fun build ()Ljava/lang/AssertionError;
-	public final fun copy (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/errors/Actual;)Lio/kotest/assertions/errors/AssertionErrorBuilder;
-	public static synthetic fun copy$default (Lio/kotest/assertions/errors/AssertionErrorBuilder;Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/errors/Actual;ILjava/lang/Object;)Lio/kotest/assertions/errors/AssertionErrorBuilder;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public final fun intellijFormattedComparison (Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/errors/Actual;)Ljava/lang/String;
-	public fun toString ()Ljava/lang/String;
-	public final fun withCause (Ljava/lang/Throwable;)Lio/kotest/assertions/errors/AssertionErrorBuilder;
-	public final fun withMessage (Ljava/lang/String;)Lio/kotest/assertions/errors/AssertionErrorBuilder;
-	public final fun withValues (Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/errors/Actual;)Lio/kotest/assertions/errors/AssertionErrorBuilder;
-}
-
-public final class io/kotest/assertions/errors/AssertionErrorBuilder$Companion {
-	public final fun create ()Lio/kotest/assertions/errors/AssertionErrorBuilder;
-	public final fun fail (Ljava/lang/String;)Ljava/lang/Void;
-}
-
-public final class io/kotest/assertions/errors/AssertionErrorBuilder_jvmKt {
-	public static final fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/errors/Actual;)Ljava/lang/AssertionError;
-}
-
-public final class io/kotest/assertions/errors/Expected {
-	public fun <init> (Lio/kotest/assertions/print/Printed;)V
-	public final fun component1 ()Lio/kotest/assertions/print/Printed;
-	public final fun copy (Lio/kotest/assertions/print/Printed;)Lio/kotest/assertions/errors/Expected;
-	public static synthetic fun copy$default (Lio/kotest/assertions/errors/Expected;Lio/kotest/assertions/print/Printed;ILjava/lang/Object;)Lio/kotest/assertions/errors/Expected;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getValue ()Lio/kotest/assertions/print/Printed;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/errors/MultiAssertionError : java/lang/AssertionError {
-	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
-	public final fun getErrors ()Ljava/util/List;
-}
-
-public final class io/kotest/assertions/errors/MultiAssertionErrorBuilder {
-	public static final field Companion Lio/kotest/assertions/errors/MultiAssertionErrorBuilder$Companion;
-	public fun <init> (Ljava/util/List;)V
-	public final fun build ()Lio/kotest/assertions/errors/MultiAssertionError;
-}
-
-public final class io/kotest/assertions/errors/MultiAssertionErrorBuilder$Companion {
-	public final fun create (Ljava/util/List;)Lio/kotest/assertions/errors/MultiAssertionErrorBuilder;
-}
-
 public final class io/kotest/assertions/nondeterministic/ContinuallyConfiguration {
 	public synthetic fun <init> (JJLio/kotest/assertions/nondeterministic/DurationFn;Lkotlin/jvm/functions/Function3;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1-UwyO8pc ()J
@@ -548,6 +485,18 @@ public final class io/kotest/assertions/print/ArrayPrint : io/kotest/assertions/
 	public fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 }
 
+public final class io/kotest/assertions/print/BigDecimalPrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/BigDecimalPrint;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Ljava/math/BigDecimal;I)Lio/kotest/assertions/print/Printed;
+}
+
+public final class io/kotest/assertions/print/BigIntegerPrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/BigIntegerPrint;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Ljava/math/BigInteger;I)Lio/kotest/assertions/print/Printed;
+}
+
 public final class io/kotest/assertions/print/BooleanPrint : io/kotest/assertions/print/Print {
 	public static final field INSTANCE Lio/kotest/assertions/print/BooleanPrint;
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
@@ -664,7 +613,6 @@ public final class io/kotest/assertions/print/PrintKt {
 	public static final fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
 	public static final fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 	public static final fun printFor (Ljava/lang/Object;)Lio/kotest/assertions/print/Print;
-	public static final fun printWithType (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
 	public static final fun printed (Ljava/lang/String;)Lio/kotest/assertions/print/Printed;
 }
 
@@ -679,6 +627,12 @@ public final class io/kotest/assertions/print/ShortPrint : io/kotest/assertions/
 	public static final field INSTANCE Lio/kotest/assertions/print/ShortPrint;
 	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
 	public fun print (SI)Lio/kotest/assertions/print/Printed;
+}
+
+public final class io/kotest/assertions/print/StringBuilderPrint : io/kotest/assertions/print/Print {
+	public static final field INSTANCE Lio/kotest/assertions/print/StringBuilderPrint;
+	public synthetic fun print (Ljava/lang/Object;I)Lio/kotest/assertions/print/Printed;
+	public fun print (Ljava/lang/StringBuilder;I)Lio/kotest/assertions/print/Printed;
 }
 
 public final class io/kotest/assertions/print/StringPrint : io/kotest/assertions/print/Print {

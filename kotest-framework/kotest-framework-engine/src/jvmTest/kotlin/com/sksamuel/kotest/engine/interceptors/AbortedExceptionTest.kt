@@ -10,6 +10,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.collections.shouldMatchEach
 import io.kotest.matchers.shouldBe
 import org.opentest4j.TestAbortedException
+import org.opentest4j.TestSkippedException
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class AbortedExceptionTest : FreeSpec({
@@ -23,6 +24,10 @@ class AbortedExceptionTest : FreeSpec({
       collector.tests.toList().shouldMatchEach(
          {
             it.first.name.name shouldBe "opentest4j TestAbortedException should be marked as Ignored"
+            it.second.isIgnored.shouldBeTrue()
+         },
+         {
+            it.first.name.name shouldBe "opentest4j TestSkippedException should be marked as Ignored"
             it.second.isIgnored.shouldBeTrue()
          },
          {
@@ -45,6 +50,10 @@ private class DummySpec : FreeSpec({
 
    "opentest4j TestAbortedException should be marked as Ignored" {
       throw TestAbortedException()
+   }
+
+   "opentest4j TestSkippedException should be marked as Ignored" {
+      throw TestSkippedException()
    }
 
    "kotest TestAbortedException should be marked as Ignored" {
