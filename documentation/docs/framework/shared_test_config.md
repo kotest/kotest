@@ -8,8 +8,9 @@ slug: sharedtestconfig.html
 
 This page describes how to use `DefaultTestConfig` to share test configuration across multiple test cases in your specs.
 
-!!! note New Feature in Kotest 6.0
-    This feature is available in Kotest 6.0 and later.
+:::note
+This feature is available in Kotest 6.0 and later.
+:::
 
 ## Introduction
 

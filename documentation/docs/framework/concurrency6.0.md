@@ -4,9 +4,10 @@ title: Concurrency6
 slug: concurrency6.html
 ---
 
-!!! note "Kotest 6.0"
-    This document describes the new concurrency features introduced in Kotest 6.0.
-    If you are using an earlier version of Kotest, please refer to the [previous concurrency documentation](https://kotest.io/docs/framework/concurrency.html).
+:::note
+This document describes the new concurrency features introduced in Kotest 6.0.
+If you are using an earlier version of Kotest, please refer to the [previous concurrency documentation](https://kotest.io/docs/framework/concurrency.html).
+:::
 
 Concurrency is at the heart of Kotlin, with compiler support for continuations (suspend functions), enabling
 the powerful coroutines library, in addition to the standard Java concurrency tools.
@@ -36,9 +37,10 @@ concurrently can be significant.
 
 ## Concurrency Modes
 
-!!! note "JVM Only
-    The concurrency modes described below are only available on the JVM platform.
-    On other platforms, tests will always run sequentially.
+:::note
+The concurrency modes described below are only available on the JVM platform.
+On other platforms, tests will always run sequentially.
+:::
 
 
 Kotest provides two types of concurrency modes:
@@ -226,6 +228,7 @@ class BlockingTestSpec : StringSpec({
 })
 ```
 
-!!! tip
-  The `blockingTest` mode is only necessary when you're using blocking calls in your tests.
-  For tests that use suspending functions, the regular timeout mechanism works fine without needing to enable this mode.
+:::tip
+The `blockingTest` mode is only necessary when you're using blocking calls in your tests.
+For tests that use suspending functions, the regular timeout mechanism works fine without needing to enable this mode.
+:::
