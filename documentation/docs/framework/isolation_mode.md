@@ -47,7 +47,7 @@ Jasmine, and other Javascript frameworks, but different to JUnit.
 The default isolation mode is `SingleInstance` whereby one instance of the Spec class is created and then each test case
 is executed in turn until all tests have completed.
 
-For example, in the following spec, the same id would be printed three times as the same instance is used for all tests.
+For example, in the following spec, the same id would be printed four times as the same instance is used for all tests.
 
 ```kotlin
 class SingleInstanceExample : WordSpec({
@@ -60,6 +60,9 @@ class SingleInstanceExample : WordSpec({
     "c" {
       println(id)
     }
+  }
+  "d" should {
+    println(id)
   }
 })
 ```
