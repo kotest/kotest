@@ -1,6 +1,6 @@
 ---
 id: concurrency6
-title: Concurrency6
+title: Concurrency
 slug: concurrency6.html
 ---
 
