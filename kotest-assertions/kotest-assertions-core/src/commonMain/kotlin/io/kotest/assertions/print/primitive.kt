@@ -1,61 +1,61 @@
 package io.kotest.assertions.print
 
 object NullPrint : Print<Any?> {
-   override fun print(a: Any?, level: Int): Printed = Printed("${indent(level)}<null>", null)
+   override fun print(a: Any?): Printed = Printed("<null>", null)
 }
 
 object BooleanPrint : Print<Boolean> {
-   override fun print(a: Boolean, level: Int): Printed = Printed("${indent(level)}$a", Boolean::class)
+   override fun print(a: Boolean): Printed = Printed("$a", Boolean::class)
 }
 
 object DoublePrint : Print<Double> {
-   override fun print(a: Double, level: Int): Printed = Printed("${indent(level)}$a", Double::class)
+   override fun print(a: Double): Printed = Printed("$a", Double::class)
 }
 
 /**
  * Floats's are printed out as is, with the suffix f.
  */
 object FloatPrint : Print<Float> {
-   override fun print(a: Float, level: Int): Printed = Printed("${indent(level)}${a}f", Float::class)
+   override fun print(a: Float): Printed = Printed("${a}f", Float::class)
 }
 
 /**
  * Long's are printed out as is, with the suffix L.
  */
 object LongPrint : Print<Long> {
-   override fun print(a: Long, level: Int): Printed = Printed("${indent(level)}${a}L", Long::class)
+   override fun print(a: Long): Printed = Printed("${a}L", Long::class)
 }
 
 object IntPrint : Print<Int> {
-   override fun print(a: Int, level: Int): Printed = Printed("${indent(level)}$a", Int::class)
+   override fun print(a: Int): Printed = Printed("$a", Int::class)
 }
 
 object CharPrint : Print<Char> {
-   override fun print(a: Char, level: Int): Printed = Printed("${indent(level)}'$a'", Char::class)
+   override fun print(a: Char): Printed = Printed("'$a'", Char::class)
 }
 
 object ShortPrint : Print<Short> {
-   override fun print(a: Short, level: Int): Printed = Printed("${indent(level)}$a", Short::class)
+   override fun print(a: Short): Printed = Printed("$a", Short::class)
 }
 
 object BytePrint : Print<Byte> {
-   override fun print(a: Byte, level: Int): Printed = Printed("${indent(level)}$a", Byte::class)
+   override fun print(a: Byte): Printed = Printed("$a", Byte::class)
 }
 
 object UBytePrint : Print<UByte> {
-   override fun print(a: UByte, level: Int): Printed = Printed("${indent(level)}$a (UByte)", UByte::class)
+   override fun print(a: UByte): Printed = Printed("$a (UByte)", UByte::class)
 }
 
 object UShortPrint : Print<UShort> {
-   override fun print(a: UShort, level: Int): Printed = Printed("${indent(level)}$a (UShort)", UShort::class)
+   override fun print(a: UShort): Printed = Printed("$a (UShort)", UShort::class)
 }
 
 object UIntPrint : Print<UInt> {
-   override fun print(a: UInt, level: Int): Printed = Printed("${indent(level)}$a (UInt)", UInt::class)
+   override fun print(a: UInt): Printed = Printed("$a (UInt)", UInt::class)
 }
 
 object ULongPrint : Print<ULong> {
-   override fun print(a: ULong, level: Int): Printed = Printed("${indent(level)}$a (ULong)", ULong::class)
+   override fun print(a: ULong): Printed = Printed("$a (ULong)", ULong::class)
 }
 
 /**
@@ -63,25 +63,25 @@ object ULongPrint : Print<ULong> {
  * to object a [Printed] result.
  */
 object ToStringPrint : Print<Any> {
-   override fun print(a: Any, level: Int): Printed = Printed("${indent(level)}$a")
+   override fun print(a: Any): Printed = Printed("$a")
 }
 
 object LongRangePrint : Print<LongRange> {
-   override fun print(a: LongRange, level: Int): Printed = Printed("${indent(level)}$a", LongRange::class)
+   override fun print(a: LongRange): Printed = Printed("$a", LongRange::class)
 }
 
 object IntRangePrint : Print<IntRange> {
-   override fun print(a: IntRange, level: Int): Printed = Printed("${indent(level)}$a", IntRange::class)
+   override fun print(a: IntRange): Printed = Printed("$a", IntRange::class)
 }
 
 object CharRangePrint : Print<CharRange> {
-   override fun print(a: CharRange, level: Int): Printed = Printed("${indent(level)}$a", CharRange::class)
+   override fun print(a: CharRange): Printed = Printed("$a", CharRange::class)
 }
 
 object ULongRangePrint : Print<ULongRange> {
-   override fun print(a: ULongRange, level: Int): Printed = Printed("${indent(level)}$a", ULongRange::class)
+   override fun print(a: ULongRange): Printed = Printed("$a", ULongRange::class)
 }
 
 object UIntRangePrint : Print<UIntRange> {
-   override fun print(a: UIntRange, level: Int): Printed = Printed("${indent(level)}$a", UIntRange::class)
+   override fun print(a: UIntRange): Printed = Printed("$a", UIntRange::class)
 }

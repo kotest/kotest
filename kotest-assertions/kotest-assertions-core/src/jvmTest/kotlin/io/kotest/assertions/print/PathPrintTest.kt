@@ -7,7 +7,7 @@ import java.nio.file.Paths
 
 class PathPrintTest : FunSpec({
    test("path print") {
-      PathPrint.print(Paths.get("foo/bar.txt"), 0) shouldBe Printed(value = "foo/bar.txt", type = Path::class)
-      PathPrint.print(Paths.get("/tmp/foo"), 0) shouldBe Printed(value = "/tmp/foo", type = Path::class)
+      PathPrint.print(Paths.get("foo/bar.txt")) shouldBe Printed(value = "foo/bar.txt", type = Path::class)
+      PathPrint.print(Paths.get("/tmp/foo")) shouldBe Printed(value = "/tmp/foo", type = Path::class)
    }
 })

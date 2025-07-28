@@ -7,5 +7,5 @@ import kotlin.reflect.KClass
  * Prints a [KClass] using the qualified name of the class if available, otherwise the simple name.
  */
 object KClassPrint : Print<KClass<*>> {
-   override fun print(a: KClass<*>, level: Int): Printed = Printed(a.bestName(), KClass::class)
+   override fun print(a: KClass<*>): Printed = Printed(a.bestName(), KClass::class)
 }
