@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.throwablehandling
 
 
-import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.MultiAssertionError
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldNotThrowAnyUnit
 import io.kotest.assertions.throwables.shouldThrowAny

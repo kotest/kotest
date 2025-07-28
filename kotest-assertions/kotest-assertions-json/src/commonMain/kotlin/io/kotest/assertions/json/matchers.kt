@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
 
 /**
- * Returns a [Matcher] that verifies that two JSON strings are equal.
+ * Returns a [io.kotest.matchers.Matcher] that verifies that two JSON strings are equal.
  *
  * This matcher will consider two JSON strings matched if they have the same key-values pairs.
  * The [CompareJsonOptions] parameter can be used to configure the matcher behavior.
@@ -32,7 +32,7 @@ fun equalJson(
    }
 
 /**
- * Returns a [Matcher] that verifies JSON trees are equal.
+ * Returns a [io.kotest.matchers.Matcher] that verifies JSON trees are equal.
  *
  * This common matcher requires JSON in Kotest's [JsonNode] abstraction.
  *

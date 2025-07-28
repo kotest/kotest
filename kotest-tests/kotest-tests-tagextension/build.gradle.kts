@@ -6,10 +6,10 @@ kotlin {
    jvm()
 
    sourceSets {
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestRunner.kotestRunnerJunit5)
          }
       }

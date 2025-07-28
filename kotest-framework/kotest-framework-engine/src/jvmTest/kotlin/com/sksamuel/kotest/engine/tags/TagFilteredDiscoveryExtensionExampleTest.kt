@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.engine.tags
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.Tags
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.annotation.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TagExtension
@@ -40,6 +40,6 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
 @Tags("SpecExcluded")
 private class ShouldBeExcluded : StringSpec({
    "Spec marked with a excluded tag" {
-      fail("Should never execute (excluded by spec tag)")
+     AssertionErrorBuilder.fail("Should never execute (excluded by spec tag)")
    }
 })

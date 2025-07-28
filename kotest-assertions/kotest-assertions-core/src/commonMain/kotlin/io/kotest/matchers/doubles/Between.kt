@@ -2,7 +2,6 @@ package io.kotest.matchers.doubles
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -78,7 +77,7 @@ fun between(a: Double, b: Double, tolerance: Double): Matcher<Double> = object :
    override fun test(value: Double): MatcherResult {
       val min = a - tolerance
       val max = b + tolerance
-      return invoke(
+      return MatcherResult.invoke(
          value in min..max,
          { "$value is outside expected range [$a, $b] (using tolerance $tolerance)" },
          { "$value is not outside expected range [$a, $b] (using tolerance $tolerance)" }

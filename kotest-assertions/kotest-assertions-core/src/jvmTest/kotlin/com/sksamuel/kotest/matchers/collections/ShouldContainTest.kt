@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.EqualityResult
+import io.kotest.assertions.equals.SimpleEqualityResult
+import io.kotest.assertions.equals.SimpleEqualityResultDetail
+import io.kotest.assertions.equals.byObjectEquality
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.equals.Equality
-import io.kotest.equals.EqualityResult
-import io.kotest.equals.SimpleEqualityResult
-import io.kotest.equals.SimpleEqualityResultDetail
-import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain

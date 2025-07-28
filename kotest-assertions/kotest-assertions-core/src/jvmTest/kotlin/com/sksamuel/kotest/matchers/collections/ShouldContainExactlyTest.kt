@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.matchers.collections
 
+import com.sksamuel.kotest.matchers.collections.ShouldContainExactlyTest.Companion.expectedPath
+import com.sksamuel.kotest.matchers.collections.ShouldContainExactlyTest.Companion.inputPath
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.EqualityResult
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.equals.Equality
-import io.kotest.equals.EqualityResult
 import io.kotest.matchers.collections.CountMismatch
 import io.kotest.matchers.collections.containExactly
 import io.kotest.matchers.collections.containExactlyInAnyOrder
@@ -30,7 +32,7 @@ import io.kotest.property.exhaustive.of
 import java.io.File
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
+import java.util.TreeSet
 import java.util.concurrent.ConcurrentSkipListSet
 import kotlin.time.Duration.Companion.seconds
 

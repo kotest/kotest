@@ -1,7 +1,7 @@
 package io.kotest.matchers.compilation
 
 import com.tschuchort.compiletesting.KotlinCompilation.ExitCode
-import io.kotest.assertions.throwables.shouldThrowExactly
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
@@ -70,12 +70,12 @@ class CompilationsMatcherTest : StringSpec() {
              val aString: String = 123
           """
 
-         shouldThrowExactly<AssertionError> {
-            rawStringCodeSnippet.shouldNotCompile("Initializer type mismatch: expected 'Int', actual 'String'")
+         shouldThrow<AssertionError> {
+            rawStringCodeSnippet.shouldNotCompile("wobble")
          }
          file.writeText(rawStringCodeSnippet)
-         shouldThrowExactly<AssertionError> {
-            file.shouldNotCompile("Initializer type mismatch: expected 'Int', actual 'String'")
+         shouldThrow<AssertionError> {
+            file.shouldNotCompile("wobble")
          }
       }
 

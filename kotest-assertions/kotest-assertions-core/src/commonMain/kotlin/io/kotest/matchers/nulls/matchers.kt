@@ -2,7 +2,6 @@ package io.kotest.matchers.nulls
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.MatcherResult.Companion.invoke
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.contracts.contract
@@ -115,7 +114,7 @@ fun beNull() = object : Matcher<Any?> {
   override fun test(value: Any?): MatcherResult {
     val passed = value == null
 
-     return invoke(
+     return MatcherResult.invoke(
         passed,
         { "Expected value to be null, but was $value." },
         { "Expected value to not be null, but was null." }

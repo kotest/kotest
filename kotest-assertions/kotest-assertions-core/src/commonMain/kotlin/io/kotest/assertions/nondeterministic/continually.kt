@@ -1,6 +1,6 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.failure
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.nonDeterministicTestTimeSource
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
@@ -46,13 +46,14 @@ suspend fun <T> continually(
          when (ex) {
             is AssertionError -> {
                if (iterations == 0) throw ex
-               throw failure(
-                  message = "Test failed after ${start.elapsedNow()}; " +
-                     "expected to pass for ${config.duration}; " +
-                     "attempted $iterations times\n" +
-                     "Underlying failure was: ${ex.message}",
-                  cause = ex
-               )
+               throw AssertionErrorBuilder.create()
+                  .withMessage(
+                     "Test failed after ${start.elapsedNow()}; " +
+                        "expected to pass for ${config.duration}; " +
+                        "attempted $iterations times\n" +
+                        "Underlying failure was: ${ex.message}",
+                  ).withCause(ex)
+                  .build()
             }
 
             else -> throw ex

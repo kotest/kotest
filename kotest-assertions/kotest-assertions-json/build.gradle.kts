@@ -7,24 +7,23 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             compileOnly(libs.jetbrainsAnnotations)
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.serialization.json)
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
 
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestProperty)
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(libs.jayway.json.path)
          }

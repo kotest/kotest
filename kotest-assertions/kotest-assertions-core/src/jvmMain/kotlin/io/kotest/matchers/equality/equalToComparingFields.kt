@@ -5,7 +5,6 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import java.lang.AssertionError
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 

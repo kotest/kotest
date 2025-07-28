@@ -1,7 +1,7 @@
 package io.kotest.matchers.floats
 
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult.Companion.invoke
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
@@ -43,7 +43,7 @@ fun Float.shouldNotBeNegative(): Float {
 }
 
 fun negative() = object : Matcher<Float> {
-   override fun test(value: Float) = invoke(
+   override fun test(value: Float) = MatcherResult.invoke(
       value < 0.0F,
       { "$value should be < 0.0F" },
       { "$value should not be < 0.0F" }

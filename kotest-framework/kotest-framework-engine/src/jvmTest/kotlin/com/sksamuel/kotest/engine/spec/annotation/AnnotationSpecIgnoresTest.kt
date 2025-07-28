@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.annotation
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.AnnotationSpec
@@ -35,7 +35,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
 class AnnotationSpecWithBangTest : AnnotationSpec() {
    @Test
    fun `!foo`() {
-      fail("This should never execute as the test name starts with !")
+     AssertionErrorBuilder.fail("This should never execute as the test name starts with !")
    }
 }
 
@@ -43,6 +43,6 @@ class AnnotationSpecAtIgnoreTest : AnnotationSpec() {
    @Ignore
    @Test
    fun bar() {
-      fail("This should never execute as the test is marked with @Ignore")
+     AssertionErrorBuilder.fail("This should never execute as the test is marked with @Ignore")
    }
 }

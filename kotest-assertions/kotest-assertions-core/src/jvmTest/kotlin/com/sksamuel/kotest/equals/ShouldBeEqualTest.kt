@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.equals
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.equals.shouldNotBeEqual
+import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ShouldBeEqualTest : FunSpec() {
@@ -24,6 +26,12 @@ class ShouldBeEqualTest : FunSpec() {
             }
          }
          Foo() shouldNotBeEqual Foo()
+      }
+      test("should generate diff") {
+         val listA = listOf(1, 2, 3, 4)
+         val listB = listOf(1, 2, 3)
+         shouldThrow<AssertionError> { listA shouldBeEqual listB }.message shouldBe """[1, 2, 3, 4] should be equal to [1, 2, 3]
+expected:<[1, 2, 3]> but was:<[1, 2, 3]>"""
       }
    }
 }

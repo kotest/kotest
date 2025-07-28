@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.examples
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.spec.style.BehaviorSpec
 
 class BehaviorSpecExample : BehaviorSpec() {
@@ -14,37 +14,37 @@ class BehaviorSpecExample : BehaviorSpec() {
               // test here
            }
            xthen("disabled") {
-              fail("boom")
+             AssertionErrorBuilder.fail("boom")
            }
            xThen("capitalized disabled then") {
-              fail("boom")
+             AssertionErrorBuilder.fail("boom")
            }
         }
         xWhen("capitalized disabled when") {
            Then("to keep context happy") {}
-           fail("Boom")
+          AssertionErrorBuilder.fail("Boom")
         }
         and("another given scope") {
            Then("to keep context happy") {}
         }
         xand("uncapitalized disabled and") {
            Then("to keep context happy") {}
-           fail("Boom")
+          AssertionErrorBuilder.fail("Boom")
         }
         xAnd("capitalized disabled and") {
            Then("to keep context happy") {}
-           fail("Boom")
+          AssertionErrorBuilder.fail("Boom")
         }
      }
      xgiven("disabled given") {
         `when`("should be ignored") {
            Then("to keep context happy") {}
-           fail("boom")
+          AssertionErrorBuilder.fail("boom")
         }
      }
      xGiven("a capitalized disabled given") {
         Then("to keep context happy") {}
-        fail("boom")
+       AssertionErrorBuilder.fail("boom")
      }
      Given("a capital given") {
         When("this when uses capitals to avoid backticks") {
@@ -69,11 +69,11 @@ class BehaviorSpecExample : BehaviorSpec() {
         }
         xwhen("an xdisabled when") {
            Then("to keep context happy") {}
-           fail("boom")
+          AssertionErrorBuilder.fail("boom")
         }
         And("an and scope") {
            xthen("xdisabled test") {
-              fail("boom")
+             AssertionErrorBuilder.fail("boom")
            }
         }
      }

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.matchers.resource
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.ComparableMatcherResult
@@ -36,7 +36,7 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue shouldMatchResource "/resourceMatchersTest/expected/binary42.bin"
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/binary42.bin"
          errorMessage shouldContain "Actual   : .*/resourceMatchersTest/expected/_actual/binary42\\.bin".toRegex()
@@ -47,7 +47,7 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue shouldMatchResource "/resourceMatchersTest/expected/binary42.bin"
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          val actualValueFile = errorMessage.fileFromRegex(
             "Actual   : .*/resourceMatchersTest/expected/_actual/binary42\\.bin".toRegex()
@@ -94,7 +94,7 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue shouldNotMatchResource "/resourceMatchersTest/expected/binary42.bin"
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/binary42.bin"
       }

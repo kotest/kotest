@@ -1,9 +1,8 @@
 package com.sksamuel.kotest.assertions
 
-import io.kotest.assertions.ExceptionWithClue
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
@@ -26,9 +25,8 @@ class ClueTest : FreeSpec({
          override fun test(value: String) = MatcherResult(
             false,
             { "Should have the details of '$value' and $other" },
-            {
-               "Should have the details of '$value' and $other"
-            })
+            { "Should have the details of '$value' and $other" }
+         )
       }
 
       "should prepend clue to message with a newline" {
@@ -67,7 +65,7 @@ class ClueTest : FreeSpec({
 
       "should not invoke the lazy clue if an assertion succeeds" {
          @Suppress("DEPRECATION")
-         withClue(lazy { fail("lazy clue must not be called in case assertion succeeds") }) {
+         withClue(lazy { AssertionErrorBuilder.fail("lazy clue must not be called in case assertion succeeds") }) {
             1 + 1 shouldBe 2
          }
       }
@@ -78,7 +76,7 @@ class ClueTest : FreeSpec({
          withClue(lazy {
             counter -= 1
             if (counter == 0) {
-               fail("lazy clue must be called only once")
+               AssertionErrorBuilder.fail("lazy clue must be called only once")
             }
             "extra lazy message"
          }) {
@@ -87,7 +85,7 @@ class ClueTest : FreeSpec({
       }
 
       "should not invoke { .. } clue if an assertion succeeds" {
-         withClue({ fail("{ .. } clue must not be called in case assertion succeeds") }) {
+         withClue({ AssertionErrorBuilder.fail("{ .. } clue must not be called in case assertion succeeds") }) {
             1 + 1 shouldBe 2
          }
       }
@@ -97,7 +95,7 @@ class ClueTest : FreeSpec({
          withClue({
             counter -= 1
             if (counter == 0) {
-               fail("{ .. } clue must be called only once")
+               AssertionErrorBuilder.fail("{ .. } clue must be called only once")
             }
             "extra lazy message"
          }) {
@@ -139,21 +137,17 @@ class ClueTest : FreeSpec({
       }
 
       "should add clue when Exception is thrown" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             withClue("some clue") {
                val list = listOf("a", "b")
                   .single { it.length == 2 }
 
                list.shouldContain("something")
             }
-         }
-            .run {
-               clue shouldBe "some clue\n"
-               message.shouldContainInOrder(
-                  "some clue",
-                  "Collection contains no element matching the predicate.",
-               )
-            }
+         }.message.shouldContainInOrder(
+            "some clue",
+            "Collection contains no element matching the predicate.",
+         )
       }
    }
    "asClue()" - {
@@ -162,6 +156,21 @@ class ClueTest : FreeSpec({
             "a clue:".asClue { "1" shouldBe "2" }
          }
          ex.message shouldBe "a clue:\nexpected:<\"2\"> but was:<\"1\">"
+      }
+
+      "should handle nesting" {
+         shouldThrow<AssertionError> {
+            withClue("outer clue") {
+               withClue("middle clue") {
+                  withClue("inner clue") {
+                     "hello" shouldBe null
+                  }
+               }
+            }
+         }.message shouldBe """outer clue
+middle clue
+inner clue
+Expected null but actual was "hello""""
       }
 
       "should add clues correctly with multiple/softAssert" {
@@ -214,7 +223,8 @@ class ClueTest : FreeSpec({
                   delay(1000)
                }
             }
-         }.message shouldBe "timey timey\nTimed out waiting for 2 ms"
+         }.message shouldBe """timey timey
+Timed out waiting for 2 ms"""
       }
 
       "clue should work where expected or actual is null" {
@@ -231,7 +241,7 @@ class ClueTest : FreeSpec({
       }
 
       "should add clue when Exception is thrown" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             "some clue".asClue {
                val list = listOf("a", "b")
                   .single { it.length == 2 }
@@ -240,7 +250,6 @@ class ClueTest : FreeSpec({
             }
          }
             .run {
-               clue shouldBe "some clue\n"
                message.shouldContainInOrder(
                   "some clue",
                   "Collection contains no element matching the predicate.",
@@ -249,7 +258,7 @@ class ClueTest : FreeSpec({
       }
 
       "should not duplicate clue messages when Exception is thrown" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             "outer clue".asClue {
                "inner clue".asClue {
                   val list = listOf("a", "b")
@@ -260,7 +269,6 @@ class ClueTest : FreeSpec({
             }
          }
             .run {
-               clue shouldBe "outer clue\ninner clue\n"
                message.shouldContainInOrder(
                   "outer clue",
                   "inner clue",
@@ -270,7 +278,7 @@ class ClueTest : FreeSpec({
       }
 
       "should not contain inner clue when Exception is thrown in outer scope" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             "outer clue".asClue {
                "inner clue".asClue {
                   1 shouldBe 1
@@ -282,7 +290,6 @@ class ClueTest : FreeSpec({
             }
          }
             .run {
-               clue shouldBe "outer clue\n"
                message.shouldContainInOrder(
                   "outer clue",
                   "Collection contains no element matching the predicate.",

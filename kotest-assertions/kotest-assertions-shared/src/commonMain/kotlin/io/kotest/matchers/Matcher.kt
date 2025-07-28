@@ -1,6 +1,7 @@
 package io.kotest.matchers
 
-import io.kotest.matchers.MatcherResult.Companion.invoke
+import io.kotest.assertions.print.Printed
+import kotlin.js.JsName
 
 /**
  * A [Matcher] is the main abstraction in the assertions library.
@@ -18,27 +19,32 @@ interface Matcher<in T> {
 
    fun test(value: T): MatcherResult
 
-   infix fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { test(f(it)) }
-
+   /**
+    * Returns a [Matcher] which has the inverse logic of this matcher.
+    * Eg, if the matcher would fail on size < 10, this matcher would now pass for < 10.
+    * The error messages are inverted to match, so the failure message becomes the success message.
+    */
    fun invert(): Matcher<T> = Matcher {
       with(test(it)) {
          MatcherResult(!passed(), { negatedFailureMessage() }, { failureMessage() })
       }
    }
 
-   fun <T> Matcher<T>.invertIf(invert: Boolean): Matcher<T> = if (invert) invert() else this
+   infix fun <U> contramap(f: (U) -> T): Matcher<U> = Matcher { test(f(it)) }
+
+   fun invertIf(invert: Boolean): Matcher<T> = if (invert) invert() else this
 
    companion object {
 
       /**
        * Returns a [Matcher] for type T that will always fail with the given [error] message.
        */
-      fun <T> failure(error: String) = Matcher<T> { invoke(false, { error }, { "" }) }
+      fun <T> failure(error: String) = Matcher<T> { MatcherResult.invoke(false, { error }, { "" }) }
 
       /**
-       * Create matcher with the given function to evaluate the value and return a MatcherResult
+       * Creates a matcher with the given function to evaluate the value and return a [MatcherResult].
        *
-       * @param tester The function that evaluates a value and returns a MatcherResult
+       * @param tester The function that evaluates a value and returns a [MatcherResult].
        */
       inline operator fun <T> invoke(crossinline tester: (T) -> MatcherResult) = object : Matcher<T> {
          override fun test(value: T) = tester(value)
@@ -57,31 +63,6 @@ infix fun <T> Matcher<T>.or(other: Matcher<T>): Matcher<T> = Matcher {
       .takeIf(MatcherResult::passed)
       ?: other.test(it)
 }
-
-/**
- * A [Matcher] that asserts that the value is not `null` before performing the test.
- *
- * The matcher returned by [invert] will _also_ assert that the value is not `null`. Use this for matchers that
- * should fail on `null` values, whether called with `should` or `shouldNot`.
- */
-private class NeverNullMatcher<T : Any?>(
-   private val next: Matcher<T>
-) : Matcher<T?> {
-   override fun test(value: T?): MatcherResult =
-      when (value) {
-         null -> MatcherResult(false, { "Expecting actual not to be null" }, { "" })
-         else -> next.test(value)
-      }
-
-   override fun invert(): Matcher<T?> =
-      // invert the next matcher, but not the null check
-      NeverNullMatcher(next.invert())
-}
-
-fun <T : Any> neverNullMatcher(t: (T) -> MatcherResult): Matcher<T?> =
-   NeverNullMatcher(
-      Matcher { t(it) }
-   )
 
 /**
  * An instance of [MatcherResult] contains the result of an evaluation of a [Matcher].
@@ -123,6 +104,22 @@ interface MatcherResult {
    }
 }
 
+/**
+ * An instance of [MatcherResult] that contains the actual and expected values
+ * as [Printed] values, along with the failure and negated failure messages.
+ */
+data class ValuesMatcherResult(
+   @JsName("passed_val") val passed: Boolean,
+   val actual: Printed,
+   val expected: Printed,
+   val failureMessageFn: () -> String,
+   val negatedFailureMessageFn: () -> String,
+) : MatcherResult {
+   override fun passed(): Boolean = passed
+   override fun failureMessage(): String = failureMessageFn()
+   override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+}
+
 interface ComparableMatcherResult : MatcherResult {
 
    fun actual(): String
@@ -159,7 +156,7 @@ interface EqualityMatcherResult : MatcherResult {
          expected: Any?,
          failureMessageFn: () -> String,
          negatedFailureMessageFn: () -> String,
-         ): EqualityMatcherResult = object : EqualityMatcherResult {
+      ): EqualityMatcherResult = object : EqualityMatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()

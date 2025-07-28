@@ -1,15 +1,13 @@
 package io.kotest.engine.test.interceptors
 
-import io.kotest.assertions.assertionCounter
-import io.kotest.assertions.getAndReset
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import kotlin.time.Duration
+import io.kotest.matchers.assertionCounter
 
 /**
  * Wraps the test function checking for assertion mode,

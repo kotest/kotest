@@ -1,16 +1,16 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.equals.CommutativeEquality
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.countByEquality
 import io.kotest.assertions.print.print
-import io.kotest.equals.CommutativeEquality
-import io.kotest.equals.Equality
-import io.kotest.equals.countByEquality
+import io.kotest.assertions.similarity.possibleMatchesDescription
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.similarity.possibleMatchesDescription
 
 
 /**

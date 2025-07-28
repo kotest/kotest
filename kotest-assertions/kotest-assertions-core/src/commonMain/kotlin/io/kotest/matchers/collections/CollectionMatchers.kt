@@ -1,11 +1,11 @@
 package io.kotest.matchers.collections
 
-import io.kotest.assertions.ErrorCollectionMode
-import io.kotest.assertions.errorCollector
+import io.kotest.assertions.collector.runWithMode
 import io.kotest.assertions.print.print
-import io.kotest.assertions.runWithMode
+import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.errorCollector
 import io.kotest.matchers.neverNullMatcher
 
 fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())

@@ -7,8 +7,6 @@ kotlin {
    sourceSets {
       jvmMain {
          dependencies {
-            api(projects.kotestCommon)
-            api(projects.kotestAssertions.kotestAssertionsShared)
             api(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.junit4)
             api(libs.kotlinx.coroutines.core)

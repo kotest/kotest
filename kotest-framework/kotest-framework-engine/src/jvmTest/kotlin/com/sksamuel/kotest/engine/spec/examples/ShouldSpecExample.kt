@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.examples
 
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.should
 import io.kotest.matchers.string.haveLength
 
 class ShouldSpecExample : ShouldSpec() {

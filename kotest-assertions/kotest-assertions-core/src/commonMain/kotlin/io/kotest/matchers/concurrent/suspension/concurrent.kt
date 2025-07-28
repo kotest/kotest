@@ -1,7 +1,7 @@
 package io.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.failure
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.testTimeSource
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -34,8 +34,8 @@ suspend fun <A> shouldCompleteWithin(
       return withTimeout(duration) {
          operation()
       }
-   } catch (ex: TimeoutCancellationException) {
-      throw failure(
+   } catch (_: TimeoutCancellationException) {
+      AssertionErrorBuilder.fail(
          "Operation took longer than expected. " +
             "Expected that operation completed within $duration, but it took longer and was cancelled."
       )
@@ -69,7 +69,7 @@ suspend fun <A> shouldCompleteBetween(
    }
 
    if (durationRange.start > timeElapsed) {
-      throw failure(
+      AssertionErrorBuilder.fail(
          "Operation completed too quickly. " +
             "Expected that operation lasted at least ${durationRange.start}, but it took $timeElapsed."
       )

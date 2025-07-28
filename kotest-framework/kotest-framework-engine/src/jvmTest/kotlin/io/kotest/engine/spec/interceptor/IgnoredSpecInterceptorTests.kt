@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.assertions.all
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.Isolate
@@ -45,12 +45,12 @@ class IgnoredSpecInterceptorTests : FunSpec({
 
 @Ignored
 private class DefaultIgnoredSpec : FunSpec({
-   test("boom") { fail("boom") }
+   test("boom") { AssertionErrorBuilder.fail("boom") }
 })
 
 @Ignored("it's a good reason!")
 private class ReasonIgnoredSpec : FunSpec({
-   test("boom") { fail("boom") }
+   test("boom") { AssertionErrorBuilder.fail("boom") }
 })
 
 private class TestIgnoredSpecListener : AbstractTestEngineListener() {
