@@ -1,6 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.matchers.clueContextAsString
 import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.TimeoutCancellationException
 
@@ -30,11 +29,20 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
       return thunk()
       // this is a special control exception used by coroutines
    } catch (t: TimeoutCancellationException) {
-      throw AssertionErrorBuilder.create().withMessage(clueContextAsString() + (t.message ?: "")).build()
-   } catch (e: ExceptionWithClue) {
+      throw AssertionErrorBuilder.create()
+         .withMessage(t.message ?: "TimeoutCancellationException")
+         .withCause(t)
+         .build()
+      // this means that an assertion failed and the assertion error was created by a matcher
+      // which would include the context clues already, so we just throw it
+   } catch (e: AssertionError) {
       throw e
+      // this means that a non-assertion error was thrown, so we wrap it in an AssertionError
+      // the AssertionErrorBuilder will include the context clues in the error message
    } catch (e: Exception) {
-      throw ExceptionWithClue.from(clueContextAsString(), e)
+      throw AssertionErrorBuilder.create()
+         .withMessage(e.message ?: e::class.simpleName ?: "Exception")
+         .withCause(e).build()
    } finally {
       collector.popClue()
    }

@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.assertions
 
-import io.kotest.assertions.ExceptionWithClue
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.AssertionErrorBuilder
@@ -21,7 +20,7 @@ import kotlinx.coroutines.withTimeout
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ClueTest : FreeSpec({
 
-   "!withClue()" - {
+   "withClue()" - {
       fun withClueEcho(other: String) = object : Matcher<String> {
          override fun test(value: String) = MatcherResult(
             false,
@@ -77,7 +76,7 @@ class ClueTest : FreeSpec({
          withClue(lazy {
             counter -= 1
             if (counter == 0) {
-              AssertionErrorBuilder.fail("lazy clue must be called only once")
+               AssertionErrorBuilder.fail("lazy clue must be called only once")
             }
             "extra lazy message"
          }) {
@@ -86,7 +85,7 @@ class ClueTest : FreeSpec({
       }
 
       "should not invoke { .. } clue if an assertion succeeds" {
-         withClue({AssertionErrorBuilder.fail("{ .. } clue must not be called in case assertion succeeds") }) {
+         withClue({ AssertionErrorBuilder.fail("{ .. } clue must not be called in case assertion succeeds") }) {
             1 + 1 shouldBe 2
          }
       }
@@ -96,7 +95,7 @@ class ClueTest : FreeSpec({
          withClue({
             counter -= 1
             if (counter == 0) {
-              AssertionErrorBuilder.fail("{ .. } clue must be called only once")
+               AssertionErrorBuilder.fail("{ .. } clue must be called only once")
             }
             "extra lazy message"
          }) {
@@ -138,24 +137,20 @@ class ClueTest : FreeSpec({
       }
 
       "should add clue when Exception is thrown" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             withClue("some clue") {
                val list = listOf("a", "b")
                   .single { it.length == 2 }
 
                list.shouldContain("something")
             }
-         }
-            .run {
-               clue shouldBe "some clue\n"
-               message.shouldContainInOrder(
-                  "some clue",
-                  "Collection contains no element matching the predicate.",
-               )
-            }
+         }.message.shouldContainInOrder(
+            "some clue",
+            "Collection contains no element matching the predicate.",
+         )
       }
    }
-   "!asClue()" - {
+   "asClue()" - {
       "should prepend clue to message with a newline" {
          val ex = shouldThrow<AssertionError> {
             "a clue:".asClue { "1" shouldBe "2" }
@@ -214,7 +209,6 @@ class ClueTest : FreeSpec({
                }
             }
          }.message shouldBe """timey timey
-timey timey
 Timed out waiting for 2 ms"""
       }
 
@@ -232,7 +226,7 @@ Timed out waiting for 2 ms"""
       }
 
       "should add clue when Exception is thrown" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             "some clue".asClue {
                val list = listOf("a", "b")
                   .single { it.length == 2 }
@@ -241,7 +235,6 @@ Timed out waiting for 2 ms"""
             }
          }
             .run {
-               clue shouldBe "some clue\n"
                message.shouldContainInOrder(
                   "some clue",
                   "Collection contains no element matching the predicate.",
@@ -250,7 +243,7 @@ Timed out waiting for 2 ms"""
       }
 
       "should not duplicate clue messages when Exception is thrown" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             "outer clue".asClue {
                "inner clue".asClue {
                   val list = listOf("a", "b")
@@ -261,7 +254,6 @@ Timed out waiting for 2 ms"""
             }
          }
             .run {
-               clue shouldBe "outer clue\ninner clue\n"
                message.shouldContainInOrder(
                   "outer clue",
                   "inner clue",
@@ -271,7 +263,7 @@ Timed out waiting for 2 ms"""
       }
 
       "should not contain inner clue when Exception is thrown in outer scope" {
-         shouldThrow<ExceptionWithClue> {
+         shouldThrow<AssertionError> {
             "outer clue".asClue {
                "inner clue".asClue {
                   1 shouldBe 1
@@ -283,7 +275,6 @@ Timed out waiting for 2 ms"""
             }
          }
             .run {
-               clue shouldBe "outer clue\n"
                message.shouldContainInOrder(
                   "outer clue",
                   "Collection contains no element matching the predicate.",
