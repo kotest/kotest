@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.data.blocking
 
 import io.kotest.data.Row7
