@@ -1,7 +1,7 @@
 ---
-id: concurrency
-title: Concurrency
-slug: concurrency.html
+id: concurrency6
+title: Concurrency6
+slug: concurrency6.html
 ---
 
 !!! note "Kotest 6.0"
