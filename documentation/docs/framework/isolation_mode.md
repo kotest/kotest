@@ -3,7 +3,7 @@ title: Isolation Modes
 slug: isolation-mode.html
 ---
 
-:::warn
+:::warning
 The isolation mode `InstancePerRoot` is only available in Kotest 6.0 and later, and `InstancePerTest` and
 `InstancePerLeaf` are now deprecated due to undefined behavior in edge cases.
 :::

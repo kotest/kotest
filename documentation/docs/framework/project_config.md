@@ -3,7 +3,7 @@ title: Project Level Config
 slug: project-config.html
 ---
 
-:::warn
+:::warning
 This document describes project-level configuration in Kotest 6.0.
 If you were using project-level configuration in Kotest 5.x, note that the location of the project config instance
 is now **required** to be `io.kotest.provided.ProjectConfig`, otherwise it will not be picked up by the framework.
