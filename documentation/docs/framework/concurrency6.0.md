@@ -193,6 +193,111 @@ class ConcurrentTestsSpec : StringSpec({
 })
 ```
 
+## Coroutine Dispatcher Factory
+
+Kotest allows you to customize the coroutine dispatcher used for executing specs and tests through the
+`CoroutineDispatcherFactory` feature. This gives you fine-grained control over the execution context of your tests.
+
+The `CoroutineDispatcherFactory` interface provides methods to switch the `CoroutineDispatcher` used for:
+
+1. Spec callbacks (like `beforeSpec` and `afterSpec`)
+2. Test case execution
+
+### How It Works
+
+The `CoroutineDispatcherFactory` interface has two main methods:
+
+```kotlin
+interface CoroutineDispatcherFactory {
+  // For spec callbacks
+  suspend fun <T> withDispatcher(spec: Spec, f: suspend () -> T): T
+
+  // For test case execution
+  suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T
+
+  // Closes resources when the test engine completes
+  fun close() {}
+}
+```
+
+When a `CoroutineDispatcherFactory` is configured, Kotest will use it to determine which dispatcher to use when
+executing specs and tests.
+
+### Configuration Options
+
+You can configure a `CoroutineDispatcherFactory` at different levels:
+
+#### Project-wide configuration
+
+```kotlin
+class MyProjectConfig : AbstractProjectConfig() {
+    override val coroutineDispatcherFactory = ThreadPerSpecCoroutineContextFactory
+}
+```
+
+#### Spec-level configuration
+
+```kotlin
+class MySpec : StringSpec() {
+    // Option 1: Using property
+    init {
+        coroutineDispatcherFactory = ThreadPerSpecCoroutineContextFactory
+
+        // tests...
+    }
+
+    // Option 2: Using function
+    override fun coroutineDispatcherFactory() = ThreadPerSpecCoroutineContextFactory
+}
+```
+
+### Built-in Implementations
+
+Kotest provides a built-in implementation called `ThreadPerSpecCoroutineContextFactory` that creates a dedicated thread
+per spec.
+
+This implementation:
+- Creates a dedicated thread for each spec
+- Uses that thread as the coroutine dispatcher for the spec and all its tests
+- Shuts down the thread when the spec completes
+
+### Custom Implementation Example
+
+You can create your own custom implementation to suit your specific needs:
+
+```kotlin
+object CustomDispatcherFactory : CoroutineDispatcherFactory {
+
+   // A fixed thread pool with 4 threads
+   private val dispatcher = Executors.newFixedThreadPool(4).asCoroutineDispatcher()
+
+   override suspend fun <T> withDispatcher(spec: Spec, f: suspend () -> T): T {
+      return withContext(dispatcher) {
+         f()
+      }
+   }
+
+   override suspend fun <T> withDispatcher(testCase: TestCase, f: suspend () -> T): T {
+      return withContext(dispatcher) {
+         f()
+      }
+   }
+
+   override fun close() {
+      dispatcher.close()
+   }
+}
+```
+
+### Use Cases
+
+The `coroutineDispatcherFactory` feature is useful for:
+
+1. **Performance optimization**: Using a dedicated thread per spec can improve performance by reducing context switching
+2. **Resource isolation**: Ensuring each spec runs on its own thread can help isolate tests from each other
+3. **Custom threading models**: Implementing specific threading strategies for your test suite
+4. **Testing with specific dispatchers**: Testing code that behaves differently on different dispatchers
+
 ## Blocking Test Mode
 
 When working with blocking code in tests, you may encounter issues with timeouts not working as expected.
