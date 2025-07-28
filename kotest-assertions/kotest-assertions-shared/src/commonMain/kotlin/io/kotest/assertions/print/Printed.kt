@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
  * For example, a null might be formatted as <null>, whitespace
  * may be escaped and the empty string may be quoted.
  *
- * Optionally, a type can be provided to indicate the type of the value.
+ * Optionally, a type can be provided to indicate the original type of the value.
  */
 data class Printed(val value: String, val type: KClass<*>?) {
    constructor(value: String) : this(value, null)

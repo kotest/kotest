@@ -17,7 +17,7 @@ import kotlin.reflect.KClass
  *
  * @return [PathPrint] if [A] is a 'java.nio.file.Path',
  * or [FilePrint] if [A] is `java.io.File`,
- * or `null` otherwise.
+ * etc or `null` otherwise.
  */
 @Suppress("UNCHECKED_CAST")
 actual fun <A : Any> platformPrint(a: A): Print<A>? = when {
@@ -52,9 +52,4 @@ private fun javaIoFileKlass(): KClass<*>? = try {
   Class.forName("java.io.File").kotlin
 } catch (_: ClassNotFoundException) {
   null
-}
-
-internal actual fun Any?.printType() = when {
-   this == null -> "Nothing"
-   else -> this::class.qualifiedName ?: "UnknownType"
 }

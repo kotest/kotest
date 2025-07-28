@@ -1,6 +1,11 @@
 package io.kotest.assertions.print
 
+import java.io.File
 import java.nio.file.Path
+
+object FilePrint : Print<File> {
+   override fun print(a: File, level: Int): Printed = Printed((indent(level) + a.path), File::class)
+}
 
 object PathPrint : Print<Path> {
    override fun print(a: Path, level: Int): Printed = Printed(a.toString(), Path::class)

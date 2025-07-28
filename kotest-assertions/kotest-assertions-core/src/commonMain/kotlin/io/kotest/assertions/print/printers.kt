@@ -3,7 +3,7 @@ package io.kotest.assertions.print
 import kotlin.reflect.KClass
 
 /**
- * Global object that allows for registration of custom [Print] typeclasses.
+ * Global object that allows for registration of custom [Print] typeclasses for all platforms.
  */
 object Printers {
 

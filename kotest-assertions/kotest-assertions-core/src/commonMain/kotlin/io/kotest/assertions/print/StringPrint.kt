@@ -8,15 +8,9 @@ object StringPrint : Print<String> {
 
    private fun String.wrap() = """"$this""""
 
-   fun showNoWrap(a: String): Printed = when {
-      a == "" -> "<empty string>".printed()
-      a.isBlank() -> a.replace(" ", "\\s").wrap().printed()
-      else -> a.printed()
-   }
-
    override fun print(a: String, level: Int): Printed = when {
-      a == "" -> "<empty string>".printed()
-      a.isBlank() -> a.replace(" ", "\\s").wrap().printed()
-      else -> a.wrap().printed()
+      a == "" -> Printed("<empty string>", String::class)
+      a.isBlank() -> Printed(a.replace(" ", "\\s").wrap(), String::class)
+      else -> Printed(a.wrap(), String::class)
    }
 }

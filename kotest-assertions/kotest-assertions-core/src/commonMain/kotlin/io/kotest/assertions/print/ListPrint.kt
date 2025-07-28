@@ -21,7 +21,8 @@ class ListPrint<T>(
             else -> null
          }
 
-         return a.joinToString(
+         return Printed(
+            a.joinToString(
             separator = ", ",
             prefix = "[",
             postfix = "]",
@@ -32,7 +33,8 @@ class ListPrint<T>(
                it is Iterable<*> && it.toList() == a && a.size == 1 -> a[0].toString()
                else -> recursiveRepr(a, it, level).value
             }
-         }.printed()
+         }, null
+         )
       }
    }
 }
