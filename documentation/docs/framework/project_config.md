@@ -153,7 +153,7 @@ If you define test names over several lines then `removeTestNameWhitespace` can 
 }
 ```
 
-Then the test name in output will be `this is   my test case`. By setting `removeTestNameWhitespace` to true,
+Then the test name in output will be `this is _ _ _  my test case` (note: the underscores are added for emphasis). By setting `removeTestNameWhitespace` to true,
 then this name will be trimmed to `this is my test case`.
 
 An alternative way to enable this is by setting system property `kotest.framework.testname.multiline` to `true` which
