@@ -8,6 +8,10 @@ slug: package-level-config.html
 This page describes how to use package-level configuration to share configuration across multiple specs in the same
 package.
 
+!!! note "Kotest 6.0"
+    Package-level configuration was introduced in Kotest 6.0. If you are using an earlier version, please upgrade to
+    take advantage of this feature.
+
 ## Introduction
 
 When writing tests, you often need to apply the same configuration to multiple test files in the same package.
