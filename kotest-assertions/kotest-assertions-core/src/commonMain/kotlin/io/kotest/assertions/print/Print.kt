@@ -14,10 +14,9 @@ package io.kotest.assertions.print
 fun interface Print<in A> {
 
    /**
-    * Returns a [Printed] for the given instance [a], with a recursion
-    * level hint.
+    * Returns a [Printed] for the given instance [a].
     */
-   fun print(a: A, level: Int): Printed
+   fun print(a: A): Printed
 }
 
 internal fun indent(level: Int): String = "  ".repeat(level)
@@ -26,24 +25,16 @@ internal fun indent(level: Int): String = "  ".repeat(level)
  * Obtains a [Printed] instance for the given receiver by delegating to the common
  * and platform print lookups.
  */
-fun Any?.print(): Printed =
-   if (this == null) NullPrint.print(this, 0) else PrintResolver.printFor(this).print(this, 0)
+@Deprecated("Use PrintResolver.printFor instead", ReplaceWith("PrintResolver.printFor(this).print(this)"))
+fun Any?.print(): Printed = if (this == null) NullPrint.print(this) else PrintResolver.printFor(this).print(this)
 
-/**
- * Obtains a [Printed] instance for the given receiver by delegating to the common
- * and platform print lookups.
- */
-fun Any?.print(level: Int): Printed =
-   if (this == null) NullPrint.print(this, level) else PrintResolver.printFor(this).print(this, level)
-
-
-internal fun recursiveRepr(root: Any, node: Any?, level: Int): Printed {
+internal fun recursiveRepr(root: Any, node: Any?): Printed {
    return when (root) {
       node -> Printed("(this ${root::class.simpleName})")
       is Iterable<*> if node is Iterable<*> && root.toList() == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is Iterable<*> if node is Iterable<*> -> node.print(level)
+      is Iterable<*> if node is Iterable<*> -> node.print()
       is List<*> if node is Iterable<*> && root == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is List<*> if node is Iterable<*> -> node.print(level)
-      else -> node.print(level)
+      is List<*> if node is Iterable<*> -> node.print()
+      else -> node.print()
    }
 }

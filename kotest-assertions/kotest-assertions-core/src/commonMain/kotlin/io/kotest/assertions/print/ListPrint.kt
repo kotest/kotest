@@ -10,7 +10,7 @@ class ListPrint<T>(
    private val limitConfigValue: EnvironmentConfigValue<Int> = AssertionsConfig.maxCollectionPrintSize,
 ) : Print<List<T>> {
 
-   override fun print(a: List<T>, level: Int): Printed {
+   override fun print(a: List<T>): Printed {
       return if (a.isEmpty()) Printed("[]") else {
 
          val limit = limitConfigValue.value
@@ -31,7 +31,7 @@ class ListPrint<T>(
          ) {
             when {
                it is Iterable<*> && it.toList() == a && a.size == 1 -> a[0].toString()
-               else -> recursiveRepr(a, it, level).value
+               else -> recursiveRepr(a, it).value
             }
          }, null
          )

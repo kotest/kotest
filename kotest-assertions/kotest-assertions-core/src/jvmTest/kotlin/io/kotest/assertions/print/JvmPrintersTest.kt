@@ -6,8 +6,8 @@ import io.kotest.matchers.shouldBe
 class JvmPrintersTest : FunSpec() {
    init {
       test("should allow jvm printers registrations") {
-         Printers.add(Wobble::class) { value, level -> Printed("hello wobble ${value.a}") }
-         PrintResolver.printFor(Wobble("foo")).print(Wobble("foo"), 2) shouldBe Printed("hello wobble foo")
+         Printers.add(Wobble::class) { Printed("hello wobble ${it.a}") }
+         PrintResolver.printFor(Wobble("foo")).print(Wobble("foo")) shouldBe Printed("hello wobble foo")
       }
    }
 }
