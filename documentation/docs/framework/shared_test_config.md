@@ -23,6 +23,7 @@ Each of the configuration values can be overridden on a per-test basis, but if y
 defaults that are shared across several tests, then you can create an instance of this class and declare it in each of
 the specs that you wish to share the configuration.
 
+
 ## Basic Usage
 
 To set a default configuration for all tests in a spec, assign a `DefaultTestConfig` instance to the `defaultTestConfig`
