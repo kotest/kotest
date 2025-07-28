@@ -51,16 +51,6 @@ public final class io/kotest/assertions/EnvironmentConfigValue {
 	public final fun getValue ()Ljava/lang/Object;
 }
 
-public final class io/kotest/assertions/ExceptionWithClue : java/lang/RuntimeException {
-	public static final field Companion Lio/kotest/assertions/ExceptionWithClue$Companion;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V
-	public final fun getClue ()Ljava/lang/String;
-}
-
-public final class io/kotest/assertions/ExceptionWithClue$Companion {
-	public final fun from (Ljava/lang/String;Ljava/lang/Exception;)Lio/kotest/assertions/ExceptionWithClue;
-}
-
 public final class io/kotest/assertions/ExtractingKt {
 	public static final fun extracting (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 }

@@ -158,6 +158,21 @@ class ClueTest : FreeSpec({
          ex.message shouldBe "a clue:\nexpected:<\"2\"> but was:<\"1\">"
       }
 
+      "should handle nesting" {
+         shouldThrow<AssertionError> {
+            withClue("outer clue") {
+               withClue("middle clue") {
+                  withClue("inner clue") {
+                     "hello" shouldBe null
+                  }
+               }
+            }
+         }.message shouldBe """outer clue
+middle clue
+inner clue
+Expected null but actual was "hello""""
+      }
+
       "should add clues correctly with multiple/softAssert" {
          val ex = shouldThrow<AssertionError> {
             "outer clue:".asClue {
