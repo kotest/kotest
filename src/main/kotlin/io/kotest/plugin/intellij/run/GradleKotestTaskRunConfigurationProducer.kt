@@ -40,7 +40,6 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
     * Returns true if this configuration should replace the other configuration.
     */
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
-      println("Should replace ${self.configuration.name} over ${other.configuration.name}")
       // We need this Gradle configuration to take precedence over the previous kotest run that ran a java process directly.
       // However, we only want to do this if the user has enabled the kotest Gradle plugin
       // we don't have access to the module at this point, but we can assume that the presence of this configuration

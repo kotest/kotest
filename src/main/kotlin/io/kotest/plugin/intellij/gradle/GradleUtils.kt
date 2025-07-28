@@ -13,11 +13,10 @@ object GradleUtils {
    /**
     * Returns true if we have the Kotest Gradle plugin configured for the given module.
     */
-   @Suppress("UnstableApiUsage")
    fun hasGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
-      // if we have any kotest task in the project, we assume the plugin is applied
-      return hasKotestTask(listTasks(module).map { it.name })
+      // if we have any kotest gradle task in the project, we assume the plugin is applied
+      return kotestTasks(module).isNotEmpty()
    }
 
    @Suppress("UnstableApiUsage")
@@ -32,7 +31,22 @@ object GradleUtils {
    fun hasKotestTask(taskNames: List<String>): Boolean {
       // tasks from the gradle plugin are like kotest, jsKotest, jvmKotest, wasmJsKotest, etc.
       // so returns true if any task in the project ends with kotest
-      return taskNames.any { it.lowercase().endsWith("kotest") }
+      // todo really need some better way of identifying kotest tasks
+      return taskNames.any { isKotestTaskName(it) }
+   }
+
+   @Suppress("UnstableApiUsage")
+   fun kotestTasks(module: Module): List<GradleTaskData> {
+      return listTasks(module)
+         .filter { isKotestTaskName(it.name) }
+         .sortedBy { it.name }
+   }
+
+   fun isKotestTaskName(taskName: String): Boolean {
+      return taskName == "kotest" // jvm only task name
+         || taskName.endsWith("Kotest") // thinks like linuxX84Kotest
+         || taskName.endsWith("kotestDebugUnitTest") // android
+         || taskName.endsWith("kotestReleaseUnitTest") // android
    }
 
    fun getDescriptorArg(taskNames: List<String>): String? {
