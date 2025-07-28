@@ -100,9 +100,6 @@ possible `TestType` values:
 
 - `Container` - a container that can contain other tests,
 - `Test` - a leaf test that cannot contain nested tests,
-- `Dynamic` - can either be a container or a test
-and is used when tests are added dynamically
-via functionality such as property tests or data tests.
 
 |Callback|Description|
 |--------|-----------|
