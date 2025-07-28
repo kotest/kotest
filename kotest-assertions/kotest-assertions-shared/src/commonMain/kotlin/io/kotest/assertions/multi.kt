@@ -6,7 +6,11 @@ import io.kotest.common.stacktrace.stacktraces
 /**
  * An error that wraps one or more [Throwable]s.
  */
-class MultiAssertionError(val errors: List<Throwable>, message: String) : AssertionError(message)
+class MultiAssertionError(val errors: List<Throwable>, message: String) : AssertionError(message) {
+   init {
+      require(errors.size > 1) { "MultiAssertionError must contain at least two errors" }
+   }
+}
 
 class MultiAssertionErrorBuilder(private val errors: List<Throwable>) {
 
@@ -15,7 +19,7 @@ class MultiAssertionErrorBuilder(private val errors: List<Throwable>) {
    }
 
    /**
-    * Creates a [MultiAssertionError] from the given list of [errors].
+    * Creates an [AssertionError] from the given list of [errors].
     * The message will be created from the errors.
     */
    fun build(): MultiAssertionError {

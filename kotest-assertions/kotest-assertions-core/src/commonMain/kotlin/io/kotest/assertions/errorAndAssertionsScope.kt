@@ -2,6 +2,7 @@ package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.ErrorCollectionMode
+import io.kotest.matchers.ErrorCollector
 import io.kotest.matchers.assertionCounter
 import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.withContext
@@ -52,3 +53,12 @@ internal suspend fun <T> errorAndAssertionsScope(block: suspend () -> T): Triple
    return Triple(result, resultFailures, resultAssertions)
 }
 
+
+internal fun ErrorCollector.getAndReplace(errors: Collection<Throwable>): List<Throwable> {
+   val old = errors()
+
+   clear()
+   errors.forEach { pushError(it) }
+
+   return old
+}

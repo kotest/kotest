@@ -2,7 +2,6 @@ package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
 import io.kotest.common.ExperimentalKotest
-import io.kotest.common.KotestInternal
 import io.kotest.common.stacktrace.stacktraces
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.ErrorCollector
@@ -10,6 +9,7 @@ import io.kotest.matchers.errorCollector
 
 /**
  * Throws all errors currently collected in the [ErrorCollector].
+ * If no errors are collected, this function does nothing.
  */
 fun ErrorCollector.throwCollectedErrors() {
    collectErrors()?.let { throw it }
@@ -45,16 +45,6 @@ fun ErrorCollector.pushErrorAndMaybeThrow(error: Throwable) {
 }
 
 /**
- * Pushes the provided [error] onto the [errorCollector] and throws
- */
-@ExperimentalKotest
-@KotestInternal
-fun ErrorCollector.pushErrorAndThrow(error: Throwable): Nothing {
-   pushError(error)
-   throw collectErrors()!!
-}
-
-/**
  * If we are in "soft assertion mode" will add this throwable to the
  * list of throwables for the current execution. Otherwise will
  * throw immediately.
@@ -79,13 +69,4 @@ fun ErrorCollector.collectOrThrow(errors: Collection<Throwable>) {
    if (getCollectionMode() == ErrorCollectionMode.Hard) {
       throwCollectedErrors()
    }
-}
-
-fun ErrorCollector.getAndReplace(errors: Collection<Throwable>): List<Throwable> {
-   val old = errors()
-
-   clear()
-   errors.forEach { pushError(it) }
-
-   return old
 }

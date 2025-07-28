@@ -40,7 +40,6 @@ public final class io/kotest/assertions/AssertionErrorBuilder_jvmKt {
 public final class io/kotest/assertions/CollectorKt {
 	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
 	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
-	public static final fun getAndReplace (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)Ljava/util/List;
 	public static final fun pushErrorAndMaybeThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
 	public static final fun pushErrors (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
 	public static final fun throwCollectedErrors (Lio/kotest/matchers/ErrorCollector;)V
