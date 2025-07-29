@@ -21,6 +21,7 @@ defaultValue="JVM/Gradle"
 values={[
 {label: 'JVM/Gradle', value: 'JVM/Gradle'},
 {label: 'Kotlin/JS', value: 'JS'},
+{label: 'Kotlin/WasmJS', value: 'WasmJS'},
 {label: 'Kotlin/Native', value: 'Native'},
 {label: 'Android', value: 'Android'},
 ]}>
@@ -106,8 +107,48 @@ Tests can be placed in either `commonTest` or `jsTest`.
 Run your tests using the `jsKotest` gradle task.
 
 :::note
-The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
-based configuration will not work as Kotlin does not expose annotations at runtime to native code.
+The JS test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to JS code.
+:::
+
+   </TabItem>
+   <TabItem value="WasmJS">
+
+:::tip
+A working WasmJS project can be found here: https://github.com/kotest/kotest-examples
+:::
+
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
+
+For example:
+
+```kotlin
+plugins {
+   id("io.kotest") version "$version"
+}
+```
+
+Add the engine dependency to your `commonTest` or `wasmJsTest` source set:
+
+```kotlin
+kotlin {
+   js()
+   sourceSets {
+      wasmJsTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:$version")
+         }
+      }
+   }
+}
+```
+
+Tests can be placed in either `commonTest` or `wasmJsTest`.
+Run your tests using the `wasmJsKotest` gradle task.
+
+:::note
+The WasmJS test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to Wasm code.
 :::
 
    </TabItem>
@@ -128,7 +169,7 @@ plugins {
 }
 ```
 
-Add the engine dependency to your `commonTest` dependencies block:
+Add the engine dependency to your `commonTest`, `nativeTest` or platform specific sourceset:
 
 ```kotlin
 kotlin {
@@ -144,12 +185,13 @@ kotlin {
 ```
 
 Tests can be placed in either `commonTest` or a specific native sourceset.
-Run your tests using the kotest test tasks that mirror the target names, for example `linuxX86Kotest`.
+Run your tests using the kotest tasks that mirror the target names, for example `linuxX86Kotest`.
 
 :::note
 The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
 based configuration will not work as Kotlin does not expose annotations at runtime to native code.
 :::
+
    </TabItem>
    <TabItem value="Android">
 
