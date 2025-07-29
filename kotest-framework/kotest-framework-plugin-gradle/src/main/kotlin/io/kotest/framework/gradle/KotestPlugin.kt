@@ -88,6 +88,17 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
+   private fun handleMultiplatformJvm(testableTarget: KotlinTargetWithTests<*, *>) {
+      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // see https://docs.gradle.org/current/userguide/isolated_projects.html
+      val task = testableTarget.project.tasks.register("jvmKotest", KotestJvmTask::class) {
+         sourceSetName.set("jvmTest")
+         inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
+      }
+      // this means this kotest task will be run when the user runs "gradle check"
+      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+   }
+
    private fun handleKotlinMultiplatform(project: Project) {
       project.plugins.withType<KotlinMultiplatformPluginWrapper> { // this is the multiplatform plugin, not the kotlin plugin
          project.extensions.configure<KotlinMultiplatformExtension> { // this is the multiplatform extension
@@ -103,7 +114,7 @@ abstract class KotestPlugin : Plugin<Project> {
                         KotlinPlatformType.js -> handleJs(testableTarget)
                         KotlinPlatformType.wasm -> handleWasm(testableTarget)
                         KotlinPlatformType.common -> Unit
-                        KotlinPlatformType.jvm -> handleJvm(testableTarget)
+                        KotlinPlatformType.jvm -> handleMultiplatformJvm(testableTarget)
                         KotlinPlatformType.androidJvm -> Unit
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
@@ -139,17 +150,6 @@ abstract class KotestPlugin : Plugin<Project> {
          // this means this kotest task will be run when the user runs "gradle check"
          testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
       }
-   }
-
-   private fun handleJvm(testableTarget: KotlinTargetWithTests<*, *>) {
-      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-      // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val task = testableTarget.project.tasks.register("jvmKotest", KotestJvmTask::class) {
-         sourceSetName.set("jvmTest")
-         inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
-      }
-      // this means this kotest task will be run when the user runs "gradle check"
-      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    private fun handleJs(testableTarget: KotlinTargetWithTests<*, *>) {

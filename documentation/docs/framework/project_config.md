@@ -14,7 +14,7 @@ test classes are created. Sometimes you may want to set this at a global level a
 project-level-config.
 
 Project wide configuration can be used by creating a class that extends from `AbstractProjectConfig`.
-On the JVM and JS platforms, an object is also supported if you prefer to a class.
+On the JVM and JS platforms, an object is also supported if you prefer using an object to a class.
 
 Any configuration set at the spec level or directly on a test will override config specified at the project level. Some
 configuration options are only available at the project level because they change how the test engine runs the entire
@@ -153,7 +153,7 @@ If you define test names over several lines then `removeTestNameWhitespace` can 
 }
 ```
 
-Then the test name in output will be `this is   my test case`. By setting `removeTestNameWhitespace` to true,
+Then the test name in output will be `this is _ _ _  my test case` (note: the underscores are added for emphasis). By setting `removeTestNameWhitespace` to true,
 then this name will be trimmed to `this is my test case`.
 
 An alternative way to enable this is by setting system property `kotest.framework.testname.multiline` to `true` which
@@ -165,3 +165,14 @@ object KotestProjectConfig : AbstractProjectConfig() {
 }
 ```
 
+### Coroutine Dispatcher Factory
+
+You can specify a custom coroutine dispatcher factory to control how coroutines are executed in your tests.
+
+```kotlin
+object KotestProjectConfig : AbstractProjectConfig() {
+  override val coroutineDispatcherFactory = ThreadPerSpecCoroutineContextFactory
+}
+```
+
+For more details on this feature, see the [concurrency documentation](concurrency6.html#coroutine-dispatcher-factory).

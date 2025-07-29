@@ -8,7 +8,7 @@ object StringPrint : Print<String> {
 
    private fun String.wrap() = """"$this""""
 
-   override fun print(a: String, level: Int): Printed = when {
+   override fun print(a: String): Printed = when {
       a == "" -> Printed("<empty string>", String::class)
       a.isBlank() -> Printed(a.replace(" ", "\\s").wrap(), String::class)
       else -> Printed(a.wrap(), String::class)

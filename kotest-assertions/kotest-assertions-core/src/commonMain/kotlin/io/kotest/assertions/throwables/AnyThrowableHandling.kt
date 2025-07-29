@@ -1,7 +1,7 @@
 package io.kotest.assertions.throwables
 
-import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
 import io.kotest.matchers.assertionCounter
@@ -144,12 +144,12 @@ inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
    }
 
    thrownException ?: throw AssertionErrorBuilder.create()
-      .withMessage("Expected a throwable with message ${StringPrint.print(message, 0).value} but nothing was thrown".trimMargin())
+      .withMessage("Expected a throwable with message ${StringPrint.print(message).value} but nothing was thrown".trimMargin())
       .build()
 
    if (thrownException.message != message) {
       throw AssertionErrorBuilder.create()
-         .withMessage("Expected a throwable with message ${StringPrint.print(message, 0).value} but got a throwable with message ${thrownException.message.print().value}".trimMargin())
+         .withMessage("Expected a throwable with message ${StringPrint.print(message).value} but got a throwable with message ${thrownException.message.print().value}".trimMargin())
          .withCause(thrownException)
          .build()
    }
