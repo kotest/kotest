@@ -39,7 +39,7 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
       throw e
       // this means that a non-assertion error was thrown, so we wrap it in an AssertionError
       // the AssertionErrorBuilder will include the context clues in the error message
-   } catch (e: Exception) {
+   } catch (e: Throwable) {
       throw AssertionErrorBuilder.create()
          .withMessage(e.message ?: e::class.simpleName ?: "Exception")
          .withCause(e).build()

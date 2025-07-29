@@ -1,8 +1,8 @@
 package com.sksamuel.kotest.assertions
 
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
@@ -288,14 +288,21 @@ Timed out waiting for 2 ms"""
 
                list.shouldContain("something")
             }
-         }
-            .run {
-               message.shouldContainInOrder(
-                  "outer clue",
-                  "Collection contains no element matching the predicate.",
-               )
+         }.message.shouldContainInOrder(
+            "outer clue",
+            "Collection contains no element matching the predicate.",
+         )
+      }
+
+      "should support errors" {
+         shouldThrow<AssertionError> {
+            "Expected clue".asClue {
+               throw AbstractMethodError("qq")
             }
+         }.message.shouldBe(
+            """Expected clue
+qq"""
+         )
       }
    }
-
 })
