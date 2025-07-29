@@ -35,14 +35,14 @@ class SetShrinkerTest : FunSpec() {
       }
 
       test("SetShrinker should observe range") {
-         val intArb = Arb.int()
-
-         // For this test to make sense, need to disable recursive shrinking
-         //  for the set.
-         val shrinker = Shrinker<Int> { listOf() }
+         val intArb = Arb.int(
+            // For this test to make sense, need to disable recursive shrinking
+            //  for the set.
+            shrinker = Shrinker<Int> { listOf() }
+         )
 
          checkAll(Arb.set(intArb, range = 4..100)) { set ->
-            val shrinks = SetShrinker<Int>(shrinker, 4..100).rtree(set)
+            val shrinks = SetShrinker<Int>(intArb, 4..100).rtree(set)
             val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
                it shouldHaveSize 0
             }

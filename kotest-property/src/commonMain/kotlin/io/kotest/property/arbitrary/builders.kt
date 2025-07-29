@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
+import io.kotest.property.ArbDefinition
 import io.kotest.property.Classifier
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
@@ -99,11 +100,14 @@ fun <A> arbitrary(
    shrinker: Shrinker<A>,
    sampleFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> =
-   object : Arb<A>() {
+   object : ArbDefinition<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
 
       private val delegate: Arb<A> = arbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
+      override fun shrink(value: A): List<A> {
+         return shrinker.shrink(value)
+      }
    }
 
 /**
@@ -323,13 +327,17 @@ class ArbitraryBuilder<A>(
       if (edgecases.isEmpty()) null else edgecases.random(it.random).asSample()
    }
 
-   fun build() = object : Arb<A>() {
+   fun build(): Arb<A> = object : ArbDefinition<A>() {
       override val classifier: Classifier<out A>? = this@ArbitraryBuilder.classifier
-      override val shrinker: Shrinker<A> = this@ArbitraryBuilder.shrinker ?: super.shrinker
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn?.invoke(rs)
       override fun sample(rs: RandomSource): Sample<A> {
          val sample = sampleFn(rs)
-         return sampleOf(sample, this@ArbitraryBuilder.shrinker ?: shrinker)
+         return sampleOf(sample, shrinker ?: Shrinker { emptyList() })
+      }
+
+      override fun shrink(value: A): List<A> {
+         val shrinker = shrinker ?: Shrinker { emptyList() }
+         return shrinker.shrink(value)
       }
    }
 }

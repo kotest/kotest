@@ -41,7 +41,7 @@ class ListShrinkerTest : FunSpec() {
 
          checkAll(Arb.list(intArb)) { list ->
             if (list.size > 1) {
-               val candidates = ListShrinker<Int>(intArb.shrinker, 0..100).shrink(list)
+               val candidates = ListShrinker<Int>(intArb, 0..100).shrink(list)
                candidates.forAtLeastOne {
                   list.take(list.size / 2) shouldBe it
                }
@@ -53,7 +53,7 @@ class ListShrinkerTest : FunSpec() {
          val intArb = Arb.int(0..1000)
          checkAll(Arb.list(intArb)) { list ->
             if (list.size > 1) {
-               val candidates = ListShrinker<Int>(intArb.shrinker, 0..100).shrink(list)
+               val candidates = ListShrinker<Int>(intArb, 0..100).shrink(list)
                candidates.forAtLeastOne {
                   list.drop(1) shouldBe it
                }
@@ -65,7 +65,7 @@ class ListShrinkerTest : FunSpec() {
          val intArb = Arb.int(0..1000)
          checkAll(Arb.list(intArb)) { list ->
             if (list.size > 1) {
-               val candidates = ListShrinker<Int>(intArb.shrinker, 0..100).shrink(list)
+               val candidates = ListShrinker<Int>(intArb, 0..100).shrink(list)
                candidates.forAtLeastOne {
                   list.dropLast(1) shouldBe it
                }
@@ -77,7 +77,7 @@ class ListShrinkerTest : FunSpec() {
          val intArb = Arb.int(0..1000)
          checkAll(Arb.list(intArb)) { list ->
             if (list.isNotEmpty()) {
-               val shrinks = ListShrinker<Int>(intArb.shrinker, 0..100).rtree(list)
+               val shrinks = ListShrinker<Int>(intArb, 0..100).rtree(list)
                val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
                   it shouldHaveSize 0
                }
@@ -86,7 +86,7 @@ class ListShrinkerTest : FunSpec() {
          }
 
          val input = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-         val shrinks = ListShrinker<Int>(intArb.shrinker, 0..100).rtree(input)
+         val shrinks = ListShrinker<Int>(intArb, 0..100).rtree(input)
          val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
             it shouldHaveAtMostSize 2
          }
@@ -97,7 +97,7 @@ class ListShrinkerTest : FunSpec() {
          val intArb = Arb.constant(0)
          checkAll(Arb.list(intArb, range = 4..100)) { list ->
             if (list.isNotEmpty()) {
-               val shrinks = ListShrinker<Int>(intArb.shrinker, 4..100).rtree(list)
+               val shrinks = ListShrinker<Int>(intArb, 4..100).rtree(list)
                val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
                   it shouldHaveSize 0
                }
@@ -111,7 +111,7 @@ class ListShrinkerTest : FunSpec() {
 
          checkAll(Arb.list(intArb, range = 4..100)) { list ->
             if (list.isNotEmpty()) {
-               val shrinks = ListShrinker<Int>(intArb.shrinker, 4..100).rtree(list)
+               val shrinks = ListShrinker<Int>(intArb, 4..100).rtree(list)
                val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
                   !it.any { it % 2 == 0 }
                }

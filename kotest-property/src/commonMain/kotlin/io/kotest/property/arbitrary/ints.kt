@@ -28,7 +28,11 @@ class IntShrinker(val range: IntRange) : Shrinker<Int> {
  *
  * Min defaults to [Int.MIN_VALUE] and max defaults to [Int.MAX_VALUE].
  */
-fun Arb.Companion.int(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) = int(min..max)
+fun Arb.Companion.int(
+   min: Int = Int.MIN_VALUE,
+   max: Int = Int.MAX_VALUE,
+   shrinker: Shrinker<Int> = IntShrinker(min .. max)
+) = int(min..max)
 
 /**
  * Returns an [Arb] that produces [Int]s in [range].
@@ -38,11 +42,14 @@ fun Arb.Companion.int(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) = int(
  *
  * The range defaults to [Int.MIN_VALUE] to [Int.MAX_VALUE].
  */
-fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
+fun Arb.Companion.int(
+   range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE,
+   shrinker: Shrinker<Int> = IntShrinker(range)
+): Arb<Int> {
    val edgeCases = intArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
    return ArbitraryBuilder.create { it.random.nextInt(range) }
       .withEdgecases(edgeCases)
-      .withShrinker(IntShrinker(range))
+      .withShrinker(shrinker)
       .withClassifier(IntClassifier(range))
       .build()
 }

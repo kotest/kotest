@@ -60,13 +60,6 @@ sealed class Gen<out A> {
    open val classifier: Classifier<out A>? = null
 
    /**
-    * Returns the default shrinker associated with this generator.
-    *
-    * Performs no shrinking by default.
-    **/
-   open val shrinker: Shrinker<@UnsafeVariance A> get() = Shrinker { listOf() }
-
-   /**
     * The minimum iteration count required for this [Gen] to be invoked.
     * Requesting a property test with fewer than this will result in an exception.
     */
@@ -75,6 +68,15 @@ sealed class Gen<out A> {
       else -> 1
    }
 }
+
+/**
+ * Internal definition used to tie an [Arb] and [Shrinker] together in definitions, e.x.
+ *  [arbitrary].
+ *
+ * Used to make casts safe when implementing recursive shrinking. Should not be exposed
+ *  in the public API.
+ **/
+internal abstract class ArbDefinition<A>: Arb<A>(), Shrinker<A>
 
 /**
  * An [Arb] (short for arbitrary) is a generator of values in two categories: edge cases and samples.
