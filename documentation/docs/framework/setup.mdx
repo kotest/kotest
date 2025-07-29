@@ -3,6 +3,7 @@ title: Setup
 slug: project-setup.html
 ---
 
+
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
@@ -19,7 +20,6 @@ Please see the rest of this page for details on how to configure Kotest for KMP 
 defaultValue="JVM/Gradle"
 values={[
 {label: 'JVM/Gradle', value: 'JVM/Gradle'},
-{label: 'JVM/Maven', value: 'JVM/Maven'},
 {label: 'Kotlin/JS', value: 'JS'},
 {label: 'Kotlin/Native', value: 'Native'},
 {label: 'Android', value: 'Android'},
@@ -74,79 +74,58 @@ And then execute the `test` task in gradle, or run tests directly from the IDE.
    <TabItem value="JS">
 
 :::tip
-A working multiplatform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
+A working JS project with unit and data driven test examples, can be found here:
 https://github.com/kotest/kotest-examples
 :::
 
-Add the [Kotest multiplatform gradle plugin](https://plugins.gradle.org/plugin/io.kotest.multiplatform) to your build.
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
 
 For example:
 
 ```kotlin
 plugins {
-  id("io.kotest.multiplatform") version "5.0.2"
+   id("io.kotest") version "$version"
 }
 ```
 
-Add the engine dependency to your `commonTest` dependencies block:
+Add the engine dependency to your `commonTest` or `jsTest` source set:
 
 ```kotlin
 kotlin {
-  targets {
-    js(IR) { // LEGACY or BOTH are unsupported
-      browser() // to compile for the web
-      nodejs() // to compile against node
-    }
-  }
-
-  sourceSets {
-    val commonTest by getting {
-      dependencies {
-        implementation("io.kotest:kotest-framework-engine:$version")
+   js()
+   sourceSets {
+      jsTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:$version")
+         }
       }
-    }
-  }
+   }
 }
 ```
 
-:::caution
-Only the new IR compiler backend for Kotlin/JS is supported. If you are compiling JS with the legacy compiler backend then you will not be
-able to use Kotest for testing.
-:::
-
-Write your tests using [FunSpec](framework/styles.md#fun-spec), [ShouldSpec](framework/styles.md#should-spec) or [StringSpec](framework/styles.md#string-spec).
-Tests can be placed in either `commonTest` or `jsTest`
-source sets. Run your tests using the `gradle check` command.
-
-The Javascript test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
-based configuration will not work as Kotlin does not expose annotations at runtime to javascript code.
+Tests can be placed in either `commonTest` or `jsTest`.
+Run your tests using the `jsKotest` gradle task.
 
 :::note
-Tests for Javascript cannot nest tests. This is due to the underlying Javascript test runners (such as Mocha or Karma)
-not supporting promises in parent tests, which is incompatible with coroutines and in Kotest every test scope is a coroutine.
-This is why the supported specs are limited to `FunSpec`, `ShouldSpec` and `StringSpec`.
-:::
-
-:::info
-The IntelliJ Kotest plugin does not support running common, native or JS tests directly from the IDE using the green run icons.
-Only execution via gradle is supported.
+The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to native code.
 :::
 
    </TabItem>
    <TabItem value="Native">
 
 :::tip
-A working multiplatform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
-https://github.com/kotest/kotest-examples-multiplatform
+A working native project with linux, windows and macos configured, with unit and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
 :::
 
-Add the [Kotest multiplatform gradle plugin](https://plugins.gradle.org/plugin/io.kotest.multiplatform) to your build.
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
 
 For example:
 
 ```kotlin
 plugins {
-  id("io.kotest") version "5.0.2"
+  id("io.kotest") version "$version"
 }
 ```
 
@@ -154,68 +133,30 @@ Add the engine dependency to your `commonTest` dependencies block:
 
 ```kotlin
 kotlin {
-  targets {
-    linuxX64() // can add any supported native targets such as linux, mac, windows etc
-  }
-}
-sourceSets {
-  val commonTest by getting {
-    dependencies {
-      implementation("io.kotest:kotest-framework-engine:$version")
-    }
-  }
+   linuxX64() // add any supported native target
+   sourceSets {
+      nativeTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:$version")
+         }
+      }
+   }
 }
 ```
 
 Tests can be placed in either `commonTest` or a specific native sourceset.
-Run your tests using the `gradle check` command.
-
-The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
-based configuration will not work as Kotlin does not expose annotations at runtime to native code.
+Run your tests using the kotest test tasks that mirror the target names, for example `linuxX86Kotest`.
 
 :::note
-The IntelliJ Kotest plugin does not support running common, native or JS tests from the IDE. You will need to use
-the `gradle check` task.
+The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to native code.
 :::
-
-   </TabItem>
-   <TabItem value="JVM/Maven">
-
-For maven you must configure the surefire plugin for junit tests.
-
-```xml
-<plugin>
-   <groupId>org.apache.maven.plugins</groupId>
-   <artifactId>maven-surefire-plugin</artifactId>
-   <version>2.22.2</version>
-</plugin>
-```
-
-And then add the Kotest JUnit5 runner to your dependencies section.
-
-```xml
-<dependency>
-   <groupId>io.kotest</groupId>
-   <artifactId>kotest-runner-junit5</artifactId>
-   <version>{version}</version>
-   <scope>test</scope>
-</dependency>
-```
-
-:::info
-Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html).
-If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on.
-Since version 5.9.0, Kotest includes a workaround so that the `kotest-runner-junit5` module can be used directly, but
-for older versions you need to explicitly depend on the modules that end with -JVM, such as `kotest-property-jvm`_
-:::
-
    </TabItem>
    <TabItem value="Android">
 
 :::info
-Currently, only JVM tests are officially supported in Kotest. We are open to suggestions on how to support UI tests.
-
-The following steps enable Kotest to be used for unit and integration tests, where the Android framework is not needed or is mocked that usually reside in the
+Currently, only Unit tests are supported in Kotest.
+The following steps enable Kotest to be used for unit tests, where the Android framework is not needed or is mocked that usually reside in the
 `src/test` folder of your module.
 :::
 
@@ -238,6 +179,11 @@ dependencies {
 
    </TabItem>
    <TabItem value="Multiplatform">
+
+:::tip
+A working multiplatform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
+:::
 
 To configure the test framework for both JS and JVM, you just combine copy the steps for JVM and JS.
 
