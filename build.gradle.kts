@@ -82,7 +82,7 @@ val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarg
 
 val jetbrainsToken: String by project
 
-version = "1.3." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
+version = "6.0." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 val runWithCustomSandbox by intellijPlatformTesting.runIde.registering {
    prepareSandboxTask {
