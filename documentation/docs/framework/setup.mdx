@@ -10,6 +10,11 @@ import TabItem from '@theme/TabItem';
 The Kotest test framework is supported on JVM, Javascript and Native.
 To enable Kotest for multiple platforms, combine the steps for the individual platforms as detailed in the following tabs.
 
+:::caution
+The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin, but instead an updated gradle plugin.
+Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
+:::
+
 <Tabs
 defaultValue="JVM/Gradle"
 values={[
@@ -21,19 +26,33 @@ values={[
 ]}>
 <TabItem value="JVM/Gradle">
 
-Kotest on the JVM uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
-For Gradle 4.6 and higher this is as simple as adding `useJUnitPlatform()` inside the tasks with type `Test`
-and then adding the Kotest junit5 runner dependency.
+:::tip
+A working project with JVM support can be found here:
+https://github.com/kotest/kotest-examples
+:::
 
-If you are using Gradle + Groovy then:
+Kotest on the JVM has two methods for running tests. One uses the `io.kotest` gradle plugin, which provides detailed test output in the console, and a rich experience in Intellij (in conjuction with the Intellij Kotest plugin).
+The other option uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin which is ubiquitous in the JVM ecosystem but lacks some of the features of the Kotest gradle plugin.
 
-```groovy
-test {
-   useJUnitPlatform()
+To use the Kotest gradle plugin, add the following to your `build.gradle.kts` file:
+
+```kotlin
+plugins {
+   id("io.kotest") version "$version"
 }
 ```
 
-Or if you are using Gradle + Kotlin then:
+Add the following dependency to your build:
+
+```kotlin
+dependencies {
+   testImplementation("io.kotest:kotest-framework-engine:$version")
+}
+```
+
+And then execute the `kotest` task in gradle, or run tests directly from the IDE.
+
+To use the JUnit Platform plugin, add the following to your `build.gradle.kts` file:
 
 ```kotlin
 tasks.withType<Test>().configureEach {
@@ -41,18 +60,22 @@ tasks.withType<Test>().configureEach {
 }
 ```
 
-And then the dependency:
+Add the following dependency to your build:
 
-```groovy
-testImplementation 'io.kotest:kotest-runner-junit5:$version'
+```kotlin
+dependencies {
+   testImplementation("io.kotest:kotest-runner-junit5:$version")
+}
 ```
+
+And then execute the `test` task in gradle, or run tests directly from the IDE.
 
    </TabItem>
    <TabItem value="JS">
 
 :::tip
 A working multiplatform project with JVM, native and Javascript all configured, with unit and data driven test examples, can be found here:
-https://github.com/kotest/kotest-examples-multiplatform
+https://github.com/kotest/kotest-examples
 :::
 
 Add the [Kotest multiplatform gradle plugin](https://plugins.gradle.org/plugin/io.kotest.multiplatform) to your build.
@@ -123,7 +146,7 @@ For example:
 
 ```kotlin
 plugins {
-  id("io.kotest.multiplatform") version "5.0.2"
+  id("io.kotest") version "5.0.2"
 }
 ```
 
