@@ -105,6 +105,10 @@ class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run describe with config it block", 2308),
          Gutter("Disabled - xdescribe with config", 2406, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - xdescribe with config it block", 2444, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run context with config", 2538),
+         Gutter("Run context with config nested describe with config", 2612),
+         Gutter("Run context with config nested describe with config it block", 2653),
+         Gutter("Disabled - xcontext with config", 2766, AllIcons.RunConfigurations.TestIgnored),
       )
 
       expected.size shouldBe gutters.size

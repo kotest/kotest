@@ -32,12 +32,20 @@ object DescribeSpecStyle : SpecStyle {
    private fun locateParent(element: PsiElement): Test? {
       // if parent is null then we have hit the end
       val p = element.parent ?: return null
-      fun tryDots() =
-         if (p is KtCallExpression) p.tryDescribe() ?: p.tryXDescribe() ?: p.tryContext() ?: p.tryXContent() else null
-
-      fun tryCalls() =
-         if (p is KtDotQualifiedExpression) p.tryDescribeWithConfig() ?: p.tryXDescribeWithConfig() else null
-      return tryDots() ?: tryCalls() ?: locateParent(p)
+      fun parse(): Test? {
+         return when (p) {
+            is KtDotQualifiedExpression -> p.tryDescribeWithConfig()
+               ?: p.tryXDescribeWithConfig()
+               ?: p.tryContextWithConfig()
+               ?: p.tryContextWithConfig()
+            is KtCallExpression -> p.tryDescribe()
+               ?: p.tryXDescribe()
+               ?: p.tryContext()
+               ?: p.tryXContent()
+            else -> null
+         }
+      }
+      return parse() ?: locateParent(p)
    }
 
    /**
@@ -163,7 +171,25 @@ object DescribeSpecStyle : SpecStyle {
    /**
     * Finds tests in the form:
     *
-    *   describe("test name").config { }
+    *   context("test name").config() { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
+      val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("context", "config") ?: return null
+      return buildTest(
+         TestName(null, name.text, name.interpolated),
+         name.text.startsWith("!"),
+         this,
+         TestType.Test,
+         specClass
+      )
+   }
+
+   /**
+    * Finds tests in the form:
+    *
+    *   describe("test name").config() { }
     *
     */
    private fun KtDotQualifiedExpression.tryDescribeWithConfig(): Test? {
@@ -181,12 +207,24 @@ object DescribeSpecStyle : SpecStyle {
    /**
     * Finds tests in the form:
     *
-    *   xdescribe("test name").config { }
+    *   xdescribe("test name").config() { }
     *
     */
    private fun KtDotQualifiedExpression.tryXDescribeWithConfig(): Test? {
       val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xdescribe", "config") ?: return null
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
+   }
+
+   /**
+    * Finds tests in the form:
+    *
+    *   xdescribe("test name").config() { }
+    *
+    */
+   private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
+      val specClass = enclosingKtClassOrObject() ?: return null
+      val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
       return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
    }
 
@@ -202,13 +240,19 @@ object DescribeSpecStyle : SpecStyle {
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
-         is KtCallExpression -> element.tryIt() ?: element.tryXIt() ?: element.tryDescribe() ?: element.tryXDescribe()
-         ?: element.tryContext() ?: element.tryXContent()
+         is KtCallExpression -> element.tryIt()
+            ?: element.tryXIt()
+            ?: element.tryDescribe()
+            ?: element.tryXDescribe()
+            ?: element.tryContext()
+            ?: element.tryXContent()
          is KtDotQualifiedExpression ->
             element.tryDescribeWithConfig()
                ?: element.tryXDescribeWithConfig()
                ?: element.tryItWithConfig()
                ?: element.tryXItWithConfig()
+               ?: element.tryContextWithConfig()
+               ?: element.tryXContextWithConfig()
          else -> null
       }
    }

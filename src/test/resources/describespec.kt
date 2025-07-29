@@ -93,6 +93,15 @@ class DescribeSpecExample : DescribeSpec() {
             // test here
          }
       }
+      context("context with config").config(enabled = true) {
+         describe("nested describe with config").config(enabled = true) {
+            it("it block") {
+               // test here
+            }
+         }
+      }
+      xcontext("xcontext with config").config(enabled = true) {
+      }
    }
 }
 
