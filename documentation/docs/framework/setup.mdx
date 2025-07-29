@@ -78,13 +78,14 @@ And then execute the `test` task in gradle, or run tests directly from the IDE.
 A working JS project can be found here: https://github.com/kotest/kotest-examples
 :::
 
-Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
 
 For example:
 
 ```kotlin
 plugins {
    id("io.kotest") version "$version"
+   id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 ```
 
@@ -118,13 +119,14 @@ based configuration will not work as Kotlin does not expose annotations at runti
 A working WasmJS project can be found here: https://github.com/kotest/kotest-examples
 :::
 
-Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
 
 For example:
 
 ```kotlin
 plugins {
    id("io.kotest") version "$version"
+   id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 ```
 
@@ -159,13 +161,14 @@ A working native project with linux, windows and macos configured, with unit and
 https://github.com/kotest/kotest-examples
 :::
 
-Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
 
 For example:
 
 ```kotlin
 plugins {
-  id("io.kotest") version "$version"
+  id("io.kotest") version "$version
+  id("com.google.devtools.ksp") version "2.2.0-2.0.2"
 }
 ```
 
