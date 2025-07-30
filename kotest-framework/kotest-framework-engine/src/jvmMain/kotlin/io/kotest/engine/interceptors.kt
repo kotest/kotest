@@ -3,7 +3,7 @@ package io.kotest.engine
 import io.kotest.engine.interceptors.DumpProjectConfigInterceptor
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
 import io.kotest.engine.interceptors.EngineInterceptor
-import io.kotest.engine.interceptors.MarkAbortedExceptionsAsSkippedTestInterceptor
+import io.kotest.engine.interceptors.MarkPlatformAbortedExceptionsAsSkippedTestInterceptor
 import io.kotest.engine.interceptors.ProjectConfigurationEngineInterceptor
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
@@ -36,4 +36,4 @@ actual fun testEngineInterceptorsForPlatform(): List<EngineInterceptor> {
 }
 
 internal actual fun testInterceptorsForPlatform(): List<TestExecutionInterceptor> =
-   listOf(MarkAbortedExceptionsAsSkippedTestInterceptor)
+   listOf(MarkPlatformAbortedExceptionsAsSkippedTestInterceptor)

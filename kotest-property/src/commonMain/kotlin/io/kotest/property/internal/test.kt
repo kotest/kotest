@@ -2,8 +2,8 @@ package io.kotest.property.internal
 
 import io.kotest.assertions.print.print
 import io.kotest.common.stacktrace.stacktraces
+import io.kotest.engine.IterationSkippedException
 import io.kotest.property.AfterPropertyContextElement
-import io.kotest.property.AssumptionFailedException
 import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
@@ -55,7 +55,7 @@ internal suspend fun test(
          testFn()
          context.markSuccess()
          coroutineContext[AfterPropertyContextElement]?.after?.invoke()
-      } catch (e: AssumptionFailedException) {
+      } catch (_: IterationSkippedException) {
          // we don't mark failed assumptions as errors
       } catch (e: Throwable) {
          // we track any throwables and try to shrink them

@@ -2590,10 +2590,6 @@ public final class io/kotest/core/test/Enabled$Companion {
 	public final fun getEnabled ()Lio/kotest/core/test/Enabled;
 }
 
-public final class io/kotest/core/test/ExpectFailureException : java/lang/Exception {
-	public static final field INSTANCE Lio/kotest/core/test/ExpectFailureException;
-}
-
 public final class io/kotest/core/test/ExpectFailureExceptionKt {
 	public static final fun runIf (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
 }
@@ -2989,6 +2985,12 @@ public final class io/kotest/engine/EngineResult$Companion {
 
 public final class io/kotest/engine/InterceptorsKt {
 	public static final fun testEngineInterceptorsForPlatform ()Ljava/util/List;
+}
+
+public final class io/kotest/engine/IterationSkippedException : java/lang/Throwable {
+	public fun <init> ()V
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getReason ()Ljava/lang/String;
 }
 
 public final class io/kotest/engine/ResultsKt {
