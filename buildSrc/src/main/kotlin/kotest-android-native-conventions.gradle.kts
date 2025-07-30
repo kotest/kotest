@@ -5,8 +5,10 @@ plugins {
    id("kotlin-conventions")
 }
 
+val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
+
 kotlin {
-   if (!project.hasProperty(Ci.JVM_ONLY)) {
+   if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinNative.get()) {
       androidNativeX86()
       androidNativeX64()
       androidNativeArm32()
