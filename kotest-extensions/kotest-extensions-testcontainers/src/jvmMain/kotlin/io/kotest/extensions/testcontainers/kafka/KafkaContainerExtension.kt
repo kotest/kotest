@@ -17,6 +17,7 @@ import org.testcontainers.containers.KafkaContainer
 import org.testcontainers.utility.DockerImageName
 import java.util.Properties
 
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 class KafkaContainerExtension(
    container: KafkaContainer,
    mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,
@@ -28,6 +29,7 @@ class KafkaContainerExtension(
    ) : this(KafkaContainer(image), mode)
 }
 
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.admin(configure: Properties.() -> Unit = {}): Admin {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
@@ -35,6 +37,7 @@ fun KafkaContainer.admin(configure: Properties.() -> Unit = {}): Admin {
    return Admin.create(props)
 }
 
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.producer(configure: Properties.() -> Unit = {}): KafkaProducer<Bytes, Bytes> {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
@@ -44,6 +47,7 @@ fun KafkaContainer.producer(configure: Properties.() -> Unit = {}): KafkaProduce
    return KafkaProducer<Bytes, Bytes>(props)
 }
 
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.stringStringProducer(configure: Properties.() -> Unit = {}): KafkaProducer<String, String> {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
@@ -53,6 +57,7 @@ fun KafkaContainer.stringStringProducer(configure: Properties.() -> Unit = {}): 
    return KafkaProducer<String, String>(props)
 }
 
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.consumer(configure: Properties.() -> Unit = {}): KafkaConsumer<Bytes, Bytes> {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
@@ -64,6 +69,7 @@ fun KafkaContainer.consumer(configure: Properties.() -> Unit = {}): KafkaConsume
    return KafkaConsumer<Bytes, Bytes>(props)
 }
 
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.stringStringConsumer(configure: Properties.() -> Unit = {}): KafkaConsumer<String, String> {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers
