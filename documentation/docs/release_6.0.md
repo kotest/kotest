@@ -70,6 +70,15 @@ Improved support for debugging coroutines in tests:
 - Helps with debugging by providing stack traces and dumping coroutine information
 - Can be enabled on a per-test basis
 
+### Power Assert Support
+
+Kotest 6.0 integrates with Kotlin 2.2's Power Assert feature to provide enhanced assertion failure messages:
+
+- Displays values of each part of an expression when an assertion fails
+- Makes debugging test failures easier by showing the actual values in the expression
+- Works with `shouldBe` and other configurable assertion functions
+- See the [Power Assert documentation](assertions/power-assert.md) for details and setup instructions
+
 ## Breaking Changes
 
 ### Minimum Versions

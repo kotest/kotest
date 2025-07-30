@@ -52,6 +52,7 @@ module.exports = {
     "assertions/similarity",
     "assertions/clues",
     "assertions/soft_assertions",
+    "assertions/power-assert",
     {
       "type": "category",
       "label": "Non-deterministic Testing",
