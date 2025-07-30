@@ -492,18 +492,16 @@ expected:<2> but was:<3>"""
 
             shouldThrow<AssertionError> {
                list shouldHave atMostSize(2)
-            }.shouldHaveMessage("Collection [1, 2, 3] should contain at most 2 elements")
+            }.shouldHaveMessage(               """Collection [1, 2, 3] should contain at most 2 elements
+expected:<2> but was:<3>""")
 
             shouldThrow<AssertionError> {
                list shouldNotHave atMostSize(4)
             }.shouldHaveMessage(
-               """Collection [1, 2, 3] should contain at most 2 elements
-expected:<2> but was:<3>"""
+               "Collection [1, 2, 3] should contain more than 4 elements"
             )
          }
       }
-
-
 
       "containNoNulls" should {
          "test that a collection contains zero nulls" {
