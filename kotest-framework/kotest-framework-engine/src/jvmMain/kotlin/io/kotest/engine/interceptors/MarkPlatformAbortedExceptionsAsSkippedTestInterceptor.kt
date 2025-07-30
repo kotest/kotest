@@ -14,7 +14,7 @@ import io.kotest.engine.test.interceptors.TestExecutionInterceptor
  * and converts the result to an [TestResult.Ignored].
  */
 @JVMOnly
-internal object MarkAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInterceptor {
+internal object MarkPlatformAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,
       scope: TestScope,
@@ -23,7 +23,6 @@ internal object MarkAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInt
       return test(testCase, scope).let { testResult ->
          val error = testResult.errorOrNull
          when (error) {
-            is TestAbortedException -> TestResult.Ignored(error.reason)
             is org.opentest4j.TestAbortedException -> TestResult.Ignored(error.message)
             is org.opentest4j.TestSkippedException -> TestResult.Ignored(error.message)
             else -> testResult
