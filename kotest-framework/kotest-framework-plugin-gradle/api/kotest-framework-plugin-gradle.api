@@ -36,6 +36,7 @@ public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion 
 public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestJsTask$Companion;
 	protected final fun execute ()V
+	public abstract fun getModuleFile ()Lorg/gradle/api/provider/Property;
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
 }
 

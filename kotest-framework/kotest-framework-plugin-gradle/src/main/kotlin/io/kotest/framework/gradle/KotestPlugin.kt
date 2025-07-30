@@ -158,6 +158,11 @@ abstract class KotestPlugin : Plugin<Project> {
          val spec = this
          val task = testableTarget.project.tasks.register("jsNodeKotest", KotestJsTask::class) {
             nodeExecutable.set(spec.executable)
+
+            val buildDir = project.layout.buildDirectory.asFile.get().toPath()
+            val testModulePath = buildDir.resolve(testModulePath(project))
+            moduleFile.set(testModulePath)
+
             dependsOn(":kotlinNodeJsSetup")
             inputs.files(
                project.tasks.named("compileTestDevelopmentExecutableKotlinJs")
@@ -236,6 +241,14 @@ abstract class KotestPlugin : Plugin<Project> {
       // this will result in something like kotestDebugUnitTest, which is analogous to the
       // standard test task called testDebugUnitTest
       return "kotest$capitalTarget"
+   }
+
+   /**
+    * The kotlin js compiler uses projectname-test as the module name, eg in build/js/packages
+    */
+   private fun testModulePath(project: Project): String {
+      val testModuleName = "${project.name}-test"
+      return "js/packages/${testModuleName}/kotlin/${testModuleName}.js"
    }
 
    /**
