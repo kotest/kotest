@@ -13,6 +13,7 @@ maintained and hosted by third parties.
 | Project                               | Description                                                                  |
 |---------------------------------------|------------------------------------------------------------------------------|
 | [Allure](allure.md)                   | Provides output for the allure framework                                     |
+| [Decoroutinator](decoroutinator.md)   | Improves stack traces in Kotlin coroutines                                   |
 | [HTML Reporter](html_reporter.md)     | Generates HTML reports of test results based on [JUnit XML](junit_xml.md)    |
 | [Instant](instant.md)                 | Override the 'now' context in java.time                                      |
 | [JUnit XML](junit_xml.md)             | Provides output in the JUnit XML format for integration with reporting tools |
@@ -42,4 +43,3 @@ maintained and hosted by third parties.
 | [Sniffy](https://www.sniffy.io/docs/latest/#_integration_with_kotest)                            | Network connectivity testing                                                       |
 | [TestFiles](https://github.com/jGleitz/testfiles)                                                | Creates organized files and directories for testing                                |
 | [FixtureMonkey](https://github.com/naver/fixture-monkey)                                         | generate a complex type and customize it within Kotest                             |
-
