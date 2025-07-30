@@ -53,6 +53,9 @@ jobs:
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=android"
+               # Kotest BOM
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=KotestBom"
 
                # Windows: MinGW
                -  os: windows-latest

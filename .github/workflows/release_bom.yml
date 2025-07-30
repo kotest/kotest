@@ -1,0 +1,36 @@
+name: release_bom
+
+on:
+   workflow_dispatch:
+      inputs:
+         version:
+            description: "The release version"
+            required: true
+         branch:
+            description: "The branch to release from"
+            required: true
+            default: 'master'
+
+env:
+   RELEASE_VERSION: ${{ github.event.inputs.version }}
+   NEW_MAVEN_CENTRAL_USERNAME: ${{ secrets.NEW_MAVEN_CENTRAL_USERNAME }}
+   NEW_MAVEN_CENTRAL_PASSWORD: ${{ secrets.NEW_MAVEN_CENTRAL_PASSWORD }}
+   ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
+   ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
+
+permissions:
+   contents: read
+
+jobs:
+   publish_bom:
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         ref: ${{ inputs.ref }}
+         task: >
+            -P"kotest_enableKotlinJs=false"
+            -P"kotest_enableKotlinNative=false"
+            -P"kotest_enabledPublicationNamePrefixes=KotestBom"
+            --no-configuration-cache
+            publishToAppropriateCentralRepository
+         runs-on: ubuntu-latest
