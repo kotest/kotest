@@ -39,7 +39,7 @@ import kotlin.time.TimeMark
  * This implementation handles nesting, whereas the JUnit implementation will only output for leaf tests.
  *
  * Note: This site has a good set of schemas and examples of the format: https://github.com/testmoapp/junitxml
- * Another useful,but less details is https://llg.cubic.org/docs/junit
+ * Another useful, but less details is https://llg.cubic.org/docs/junit
  *
  * @param includeContainers when `true`, all intermediate tests are included in the report as
  * tests in their own right.

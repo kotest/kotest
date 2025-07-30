@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.tags
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
@@ -28,7 +28,7 @@ class ExcludeTagExtensionTest : FunSpec() {
 
          val listener = object : AbstractTestEngineListener() {
             override suspend fun testStarted(testCase: TestCase) {
-               fail(testCase.name.name + " should not run")
+              AssertionErrorBuilder.fail(testCase.name.name + " should not run")
             }
          }
 
@@ -49,6 +49,6 @@ private class ExcludedSpec : StringSpec({
    tags(Exclude)
 
    "should not run" {
-      fail("Shouldn't get here")
+     AssertionErrorBuilder.fail("Shouldn't get here")
    }
 })

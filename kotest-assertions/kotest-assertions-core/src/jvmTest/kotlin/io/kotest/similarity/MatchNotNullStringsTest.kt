@@ -1,6 +1,11 @@
 package io.kotest.similarity
 
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.similarity.AtomicMismatch
+import io.kotest.assertions.similarity.Distance
+import io.kotest.assertions.similarity.Match
+import io.kotest.assertions.similarity.StringMismatch
+import io.kotest.assertions.similarity.matchNotNullStrings
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
@@ -28,7 +33,8 @@ class MatchNotNullStringsTest: StringSpec() {
          }
       }
       "work for two different strings with similarity below threshold" {
-         val actual = matchNotNullStrings("field", "0123456789abcdefghijklmnopqrstuvwxyz", "SFGHSRGHSFDGHSFGHSDFGHSDFGHDF")
+         val actual =
+            matchNotNullStrings("field", "0123456789abcdefghijklmnopqrstuvwxyz", "SFGHSRGHSFDGHSFGHSDFGHSDFGHDF")
          assertSoftly {
             actual.match shouldBe false
             actual.description() shouldBe """    "field" expected: <"0123456789abcdefghijklmnopqrstuvwxyz">, but was: <"SFGHSRGHSFDGHSFGHSDFGHSDFGHDF">"""

@@ -40,7 +40,7 @@ class FloatNaNTest : FunSpec() {
          }
 
          test("NaN should not be exactly NaN when NaN equality is disabled") {
-            withSystemProperty(AssertionsConfigSystemProperties.disableNaNEquality, "true") {
+            withSystemProperty(AssertionsConfigSystemProperties.DISABLE_NA_NEQUALITY, "true") {
                Float.NaN shouldNotBeExactly Float.NaN
                shouldThrowAny {
                   Float.NaN shouldBeExactly Float.NaN

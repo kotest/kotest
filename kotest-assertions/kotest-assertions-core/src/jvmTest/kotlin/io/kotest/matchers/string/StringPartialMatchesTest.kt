@@ -1,14 +1,14 @@
 package io.kotest.matchers.string
 
+import io.kotest.assertions.submatching.PartialMatchesInStringDescription
+import io.kotest.assertions.submatching.describePartialMatchesInStringForPrefix
+import io.kotest.assertions.submatching.describePartialMatchesInStringForSlice
+import io.kotest.assertions.submatching.describePartialMatchesInStringForSuffix
+import io.kotest.assertions.submatching.underscoreSubstring
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.submatching.PartialMatchesInStringDescription
-import io.kotest.submatching.describePartialMatchesInStringForPrefix
-import io.kotest.submatching.describePartialMatchesInStringForSlice
-import io.kotest.submatching.describePartialMatchesInStringForSuffix
-import io.kotest.submatching.underscoreSubstring
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class StringPartialMatchesTest : WordSpec() {

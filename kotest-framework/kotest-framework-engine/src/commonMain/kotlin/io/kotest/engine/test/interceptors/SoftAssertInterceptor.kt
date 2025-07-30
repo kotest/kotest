@@ -1,14 +1,14 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.collectiveError
-import io.kotest.assertions.errorCollector
+import io.kotest.assertions.collectErrors
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
+import io.kotest.matchers.errorCollector
 
 /**
  * Executes the test with assertSoftly if [assertSoftly] is enabled for this test or container.
@@ -32,7 +32,7 @@ internal class SoftAssertInterceptor(private val testConfigResolver: TestConfigR
          // as result test are getting report as execution error instead of assertion error.
          // Here we are collecting error manually and creating failure if error is present so that assertSoftly won't
          // throw any error and test report correctly assertion error instead of execution error.
-         errorCollector.collectiveError()
+         errorCollector.collectErrors()
             ?.let { TestResultBuilder.builder().withDuration(result.duration).withError(it).build() }
             ?: result
       }

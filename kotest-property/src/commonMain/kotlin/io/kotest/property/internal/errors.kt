@@ -1,6 +1,6 @@
 package io.kotest.property.internal
 
-import io.kotest.assertions.failure
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
 
 /**
@@ -43,7 +43,10 @@ internal fun propertyAssertionError(
    results: List<ShrinkResult<Any?>>,
    outputHexForUnprintableChars: Boolean,
 ): Throwable {
-   return failure(propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars), e)
+   return AssertionErrorBuilder.create()
+      .withMessage(propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars))
+      .withCause(e)
+      .build()
 }
 
 /**

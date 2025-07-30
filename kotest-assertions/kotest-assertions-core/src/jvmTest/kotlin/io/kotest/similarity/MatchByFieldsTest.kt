@@ -1,5 +1,10 @@
 package io.kotest.similarity
 
+import io.kotest.assertions.similarity.AtomicMismatch
+import io.kotest.assertions.similarity.Distance
+import io.kotest.assertions.similarity.Match
+import io.kotest.assertions.similarity.MismatchByField
+import io.kotest.assertions.similarity.matchByFields
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec

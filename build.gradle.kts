@@ -5,6 +5,7 @@ plugins {
    id("com.gradleup.nmcp.aggregation")
    java
    alias(libs.plugins.kotlinBinaryCompatibilityValidator)
+   //TODO this fails. why?? alias(libs.plugins.android.library) apply false
 }
 
 apiValidation {
@@ -42,15 +43,13 @@ val publishToAppropriateCentralRepository by tasks.registering {
 // List all projects which should be included in publishing
 dependencies {
    // Assertions
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrow)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsJson)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKonform)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKotlinxDatetime)
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsShared)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsYaml)
@@ -76,16 +75,17 @@ dependencies {
 
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
+   nmcpAggregation(projects.kotestFramework.kotestFrameworkMultiplatformReporter)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
 
    // Property
    nmcpAggregation(projects.kotestProperty)
    nmcpAggregation(projects.kotestProperty.kotestPropertyArrow)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
+//   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
    nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
+//   nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
 
    // Runner
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)

@@ -12,14 +12,14 @@ import org.testcontainers.containers.KafkaContainer
 import java.util.Properties
 import java.util.UUID
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.createStringStringProducer(
    configure: Properties.() -> Unit = {},
 ): KafkaProducer<String, String> {
    return createProducer(StringSerializer(), StringSerializer(), configure)
 }
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun <K, V> KafkaContainer.createProducer(
    kserializer: Serializer<K>,
    vserializer: Serializer<V>,
@@ -31,14 +31,14 @@ fun <K, V> KafkaContainer.createProducer(
    return KafkaProducer(props, kserializer, vserializer)
 }
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.createStringStringConsumer(
    configure: Properties.() -> Unit = {},
 ): KafkaConsumer<String, String> {
    return createConsumer(StringDeserializer(), StringDeserializer(), configure)
 }
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun <K, V> KafkaContainer.createConsumer(
    kserializer: Deserializer<K>,
    vserializer: Deserializer<V>,
@@ -51,7 +51,7 @@ fun <K, V> KafkaContainer.createConsumer(
    return KafkaConsumer(props, kserializer, vserializer)
 }
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use org.testcontainers.kafka.KafkaContainer or org.testcontainers.kafka.ConfluentKafkaContainer. Deprecated since 6.0")
 fun KafkaContainer.createAdminClient(configure: Properties.() -> Unit = {}): AdminClient {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers

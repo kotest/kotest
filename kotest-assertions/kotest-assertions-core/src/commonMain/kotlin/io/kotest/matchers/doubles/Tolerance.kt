@@ -87,9 +87,10 @@ class ToleranceMatcher(private val expected: Double?, private val tolerance: Dou
  * 30.0.shouldBeWithinPercentageOf(100.0, 10.0)  // Fail
  *
  */
-fun Double.shouldBeWithinPercentageOf(other: Double, percentage: Double) {
+fun Double.shouldBeWithinPercentageOf(other: Double, percentage: Double): Double {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
+   return this
 }
 
 /**
@@ -100,9 +101,10 @@ fun Double.shouldBeWithinPercentageOf(other: Double, percentage: Double) {
  * 30.0.shouldNotBeWithinPercentageOf(100.0, 10.0)  // Passes
  *
  */
-fun Double.shouldNotBeWithinPercentageOf(other: Double, percentage: Double) {
+fun Double.shouldNotBeWithinPercentageOf(other: Double, percentage: Double): Double {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this shouldNot beWithinPercentageOf(other, percentage)
+   return this
 }
 
 fun beWithinPercentageOf(other: Double, percentage: Double) = object : Matcher<Double> {

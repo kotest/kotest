@@ -9,7 +9,7 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptor
-import io.kotest.mpp.annotation
+import io.kotest.common.reflection.annotation
 
 /**
  * A [io.kotest.engine.spec.interceptor.SpecRefInterceptor] which will ignore specs if they are annotated with @[io.kotest.core.annotation.RequiresPlatform]

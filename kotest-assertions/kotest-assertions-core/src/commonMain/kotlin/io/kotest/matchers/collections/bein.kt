@@ -1,11 +1,11 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.assertions.similarity.possibleMatchesForSet
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.similarity.possibleMatchesForSet
 import kotlin.jvm.JvmName
 
 /**

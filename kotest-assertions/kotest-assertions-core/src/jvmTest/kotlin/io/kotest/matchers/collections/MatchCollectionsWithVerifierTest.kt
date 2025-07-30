@@ -1,10 +1,10 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.EqualityResult
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.equals.Equality
-import io.kotest.equals.EqualityResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
 

@@ -14,16 +14,20 @@ abstract class KotestJsTask @Inject internal constructor(
    private val executors: ExecOperations,
 ) : AbstractKotestTask() {
 
-   // this is the name of the generated function from the KSP plugin
-   // it should always match whatever the plugin is generating
-   private val runKotestFnName = "runKotest"
+   companion object {
 
-   // this is the name of the package where the KSP plugin places the generated top level run function
-   // it should always match whatever the plugin is generating
-   private val runKotestPackageName = "io.kotest.framework.runtime.js"
+      // this is the name of the generated function from the KSP plugin
+      // it should always match whatever the plugin is generating
+      private const val KOTEST_RUN_FN_NAME = "runKotest"
 
-   // the value used to specify the team city format
-   private val LISTENER_TC = "teamcity"
+      // this is the name of the package where the KSP plugin places the generated top level run function
+      // it should always match whatever the plugin is generating
+      private const val KOTEST_JS_GENERATED_PACKAGE = "io.kotest.framework.runtime.js"
+
+      // the value used to specify the team city format
+      private const val LISTENER_TC = "teamcity"
+      private const val LISTENER_CONSOLE = "console"
+   }
 
    @get:Input
    abstract val nodeExecutable: Property<String>
@@ -44,15 +48,12 @@ abstract class KotestJsTask @Inject internal constructor(
          // it would be good if we could derive this somehow other than assuming based on the project name
          val moduleFile = buildDir.resolve("js/packages/${testModuleName}/kotlin/${testModuleName}.js")
 
-//         val testFilter = if (tests.orNull == null) null else "'$tests'"
-
          val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
+         val listenerArg = if (IntellijUtils.isIntellij()) LISTENER_TC else LISTENER_CONSOLE
 
          // this is the entry point passed to node which references the well defined runKotest function
-         val nodeCommand = when {
-            IntellijUtils.isIntellij() -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('$LISTENER_TC', $descriptorArg)"
-            else -> "require('${moduleFile}').$runKotestPackageName.$runKotestFnName('console', $descriptorArg)"
-         }
+         val nodeCommand =
+            "require('${moduleFile}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $descriptorArg)"
          println("Node command :$nodeCommand")
 
          commandLine(nodeExecutable.get(), "-e", nodeCommand)

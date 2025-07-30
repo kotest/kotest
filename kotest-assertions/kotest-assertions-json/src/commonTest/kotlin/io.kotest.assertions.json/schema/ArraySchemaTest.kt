@@ -87,7 +87,7 @@ class ArraySchemaTest : FunSpec(
          val schema = parseSchema(
             """
                { "type": "array", "uniqueItems": true, "elementType": {"type": "number"} }
-            """.trimIndent()
+            """
          )
          "[1,1]" shouldNotMatchSchema schema
       }

@@ -7,14 +7,14 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
-            implementation(projects.kotestAssertions.kotestAssertionsShared)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.kotlinx.datetime)
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
          }

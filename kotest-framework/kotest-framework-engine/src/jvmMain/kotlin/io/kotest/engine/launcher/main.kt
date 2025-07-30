@@ -18,7 +18,7 @@ import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.engine.runBlocking
+import io.kotest.common.runBlocking
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
 

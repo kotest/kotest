@@ -1,15 +1,19 @@
 plugins {
-   id("kotest-multiplatform-library-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-js-wasm-conventions")
+   id("kotest-native-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
+
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
-            // this is api because we want to expose `shouldBe` etc
+            // required for the base matcher interface
             api(projects.kotestAssertions.kotestAssertionsShared)
 
             implementation(libs.kotlin.reflect)
@@ -18,24 +22,25 @@ kotlin {
          }
       }
 
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
          }
       }
 
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(libs.kotlinx.coroutines.jdk8)
+            implementation(libs.diffutils) // used for diffing large strings in assertions
          }
       }
 
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestProperty)
+            implementation(projects.kotestAssertions.kotestAssertionsTable)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.opentest4j)
             implementation(libs.apache.commons.lang)
             implementation(libs.mockk)
          }

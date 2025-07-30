@@ -1,12 +1,12 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.print.print
+import io.kotest.assertions.submatching.describePartialMatchesInStringForPrefix
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.submatching.describePartialMatchesInStringForPrefix
 import kotlin.math.min
 
 infix fun <A : CharSequence?> A.shouldStartWith(prefix: CharSequence): A {

@@ -1,11 +1,9 @@
 package io.kotest.matchers.properties
 
-import io.kotest.assertions.Actual
-import io.kotest.assertions.Expected
 import io.kotest.assertions.eq.EqCompare
-import io.kotest.assertions.intellijFormatError
 import io.kotest.assertions.print.print
 import io.kotest.assertions.withClue
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -18,28 +16,33 @@ import kotlin.reflect.KProperty0
  * Asserts that this property has a specific value. Unlike regular [shouldBe], the name of the property
  * will be automatically added to the error message
  */
-infix fun <T> KProperty0<T>.shouldHaveValue(expected: T) = this should haveValue(expected)
+infix fun <T> KProperty0<T>.shouldHaveValue(expected: T): KProperty0<T> {
+   this should haveValue(expected)
+   return this
+}
 
 /**
  * Asserts that this property does not have a specific value. Unlike regular [shouldNotBe], the name of the
  * property will be automatically added to the error message
  */
-infix fun <T> KProperty0<T>.shouldNotHaveValue(expected: T) = this shouldNot haveValue(expected)
+infix fun <T> KProperty0<T>.shouldNotHaveValue(expected: T): KProperty0<T> {
+   this shouldNot haveValue(expected)
+   return this
+}
 
 fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
    override fun test(value: KProperty0<T>): MatcherResult {
+
       val prependMessage = { "Assertion failed for property '${value.name}'" }
       val actual = value.get()
-      return object : MatcherResult {
-         override fun passed(): Boolean =
-            EqCompare.compare(actual, expected, false) == null
 
-         override fun failureMessage(): String =
-            prependMessage() + "\n" + intellijFormatError(Expected(expected.print()), Actual(actual.print()))
-
-         override fun negatedFailureMessage(): String =
-            prependMessage() + "\n${expected.print().value} should not equal ${actual.print().value}"
-      }
+      return EqualityMatcherResult(
+         passed = EqCompare.compare(actual, expected, false) == null,
+         actual = actual,
+         expected = expected,
+         failureMessageFn = prependMessage,
+         negatedFailureMessageFn = { prependMessage() + "\n${expected.print().value} should not equal ${actual.print().value}" },
+      )
    }
 }
 

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.examples
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.testTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -72,14 +72,14 @@ private class DescribeSpecExample : DescribeSpec() {
             // test here
          }
          xit("disabled test") {
-            fail("should not be invoked")
+           AssertionErrorBuilder.fail("should not be invoked")
          }
          describe("a nested describe!") {
             it("test name") {
                // test here
             }
             xit("disabled test") {
-               fail("should not be invoked")
+              AssertionErrorBuilder.fail("should not be invoked")
             }
          }
          describe("with some describe") {
@@ -109,7 +109,7 @@ private class DescribeSpecExample : DescribeSpec() {
             }
          }
          xdescribe("disabled describe") {
-            fail("should not be invoked")
+           AssertionErrorBuilder.fail("should not be invoked")
          }
       }
 
@@ -133,11 +133,11 @@ private class DescribeSpecExample : DescribeSpec() {
       }
 
       xdescribe("disabled top level describe") {
-         fail("should not be invoked")
+        AssertionErrorBuilder.fail("should not be invoked")
       }
 
       xdescribe("disabled top level describe with config").config(timeout = 123.milliseconds) {
-         fail("should not be invoked")
+        AssertionErrorBuilder.fail("should not be invoked")
       }
 
       context("top level context") {
@@ -145,12 +145,12 @@ private class DescribeSpecExample : DescribeSpec() {
             // test here
          }
          xit("disabled test with config").config(invocations = 3) {
-            fail("should not be invoked")
+           AssertionErrorBuilder.fail("should not be invoked")
          }
       }
 
       xcontext("disabled top level context") {
-         fail("should not be invoked")
+        AssertionErrorBuilder.fail("should not be invoked")
       }
 
       it("test without describe") {
@@ -158,7 +158,7 @@ private class DescribeSpecExample : DescribeSpec() {
       }
 
       xit("disabled test without describe") {
-         fail("should not be invoked")
+        AssertionErrorBuilder.fail("should not be invoked")
       }
    }
 }

@@ -194,7 +194,7 @@ data class JsonSchema(
 
 /**
  * Creates a [JsonSchema.JsonString] node, which is a leaf node that will hold a [String] value.
- * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [io.kotest.matchers.Matcher] which the node will be tested with.
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null }) =
@@ -202,7 +202,7 @@ fun JsonSchema.Builder.string(matcherBuilder: () -> Matcher<String>? = { null })
 
 /**
  * Creates a [JsonSchema.JsonInteger] node, which is a leaf node that will hold a [Long] value.
- * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [io.kotest.matchers.Matcher] which the node will be tested with.
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Long>? = { null }) =
@@ -210,7 +210,7 @@ fun JsonSchema.Builder.integer(matcherBuilder: () -> Matcher<Long>? = { null }) 
 
 /**
  * Creates a [JsonSchema.JsonDecimal] node, which is a leaf node that will hold a [Double] value.
- * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [io.kotest.matchers.Matcher] which the node will be tested with.
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Double>? = { null }) =
@@ -220,7 +220,7 @@ fun JsonSchema.Builder.number(matcherBuilder: () -> Matcher<Double>? = { null })
  * Alias for [number]
  *
  * Creates a [JsonSchema.JsonDecimal] node, which is a leaf node that will hold a [Double] value.
- * Optionally, you can provide a [matcherBuilder] that constructs a [Matcher] which the node will be tested with.
+ * Optionally, you can provide a [matcherBuilder] that constructs a [io.kotest.matchers.Matcher] which the node will be tested with.
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }) =

@@ -1,6 +1,6 @@
 package io.kotest.datatest.styles
 
-import io.kotest.common.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.FruitWithMemberNameCollision

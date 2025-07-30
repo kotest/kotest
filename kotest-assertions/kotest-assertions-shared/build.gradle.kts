@@ -1,34 +1,33 @@
 plugins {
-   id("kotest-multiplatform-library-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-js-wasm-conventions")
+   id("kotest-native-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
-            implementation(libs.kotlin.reflect)
             implementation(projects.kotestCommon)
             implementation(libs.kotlinx.coroutines.core)
          }
       }
 
-      val commonTest by getting {
+      jvmMain {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(libs.opentest4j) // used to create richer assertion errors that intellij uses for diffs
          }
       }
 
-      val jvmMain by getting {
+      commonTest {
          dependencies {
-            implementation(libs.kotlinx.coroutines.jdk8)
-            implementation(libs.diffutils)
-            implementation(libs.opentest4j)
-            implementation(libs.apache.commons.lang)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
    }

@@ -403,7 +403,7 @@ infix fun <T, U> Array<T>.shouldNotBeLargerThan(other: Array<U>): Array<T> = app
  * ```
  *
  * @param other the [Iterable] to compare against.
- * @return a [Matcher] that validates the size relationship.
+ * @return a [io.kotest.matchers.Matcher] that validates the size relationship.
  * @see Iterable.shouldBeLargerThan
  * @see Iterable.shouldNotBeLargerThan
  */

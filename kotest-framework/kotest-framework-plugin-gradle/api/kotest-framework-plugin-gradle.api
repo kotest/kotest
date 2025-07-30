@@ -1,32 +1,12 @@
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
-	public static final field DESCRIPTION Ljava/lang/String;
-	public static final field EXTENSION_NAME Ljava/lang/String;
-	public static final field JS_TASK_NAME Ljava/lang/String;
-	public static final field JVM_ONLY_TASK_NAME Ljava/lang/String;
-	public static final field TARGET_JS_NAME Ljava/lang/String;
-	public static final field TARGET_NAME_WASM_JS Ljava/lang/String;
-	public static final field TASK_BUILD Ljava/lang/String;
-	public static final field TASK_COMPILE_TEST_DEV_JS Ljava/lang/String;
-	public static final field TASK_NODE_JS_SETUP Ljava/lang/String;
-	public static final field TASK_WASM_JS_TEST_CLASSES Ljava/lang/String;
-	public static final field WASM_JS_TASK_NAME Ljava/lang/String;
+	public static final field TASK_DESCRIPTION Ljava/lang/String;
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
 }
 
 public final class io/kotest/framework/gradle/KotestPlugin$Companion {
-}
-
-public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinAndroid$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun execute (Ljava/lang/Object;)V
-}
-
-public final class io/kotest/framework/gradle/KotestPlugin$handleKotlinMultiplatform$1$inlined$sam$i$org_gradle_api_Action$0 : org/gradle/api/Action {
-	public fun <init> (Lkotlin/jvm/functions/Function1;)V
-	public final synthetic fun execute (Ljava/lang/Object;)V
 }
 
 public final class io/kotest/framework/gradle/SpecsResolver {
@@ -54,16 +34,30 @@ public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion 
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestJsTask$Companion;
 	protected final fun execute ()V
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
 }
 
+public final class io/kotest/framework/gradle/tasks/KotestJsTask$Companion {
+}
+
 public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
+	public abstract fun getSourceSetName ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestNativeTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
 	public abstract fun getTarget ()Lorg/gradle/api/provider/Property;
+}
+
+public abstract class io/kotest/framework/gradle/tasks/KotestWasmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
+	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestWasmTask$Companion;
+	protected final fun execute ()V
+	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
+}
+
+public final class io/kotest/framework/gradle/tasks/KotestWasmTask$Companion {
 }
 

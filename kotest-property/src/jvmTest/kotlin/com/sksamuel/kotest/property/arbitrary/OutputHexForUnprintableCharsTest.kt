@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.assertions.AssertionFailedError
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.StringSpec
@@ -26,7 +25,7 @@ class OutputHexForUnprintableCharsTest : StringSpec({
          PropTestConfig(outputHexForUnprintableChars = true, seed = -5556043119863981334),
          Arb.string(1..127, codepoints = Codepoint.ascii())
       ) { str ->
-         val message = shouldThrow<AssertionFailedError> { str shouldBe "expectedString" }.message
+         val message = shouldThrow<AssertionError> { str shouldBe "expectedString" }.message
          val escapedMessage = message?.escapeUnprintable()
 
          if (message != escapedMessage) unprintableCount++
@@ -44,7 +43,7 @@ class OutputHexForUnprintableCharsTest : StringSpec({
          PropTestConfig(outputHexForUnprintableChars = true, seed = -5556043119863981334),
          Arb.string(1..127, codepoints = Codepoint.printableAscii())
       ) { str ->
-         val message = shouldThrow<AssertionFailedError> { str shouldBe "expectedString" }.message
+         val message = shouldThrow<AssertionError> { str shouldBe "expectedString" }.message
          message?.escapeUnprintable() shouldBe message
       }
    }

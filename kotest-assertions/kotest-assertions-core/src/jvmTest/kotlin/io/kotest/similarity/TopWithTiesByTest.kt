@@ -1,5 +1,6 @@
 package io.kotest.similarity
 
+import io.kotest.assertions.similarity.topWithTiesBy
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec

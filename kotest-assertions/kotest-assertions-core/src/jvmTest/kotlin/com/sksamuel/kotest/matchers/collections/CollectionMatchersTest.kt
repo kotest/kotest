@@ -1,13 +1,13 @@
 package com.sksamuel.kotest.matchers.collections
 
+import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.equals.byObjectEquality
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.WordSpec
-import io.kotest.equals.Equality
-import io.kotest.equals.types.byObjectEquality
 import io.kotest.matchers.collections.atLeastSize
 import io.kotest.matchers.collections.atMostSize
 import io.kotest.matchers.collections.beLargerThan
@@ -240,7 +240,10 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                col1.shouldBeSameSizeAs(col3)
-            }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
+            }.shouldHaveMessage(
+               "Collection of size 3 should be the same size as collection of size 4\n" +
+                  "expected:<4> but was:<3>"
+            )
          }
          "test that an iterable is the same size as another iterable" {
             class Group(val name: String, memberIds: Iterable<Int>) : Iterable<Int> by memberIds
@@ -252,7 +255,10 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                group.shouldBeSameSizeAs(col3)
-            }.shouldHaveMessage("Collection of size 3 should be the same size as collection of size 4")
+            }.shouldHaveMessage(
+               """Collection of size 3 should be the same size as collection of size 4
+expected:<4> but was:<3>"""
+            )
          }
 
       }
@@ -340,17 +346,26 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 0 elements" {
             shouldThrow<AssertionError> {
                listOf<Int>().shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: []")
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 0. Values: []
+expected:<1> but was:<0>"""
+            )
          }
 
          "fail for collection with 2+ elements" {
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: [1, 2]")
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 2. Values: [1, 2]
+expected:<1> but was:<2>"""
+            )
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton()
-            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]")
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]
+expected:<1> but was:<4>"""
+            )
          }
       }
 
@@ -362,7 +377,10 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 0 elements" {
             shouldThrow<AssertionError> {
                listOf<Int>().shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 0. Values: []")
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 0. Values: []
+expected:<1> but was:<0>"""
+            )
          }
 
          "fail for collection with a single incorrect elements" {
@@ -374,11 +392,17 @@ class CollectionMatchersTest : WordSpec() {
          "fail for collection with 2+ elements" {
             shouldThrow<AssertionError> {
                listOf(1, 2).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 2. Values: [1, 2]")
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 2. Values: [1, 2]
+expected:<1> but was:<2>"""
+            )
 
             shouldThrow<AssertionError> {
                listOf(1, 2, 3, 4).shouldBeSingleton { it shouldBe 1 }
-            }.shouldHaveMessage("Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]")
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]
+expected:<1> but was:<4>"""
+            )
          }
       }
 
@@ -424,11 +448,17 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                list.shouldHaveAtLeastSize(4)
-            }.shouldHaveMessage("Collection [1, 2, 3] should contain at least 4 elements")
+            }.shouldHaveMessage(
+               """Collection [1, 2, 3] should contain at least 4 elements
+expected:<4> but was:<3>"""
+            )
 
             shouldThrow<AssertionError> {
                list shouldHave atLeastSize(4)
-            }.shouldHaveMessage("Collection [1, 2, 3] should contain at least 4 elements")
+            }.shouldHaveMessage(
+               """Collection [1, 2, 3] should contain at least 4 elements
+expected:<4> but was:<3>"""
+            )
 
             shouldThrow<AssertionError> {
                list shouldNotHave atLeastSize(2)
@@ -455,19 +485,23 @@ class CollectionMatchersTest : WordSpec() {
 
             shouldThrow<AssertionError> {
                list.shouldHaveAtMostSize(2)
-            }.shouldHaveMessage("Collection [1, 2, 3] should contain at most 2 elements")
+            }.shouldHaveMessage(
+               """Collection [1, 2, 3] should contain at most 2 elements
+expected:<2> but was:<3>"""
+            )
 
             shouldThrow<AssertionError> {
                list shouldHave atMostSize(2)
-            }.shouldHaveMessage("Collection [1, 2, 3] should contain at most 2 elements")
+            }.shouldHaveMessage(               """Collection [1, 2, 3] should contain at most 2 elements
+expected:<2> but was:<3>""")
 
             shouldThrow<AssertionError> {
                list shouldNotHave atMostSize(4)
-            }.shouldHaveMessage("Collection [1, 2, 3] should contain more than 4 elements")
+            }.shouldHaveMessage(
+               "Collection [1, 2, 3] should contain more than 4 elements"
+            )
          }
       }
-
-
 
       "containNoNulls" should {
          "test that a collection contains zero nulls" {
@@ -926,7 +960,7 @@ class CollectionMatchersTest : WordSpec() {
                "Collection [1, 2, 3] should not contain any of [1]",
                "Forbidden elements found in collection:",
                "[0] => 1",
-               )
+            )
          }
 
          "Fail when one element is in the iterable" {
@@ -946,7 +980,7 @@ class CollectionMatchersTest : WordSpec() {
                "Collection [1, 2, 3] should not contain any of [1]",
                "Forbidden elements found in collection:",
                "[0] => 1",
-               )
+            )
          }
 
          "Fail when all elements are in the list" {
@@ -958,7 +992,7 @@ class CollectionMatchersTest : WordSpec() {
                "[0] => 1",
                "[1] => 2",
                "[2] => 3",
-               )
+            )
          }
       }
 

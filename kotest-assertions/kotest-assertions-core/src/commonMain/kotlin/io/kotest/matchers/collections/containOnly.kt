@@ -1,7 +1,7 @@
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.equals.Equality
 import io.kotest.assertions.print.print
-import io.kotest.equals.Equality
 import io.kotest.matchers.*
 import kotlin.jvm.JvmName
 
@@ -28,8 +28,10 @@ infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldContainOnly_array")
-infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>) =
+infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>): Array<T>? {
    this?.asList() should containOnly(*expected)
+   return this
+}
 
 /**
  * Assert that a collection contains only the given elements.

@@ -1,6 +1,6 @@
 package io.kotest.property.statistics
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.ExperimentalKotest
 import io.kotest.property.PropertyContext
 
@@ -36,7 +36,7 @@ suspend fun withCoveragePercentages(
       val attempts = context.attempts()
       val actual = (count.toDouble() / attempts.toDouble()) * 100.0
       if (actual < min)
-         fail("Required coverage of $min% for [${classification}] but was [${actual.toInt()}%]")
+         AssertionErrorBuilder.fail("Required coverage of $min% for [${classification}] but was [${actual.toInt()}%]")
    }
    return context
 }
@@ -84,7 +84,7 @@ suspend fun withCoverageCounts(
    classifications.forEach { (classification, min) ->
       val actual = stats[classification] ?: 0
       if (actual < min)
-         fail("Required coverage of $min for [${classification}] but was [${actual}]")
+         AssertionErrorBuilder.fail("Required coverage of $min for [${classification}] but was [${actual}]")
    }
    return context
 }

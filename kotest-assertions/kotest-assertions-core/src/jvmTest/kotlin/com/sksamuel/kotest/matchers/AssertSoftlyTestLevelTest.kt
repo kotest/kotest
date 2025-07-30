@@ -10,15 +10,15 @@ class AssertSoftlyTestLevelTest : FunSpec() {
    init {
       assertSoftly = true
 
-      context("test level assertSoftly should work at the container level") {
+      context("spec level assertSoftly should work for containers and tests") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher(listener)
             .withClasses(AssertSoftlyAtTestLevel::class)
             .launch()
          listener.tests.size shouldBe 2
          listener.errors shouldBe true
-         listener.result("test level assertSoftly should work at the container level")!!.errorOrNull!!.message shouldContain "The following 2 assertions failed"
-         listener.result("test level assertSoftly should work at the test level")!!.errorOrNull!!.message shouldContain "The following 2 assertions failed"
+         listener.result("spec level assertSoftly should work on containers")!!.errorOrNull!!.message shouldContain "The following 2 assertions failed"
+         listener.result("spec level assertSoftly should work on tests")!!.errorOrNull!!.message shouldContain "The following 2 assertions failed"
       }
    }
 }
@@ -27,12 +27,12 @@ private class AssertSoftlyAtTestLevel : FunSpec() {
    init {
       assertSoftly = true
 
-      context("test level assertSoftly should work at the container level") {
+      context("spec level assertSoftly should work on containers") {
          1 shouldBe 2
          1 shouldBe 3
       }
 
-      test("test level assertSoftly should work at the test level") {
+      test("spec level assertSoftly should work on tests") {
          1 shouldBe 2
          1 shouldBe 3
       }

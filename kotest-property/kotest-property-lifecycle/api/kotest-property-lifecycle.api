@@ -1,7 +1,7 @@
 public abstract interface class io/kotest/property/lifecycle/BeforeAndAfterPropertyTestInterceptExtension : io/kotest/core/extensions/SpecExtension {
 	public abstract fun afterProperty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public abstract fun beforeProperty (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/property/lifecycle/BeforeAndAfterPropertyTestInterceptExtension$DefaultImpls {

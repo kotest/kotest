@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -34,19 +35,19 @@ class UppercaseTest : FreeSpec({
          cs2.shouldNotBeUpperCase()
       }
       "should fail if value is null" {
-         io.kotest.assertions.throwables.shouldThrow<AssertionError> {
-            null shouldNot io.kotest.matchers.string.beUpperCase()
+         shouldThrow<AssertionError> {
+            null shouldNot beUpperCase()
          }.message shouldBe "Expecting actual not to be null"
 
-         io.kotest.assertions.throwables.shouldThrow<AssertionError> {
+         shouldThrow<AssertionError> {
             null.shouldNotBeUpperCase()
          }.message shouldBe "Expecting actual not to be null"
 
-         io.kotest.assertions.throwables.shouldThrow<AssertionError> {
-            null should io.kotest.matchers.string.beUpperCase()
+         shouldThrow<AssertionError> {
+            null should beUpperCase()
          }.message shouldBe "Expecting actual not to be null"
 
-         io.kotest.assertions.throwables.shouldThrow<AssertionError> {
+         shouldThrow<AssertionError> {
             null.shouldBeUpperCase()
          }.message shouldBe "Expecting actual not to be null"
       }

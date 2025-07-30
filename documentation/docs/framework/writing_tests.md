@@ -29,7 +29,7 @@ class MyFirstTestClass : FunSpec({
 })
 ```
 
-Note that tests must be defined inside an `init {}` block or an init lambda as in the previous example.
+Note that tests must be defined inside an `init {}` block or a class body lambda as in the previous example.
 
 ### Nested Tests
 

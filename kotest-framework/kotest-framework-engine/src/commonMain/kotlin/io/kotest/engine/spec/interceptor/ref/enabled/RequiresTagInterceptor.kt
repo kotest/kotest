@@ -14,7 +14,7 @@ import io.kotest.engine.spec.interceptor.SpecRefInterceptor
 import io.kotest.engine.tags.TagExpressionBuilder
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
-import io.kotest.mpp.annotation
+import io.kotest.common.reflection.annotation
 
 /**
  * A [io.kotest.engine.spec.interceptor.SpecRefInterceptor] which will ignore specs if they are annotated with @[io.kotest.core.annotation.RequiresTag]

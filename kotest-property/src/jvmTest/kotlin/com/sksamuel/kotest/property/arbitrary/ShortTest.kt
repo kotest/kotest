@@ -5,14 +5,17 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.data.blocking.forAll
+import io.kotest.data.forAll
 import io.kotest.data.row
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.short.shouldBeBetween
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.PropTest
-import io.kotest.property.arbitrary.*
+import io.kotest.property.arbitrary.edgecases
+import io.kotest.property.arbitrary.short
+import io.kotest.property.arbitrary.single
+import io.kotest.property.arbitrary.uShort
 import io.kotest.property.checkAll
 import io.kotest.property.checkCoverage
 

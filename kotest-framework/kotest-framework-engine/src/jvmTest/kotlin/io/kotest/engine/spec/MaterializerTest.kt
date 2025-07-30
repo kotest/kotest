@@ -13,7 +13,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds
 

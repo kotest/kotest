@@ -5,8 +5,8 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.mpp.sysprop
-import io.kotest.mpp.syspropOrEnv
+import io.kotest.common.sysprop
+import io.kotest.common.syspropOrEnv
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 

@@ -157,6 +157,19 @@ public final class io/kotest/extensions/testcontainers/JdbcTestContainerExtensio
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/extensions/testcontainers/KafkaKt {
+	public static final fun createAdminClient (Lorg/testcontainers/kafka/KafkaContainer;Lkotlin/jvm/functions/Function1;)Lorg/apache/kafka/clients/admin/AdminClient;
+	public static synthetic fun createAdminClient$default (Lorg/testcontainers/kafka/KafkaContainer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/apache/kafka/clients/admin/AdminClient;
+	public static final fun createConsumer (Lorg/testcontainers/kafka/KafkaContainer;Lorg/apache/kafka/common/serialization/Deserializer;Lorg/apache/kafka/common/serialization/Deserializer;Lkotlin/jvm/functions/Function1;)Lorg/apache/kafka/clients/consumer/KafkaConsumer;
+	public static synthetic fun createConsumer$default (Lorg/testcontainers/kafka/KafkaContainer;Lorg/apache/kafka/common/serialization/Deserializer;Lorg/apache/kafka/common/serialization/Deserializer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/apache/kafka/clients/consumer/KafkaConsumer;
+	public static final fun createProducer (Lorg/testcontainers/kafka/KafkaContainer;Lorg/apache/kafka/common/serialization/Serializer;Lorg/apache/kafka/common/serialization/Serializer;Lkotlin/jvm/functions/Function1;)Lorg/apache/kafka/clients/producer/KafkaProducer;
+	public static synthetic fun createProducer$default (Lorg/testcontainers/kafka/KafkaContainer;Lorg/apache/kafka/common/serialization/Serializer;Lorg/apache/kafka/common/serialization/Serializer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/apache/kafka/clients/producer/KafkaProducer;
+	public static final fun createStringStringConsumer (Lorg/testcontainers/kafka/KafkaContainer;Lkotlin/jvm/functions/Function1;)Lorg/apache/kafka/clients/consumer/KafkaConsumer;
+	public static synthetic fun createStringStringConsumer$default (Lorg/testcontainers/kafka/KafkaContainer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/apache/kafka/clients/consumer/KafkaConsumer;
+	public static final fun createStringStringProducer (Lorg/testcontainers/kafka/KafkaContainer;Lkotlin/jvm/functions/Function1;)Lorg/apache/kafka/clients/producer/KafkaProducer;
+	public static synthetic fun createStringStringProducer$default (Lorg/testcontainers/kafka/KafkaContainer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/apache/kafka/clients/producer/KafkaProducer;
+}
+
 public final class io/kotest/extensions/testcontainers/LifecycleMode : java/lang/Enum {
 	public static final field EveryTest Lio/kotest/extensions/testcontainers/LifecycleMode;
 	public static final field Leaf Lio/kotest/extensions/testcontainers/LifecycleMode;

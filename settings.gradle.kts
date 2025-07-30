@@ -2,6 +2,7 @@ rootProject.name = "kotest"
 
 pluginManagement {
    repositories {
+      google()
       mavenCentral()
       gradlePluginPortal()
    }
@@ -12,6 +13,7 @@ dependencyResolutionManagement {
    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
 
    repositories {
+      google()
       mavenCentral()
       maven("https://oss.sonatype.org/content/repositories/snapshots/") {
          name = "SonatypeSnapshots"
@@ -63,16 +65,25 @@ include(
    // generates KMP tests
    ":kotest-framework:kotest-framework-symbol-processor",
 
-   // contains basic assertion building block such as shouldBe which are used by both
-   // framework and assertion libraries;
-   // no user should need to depend on this
+   // generates KMP test reports
+   ":kotest-framework:kotest-framework-multiplatform-reporter",
+
+   ":kotest-assertions:kotest-assertions-table",
+
+   // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
    ":kotest-assertions:kotest-assertions-shared",
 
-   // the core assertions that cover things like collections, strings, etc
+   // the core assertions that cover the basic types such as String, Int, Boolean, etc.
+   // it also defines the assertion error builders that create the intellij formatted assertion errors
    // users should depend on this if they want to use kotest assertions in tests
    ":kotest-assertions:kotest-assertions-core",
+
+   // provides json matchers for comparing json strings, json objects, and json arrays
    ":kotest-assertions:kotest-assertions-json",
+
+   // provides matchers for ktor requests and responses
    ":kotest-assertions:kotest-assertions-ktor",
+
    ":kotest-assertions:kotest-assertions-yaml",
 
    // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
@@ -93,13 +104,13 @@ include(
 
    // contains  extensions for property testing that build on the kotest test framework
    // the new 6.0+ permutations based DSL for property testing
-   ":kotest-property:kotest-property-permutations",
+//   ":kotest-property:kotest-property-permutations",
 
    // contains extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",
 
    ":kotest-property:kotest-property-arrow",
-   ":kotest-property:kotest-property-arrow-optics",
+//   ":kotest-property:kotest-property-arrow-optics",
 
    // support for executing tests via junit platform through gradle
    // this will also bring in the required libs for the intellij plugin

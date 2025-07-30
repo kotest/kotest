@@ -1,7 +1,10 @@
 plugins {
-   id("kotest-multiplatform-library-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-js-wasm-conventions")
+   id("kotest-native-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
+   id("kotest-publishing-conventions")
 }
 
 kotlin {
@@ -9,7 +12,9 @@ kotlin {
 
       commonMain {
          dependencies {
-            api(projects.kotestAssertions.kotestAssertionsShared)
+            // this pulls in the should DSL, which is used in the engine to track assertion usage
+            implementation(projects.kotestAssertions.kotestAssertionsShared)
+
             implementation(libs.kotlin.reflect)
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
@@ -41,10 +46,16 @@ kotlin {
          }
       }
 
+      commonTest {
+         dependencies {
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestAssertions.kotestAssertionsTable)
+         }
+      }
+
       jvmTest {
          dependencies {
             implementation(kotlin("stdlib"))
-            implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
@@ -77,6 +88,4 @@ tasks.withType<Test>().configureEach {
          }
       }
    })
-
-   systemProperty("kotest.framework.classpath.scanning.autoscan.disable", "false")
 }

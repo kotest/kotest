@@ -1,7 +1,7 @@
 package io.kotest.property.seed
 
-import io.kotest.common.DescriptorPath
-import io.kotest.common.DescriptorPathContextElement
+import io.kotest.core.descriptors.DescriptorPath
+import io.kotest.core.descriptors.DescriptorPathContextElement
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
@@ -31,7 +31,5 @@ internal suspend fun clearFailedSeed() {
 }
 
 internal expect fun readSeed(path: DescriptorPath): Long?
-
 internal expect fun writeSeed(path: DescriptorPath, seed: Long)
-
 internal expect fun clearSeed(path: DescriptorPath)

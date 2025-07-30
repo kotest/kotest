@@ -7,7 +7,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.descriptors.toDescriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
@@ -15,7 +15,7 @@ import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.teamcity.TeamCityWriter
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import io.kotest.mpp.bestName
+import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 
 /**

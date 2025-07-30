@@ -32,7 +32,6 @@ module.exports = {
     "extensions/ktor",
     "extensions/system_extensions",
     "extensions/test_containers",
-    "extensions/kafka",
     "extensions/mockserver",
     "extensions/junit_xml",
     "extensions/html_reporter",
@@ -53,6 +52,7 @@ module.exports = {
     "assertions/similarity",
     "assertions/clues",
     "assertions/soft_assertions",
+    "assertions/power-assert",
     {
       "type": "category",
       "label": "Non-deterministic Testing",
@@ -118,6 +118,7 @@ module.exports = {
       ]
     },
     "framework/isolation_mode",
+    "framework/concurrency6",
     "framework/lifecycle_hooks",
     {
       "type": "category",
@@ -196,6 +197,8 @@ module.exports = {
       "items": [
         "framework/test_case_config",
         "framework/project_config",
+        "framework/package_level_config",
+        "framework/shared_test_config",
         "framework/framework_config_props"
       ]
     },

@@ -25,10 +25,6 @@ public abstract class io/kotest/property/Arb : io/kotest/property/Gen {
 public final class io/kotest/property/Arb$Companion {
 }
 
-public final class io/kotest/property/AssumptionFailedException : java/lang/Exception {
-	public static final field INSTANCE Lio/kotest/property/AssumptionFailedException;
-}
-
 public final class io/kotest/property/AssumptionsKt {
 	public static final fun assume (Lkotlin/jvm/functions/Function0;)V
 	public static final fun assume (Z)V
@@ -198,8 +194,8 @@ public final class io/kotest/property/PropTestConfig {
 }
 
 public abstract interface class io/kotest/property/PropTestListener {
-	public abstract fun afterTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public abstract fun beforeTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun afterTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeTest (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/property/PropTestListener$DefaultImpls {

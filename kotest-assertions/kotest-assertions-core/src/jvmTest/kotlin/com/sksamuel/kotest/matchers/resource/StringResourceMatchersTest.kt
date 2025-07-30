@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.matchers.resource
 
-import io.kotest.assertions.fail
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.be
@@ -36,7 +36,7 @@ class StringResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue shouldMatchResource "/resourceMatchersTest/expected/testResource.txt"
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
          errorMessage shouldContain "Actual   : .*/resourceMatchersTest/expected/_actual/testResource\\.txt".toRegex()
@@ -47,7 +47,7 @@ class StringResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue shouldMatchResource "/resourceMatchersTest/expected/testResource.txt"
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          val actualValueFile = errorMessage.fileFromRegex(
             "Actual   : .*/resourceMatchersTest/expected/_actual/testResource\\.txt".toRegex()
@@ -65,7 +65,8 @@ class StringResourceMatchersTest : ShouldSpec({
          val givenValue = "test\nresource\nsomething"
 
          givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
-         givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt",
+         givenValue.shouldMatchResource(
+            "/resourceMatchersTest/expected/testResource.txt",
             { s -> startWith(s.lowercase()) })
       }
 
@@ -74,7 +75,7 @@ class StringResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
          errorMessage shouldContain "Actual   : .*/resourceMatchersTest/expected/_actual/testResource\\.txt".toRegex()
@@ -100,7 +101,7 @@ class StringResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue shouldNotMatchResource "/resourceMatchersTest/expected/testResource.txt"
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
       }
@@ -120,7 +121,7 @@ class StringResourceMatchersTest : ShouldSpec({
 
          val errorMessage = shouldThrow<AssertionError> {
             givenValue.shouldNotMatchResource("/resourceMatchersTest/expected/testResource.txt", ::startWith)
-         }.message ?: fail("Cannot get error message")
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
 
          errorMessage shouldContain "Expected : /resourceMatchersTest/expected/testResource.txt"
       }
@@ -183,4 +184,4 @@ fun String.fileFromRegex(fileRegex: Regex) =
       ?.value
       ?.substringAfter(": ")
       ?.let { File(it) }
-      ?: fail("Cannot get file path from error message")
+      ?: AssertionErrorBuilder.fail("Cannot get file path from error message")

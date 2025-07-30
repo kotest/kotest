@@ -6,7 +6,7 @@ slug: testing-styles.html
 
 
 Kotest offers 10 different styles of test layout. Some are inspired from other popular test frameworks to make you feel right at home.
-Others were created just for Kotest. 
+Others were created just for Kotest.
 
 To use Kotest, create a class file that extends one of the test styles. Then inside an `init { }` block,
 create your test cases. The following table contains the test styles you can pick from along with examples.
@@ -147,55 +147,56 @@ class MyTests : ShouldSpec({
 ## Describe Spec
 
 `DescribeSpec` offers a style familiar to those from a Ruby or Javascript background, as this testing style
- uses `describe` / `it` keywords. Tests must be nested in one or more `describe` blocks.
+uses `describe` / `it` keywords. Tests must be nested in one or more `describe` blocks. `context` can also be used as an
+alias for `describe`.
 
 ```kotlin
 class MyTests : DescribeSpec({
-    describe("score") {
-        it("start as zero") {
-            // test here
-        }
-        describe("with a strike") {
-            it("adds ten") {
-                // test here
-            }
-            it("carries strike to the next frame") {
-                // test here
-            }
-        }
-
-        describe("for the opposite team") {
-            it("Should negate one score") {
-                // test here
-            }
-        }
+  describe("score") {
+    it("start as zero") {
+      // test here
     }
+    describe("with a strike") {
+      it("adds ten") {
+        // test here
+      }
+      it("carries strike to the next frame") {
+        // test here
+      }
+    }
+
+    context("big scorers") {
+      describe("for the opposite team") {
+        it("Should negate one score") {
+          // test here
+        }
+      }
+    }
+  }
 })
 ```
 
-Tests can be disabled using the `xdescribe` and `xit` variants (in addition to the [usual ways](conditional_evaluation.md))
+Tests can be disabled using the `xcontext`, `xdescribe` and `xit` variants (in addition to the [usual ways](conditional_evaluation.md))
 
 ```kotlin
 class MyTests : DescribeSpec({
-    describe("this outer block is enabled") {
-        xit("this test is disabled") {
-            // test here
-        }
+  describe("this outer block is enabled") {
+    xit("this test is disabled") {
+      // test here
     }
-    xdescribe("this block is disabled") {
-        it("disabled by inheritance from the parent") {
-            // test here
-        }
+  }
+  xdescribe("this block is disabled") {
+    it("disabled by inheritance from the parent") {
+      // test here
     }
+  }
+  xcontext("this block is also disabled") {
+    it("disabled by inheritance from the parent") {
+      // test here
+    }
+  }
 })
 ```
-
-
-
-
-
-
-
 
 ## Behavior Spec
 
