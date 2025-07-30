@@ -1,10 +1,10 @@
 package io.kotest.core.test
 
-/**
- * This exception is thrown when a test fails an expect block.
- */
-object ExpectFailureException : Exception()
+import io.kotest.engine.IterationSkippedException
 
+// TestScope is added just to restrict where this function can be used.
+// It is not used in the function itself.
+@Suppress("UnusedReceiverParameter")
 fun TestScope.runIf(thunk: () -> Boolean) {
-   if (!thunk()) throw ExpectFailureException
+   if (!thunk()) throw IterationSkippedException()
 }
