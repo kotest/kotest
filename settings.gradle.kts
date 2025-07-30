@@ -124,6 +124,10 @@ include(
    // adds support for the allure reporting framework - see more https://allurereport.org/
    ":kotest-extensions:kotest-extensions-allure",
    ":kotest-extensions:kotest-extensions-blockhound",
+
+   // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
+   ":kotest-extensions:kotest-extensions-decoroutinator",
+
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 

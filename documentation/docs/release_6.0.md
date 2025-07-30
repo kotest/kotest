@@ -70,6 +70,15 @@ Improved support for debugging coroutines in tests:
 - Helps with debugging by providing stack traces and dumping coroutine information
 - Can be enabled on a per-test basis
 
+### Decoroutinator Extension
+
+A new extension for improving coroutine stack traces:
+
+- Integrates with [Stacktrace Decoroutinator](https://github.com/Anamorphosee/stacktrace-decoroutinator)
+- Removes internal coroutine implementation details from stack traces
+- Makes stack traces cleaner and easier to understand
+- Helps quickly identify the source of errors in coroutine-based tests
+
 ## Breaking Changes
 
 ### Minimum Versions
