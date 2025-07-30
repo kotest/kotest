@@ -154,6 +154,28 @@ public final class io/kotest/matchers/ComparableMatcherResult$Companion {
 	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/matchers/ComparableMatcherResult;
 }
 
+public final class io/kotest/matchers/ComparisonMatcherResult : io/kotest/matchers/MatcherResult {
+	public fun <init> (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lio/kotest/assertions/print/Printed;
+	public final fun component3 ()Lio/kotest/assertions/print/Printed;
+	public final fun component4 ()Lkotlin/jvm/functions/Function0;
+	public final fun component5 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/ComparisonMatcherResult;
+	public static synthetic fun copy$default (Lio/kotest/matchers/ComparisonMatcherResult;ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/matchers/ComparisonMatcherResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureMessage ()Ljava/lang/String;
+	public final fun getActual ()Lio/kotest/assertions/print/Printed;
+	public final fun getExpected ()Lio/kotest/assertions/print/Printed;
+	public final fun getFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getNegatedFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getPassed ()Z
+	public fun hashCode ()I
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class io/kotest/matchers/EqualityMatcherResult : io/kotest/matchers/MatcherResult {
 	public static final field Companion Lio/kotest/matchers/EqualityMatcherResult$Companion;
 	public abstract fun actual ()Ljava/lang/Object;
@@ -224,28 +246,6 @@ public abstract interface class io/kotest/matchers/MatcherResult {
 
 public final class io/kotest/matchers/MatcherResult$Companion {
 	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResult;
-}
-
-public final class io/kotest/matchers/ValuesMatcherResult : io/kotest/matchers/MatcherResult {
-	public fun <init> (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
-	public final fun component1 ()Z
-	public final fun component2 ()Lio/kotest/assertions/print/Printed;
-	public final fun component3 ()Lio/kotest/assertions/print/Printed;
-	public final fun component4 ()Lkotlin/jvm/functions/Function0;
-	public final fun component5 ()Lkotlin/jvm/functions/Function0;
-	public final fun copy (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/ValuesMatcherResult;
-	public static synthetic fun copy$default (Lio/kotest/matchers/ValuesMatcherResult;ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/matchers/ValuesMatcherResult;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun failureMessage ()Ljava/lang/String;
-	public final fun getActual ()Lio/kotest/assertions/print/Printed;
-	public final fun getExpected ()Lio/kotest/assertions/print/Printed;
-	public final fun getFailureMessageFn ()Lkotlin/jvm/functions/Function0;
-	public final fun getNegatedFailureMessageFn ()Lkotlin/jvm/functions/Function0;
-	public final fun getPassed ()Z
-	public fun hashCode ()I
-	public fun negatedFailureMessage ()Ljava/lang/String;
-	public fun passed ()Z
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/matchers/jvmerrorcollector {

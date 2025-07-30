@@ -6,7 +6,7 @@ import io.kotest.assertions.similarity.possibleMatchesDescription
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.ValuesMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.errorCollector
 import io.kotest.matchers.string.Diff
 import io.kotest.matchers.string.stringify
@@ -127,7 +127,7 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
             negatedFailureMessageFn = { "Map should not contain mapping $key=$v" }
          )
 
-         key in value -> ValuesMatcherResult(
+         key in value -> ComparisonMatcherResult(
             passed = passed,
             expected = v.print(),
             actual = value[key].print(),

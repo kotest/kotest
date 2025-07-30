@@ -5,20 +5,20 @@ sidebar_label: Test Clock
 slug: test_clock.html
 ---
 
-[![Latest Release](https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-clock)](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-clock)
+[![Latest Release](https://img.shields.io/maven-central/v/io.kotest/kotest-extensions)](https://search.maven.org/artifact/io.kotest/kotest-extensions)
 
-The JVM provides the java.time.Clock interface which is used to generate `Instant`s. When we have code that relies on time,
+The JVM provides the `java.time.Clock` interface which is used to generate `Instant`s. When we have code that relies on time,
 we can use a `Clock` to generate the values, rather than using things like `Instant.now()` or `System.currentTimeMillis()`.
 
 Then in tests we can provide a fixed or controllable clock which avoids issues where the time changes on each test run.
 In your real code, you provide an instance of Clock.systemUTC() or whatever.
 
 :::note
-The following module is needed: `io.kotest:kotest-extensions-clock` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-clock).
+The following module is needed: `io.kotest:kotest-extensions` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions).
 :::
 
 :::note
-Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
+Since Kotest 6.0, all extensions are published under the `io.kotest` group, with version cadence tied to
 main Kotest releases.
 :::
 

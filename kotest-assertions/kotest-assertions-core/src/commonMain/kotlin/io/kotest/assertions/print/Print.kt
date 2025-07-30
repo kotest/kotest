@@ -25,7 +25,6 @@ internal fun indent(level: Int): String = "  ".repeat(level)
  * Obtains a [Printed] instance for the given receiver by delegating to the common
  * and platform print lookups.
  */
-@Deprecated("Use PrintResolver.printFor instead", ReplaceWith("PrintResolver.printFor(this).print(this)"))
 fun Any?.print(): Printed = if (this == null) NullPrint.print(this) else PrintResolver.printFor(this).print(this)
 
 internal fun recursiveRepr(root: Any, node: Any?): Printed {

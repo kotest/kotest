@@ -32,7 +32,6 @@ module.exports = {
     "extensions/ktor",
     "extensions/system_extensions",
     "extensions/test_containers",
-    "extensions/kafka",
     "extensions/mockserver",
     "extensions/junit_xml",
     "extensions/html_reporter",
@@ -53,6 +52,7 @@ module.exports = {
     "assertions/similarity",
     "assertions/clues",
     "assertions/soft_assertions",
+    "assertions/power-assert",
     {
       "type": "category",
       "label": "Non-deterministic Testing",

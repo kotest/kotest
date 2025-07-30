@@ -107,8 +107,12 @@ interface MatcherResult {
 /**
  * An instance of [MatcherResult] that contains the actual and expected values
  * as [Printed] values, along with the failure and negated failure messages.
+ *
+ * By return this [MatcherResult], Kotest will automatically generate the appropriate
+ * assertion error message that contains the actual and expected values in a way
+ * that allows intellij to create a <Click to see difference> link in the IDE output window.
  */
-data class ValuesMatcherResult(
+data class ComparisonMatcherResult(
    @JsName("passed_val") val passed: Boolean,
    val actual: Printed,
    val expected: Printed,
@@ -120,6 +124,7 @@ data class ValuesMatcherResult(
    override fun negatedFailureMessage(): String = negatedFailureMessageFn()
 }
 
+@Deprecated("Use ValuesMatcherResult")
 interface ComparableMatcherResult : MatcherResult {
 
    fun actual(): String
@@ -143,6 +148,7 @@ interface ComparableMatcherResult : MatcherResult {
    }
 }
 
+@Deprecated("Use ValuesMatcherResult")
 interface EqualityMatcherResult : MatcherResult {
 
    fun actual(): Any?

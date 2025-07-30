@@ -24,8 +24,8 @@ To start, add the below dependency to your Gradle build file.
 io.kotest:kotest-extensions-allure:${kotest.version}
 ```
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-allure)
-[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-allure.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-allure/)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-allure.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-allure)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-allure%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-allure/maven-metadata.xml)
 
 :::note
 Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to

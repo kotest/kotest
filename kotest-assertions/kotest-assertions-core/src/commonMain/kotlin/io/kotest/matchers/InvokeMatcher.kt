@@ -13,7 +13,7 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    if (!result.passed()) {
       when (result) {
 
-         is ValuesMatcherResult -> errorCollector.collectOrThrow(
+         is ComparisonMatcherResult -> errorCollector.collectOrThrow(
             AssertionErrorBuilder.create()
                .withMessage(result.failureMessage() + "\n")
                .withValues(

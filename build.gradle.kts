@@ -51,6 +51,7 @@ dependencies {
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKonform)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKotlinxDatetime)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsShared)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsYaml)
 
    // bom

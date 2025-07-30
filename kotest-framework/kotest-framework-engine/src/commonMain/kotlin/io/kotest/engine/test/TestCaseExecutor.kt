@@ -1,8 +1,8 @@
 package io.kotest.engine.test
 
-import io.kotest.core.Logger
 import io.kotest.common.Platform
 import io.kotest.common.platform
+import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.engine.interceptors.EngineContext
@@ -14,10 +14,10 @@ import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
-import io.kotest.engine.test.interceptors.ExpectExceptionTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
+import io.kotest.engine.test.interceptors.HandleSkippedExceptionsTestInterceptor
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
@@ -88,7 +88,7 @@ internal class TestCaseExecutor(
             blockedThreadTimeoutInterceptor(timeMark, context.testConfigResolver)
          else null,
          TimeoutInterceptor(timeMark, context.testConfigResolver),
-         ExpectExceptionTestInterceptor,
+         HandleSkippedExceptionsTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
             timeMark,

@@ -8,7 +8,7 @@ json-path = "2.9.0"
 junit4 = "4.13.2"
 junit-platform = "1.8.2"
 junit-jupiter = "5.8.2"
-kaml = "0.66.0"
+kaml = "0.85.0"
 kotlin = "2.2.0"
 kotlinx-coroutines = "1.10.0"
 kotlinx-serialization = "1.9.0"
@@ -39,6 +39,7 @@ kotlinx-io-core = "0.7.0"
 xmlutil = "0.91.1"
 agp = "8.10.0"
 binary-compatibility-validator = "0.18.1"
+decoroutinator = "2.5.5"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -69,6 +70,8 @@ arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref 
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
 arrow-optics = { module = "io.arrow-kt:arrow-optics", version.ref = "arrow" }
 arrow-functions = { module = "io.arrow-kt:arrow-functions", version.ref = "arrow" }
+
+decoroutinator = { module = "dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-jvm", version.ref = "decoroutinator" }
 
 fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 
@@ -154,4 +157,4 @@ kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compat
 allure = { id = "io.qameta.allure", version = "2.12.0" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
 power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
-android-library = {id = "com.android.library", version.ref = "agp"}
+android-library = { id = "com.android.library", version.ref = "agp" }
