@@ -40,6 +40,7 @@ val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?
 
 val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
 
 """.trim()
          )
@@ -88,6 +89,7 @@ when (listenerType) {
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
          .addImport("io.kotest.engine.extensions", "ProvidedDescriptorFilter")
          .addImport("io.kotest.engine", "TestEngineLauncher")
+         .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")

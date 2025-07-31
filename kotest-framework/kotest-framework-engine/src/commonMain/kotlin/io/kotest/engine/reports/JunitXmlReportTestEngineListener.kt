@@ -1,23 +1,23 @@
-package io.kotest.engine.launcher
+package io.kotest.engine.reports
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.reports.JUnitXmlReportGenerator
 import io.kotest.engine.test.TestResult
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Paths
+import kotlinx.io.buffered
+import kotlinx.io.files.Path
+import kotlinx.io.files.SystemFileSystem
+import kotlinx.io.writeString
 import kotlin.reflect.KClass
 import kotlin.time.Clock
 
-class JunitXmlTestEngineListener(private val testReportsDir: String, hostname: String) : TestEngineListener {
+class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostname: String?) : TestEngineListener {
 
-   private val writer = JUnitXmlReportGenerator(
+   private val generator = JUnitXmlReportGenerator(
       clock = Clock.System,
       includeStackTraces = true,
-      hostname = hostname
+      hostname = hostname,
    )
 
    private val results = mutableMapOf<TestCase, TestResult>()
@@ -38,11 +38,10 @@ class JunitXmlTestEngineListener(private val testReportsDir: String, hostname: S
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      File(testReportsDir).mkdirs()
-      val xml = writer.writeXml(ref.kclass, results)
-      val fileName = ref.kclass.qualifiedName ?: ref.kclass.simpleName
-      Files.writeString(Paths.get(testReportsDir).resolve("TEST-${fileName}.xml"), xml)
-      results.clear()
+      val specName = ref.kclass.qualifiedName ?: ref.kclass.simpleName
+      val testFile = "TEST-${specName}.xml"
+      val xml = generator.xml(ref.kclass, results)
+      writeFile(testReportsDir, testFile, xml)
    }
 
    override suspend fun testStarted(testCase: TestCase) {
@@ -56,4 +55,12 @@ class JunitXmlTestEngineListener(private val testReportsDir: String, hostname: S
       results[testCase] = result
    }
 
+   fun writeFile(baseDir: String, filename: String, contents: String) {
+      val path = Path(baseDir, filename)
+      SystemFileSystem.createDirectories(path)
+      println(" >> Test report will be written to $path")
+      val sink = SystemFileSystem.sink(path, append = false).buffered()
+      sink.writeString(contents)
+      sink.close()
+   }
 }

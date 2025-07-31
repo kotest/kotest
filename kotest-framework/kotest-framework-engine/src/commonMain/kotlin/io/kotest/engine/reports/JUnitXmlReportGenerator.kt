@@ -11,7 +11,7 @@ import kotlin.time.Clock
 class JUnitXmlReportGenerator(
    private val clock: Clock,
    private val includeStackTraces: Boolean,
-   private val hostname: String,
+   private val hostname: String?,
 ) {
 
    private val xml = XML {
@@ -21,7 +21,7 @@ class JUnitXmlReportGenerator(
 
    private val target: String = "todo"
 
-   fun writeXml(spec: KClass<*>, tests: Map<TestCase, TestResult>): String {
+   fun xml(spec: KClass<*>, tests: Map<TestCase, TestResult>): String {
       val testsuite = generate(spec, tests)
       return xml.encodeToString(TestSuite.serializer(), testsuite)
    }
@@ -34,7 +34,7 @@ class JUnitXmlReportGenerator(
          errors = tests.filter { it.value.isError }.count(),
          skipped = tests.filter { it.value.isIgnored }.count(),
          timestamp = clock.now().toString().substringBeforeLast("."), // time without nanos
-         hostname = hostname,
+         hostname = hostname ?:"",
          time = tests.map { it.value.duration.inWholeMilliseconds / 1_000.0 }.sum(),
          cases = tests.map { (test, result) ->
             TestCaseElement(
@@ -80,13 +80,4 @@ class JUnitXmlReportGenerator(
       }
    }
 
-   /* ---------- platform hook ---------- */
-//   private fun writeXmlFile(xml: String, filename: String) {
-//      val path = Path(tempPath, filename)
-//      SystemFileSystem.createDirectories(tempPath)
-//      println(" >> Test report will be written to $path")
-//      val sink = SystemFileSystem.sink(path, append = false).buffered()
-//      sink.writeString(xml)
-//      sink.close()
-//   }
 }

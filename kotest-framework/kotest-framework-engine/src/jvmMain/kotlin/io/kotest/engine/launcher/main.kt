@@ -16,6 +16,7 @@ import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.reports.JunitXmlReportTestEngineListener
 import java.net.InetAddress
 import java.net.UnknownHostException
 import kotlin.reflect.KClass
@@ -124,7 +125,7 @@ private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): 
       } catch (_: UnknownHostException) {
          InetAddress.getLoopbackAddress().hostAddress
       }
-      JunitXmlTestEngineListener(xmldir, hostname)
+      JunitXmlReportTestEngineListener(xmldir, hostname)
    }
 }
 
