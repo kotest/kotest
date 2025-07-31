@@ -1,5 +1,6 @@
 package io.kotest.engine.reports
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
@@ -38,7 +39,7 @@ class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostn
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      val specName = ref.kclass.qualifiedName ?: ref.kclass.simpleName
+      val specName = ref.kclass.bestName()
       val testFile = "TEST-${specName}.xml"
       val xml = generator.xml(ref.kclass, results)
       writeFile(testReportsDir, testFile, xml)
