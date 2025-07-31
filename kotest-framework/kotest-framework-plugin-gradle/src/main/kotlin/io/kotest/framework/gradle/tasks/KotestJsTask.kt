@@ -52,7 +52,7 @@ abstract class KotestJsTask @Inject internal constructor(
 
          // this is the entry point passed to node which references the well defined runKotest function
          val nodeCommand =
-            "require('${moduleFile}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $descriptorArg)"
+            "require('${moduleFile.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $descriptorArg)"
          println("Node command :$nodeCommand")
 
          commandLine(nodeExecutable.get(), "-e", nodeCommand)
