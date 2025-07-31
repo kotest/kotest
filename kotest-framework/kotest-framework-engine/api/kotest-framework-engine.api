@@ -3008,6 +3008,7 @@ public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
+	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
 	public final fun addExtension (Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
