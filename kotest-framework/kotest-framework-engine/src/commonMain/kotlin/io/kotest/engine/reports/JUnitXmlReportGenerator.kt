@@ -8,7 +8,7 @@ import nl.adaptivity.xmlutil.serialization.XML
 import kotlin.reflect.KClass
 import kotlin.time.Clock
 
-class JUnitXmlWriter(
+class JUnitXmlReportGenerator(
    private val clock: Clock,
    private val includeStackTraces: Boolean,
    private val hostname: String,

@@ -4,7 +4,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.reports.JUnitXmlWriter
+import io.kotest.engine.reports.JUnitXmlReportGenerator
 import io.kotest.engine.test.TestResult
 import java.io.File
 import java.nio.file.Files
@@ -14,7 +14,7 @@ import kotlin.time.Clock
 
 class JunitXmlTestEngineListener(private val testReportsDir: String, hostname: String) : TestEngineListener {
 
-   private val writer = JUnitXmlWriter(
+   private val writer = JUnitXmlReportGenerator(
       clock = Clock.System,
       includeStackTraces = true,
       hostname = hostname

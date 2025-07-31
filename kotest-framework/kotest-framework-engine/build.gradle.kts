@@ -27,6 +27,9 @@ kotlin {
 
             // used to generate the junit-format xml reports
             implementation(libs.xmlutil)
+
+            // used to write the xml reports to the file system
+            implementation(libs.kotlinx.io.core)
          }
       }
 

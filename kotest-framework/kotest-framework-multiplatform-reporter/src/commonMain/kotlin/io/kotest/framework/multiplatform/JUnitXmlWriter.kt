@@ -1,9 +1,9 @@
 package io.kotest.framework.multiplatform
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.common.reflection.bestName
 import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML
 import kotlin.time.Clock
@@ -75,14 +75,4 @@ class JUnitXmlWriter(
          else -> null
       }
    }
-
-   /* ---------- platform hook ---------- */
-//   private fun writeXmlFile(xml: String, filename: String) {
-//      val path = Path(tempPath, filename)
-//      SystemFileSystem.createDirectories(tempPath)
-//      println(" >> Test report will be written to $path")
-//      val sink = SystemFileSystem.sink(path, append = false).buffered()
-//      sink.writeString(xml)
-//      sink.close()
-//   }
 }
