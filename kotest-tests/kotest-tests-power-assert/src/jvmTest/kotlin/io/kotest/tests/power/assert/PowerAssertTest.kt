@@ -7,7 +7,7 @@ import io.kotest.matchers.shouldBe
 class PowerAssertTest : FunSpec() {
    init {
 
-      xtest("power assert should work with basic chains") {
+      test("power assert should work with basic chains") {
          val hello = "Hello"
          val world = "world!"
          val error = shouldFail {

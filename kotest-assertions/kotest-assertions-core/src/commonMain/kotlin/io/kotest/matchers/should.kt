@@ -18,7 +18,7 @@ import io.kotest.assertions.withClue
  * @see [eq]
  */
 @Suppress("UNCHECKED_CAST")
-infix fun <T, U : T> T.shouldBe(expected: U?): T {
+infix fun <T, U> T.shouldBe(expected: U?): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
       else -> this should be(expected)
@@ -41,7 +41,7 @@ infix fun <T, U : T> T.shouldBe(expected: U?): T {
  * @see [eq]
  */
 @Suppress("UNCHECKED_CAST")
-fun <T> T.shouldBe(expected: T?, msg: String): T {
+fun <T, U> T.shouldBe(expected: U?, msg: String): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
       else -> withClue(msg) {
