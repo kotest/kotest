@@ -23,7 +23,7 @@ class KotestTestRunner(
    override fun run(notifier: RunNotifier) {
       runBlocking {
          val listener = JUnitTestEngineListener(notifier)
-         TestEngineLauncher(listener).withClasses(kclass.kotlin).launch()
+         TestEngineLauncher().withListener(listener).withClasses(kclass.kotlin).launch()
       }
    }
 

@@ -2,8 +2,10 @@ package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
+import org.gradle.api.file.Directory
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.StopExecutionException
@@ -26,6 +28,8 @@ abstract class KotestJvmTask @Inject internal constructor(
    protected fun execute() {
 
       val java = project.extensions.getByType(JavaPluginExtension::class.java)
+      val testReportsDir: Provider<Directory> = getTestReportsDir(project, name)
+
       val test = java.sourceSets.findByName(sourceSetName.get())
          ?: throw StopExecutionException("Could not find source set '${sourceSetName.get()}'")
 
@@ -36,6 +40,7 @@ abstract class KotestJvmTask @Inject internal constructor(
             .withClasspath(test.runtimeClasspath)
             .withSpecs(specs)
             .withDescriptor(descriptor.orNull)
+            .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
             .withCommandLineTags(tags.orNull)
             .configure(this)
       }
@@ -45,4 +50,5 @@ abstract class KotestJvmTask @Inject internal constructor(
          result.rethrowFailure()
       }
    }
+
 }

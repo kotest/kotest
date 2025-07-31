@@ -12,7 +12,8 @@ class DefaultFqnConfigClassTest : FunSpec() {
    init {
       test("default FQN should be used for config class when no sys property override exists") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(BarTest::class)
             .launch()
          collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 2ms"

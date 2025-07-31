@@ -3007,14 +3007,18 @@ public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
 
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/common/Platform;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
+	public fun <init> (Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun addExtension (Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun async (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun copy (Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/TestEngineLauncher;
+	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineLauncher;Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;ILjava/lang/Object;)Lio/kotest/engine/TestEngineLauncher;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
 	public final fun launch ()Lio/kotest/engine/EngineResult;
 	public final fun promise ()V
+	public fun toString ()Ljava/lang/String;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJs ()Lio/kotest/engine/TestEngineLauncher;
@@ -3461,6 +3465,19 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 	public final fun getTimeout-UwyO8pc ()J
 }
 
+public final class io/kotest/engine/launcher/JunitXmlTestEngineListener : io/kotest/engine/listener/TestEngineListener {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field ARG_LISTENER Ljava/lang/String;
 	public static final field ARG_SPEC Ljava/lang/String;
@@ -3469,6 +3486,7 @@ public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
+	public static final field TEST_REPORTS_DIR Ljava/lang/String;
 	public static final field WRITER Ljava/lang/String;
 }
 
@@ -3656,6 +3674,184 @@ public abstract interface class io/kotest/engine/names/DisplayNameFormatter {
 
 public abstract interface class io/kotest/engine/names/WithDataTestName {
 	public abstract fun dataTestName ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/reports/ErrorElement {
+	public static final field Companion Lio/kotest/engine/reports/ErrorElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/reports/ErrorElement;
+	public static synthetic fun copy$default (Lio/kotest/engine/reports/ErrorElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/reports/ErrorElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getStack ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/engine/reports/ErrorElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/engine/reports/ErrorElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/engine/reports/ErrorElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/engine/reports/ErrorElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/ErrorElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/FailureElement {
+	public static final field Companion Lio/kotest/engine/reports/FailureElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/reports/FailureElement;
+	public static synthetic fun copy$default (Lio/kotest/engine/reports/FailureElement;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/reports/FailureElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public final fun getStack ()Ljava/lang/String;
+	public final fun getType ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/engine/reports/FailureElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/engine/reports/FailureElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/engine/reports/FailureElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/engine/reports/FailureElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/FailureElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/JUnitXmlWriter {
+	public fun <init> (Lkotlin/time/Clock;ZLjava/lang/String;)V
+	public final fun writeXml (Lkotlin/reflect/KClass;Ljava/util/Map;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/reports/SkippedElement {
+	public static final field Companion Lio/kotest/engine/reports/SkippedElement$Companion;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun getMessage ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/engine/reports/SkippedElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/engine/reports/SkippedElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/engine/reports/SkippedElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/engine/reports/SkippedElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/SkippedElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/TestCaseElement {
+	public static final field Companion Lio/kotest/engine/reports/TestCaseElement$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;DLio/kotest/engine/reports/FailureElement;Lio/kotest/engine/reports/ErrorElement;Lio/kotest/engine/reports/SkippedElement;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;DLio/kotest/engine/reports/FailureElement;Lio/kotest/engine/reports/ErrorElement;Lio/kotest/engine/reports/SkippedElement;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()D
+	public final fun component4 ()Lio/kotest/engine/reports/FailureElement;
+	public final fun component5 ()Lio/kotest/engine/reports/ErrorElement;
+	public final fun component6 ()Lio/kotest/engine/reports/SkippedElement;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;DLio/kotest/engine/reports/FailureElement;Lio/kotest/engine/reports/ErrorElement;Lio/kotest/engine/reports/SkippedElement;)Lio/kotest/engine/reports/TestCaseElement;
+	public static synthetic fun copy$default (Lio/kotest/engine/reports/TestCaseElement;Ljava/lang/String;Ljava/lang/String;DLio/kotest/engine/reports/FailureElement;Lio/kotest/engine/reports/ErrorElement;Lio/kotest/engine/reports/SkippedElement;ILjava/lang/Object;)Lio/kotest/engine/reports/TestCaseElement;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getClassname ()Ljava/lang/String;
+	public final fun getError ()Lio/kotest/engine/reports/ErrorElement;
+	public final fun getFailure ()Lio/kotest/engine/reports/FailureElement;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSkipped ()Lio/kotest/engine/reports/SkippedElement;
+	public final fun getTime ()D
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/engine/reports/TestCaseElement$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/engine/reports/TestCaseElement$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/engine/reports/TestCaseElement;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/engine/reports/TestCaseElement;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/TestCaseElement$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/TestSuite {
+	public static final field Companion Lio/kotest/engine/reports/TestSuite$Companion;
+	public fun <init> (Ljava/lang/String;IIIILjava/lang/String;Ljava/lang/String;DLjava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()I
+	public final fun component3 ()I
+	public final fun component4 ()I
+	public final fun component5 ()I
+	public final fun component6 ()Ljava/lang/String;
+	public final fun component7 ()Ljava/lang/String;
+	public final fun component8 ()D
+	public final fun component9 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;IIIILjava/lang/String;Ljava/lang/String;DLjava/util/List;)Lio/kotest/engine/reports/TestSuite;
+	public static synthetic fun copy$default (Lio/kotest/engine/reports/TestSuite;Ljava/lang/String;IIIILjava/lang/String;Ljava/lang/String;DLjava/util/List;ILjava/lang/Object;)Lio/kotest/engine/reports/TestSuite;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getCases ()Ljava/util/List;
+	public final fun getErrors ()I
+	public final fun getFailures ()I
+	public final fun getHostname ()Ljava/lang/String;
+	public final fun getName ()Ljava/lang/String;
+	public final fun getSkipped ()I
+	public final fun getTests ()I
+	public final fun getTime ()D
+	public final fun getTimestamp ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final synthetic class io/kotest/engine/reports/TestSuite$$serializer : kotlinx/serialization/internal/GeneratedSerializer {
+	public static final field INSTANCE Lio/kotest/engine/reports/TestSuite$$serializer;
+	public final fun childSerializers ()[Lkotlinx/serialization/KSerializer;
+	public final fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Lio/kotest/engine/reports/TestSuite;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public final fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public final fun serialize (Lkotlinx/serialization/encoding/Encoder;Lio/kotest/engine/reports/TestSuite;)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
+	public fun typeParametersSerializers ()[Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/TestSuite$Companion {
+	public final fun serializer ()Lkotlinx/serialization/KSerializer;
+}
+
+public final class io/kotest/engine/reports/TimeSerializer : kotlinx/serialization/KSerializer {
+	public static final field INSTANCE Lio/kotest/engine/reports/TimeSerializer;
+	public fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Double;
+	public synthetic fun deserialize (Lkotlinx/serialization/encoding/Decoder;)Ljava/lang/Object;
+	public fun getDescriptor ()Lkotlinx/serialization/descriptors/SerialDescriptor;
+	public fun serialize (Lkotlinx/serialization/encoding/Encoder;D)V
+	public synthetic fun serialize (Lkotlinx/serialization/encoding/Encoder;Ljava/lang/Object;)V
 }
 
 public final class io/kotest/engine/spec/Materializer {

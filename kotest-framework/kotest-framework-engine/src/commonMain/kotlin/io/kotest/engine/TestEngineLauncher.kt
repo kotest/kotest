@@ -2,10 +2,10 @@
 
 package io.kotest.engine
 
+import io.kotest.common.Platform
 import io.kotest.common.runBlocking
 import io.kotest.common.runPromise
 import io.kotest.core.Logger
-import io.kotest.common.Platform
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
@@ -14,7 +14,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
-import io.kotest.engine.listener.ConsoleTestEngineListener
+import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -23,16 +23,16 @@ import io.kotest.engine.tags.TagExpression
 import kotlin.reflect.KClass
 
 /**
- * A builder class for creating and executing tests via the [TestEngine].
+ * A builder class for creating and executing tests via a [TestEngine].
  *
  * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
  *
  * @param platform specifies the platform which the tests will be running on.
  */
-class TestEngineLauncher(
+data class TestEngineLauncher(
    private val platform: Platform,
-   private val listener: TestEngineListener,
+   private val listeners: List<TestEngineListener>,
    private val config: AbstractProjectConfig?,
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
@@ -41,11 +41,9 @@ class TestEngineLauncher(
 
    private val logger = Logger(TestEngineLauncher::class)
 
-   constructor() : this(ConsoleTestEngineListener())
-
-   constructor(listener: TestEngineListener) : this(
+   constructor() : this(
       Platform.JVM,
-      listener,
+      emptyList(),
       null,
       emptyList(),
       null,
@@ -67,15 +65,8 @@ class TestEngineLauncher(
     * Returns a copy of this launcher with the given [TestEngineListener] set.
     * This will override the current listener. Wrap in a composite listener if you want to use multiple.
     */
-   fun withListener(listener: TestEngineListener): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = refs,
-         tagExpression = tagExpression,
-         registry = registry,
-      )
+   fun withListener(listener: TestEngineListener?): TestEngineLauncher {
+      return if (listener == null) this else copy(listeners = listeners + listener)
    }
 
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
@@ -84,14 +75,7 @@ class TestEngineLauncher(
 
    fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
    fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = refs,
-         tagExpression = tagExpression,
-         registry = registry,
-      )
+      return copy(refs = refs)
    }
 
    /**
@@ -100,25 +84,11 @@ class TestEngineLauncher(
     * This will override any existing project config.
     */
    fun withProjectConfig(config: AbstractProjectConfig?): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = refs,
-         tagExpression = tagExpression,
-         registry = registry,
-      )
+      return copy(config = config)
    }
 
    fun withTagExpression(expression: TagExpression?): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = refs,
-         tagExpression = expression,
-         registry = registry,
-      )
+      return copy(tagExpression = expression)
    }
 
    /**
@@ -167,27 +137,21 @@ class TestEngineLauncher(
     * This will override the current platform.
     */
    fun withPlatform(platform: Platform): TestEngineLauncher {
-      return TestEngineLauncher(
-         platform = platform,
-         listener = listener,
-         config = config,
-         refs = refs,
-         tagExpression = tagExpression,
-         registry = registry,
-      )
+      return copy(platform = platform)
    }
 
    private fun toConfig(): TestEngineConfig {
+      require(listeners.isNotEmpty()) { "At least one TestEngineListener must be registered" }
 
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
+      val safeListeners = listeners.map {
+         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(it))
+      }
+
       return TestEngineConfig(
-         listener = ThreadSafeTestEngineListener(
-            PinnedSpecTestEngineListener(
-               listener
-            )
-         ),
+         listener = CompositeTestEngineListener(safeListeners),
          interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,

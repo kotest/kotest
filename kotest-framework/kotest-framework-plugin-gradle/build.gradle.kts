@@ -14,6 +14,7 @@ version = Ci.gradleRelease
 
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
+   compileOnly(projects.kotestFramework.kotestFrameworkEngine)
    implementation(libs.asm) // used to poke into classes to see if they are specs when running JVM tests
    testImplementation(libs.kotlin.gradle.plugin)
 }

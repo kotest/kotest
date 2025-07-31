@@ -65,7 +65,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      TestEngineLauncher(listener)
+      TestEngineLauncher()
+         .withListener(listener)
          .addExtensions(root.extensions)
          .withClasses(root.classes)
          .launch()

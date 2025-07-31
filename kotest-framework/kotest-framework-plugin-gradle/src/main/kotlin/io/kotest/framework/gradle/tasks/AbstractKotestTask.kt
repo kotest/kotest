@@ -1,12 +1,19 @@
 package io.kotest.framework.gradle.tasks
 
 import org.gradle.api.DefaultTask
+import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.options.Option
 
 abstract class AbstractKotestTask internal constructor() : DefaultTask() {
+
+   companion object {
+      const val TESTS_DIR_NAME = "test-results"
+   }
 
    @get:Option(option = "descriptor", description = "Filter to a single spec or test")
    @get:Input
@@ -27,4 +34,9 @@ abstract class AbstractKotestTask internal constructor() : DefaultTask() {
    @get:Input
    @get:Optional
    abstract val tags: Property<String>
+
+   protected fun getTestReportsDir(project: Project, taskName: String): Provider<Directory> {
+      val baseDirectory = project.layout.buildDirectory
+      return baseDirectory.dir("$TESTS_DIR_NAME/$taskName")
+   }
 }
