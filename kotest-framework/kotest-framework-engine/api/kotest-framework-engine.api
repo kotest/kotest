@@ -3739,9 +3739,14 @@ public final class io/kotest/engine/reports/FailureElement$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class io/kotest/engine/reports/JUnitXmlWriter {
+public final class io/kotest/engine/reports/JUnitXmlReportGenerator {
 	public fun <init> (Lkotlin/time/Clock;ZLjava/lang/String;)V
 	public final fun writeXml (Lkotlin/reflect/KClass;Ljava/util/Map;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/reports/ReportWriter {
+	public fun <init> ()V
+	public final fun writeXmlFile (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 }
 
 public final class io/kotest/engine/reports/SkippedElement {
