@@ -41,6 +41,16 @@ data class TestEngineLauncher(
 
    private val logger = Logger(TestEngineLauncher::class)
 
+   @Deprecated("Use no arg constructor. Deprecated in 6.0")
+   constructor(listener: TestEngineListener) : this(
+      Platform.JVM,
+      listOf(listener),
+      null,
+      emptyList(),
+      null,
+      DefaultExtensionRegistry(),
+   )
+
    constructor() : this(
       Platform.JVM,
       emptyList(),
