@@ -36,9 +36,11 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
             """
 val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
 val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString()
+val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
 
 val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+
 """.trim()
          )
          .addCode("\n")
