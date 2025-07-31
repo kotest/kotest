@@ -3466,19 +3466,6 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 	public final fun getTimeout-UwyO8pc ()J
 }
 
-public final class io/kotest/engine/launcher/JunitXmlTestEngineListener : io/kotest/engine/listener/TestEngineListener {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
-	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
 public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field ARG_LISTENER Ljava/lang/String;
 	public static final field ARG_SPEC Ljava/lang/String;
@@ -3739,9 +3726,23 @@ public final class io/kotest/engine/reports/FailureElement$Companion {
 	public final fun serializer ()Lkotlinx/serialization/KSerializer;
 }
 
-public final class io/kotest/engine/reports/JUnitXmlWriter {
+public final class io/kotest/engine/reports/JUnitXmlReportGenerator {
 	public fun <init> (Lkotlin/time/Clock;ZLjava/lang/String;)V
-	public final fun writeXml (Lkotlin/reflect/KClass;Ljava/util/Map;)Ljava/lang/String;
+	public final fun xml (Lkotlin/reflect/KClass;Ljava/util/Map;)Ljava/lang/String;
+}
+
+public final class io/kotest/engine/reports/JunitXmlReportTestEngineListener : io/kotest/engine/listener/TestEngineListener {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specIgnored (Lkotlin/reflect/KClass;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testIgnored (Lio/kotest/core/test/TestCase;Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun writeFile (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 }
 
 public final class io/kotest/engine/reports/SkippedElement {
