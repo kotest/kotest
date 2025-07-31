@@ -6,6 +6,7 @@ import io.kotest.core.listeners.IgnoredTestListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -23,6 +24,7 @@ class IgnoredTestListenerTest : FunSpec({
 
    test("ignored listener should be fired for all combinations of ingored tests") {
       TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
          .withClasses(IgnoredTests::class)
          .addExtensions(ignoredTestListener)
          .launch()
