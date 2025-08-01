@@ -41,7 +41,7 @@ infix fun <T> T.shouldBe(expected: T?): T {
  * @see [eq]
  */
 @Suppress("UNCHECKED_CAST")
-fun <T, U> T.shouldBe(expected: U?, msg: String): T {
+fun <T> T.shouldBe(expected: T?, msg: String): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
       else -> withClue(msg) {
