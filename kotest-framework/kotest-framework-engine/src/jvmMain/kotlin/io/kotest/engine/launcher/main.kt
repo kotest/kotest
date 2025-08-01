@@ -1,5 +1,6 @@
 package io.kotest.engine.launcher
 
+import io.kotest.common.runBlocking
 import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
@@ -13,12 +14,11 @@ import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
-import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
-import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.common.runBlocking
+import io.kotest.engine.reports.JunitXmlReportTestEngineListener
+import java.net.InetAddress
+import java.net.UnknownHostException
 import kotlin.reflect.KClass
 import kotlin.system.exitProcess
 
@@ -34,6 +34,9 @@ object LauncherArgs {
 
    // used to filter to a single spec or test within a spec
    const val DESCRIPTOR = "descriptor"
+
+   // sets the location of the test-reports directory in the build directory
+   const val TEST_REPORTS_DIR = "test-reports-dir"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
    @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
@@ -84,19 +87,20 @@ fun main(args: Array<String>) {
    val descriptorFilterKotest5 = buildKotest5DescriptorFilter(launcherArgs)
 
    // this is the output listener that will write to the console or teamcity so we can see tests running
-   val outputListener = buildOutputTestEngineListener(launcherArgs)
+   val consoleListener = buildOutputTestEngineListener(launcherArgs)
 
    // this is used so we can see if any test failed and so exit with a non-zero code
    val collector = CollectingTestEngineListener()
 
+   val xmlListener = buildJunitXmlTestEngineListener(launcherArgs)
+
    runBlocking {
-      TestEngineLauncher(
-         CompositeTestEngineListener(
-            collector,
-            LoggingTestEngineListener, // we use this to write to the kotest log file if enabled
-            ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(outputListener))
-         )
-      ).withClasses(classes)
+      TestEngineLauncher()
+         .withListener(collector)
+         .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
+         .withListener(consoleListener)
+         .withListener(xmlListener)
+         .withClasses(classes)
          .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
          .async()
    }
@@ -114,9 +118,19 @@ private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): Te
       .build()
 }
 
+private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener? {
+   return launcherArgs[LauncherArgs.TEST_REPORTS_DIR]?.let { xmldir ->
+      val hostname = try {
+         InetAddress.getLocalHost().hostName
+      } catch (_: UnknownHostException) {
+         InetAddress.getLoopbackAddress().hostAddress
+      }
+      JunitXmlReportTestEngineListener(xmldir, hostname)
+   }
+}
+
 private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
    return launcherArgs[DESCRIPTOR]?.let { descriptor ->
-      println("Making a filter from input $descriptor")
       ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
    }
 }

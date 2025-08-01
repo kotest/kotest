@@ -26,6 +26,7 @@ abstract class KotestJvmTask @Inject internal constructor(
    protected fun execute() {
 
       val java = project.extensions.getByType(JavaPluginExtension::class.java)
+
       val test = java.sourceSets.findByName(sourceSetName.get())
          ?: throw StopExecutionException("Could not find source set '${sourceSetName.get()}'")
 
@@ -36,6 +37,7 @@ abstract class KotestJvmTask @Inject internal constructor(
             .withClasspath(test.runtimeClasspath)
             .withSpecs(specs)
             .withDescriptor(descriptor.orNull)
+            .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
             .withCommandLineTags(tags.orNull)
             .configure(this)
       }
@@ -45,4 +47,5 @@ abstract class KotestJvmTask @Inject internal constructor(
          result.rethrowFailure()
       }
    }
+
 }

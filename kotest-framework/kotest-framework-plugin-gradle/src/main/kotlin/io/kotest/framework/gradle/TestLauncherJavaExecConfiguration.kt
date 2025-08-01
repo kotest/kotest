@@ -12,6 +12,7 @@ internal data class TestLauncherJavaExecConfiguration(
    private val classpath: FileCollection? = null,
    private val tags: String? = null,
    private val descriptor: String? = null,
+   private val testReportsDir: String? = null,
    private val specs: List<String> = emptyList(),
 ) {
 
@@ -27,6 +28,9 @@ internal data class TestLauncherJavaExecConfiguration(
 
       // used to filter to a single spec or test within a spec
       private const val ARG_DESCRIPTOR = "--descriptor"
+
+      // used to filter to a single spec or test within a spec
+      private const val ARG_TEST_REPORTS_DIR = "--test-reports-dir"
 
       // the value used to specify the team city format
       private const val LISTENER_TC = "teamcity"
@@ -55,6 +59,10 @@ internal data class TestLauncherJavaExecConfiguration(
       return copy(descriptor = descriptor)
    }
 
+   fun withTestReportsDir(testReportsDir: String): TestLauncherJavaExecConfiguration {
+      return copy(testReportsDir = testReportsDir)
+   }
+
    fun configure(exec: JavaExecSpec) {
       exec.mainClass.set(LAUNCHER_MAIN_CLASS)
       exec.classpath(classpath)
@@ -68,7 +76,7 @@ internal data class TestLauncherJavaExecConfiguration(
    /**
     * Returns the args to send to the launcher
     */
-   private fun args() = listenerArgs() + tagsArg() + specsArg() + descriptorArg()
+   private fun args() = listenerArgs() + tagsArg() + specsArg() + descriptorArg() + testReportsDirArg()
 
    /**
     * If we are running inside intellij, we assume the user has the intellij Kotest plugin installed,
@@ -92,6 +100,15 @@ internal data class TestLauncherJavaExecConfiguration(
    private fun descriptorArg(): List<String> {
       if (descriptor == null) return emptyList()
       return listOf(ARG_DESCRIPTOR, descriptor)
+   }
+
+   /**
+    * Returns an arg to filter down to a single spec or test within a spec.
+    * This is used for example when running a single test from the kotest intellij plugin.
+    */
+   private fun testReportsDirArg(): List<String> {
+      if (testReportsDir == null) return emptyList()
+      return listOf(ARG_TEST_REPORTS_DIR, testReportsDir)
    }
 
    /**

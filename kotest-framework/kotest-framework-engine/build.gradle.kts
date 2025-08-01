@@ -5,6 +5,7 @@ plugins {
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
    id("kotest-publishing-conventions")
+   alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -16,12 +17,19 @@ kotlin {
             implementation(projects.kotestAssertions.kotestAssertionsShared)
 
             implementation(libs.kotlin.reflect)
+
             api(projects.kotestCommon) // needs to be API so the domain objects are open
 
             api(libs.kotlinx.coroutines.core)
 
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
+
+            // used to generate the junit-format xml reports
+            implementation(libs.xmlutil)
+
+            // used to write the xml reports to the file system
+            implementation(libs.kotlinx.io.core)
          }
       }
 

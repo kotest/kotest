@@ -11,6 +11,7 @@ internal data class NativeExecConfiguration(
    private val executable: String,
    private val tags: String? = null,
    private val descriptor: String? = null,
+   private val testReportsDir: String? = null,
    private val specs: List<String> = emptyList(),
 ) {
 
@@ -26,6 +27,10 @@ internal data class NativeExecConfiguration(
       return copy(tags = tags)
    }
 
+   fun withTestReportsDir(dir: String): NativeExecConfiguration {
+      return copy(testReportsDir = dir)
+   }
+
    fun withDescriptor(descriptor: String?): NativeExecConfiguration {
       return copy(descriptor = descriptor)
    }
@@ -36,6 +41,8 @@ internal data class NativeExecConfiguration(
          exec.environment("kotest.framework.runtime.native.listener", LISTENER_TC)
       if (descriptor != null)
          exec.environment("kotest.framework.runtime.native.descriptor", descriptor)
+      if (testReportsDir != null)
+         exec.environment("kotest.framework.runtime.native.test.reports.dir", testReportsDir)
 
       // this must be true so we can handle the failure ourselves by throwing GradleException
       // otherwise we get a nasty stack trace from gradle

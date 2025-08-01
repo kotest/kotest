@@ -19,18 +19,18 @@ abstract class KotestNativeTask @Inject internal constructor(
    @get:Input
    abstract val target: Property<KotlinTargetWithTests<*, *>>
 
+   @get:Input
+   abstract val exe: Property<String>
+
    @TaskAction
    protected fun execute() {
 
-      val binaryPath = "bin/${target.get().name}/debugTest/test.kexe"
-      val kexe = project.layout.buildDirectory.get().asFile.resolve(binaryPath).absolutePath
-
       val result = executors.exec {
-         NativeExecConfiguration(kexe)
+         NativeExecConfiguration(exe.get())
             .withDescriptor(descriptor.orNull)
             .withCommandLineTags(tags.orNull)
+            .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
             .configure(this)
-         println(this.environment)
       }
 
       if (result.exitValue != 0) {

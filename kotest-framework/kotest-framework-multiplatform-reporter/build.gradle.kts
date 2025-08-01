@@ -25,4 +25,3 @@ kotlin {
    }
 }
 //TODO android {} configuration block as required by the android library plugin
-

@@ -1,16 +1,17 @@
-package io.kotest.framework.multiplatform
+package io.kotest.engine.reports
 
 import io.kotest.common.reflection.bestName
-import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML
+import kotlin.reflect.KClass
 import kotlin.time.Clock
 
-class JUnitXmlWriter(
+class JUnitXmlReportGenerator(
    private val clock: Clock,
    private val includeStackTraces: Boolean,
+   private val hostname: String?,
 ) {
 
    private val xml = XML {
@@ -18,19 +19,22 @@ class JUnitXmlWriter(
       xmlVersion = XmlVersion.XML10
    }
 
-   fun writeXml(spec: Spec, tests: Map<TestCase, TestResult>): String {
+   private val target: String = "todo"
+
+   fun xml(spec: KClass<*>, tests: Map<TestCase, TestResult>): String {
       val testsuite = generate(spec, tests)
       return xml.encodeToString(TestSuite.serializer(), testsuite)
    }
 
-   fun generate(spec: Spec, tests: Map<TestCase, TestResult>): TestSuite {
+   private fun generate(spec: KClass<*>, tests: Map<TestCase, TestResult>): TestSuite {
       return TestSuite(
-         name = spec::class.bestName(),
+         name = spec.bestName(),
          tests = tests.size,
          failures = tests.filter { it.value.isFailure }.count(),
          errors = tests.filter { it.value.isError }.count(),
          skipped = tests.filter { it.value.isIgnored }.count(),
          timestamp = clock.now().toString().substringBeforeLast("."), // time without nanos
+         hostname = hostname ?:"",
          time = tests.map { it.value.duration.inWholeMilliseconds / 1_000.0 }.sum(),
          cases = tests.map { (test, result) ->
             TestCaseElement(
@@ -75,4 +79,5 @@ class JUnitXmlWriter(
          else -> null
       }
    }
+
 }

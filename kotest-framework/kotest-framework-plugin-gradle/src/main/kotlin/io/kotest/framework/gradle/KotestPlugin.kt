@@ -8,7 +8,9 @@ import io.kotest.framework.gradle.tasks.KotestNativeTask
 import io.kotest.framework.gradle.tasks.KotestWasmTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.Directory
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
@@ -32,9 +34,8 @@ abstract class KotestPlugin : Plugin<Project> {
 
    companion object {
       const val TASK_DESCRIPTION = "Runs tests using Kotest"
-      private val unsupportedTargets = listOf(
-         "metadata"
-      )
+      const val TESTS_DIR_NAME = "test-results"
+      private val unsupportedTargets = listOf("metadata")
    }
 
    private val version = version()
@@ -81,6 +82,7 @@ abstract class KotestPlugin : Plugin<Project> {
          // when we have a JVM project, the task name is just "kotest" to match the standard "test" task name.
          val task = project.tasks.register("kotest", KotestJvmTask::class) {
             sourceSetName.set("test")
+            testReportsDir.set(getTestReportsDir(project, name))
             inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
          }
          // this means this kotest task will be run when the user runs "gradle check"
@@ -158,6 +160,11 @@ abstract class KotestPlugin : Plugin<Project> {
          val spec = this
          val task = testableTarget.project.tasks.register("jsNodeKotest", KotestJsTask::class) {
             nodeExecutable.set(spec.executable)
+
+            val buildDir = project.layout.buildDirectory.asFile.get().toPath()
+            val testModulePath = buildDir.resolve(testModulePath(project))
+            moduleFile.set(testModulePath)
+
             dependsOn(":kotlinNodeJsSetup")
             inputs.files(
                project.tasks.named("compileTestDevelopmentExecutableKotlinJs")
@@ -180,6 +187,12 @@ abstract class KotestPlugin : Plugin<Project> {
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val task = testableTarget.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
          target.set(testableTarget)
+         testReportsDir.set(getTestReportsDir(project, name))
+
+         val binaryPath = "bin/${target.get().name}/debugTest/test.kexe"
+         val kexe = project.layout.buildDirectory.get().asFile.resolve(binaryPath).absolutePath
+         exe.set(kexe)
+
          // this is the task that runs the linker for the tests, so we depend on it to ensure
          // the tests are compiled before we run them
          val linkDebugTestTaskName = linkDebugNativeTestTaskName(testableTarget)
@@ -239,6 +252,14 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    /**
+    * The kotlin js compiler uses projectname-test as the module name, eg in build/js/packages
+    */
+   private fun testModulePath(project: Project): String {
+      val testModuleName = "${project.name}-test"
+      return "js/packages/${testModuleName}/kotlin/${testModuleName}.js"
+   }
+
+   /**
     * Returns the name of the KSP task for a test compilation.
     * The KSP plugin uses the format ksp<TargetName>Test eg kspLinuxX64Test
     */
@@ -284,5 +305,10 @@ abstract class KotestPlugin : Plugin<Project> {
             project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
          }
       }
+   }
+
+   private fun getTestReportsDir(project: Project, taskName: String): Provider<Directory> {
+      val baseDirectory = project.layout.buildDirectory
+      return baseDirectory.dir("$TESTS_DIR_NAME/$taskName")
    }
 }

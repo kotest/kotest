@@ -1,0 +1,6 @@
+public final class io/kotest/extensions/decoroutinator/DecoroutinatorExtension : io/kotest/core/listeners/BeforeProjectListener, io/kotest/core/listeners/BeforeSpecListener {
+	public fun <init> ()V
+	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun beforeSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
