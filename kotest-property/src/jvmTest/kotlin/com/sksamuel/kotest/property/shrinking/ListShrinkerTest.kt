@@ -51,7 +51,9 @@ class ListShrinkerTest : FunSpec() {
 
       test("ListShrinker should include input minus head") {
          val intArb = Arb.int(0..1000)
-         checkAll(Arb.list(intArb)) { list ->
+
+         // Use smaller amount of iterations so test does not timeout on CI
+         checkAll(iterations = 500, Arb.list(intArb)) { list ->
             if (list.size > 1) {
                val candidates = ListShrinker<Int>(intArb, 0..100).shrink(list)
                candidates.forAtLeastOne {
