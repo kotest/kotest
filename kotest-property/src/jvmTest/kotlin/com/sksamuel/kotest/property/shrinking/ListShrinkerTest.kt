@@ -8,6 +8,7 @@ import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Arb
@@ -109,17 +110,17 @@ class ListShrinkerTest : FunSpec() {
       }
 
       test("ListShrinker shrinks recursively") {
-         val intArb = Arb.int()
+         val intArb = Arb.int(0, 100)
 
-         checkAll(Arb.list(intArb, range = 4..100)) { list ->
+         checkAll(Arb.list(intArb, range = 1..100)) { list ->
             if (list.isNotEmpty()) {
-               val shrinks = ListShrinker<Int>(intArb, 4..100).rtree(list)
+               val shrinks = ListShrinker<Int>(intArb, 1..100).rtree(list)
                val shrunk = doShrinking(shrinks, ShrinkingMode.Unbounded) {
-                  !it.any { it % 2 == 0 }
+                  it.all { it % 2 == 0 } shouldBe true
                }
 
-               // Shrinker should always find minimal example
-               shrunk.shrink == listOf(0)
+               // Shrinker should always a small int that reproduces
+               shrunk.shrink.first() shouldBeLessThan 5
             }
          }
       }
