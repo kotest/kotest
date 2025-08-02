@@ -2,6 +2,7 @@
 
 package com.sksamuel.kotest.tests.json
 
+import io.kotest.assertions.json.NumberFormat
 import io.kotest.assertions.json.PropertyOrder
 import io.kotest.assertions.json.TypeCoercion
 import io.kotest.assertions.json.shouldEqualJson
@@ -646,6 +647,15 @@ expected:<{
   }
 }>"""
          )
+      }
+
+      test("comparing -0.0 and 0.0 double") {
+         val a = """{ "a": -0.0 } """
+         val b = """ { "a" : 0.0 } """
+         a shouldEqualJson {
+            numberFormat = NumberFormat.Lenient
+            b
+         }
       }
 
       test("real world json test") {
