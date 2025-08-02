@@ -1023,13 +1023,13 @@ public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun beEqualIgnoringScale (Ljava/math/BigDecimal;)Lio/kotest/matchers/Matcher;
 	public static final fun beInClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
-	public static final fun shouldBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
-	public static final fun shouldBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
-	public static final fun shouldBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
-	public static final fun shouldBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
-	public static final fun shouldBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
-	public static final fun shouldBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeNegative (Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBePositive (Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeZero (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldHavePrecision (Ljava/math/BigDecimal;I)I
 	public static final fun shouldHaveScale (Ljava/math/BigDecimal;I)I
@@ -1805,10 +1805,10 @@ public final class io/kotest/matchers/date/InstantKt {
 	public static final fun between (Ljava/time/Instant;Ljava/time/Instant;)Lio/kotest/matchers/Matcher;
 	public static final fun closeTo-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
 	public static final fun plusOrMinus-HG0u8IE (Ljava/time/Instant;J)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeAfter (Ljava/time/Instant;Ljava/time/Instant;)Ljava/time/Instant;
-	public static final fun shouldBeBefore (Ljava/time/Instant;Ljava/time/Instant;)Ljava/time/Instant;
-	public static final fun shouldBeBetween (Ljava/time/Instant;Ljava/time/Instant;Ljava/time/Instant;)Ljava/time/Instant;
-	public static final fun shouldBeCloseTo-SxA4cEA (Ljava/time/Instant;Ljava/time/Instant;J)Ljava/time/Instant;
+	public static final fun shouldBeAfter (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
+	public static final fun shouldBeBefore (Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
+	public static final fun shouldBeBetween (Ljava/time/Instant;Ljava/time/Instant;Ljava/time/Instant;)Ljava/lang/Object;
+	public static final fun shouldBeCloseTo-SxA4cEA (Ljava/time/Instant;Ljava/time/Instant;J)Ljava/lang/Object;
 	public static final fun shouldNotBeAfter (Ljava/time/Instant;Ljava/time/Instant;)V
 	public static final fun shouldNotBeBefore (Ljava/time/Instant;Ljava/time/Instant;)Ljava/time/Instant;
 	public static final fun shouldNotBeBetween (Ljava/time/Instant;Ljava/time/Instant;Ljava/time/Instant;)Ljava/time/Instant;
@@ -1846,7 +1846,7 @@ public final class io/kotest/matchers/date/LocaltimeKt {
 	public static final fun plusOrMinus-HG0u8IE (Ljava/time/LocalTime;J)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeAfter (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldBeBefore (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
-	public static final fun shouldBeBetween (Ljava/time/LocalTime;Ljava/time/LocalTime;Ljava/time/LocalTime;)Ljava/time/LocalTime;
+	public static final fun shouldBeBetween (Ljava/time/LocalTime;Ljava/time/LocalTime;Ljava/time/LocalTime;)Ljava/lang/Object;
 	public static final fun shouldHaveSameHoursAs (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldHaveSameMinutesAs (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
 	public static final fun shouldHaveSameNanosAs (Ljava/time/LocalTime;Ljava/time/LocalTime;)V
@@ -1894,10 +1894,10 @@ public final class io/kotest/matchers/date/MatchersKt {
 	public static final fun shouldBeBefore (Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;)V
 	public static final fun shouldBeBefore (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
 	public static final fun shouldBeBefore (Ljava/time/ZonedDateTime;Ljava/time/ZonedDateTime;)V
-	public static final fun shouldBeBetween (Ljava/time/LocalDate;Ljava/time/LocalDate;Ljava/time/LocalDate;)Ljava/time/LocalDate;
-	public static final fun shouldBeBetween (Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;)Ljava/time/LocalDateTime;
-	public static final fun shouldBeBetween (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)Ljava/time/OffsetDateTime;
-	public static final fun shouldBeBetween (Ljava/time/ZonedDateTime;Ljava/time/ZonedDateTime;Ljava/time/ZonedDateTime;)Ljava/time/ZonedDateTime;
+	public static final fun shouldBeBetween (Ljava/time/LocalDate;Ljava/time/LocalDate;Ljava/time/LocalDate;)Ljava/lang/Object;
+	public static final fun shouldBeBetween (Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;)Ljava/lang/Object;
+	public static final fun shouldBeBetween (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)Ljava/lang/Object;
+	public static final fun shouldBeBetween (Ljava/time/ZonedDateTime;Ljava/time/ZonedDateTime;Ljava/time/ZonedDateTime;)Ljava/lang/Object;
 	public static final fun shouldBeWithin (Ljava/time/LocalDate;Ljava/time/Period;Ljava/time/LocalDate;)V
 	public static final fun shouldBeWithin (Ljava/time/LocalDateTime;Ljava/time/temporal/TemporalAmount;Ljava/time/LocalDateTime;)V
 	public static final fun shouldBeWithin (Ljava/time/OffsetDateTime;Ljava/time/temporal/TemporalAmount;Ljava/time/OffsetDateTime;)V
@@ -2286,7 +2286,7 @@ public final class io/kotest/matchers/file/MatchersKt {
 	public static final fun shouldBeAFile (Ljava/io/File;)V
 	public static final fun shouldBeAbsolute (Ljava/io/File;)V
 	public static final fun shouldBeCanonical (Ljava/io/File;)V
-	public static final fun shouldBeEmpty (Ljava/io/File;)Ljava/io/File;
+	public static final fun shouldBeEmpty (Ljava/io/File;)Ljava/lang/Object;
 	public static final fun shouldBeEmptyDirectory (Ljava/io/File;)V
 	public static final fun shouldBeExecutable (Ljava/io/File;)V
 	public static final fun shouldBeHidden (Ljava/io/File;)V
@@ -2299,7 +2299,7 @@ public final class io/kotest/matchers/file/MatchersKt {
 	public static final fun shouldBeSymbolicLink (Ljava/io/File;)V
 	public static final fun shouldBeWriteable (Ljava/io/File;)V
 	public static final fun shouldContainFile (Ljava/io/File;Ljava/lang/String;)V
-	public static final fun shouldContainNFiles (Ljava/io/File;I)Ljava/io/File;
+	public static final fun shouldContainNFiles (Ljava/io/File;I)Ljava/lang/Object;
 	public static final fun shouldExist (Ljava/io/File;)V
 	public static final fun shouldHaveFileSize (Ljava/io/File;J)V
 	public static final fun shouldHaveParent (Ljava/io/File;Ljava/lang/String;)V
@@ -2439,9 +2439,9 @@ public final class io/kotest/matchers/future/MatchersKt {
 	public static final fun cancelled ()Lio/kotest/matchers/Matcher;
 	public static final fun completed ()Lio/kotest/matchers/Matcher;
 	public static final fun completedExceptionally ()Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeCancelled (Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;
-	public static final fun shouldBeCompleted (Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;
-	public static final fun shouldBeCompletedExceptionally (Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;
+	public static final fun shouldBeCancelled (Ljava/util/concurrent/CompletableFuture;)Ljava/lang/Object;
+	public static final fun shouldBeCompleted (Ljava/util/concurrent/CompletableFuture;)Ljava/lang/Object;
+	public static final fun shouldBeCompletedExceptionally (Ljava/util/concurrent/CompletableFuture;)Ljava/lang/Object;
 	public static final fun shouldCompleteExceptionallyWith (Ljava/util/concurrent/CompletableFuture;Ljava/lang/Throwable;)V
 	public static final fun shouldNotBeCancelled (Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;
 	public static final fun shouldNotBeCompleted (Ljava/util/concurrent/CompletableFuture;)Ljava/util/concurrent/CompletableFuture;
@@ -2492,7 +2492,7 @@ public final class io/kotest/matchers/ints/IntMatchersKt {
 	public static final fun gte (I)Lio/kotest/matchers/Matcher;
 	public static final fun lt (I)Lio/kotest/matchers/Matcher;
 	public static final fun lte (I)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeBetween (III)I
+	public static final fun shouldBeBetween (III)Ljava/lang/Object;
 	public static final fun shouldBeInRange (ILkotlin/ranges/IntRange;)I
 	public static final fun shouldBeWithinPercentageOf (IID)I
 	public static final fun shouldNotBeBetween (III)V
@@ -2718,7 +2718,7 @@ public final class io/kotest/matchers/paths/PathsKt {
 	public static final fun shouldContainFile (Ljava/nio/file/Path;Ljava/lang/String;)V
 	public static final fun shouldContainFileDeep (Ljava/nio/file/Path;Ljava/lang/String;)V
 	public static final fun shouldContainFiles (Ljava/nio/file/Path;[Ljava/lang/String;)V
-	public static final fun shouldContainNFiles (Ljava/nio/file/Path;I)Ljava/io/File;
+	public static final fun shouldContainNFiles (Ljava/nio/file/Path;I)Ljava/lang/Object;
 	public static final fun shouldExist (Ljava/nio/file/Path;)V
 	public static final fun shouldHaveFileSize (Ljava/nio/file/Path;J)V
 	public static final fun shouldHaveParent (Ljava/nio/file/Path;Ljava/lang/String;)V

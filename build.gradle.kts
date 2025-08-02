@@ -52,6 +52,7 @@ dependencies {
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKotlinxDatetime)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsShared)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsTable)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsYaml)
 
    // bom
@@ -63,6 +64,7 @@ dependencies {
    nmcpAggregation(projects.kotestExtensions)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunitxml)
@@ -75,7 +77,6 @@ dependencies {
 
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
-   nmcpAggregation(projects.kotestFramework.kotestFrameworkMultiplatformReporter)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
 
