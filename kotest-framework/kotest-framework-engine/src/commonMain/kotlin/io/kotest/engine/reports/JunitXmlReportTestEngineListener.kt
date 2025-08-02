@@ -23,20 +23,15 @@ class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostn
 
    private val results = mutableMapOf<TestCase, TestResult>()
 
-   override suspend fun engineStarted() {
-   }
+   override suspend fun engineStarted() {}
 
-   override suspend fun engineInitialized(context: EngineContext) {
-   }
+   override suspend fun engineInitialized(context: EngineContext) {}
 
-   override suspend fun engineFinished(t: List<Throwable>) {
-   }
+   override suspend fun engineFinished(t: List<Throwable>) {}
 
-   override suspend fun specStarted(ref: SpecRef) {
-   }
+   override suspend fun specStarted(ref: SpecRef) {}
 
-   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-   }
+   override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
       val specName = ref.kclass.bestName()
@@ -45,8 +40,7 @@ class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostn
       writeFile(testReportsDir, testFile, xml)
    }
 
-   override suspend fun testStarted(testCase: TestCase) {
-   }
+   override suspend fun testStarted(testCase: TestCase) {}
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       results[testCase] = TestResult.Ignored(reason)
@@ -58,8 +52,8 @@ class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostn
 
    fun writeFile(baseDir: String, filename: String, contents: String) {
       val path = Path(baseDir, filename)
-      SystemFileSystem.createDirectories(path)
       println(" >> Test report will be written to $path")
+      SystemFileSystem.createDirectories(Path(baseDir))
       val sink = SystemFileSystem.sink(path, append = false).buffered()
       sink.writeString(contents)
       sink.close()

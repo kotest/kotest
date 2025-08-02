@@ -10,6 +10,7 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.Directory
 import org.gradle.api.plugins.JavaBasePlugin
+import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.kotlin.dsl.configure
@@ -81,24 +82,19 @@ abstract class KotestPlugin : Plugin<Project> {
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
          // when we have a JVM project, the task name is just "kotest" to match the standard "test" task name.
          val task = project.tasks.register("kotest", KotestJvmTask::class) {
-            sourceSetName.set("test")
+
+            val java = project.extensions.getByType(JavaPluginExtension::class.java)
+            val sourceSet = java.sourceSets.findByName("test")
+               ?: throw StopExecutionException("Could not find source set '${sourceSetClasspath.get()}'")
+
+            sourceSetClasspath.set(sourceSet.runtimeClasspath)
             testReportsDir.set(getTestReportsDir(project, name))
+
             inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
          }
          // this means this kotest task will be run when the user runs "gradle check"
          project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
       }
-   }
-
-   private fun handleMultiplatformJvm(testableTarget: KotlinTargetWithTests<*, *>) {
-      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-      // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val task = testableTarget.project.tasks.register("jvmKotest", KotestJvmTask::class) {
-         sourceSetName.set("jvmTest")
-         inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
-      }
-      // this means this kotest task will be run when the user runs "gradle check"
-      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    private fun handleKotlinMultiplatform(project: Project) {
@@ -113,20 +109,63 @@ abstract class KotestPlugin : Plugin<Project> {
                   val testableTarget: KotlinTargetWithTests<*, *> = this
                   if (name !in unsupportedTargets) {
                      when (platformType) {
-                        KotlinPlatformType.js -> handleJs(testableTarget)
-                        KotlinPlatformType.wasm -> handleWasm(testableTarget)
+                        KotlinPlatformType.androidJvm -> Unit
                         KotlinPlatformType.common -> Unit
                         KotlinPlatformType.jvm -> handleMultiplatformJvm(testableTarget)
-                        KotlinPlatformType.androidJvm -> Unit
+                        KotlinPlatformType.js -> handleJs(testableTarget)
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
                         // Testable target: mingwX64, platformType: native, disambiguationClassifier: mingwX64
                         KotlinPlatformType.native -> handleNative(testableTarget)
+                        KotlinPlatformType.wasm -> handleWasm(testableTarget)
                      }
                   }
                }
          }
       }
+   }
+
+   private fun handleMultiplatformJvm(testableTarget: KotlinTargetWithTests<*, *>) {
+      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // see https://docs.gradle.org/current/userguide/isolated_projects.html
+      val task = testableTarget.project.tasks.register("jvmKotest", KotestJvmTask::class) {
+
+         val java = project.extensions.getByType(JavaPluginExtension::class.java)
+         val sourceSet = java.sourceSets.findByName("jvmTest")
+            ?: throw StopExecutionException("Could not find source set '${sourceSetClasspath.get()}'")
+
+         sourceSetClasspath.set(sourceSet.runtimeClasspath)
+         testReportsDir.set(getTestReportsDir(project, name))
+
+         inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
+      }
+      // this means this kotest task will be run when the user runs "gradle check"
+      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+   }
+
+   private fun handleNative(testableTarget: KotlinTargetWithTests<*, *>) {
+      val kotestTaskName = nativeKotestTaskName(testableTarget)
+      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // see https://docs.gradle.org/current/userguide/isolated_projects.html
+      val task = testableTarget.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+         testReportsDir.set(getTestReportsDir(project, name))
+
+         val kexe = project.layout.buildDirectory.get().asFile.resolve(nativeBinaryPath(testableTarget)).absolutePath
+         exe.set(kexe)
+
+         // this is the task that runs the linker for the tests, so we depend on it to ensure
+         // the tests are compiled before we run them
+         val linkDebugTestTaskName = linkDebugNativeTestTaskName(testableTarget)
+         inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
+      }
+      // the ksp plugin will create a configuration for each target that contains
+      // the symbol processors used by the test configuration. We want to wire in
+      // the kotest symbol processor to this configuration so the user doesn't have to manually
+      // do it for every different native target (there could be many!)
+      wireKsp(testableTarget.project, kspConfigurationName(testableTarget))
+
+      // this means this kotest task will be run when the user runs "gradle check"
+      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    //wasmJs and wasmWasi land here, so we must not use hardcoded names
@@ -179,33 +218,6 @@ abstract class KotestPlugin : Plugin<Project> {
          // this means this kotest task will be run when the user runs "gradle check"
          testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
       }
-   }
-
-   private fun handleNative(testableTarget: KotlinTargetWithTests<*, *>) {
-      val kotestTaskName = nativeKotestTaskName(testableTarget)
-      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-      // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val task = testableTarget.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
-         target.set(testableTarget)
-         testReportsDir.set(getTestReportsDir(project, name))
-
-         val binaryPath = "bin/${target.get().name}/debugTest/test.kexe"
-         val kexe = project.layout.buildDirectory.get().asFile.resolve(binaryPath).absolutePath
-         exe.set(kexe)
-
-         // this is the task that runs the linker for the tests, so we depend on it to ensure
-         // the tests are compiled before we run them
-         val linkDebugTestTaskName = linkDebugNativeTestTaskName(testableTarget)
-         inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
-      }
-      // the ksp plugin will create a configuration for each target that contains
-      // the symbol processors used by the test configuration. We want to wire in
-      // the kotest symbol processor to this configuration so the user doesn't have to manually
-      // do it for every different native target (there could be many!)
-      wireKsp(testableTarget.project, kspConfigurationName(testableTarget))
-
-      // this means this kotest task will be run when the user runs "gradle check"
-      testableTarget.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    private fun handleKotlinAndroid(project: Project) {
@@ -283,6 +295,11 @@ abstract class KotestPlugin : Plugin<Project> {
     */
    private fun linkDebugNativeTestTaskName(compilation: KotlinTargetWithTests<*, *>): String {
       return "linkDebugTest${compilation.name.uppercaseFirstChar()}"
+   }
+
+   private fun nativeBinaryPath(testableTarget: KotlinTargetWithTests<*, *>): String {
+      // this will result in something like build/bin/linuxX64/debugTest/test.kexe
+      return "bin/${testableTarget.name}/debugTest/test.kexe"
    }
 
    /**

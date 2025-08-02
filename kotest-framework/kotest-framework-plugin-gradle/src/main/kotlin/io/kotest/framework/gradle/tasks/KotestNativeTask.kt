@@ -1,13 +1,11 @@
 package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.NativeExecConfiguration
-import org.gradle.api.GradleException
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
-import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import javax.inject.Inject
 
 // gradle requires the class be extendable
@@ -17,14 +15,11 @@ abstract class KotestNativeTask @Inject internal constructor(
 ) : AbstractKotestTask() {
 
    @get:Input
-   abstract val target: Property<KotlinTargetWithTests<*, *>>
-
-   @get:Input
    abstract val exe: Property<String>
 
    @TaskAction
    protected fun execute() {
-
+      testReportsDir.get().asFile.mkdirs()
       val result = executors.exec {
          NativeExecConfiguration(exe.get())
             .withDescriptor(descriptor.orNull)
@@ -34,7 +29,8 @@ abstract class KotestNativeTask @Inject internal constructor(
       }
 
       if (result.exitValue != 0) {
-         throw GradleException("There were test failures")
+         println("There were test failures, exit code: ${result.exitValue}")
+         result.rethrowFailure()
       }
    }
 }
