@@ -15,6 +15,7 @@ import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CompositeTestEngineListener
+import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -61,19 +62,28 @@ data class TestEngineLauncher(
    )
 
    /**
-    * Convenience function to be called by the compiler plugin to set up the TeamCity listener.
+    * Convenience function to add a [TeamCityTestEngineListener].
     *
-    * Returns a copy of this launcher with the [TeamCityTestEngineListener] set.
+    * Returns a copy of this launcher with the listener added.
     */
    fun withTeamCityListener(): TestEngineLauncher {
       return withListener(TeamCityTestEngineListener())
    }
 
    /**
+    * Convenience function to add a [ConsoleTestEngineListener].
+    *
+    * Returns a copy of this launcher with the listener added.
+    */
+   fun withConsoleListener(): TestEngineLauncher {
+      return withListener(ConsoleTestEngineListener())
+   }
+
+   /**
     * Sets the [TestEngineListener] to be notified of [TestEngine] events.
     *
     * Returns a copy of this launcher with the given [TestEngineListener] set.
-    * This will override the current listener. Wrap in a composite listener if you want to use multiple.
+    * This will override the current listener.
     */
    fun withListener(listener: TestEngineListener?): TestEngineLauncher {
       return if (listener == null) this else copy(listeners = listeners + listener)

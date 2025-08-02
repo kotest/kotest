@@ -68,7 +68,7 @@ val launcher = TestEngineLauncher()
          """
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().promise()
-   else -> launcher.promise()
+   else -> launcher.withConsoleListener().promise()
 }
 """.trim()
       ).addCode("\n")
