@@ -29,6 +29,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinTargetWithNodeJsDsl
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
@@ -111,7 +112,7 @@ abstract class KotestPlugin : Plugin<Project> {
                   val target = this
                   if (name !in unsupportedTargets) {
                      when (platformType) {
-                        KotlinPlatformType.androidJvm -> Unit
+                        KotlinPlatformType.androidJvm -> println("Kotest: Ignoring android target ${target.name}")
                         KotlinPlatformType.common -> Unit
                         KotlinPlatformType.jvm -> handleMultiplatformJvm(target)
                         KotlinPlatformType.js -> handleJs(target)
@@ -146,16 +147,31 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun handleNative(target: KotlinTarget) {
+      println(">> Configuring Kotest for native target ${target.name}")
       val kotestTaskName = nativeKotestTaskName(target)
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val task = target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+//      target.project.tasks.named("linuxX64Test").configure {
+//         val test = this as KotlinNativeTest
+//         if (IntellijUtils.isIntellij())
+//            test.environment("kotest.framework.runtime.native.listener", "teamcity")
+//         test.environment(
+//            "kotest.framework.runtime.native.test.reports.dir",
+//            getTestReportsDir(target.project, kotestTaskName).get().asFile.absolutePath
+//         )
+////         test.environment("kotest.framework.runtime.native.descriptor", "qwewqe")
+////         println("task $name == ${this::class.java.name}")
+//      }
+      println("Creating task $kotestTaskName for target ${target.name}")
+      target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+         group = JavaBasePlugin.VERIFICATION_GROUP
+         description = TASK_DESCRIPTION
          testReportsDir.set(getTestReportsDir(project, name))
 
          val kexe = project.layout.buildDirectory.get().asFile.resolve(nativeBinaryPath(target)).absolutePath
          exe.set(kexe)
 
-         // this is the task that runs the linker for the tests, so we depend on it to ensure
+         // this is the task that runs the linker for the tests, so we depend on its output to ensure
          // the tests are compiled before we run them
          val linkDebugTestTaskName = linkDebugNativeTestTaskName(target)
          inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
@@ -167,7 +183,7 @@ abstract class KotestPlugin : Plugin<Project> {
       wireKsp(target.project, kspConfigurationName(target))
 
       // this means this kotest task will be run when the user runs "gradle check"
-      target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+      // target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    // wasmJs and wasmWasi land here, so we must not use hardcoded names
@@ -182,6 +198,7 @@ abstract class KotestPlugin : Plugin<Project> {
          // we need to use the NodeJsEnvSpec to ensure the node executable is available
          target.project.extensions.configure(NodeJsEnvSpec::class.java) {
             val nodeJsSpec = this
+
             // gradle best practice is to only apply to this project, and users add the plugin to each subproject
             // see https://docs.gradle.org/current/userguide/isolated_projects.html
             val task = target.project.tasks.register(wasmNodeKotestTaskName(target), KotestWasmTask::class) {
@@ -193,6 +210,7 @@ abstract class KotestPlugin : Plugin<Project> {
                      .map { it.outputs.files }
                )
             }
+
             // the ksp plugin will create a configuration named kspWasmJsTest that contains
             // the symbol processors used by the test configuration. We want to wire in
             // the kotest symbol processor to this configuration so the user doesn't have to manually do it
@@ -215,7 +233,7 @@ abstract class KotestPlugin : Plugin<Project> {
             val testModulePath = buildDir.resolve(testModulePath(project))
             moduleFile.set(testModulePath)
 
-            dependsOn(":kotlinNodeJsSetup")
+            dependsOn("kotlinNodeJsSetup")
             inputs.files(
                project.tasks.named("compileTestDevelopmentExecutableKotlinJs")
                   .map { it.outputs.files }
