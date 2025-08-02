@@ -50,6 +50,7 @@ val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) 
 val launcher = TestEngineLauncher()
  .withNative()
  .addExtensions(listOfNotNull(filter))
+ .withListener(reporter)
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
@@ -71,7 +72,7 @@ val launcher = TestEngineLauncher()
          """
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
-   else -> launcher.launch()
+   else -> launcher.withConsoleListener().launch()
 }
 """.trim()
       ).addCode("\n")

@@ -1,10 +1,13 @@
 package io.kotest.framework.gradle.tasks
 
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.Directory
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Optional
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.options.Option
 
 abstract class AbstractKotestTask internal constructor() : DefaultTask() {
@@ -29,6 +32,8 @@ abstract class AbstractKotestTask internal constructor() : DefaultTask() {
    @get:Optional
    abstract val tags: Property<String>
 
-   @get:Input
-   abstract val testReportsDir: Property<Directory>
+   @get:InputFiles
+   @get:PathSensitive(PathSensitivity.RELATIVE)
+   @get:Optional
+   abstract val testReportsDir: DirectoryProperty
 }

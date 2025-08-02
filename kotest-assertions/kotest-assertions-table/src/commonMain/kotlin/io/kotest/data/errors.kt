@@ -6,7 +6,6 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.MultiAssertionErrorBuilder
 import io.kotest.assertions.print.print
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @PublishedApi
 internal class ErrorCollector {
    private val errors = mutableListOf<Throwable>()
@@ -24,7 +23,6 @@ internal class ErrorCollector {
    }
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @PublishedApi
 internal fun error(e: Throwable, headers: List<String>, values: List<*>): Throwable {
    val valuesInPrintableFormat = values.map { value ->
@@ -44,7 +42,6 @@ internal fun error(e: Throwable, headers: List<String>, values: List<*>): Throwa
       .build()
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @PublishedApi
 internal fun forNoneError(headers: List<String>, values: List<*>): Throwable {
    val params = headers.zip(values).joinToString(", ")

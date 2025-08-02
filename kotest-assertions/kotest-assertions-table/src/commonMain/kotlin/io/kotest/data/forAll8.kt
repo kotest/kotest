@@ -4,7 +4,6 @@ package io.kotest.data
 
 import kotlin.jvm.JvmName
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A, B, C, D, E, F, G, H> forAll(
    vararg rows: Row8<A, B, C, D, E, F, G, H>,
    testfn: suspend (A, B, C, D, E, F, G, H) -> Unit
@@ -26,7 +25,6 @@ suspend fun <A, B, C, D, E, F, G, H> forAll(
    }
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @JvmName("forall8")
 inline fun <A, B, C, D, E, F, G, H> forAll(
    table: Table8<A, B, C, D, E, F, G, H>,
@@ -34,7 +32,6 @@ inline fun <A, B, C, D, E, F, G, H> forAll(
 ) =
    table.forAll(testfn)
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 inline fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forAll(fn: (A, B, C, D, E, F, G, H) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -47,7 +44,6 @@ inline fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forAll(fn: (A
    collector.assertAll()
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 suspend fun <A, B, C, D, E, F, G, H> forNone(
    vararg rows: Row8<A, B, C, D, E, F, G, H>,
    testfn: suspend (A, B, C, D, E, F, G, H) -> Unit
@@ -69,7 +65,6 @@ suspend fun <A, B, C, D, E, F, G, H> forNone(
    }
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 @JvmName("fornone8")
 inline fun <A, B, C, D, E, F, G, H> forNone(
    table: Table8<A, B, C, D, E, F, G, H>,
@@ -77,7 +72,6 @@ inline fun <A, B, C, D, E, F, G, H> forNone(
 ) =
    table.forNone(testfn)
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 inline fun <A, B, C, D, E, F, G, H> Table8<A, B, C, D, E, F, G, H>.forNone(fn: (A, B, C, D, E, F, G, H) -> Unit) {
    for (row in rows) {
       try {

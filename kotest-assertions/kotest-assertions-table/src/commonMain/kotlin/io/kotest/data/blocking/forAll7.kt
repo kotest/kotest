@@ -9,7 +9,6 @@ import io.kotest.data.headers
 import io.kotest.data.paramNames
 import io.kotest.data.table
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun <A, B, C, D, E, F, G> forAll(
    vararg rows: Row7<A, B, C, D, E, F, G>,
    testfn: (A, B, C, D, E, F, G) -> Unit
@@ -25,7 +24,6 @@ fun <A, B, C, D, E, F, G> forAll(
    table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG), *rows).forAll(testfn)
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun <A, B, C, D, E, F, G> forNone(
    vararg rows: Row7<A, B, C, D, E, F, G>,
    testfn: (A, B, C, D, E, F, G) -> Unit

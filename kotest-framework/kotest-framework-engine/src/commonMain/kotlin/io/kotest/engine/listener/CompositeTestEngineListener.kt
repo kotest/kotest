@@ -2,8 +2,8 @@ package io.kotest.engine.listener
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 /**
@@ -15,7 +15,7 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
    constructor(vararg listeners: TestEngineListener) : this(listeners.toList())
 
    init {
-      require(listeners.isNotEmpty())
+      require(listeners.isNotEmpty()) { "Cannot create CompositeTestEngineListener with no listeners" }
    }
 
    override suspend fun engineStarted() {

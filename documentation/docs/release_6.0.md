@@ -118,6 +118,31 @@ The location of the project config instance is now required to be at a specific 
 - Will not be picked up by the framework if located elsewhere
 - Different from Kotest 5.x behavior
 
+### Removed Classpath Scanning
+
+Classpath scanning for extensions has been removed in Kotest 6.0:
+
+- The `@AutoScan` annotation is no longer supported
+- Extensions must now be explicitly registered
+
+To register extensions, use one of these approaches:
+- Add extensions to your project config:
+  ```kotlin
+  object ProjectConfig : AbstractProjectConfig() {
+    override val extensions = listOf(
+      MyExtension(),
+      AnotherExtension()
+    )
+  }
+  ```
+- Use the `@ApplyExtension` annotation on your spec classes:
+  ```kotlin
+  @ApplyExtension(MyExtension::class)
+  class MySpec : FunSpec() {
+    // tests here
+  }
+  ```
+
 ### Deprecated Isolation Modes
 
 The following isolation modes are now deprecated due to undefined behavior in edge cases:
