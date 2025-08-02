@@ -32,7 +32,7 @@ fun Arb.Companion.int(
    min: Int = Int.MIN_VALUE,
    max: Int = Int.MAX_VALUE,
    shrinker: Shrinker<Int> = IntShrinker(min .. max)
-) = int(min..max)
+) = int(min..max, shrinker = shrinker)
 
 /**
  * Returns an [Arb] that produces [Int]s in [range].
