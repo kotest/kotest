@@ -32,6 +32,7 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
       val function = FunSpec.builder("runKotest")
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ClassName("kotlinx.cinterop", "ExperimentalForeignApi"))
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addCode(
             """
 val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
@@ -92,6 +93,7 @@ when (listenerType) {
          .addImport("io.kotest.engine", "TestEngineLauncher")
          .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
          .addImport("io.kotest.core.spec", "SpecRef")
+         .addImport("io.kotest.common", "KotestInternal")
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
       specs.forEach {

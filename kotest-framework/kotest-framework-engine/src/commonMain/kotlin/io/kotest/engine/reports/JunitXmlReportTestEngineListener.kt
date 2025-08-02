@@ -52,7 +52,6 @@ class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostn
 
    fun writeFile(baseDir: String, filename: String, contents: String) {
       val path = Path(baseDir, filename)
-      println(" >> Test report will be written to $path")
       SystemFileSystem.createDirectories(Path(baseDir))
       val sink = SystemFileSystem.sink(path, append = false).buffered()
       sink.writeString(contents)
