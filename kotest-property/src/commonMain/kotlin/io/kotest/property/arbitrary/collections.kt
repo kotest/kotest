@@ -203,14 +203,10 @@ class ListShrinker<A>(
 
    override fun shrink(value: List<A>): List<List<A>> = when {
       value.isEmpty() -> emptyList()
-      value.size == 1 -> if (range.contains(0)) {
-         listOfNotNull<List<A>>(
-            emptyList(),
-            elementShrinker?.shrink(value.first())
-         )
-      } else {
-         emptyList()
-      }
+      value.size == 1 -> listOfNotNull<List<A>>(
+         if (range.contains(0)) { emptyList() } else null,
+         elementShrinker?.shrink(value.first())
+      )
       else -> listOf(
          value.take(1), // just the first element
          value.dropLast(1),
