@@ -54,6 +54,7 @@ abstract class KotestWasmTask @Inject internal constructor(
          Files.writeString(
             file,
             // this is the entry point passed to node which references the well defined runKotest function
+            // this differs from JS in that require() is not supported in wasm, so we use ECMAScript modules
             """
 import * as exports from '$mjs';
 exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $descriptorArg);
