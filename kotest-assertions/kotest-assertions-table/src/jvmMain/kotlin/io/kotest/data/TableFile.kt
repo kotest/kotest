@@ -3,7 +3,6 @@ package io.kotest.data
 import io.kotest.matchers.shouldBe
 import java.io.File
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun <A, B, C> table(
    headers: Headers3,
    file: File,
@@ -14,22 +13,17 @@ fun <A, B, C> table(
    return Table3(headers, rows)
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun File.writeTable(headers: Headers1, rows: List<Row1<String>>): String =
    writeTable(headers.values(), rows.map { it.strings() })
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun File.writeTable(headers: Headers2, rows: List<Row2<String, String>>): String =
    writeTable(headers.values(), rows.map { it.strings() })
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun File.writeTable(headers: Headers3, rows: List<Row3<String, String, String>>): String =
    writeTable(headers.values(), rows.map { it.strings() })
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 private fun Row.strings(): List<String> = values().map { it.toString() }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 internal fun File.readStringTable(headers: List<String>): StringTable {
    if (exists().not()) throw AssertionError("Can't read table file")
    if (extension != "table") throw AssertionError("Table file must have a .table extension")
@@ -39,7 +33,6 @@ internal fun File.readStringTable(headers: List<String>): StringTable {
    return StringTable(headers, lines, skipFirstLine = true)
 }
 
-@Deprecated("Use withData as the preferred way of data driven testing. This was deprecated in 6.0")
 fun File.writeTable(headers: List<String>, cells: List<List<String>>): String {
    if (extension != "table") throw AssertionError("Table file must have a .table extension")
    val containsNewLines = cells.any { it.any { cell -> cell.contains("\n") } }
