@@ -28,7 +28,8 @@ public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/ko
 	public static final field TYPE_CLASSES_DIR Ljava/lang/String;
 	public static final field TYPE_CLASSES_JAR Ljava/lang/String;
 	protected final fun execute ()V
-	public abstract fun getCompilationName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getRuntimeClasspath ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSpecsClasspath ()Lorg/gradle/api/provider/Property;
 }
 
 public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion {
