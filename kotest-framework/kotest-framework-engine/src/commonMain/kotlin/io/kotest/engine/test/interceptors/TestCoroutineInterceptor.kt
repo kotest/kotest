@@ -31,7 +31,7 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      var result = CompletableDeferred<TestResult>()
+      val result = CompletableDeferred<TestResult>()
       logger.log { Pair(testCase.name.name, "Switching context to coroutines runTest") }
 
       // Handle timeouts here to avoid the influence of the default timeout set inside runTest
