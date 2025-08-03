@@ -3034,6 +3034,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withTagExpression (Lio/kotest/engine/tags/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
+	public final fun withWasmWasi ()Lio/kotest/engine/TestEngineLauncher;
 }
 
 public abstract class io/kotest/engine/concurrency/SpecExecutionMode {

@@ -33,24 +33,43 @@ abstract class KotestWasmTask @Inject internal constructor(
    @get:Input
    abstract val compileSyncPath: Property<String>
 
+   @get:Input
+   abstract val wasi: Property<Boolean>
+
    @TaskAction
    protected fun execute() {
       executors.exec {
+
          val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
-         val listenerArg = if (IntellijUtils.isIntellij()) LISTENER_TC else LISTENER_CONSOLE
+
+         // wasi doesn't support string inputs
+         val listenerArg = when {
+            wasi.get() && IntellijUtils.isIntellij() -> "1"
+            wasi.get() -> "0"
+            IntellijUtils.isIntellij() -> LISTENER_TC
+            else -> LISTENER_CONSOLE
+         }
          val testReportsDirArg = testReportsDir.get().asFile.absolutePath
+
+         val fn = when (wasi.get()) {
+            true -> """exports["$KOTEST_RUN_FN_NAME"]($listenerArg)"""
+            false -> """exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $descriptorArg, '$testReportsDirArg')"""
+         }
 
          // must be .mjs to support modules
          val file = Files.createTempFile("runKotest", ".mjs")
          file.toFile().deleteOnExit()
+
+         val contents = """
+import * as exports from '${compileSyncPath.get()}';
+$fn;
+"""
+
          Files.writeString(
             file,
             // this is the entry point passed to node which references the well defined runKotest function
             // this differs from JS in that require() is not supported in wasm, so we use ECMAScript modules
-            """
-import * as exports from '${compileSyncPath.get()}';
-exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $descriptorArg, '$testReportsDirArg');
-"""
+            contents
          )
          commandLine(nodeExecutable.get(), file.toFile().absolutePath)
       }

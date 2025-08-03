@@ -60,6 +60,7 @@ public abstract class io/kotest/framework/gradle/tasks/KotestWasmTask : io/kotes
 	protected final fun execute ()V
 	public abstract fun getCompileSyncPath ()Lorg/gradle/api/provider/Property;
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
+	public abstract fun getWasi ()Lorg/gradle/api/provider/Property;
 }
 
 public final class io/kotest/framework/gradle/tasks/KotestWasmTask$Companion {

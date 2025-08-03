@@ -29,3 +29,8 @@ public final class io/kotest/framework/symbol/processor/NativeGenerator {
 	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 }
 
+public final class io/kotest/framework/symbol/processor/WasmWasiGenerator {
+	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
+	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
+}
+

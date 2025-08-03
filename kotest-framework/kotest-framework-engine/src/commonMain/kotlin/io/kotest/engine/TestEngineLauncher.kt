@@ -139,7 +139,12 @@ data class TestEngineLauncher(
    /**
     * Convenience function to be called by the compiler plugin to set up the WASM platform.
     */
-   fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs).withTeamCityListener()
+   fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs)
+
+   /**
+    * Convenience function to be called by the compiler plugin to set up the WASM platform.
+    */
+   fun withWasmWasi(): TestEngineLauncher = withPlatform(Platform.WasmWasi)
 
    /**
     * Convenience function to be called by the compiler plugin to set up the Native platform.
