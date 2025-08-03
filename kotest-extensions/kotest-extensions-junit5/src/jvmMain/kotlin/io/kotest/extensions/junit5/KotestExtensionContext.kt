@@ -1,17 +1,21 @@
 package io.kotest.extensions.junit5
 
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.extension.ExecutableInvoker
 import org.junit.jupiter.api.extension.ExtensionContext
+import org.junit.jupiter.api.extension.MediaType
 import org.junit.jupiter.api.extension.TestInstances
+import org.junit.jupiter.api.function.ThrowingConsumer
 import org.junit.jupiter.api.parallel.ExecutionMode
 import java.lang.reflect.AnnotatedElement
 import java.lang.reflect.Method
+import java.nio.file.Path
 import java.util.Optional
 import java.util.function.Function
 
@@ -23,6 +27,8 @@ class KotestExtensionContext(
    private val formatter = getFallbackDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
 
    override fun getExecutionMode(): ExecutionMode = ExecutionMode.CONCURRENT
+
+   override fun getExecutableInvoker(): ExecutableInvoker? = null
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
@@ -43,6 +49,8 @@ class KotestExtensionContext(
    override fun getElement(): Optional<AnnotatedElement> = Optional.empty()
 
    override fun getTestClass(): Optional<Class<*>> = Optional.of(spec::class.java)
+   override fun getEnclosingTestClasses(): List<Class<*>?> = emptyList()
+
    override fun getTestMethod(): Optional<Method> = Optional.empty()
 
    override fun getTestInstanceLifecycle(): Optional<TestInstance.Lifecycle> =
@@ -59,10 +67,27 @@ class KotestExtensionContext(
    override fun getConfigurationParameter(key: String?): Optional<String> = Optional.empty()
 
    override fun publishReportEntry(map: MutableMap<String, String>?) {}
+   override fun publishFile(
+      name: String?,
+      mediaType: MediaType?,
+      action: ThrowingConsumer<Path?>?
+   ) {
+   }
+
+   override fun publishDirectory(
+      name: String?,
+      action: ThrowingConsumer<Path?>?
+   ) {
+   }
 
    override fun getStore(namespace: ExtensionContext.Namespace): ExtensionContext.Store {
       return ExtensionStore(namespace)
    }
+
+   override fun getStore(
+      scope: ExtensionContext.StoreScope?,
+      namespace: ExtensionContext.Namespace?
+   ): ExtensionContext.Store? = null
 }
 
 @Suppress("UNCHECKED_CAST")
