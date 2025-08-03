@@ -40,7 +40,7 @@ val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString
 val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
 val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
 
 """.trim()
@@ -95,7 +95,7 @@ when (listenerType) {
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
-         .addImport("io.kotest.engine.extensions", "ProvidedDescriptorFilter")
+         .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
       specs.forEach {
          file.addImport(it.packageName.asString(), it.simpleName.asString())

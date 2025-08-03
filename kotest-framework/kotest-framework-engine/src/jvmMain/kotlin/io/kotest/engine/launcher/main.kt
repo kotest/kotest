@@ -5,7 +5,7 @@ import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
-import io.kotest.engine.extensions.ProvidedDescriptorFilter
+import io.kotest.engine.extensions.IncludeDescriptorFilter
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
 import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
 import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
@@ -78,7 +78,7 @@ fun main(args: Array<String>) {
    @Suppress("UNCHECKED_CAST")
    val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
-   // we support --descriptor to support an exact descriptor path as a way to run a single test
+   // we support --include to support an exact descriptor path as a way to run a single test
    val descriptorFilter = buildDescriptorFilter(launcherArgs)
 
    // Kotest 5 supported --testpath and didn't support the descriptor selector, only the test name
@@ -129,18 +129,18 @@ private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): 
    }
 }
 
-private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
-   return launcherArgs[ARG_INCLUDE]?.let { descriptor ->
-      ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
+private fun buildDescriptorFilter(launcherArgs: Map<String, String>): IncludeDescriptorFilter? {
+   return launcherArgs[ARG_INCLUDE]?.let { include ->
+      IncludeDescriptorFilter(DescriptorPaths.parse(include))
    }
 }
 
 @Suppress("DEPRECATION")
 @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
-private fun buildKotest5DescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
+private fun buildKotest5DescriptorFilter(launcherArgs: Map<String, String>): IncludeDescriptorFilter? {
    return launcherArgs[TESTPATH]?.let { test ->
       launcherArgs[ARG_SPEC]?.let { spec ->
-         ProvidedDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
+         IncludeDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
       }
    }
 }

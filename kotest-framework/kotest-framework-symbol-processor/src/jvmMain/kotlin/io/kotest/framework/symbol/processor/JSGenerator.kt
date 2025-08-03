@@ -41,7 +41,7 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
          .addCode(
             """
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
 val reporter = JunitXmlReportTestEngineListener(testReportsDir, null)
 """.trim()
          )
@@ -84,7 +84,7 @@ when (listenerType) {
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
-         .addImport("io.kotest.engine.extensions", "ProvidedDescriptorFilter")
+         .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
       specs.forEach {
          file.addImport(it.packageName.asString(), it.simpleName.asString())

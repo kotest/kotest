@@ -3438,14 +3438,14 @@ public abstract interface class io/kotest/engine/extensions/ExtensionRegistry {
 	public abstract fun remove (Lio/kotest/core/extensions/Extension;)V
 }
 
+public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
+	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
+	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
+}
+
 public final class io/kotest/engine/extensions/MultipleExceptions : java/lang/Exception {
 	public fun <init> (Ljava/util/List;)V
 	public final fun getCauses ()Ljava/util/List;
-}
-
-public final class io/kotest/engine/extensions/ProvidedDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
-	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
-	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
 }
 
 public final class io/kotest/engine/extensions/SystemPropertyTagExtension : io/kotest/core/extensions/TagExtension {
