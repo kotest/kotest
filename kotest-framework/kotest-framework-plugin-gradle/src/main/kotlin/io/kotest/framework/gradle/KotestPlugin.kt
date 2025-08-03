@@ -219,7 +219,7 @@ abstract class KotestPlugin : Plugin<Project> {
                   val subtarget = this
                   if (subtarget is KotlinNodeJsIr) { // we only support node based wasm targets
                      target.compilations.matching { it.name == KotlinCompilation.TEST_COMPILATION_NAME }.configureEach {
-                        val compilation = this
+//                        val compilation = this
 
                         // todo this is disabled until we can find a way to disambiguate the wasi and non-wasi
                         // inside the KSP symbol processor because we need to generate different code

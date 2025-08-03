@@ -24,7 +24,8 @@ devPublishPlugin = "0.4.2"
 spring-boot = "2.7.18"
 spring = "5.3.39"
 byte-buddy = "1.15.11"
-allure = "2.24.0"
+allure = "2.34.1"
+allure-commons = "2.29.1"
 koin = "4.0.0"
 wiremock = "3.11.0"
 mockserver = "5.15.0"
@@ -66,6 +67,8 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+
+allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure-commons" }
 
 arrow-fx-coroutines = { module = "io.arrow-kt:arrow-fx-coroutines", version.ref = "arrow" }
 arrow-core = { module = "io.arrow-kt:arrow-core", version.ref = "arrow" }
@@ -125,14 +128,12 @@ byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte
 
 kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlin-poet" }
 
-allure-commons = { module = "io.qameta.allure:allure-java-commons", version.ref = "allure" }
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
 hikari = { module = "com.zaxxer:HikariCP", version = "6.3.0" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
-testcontainers-elastic = { module = "org.testcontainers:elasticsearch", version.ref = "testcontainers" }
 testcontainers-jdbc = { module = "org.testcontainers:jdbc", version.ref = "testcontainers" }
 testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
 testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
@@ -148,9 +149,6 @@ kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", v
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "devPublishPlugin" }
 nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }
-
-[bundles]
-junit-jupiter = ["junit-jupiter-api", "junit-jupiter-engine"]
 
 [plugins]
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
