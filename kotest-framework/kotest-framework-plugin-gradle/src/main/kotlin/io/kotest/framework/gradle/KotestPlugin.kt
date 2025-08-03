@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
+import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBinaryMode
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinTargetWithNodeJsDsl
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
@@ -153,7 +154,7 @@ abstract class KotestPlugin : Plugin<Project> {
       val kotestTaskName = nativeKotestTaskName(target)
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+      val task = target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
          testReportsDir.set(getTestReportsDir(project, name))
 
          val kexe = project.layout.buildDirectory.get().asFile.resolve(nativeBinaryPath(target)).absolutePath
@@ -171,8 +172,7 @@ abstract class KotestPlugin : Plugin<Project> {
       wireKsp(target.project, kspConfigurationName(target))
 
       // this means this kotest task will be run when the user runs "gradle check"
-      // we don't want to do this for native, because the native test task runs our tests anyway, and we don't want to run them twice
-      // target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+      target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    // wasmJs and wasmWasi land here, so we must not use hardcoded names
@@ -224,14 +224,12 @@ abstract class KotestPlugin : Plugin<Project> {
                         testReportsDir.set(getTestReportsDir(project, name))
                         nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
 
-                        val buildDir = project.layout.buildDirectory.asFile.get().toPath()
-                        val testModulePath = buildDir.resolve(jsTestModulePath(compilation))
-                        moduleFile.set(testModulePath)
+                        compileSyncPath.set(jsCompileSyncPath(compilation))
 
                         dependsOn("kotlinNodeJsSetup")
-                        dependsOn("jsTestPublicPackageJson")
+                        dependsOn("jsTestTestDevelopmentExecutableCompileSync")
                         inputs.files(
-                           project.tasks.named("compileTestDevelopmentExecutableKotlinJs")
+                           project.tasks.named("jsTestTestDevelopmentExecutableCompileSync")
                               .map { it.outputs.files }
                         )
                      }
@@ -292,12 +290,17 @@ abstract class KotestPlugin : Plugin<Project> {
       return "kotest$capitalTarget"
    }
 
-   /**
-    * Returns ths path to the compiled JS test module file.
-    */
-   private fun jsTestModulePath(compilation: KotlinJsIrCompilation): String {
+   private fun jsCompileSyncPath(compilation: KotlinJsIrCompilation): String {
       val moduleName = compilation.outputModuleName.get()
-      return "js/packages/${moduleName}/kotlin/${moduleName}.js"
+
+      if (compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.isEmpty())
+         error("No DEVELOPMENT binaries found for compilation ${compilation.name} in project ${compilation.project.name}")
+
+      var path = ""
+      compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.configureEach {
+         path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.js"
+      }
+      return path
    }
 
    /**
@@ -351,14 +354,20 @@ abstract class KotestPlugin : Plugin<Project> {
          )
       }
 
-      project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+      // handles the case when the configuration is already created
+      project.configurations.configureEach {
+         if (name == configurationName) {
+            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+         }
+      }
 
-//      project.configurations.whenObjectAdded {
-//         if (name == configurationName) {
-//            // use the same version as this plugin
-//            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
-//         }
-//      }
+      // handles the case when the configuration is created after this plugin is applied
+      project.configurations.whenObjectAdded {
+         if (name == configurationName) {
+            // use the same version as this plugin
+            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+         }
+      }
    }
 
    private fun getTestReportsDir(project: Project, taskName: String): Provider<Directory> {
