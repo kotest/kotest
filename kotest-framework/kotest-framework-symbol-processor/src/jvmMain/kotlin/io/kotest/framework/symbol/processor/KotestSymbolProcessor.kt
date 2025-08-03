@@ -72,9 +72,9 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
       when (val platform = environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
          is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         // todo we need some way of determining if WASI or plain WASM, so we can use the WasmWasiGenerator
+         // todo we need some way of determining if WASI or Wasm JS, so we can use the WasmWasiGenerator
          else if platform.platformName.contains("wasm-js") ->
-            JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
+            WasmJsGenerator(environment).generate(files, visitor.specs, visitor.configs)
          else -> error("Unsupported platform: ${environment.platforms.first()}")
       }
    }
