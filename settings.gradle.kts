@@ -136,6 +136,9 @@ include(
 
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
+
+   ":kotest-extensions:kotest-extensions-pitest",
+
    ":kotest-extensions:kotest-extensions-spring",
 
    // adds support for the testcontainers framework - see more https://testcontainers.com

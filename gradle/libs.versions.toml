@@ -40,6 +40,7 @@ xmlutil = "0.91.1"
 agp = "8.10.0"
 binary-compatibility-validator = "0.18.1"
 decoroutinator = "2.5.5"
+pitest = "1.20.1"
 
 ### Java compilation ###
 # Kotest's minimum supported Java version.
@@ -114,6 +115,8 @@ kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-em
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
+
+pitest = { module = "org.pitest:pitest", version.ref = "pitest" }
 
 spring-context = { group = "org.springframework", name = "spring-context", version.ref = "spring" }
 spring-test = { group = "org.springframework", name = "spring-test", version.ref = "spring" }

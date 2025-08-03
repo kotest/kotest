@@ -9,14 +9,12 @@ kotlin {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlin.reflect)
-            implementation(libs.spring.context)
-            implementation(libs.spring.test)
-            implementation(libs.byte.buddy)
+            compileOnly(libs.pitest)
          }
       }
       jvmTest {
          dependencies {
-            implementation(libs.spring.boot.test)
+            implementation(libs.pitest)
          }
       }
    }
