@@ -42,21 +42,40 @@ abstract class KotestJsTask @Inject internal constructor(
 
    @TaskAction
    protected fun execute() {
+
       executors.exec {
-         println("specs: ${specs.getOrElse("")}")
-         println("Node executable ${nodeExecutable.get()}")
-         println("JS Test Module ${moduleFile.get()}")
+
+         // for the test framework setup in KotlinJsTest see KotlinMocha as well and KotlinJsTestFramework
+
+         // see TCServiceMessagesTestExecutor for how kotlin.test does it
+//         exec.workingDir = spec.processLaunchOptions.workingDir.orNull?.asFile
+//         exec.environment(spec.processLaunchOptions.environment.orNull.orEmpty())
+//         exec.executable = spec.processLaunchOptions.executable.get()
+//         exec.args = spec.processArgs
+//         exec.standardOutput = TCServiceMessageOutputStreamHandler(
+//            client,
+//            { spec.showSuppressedOutput() },
+//            log,
+//            ignoreTcsmOverflow,
+//         )
+//         exec.errorOutput = TCServiceMessageOutputStreamHandler(
+//            client,
+//            { spec.showSuppressedOutput() },
+//            log,
+//            ignoreTcsmOverflow,
+//         )
 
          val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
          val listenerArg = if (IntellijUtils.isIntellij()) LISTENER_TC else LISTENER_CONSOLE
+         val testReportsDirArg = testReportsDir.get().asFile.absolutePath
 
          // this is the entry point passed to node which references the well defined runKotest function
          val nodeCommand =
-            "require('${moduleFile.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $descriptorArg)"
+            "require('${moduleFile.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $descriptorArg, '$testReportsDirArg')"
          println("Node command :$nodeCommand")
 
+         // similar to setting executable + args separately
          commandLine(nodeExecutable.get(), "-e", nodeCommand)
       }
    }
 }
-
