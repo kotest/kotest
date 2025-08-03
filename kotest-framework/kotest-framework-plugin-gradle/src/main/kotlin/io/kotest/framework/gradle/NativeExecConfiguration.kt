@@ -37,7 +37,7 @@ internal data class NativeExecConfiguration(
       if (IntellijUtils.isIntellij())
          exec.environment("kotest.framework.runtime.native.listener", LISTENER_TC)
       if (descriptor != null)
-         exec.environment("kotest.framework.runtime.native.descriptor", descriptor)
+         exec.environment("kotest.framework.runtime.native.include", descriptor)
       if (testReportsDir != null)
          exec.environment("kotest.framework.runtime.native.test.reports.dir", testReportsDir)
 

@@ -66,13 +66,13 @@ abstract class KotestJsTask @Inject internal constructor(
 //            ignoreTcsmOverflow,
 //         )
 
-         val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
+         val includeArg = if (include.orNull == null) null else "'${include.get()}'"
          val listenerArg = if (IntellijUtils.isIntellij()) LISTENER_TC else LISTENER_CONSOLE
          val testReportsDirArg = testReportsDir.get().asFile.absolutePath
 
          // this is the entry point passed to node which references the well defined runKotest function
          val nodeCommand =
-            "require('${compileSyncPath.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $descriptorArg, '$testReportsDirArg')"
+            "require('${compileSyncPath.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $includeArg, '$testReportsDirArg')"
          println("Node command :$nodeCommand")
 
          // similar to setting executable + args separately

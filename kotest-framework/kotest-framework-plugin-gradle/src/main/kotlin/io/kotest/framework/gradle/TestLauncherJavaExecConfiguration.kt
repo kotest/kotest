@@ -27,7 +27,7 @@ internal data class TestLauncherJavaExecConfiguration(
       private const val ARG_SPECS = "--specs"
 
       // used to filter to a single spec or test within a spec
-      private const val ARG_DESCRIPTOR = "--descriptor"
+      private const val ARG_INCLUDE = "--include"
 
       // used to filter to a single spec or test within a spec
       private const val ARG_TEST_REPORTS_DIR = "--test-reports-dir"
@@ -76,7 +76,7 @@ internal data class TestLauncherJavaExecConfiguration(
    /**
     * Returns the args to send to the launcher
     */
-   private fun args() = listenerArgs() + tagsArg() + specsArg() + descriptorArg() + testReportsDirArg()
+   private fun args() = listenerArgs() + tagsArg() + specsArg() + includeArg() + testReportsDirArg()
 
    /**
     * If we are running inside intellij, we assume the user has the intellij Kotest plugin installed,
@@ -97,9 +97,9 @@ internal data class TestLauncherJavaExecConfiguration(
     * Returns an arg to filter down to a single spec or test within a spec.
     * This is used for example when running a single test from the kotest intellij plugin.
     */
-   private fun descriptorArg(): List<String> {
+   private fun includeArg(): List<String> {
       if (descriptor == null) return emptyList()
-      return listOf(ARG_DESCRIPTOR, descriptor)
+      return listOf(ARG_INCLUDE, descriptor)
    }
 
    /**

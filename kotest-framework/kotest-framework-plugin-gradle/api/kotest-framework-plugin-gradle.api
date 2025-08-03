@@ -16,7 +16,7 @@ public final class io/kotest/framework/gradle/SpecsResolver {
 }
 
 public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {
-	public abstract fun getDescriptor ()Lorg/gradle/api/provider/Property;
+	public abstract fun getInclude ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTags ()Lorg/gradle/api/provider/Property;

@@ -36,11 +36,11 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
          .addAnnotation(ClassName("kotlin.js", "JsExport"))
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addParameter(ParameterSpec.builder("listenerType", String::class).build())
-         .addParameter(ParameterSpec.builder("descriptorArg", String::class.asTypeName().copy(nullable = true)).build())
+         .addParameter(ParameterSpec.builder("includeArg", String::class.asTypeName().copy(nullable = true)).build())
          .addParameter(ParameterSpec.builder("testReportsDir", String::class).build())
          .addCode(
             """
-val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
+val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
 val reporter = JunitXmlReportTestEngineListener(testReportsDir, null)
 """.trim()

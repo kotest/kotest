@@ -22,13 +22,13 @@ class ArgParseTest : FunSpec() {
             "teamcity",
             "--candidates",
             "com.sksamuel.aedile.core.CoroutineContextTest",
-            "--descriptor",
+            "--include",
             "com.sksamuel.aedile.core.CoroutineContextTest/the calling context should be used by default for loading caches"
          )
          parseArgs(args) shouldBe mapOf(
             "listener" to "teamcity",
             "candidates" to "com.sksamuel.aedile.core.CoroutineContextTest",
-            "descriptor" to "com.sksamuel.aedile.core.CoroutineContextTest/the calling context should be used by default for loading caches",
+            "include" to "com.sksamuel.aedile.core.CoroutineContextTest/the calling context should be used by default for loading caches",
          )
       }
 

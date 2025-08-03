@@ -35,11 +35,11 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addCode(
             """
-val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
+val includeArg = getenv("kotest.framework.runtime.native.include")?.toKString()
 val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
 val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
 
-val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
+val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
 val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
 

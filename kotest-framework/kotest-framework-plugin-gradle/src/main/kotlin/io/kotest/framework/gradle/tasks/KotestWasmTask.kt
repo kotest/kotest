@@ -40,7 +40,7 @@ abstract class KotestWasmTask @Inject internal constructor(
    protected fun execute() {
       executors.exec {
 
-         val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
+         val includeArg = if (include.orNull == null) null else "'${include.get()}'"
 
          // wasi doesn't support string inputs
          val listenerArg = when {
@@ -53,7 +53,7 @@ abstract class KotestWasmTask @Inject internal constructor(
 
          val fn = when (wasi.get()) {
             true -> """exports["$KOTEST_RUN_FN_NAME"]($listenerArg)"""
-            false -> """exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $descriptorArg, '$testReportsDirArg')"""
+            false -> """exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $includeArg, '$testReportsDirArg')"""
          }
 
          // must be .mjs to support modules

@@ -48,7 +48,7 @@ abstract class KotestAndroidTask @Inject internal constructor(
             .withClasspath(runtimeClasspath.get())
             .withSpecs(specs)
             .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
-            .withDescriptor(descriptor.orNull)
+            .withDescriptor(include.orNull)
             .withCommandLineTags(tags.orNull)
             .configure(this)
       }

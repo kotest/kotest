@@ -9,7 +9,7 @@ import io.kotest.engine.extensions.ProvidedDescriptorFilter
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
 import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
 import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
-import io.kotest.engine.launcher.LauncherArgs.DESCRIPTOR
+import io.kotest.engine.launcher.LauncherArgs.ARG_INCLUDE
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
@@ -33,10 +33,10 @@ object LauncherArgs {
    const val ARG_LISTENER = "listener"
 
    // used to filter to a single spec or test within a spec
-   const val DESCRIPTOR = "descriptor"
+   const val ARG_INCLUDE = "include"
 
    // sets the location of the test-reports directory in the build directory
-   const val TEST_REPORTS_DIR = "test-reports-dir"
+   const val ARG_TEST_REPORTS_DIR = "test-reports-dir"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
    @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
@@ -119,7 +119,7 @@ private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): Te
 }
 
 private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener? {
-   return launcherArgs[LauncherArgs.TEST_REPORTS_DIR]?.let { xmldir ->
+   return launcherArgs[LauncherArgs.ARG_TEST_REPORTS_DIR]?.let { xmldir ->
       val hostname = try {
          InetAddress.getLocalHost().hostName
       } catch (_: UnknownHostException) {
@@ -130,7 +130,7 @@ private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): 
 }
 
 private fun buildDescriptorFilter(launcherArgs: Map<String, String>): ProvidedDescriptorFilter? {
-   return launcherArgs[DESCRIPTOR]?.let { descriptor ->
+   return launcherArgs[ARG_INCLUDE]?.let { descriptor ->
       ProvidedDescriptorFilter(DescriptorPaths.parse(descriptor))
    }
 }

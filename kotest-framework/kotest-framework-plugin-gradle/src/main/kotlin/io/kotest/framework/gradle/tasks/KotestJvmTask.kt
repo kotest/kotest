@@ -29,7 +29,7 @@ abstract class KotestJvmTask @Inject internal constructor(
          TestLauncherJavaExecConfiguration()
             .withClasspath(sourceSetClasspath.get())
             .withSpecs(specs)
-            .withDescriptor(descriptor.orNull)
+            .withDescriptor(include.orNull)
             .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
             .withCommandLineTags(tags.orNull)
             .configure(this)
