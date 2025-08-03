@@ -36,7 +36,7 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
          .addCode(
             """
 val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
-val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString()
+val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
 val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
 
 val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
@@ -73,7 +73,8 @@ val launcher = TestEngineLauncher()
          """
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
-   else -> launcher.withConsoleListener().launch()
+   "console" -> launcher.withConsoleListener().launch()
+   else -> Unit // this stops us running from the non-kotest test targets
 }
 """.trim()
       ).addCode("\n")
