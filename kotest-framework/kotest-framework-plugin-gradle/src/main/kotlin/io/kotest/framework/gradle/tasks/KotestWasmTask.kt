@@ -30,23 +30,15 @@ abstract class KotestWasmTask @Inject internal constructor(
    @get:Input
    abstract val nodeExecutable: Property<String>
 
+   @get:Input
+   abstract val compileSyncPath: Property<String>
+
    @TaskAction
    protected fun execute() {
       executors.exec {
-         println("Node executable ${nodeExecutable.get()}")
-
-         // the kotlin js compiler uses projectname-test as the module name, eg in build/js/packages
-         val testModuleName = "${project.name}-test"
-         println("Wasm Test Module $testModuleName")
-
-         val buildDir = project.layout.buildDirectory.asFile.get().toPath()
-
-         // this is the location where the kotlin wasm compiler puts all the files after compilation
-         // it would be good if we could derive this somehow other than assuming based on the project name
-         val mjs = buildDir.resolve("wasm/packages/${testModuleName}/kotlin/${testModuleName}.mjs")
-
          val descriptorArg = if (descriptor.orNull == null) null else "'${descriptor.get()}'"
          val listenerArg = if (IntellijUtils.isIntellij()) LISTENER_TC else LISTENER_CONSOLE
+         val testReportsDirArg = testReportsDir.get().asFile.absolutePath
 
          // must be .mjs to support modules
          val file = Files.createTempFile("runKotest", ".mjs")
@@ -56,8 +48,8 @@ abstract class KotestWasmTask @Inject internal constructor(
             // this is the entry point passed to node which references the well defined runKotest function
             // this differs from JS in that require() is not supported in wasm, so we use ECMAScript modules
             """
-import * as exports from '$mjs';
-exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $descriptorArg);
+import * as exports from '${compileSyncPath.get()}';
+exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $descriptorArg, '$testReportsDirArg');
 """
          )
          commandLine(nodeExecutable.get(), file.toFile().absolutePath)

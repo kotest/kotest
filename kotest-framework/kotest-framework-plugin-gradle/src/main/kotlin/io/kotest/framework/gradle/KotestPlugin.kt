@@ -26,13 +26,11 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinTargetWithTests
+import org.jetbrains.kotlin.gradle.targets.js.KotlinWasmTargetType
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBinaryMode
-import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinTargetWithNodeJsDsl
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinNodeJsIr
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsEnvSpec
-import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin.Companion.kotlinNodeJsEnvSpec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
@@ -177,36 +175,48 @@ abstract class KotestPlugin : Plugin<Project> {
 
    // wasmJs and wasmWasi land here, so we must not use hardcoded names
    private fun handleWasm(target: KotlinTargetWithTests<*, *>) {
-      target.project.plugins.apply(NodeJsPlugin::class.java)
-//      if (target is KotlinWasmTargetDsl) {
-//          wasmTargetType will be either JS or WASI
-//         println("KotlinWasmTargetDsl ${target.name} with wasmTargetType ${target.wasmTargetType}")
-//      }
-      // we only support node based wasm targets
-      if (target is KotlinTargetWithNodeJsDsl) {
-         // we need to use the NodeJsEnvSpec to ensure the node executable is available
-         target.project.extensions.configure(NodeJsEnvSpec::class.java) {
-            val nodeJsSpec = this
+      if (target is KotlinJsIrTarget) {
+         println("KotlinWasmTargetDsl ${target.name} with wasmTargetType ${target.wasmTargetType}")
+         when (target.wasmTargetType) {
+            KotlinWasmTargetType.JS -> {
+               target.subTargets.configureEach {
+                  val subtarget = this
+                  if (subtarget is KotlinNodeJsIr) { // we only support node based JS targets
+                     target.compilations.configureEach {
+                        val compilation = this
+                        if (compilation.name == KotlinCompilation.TEST_COMPILATION_NAME) {
 
-            // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-            // see https://docs.gradle.org/current/userguide/isolated_projects.html
-            val task = target.project.tasks.register(wasmNodeKotestTaskName(target), KotestWasmTask::class) {
-               nodeExecutable.set(nodeJsSpec.executable)
-               // we could depend instead on artifactsTaskName ?
-               dependsOn(wasmNodeTestTaskName(target))
-               inputs.files(
-                  project.tasks.named(wasmNodeTestTaskName(target))
-                     .map { it.outputs.files }
-               )
+                           // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+                           // see https://docs.gradle.org/current/userguide/isolated_projects.html
+                           val task = target.project.tasks.register("wasmJsNodeKotest", KotestWasmTask::class) {
+                              testReportsDir.set(getTestReportsDir(project, name))
+                              nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
+                              compileSyncPath.set(wasmJsCompileSyncPath(compilation))
+
+                              dependsOn("wasmJsTestTestDevelopmentExecutableCompileSync")
+                              inputs.files(
+                                 project.tasks.named("compileTestDevelopmentExecutableKotlinWasmJs")
+                                    .map { it.outputs.files }
+                              )
+                           }
+                           // the ksp plugin will create a configuration named kspJsTest that contains
+                           // the symbol processors used by the test configuration. We want to wire in
+                           // the kotest symbol processor to this configuration so the user doesn't have to manually
+                           wireKsp(target.project, "kspJsTest")
+
+                           // this means this kotest task will be run when the user runs "gradle check"
+                           target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+                        }
+                     }
+                  }
+               }
             }
 
-            // the ksp plugin will create a configuration named kspWasmJsTest that contains
-            // the symbol processors used by the test configuration. We want to wire in
-            // the kotest symbol processor to this configuration so the user doesn't have to manually do it
-            wireKsp(target.project, kspConfigurationName(target))
+            KotlinWasmTargetType.WASI -> {
 
-            // this means this kotest task will be run when the user runs "gradle check"
-            target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+            }
+
+            else -> Unit
          }
       }
    }
@@ -220,10 +230,11 @@ abstract class KotestPlugin : Plugin<Project> {
                   val compilation = this
                   if (compilation.name == KotlinCompilation.TEST_COMPILATION_NAME) {
 
+                     // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+                     // see https://docs.gradle.org/current/userguide/isolated_projects.html
                      val task = target.project.tasks.register("jsNodeKotest", KotestJsTask::class) {
                         testReportsDir.set(getTestReportsDir(project, name))
                         nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
-
                         compileSyncPath.set(jsCompileSyncPath(compilation))
 
                         dependsOn("kotlinNodeJsSetup")
@@ -233,6 +244,7 @@ abstract class KotestPlugin : Plugin<Project> {
                               .map { it.outputs.files }
                         )
                      }
+
                      // the ksp plugin will create a configuration named kspJsTest that contains
                      // the symbol processors used by the test configuration. We want to wire in
                      // the kotest symbol processor to this configuration so the user doesn't have to manually
@@ -299,6 +311,19 @@ abstract class KotestPlugin : Plugin<Project> {
       var path = ""
       compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.configureEach {
          path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.js"
+      }
+      return path
+   }
+
+   private fun wasmJsCompileSyncPath(compilation: KotlinJsIrCompilation): String {
+      val moduleName = compilation.outputModuleName.get()
+
+      if (compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.isEmpty())
+         error("No DEVELOPMENT binaries found for compilation ${compilation.name} in project ${compilation.project.name}")
+
+      var path = ""
+      compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.configureEach {
+         path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.mjs"
       }
       return path
    }
