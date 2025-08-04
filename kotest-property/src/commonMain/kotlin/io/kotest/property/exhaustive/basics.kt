@@ -33,7 +33,7 @@ fun <A> Exhaustive<A>.concat(other: Exhaustive<A>) = this + other
 /**
  * Returns the cross product of two [Exhaustive]s.
  */
-operator fun <A, B : A> Exhaustive<A>.times(other: Exhaustive<B>): Exhaustive<Pair<A, B>> {
+operator fun <A, B> Exhaustive<A>.times(other: Exhaustive<B>): Exhaustive<Pair<A, B>> {
    val values = this.values.flatMap { a ->
       other.values.map { b ->
          Pair(a, b)
