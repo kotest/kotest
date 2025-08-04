@@ -50,8 +50,8 @@ object GradleUtils {
    }
 
    fun getDescriptorArg(taskNames: List<String>): String? {
-      val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.DESCRIPTOR_ARG) } ?: return null
-      return arg.substringAfter(GradleTaskNamesBuilder.DESCRIPTOR_ARG).trim().removeSurrounding("'")
+      val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.ARG_INCLUDE) } ?: return null
+      return arg.substringAfter(GradleTaskNamesBuilder.ARG_INCLUDE).trim().removeSurrounding("'")
    }
 
    @Suppress("UnstableApiUsage")

@@ -17,8 +17,8 @@ data class GradleTaskNamesBuilder(
    companion object {
 
       const val SPEC_DELIMITER = ";"
-      const val SPECS_ARG = "--specs"
-      const val DESCRIPTOR_ARG = "--descriptor"
+      const val ARG_SPECS = "--specs"
+      const val ARG_INCLUDE = "--include"
 
       fun builder(module: Module): GradleTaskNamesBuilder =
          GradleTaskNamesBuilder(module, emptyList(), null)
@@ -33,7 +33,7 @@ data class GradleTaskNamesBuilder(
    }
 
    fun build(): List<String> {
-      return taskArgs().flatMap { listOfNotNull(it, specsArg(), descriptorArg()) }
+      return taskArgs().flatMap { listOfNotNull(it, specsArg(), includeArg()) }
    }
 
    @Suppress("UnstableApiUsage")
@@ -55,11 +55,11 @@ data class GradleTaskNamesBuilder(
 
    private fun specsArg(): String {
       val fqns = specs.mapNotNull { it.fqName }.joinToString(SPEC_DELIMITER) { it.asString() }
-      return "$SPECS_ARG '$fqns'"
+      return "$ARG_SPECS '$fqns'"
    }
 
-   private fun descriptorArg(): String? {
+   private fun includeArg(): String? {
       if (test == null) return null
-      return "$DESCRIPTOR_ARG '${test.descriptor()}'"
+      return "$ARG_INCLUDE '${test.descriptor()}'"
    }
 }
