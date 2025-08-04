@@ -32,30 +32,35 @@ jobs:
          ref: ${{ inputs.ref }}
          task: apiCheck
 
-   validate-primary:
+   validate-linux:
       name: Validate and publish on primary runner
       if: github.repository == 'kotest/kotest'
-      needs: validate-api
       uses: ./.github/workflows/run-gradle.yml
+      needs: validate-api
       secrets: inherit
       with:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
          task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
 
-   validate-secondary:
-      name: Validate and publish on secondary runners
+   validate-macos:
+      name: Validate and publish on macos
       if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-primary ]
-      strategy:
-         matrix:
-            include:
-               -  os: macos-latest
-               -  os: windows-latest
-         fail-fast: false
+      needs: [ validate-api, validate-linux ]
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
-         runs-on: ${{ matrix.os }}
+         runs-on: macos-latest
          ref: ${{ inputs.ref }}
-         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
+         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=false -P"kotest_enableKotlinNative"=true
+
+   validate-windows:
+      name: Validate and publish on windows
+      if: github.repository == 'kotest/kotest'
+      needs: [ validate-api, validate-linux ]
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         runs-on: windows-latest
+         ref: ${{ inputs.ref }}
+         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=false -P"kotest_enableKotlinNative"=true
