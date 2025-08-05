@@ -11,7 +11,6 @@ kotlin {
             implementation(libs.testcontainers.core)
             implementation(libs.testcontainers.jdbc)
             implementation(libs.testcontainers.kafka)
-            implementation(libs.testcontainers.elastic)
             implementation(libs.hikari)
             implementation(libs.kafka.client)
          }

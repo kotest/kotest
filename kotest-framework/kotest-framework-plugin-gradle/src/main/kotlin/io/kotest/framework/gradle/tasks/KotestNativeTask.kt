@@ -22,7 +22,7 @@ abstract class KotestNativeTask @Inject internal constructor(
       testReportsDir.get().asFile.mkdirs()
       val result = executors.exec {
          NativeExecConfiguration(exe.get())
-            .withDescriptor(descriptor.orNull)
+            .withDescriptor(include.orNull)
             .withCommandLineTags(tags.orNull)
             .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
             .configure(this)

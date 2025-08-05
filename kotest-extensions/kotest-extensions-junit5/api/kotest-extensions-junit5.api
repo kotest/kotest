@@ -33,11 +33,14 @@ public final class io/kotest/extensions/junit5/KotestExtensionContext : org/juni
 	public fun getConfigurationParameter (Ljava/lang/String;Ljava/util/function/Function;)Ljava/util/Optional;
 	public fun getDisplayName ()Ljava/lang/String;
 	public fun getElement ()Ljava/util/Optional;
+	public fun getEnclosingTestClasses ()Ljava/util/List;
+	public fun getExecutableInvoker ()Lorg/junit/jupiter/api/extension/ExecutableInvoker;
 	public fun getExecutionException ()Ljava/util/Optional;
 	public fun getExecutionMode ()Lorg/junit/jupiter/api/parallel/ExecutionMode;
 	public fun getParent ()Ljava/util/Optional;
 	public fun getRoot ()Lorg/junit/jupiter/api/extension/ExtensionContext;
 	public fun getStore (Lorg/junit/jupiter/api/extension/ExtensionContext$Namespace;)Lorg/junit/jupiter/api/extension/ExtensionContext$Store;
+	public fun getStore (Lorg/junit/jupiter/api/extension/ExtensionContext$StoreScope;Lorg/junit/jupiter/api/extension/ExtensionContext$Namespace;)Lorg/junit/jupiter/api/extension/ExtensionContext$Store;
 	public fun getTags ()Ljava/util/Set;
 	public fun getTestClass ()Ljava/util/Optional;
 	public fun getTestInstance ()Ljava/util/Optional;
@@ -45,6 +48,8 @@ public final class io/kotest/extensions/junit5/KotestExtensionContext : org/juni
 	public fun getTestInstances ()Ljava/util/Optional;
 	public fun getTestMethod ()Ljava/util/Optional;
 	public fun getUniqueId ()Ljava/lang/String;
+	public fun publishDirectory (Ljava/lang/String;Lorg/junit/jupiter/api/function/ThrowingConsumer;)V
+	public fun publishFile (Ljava/lang/String;Lorg/junit/jupiter/api/extension/MediaType;Lorg/junit/jupiter/api/function/ThrowingConsumer;)V
 	public fun publishReportEntry (Ljava/util/Map;)V
 }
 

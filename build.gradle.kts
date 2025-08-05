@@ -72,6 +72,7 @@ dependencies {
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
 

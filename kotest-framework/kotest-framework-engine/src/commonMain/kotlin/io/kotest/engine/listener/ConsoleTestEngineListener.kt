@@ -1,16 +1,17 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.engine.console.consoleRenderer
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.FallbackDisplayNameFormatter
 import io.kotest.engine.test.names.formatTestPath
 import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
@@ -28,7 +29,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
    private var testsFailed = emptyList<Pair<TestCase, TestResult>>()
    private var testsIgnored = 0
    private var testsPassed = 0
-   private var specsFailed = emptyList<Descriptor.SpecDescriptor>()
+   private var specsFailed = emptyList<KClass<*>>()
    private var specsSeen = emptyList<Descriptor>()
    private var slow = 500.milliseconds
    private var verySlow = 5000.milliseconds
@@ -52,7 +53,9 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       "Open the test suite doors, HAL",
       "Mama always said testing was like a box of chocolates. You don't know which ones are gonna fail",
       "A test suite. Shaken, not stirred",
+      "I feel the need - the need for tests",
       "I'm going to make him a test he can't refuse",
+      "Here's looking at you, tests",
       "You testing me? I don't see any other tests here, so you must be testing me",
       "I love the smell of tests in the morning",
       "Do you feel lucky punk? Do you think your tests will pass? Well, do ya?",
@@ -61,6 +64,23 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       "A test suite's gotta do what a test suite's gotta do",
       "I test code and chew bubblegum, and I'm all out of bubblegum",
       "ChatGPT ain't got nothing on me when it comes to testing",
+      "Frankly, my dear, I don't give a test",
+      "Show me the tests!",
+      "Nobody puts Kotest in a corner",
+      "The first rule of Kotest is: you do not talk about tests",
+      "I see dead tests",
+      "You had me at tests",
+      "Houston, we have a test suite",
+      "To infinity and beyond! (with tests)",
+      "May the tests be with you",
+      "I'll be back... with more tests",
+      "Hasta la vista, tests",
+      "You can't handle the tests!",
+      "Life is like a test suite, you never know what you're gonna get",
+      "Keep calm and test on",
+      "In the test suite of life, there are no failures, only learning opportunities",
+      "Test like nobody's watching",
+      "Test hard, test often",
    )
 
    override suspend fun engineInitialized(context: EngineContext) {
@@ -91,9 +111,8 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
          consoleRenderer.println(consoleRenderer.redBold(">> There were test failures"))
          consoleRenderer.println()
          specsFailed.distinct().forEach { spec ->
-            // todo fix this to use the proper class name
-            consoleRenderer.println(consoleRenderer.brightRedBold(" ${formatter.format(this::class)}"))
-            testsFailed.filter { it.first.spec::class.toDescriptor() == spec }.forEach { (testCase, _) ->
+            consoleRenderer.println(consoleRenderer.brightRedBold(" ${formatter.format(spec)}"))
+            testsFailed.filter { it.first.spec::class == spec }.forEach { (testCase, _) ->
                consoleRenderer.println(consoleRenderer.brightRed(" - ${formatter.formatTestPath(testCase, " -- ")}"))
             }
          }
@@ -171,7 +190,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       if (result.isErrorOrFailure) {
          consoleRenderer.println("${ref.kclass} $result")
          errors++
-         specsFailed = specsFailed + ref.kclass.toDescriptor()
+         specsFailed = specsFailed + ref.kclass
          printThrowable(result.errorOrNull, 4)
       }
       consoleRenderer.println()
@@ -199,7 +218,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
          is TestResult.Failure, is TestResult.Error -> {
             errors++
             testsFailed = testsFailed + Pair(testCase, result)
-            specsFailed = specsFailed + testCase.descriptor.spec()
+            specsFailed = specsFailed + testCase.spec::class
          }
 
          else -> Unit

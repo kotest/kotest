@@ -44,9 +44,16 @@ sealed class JsonNode {
 
          if (other.content == content) return true
 
+         val thisDouble = content.toDouble()
+         val otherDouble = other.content.toDouble()
+         if(
+            (thisDouble == 0.0 || thisDouble == -0.0) &&
+            (otherDouble == 0.0 || otherDouble == -0.0)
+         ) return true
+
          // if one or the other uses exponent notation, we must compare by parsed value
          if (content.matches(exponentRegex) xor other.content.matches(exponentRegex)) {
-            return content.toDouble() == other.content.toDouble()
+            return thisDouble == otherDouble
          }
 
          val fractionalZeroesRegex = """(\.\d*)0+$""".toRegex()

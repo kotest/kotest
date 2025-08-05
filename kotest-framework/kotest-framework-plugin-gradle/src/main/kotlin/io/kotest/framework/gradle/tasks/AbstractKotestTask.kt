@@ -12,10 +12,10 @@ import org.gradle.api.tasks.options.Option
 
 abstract class AbstractKotestTask internal constructor() : DefaultTask() {
 
-   @get:Option(option = "descriptor", description = "Filter to a single spec or test")
+   @get:Option(option = "include", description = "Filter to a single spec or test")
    @get:Input
    @get:Optional
-   abstract val descriptor: Property<String>
+   abstract val include: Property<String>
 
    @get:Option(option = "specs", description = "The specs list to avoid scanning")
    @get:Input

@@ -16,9 +16,6 @@ internal data class NativeExecConfiguration(
 ) {
 
    companion object {
-
-      private const val ARG_TAGS = "--tags"
-
       // the value used to specify the team city format
       private const val LISTENER_TC = "teamcity"
    }
@@ -40,26 +37,12 @@ internal data class NativeExecConfiguration(
       if (IntellijUtils.isIntellij())
          exec.environment("kotest.framework.runtime.native.listener", LISTENER_TC)
       if (descriptor != null)
-         exec.environment("kotest.framework.runtime.native.descriptor", descriptor)
+         exec.environment("kotest.framework.runtime.native.include", descriptor)
       if (testReportsDir != null)
          exec.environment("kotest.framework.runtime.native.test.reports.dir", testReportsDir)
 
       // this must be true so we can handle the failure ourselves by throwing GradleException
       // otherwise we get a nasty stack trace from gradle
       exec.isIgnoreExitValue = true
-   }
-
-   /**
-    * Returns args to be used for the tag expression.
-    *
-    * If --tags was passed as a command line arg, then that takes precedence over the value
-    * set in the gradle build.
-    *
-    * Returns empty list if no tag expression was specified.
-    */
-   private fun tagsArg(): List<String> {
-      tags?.let { return listOf(ARG_TAGS, it) }
-//      project.kotest()?.tags?.orNull?.let { return listOf(TagsArg, it) }
-      return emptyList()
    }
 }

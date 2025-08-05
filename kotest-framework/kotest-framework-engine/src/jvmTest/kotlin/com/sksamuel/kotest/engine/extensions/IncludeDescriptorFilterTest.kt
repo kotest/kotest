@@ -5,68 +5,68 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.extensions.DescriptorFilterResult
-import io.kotest.engine.extensions.ProvidedDescriptorFilter
+import io.kotest.engine.extensions.IncludeDescriptorFilter
 import io.kotest.matchers.shouldBe
 
-class ProvidedDescriptorFilterTest : FunSpec() {
+class IncludeDescriptorFilterTest : FunSpec() {
    init {
 
       test("filter should exclude tests in a different spec") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor()).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor()).filter(
             Spec2::class.toDescriptor().append("foo")
          ) shouldBe DescriptorFilterResult.Exclude(null)
       }
 
       test("filter should exclude tests in the same spec but with a different root name") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
             Spec1::class.toDescriptor().append("bar")
          ) shouldBe DescriptorFilterResult.Exclude(null)
       }
 
       test("filter should exclude tests with the same name but different spec") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
             Spec2::class.toDescriptor().append("foo")
          ) shouldBe DescriptorFilterResult.Exclude(null)
       }
 
       test("filter should exclude tests in the same spec with the same parent but different name") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar")).filter(
             Spec1::class.toDescriptor().append("foo").append("baz")
          ) shouldBe DescriptorFilterResult.Exclude(null)
       }
 
       test("filter should include tests in a matching spec") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor()).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor()).filter(
             Spec1::class.toDescriptor().append("foo")
          ) shouldBe DescriptorFilterResult.Include
       }
 
       test("filter should include tests matching name and spec") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
             Spec1::class.toDescriptor().append("foo")
          ) shouldBe DescriptorFilterResult.Include
       }
 
       test("filter should include nested tests of the accept list") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo")).filter(
             Spec1::class.toDescriptor().append("foo").append("bar")
          ) shouldBe DescriptorFilterResult.Include
       }
 
      test("filter should include parent tests of the accept list") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar").append("baz")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar").append("baz")).filter(
             Spec1::class.toDescriptor().append("foo")
          ) shouldBe DescriptorFilterResult.Include
       }
 
       test("filter should include specs of the accept list") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar")).filter(
             Spec1::class.toDescriptor()
          ) shouldBe DescriptorFilterResult.Include
       }
 
       test("filter should support deep descriptors") {
-         ProvidedDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar").append("baz")).filter(
+         IncludeDescriptorFilter(Spec1::class.toDescriptor().append("foo").append("bar").append("baz")).filter(
             Spec1::class.toDescriptor().append("foo").append("bar").append("baz")
          ) shouldBe DescriptorFilterResult.Include
       }

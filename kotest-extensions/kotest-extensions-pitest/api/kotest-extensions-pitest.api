@@ -1,0 +1,32 @@
+public final class io/kotest/extensions/pitest/KotestConfiguration : org/pitest/testapi/Configuration {
+	public fun <init> ()V
+	public fun testSuiteFinder ()Lorg/pitest/testapi/TestSuiteFinder;
+	public fun testUnitFinder ()Lorg/pitest/testapi/TestUnitFinder;
+	public fun verifyEnvironment ()Ljava/util/Optional;
+}
+
+public final class io/kotest/extensions/pitest/KotestPluginFactory : org/pitest/testapi/TestPluginFactory {
+	public fun <init> ()V
+	public fun createTestFrameworkConfiguration (Lorg/pitest/testapi/TestGroupConfig;Lorg/pitest/classinfo/ClassByteArraySource;Ljava/util/Collection;Ljava/util/Collection;)Lorg/pitest/testapi/Configuration;
+	public fun description ()Ljava/lang/String;
+	public fun name ()Ljava/lang/String;
+}
+
+public final class io/kotest/extensions/pitest/KotestSuiteFinder : org/pitest/testapi/TestSuiteFinder {
+	public fun <init> ()V
+	public fun apply (Ljava/lang/Class;)Ljava/util/List;
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/pitest/KotestUnit : org/pitest/testapi/TestUnit {
+	public fun <init> (Lkotlin/reflect/KClass;)V
+	public fun execute (Lorg/pitest/testapi/ResultCollector;)V
+	public fun getDescription ()Lorg/pitest/testapi/Description;
+	public final fun getKlass ()Lkotlin/reflect/KClass;
+}
+
+public final class io/kotest/extensions/pitest/KotestUnitFinder : org/pitest/testapi/TestUnitFinder {
+	public fun <init> ()V
+	public fun findTestUnits (Ljava/lang/Class;Lorg/pitest/testapi/TestUnitExecutionListener;)Ljava/util/List;
+}
+

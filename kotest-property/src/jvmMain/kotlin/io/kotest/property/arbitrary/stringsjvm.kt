@@ -14,7 +14,7 @@ import java.util.Random
  */
 fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
 
-   val rgxgen = RgxGen(pattern)
+   val rgxgen = RgxGen.parse(pattern)
 
    override fun edgecase(rs: RandomSource): Sample<String>? = null
    override fun sample(rs: RandomSource): Sample<String> = sampleStringPattern(rs)

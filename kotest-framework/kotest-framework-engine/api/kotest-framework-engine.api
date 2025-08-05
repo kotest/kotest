@@ -3034,6 +3034,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withTagExpression (Lio/kotest/engine/tags/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
+	public final fun withWasmWasi ()Lio/kotest/engine/TestEngineLauncher;
 }
 
 public abstract class io/kotest/engine/concurrency/SpecExecutionMode {
@@ -3437,14 +3438,14 @@ public abstract interface class io/kotest/engine/extensions/ExtensionRegistry {
 	public abstract fun remove (Lio/kotest/core/extensions/Extension;)V
 }
 
+public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
+	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
+	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
+}
+
 public final class io/kotest/engine/extensions/MultipleExceptions : java/lang/Exception {
 	public fun <init> (Ljava/util/List;)V
 	public final fun getCauses ()Ljava/util/List;
-}
-
-public final class io/kotest/engine/extensions/ProvidedDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
-	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
-	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
 }
 
 public final class io/kotest/engine/extensions/SystemPropertyTagExtension : io/kotest/core/extensions/TagExtension {
@@ -3468,14 +3469,14 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 }
 
 public final class io/kotest/engine/launcher/LauncherArgs {
+	public static final field ARG_INCLUDE Ljava/lang/String;
 	public static final field ARG_LISTENER Ljava/lang/String;
 	public static final field ARG_SPEC Ljava/lang/String;
 	public static final field ARG_SPECS Ljava/lang/String;
-	public static final field DESCRIPTOR Ljava/lang/String;
+	public static final field ARG_TEST_REPORTS_DIR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
-	public static final field TEST_REPORTS_DIR Ljava/lang/String;
 	public static final field WRITER Ljava/lang/String;
 }
 

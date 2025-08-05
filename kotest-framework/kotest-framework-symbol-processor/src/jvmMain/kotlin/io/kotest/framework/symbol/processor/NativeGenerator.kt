@@ -32,14 +32,15 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
       val function = FunSpec.builder("runKotest")
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ClassName("kotlinx.cinterop", "ExperimentalForeignApi"))
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addCode(
             """
-val descriptorArg = getenv("kotest.framework.runtime.native.descriptor")?.toKString()
-val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString()
+val includeArg = getenv("kotest.framework.runtime.native.include")?.toKString()
+val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
 val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
 
-val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
+val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
 val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
 
 """.trim()
@@ -72,7 +73,8 @@ val launcher = TestEngineLauncher()
          """
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
-   else -> launcher.withConsoleListener().launch()
+   "console" -> launcher.withConsoleListener().launch()
+   else -> Unit // this stops us running from the non-kotest test targets
 }
 """.trim()
       ).addCode("\n")
@@ -87,13 +89,14 @@ when (listenerType) {
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
          .addFunction(function.build())
          .addProperty(invoker.build())
-         .addImport("io.kotest.core.descriptors", "DescriptorPaths")
-         .addImport("io.kotest.engine.extensions", "ProvidedDescriptorFilter")
-         .addImport("io.kotest.engine", "TestEngineLauncher")
-         .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
-         .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
+         .addImport("io.kotest.common", "KotestInternal")
+         .addImport("io.kotest.core.descriptors", "DescriptorPaths")
+         .addImport("io.kotest.core.spec", "SpecRef")
+         .addImport("io.kotest.engine", "TestEngineLauncher")
+         .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
+         .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
       specs.forEach {
          file.addImport(it.packageName.asString(), it.simpleName.asString())
       }

@@ -4,6 +4,7 @@ import com.google.devtools.ksp.processing.Dependencies
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
@@ -33,12 +34,15 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ExperimentalJsExport::class)
          .addAnnotation(ClassName("kotlin.js", "JsExport"))
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addParameter(ParameterSpec.builder("listenerType", String::class).build())
-         .addParameter(ParameterSpec.builder("descriptorArg", String::class.asTypeName().copy(nullable = true)).build())
+         .addParameter(ParameterSpec.builder("includeArg", String::class.asTypeName().copy(nullable = true)).build())
+         .addParameter(ParameterSpec.builder("testReportsDir", String::class).build())
          .addCode(
             """
-val descriptor = descriptorArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
+val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
+val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
+val reporter = JunitXmlReportTestEngineListener(testReportsDir, null)
 """.trim()
          )
          .addCode("\n")
@@ -47,6 +51,7 @@ val filter = descriptor?.let { ProvidedDescriptorFilter(descriptor) }
 val launcher = TestEngineLauncher()
  .withJs()
  .addExtensions(listOfNotNull(filter))
+ .withListener(reporter)
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
@@ -75,10 +80,12 @@ when (listenerType) {
 
       val file = FileSpec.builder("io.kotest.framework.runtime.js", "kotest.kt")
          .addFunction(function.build())
+         .addImport("io.kotest.common", "KotestInternal")
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
-         .addImport("io.kotest.engine.extensions", "ProvidedDescriptorFilter")
-         .addImport("io.kotest.engine", "TestEngineLauncher")
          .addImport("io.kotest.core.spec", "SpecRef")
+         .addImport("io.kotest.engine", "TestEngineLauncher")
+         .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
+         .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
       specs.forEach {
          file.addImport(it.packageName.asString(), it.simpleName.asString())
       }

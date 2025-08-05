@@ -16,7 +16,7 @@ public final class io/kotest/framework/gradle/SpecsResolver {
 }
 
 public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {
-	public abstract fun getDescriptor ()Lorg/gradle/api/provider/Property;
+	public abstract fun getInclude ()Lorg/gradle/api/provider/Property;
 	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
 	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTags ()Lorg/gradle/api/provider/Property;
@@ -28,7 +28,8 @@ public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/ko
 	public static final field TYPE_CLASSES_DIR Ljava/lang/String;
 	public static final field TYPE_CLASSES_JAR Ljava/lang/String;
 	protected final fun execute ()V
-	public abstract fun getCompilationName ()Lorg/gradle/api/provider/Property;
+	public abstract fun getRuntimeClasspath ()Lorg/gradle/api/provider/Property;
+	public abstract fun getSpecsClasspath ()Lorg/gradle/api/provider/Property;
 }
 
 public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion {
@@ -38,7 +39,7 @@ public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion 
 public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestJsTask$Companion;
 	protected final fun execute ()V
-	public abstract fun getModuleFile ()Lorg/gradle/api/provider/Property;
+	public abstract fun getCompileSyncPath ()Lorg/gradle/api/provider/Property;
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
 }
 
@@ -58,7 +59,9 @@ public abstract class io/kotest/framework/gradle/tasks/KotestNativeTask : io/kot
 public abstract class io/kotest/framework/gradle/tasks/KotestWasmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestWasmTask$Companion;
 	protected final fun execute ()V
+	public abstract fun getCompileSyncPath ()Lorg/gradle/api/provider/Property;
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
+	public abstract fun getWasi ()Lorg/gradle/api/provider/Property;
 }
 
 public final class io/kotest/framework/gradle/tasks/KotestWasmTask$Companion {

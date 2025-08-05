@@ -5,7 +5,7 @@ plugins {
 
 kotlin {
    sourceSets {
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlin.reflect)
@@ -14,7 +14,7 @@ kotlin {
             implementation(libs.byte.buddy)
          }
       }
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(libs.spring.boot.test)
          }

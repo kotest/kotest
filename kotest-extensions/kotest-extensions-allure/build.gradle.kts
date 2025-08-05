@@ -22,7 +22,6 @@ kotlin {
 }
 
 allure {
-   version.set(libs.versions.allure)
    adapter.autoconfigure.set(false)
    adapter.autoconfigureListeners.set(false)
    adapter {

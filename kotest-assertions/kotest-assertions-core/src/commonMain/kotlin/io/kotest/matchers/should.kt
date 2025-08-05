@@ -68,6 +68,20 @@ infix fun <T> T.should(matcher: Matcher<T>) {
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
 infix fun <T> T.shouldNot(matcher: Matcher<T>) = should(matcher.invert())
 
+/**
+ * This is a semantic alternative to kotlin's native [also], note that this does not
+ * do any kind of assertion or verification on its own. It is expected to do assertions
+ * within the supplied lambda.
+ *
+ * Example:
+ * ```kotlin
+ * val result = person.should {
+ *   it.name shouldBe "John"
+ *   it.age shouldBe 30
+ * }
+ * ```
+ * @return Unit
+ */
 inline infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 fun <T> be(expected: T): Matcher<T> = EqMatcher(expected)
