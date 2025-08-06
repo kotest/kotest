@@ -2999,6 +2999,11 @@ public final class io/kotest/engine/ResultsKt {
 	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
+public final class io/kotest/engine/RunBlocking_jvmKt {
+	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
@@ -3017,7 +3022,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineLauncher;Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;ILjava/lang/Object;)Lio/kotest/engine/TestEngineLauncher;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
-	public final fun launch ()Lio/kotest/engine/EngineResult;
+	public final fun launch ()V
 	public final fun promise ()V
 	public fun toString ()Ljava/lang/String;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;

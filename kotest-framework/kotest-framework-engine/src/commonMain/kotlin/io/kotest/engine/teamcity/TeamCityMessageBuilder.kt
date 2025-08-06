@@ -144,14 +144,15 @@ class TeamCityMessageBuilder(
       val line1 = error.message?.trim()?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
       message(escapeColons(message))
+
       if (showDetails) {
          // stackTraceToString fails if the error is created by a mocking framework, so we should catch
-         val stacktrace = try {
+         val stacktrace: String = try {
             error.stackTraceToString()
          } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
-         details(escapeColons(stacktrace))
+         details(escapeColons(stacktrace.take(1000))) // seems to be some limit to the details field
       }
 
       when (error) {

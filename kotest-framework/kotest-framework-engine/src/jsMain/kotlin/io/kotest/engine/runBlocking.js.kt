@@ -1,4 +1,4 @@
-package io.kotest.common
+package io.kotest.engine
 
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope

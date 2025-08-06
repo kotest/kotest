@@ -3,8 +3,6 @@
 package io.kotest.engine
 
 import io.kotest.common.Platform
-import io.kotest.common.runBlocking
-import io.kotest.common.runPromise
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
@@ -198,11 +196,13 @@ data class TestEngineLauncher(
     * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
     * This method will throw on JS.
     */
-   fun launch(): EngineResult {
+   fun launch() {
       logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs))
+         val result = engine.execute(TestSuite(refs))
+         if (result.errors.isNotEmpty())
+            error("Test suite failed with errors")
       }
    }
 
