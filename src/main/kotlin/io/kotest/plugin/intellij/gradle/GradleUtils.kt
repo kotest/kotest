@@ -24,7 +24,9 @@ object GradleUtils {
    fun listTasks(module: Module): List<GradleTaskData> {
       val modulePath = resolveModulePath(module) ?: return emptyList()
       val moduleData = moduleData(module) ?: return emptyList()
+      // this will return tasks like :kotest and :mymodule:kotest, so we need to filter them
       val tasks = GradleTasksIndices.getInstance(module.project).findTasks(modulePath)
+      // filter down the tasks to the module only
       return tasks.filter { it.getFqnTaskName().startsWith(moduleData.moduleData.id + ":") }
    }
 
