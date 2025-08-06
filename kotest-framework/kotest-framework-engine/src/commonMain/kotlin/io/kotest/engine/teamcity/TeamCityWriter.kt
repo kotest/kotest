@@ -70,6 +70,9 @@ internal class TeamCityWriter(
       println(TeamCityMessageBuilder.testStarted(prefix, testName).build())
    }
 
+   /**
+    * For a given [TestCase] will output the "test failed" message with the given error message.
+    */
    internal fun outputTestFailed(testName: String, message: String) {
       println(TeamCityMessageBuilder.testFailed(prefix, testName).message(message).build())
    }
@@ -79,7 +82,8 @@ internal class TeamCityWriter(
    }
 
    /**
-    * For a given [TestCase] will output the "test failed" message.
+    * For a given [TestCase] will output the "test failed" message,
+    * with the error message taken from the [TestResult].
     */
    internal fun outputTestFailed(testCase: TestCase, result: TestResult, details: Boolean) {
       val msg = TeamCityMessageBuilder
