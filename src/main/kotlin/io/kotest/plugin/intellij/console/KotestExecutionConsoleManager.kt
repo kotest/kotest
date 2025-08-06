@@ -75,7 +75,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
             callback?.addNoTestsPlaceholder()
 
-            if (event.exitCode == 1) {
+            if (event.exitCode != 0) {
                consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code 1", null, true)
             } else {
                consoleView.resultsViewer.testsRootNode.setFinished()
@@ -103,6 +103,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
    override fun isApplicableFor(task: ExternalSystemTask): Boolean {
       if (task is ExternalSystemExecuteTaskTask) {
          if (task.externalSystemId.id == GradleConstants.SYSTEM_ID.id) {
+            println("Checking is applicable, tasks to execute: ${task.tasksToExecute}")
             return task.tasksToExecute.any {
                it.lowercase().endsWith("kotest")
             }

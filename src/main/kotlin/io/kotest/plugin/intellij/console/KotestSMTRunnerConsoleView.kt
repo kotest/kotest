@@ -20,7 +20,7 @@ class KotestSMTRunnerConsoleView(
    override fun isExecutionViewHidden() = false
 
    override fun print(s: String, contentType: ConsoleViewContentType) {
-      if (detectUnwantedEmptyLine(s)) return;
+      if (detectUnwantedEmptyLine(s)) return
       super.print(s, contentType)
    }
 
