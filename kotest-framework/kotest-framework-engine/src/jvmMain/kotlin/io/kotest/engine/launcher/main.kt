@@ -1,6 +1,6 @@
 package io.kotest.engine.launcher
 
-import io.kotest.common.runBlocking
+import io.kotest.engine.runBlocking
 import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher

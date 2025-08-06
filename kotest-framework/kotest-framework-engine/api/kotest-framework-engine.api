@@ -2999,6 +2999,11 @@ public final class io/kotest/engine/ResultsKt {
 	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
+public final class io/kotest/engine/RunBlocking_jvmKt {
+	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
+}
+
 public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
@@ -3265,6 +3270,8 @@ public abstract interface class io/kotest/engine/console/ConsoleRenderer {
 
 public final class io/kotest/engine/console/ConsoleRenderer_jvmKt {
 	public static final fun getConsoleRenderer ()Lio/kotest/engine/console/ConsoleRenderer;
+	public static final fun main ()V
+	public static synthetic fun main ([Ljava/lang/String;)V
 }
 
 public final class io/kotest/engine/console/MordantConsoleRenderer : io/kotest/engine/console/ConsoleRenderer {
