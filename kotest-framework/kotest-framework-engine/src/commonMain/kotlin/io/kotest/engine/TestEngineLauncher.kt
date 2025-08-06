@@ -200,10 +200,7 @@ data class TestEngineLauncher(
       logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
-         val result = engine.execute(TestSuite(refs))
-         if (result.errors.isNotEmpty())
-            error("Test suite failed with errors")
-         result
+         engine.execute(TestSuite(refs))
       }
    }
 

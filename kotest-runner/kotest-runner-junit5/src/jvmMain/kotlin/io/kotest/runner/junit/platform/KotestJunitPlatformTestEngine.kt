@@ -65,11 +65,14 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      TestEngineLauncher()
+      val result = TestEngineLauncher()
          .withListener(listener)
          .addExtensions(root.extensions)
          .withClasses(root.classes)
          .launch()
+
+      if (result.errors.isNotEmpty())
+         error("Test suite failed with errors")
    }
 
    /**

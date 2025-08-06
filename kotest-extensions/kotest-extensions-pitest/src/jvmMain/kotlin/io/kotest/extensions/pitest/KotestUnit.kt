@@ -40,9 +40,12 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
          }
       }
 
-      TestEngineLauncher()
+      val result = TestEngineLauncher()
          .withListener(listener)
          .withClasses(klass)
          .launch()
+
+      if (result.errors.isNotEmpty())
+         error("Test suite failed with errors")
    }
 }

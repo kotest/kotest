@@ -1,15 +1,14 @@
 package io.kotest.engine.launcher
 
-import io.kotest.engine.runBlocking
 import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.IncludeDescriptorFilter
+import io.kotest.engine.launcher.LauncherArgs.ARG_INCLUDE
 import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
 import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
 import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
-import io.kotest.engine.launcher.LauncherArgs.ARG_INCLUDE
 import io.kotest.engine.launcher.LauncherArgs.REPORTER
 import io.kotest.engine.launcher.LauncherArgs.TESTPATH
 import io.kotest.engine.launcher.LauncherArgs.WRITER
@@ -94,16 +93,17 @@ fun main(args: Array<String>) {
 
    val xmlListener = buildJunitXmlTestEngineListener(launcherArgs)
 
-   runBlocking {
-      TestEngineLauncher()
-         .withListener(collector)
-         .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
-         .withListener(consoleListener)
-         .withListener(xmlListener)
-         .withClasses(classes)
-         .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
-         .async()
-   }
+   val result = TestEngineLauncher()
+      .withListener(collector)
+      .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
+      .withListener(consoleListener)
+      .withListener(xmlListener)
+      .withClasses(classes)
+      .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
+      .launch()
+
+   if (result.errors.isNotEmpty())
+      println("Test suite had errors")
 
    // there could be threads in the background that will stop the launcher shutting down
    // for example if a test keeps a thread running,
