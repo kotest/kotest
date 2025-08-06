@@ -2,6 +2,7 @@ package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
+import org.gradle.api.GradleException
 import org.gradle.api.attributes.Attribute
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Property
@@ -54,8 +55,7 @@ abstract class KotestAndroidTask @Inject internal constructor(
       }
 
       if (result.exitValue != 0) {
-         println(">> There were test failures")
-         result.rethrowFailure()
+         throw GradleException("Test suite failed with errors")
       }
    }
 }

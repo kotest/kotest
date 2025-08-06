@@ -1,6 +1,7 @@
 package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.NativeExecConfiguration
+import org.gradle.api.GradleException
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
@@ -29,8 +30,7 @@ abstract class KotestNativeTask @Inject internal constructor(
       }
 
       if (result.exitValue != 0) {
-         println("There were test failures, exit code: ${result.exitValue}")
-         result.rethrowFailure()
+         throw GradleException("Test suite failed with errors")
       }
    }
 }

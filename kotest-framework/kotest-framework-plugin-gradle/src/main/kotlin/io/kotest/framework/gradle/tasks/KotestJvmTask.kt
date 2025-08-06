@@ -2,6 +2,7 @@ package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
+import org.gradle.api.GradleException
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.CacheableTask
@@ -25,6 +26,7 @@ abstract class KotestJvmTask @Inject internal constructor(
    protected fun execute() {
       val specs = SpecsResolver.specs(specs, packages, sourceSetClasspath.get())
       testReportsDir.get().asFile.mkdirs()
+
       val result = executors.javaexec {
          TestLauncherJavaExecConfiguration()
             .withClasspath(sourceSetClasspath.get())
@@ -36,8 +38,7 @@ abstract class KotestJvmTask @Inject internal constructor(
       }
 
       if (result.exitValue != 0) {
-         println("Test execution failed with exit code ${result.exitValue}")
-         result.rethrowFailure()
+         throw GradleException("Test suite failed with errors")
       }
    }
 
