@@ -66,12 +66,11 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      // we must have kotest as a task configured in Gradle for this run producer to be applicable
+      // checks we have the kotest gradle plugin for this run producer to be applicable
       if (!GradleUtils.hasGradlePlugin(context.module)) return false
 
       val project = context.project ?: return false
       val module = context.module ?: return false
-//      val gradleModuleData = CachedModuleDataFinder.getGradleModuleData(module) ?: return false
 
       // we must have the element we clicked on as we are running from the gutter
       val element = sourceElement.get()
@@ -84,7 +83,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       val test = SpecStyle.findTest(element)
 
       // this is the path to the project on the file system
-      val externalProjectPath = GradleUtils.resolveProjectPath(module) ?: return false
+      val modulePath = GradleUtils.resolveModulePath(module) ?: return false
 
       // this is the psi element associated with the run, needed by the java run extension manager
       val location = context.location ?: return false
@@ -100,7 +99,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       runManager.setUniqueNameIfNeeded(configuration)
 
       // note: configuration.settings.externalSystemId is set for us
-      configuration.settings.externalProjectPath = externalProjectPath
+      configuration.settings.externalProjectPath = modulePath
       configuration.settings.scriptParameters = ""
       configuration.settings.taskNames = taskNames(module, spec, test)
 
@@ -115,6 +114,9 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
          .build()
    }
 
+   /**
+    * Returns the list of gradle task names to run for the given [module], [spec] and [test].
+    */
    private fun taskNames(module: Module, spec: KtClassOrObject, test: Test?): List<String> {
       return GradleTaskNamesBuilder.builder(module)
          .withSpec(spec)
@@ -132,7 +134,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       context: ConfigurationContext
    ): Boolean {
 
-      // we must have at least one kotest task in the list of gradle tasks for this configuration to be applicable
+      // we must have the kotest gradle plugin for this configuration to be applicable
       if (!GradleUtils.hasGradlePlugin(context.module)) return false
 
       // if kotest is not a task this configuration is running, then this isn't a configuration we can re-use
@@ -145,7 +147,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
          val test = SpecStyle.findTest(element)
          if (test != null) {
             // if we specified a test descriptor before, it needs to match for this configuration to be the same
-            val descriptorArg = GradleUtils.getDescriptorArg(configuration.settings.taskNames) ?: return false
+            val descriptorArg = GradleUtils.getIncludeArg(configuration.settings.taskNames) ?: return false
             if (test.descriptor() == descriptorArg) return true
          }
       }

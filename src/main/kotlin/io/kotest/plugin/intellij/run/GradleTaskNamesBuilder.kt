@@ -38,10 +38,6 @@ data class GradleTaskNamesBuilder(
 
    @Suppress("UnstableApiUsage")
    private fun taskArgs(): List<String> {
-      // if we have a multiplatform project, we might have jsKotest, jvmKotest, or nativeKotest tasks all registered
-      // android projects will have something like kotestDebugUnitTest or kotestReleaseUnitTest
-      // we'll invoke them all for now, but we should be better about picking one based on the source set?
-      // todo use sourceset or some other way of narrowing down the appropriate task
       val tasks = GradleUtils.kotestTasks(module)
       // we should definitely have at least one kotest task in the project, otherwise
       // the GradleKotestTaskRunConfigurationProducer should have skipped this
