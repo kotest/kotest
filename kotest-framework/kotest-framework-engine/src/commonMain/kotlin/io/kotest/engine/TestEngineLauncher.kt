@@ -196,13 +196,14 @@ data class TestEngineLauncher(
     * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
     * This method will throw on JS.
     */
-   fun launch() {
+   fun launch(): EngineResult {
       logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
          val result = engine.execute(TestSuite(refs))
          if (result.errors.isNotEmpty())
             error("Test suite failed with errors")
+         result
       }
    }
 
