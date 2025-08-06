@@ -74,9 +74,17 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
    ),
+   PluginDescriptor(
+      since = "252.*", // this version is 2025.1.x
+      until = "254.*",
+      sdkVersion = "2025.2",
+      sourceFolder = "IC-252",
+      useInstaller = true,
+      jdkTarget = JavaVersion.VERSION_21,
+   ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
