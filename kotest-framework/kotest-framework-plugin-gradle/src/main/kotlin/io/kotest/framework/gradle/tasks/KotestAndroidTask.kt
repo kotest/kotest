@@ -39,17 +39,15 @@ abstract class KotestAndroidTask @Inject internal constructor(
    protected fun execute() {
 
       val specs = SpecsResolver.specs(specs, packages, specsClasspath.get())
-      if (specs.isEmpty()) {
-         println(">> No specs found")
-         return
-      }
+      if (specs.isEmpty())
+         return // if there are no specs, we do not run the task
 
       val result = executors.javaexec {
          TestLauncherJavaExecConfiguration()
             .withClasspath(runtimeClasspath.get())
             .withSpecs(specs)
             .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
-            .withRootTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
+            .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
             .withDescriptor(include.orNull)
             .withCommandLineTags(tags.orNull)
             .configure(this)

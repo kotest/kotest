@@ -25,7 +25,8 @@ abstract class KotestNativeTask @Inject internal constructor(
          NativeExecConfiguration(exe.get())
             .withDescriptor(include.orNull)
             .withCommandLineTags(tags.orNull)
-            .withRootTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
+            .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
+            .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
             .configure(this)
       }
 
