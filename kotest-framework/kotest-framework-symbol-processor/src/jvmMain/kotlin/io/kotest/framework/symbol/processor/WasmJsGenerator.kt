@@ -51,8 +51,8 @@ val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
 val launcher = TestEngineLauncher()
  .withWasmJs()
  .addExtensions(listOfNotNull(filter))
- .withListener(JunitXmlReportTestEngineListener(moduleTestReportsDir, null))
- .withListener(JunitXmlReportTestEngineListener(rootTestReportsDir, null))
+ .withListener(JunitXmlReportTestEngineListener(moduleTestReportsDir, null, 'WasmJS'))
+ .withListener(JunitXmlReportTestEngineListener(rootTestReportsDir, null, 'WasmJS'))
  .withSpecRefs(
     """.trim()
          ).addCode("\n")

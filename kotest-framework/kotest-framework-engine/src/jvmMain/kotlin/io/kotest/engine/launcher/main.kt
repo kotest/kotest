@@ -126,7 +126,7 @@ private fun buildJunitXmlTestEngineListener(argName: String, launcherArgs: Map<S
       } catch (_: UnknownHostException) {
          InetAddress.getLoopbackAddress().hostAddress
       }
-      JunitXmlReportTestEngineListener(xmldir, hostname)
+      JunitXmlReportTestEngineListener(xmldir, hostname, null)
    }
 }
 

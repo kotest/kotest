@@ -3735,12 +3735,12 @@ public final class io/kotest/engine/reports/FailureElement$Companion {
 }
 
 public final class io/kotest/engine/reports/JUnitXmlReportGenerator {
-	public fun <init> (Lkotlin/time/Clock;ZLjava/lang/String;)V
+	public fun <init> (Lkotlin/time/Clock;ZLjava/lang/String;Ljava/lang/String;)V
 	public final fun xml (Lkotlin/reflect/KClass;Ljava/util/Map;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/reports/JunitXmlReportTestEngineListener : io/kotest/engine/listener/TestEngineListener {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

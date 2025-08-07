@@ -8,18 +8,20 @@ import nl.adaptivity.xmlutil.serialization.XML
 import kotlin.reflect.KClass
 import kotlin.time.Clock
 
+/**
+ * @target the Kotlin KMP target this report is generated for. If set will be prefixed to each test name.
+ */
 class JUnitXmlReportGenerator(
    private val clock: Clock,
    private val includeStackTraces: Boolean,
    private val hostname: String?,
+   private val target: String?,
 ) {
 
    private val xml = XML {
       indentString = "  "
       xmlVersion = XmlVersion.XML10
    }
-
-   private val target: String = "todo"
 
    fun xml(spec: KClass<*>, tests: Map<TestCase, TestResult>): String {
       val testsuite = generate(spec, tests)
@@ -34,12 +36,13 @@ class JUnitXmlReportGenerator(
          errors = tests.filter { it.value.isError }.count(),
          skipped = tests.filter { it.value.isIgnored }.count(),
          timestamp = clock.now().toString().substringBeforeLast("."), // time without nanos
-         hostname = hostname ?:"",
+         hostname = hostname ?: "",
          time = tests.map { it.value.duration.inWholeMilliseconds / 1_000.0 }.sum(),
          cases = tests.map { (test, result) ->
+            val name = if (target == null) test.descriptor.path().value else "[${target}] ${test.descriptor.path().value}"
             TestCaseElement(
-               classname = spec::class.bestName(),
-               name = "[${target}] ${test.descriptor.path().value}",
+               classname = spec.bestName(),
+               name = name,
                time = result.duration.inWholeMilliseconds / 1_000.0,
                error = errorElementOrNull(result),
                failure = failureElementOrNull(result),
