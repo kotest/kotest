@@ -20,16 +20,21 @@ abstract class KotestJvmTask @Inject internal constructor(
    // this is the sourceset that contains the tests
    // this will be usally "test" for JVM projects and "jvmTest" for multiplatform projects
    @get:Input
-   abstract val sourceSetClasspath: Property<FileCollection>
+   abstract val testSourceSetClasspath: Property<FileCollection>
 
    @TaskAction
    protected fun execute() {
-      val specs = SpecsResolver.specs(specs, packages, sourceSetClasspath.get())
+
+      val specs = SpecsResolver.specs(specs, packages, testSourceSetClasspath.get())
       moduleTestReportsDir.get().asFile.mkdirs()
+      rootTestReportsDir.get().asFile.mkdirs()
+
+      if (specs.isEmpty())
+         return // if there are no specs, we do not run the task
 
       val result = executors.javaexec {
          TestLauncherJavaExecConfiguration()
-            .withClasspath(sourceSetClasspath.get())
+            .withClasspath(testSourceSetClasspath.get())
             .withSpecs(specs)
             .withDescriptor(include.orNull)
             .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)

@@ -107,9 +107,9 @@ abstract class KotestPlugin : Plugin<Project> {
 
             val java = project.extensions.getByType(JavaPluginExtension::class.java)
             val sourceSet = java.sourceSets.findByName("test")
-               ?: throw StopExecutionException("Could not find source set '${sourceSetClasspath.get()}'")
+               ?: throw StopExecutionException("Could not find source set '${testSourceSetClasspath.get()}'")
 
-            sourceSetClasspath.set(sourceSet.runtimeClasspath)
+            testSourceSetClasspath.set(sourceSet.runtimeClasspath)
             moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
             rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
@@ -155,9 +155,9 @@ abstract class KotestPlugin : Plugin<Project> {
 
          val java = project.extensions.getByType(JavaPluginExtension::class.java)
          val sourceSet = java.sourceSets.findByName("jvmTest")
-            ?: throw StopExecutionException("Could not find source set '${sourceSetClasspath.get()}'")
+            ?: throw StopExecutionException("Could not find source set '${testSourceSetClasspath.get()}'")
 
-         sourceSetClasspath.set(sourceSet.runtimeClasspath)
+         testSourceSetClasspath.set(sourceSet.runtimeClasspath)
          moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
          rootTestReportsDir.set(getRootTestReportsDir(project, name))
 

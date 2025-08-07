@@ -53,7 +53,6 @@ internal data class TestLauncherJavaExecConfiguration(
    }
 
    fun withSpecs(specs: List<String>): TestLauncherJavaExecConfiguration {
-      require(specs.isNotEmpty()) { "Specs must be provided by the gradle plugin" }
       return copy(specs = specs)
    }
 
