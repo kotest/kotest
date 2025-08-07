@@ -3476,9 +3476,10 @@ public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/
 public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field ARG_INCLUDE Ljava/lang/String;
 	public static final field ARG_LISTENER Ljava/lang/String;
+	public static final field ARG_MODULE_TEST_REPORTS_DIR Ljava/lang/String;
+	public static final field ARG_ROOT_TEST_REPORTS_DIR Ljava/lang/String;
 	public static final field ARG_SPEC Ljava/lang/String;
 	public static final field ARG_SPECS Ljava/lang/String;
-	public static final field ARG_TEST_REPORTS_DIR Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;

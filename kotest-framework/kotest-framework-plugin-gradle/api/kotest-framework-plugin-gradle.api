@@ -17,10 +17,11 @@ public final class io/kotest/framework/gradle/SpecsResolver {
 
 public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {
 	public abstract fun getInclude ()Lorg/gradle/api/provider/Property;
+	public abstract fun getModuleTestReportsDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
+	public abstract fun getRootTestReportsDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTags ()Lorg/gradle/api/provider/Property;
-	public abstract fun getTestReportsDir ()Lorg/gradle/api/file/DirectoryProperty;
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {

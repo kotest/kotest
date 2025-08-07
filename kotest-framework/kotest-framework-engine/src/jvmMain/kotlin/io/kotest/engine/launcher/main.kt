@@ -35,7 +35,8 @@ object LauncherArgs {
    const val ARG_INCLUDE = "include"
 
    // sets the location of the test-reports directory in the build directory
-   const val ARG_TEST_REPORTS_DIR = "test-reports-dir"
+   const val ARG_ROOT_TEST_REPORTS_DIR = "root-test-reports-dir"
+   const val ARG_MODULE_TEST_REPORTS_DIR = "module-test-reports-dir"
 
    // these are deprecated kotest 5 flags kept for backwards compatibility
    @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
@@ -65,6 +66,7 @@ object LauncherArgs {
 fun main(args: Array<String>) {
 
    val launcherArgs = parseArgs(args.toList())
+   println("Launcher args: $launcherArgs")
 
    // The engine *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
@@ -78,7 +80,7 @@ fun main(args: Array<String>) {
    val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
 
    // we support --include to support an exact descriptor path as a way to run a single test
-   val descriptorFilter = buildDescriptorFilter(launcherArgs)
+   val descriptorFilter = buildIncludeFilter(launcherArgs)
 
    // Kotest 5 supported --testpath and didn't support the descriptor selector, only the test name
    // but we can combine that with the --spec arg which we know must be present in kotest 5 if testpath is
@@ -91,13 +93,12 @@ fun main(args: Array<String>) {
    // this is used so we can see if any test failed and so exit with a non-zero code
    val collector = CollectingTestEngineListener()
 
-   val xmlListener = buildJunitXmlTestEngineListener(launcherArgs)
-
    val result = TestEngineLauncher()
       .withListener(collector)
       .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
       .withListener(consoleListener)
-      .withListener(xmlListener)
+      .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_ROOT_TEST_REPORTS_DIR, launcherArgs))
+      .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_MODULE_TEST_REPORTS_DIR, launcherArgs))
       .withClasses(classes)
       .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
       .launch()
@@ -118,8 +119,8 @@ private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): Te
       .build()
 }
 
-private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener? {
-   return launcherArgs[LauncherArgs.ARG_TEST_REPORTS_DIR]?.let { xmldir ->
+private fun buildJunitXmlTestEngineListener(argName: String, launcherArgs: Map<String, String>): TestEngineListener? {
+   return launcherArgs[argName]?.let { xmldir ->
       val hostname = try {
          InetAddress.getLocalHost().hostName
       } catch (_: UnknownHostException) {
@@ -129,7 +130,7 @@ private fun buildJunitXmlTestEngineListener(launcherArgs: Map<String, String>): 
    }
 }
 
-private fun buildDescriptorFilter(launcherArgs: Map<String, String>): IncludeDescriptorFilter? {
+private fun buildIncludeFilter(launcherArgs: Map<String, String>): IncludeDescriptorFilter? {
    return launcherArgs[ARG_INCLUDE]?.let { include ->
       IncludeDescriptorFilter(DescriptorPaths.parse(include))
    }

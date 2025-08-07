@@ -49,11 +49,12 @@ abstract class KotestWasmTask @Inject internal constructor(
             IntellijUtils.isIntellij() -> LISTENER_TC
             else -> LISTENER_CONSOLE
          }
-         val testReportsDirArg = testReportsDir.get().asFile.absolutePath
+         val moduleTestReportsDirArg = moduleTestReportsDir.get().asFile.absolutePath
+         val rootTestReportsDirArg = rootTestReportsDir.get().asFile.absolutePath
 
          val fn = when (wasi.get()) {
             true -> """exports["$KOTEST_RUN_FN_NAME"]($listenerArg)"""
-            false -> """exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $includeArg, '$testReportsDirArg')"""
+            false -> """exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $includeArg, '$moduleTestReportsDirArg', '$rootTestReportsDirArg')"""
          }
 
          // must be .mjs to support modules

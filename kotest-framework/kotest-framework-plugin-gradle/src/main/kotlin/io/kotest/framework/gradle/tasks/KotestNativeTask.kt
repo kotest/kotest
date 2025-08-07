@@ -20,12 +20,12 @@ abstract class KotestNativeTask @Inject internal constructor(
 
    @TaskAction
    protected fun execute() {
-      testReportsDir.get().asFile.mkdirs()
+      moduleTestReportsDir.get().asFile.mkdirs()
       val result = executors.exec {
          NativeExecConfiguration(exe.get())
             .withDescriptor(include.orNull)
             .withCommandLineTags(tags.orNull)
-            .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
+            .withRootTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
             .configure(this)
       }
 

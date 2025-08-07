@@ -25,14 +25,15 @@ abstract class KotestJvmTask @Inject internal constructor(
    @TaskAction
    protected fun execute() {
       val specs = SpecsResolver.specs(specs, packages, sourceSetClasspath.get())
-      testReportsDir.get().asFile.mkdirs()
+      moduleTestReportsDir.get().asFile.mkdirs()
 
       val result = executors.javaexec {
          TestLauncherJavaExecConfiguration()
             .withClasspath(sourceSetClasspath.get())
             .withSpecs(specs)
             .withDescriptor(include.orNull)
-            .withTestReportsDir(testReportsDir.get().asFile.absolutePath)
+            .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
+            .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
             .withCommandLineTags(tags.orNull)
             .configure(this)
       }

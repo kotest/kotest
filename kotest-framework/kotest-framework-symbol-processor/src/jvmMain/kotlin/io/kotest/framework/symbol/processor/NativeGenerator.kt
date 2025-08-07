@@ -37,11 +37,13 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
             """
 val includeArg = getenv("kotest.framework.runtime.native.include")?.toKString()
 val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
-val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
+val moduleTestReportsDir = getenv("kotest.framework.runtime.native.module.test.reports.dir")?.toKString()
+val rootTestReportsDir = getenv("kotest.framework.runtime.native.root.test.reports.dir")?.toKString()
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
-val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
+val moduleXmlReporter = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
+val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
 
 """.trim()
          )
@@ -51,7 +53,8 @@ val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) 
 val launcher = TestEngineLauncher()
  .withNative()
  .addExtensions(listOfNotNull(filter))
- .withListener(reporter)
+ .withListener(moduleXmlReporter)
+ .withListener(rootXmlReporter)
  .withSpecRefs(
     """.trim()
          ).addCode("\n")

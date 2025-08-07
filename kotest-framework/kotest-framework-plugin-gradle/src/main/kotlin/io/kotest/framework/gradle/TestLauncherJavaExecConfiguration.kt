@@ -12,7 +12,8 @@ internal data class TestLauncherJavaExecConfiguration(
    private val classpath: FileCollection? = null,
    private val tags: String? = null,
    private val descriptor: String? = null,
-   private val testReportsDir: String? = null,
+   private val moduleTestReportsDir: String? = null,
+   private val rootTestReportsDir: String? = null,
    private val specs: List<String> = emptyList(),
 ) {
 
@@ -30,7 +31,8 @@ internal data class TestLauncherJavaExecConfiguration(
       private const val ARG_INCLUDE = "--include"
 
       // used to filter to a single spec or test within a spec
-      private const val ARG_TEST_REPORTS_DIR = "--test-reports-dir"
+      private const val ARG_MODULE_TEST_REPORTS_DIR = "--module-test-reports-dir"
+      private const val ARG_ROOT_TEST_REPORTS_DIR = "--root-test-reports-dir"
 
       // the value used to specify the team city format
       private const val LISTENER_TC = "teamcity"
@@ -59,8 +61,12 @@ internal data class TestLauncherJavaExecConfiguration(
       return copy(descriptor = descriptor)
    }
 
-   fun withTestReportsDir(testReportsDir: String): TestLauncherJavaExecConfiguration {
-      return copy(testReportsDir = testReportsDir)
+   fun withModuleTestReportsDir(dir: String): TestLauncherJavaExecConfiguration {
+      return copy(moduleTestReportsDir = dir)
+   }
+
+   fun withRootTestReportsDir(dir: String): TestLauncherJavaExecConfiguration {
+      return copy(rootTestReportsDir = dir)
    }
 
    fun configure(exec: JavaExecSpec) {
@@ -107,8 +113,11 @@ internal data class TestLauncherJavaExecConfiguration(
     * This is used for example when running a single test from the kotest intellij plugin.
     */
    private fun testReportsDirArg(): List<String> {
-      if (testReportsDir == null) return emptyList()
-      return listOf(ARG_TEST_REPORTS_DIR, testReportsDir)
+      return (if (moduleTestReportsDir != null) listOf(
+         ARG_MODULE_TEST_REPORTS_DIR,
+         moduleTestReportsDir
+      ) else emptyList()) +
+         (if (rootTestReportsDir != null) listOf(ARG_ROOT_TEST_REPORTS_DIR, rootTestReportsDir) else emptyList())
    }
 
    /**

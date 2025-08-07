@@ -61,6 +61,20 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // configure Kotlin Android projects when it is not a multiplatform project
       handleAndroid(project)
+
+      if (project == project.rootProject)
+         testReportAggregation(project)
+   }
+
+   private fun testReportAggregation(project: Project) {
+      // this is the root project, so we can aggregate the test reports
+      // we do this by creating a task that depends on all the kotest tasks in the subprojects
+      project.tasks.register("aggregateKotestReports") {
+         group = JavaBasePlugin.VERIFICATION_GROUP
+         description = "Aggregates all Kotest test reports from subprojects"
+
+         // should run after test executions
+      }
    }
 
    /**
@@ -96,7 +110,8 @@ abstract class KotestPlugin : Plugin<Project> {
                ?: throw StopExecutionException("Could not find source set '${sourceSetClasspath.get()}'")
 
             sourceSetClasspath.set(sourceSet.runtimeClasspath)
-            testReportsDir.set(getTestReportsDir(project, name))
+            moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+            rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
             inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
          }
@@ -143,7 +158,8 @@ abstract class KotestPlugin : Plugin<Project> {
             ?: throw StopExecutionException("Could not find source set '${sourceSetClasspath.get()}'")
 
          sourceSetClasspath.set(sourceSet.runtimeClasspath)
-         testReportsDir.set(getTestReportsDir(project, name))
+         moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+         rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
          inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
       }
@@ -156,7 +172,8 @@ abstract class KotestPlugin : Plugin<Project> {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val task = target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
-         testReportsDir.set(getTestReportsDir(project, name))
+         moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+         rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
          val kexe = project.layout.buildDirectory.get().asFile.resolve(nativeBinaryPath(target)).absolutePath
          exe.set(kexe)
@@ -190,7 +207,10 @@ abstract class KotestPlugin : Plugin<Project> {
                         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                         // see https://docs.gradle.org/current/userguide/isolated_projects.html
                         val task = target.project.tasks.register("wasmJsNodeKotest", KotestWasmTask::class) {
-                           testReportsDir.set(getTestReportsDir(project, name))
+
+                           moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+                           rootTestReportsDir.set(getRootTestReportsDir(project, name))
+
                            nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
                            compileSyncPath.set(wasmCompileSyncPath(compilation))
                            wasi.set(false)
@@ -266,7 +286,7 @@ abstract class KotestPlugin : Plugin<Project> {
                   // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                   // see https://docs.gradle.org/current/userguide/isolated_projects.html
                   val task = target.project.tasks.register("jsNodeKotest", KotestJsTask::class) {
-                     testReportsDir.set(getTestReportsDir(project, name))
+                     moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
                      nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
                      compileSyncPath.set(jsCompileSyncPath(compilation))
 
@@ -331,9 +351,11 @@ abstract class KotestPlugin : Plugin<Project> {
                specsClasspath.set(compilation.output.allOutputs)
                // to run specs we need to include dependencies and the compiled output
                runtimeClasspath.set(runtimeWithTests)
+
                // we set the test reports dir to the standard android test reports dir
                // this will result in something like build/test-results/kotestDebugUnitTest
-               testReportsDir.set(getTestReportsDir(project, name))
+               moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+               rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
                // we depend on the standard android test task to ensure compilation has happened
                dependsOn(androidTestTaskName(compilation))
@@ -388,9 +410,11 @@ abstract class KotestPlugin : Plugin<Project> {
                   specsClasspath.set(compilation.output.allOutputs)
                   // to run specs we need to include dependencies and the compiled output
                   runtimeClasspath.set(runtimeWithTests)
+
                   // we set the test reports dir to the standard android test reports dir
                   // this will result in something like build/test-results/kotestDebugUnitTest
-                  testReportsDir.set(getTestReportsDir(project, name))
+                  moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+                  rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
                   // we depend on the standard android test task to ensure compilation has happened
                   dependsOn(androidTestTaskName(compilation))
@@ -516,8 +540,13 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun getTestReportsDir(project: Project, taskName: String): Provider<Directory> {
+   private fun getModuleTestReportsDir(project: Project, taskName: String): Provider<Directory> {
       val baseDirectory = project.layout.buildDirectory
+      return baseDirectory.dir("$TESTS_DIR_NAME/$taskName")
+   }
+
+   private fun getRootTestReportsDir(project: Project, taskName: String): Provider<Directory> {
+      val baseDirectory = project.rootProject.layout.buildDirectory
       return baseDirectory.dir("$TESTS_DIR_NAME/$taskName")
    }
 }

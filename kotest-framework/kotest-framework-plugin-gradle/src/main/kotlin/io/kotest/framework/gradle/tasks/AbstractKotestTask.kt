@@ -35,5 +35,10 @@ abstract class AbstractKotestTask internal constructor() : DefaultTask() {
    @get:InputFiles
    @get:PathSensitive(PathSensitivity.RELATIVE)
    @get:Optional
-   abstract val testReportsDir: DirectoryProperty
+   abstract val moduleTestReportsDir: DirectoryProperty
+
+   @get:InputFiles
+   @get:PathSensitive(PathSensitivity.RELATIVE)
+   @get:Optional
+   abstract val rootTestReportsDir: DirectoryProperty
 }
