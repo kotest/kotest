@@ -32,7 +32,6 @@ jobs:
          task: apiCheck
 
    build-and-publish-snapshots:
-      needs: validate-api
       strategy:
          matrix:
             include:
@@ -74,6 +73,8 @@ jobs:
                # Apple: watchOS
                -  os: macos-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=watchOS"
+
+
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
