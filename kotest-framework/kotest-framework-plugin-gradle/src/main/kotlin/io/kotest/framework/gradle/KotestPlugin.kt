@@ -168,6 +168,10 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun handleNative(target: KotlinTarget) {
+
+      if (target.name.startsWith("androidNative")) // these don't have testable targets, so we skip them
+         return
+
       val kotestTaskName = nativeKotestTaskName(target)
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
