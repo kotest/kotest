@@ -31,7 +31,7 @@ jobs:
          ref: ${{ inputs.ref }}
          task: apiCheck
 
-   build-and-publish-snapshots:
+   build-primary:
       strategy:
          matrix:
             include:
@@ -50,17 +50,30 @@ jobs:
                # Wasm
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
-               # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
+               # Android
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=android"
-               # Kotest BOM
-               -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=KotestBom"
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         ref: ${{ inputs.ref }}
+         task: >
+            -P"kotest_enableKotlinJs=true"
+            -P"kotest_enableKotlinNative=true"
+            ${{ matrix.args }}
+            --no-configuration-cache
+            check publishToAppropriateCentralRepository
+         runs-on: ${{ matrix.os }}
 
+      # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
+      # run macos tests if we know the JVM/JS/linux tests pass.
+   build-secondary-targets:
+      strategy:
+         matrix:
+            include:
                # Windows: MinGW
                -  os: windows-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=mingw"
-
                # Apple: macOS
                -  os: macos-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=macOS"
@@ -73,7 +86,6 @@ jobs:
                # Apple: watchOS
                -  os: macos-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=watchOS"
-
 
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
