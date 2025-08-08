@@ -626,6 +626,7 @@ public final class io/kotest/assertions/print/StringPrint : io/kotest/assertions
 	public static final field INSTANCE Lio/kotest/assertions/print/StringPrint;
 	public synthetic fun print (Ljava/lang/Object;)Lio/kotest/assertions/print/Printed;
 	public fun print (Ljava/lang/String;)Lio/kotest/assertions/print/Printed;
+	public final fun printUnquoted (Ljava/lang/String;)Lio/kotest/assertions/print/Printed;
 }
 
 public final class io/kotest/assertions/print/ToStringPrint : io/kotest/assertions/print/Print {

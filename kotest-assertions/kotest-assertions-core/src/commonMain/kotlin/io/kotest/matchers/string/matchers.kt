@@ -1,6 +1,7 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
 import io.kotest.assertions.submatching.describePartialMatchesInStringForSlice
 import io.kotest.matchers.ComparisonMatcherResult
@@ -250,8 +251,8 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
    )
    ComparisonMatcherResult(
       passed = passed,
-      actual = value.print(),
-      expected = substr.print(),
+      actual = StringPrint.printUnquoted(value),
+      expected = StringPrint.printUnquoted(substr),
       failureMessageFn = { differencesDescription.filter { it.isNotEmpty() }.joinToString("\n") },
       negatedFailureMessageFn = { "${value.print().value} should not include substring ${substr.print().value}" }
    )

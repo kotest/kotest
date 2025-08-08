@@ -109,7 +109,7 @@ class EqualToComparingFieldsTest : FunSpec() {
  - c
 
 Fields that differ:
- - a  =>  expected:<"terry"> but was:<"sammy">
+ - a  =>  expected:<terry> but was:<sammy>
  - b  =>  expected:<2> but was:<1>
  - c  =>  expected:<false> but was:<true>"""
       }
@@ -155,10 +155,10 @@ Fields that differ:
             "- mainHospital.mainDoctor.name",
             "- name",
             "Fields that differ:",
-            """- mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">""",
+            """- mainHospital.mainDoctor.name  =>  expected:<barry> but was:<billy>""",
             "- mainHospital.name  =>",
-            """expected:<"test-hospital2"> but was:<"test-hospital1">""",
-            """- name  =>  expected:<"test2"> but was:<"test1">""",
+            """expected:<test-hospital2> but was:<test-hospital1>""",
+            """- name  =>  expected:<test2> but was:<test1>""",
          )
       }
 
@@ -180,12 +180,12 @@ Fields that differ:
 " - mainHospital.name",
 " - name",
 "Fields that differ:",
-""" - mainHospital.mainDoctor.name  =>  expected:<"barry"> but was:<"billy">""",
+""" - mainHospital.mainDoctor.name  =>  expected:<barry> but was:<billy>""",
 """ - mainHospital.name  =>""",
-"""expected:<"test""",
-"""                          hospital2"> but was:<"test""",
-"""                          hospital1">""",
-""" - name  =>  expected:<"test2"> but was:<"test1">""",
+"""expected:<test""",
+"""                          hospital2> but was:<test""",
+"""                          hospital1>""",
+""" - name  =>  expected:<test2> but was:<test1>""",
          )
       }
 
@@ -230,7 +230,7 @@ Fields that differ:
  - name
 
 Fields that differ:
- - address  =>  expected:<<empty string>> but was:<"new address">"""
+ - address  =>  expected:<<empty string>> but was:<new address>"""
       }
 
       test("check equality comparing field by field excluding given fields and private fields") {
@@ -358,7 +358,7 @@ Fields that differ:
  - name
 
 Fields that differ:
- - name  =>  expected:<"bar"> but was:<"foo">"""
+ - name  =>  expected:<bar> but was:<foo>"""
       }
 
       test("should compare lists") {

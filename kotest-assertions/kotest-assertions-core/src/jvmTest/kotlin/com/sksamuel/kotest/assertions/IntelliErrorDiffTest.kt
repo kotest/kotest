@@ -13,12 +13,12 @@ class IntelliErrorDiffTest : FunSpec({
    test("shouldBe should output in intelli format") {
       shouldThrow<AssertionError> {
          "a" shouldBe "b"
-      }.message shouldBe """expected:<"b"> but was:<"a">"""
+      }.message shouldBe """expected:<b> but was:<a>"""
    }
 
    test("diff format should distinguish between different types") {
       shouldThrow<AssertionError> {
          "1" shouldBe 1
-      }.message shouldBe """expected:kotlin.Int<1> but was:kotlin.String<"1">"""
+      }.message shouldBe """expected:kotlin.Int<1> but was:kotlin.String<1>"""
    }
 })

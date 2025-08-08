@@ -55,7 +55,7 @@ class EqualToComparingFieldsWithCustomMatchingTest: StringSpec() {
             actual shouldBeEqualUsingFields expected
          }.message.shouldContainInOrder(
             "Fields that differ:",
-            """- name  =>  expected:<"apple"> but was:<"Apple">""",
+            """- name  =>  expected:<apple> but was:<Apple>""",
          )
          actual shouldBeEqualUsingFields {
             overrideMatchers = mapOf(
