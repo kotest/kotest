@@ -27,17 +27,21 @@ The Spring extension requires you to activate it for all test classes, or per te
 register the `SpringExtension` in [project config](../framework/project_config.md):
 
 ```kotlin
+package io.kotest.provided
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.extensions.spring.SpringExtension
 class ProjectConfig : AbstractProjectConfig() {
-   override fun extensions() = listOf(SpringExtension)
+   override val extensions = listOf(SpringExtension())
 }
 ```
 
 To activate it per test class:
 
 ```kotlin
-class MyTestSpec : FunSpec() {
-   override fun extensions() = listOf(SpringExtension)
-}
+import io.kotest.core.extensions.ApplyExtension
+import io.kotest.extensions.spring.SpringExtension
+@ApplyExtension(SpringExtension::class)
+class MyTestSpec : FunSpec() {}
 ```
 
 In order to let Spring know which configuration class to use, you must annotate your Spec classes with `@ContextConfiguration`.
