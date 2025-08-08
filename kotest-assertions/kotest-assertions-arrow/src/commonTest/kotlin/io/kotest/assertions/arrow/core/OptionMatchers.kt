@@ -35,7 +35,7 @@ class OptionMatchers : StringSpec({
 
     shouldThrow<AssertionError> {
       Option.fromNullable("boo") shouldBeSome "foo"
-    }.message shouldBe "expected:<\"foo\"> but was:<\"boo\">"
+    }.message shouldBe "expected:<foo> but was:<boo>"
 
     val some =
       Option.fromNullable("foo") shouldBeSome "foo"

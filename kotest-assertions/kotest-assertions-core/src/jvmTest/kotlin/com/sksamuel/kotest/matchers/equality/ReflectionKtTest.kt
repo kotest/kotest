@@ -184,7 +184,7 @@ class ReflectionKtTest : FunSpec() {
          errorMessage shouldContain "Using fields: address, isExhausted, name"
          errorMessage shouldContain "Value differ at:"
          errorMessage shouldContain "1) address"
-         errorMessage shouldContain "expected:<<empty string>> but was:<\"new address\">"
+         errorMessage shouldContain "expected:<<empty string>> but was:<new address>"
       }
 
       test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and private fields") {
@@ -222,7 +222,7 @@ class ReflectionKtTest : FunSpec() {
          message shouldContain "Using fields: address, name"
          message shouldContain "Value differ at"
          message shouldContain "1) address"
-         message shouldContain "expected:<<empty string>> but was:<\"new address\">"
+         message shouldContain "expected:<<empty string>> but was:<new address>"
 
       }
 

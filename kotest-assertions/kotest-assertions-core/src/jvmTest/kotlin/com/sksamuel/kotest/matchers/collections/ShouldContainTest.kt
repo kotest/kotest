@@ -145,7 +145,7 @@ class ShouldContainTest : WordSpec({
             "qeqweew" shouldContain "ooo"
          }.message
          message.shouldContain("""qeqweew" should include substring "ooo"
-expected:<"ooo"> but was:<"qeqweew">""")
+expected:<ooo> but was:<qeqweew>""")
       }
    }
 })

@@ -688,7 +688,7 @@ private fun matchMapTests(contextName: String) = wordSpec {
          shouldThrow<AssertionError> {
             mapOf("key" to "otherValue") should matcher("key" to { it shouldBe "value" })
          }.also {
-            it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, expected:<"value"> but was:<"otherValue">)], Unexpected keys were []."""
+            it.message shouldBe """Expected map to match all assertions. Missing keys were=[], Mismatched values were=[(key, expected:<value> but was:<otherValue>)], Unexpected keys were []."""
          }
       }
    }

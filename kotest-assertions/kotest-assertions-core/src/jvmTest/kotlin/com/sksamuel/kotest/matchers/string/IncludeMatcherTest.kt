@@ -28,15 +28,16 @@ class IncludeMatcherTest : FreeSpec() {
 
             shouldThrow<AssertionError> {
                "la tour" shouldContain "wibble"
-            }.message shouldBe "\"la tour\" should include substring \"wibble\""
+            }.message shouldBe """"la tour" should include substring "wibble"
+expected:<wibble> but was:<la tour>"""
 
             shouldThrow<AssertionError> {
                "hello" should include("allo")
-            }.message shouldBe "\"hello\" should include substring \"allo\""
+            }.message shouldContain "\"hello\" should include substring \"allo\""
 
             shouldThrow<AssertionError> {
                "hello" shouldInclude "qwe"
-            }.message shouldBe "\"hello\" should include substring \"qwe\""
+            }.message shouldContain "\"hello\" should include substring \"qwe\""
          }
 
          "should find a submatch for reasonably long value and substring" {

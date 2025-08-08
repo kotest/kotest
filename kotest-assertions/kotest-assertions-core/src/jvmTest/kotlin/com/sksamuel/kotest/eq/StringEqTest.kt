@@ -16,13 +16,13 @@ class StringEqTest : FunSpec({
    }
 
    test("StringEq shows type information when relevant") {
-      shouldFailWithMessage("expected:java.lang.StringBuilder<foo> but was:kotlin.String<\"foo\">") {
+      shouldFailWithMessage("expected:java.lang.StringBuilder<foo> but was:kotlin.String<"foo">") {
          "foo" shouldBe StringBuilder("foo")
       }
    }
 
    test("String comparison with same types dont include type information") {
-      shouldFailWithMessage("expected:<\"bar\"> but was:<\"foo\">") {
+      shouldFailWithMessage("expected:<bar> but was:<foo>") {
          "foo" shouldBe "bar"
       }
    }
@@ -35,7 +35,7 @@ class StringEqTest : FunSpec({
          "Match[0]: part of slice with indexes [2..39] matched actual[2..39]",
          """Line[0] ="The quick brown fox jumps over the lazy dog"""",
          """Match[0]= --++++++++++++++++++++++++++++++++++++++---""",
-         """expected:<"One quick brown fox jumps over the lazy cat"> but was:<"The quick brown fox jumps over the lazy dog">"""
+         """expected:<One quick brown fox jumps over the lazy cat> but was:<The quick brown fox jumps over the lazy dog>"""
       )
    }
 })

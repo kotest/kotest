@@ -21,7 +21,7 @@ hello.substring(1, 3) shouldBe world.substring(1, 4)
 |     el
 Hello
 
-expected:<"orl"> but was:<"el">""".trim()
+expected:<orl> but was:<el>""".trim()
       }
    }
 }

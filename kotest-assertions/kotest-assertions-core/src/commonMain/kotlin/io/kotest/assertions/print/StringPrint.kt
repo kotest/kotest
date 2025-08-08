@@ -13,4 +13,10 @@ object StringPrint : Print<String> {
       a.isBlank() -> Printed(a.replace(" ", "\\s").wrap(), String::class)
       else -> Printed(a.wrap(), String::class)
    }
+
+   fun printUnquoted(a: String): Printed = when {
+      a == "" -> Printed("<empty string>", String::class)
+      a.isBlank() -> Printed(a.replace(" ", "\\s"), String::class)
+      else -> Printed(a, String::class)
+   }
 }

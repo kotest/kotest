@@ -163,7 +163,7 @@ class AssertSoftlyTest : FreeSpec({
             }
          }.run {
             message.shouldContainInOrder(
-               "expected:<\"bar\"> but was:<\"foo\">",
+               "expected:<bar> but was:<foo>",
             )
          }
       }
@@ -239,7 +239,7 @@ class AssertSoftlyTest : FreeSpec({
                   }
                }.message.shouldContainInOrder(
                   """The following 2 assertions for Person(name=John, age=20) failed:""",
-                  """1) expected:<"Jane"> but was:<"John">""",
+                  """1) expected:<Jane> but was:<John>""",
                   """2) The following 2 assertions for 20 failed:""",
                   """   1) 20 should be > 30""",
                   """   2) 20 should be odd""",
@@ -268,7 +268,7 @@ class AssertSoftlyTest : FreeSpec({
 
             error.message shouldContain "The following 2 assertions failed:"
             error.message shouldContain "1) simple strings"
-            error.message shouldContain """expected:<"b"> but was:<"a">"""
+            error.message shouldContain """expected:<b> but was:<a>"""
             error.message shouldContain """at com.sksamuel.kotest.matchers.AssertSoftlyTest"""
             error.message shouldContain """2) more complex with data class and enums"""
             error.message shouldContain """expected:<Second> but was:<First>"""
