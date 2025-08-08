@@ -32,6 +32,7 @@ jobs:
          task: apiCheck
 
    build-primary:
+      needs: validate-api
       strategy:
          matrix:
             include:
@@ -68,6 +69,7 @@ jobs:
       # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
       # run macos tests if we know the JVM/JS/linux tests pass.
    build-secondary-targets:
+      needs: build-primary
       strategy:
          matrix:
             include:
