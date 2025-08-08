@@ -16,7 +16,7 @@ class StringEqTest : FunSpec({
    }
 
    test("StringEq shows type information when relevant") {
-      shouldFailWithMessage("expected:java.lang.StringBuilder<foo> but was:kotlin.String<"foo">") {
+      shouldFailWithMessage("expected:java.lang.StringBuilder<foo> but was:kotlin.String<foo>") {
          "foo" shouldBe StringBuilder("foo")
       }
    }
