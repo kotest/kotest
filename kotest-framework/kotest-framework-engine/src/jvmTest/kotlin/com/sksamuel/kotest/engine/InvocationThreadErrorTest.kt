@@ -13,12 +13,12 @@ class InvocationThreadErrorTest : FunSpec({
 
    test("invocation errors should be propagated") {
       val listener = CollectingTestEngineListener()
-      TestEngineLauncher(listener)
+      TestEngineLauncher()
+         .withListener(listener)
          .withClasses(InvocationErrorsTests::class)
          .launch()
       listener.tests.keys.map { it.name.name } shouldBe setOf(
          "multiple invocations",
-//         "multiple invocations on multiple threads"
       )
       listener.tests.values.forAll { it.isError shouldBe true }
    }
@@ -29,8 +29,4 @@ private class InvocationErrorsTests : FunSpec({
    test("multiple invocations").config(invocations = 4) {
       error("boom")
    }
-
-//   xtest("multiple invocations on multiple threads").config(invocations = 4, threads = 3) {
-//      error("boom")
-//   }
 })
