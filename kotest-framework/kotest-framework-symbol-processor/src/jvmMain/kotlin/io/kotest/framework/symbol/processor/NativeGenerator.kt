@@ -39,11 +39,12 @@ val includeArg = getenv("kotest.framework.runtime.native.include")?.toKString()
 val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
 val moduleTestReportsDir = getenv("kotest.framework.runtime.native.module.test.reports.dir")?.toKString()
 val rootTestReportsDir = getenv("kotest.framework.runtime.native.root.test.reports.dir")?.toKString()
+val target = getenv("kotest.framework.runtime.native.target")?.toKString()
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
-val moduleXmlReporter = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, null) }
-val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, null) }
+val moduleXmlReporter = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
+val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
 
 """.trim()
          )

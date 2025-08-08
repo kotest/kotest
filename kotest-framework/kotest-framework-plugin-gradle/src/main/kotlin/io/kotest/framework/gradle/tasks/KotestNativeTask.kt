@@ -21,6 +21,7 @@ abstract class KotestNativeTask @Inject internal constructor(
    @TaskAction
    protected fun execute() {
       moduleTestReportsDir.get().asFile.mkdirs()
+      rootTestReportsDir.get().asFile.mkdirs()
       val result = executors.exec {
          NativeExecConfiguration(exe.get())
             .withDescriptor(include.orNull)

@@ -139,6 +139,14 @@ class ShouldContainTest : WordSpec({
          }.message
          message.shouldContain("but it did at index(es):[1]")
       }
+
+      "return diff formatting" {
+         val message = shouldThrow<AssertionError> {
+            "qeqweew" shouldContain "ooo"
+         }.message
+         message.shouldContain("""qeqweew" should include substring "ooo"
+expected:<"ooo"> but was:<"qeqweew">""")
+      }
    }
 })
 
