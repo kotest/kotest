@@ -55,6 +55,7 @@ public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : io/kotest
 public abstract class io/kotest/framework/gradle/tasks/KotestNativeTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
 	protected final fun execute ()V
 	public abstract fun getExe ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetName ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestWasmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {

@@ -176,8 +176,10 @@ abstract class KotestPlugin : Plugin<Project> {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val task = target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+
          moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
          rootTestReportsDir.set(getRootTestReportsDir(project, name))
+         targetName.set(target.name)
 
          val kexe = project.layout.buildDirectory.get().asFile.resolve(nativeBinaryPath(target)).absolutePath
          exe.set(kexe)

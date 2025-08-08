@@ -9,6 +9,7 @@ import org.gradle.process.internal.ExecAction
  */
 internal data class NativeExecConfiguration(
    private val executable: String,
+   private val targetName: String? = null,
    private val tags: String? = null,
    private val descriptor: String? = null,
    private val moduleTestReportsDir: String? = null,
@@ -37,6 +38,10 @@ internal data class NativeExecConfiguration(
       return copy(descriptor = descriptor)
    }
 
+   fun withTargetName(targetName: String): NativeExecConfiguration {
+      return copy(targetName = targetName)
+   }
+
    fun configure(exec: ExecSpec) {
       exec.setCommandLine(executable)
       if (IntellijUtils.isIntellij())
@@ -47,6 +52,8 @@ internal data class NativeExecConfiguration(
          exec.environment("kotest.framework.runtime.native.module.test.reports.dir", moduleTestReportsDir)
       if (rootTestReportsDir != null)
          exec.environment("kotest.framework.runtime.native.root.test.reports.dir", rootTestReportsDir)
+      if (targetName != null)
+         exec.environment("kotest.framework.runtime.native.target", targetName)
 
       // this must be true so we can handle the failure ourselves by throwing GradleException
       // otherwise we get a nasty stack trace from gradle
