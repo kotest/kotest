@@ -104,7 +104,7 @@ include(
 
    // contains  extensions for property testing that build on the kotest test framework
    // the new 6.0+ permutations based DSL for property testing
-//   ":kotest-property:kotest-property-permutations",
+   ":kotest-property:kotest-property-permutations",
 
    // contains extensions for property testing that build on the kotest test framework
    ":kotest-property:kotest-property-lifecycle",

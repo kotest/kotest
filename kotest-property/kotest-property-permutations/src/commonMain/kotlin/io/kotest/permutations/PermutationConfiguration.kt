@@ -8,7 +8,6 @@ import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.DefaultStatisticsReporter
 import io.kotest.permutations.statistics.StatisticsReporter
-import io.kotest.property.AssumptionFailedException
 import io.kotest.property.Gen
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
