@@ -66,7 +66,7 @@ object LauncherArgs {
 fun main(args: Array<String>) {
 
    val launcherArgs = parseArgs(args.toList())
-   println("Launcher args: $launcherArgs")
+//   println("Launcher args: $launcherArgs")
 
    // The engine *must* be given the classes to execute - in Kotest 6 the engine does not perform scanning
    // It is the responsibility of the caller to pass this information.
