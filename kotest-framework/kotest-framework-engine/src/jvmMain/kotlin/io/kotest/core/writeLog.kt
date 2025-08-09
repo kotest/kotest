@@ -22,7 +22,7 @@ private val file: FileWriter by lazy {
 }
 
 actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
-   file.write(start.elapsedNow().inWholeMicroseconds.toString())
+   file.write(start.elapsedNow().inWholeMilliseconds.toString())
    file.write("  ")
    file.write(f())
    file.write("\n")
