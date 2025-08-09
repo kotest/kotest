@@ -143,7 +143,7 @@ class TeamCityMessageBuilder(
 
       val line1 = error.message?.trim()?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
-      message(escapeColons(message))
+      message(escapeColonsIn(message))
 
       if (showDetails) {
          // stackTraceToString fails if the error is created by a mocking framework, so we should catch
@@ -152,7 +152,7 @@ class TeamCityMessageBuilder(
          } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
-         details(escapeColons(stacktrace.take(10000))) // seems to be some limit to the details field
+         details(escapeColonsIn(truncateStackTrace(stacktrace))) // seems to be some limit to the details field
       }
 
       when (error) {
@@ -163,6 +163,10 @@ class TeamCityMessageBuilder(
       return this
    }
 
+   private fun truncateStackTrace(stacktrace: String): String {
+      return if (stacktrace.length > 10000) stacktrace.take(10000) + "..." else stacktrace
+   }
+
    // sets the test's parents id
    fun parent(value: String): TeamCityMessageBuilder = addAttribute(Attributes.PARENT_ID, value)
 
@@ -170,7 +174,7 @@ class TeamCityMessageBuilder(
    fun id(value: String): TeamCityMessageBuilder = addAttribute(Attributes.ID, value)
 
    // workaround for TC colon issue, see main javadoc
-   private fun escapeColons(value: String) = when (escapeColons) {
+   private fun escapeColonsIn(value: String) = when (escapeColons) {
       true -> value.replace(":", "\u02D0")
       false -> value
    }

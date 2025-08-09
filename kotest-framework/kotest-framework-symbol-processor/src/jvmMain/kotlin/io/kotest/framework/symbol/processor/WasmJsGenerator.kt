@@ -42,7 +42,7 @@ class WasmJsGenerator(private val environment: SymbolProcessorEnvironment) {
          .addCode(
             """
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
+val filter = descriptor?.let { IncludeDescriptorFilter(it) }
 """.trim()
          )
          .addCode("\n")

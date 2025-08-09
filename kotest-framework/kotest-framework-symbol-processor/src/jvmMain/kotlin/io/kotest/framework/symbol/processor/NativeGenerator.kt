@@ -42,7 +42,7 @@ val rootTestReportsDir = getenv("kotest.framework.runtime.native.root.test.repor
 val target = getenv("kotest.framework.runtime.native.target")?.toKString()
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
+val filter = descriptor?.let { IncludeDescriptorFilter(it) }
 val moduleXmlReporter = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
 val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
 
