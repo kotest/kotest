@@ -152,7 +152,7 @@ class TeamCityMessageBuilder(
          } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
-         details(escapeColons(stacktrace.take(10000))) // seems to be some limit to the details field
+         details(escapeColons(stacktrace.take(4000))) // seems to be some limit to the details field
       }
 
       when (error) {
