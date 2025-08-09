@@ -292,7 +292,10 @@ abstract class KotestPlugin : Plugin<Project> {
                   // gradle best practice is to only apply to this project, and users add the plugin to each subproject
                   // see https://docs.gradle.org/current/userguide/isolated_projects.html
                   val task = target.project.tasks.register("jsNodeKotest", KotestJsTask::class) {
+
                      moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+                     rootTestReportsDir.set(getModuleTestReportsDir(project, name))
+
                      nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
                      compileSyncPath.set(jsCompileSyncPath(compilation))
 
