@@ -6,7 +6,6 @@ import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.ARTIFACT_TYP
 import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.TYPE_CLASSES_JAR
 import io.kotest.framework.gradle.tasks.KotestJsTask
 import io.kotest.framework.gradle.tasks.KotestJvmTask
-import io.kotest.framework.gradle.tasks.KotestNativeTask
 import io.kotest.framework.gradle.tasks.KotestWasmTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -35,6 +34,7 @@ import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinNodeJsIr
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin.Companion.kotlinNodeJsEnvSpec
+import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
 
@@ -42,7 +42,7 @@ import java.util.Properties
 abstract class KotestPlugin : Plugin<Project> {
 
    companion object {
-      const val TASK_DESCRIPTION = "Runs tests using Kotest"
+      const val TASK_DESCRIPTION = "Configures kotest tests"
       const val TESTS_DIR_NAME = "test-results"
       private val unsupportedTargets = listOf("metadata")
    }
@@ -61,20 +61,6 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // configure Kotlin Android projects when it is not a multiplatform project
       handleAndroid(project)
-
-      if (project == project.rootProject)
-         testReportAggregation(project)
-   }
-
-   private fun testReportAggregation(project: Project) {
-      // this is the root project, so we can aggregate the test reports
-      // we do this by creating a task that depends on all the kotest tasks in the subprojects
-      project.tasks.register("aggregateKotestReports") {
-         group = JavaBasePlugin.VERIFICATION_GROUP
-         description = "Aggregates all Kotest test reports from subprojects"
-
-         // should run after test executions
-      }
    }
 
    /**
@@ -93,7 +79,7 @@ abstract class KotestPlugin : Plugin<Project> {
     */
    private fun configureTaskConventions(project: Project) {
       project.tasks.withType<AbstractKotestTask>().configureEach {
-         group = JavaBasePlugin.VERIFICATION_GROUP
+         group = "kotest"
          description = TASK_DESCRIPTION
       }
    }
@@ -169,34 +155,62 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleNative(target: KotlinTarget) {
 
-      if (target.name.startsWith("androidNative")) // these don't have testable targets, so we skip them
-         return
+      val existing = target.project.tasks.findByName(nativeTestTaskName(target))
+      when (existing) {
 
-      val kotestTaskName = nativeKotestTaskName(target)
-      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-      // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val task = target.project.tasks.register(kotestTaskName, KotestNativeTask::class) {
+         // sometimes a native target might not exist, because either tests are not supported (eg android native)
+         // or the target is not buildable on the current host (eg ios target on a linux host)
+         null -> println("[Kotest] Skipping tests for ${target.name}")
 
-         moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-         rootTestReportsDir.set(getRootTestReportsDir(project, name))
-         targetName.set(target.name)
+         is KotlinNativeTest -> {
 
-         val kexe = project.layout.buildDirectory.get().asFile.resolve(nativeBinaryPath(target)).absolutePath
-         exe.set(kexe)
+            val moduleTestDir = getModuleTestReportsDir(target.project, existing.name).get()
+            moduleTestDir.asFile.mkdirs()
+            val moduleTestDirAbsolutePath = moduleTestDir.asFile.absolutePath
 
-         // this is the task that runs the linker for the tests, so we depend on its output to ensure
-         // the tests are compiled before we run them
-         val linkDebugTestTaskName = linkDebugNativeTestTaskName(target)
-         inputs.files(project.tasks.named(linkDebugTestTaskName).map { it.outputs.files })
+            val rootTestDir = getRootTestReportsDir(target.project, existing.name).get()
+            rootTestDir.asFile.mkdirs()
+            val rootTestDirAbsolutePath = rootTestDir.asFile.absolutePath
+
+            // passed to the xml report generator
+            val targetName = target.name
+
+            // we can execute check or test tasks with -Pkotest.include and this will then be
+            // passed to the kotest runtime as an environment variable to filter specs and tests
+            val include = target.project.findProperty("kotest.include")
+
+            existing.doFirst {
+
+               if (include != null)
+                  existing.environment("kotest.framework.runtime.native.include", include.toString())
+
+               // we need to switch to TCSM format if running inside of intellij
+               val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
+               existing.environment("kotest.framework.runtime.native.listener", listener)
+
+               // it seems the kotlin native test task empties this directory, so this currently does not do anything
+               existing.environment(
+                  "kotest.framework.runtime.native.module.test.reports.dir",
+                  moduleTestDirAbsolutePath
+               )
+
+               existing.environment(
+                  "kotest.framework.runtime.native.root.test.reports.dir",
+                  rootTestDirAbsolutePath
+               )
+
+               // this sets the target name in the environment, which is used by the xml report generator
+               // to add the target name to the test names
+               existing.environment("kotest.framework.runtime.native.target", targetName)
+            }
+
+            // the ksp plugin will create a configuration for each target that contains
+            // the symbol processors used by the test configuration. We want to wire in
+            // the kotest symbol processor to this configuration so the user doesn't have to manually
+            // do it for every different native target (there could be many!)
+            wireKsp(target.project, kspConfigurationName(target))
+         }
       }
-      // the ksp plugin will create a configuration for each target that contains
-      // the symbol processors used by the test configuration. We want to wire in
-      // the kotest symbol processor to this configuration so the user doesn't have to manually
-      // do it for every different native target (there could be many!)
-      wireKsp(target.project, kspConfigurationName(target))
-
-      // this means this kotest task will be run when the user runs "gradle check"
-      target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    // wasmJs and wasmWasi land here, so we must not use hardcoded names
@@ -496,7 +510,11 @@ abstract class KotestPlugin : Plugin<Project> {
     * Eg `linuxX64Test` will become `linuxX64Kotest`, and `mingwX64Test` will become `mingwX64Kotest`.
     */
    private fun nativeKotestTaskName(target: KotlinTarget): String {
-      return target.name + "Kotest"
+      return target.name + "ConfigureKotest"
+   }
+
+   private fun nativeTestTaskName(target: KotlinTarget): String {
+      return target.name + "Test"
    }
 
    private fun wasmNodeKotestTaskName(target: KotlinTarget): String {
