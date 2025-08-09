@@ -156,8 +156,10 @@ class TeamCityMessageBuilder(
       }
 
       when (error) {
-         is KotestAssertionFailedError -> type("comparisonFailure").expected(error.expected).actual(error.actual)
-         else -> this.handlePlatformComparisonExceptions(error)
+         is KotestAssertionFailedError if error.actual != null || error.expected != null ->
+            type("comparisonFailure").expected(error.expected).actual(error.actual)
+
+         else -> handlePlatformComparisonExceptions(error)
       }
 
       return this
