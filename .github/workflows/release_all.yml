@@ -25,7 +25,7 @@ concurrency:
 
 
 permissions:
-   contents: read
+   contents: write
 
 
 jobs:
@@ -78,7 +78,7 @@ jobs:
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
-         ref: ${{ inputs.ref }}
+         ref: refs/tags/${{ inputs.version }}
          task: >
             -P"kotest_enableKotlinJs=true"
             -P"kotest_enableKotlinNative=true"
@@ -86,3 +86,25 @@ jobs:
             --no-configuration-cache
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
+
+   tag:
+      needs: publish
+      runs-on: ubuntu-latest
+      steps:
+         -  uses: actions/checkout@v4
+            with:
+               ref: ${{ inputs.branch }}
+               fetch-depth: 0
+         -  name: Create and push tag
+            shell: bash
+            run: |
+               set -euo pipefail
+               TAG="${{ inputs.version }}"
+               # Check if tag already exists remotely
+               if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
+                 echo "Tag ${TAG} already exists on origin; skipping creation."
+               else
+                 echo "Creating tag ${TAG} on current commit."
+                 git tag -a "${TAG}" -m "Release ${TAG}"
+                 git push origin "refs/tags/${TAG}"
+               fi
