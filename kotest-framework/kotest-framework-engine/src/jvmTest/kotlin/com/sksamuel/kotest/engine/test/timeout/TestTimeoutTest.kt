@@ -38,7 +38,7 @@ class TestTimeoutTest : FunSpec() {
             type = TestType.Container,
             parent = null,
             config = TestConfig(
-               timeout = 1.milliseconds,
+               timeout = 100.milliseconds,
                blockingTest = true
             ),
          )
@@ -65,7 +65,7 @@ class TestTimeoutTest : FunSpec() {
             type = TestType.Container,
             parent = null,
             config = TestConfig(
-               timeout = 1.milliseconds,
+               timeout = 100.milliseconds,
             ),
          )
 
