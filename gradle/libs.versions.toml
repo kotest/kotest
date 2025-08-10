@@ -1,5 +1,4 @@
 [versions]
-kotlin = "2.1.21"
 runtime-kotest = "4.2.0"
 # We separate these from the actual runtime dependencies
 test-kotest = "5.9.1"
@@ -11,6 +10,3 @@ runtime-kotest-legacy-launcher = { module = "io.kotest:kotest-launcher", version
 # Separate these from the Kotest libraries that will go into the plugin release
 test-kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "test-kotest" }
 test-kotest-framework-api = { module = "io.kotest:kotest-framework-api", version.ref = "test-kotest" }
-
-[plugins]
-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
