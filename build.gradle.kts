@@ -84,7 +84,7 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
@@ -134,7 +134,9 @@ dependencies {
    // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
    intellijPlatform {
       // snapshots here https://www.jetbrains.com/intellij-repository/snapshots/
-      intellijIdeaCommunity(descriptor.sdkVersion, useInstaller = descriptor.useInstaller)
+      intellijIdeaCommunity(descriptor.sdkVersion) {
+         useInstaller = descriptor.useInstaller
+      }
 
       if (!descriptor.useInstaller) {
          jetbrainsRuntime()
