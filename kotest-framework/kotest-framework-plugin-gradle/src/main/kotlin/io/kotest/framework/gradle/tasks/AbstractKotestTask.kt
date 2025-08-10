@@ -10,7 +10,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.options.Option
 
-abstract class AbstractKotestTask internal constructor() : DefaultTask() {
+abstract class AbstractKotestTask : DefaultTask() {
 
    @get:Option(option = "include", description = "Filter to a single spec or test")
    @get:Input
@@ -27,10 +27,10 @@ abstract class AbstractKotestTask internal constructor() : DefaultTask() {
    @get:Optional
    abstract val packages: Property<String>
 
-   @get:Option(option = "tags", description = "Set tag expression to include or exclude tests")
-   @get:Input
-   @get:Optional
-   abstract val tags: Property<String>
+//   @get:Option(option = "tags", description = "Set tag expression to include or exclude tests")
+//   @get:Input
+//   @get:Optional
+//   abstract val tags: Property<String>
 
    @get:InputFiles
    @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -41,4 +41,5 @@ abstract class AbstractKotestTask internal constructor() : DefaultTask() {
    @get:PathSensitive(PathSensitivity.RELATIVE)
    @get:Optional
    abstract val rootTestReportsDir: DirectoryProperty
+
 }

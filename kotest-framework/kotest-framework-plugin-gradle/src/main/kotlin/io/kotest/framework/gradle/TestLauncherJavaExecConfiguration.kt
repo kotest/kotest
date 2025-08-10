@@ -11,7 +11,7 @@ import org.gradle.process.internal.JavaExecAction
 internal data class TestLauncherJavaExecConfiguration(
    private val classpath: FileCollection? = null,
    private val tags: String? = null,
-   private val descriptor: String? = null,
+   private val include: String? = null,
    private val moduleTestReportsDir: String? = null,
    private val rootTestReportsDir: String? = null,
    private val specs: List<String> = emptyList(),
@@ -56,8 +56,8 @@ internal data class TestLauncherJavaExecConfiguration(
       return copy(specs = specs)
    }
 
-   fun withDescriptor(descriptor: String?): TestLauncherJavaExecConfiguration {
-      return copy(descriptor = descriptor)
+   fun withInclude(include: String?): TestLauncherJavaExecConfiguration {
+      return copy(include = include)
    }
 
    fun withModuleTestReportsDir(dir: String): TestLauncherJavaExecConfiguration {
@@ -103,8 +103,8 @@ internal data class TestLauncherJavaExecConfiguration(
     * This is used for example when running a single test from the kotest intellij plugin.
     */
    private fun includeArg(): List<String> {
-      if (descriptor == null) return emptyList()
-      return listOf(ARG_INCLUDE, descriptor)
+      if (include == null) return emptyList()
+      return listOf(ARG_INCLUDE, include)
    }
 
    /**
