@@ -5,6 +5,7 @@ import com.intellij.execution.Platform
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
+import com.intellij.openapi.project.Project
 
 /**
  * An [KotestSMTRunnerConsoleView] is a customized [SMTRunnerConsoleView] for ServiceMessage (ie TeamCity format)
@@ -15,10 +16,11 @@ class KotestSMTRunnerConsoleView(
    consoleProperties: KotestSMTRunnerConsoleProperties,
    splitterPropertyName: String,
    publisher: SMTRunnerEventsListener,
+   project: Project,
 ) : SMTRunnerConsoleView(consoleProperties, splitterPropertyName), BuildViewSettingsProvider {
 
    private var lastMessageWasEmptyLine = false
-   val callback = KotestServiceMessageCallback(this, publisher)
+   val callback = KotestServiceMessageCallback(this, publisher, project)
 
    override fun isExecutionViewHidden() = false
 

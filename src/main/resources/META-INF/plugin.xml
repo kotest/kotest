@@ -39,6 +39,10 @@
       <configurationType implementation="io.kotest.plugin.intellij.run.KotestConfigurationType"/>
       <defaultLiveTemplates file="liveTemplates.xml"/>
 
+      <notificationGroup id="kotest.notification.group"
+                         displayType="BALLOON"
+                         key="kotest.notification.group"/>
+
       <annotator language="kotlin"
                  implementationClass="io.kotest.plugin.intellij.annotators.DuplicatedTestNameAnnotator"/>
 

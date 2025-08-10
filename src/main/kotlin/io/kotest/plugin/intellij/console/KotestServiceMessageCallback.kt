@@ -5,6 +5,9 @@ package io.kotest.plugin.intellij.console
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
 import com.intellij.execution.testframework.sm.runner.SMTestProxy
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
+import com.intellij.notification.NotificationGroupManager
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.project.Project
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessage
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessageParserCallback
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessageTypes
@@ -16,6 +19,7 @@ import java.text.ParseException
 class KotestServiceMessageCallback(
    private val console: SMTRunnerConsoleView,
    private val publisher: SMTRunnerEventsListener,
+   private val project: Project,
 ) : ServiceMessageParserCallback {
 
    // each new proxy must be attached to its parent, so we keep a map of test ids to proxies
@@ -25,7 +29,10 @@ class KotestServiceMessageCallback(
 
    // this is text that was a service message but couldn't be parsed
    override fun parseException(p0: ParseException, p1: String) {
-      println("parseException: $p0 $p1")
+      NotificationGroupManager.getInstance().getNotificationGroup("kotest.notification.group")
+         .createNotification("Error parsing test result", NotificationType.ERROR)
+         .setTitle("Kotest")
+         .notify(project)
    }
 
    // this is text that wasn't a service message, we don't care about this

@@ -54,7 +54,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FRAMEWORK_NAME)
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
-      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName, publisher)
+      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName, publisher, project)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
       SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
