@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.console
 
 import com.intellij.build.BuildViewSettingsProvider
 import com.intellij.execution.Platform
+import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
 import com.intellij.execution.ui.ConsoleViewContentType
 
@@ -13,9 +14,11 @@ import com.intellij.execution.ui.ConsoleViewContentType
 class KotestSMTRunnerConsoleView(
    consoleProperties: KotestSMTRunnerConsoleProperties,
    splitterPropertyName: String,
+   publisher: SMTRunnerEventsListener,
 ) : SMTRunnerConsoleView(consoleProperties, splitterPropertyName), BuildViewSettingsProvider {
 
    private var lastMessageWasEmptyLine = false
+   val callback = KotestServiceMessageCallback(this, publisher)
 
    override fun isExecutionViewHidden() = false
 

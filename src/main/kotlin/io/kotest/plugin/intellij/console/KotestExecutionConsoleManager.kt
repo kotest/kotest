@@ -24,9 +24,6 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
  */
 class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTRunnerConsoleView, ProcessHandler> {
 
-   // needs to be defined here so we don't created a new one in the onOutput method every time
-   private var callback: KotestServiceMessageCallback? = null
-
    private val parser = ServiceMessagesParser()
 
    override fun getExternalSystemId(): ProjectSystemId {
@@ -56,7 +53,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       val consoleProperties = KotestSMTRunnerConsoleProperties(settings.configuration, env.executor)
 
       val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FRAMEWORK_NAME)
-      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName)
+      val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
+      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName, publisher)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
       SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
@@ -64,16 +62,13 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       consoleView.resultsViewer.testsRootNode.executionId = env.executionId
       consoleView.resultsViewer.testsRootNode.setSuiteStarted()
 
-      val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
-      callback = KotestServiceMessageCallback(consoleView, publisher)
-
       consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
       publisher.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
 
       processHandler.addProcessListener(object : ProcessAdapter() {
          override fun processTerminated(event: ProcessEvent) {
 
-            callback?.addNoTestsPlaceholder()
+            consoleView.callback.addNoTestsPlaceholder()
 
             if (event.exitCode != 0) {
                consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code ${event.exitCode}", null, true)
@@ -118,6 +113,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       text: String,
       processOutputType: Key<*>, // is stdout or stderr
    ) {
-      parser.parse(text, callback ?: error("callback must be set"))
+      when (executionConsole) {
+         is KotestSMTRunnerConsoleView -> parser.parse(text, executionConsole.callback)
+      }
    }
 }

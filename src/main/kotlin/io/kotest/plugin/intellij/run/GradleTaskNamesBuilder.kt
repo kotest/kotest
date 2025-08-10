@@ -44,7 +44,7 @@ data class GradleTaskNamesBuilder(
       if (tasks.isEmpty())
          error(
             "Could not find a kotest task in module ${module.name}. Please ensure the Kotest Gradle plugin is applied. " +
-            "Available tasks: ${GradleUtils.listTasks(module).map { it.name }}}"
+               "Available tasks: ${GradleUtils.listTasks(module).map { it.name }}"
          )
       else return tasks.map { it.getFqnTaskName() }
    }
