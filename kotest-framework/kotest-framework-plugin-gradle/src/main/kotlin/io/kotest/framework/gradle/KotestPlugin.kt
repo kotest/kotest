@@ -8,6 +8,7 @@ import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.TYPE_CLASSES
 import io.kotest.framework.gradle.tasks.KotestJsTask
 import io.kotest.framework.gradle.tasks.KotestJvmTask
 import io.kotest.framework.gradle.tasks.KotestWasmTask
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
@@ -157,7 +158,6 @@ abstract class KotestPlugin : Plugin<Project> {
                            // we don't want to wire stuff to non-buildable targets (i.e. ios target on a linux host)
                            // so we check if the target is publishable
                            if (target.publishable) handleNative(target)
-
                      }
                   }
                }
@@ -356,118 +356,86 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleMultiplatformAndroid(target: KotlinTarget) {
       if (target is KotlinAndroidTarget) {
-         // example compilations for a typical project:
-         // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
-
-         // unitTest compilations are the ones that run on the JVM, not on an android device.
-
-         // The androidTest compilations are the ones that run on an android device or simulator, also known as instrumentation tests.
-         // debug and release are called build types in android speak
-
-         // Kotest only supports unit tests, not instrumentation tests, so we can filter to
-         // compilations that ends with UnitTest. In a standard android project these would be debugUnitTest
-         // and releaseUnitTest, but if someone has custom build types then there could be more.
-         target.compilations.matching { it.name.endsWith("UnitTest") }.configureEach {
-            val compilation = this
-
-            val runtimeDependencyConfigurationName = compilation.runtimeDependencyConfigurationName
-
-            val rt: Configuration = target.project.configurations.findByName(runtimeDependencyConfigurationName)
-               ?: error("No configuration found for $runtimeDependencyConfigurationName")
-
-            // filters the runtime files to only jars
-            val runtimeFiles = rt.incoming.artifactView {
-               attributes {
-                  attribute(ARTIFACT_TYPE, TYPE_CLASSES_JAR)
-               }
-            }.files
-
-            val runtimeWithTests = project.objects.fileCollection()
-               .from(runtimeFiles)
-               .from(compilation.output.allOutputs) // this is the compiled output from this compilation
-
-            // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-            // see https://docs.gradle.org/current/userguide/isolated_projects.html
-            val task = project.tasks.register(androidKotestTaskName(this), KotestAndroidTask::class) {
-
-               // for specs we only care about what's outputted by this compilation
-               specsClasspath.set(compilation.output.allOutputs)
-               // to run specs we need to include dependencies and the compiled output
-               runtimeClasspath.set(runtimeWithTests)
-
-               // we set the test reports dir to the standard android test reports dir
-               // this will result in something like build/test-results/kotestDebugUnitTest
-               moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-               rootTestReportsDir.set(getRootTestReportsDir(project, name))
-
-               // we depend on the standard android test task to ensure compilation has happened
-               dependsOn(androidTestTaskName(compilation))
-               inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
-            }
-
-            // this means this kotest task will be run when the user runs "gradle check"
-            project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
-         }
+         configureAndroid(target.project, target.compilations)
       }
    }
 
    private fun handleAndroid(project: Project) {
       project.plugins.withType<KotlinAndroidPluginWrapper> {
          project.extensions.configure<KotlinAndroidExtension> {
-
-            // example compilations for a typical project:
-            // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
-
-            // unitTest compilations are the ones that run on the JVM, not on an android device.
-
-            // The androidTest compilations are the ones that run on an android device or simulator, also known as instrumentation tests.
-            // debug and release are called build types in android speak
-
-            // Kotest only supports unit tests, not instrumentation tests, so we can filter to
-            // compilations that ends with UnitTest. In a standard android project these would be debugUnitTest
-            // and releaseUnitTest, but if someone has custom build types then there could be more.
-            target.compilations.matching { it.name.endsWith("UnitTest") }.configureEach {
-               val compilation = this
-
-               val runtimeDependencyConfigurationName = compilation.runtimeDependencyConfigurationName
-                  ?: error("No runtime dependency configuration found for compilation ${compilation.name}")
-
-               val rt: Configuration = target.project.configurations.findByName(runtimeDependencyConfigurationName)
-                  ?: error("No configuration found for $runtimeDependencyConfigurationName")
-
-               // filters the runtime files to only jars
-               val runtimeFiles = rt.incoming.artifactView {
-                  attributes {
-                     attribute(ARTIFACT_TYPE, TYPE_CLASSES_JAR)
-                  }
-               }.files
-
-               val runtimeWithTests = project.objects.fileCollection()
-                  .from(runtimeFiles)
-                  .from(compilation.output.allOutputs) // this is the compiled output from this compilation
-
-               // see https://docs.gradle.org/current/userguide/isolated_projects.html
-               val task = project.tasks.register(androidKotestTaskName(this), KotestAndroidTask::class) {
-
-                  // for specs we only care about what's outputted by this compilation
-                  specsClasspath.set(compilation.output.allOutputs)
-                  // to run specs we need to include dependencies and the compiled output
-                  runtimeClasspath.set(runtimeWithTests)
-
-                  // we set the test reports dir to the standard android test reports dir
-                  // this will result in something like build/test-results/kotestDebugUnitTest
-                  moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-                  rootTestReportsDir.set(getRootTestReportsDir(project, name))
-
-                  // we depend on the standard android test task to ensure compilation has happened
-                  dependsOn(androidTestTaskName(compilation))
-                  inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
-               }
-
-               // this means this kotest task will be run when the user runs "gradle check"
-               project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
-            }
+            configureAndroid(project, target.compilations)
          }
+      }
+   }
+
+   private fun configureAndroid(
+      project: Project,
+      compilations: NamedDomainObjectContainer<out KotlinCompilation<out Any>>,
+   ) {
+      // example compilations for a typical project:
+      // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
+
+      // unitTest compilations are the ones that run on the JVM, not on an android device.
+
+      // The androidTest compilations are the ones that run on an android device or simulator, also known as instrumentation tests.
+      // debug and release are called build types in android speak
+
+      // Kotest only supports unit tests, not instrumentation tests, so we can filter to
+      // compilations that ends with UnitTest. In a standard android project these would be debugUnitTest
+      // and releaseUnitTest, but if someone has custom build types then there could be more.
+      compilations.matching { it.name.endsWith("UnitTest") }.configureEach {
+         val compilation = this
+
+         val runtimeDependencyConfigurationName = compilation.runtimeDependencyConfigurationName
+            ?: error("No runtime dependency configuration found for compilation ${compilation.name}")
+
+         val rt: Configuration = project.configurations.findByName(runtimeDependencyConfigurationName)
+            ?: error("No configuration found for $runtimeDependencyConfigurationName")
+
+         // filters the runtime files to only jars
+         val runtimeFiles = rt.incoming.artifactView {
+            attributes {
+               attribute(ARTIFACT_TYPE, TYPE_CLASSES_JAR)
+            }
+         }.files
+
+         // to run specs we need to include dependencies and the compiled output
+         val runtimeWithTests = project.objects.fileCollection()
+            .from(runtimeFiles)
+            .from(compilation.output.allOutputs) // this is the compiled output from this compilation
+
+         // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+         // see https://docs.gradle.org/current/userguide/isolated_projects.html
+         val task = project.tasks.register(androidKotestTaskName(compilation), KotestAndroidTask::class) {
+
+            group = JavaBasePlugin.VERIFICATION_GROUP
+            description = TASK_DESCRIPTION
+
+            // I don't know why this has to be set here and not inside the exec method
+            // it works for JVM but not KMP JVM
+            // I think the KMP version must be shadowing the mainClass variable somewhere
+            mainClass.set(LAUNCHER_MAIN_CLASS)
+            classpath = runtimeWithTests
+
+            // we don't want to abort test runs when we have test failures for one target
+            isIgnoreExitValue = true
+
+            // for specs we only care about what's outputted by this compilation
+            specsClasspath.set(compilation.output.allOutputs)
+
+            // we set the test reports dir to the standard android test reports dir
+            // this will result in something like build/test-results/kotestDebugUnitTest
+            moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+            rootTestReportsDir.set(getRootTestReportsDir(project, name))
+            compilationName.set(compilation.name)
+
+            // we depend on the standard android test task to ensure compilation has happened
+            dependsOn(androidTestTaskName(compilation))
+            inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
+         }
+
+         // this means this kotest task will be run when the user runs "gradle check"
+         project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
       }
    }
 
