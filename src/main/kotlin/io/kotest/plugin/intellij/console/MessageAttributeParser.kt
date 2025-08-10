@@ -7,9 +7,9 @@ import kotlin.time.Duration.Companion.milliseconds
 object MessageAttributeParser {
 
    fun parse(msg: ServiceMessage): MessageAttributes {
-      val id = msg.attributes["id"] ?: error("id is a required service message attribute")
+      val id = msg.attributes["id"] ?: error("id is a required service message attribute in $msg")
       val parentId = msg.attributes["parent_id"] // is null for specs
-      val name = msg.attributes["name"] ?: error("name is a required service message attribute")
+      val name = msg.attributes["name"] ?: error("name is a required service message attribute in $msg")
       val location = msg.attributes["locationHint"]
       val message = msg.attributes["message"]
       val details = msg.attributes["details"]
