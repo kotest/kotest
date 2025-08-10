@@ -18,7 +18,7 @@ data class GradleTaskNamesBuilder(
 
       const val SPEC_DELIMITER = ";"
       const val ARG_SPECS = "--specs"
-      const val ARG_INCLUDE = "--include"
+      const val ARG_INCLUDE = "-Pkotest.include"
 
       fun builder(module: Module): GradleTaskNamesBuilder =
          GradleTaskNamesBuilder(module, emptyList(), null)

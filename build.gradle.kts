@@ -84,7 +84,7 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
