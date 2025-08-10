@@ -2,7 +2,6 @@ package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
 import io.kotest.framework.gradle.TestLauncherArgsJavaExecConfiguration
-import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
 import org.gradle.api.provider.Property
@@ -73,13 +72,7 @@ abstract class KotestJvmTask : JavaExec() {
 //            .withCommandLineTags(tags.orNull)
             .configure(this)
 
-         println(args.joinToString(" "))
          super.exec()
-
-         val result = executionResult.get()
-         if (result.exitValue != 0) {
-            throw GradleException("Test suite failed with errors")
-         }
       }
    }
 }

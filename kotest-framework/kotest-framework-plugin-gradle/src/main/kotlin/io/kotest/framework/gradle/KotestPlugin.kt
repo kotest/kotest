@@ -115,8 +115,7 @@ abstract class KotestPlugin : Plugin<Project> {
          mainClass.set(LAUNCHER_MAIN_CLASS)
          classpath = sourceSet.runtimeClasspath
 
-         // this must be true so we can handle the failure ourselves by throwing GradleException
-         // otherwise we get a nasty stack trace from gradle
+         // we don't want to abort test runs when we have test failures for one target
          isIgnoreExitValue = true
 
          // we need this to scan for specs at runtime
