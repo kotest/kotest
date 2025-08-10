@@ -5,13 +5,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.IncludeDescriptorFilter
-import io.kotest.engine.launcher.LauncherArgs.ARG_INCLUDE
-import io.kotest.engine.launcher.LauncherArgs.ARG_LISTENER
-import io.kotest.engine.launcher.LauncherArgs.ARG_SPEC
-import io.kotest.engine.launcher.LauncherArgs.ARG_SPECS
-import io.kotest.engine.launcher.LauncherArgs.REPORTER
-import io.kotest.engine.launcher.LauncherArgs.TESTPATH
-import io.kotest.engine.launcher.LauncherArgs.WRITER
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -33,6 +26,9 @@ object LauncherArgs {
 
    // used to filter to a single spec or test within a spec
    const val ARG_INCLUDE = "include"
+
+   // used to add a target name to the test reporters
+   const val ARG_TARGET_NAME = "target-name"
 
    // sets the location of the test-reports directory in the build directory
    const val ARG_ROOT_TEST_REPORTS_DIR = "root-test-reports-dir"
@@ -72,9 +68,9 @@ fun main(args: Array<String>) {
    // It is the responsibility of the caller to pass this information.
    // In Kotest 5 a similar argument was called --spec to specify a single class but kotest 6 uses --specs
    // we need to support both so people can run kotest5 and kotest6 projects with the same plugin
-   val specsArg = launcherArgs[ARG_SPECS]
-      ?: launcherArgs[ARG_SPEC]
-      ?: error("The $ARG_SPECS arg must be provided")
+   val specsArg = launcherArgs[LauncherArgs.ARG_SPECS]
+      ?: launcherArgs[LauncherArgs.ARG_SPEC]
+      ?: error("The ${LauncherArgs.ARG_SPECS} arg must be provided")
 
    @Suppress("UNCHECKED_CAST")
    val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
@@ -115,7 +111,10 @@ fun main(args: Array<String>) {
 @Suppress("DEPRECATION")
 private fun buildOutputTestEngineListener(launcherArgs: Map<String, String>): TestEngineListener {
    return TestEngineListenerBuilder.builder()
-      .withType(launcherArgs[ARG_LISTENER] ?: launcherArgs[REPORTER] ?: launcherArgs[WRITER])
+      .withType(
+         launcherArgs[LauncherArgs.ARG_LISTENER] ?: launcherArgs[LauncherArgs.REPORTER]
+         ?: launcherArgs[LauncherArgs.WRITER]
+      )
       .build()
 }
 
@@ -126,12 +125,12 @@ private fun buildJunitXmlTestEngineListener(argName: String, launcherArgs: Map<S
       } catch (_: UnknownHostException) {
          InetAddress.getLoopbackAddress().hostAddress
       }
-      JunitXmlReportTestEngineListener(xmldir, hostname, null)
+      JunitXmlReportTestEngineListener(xmldir, hostname, launcherArgs[LauncherArgs.ARG_TARGET_NAME])
    }
 }
 
 private fun buildIncludeFilter(launcherArgs: Map<String, String>): IncludeDescriptorFilter? {
-   return launcherArgs[ARG_INCLUDE]?.let { include ->
+   return launcherArgs[LauncherArgs.ARG_INCLUDE]?.let { include ->
       IncludeDescriptorFilter(DescriptorPaths.parse(include))
    }
 }
@@ -139,8 +138,8 @@ private fun buildIncludeFilter(launcherArgs: Map<String, String>): IncludeDescri
 @Suppress("DEPRECATION")
 @Deprecated("Kotest 5 backwards compatibility, not used by kotest 6")
 private fun buildKotest5DescriptorFilter(launcherArgs: Map<String, String>): IncludeDescriptorFilter? {
-   return launcherArgs[TESTPATH]?.let { test ->
-      launcherArgs[ARG_SPEC]?.let { spec ->
+   return launcherArgs[LauncherArgs.TESTPATH]?.let { test ->
+      launcherArgs[LauncherArgs.ARG_SPEC]?.let { spec ->
          IncludeDescriptorFilter(DescriptorPaths.parse("$spec/$test"))
       }
    }

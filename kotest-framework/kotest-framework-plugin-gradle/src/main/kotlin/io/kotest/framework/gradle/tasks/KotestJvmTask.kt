@@ -47,6 +47,10 @@ abstract class KotestJvmTask : JavaExec() {
    @get:Optional
    abstract val moduleName: Property<String>
 
+   @get:Input
+   @get:Optional
+   abstract val targetName: Property<String>
+
    @get:InputFiles
    @get:PathSensitive(PathSensitivity.RELATIVE)
    @get:Optional
@@ -67,6 +71,7 @@ abstract class KotestJvmTask : JavaExec() {
          TestLauncherArgsJavaExecConfiguration()
             .withSpecs(specs)
             .withInclude(include.orNull)
+            .withTargetName(targetName.orNull)
             .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
             .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
 //            .withCommandLineTags(tags.orNull)

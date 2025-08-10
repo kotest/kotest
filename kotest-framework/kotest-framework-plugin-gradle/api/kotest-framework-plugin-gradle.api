@@ -62,6 +62,7 @@ public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : org/gradl
 	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
 	public abstract fun getRootTestReportsDir ()Lorg/gradle/api/file/DirectoryProperty;
 	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTargetName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTestSourceSetClasspath ()Lorg/gradle/api/provider/Property;
 }
 

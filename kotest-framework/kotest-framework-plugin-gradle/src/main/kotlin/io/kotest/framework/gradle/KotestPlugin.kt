@@ -93,12 +93,12 @@ abstract class KotestPlugin : Plugin<Project> {
          val existing = project.tasks.findByName("test")
          when (existing) {
             null -> println("> No test task found in project ${project.name} - no Kotest task will be added")
-            is Test -> configureJvmTask("kotest", "test", project)
+            is Test -> configureJvmTask("kotest", "test", project, null) // no need for target name for standalone jvm
          }
       }
    }
 
-   private fun configureJvmTask(name: String, sourceSetName: String, project: Project) {
+   private fun configureJvmTask(name: String, sourceSetName: String, project: Project, target: String?) {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val task = project.tasks.register(name, KotestJvmTask::class) {
@@ -125,6 +125,7 @@ abstract class KotestPlugin : Plugin<Project> {
          moduleName.set(project.name)
          moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
          rootTestReportsDir.set(getRootTestReportsDir(project, name))
+         targetName.set(target)
 
          // we can execute check or test tasks with -Pkotest.include and this will then be
          // passed to the kotest runtime as an environment variable to filter specs and tests
@@ -169,7 +170,7 @@ abstract class KotestPlugin : Plugin<Project> {
       val existing = target.project.tasks.findByName("jvmTest")
       when (existing) {
          null -> println("> No jvmTest task found in project ${target.project.name} - no jvmKotest task will be added")
-         is KotlinJvmTest -> configureJvmTask("jvmKotest", "jvmTest", target.project)
+         is KotlinJvmTest -> configureJvmTask("jvmKotest", "jvmTest", target.project, "jvm")
       }
    }
 

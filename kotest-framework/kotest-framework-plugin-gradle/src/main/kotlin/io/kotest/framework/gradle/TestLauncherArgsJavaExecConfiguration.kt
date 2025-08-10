@@ -10,6 +10,7 @@ import org.gradle.process.internal.JavaExecAction
 internal data class TestLauncherArgsJavaExecConfiguration(
    private val tags: String? = null,
    private val include: String? = null,
+   private val targetName: String? = null,
    private val moduleTestReportsDir: String? = null,
    private val rootTestReportsDir: String? = null,
    private val specs: List<String> = emptyList(),
@@ -27,6 +28,8 @@ internal data class TestLauncherArgsJavaExecConfiguration(
 
       // used to filter to a single spec or test within a spec
       private const val ARG_INCLUDE = "--include"
+
+      private const val ARG_TARGET_NAME = "--target-name"
 
       // used to filter to a single spec or test within a spec
       private const val ARG_MODULE_TEST_REPORTS_DIR = "--module-test-reports-dir"
@@ -54,6 +57,10 @@ internal data class TestLauncherArgsJavaExecConfiguration(
       return copy(include = include)
    }
 
+   fun withTargetName(targetName: String?): TestLauncherArgsJavaExecConfiguration {
+      return copy(targetName = targetName)
+   }
+
    fun withModuleTestReportsDir(dir: String): TestLauncherArgsJavaExecConfiguration {
       return copy(moduleTestReportsDir = dir)
    }
@@ -69,7 +76,8 @@ internal data class TestLauncherArgsJavaExecConfiguration(
    /**
     * Returns the args to send to the launcher
     */
-   private fun args() = listenerArgs() + tagsArg() + specsArg() + includeArg() + testReportsDirArg()
+   private fun args(): List<String> =
+      listenerArgs() + tagsArg() + specsArg() + includeArg() + testReportsDirArg() + targetNameArg()
 
    /**
     * If we are running inside intellij, we assume the user has the intellij Kotest plugin installed,
@@ -105,6 +113,11 @@ internal data class TestLauncherArgsJavaExecConfiguration(
          moduleTestReportsDir
       ) else emptyList()) +
          (if (rootTestReportsDir != null) listOf(ARG_ROOT_TEST_REPORTS_DIR, rootTestReportsDir) else emptyList())
+   }
+
+   private fun targetNameArg(): List<String> {
+      return if (targetName == null) emptyList()
+      else listOf(ARG_TARGET_NAME, targetName)
    }
 
    /**

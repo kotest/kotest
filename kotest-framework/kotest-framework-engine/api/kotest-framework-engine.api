@@ -3480,6 +3480,7 @@ public final class io/kotest/engine/launcher/LauncherArgs {
 	public static final field ARG_ROOT_TEST_REPORTS_DIR Ljava/lang/String;
 	public static final field ARG_SPEC Ljava/lang/String;
 	public static final field ARG_SPECS Ljava/lang/String;
+	public static final field ARG_TARGET_NAME Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/engine/launcher/LauncherArgs;
 	public static final field REPORTER Ljava/lang/String;
 	public static final field TESTPATH Ljava/lang/String;
