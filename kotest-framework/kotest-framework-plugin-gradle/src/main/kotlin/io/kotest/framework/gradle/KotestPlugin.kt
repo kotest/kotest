@@ -357,14 +357,14 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleMultiplatformAndroid(target: KotlinTarget) {
       if (target is KotlinAndroidTarget) {
-         configureAndroid(target.project, target.compilations)
+         configureAndroid(target.project, target.compilations, "android")
       }
    }
 
    private fun handleAndroid(project: Project) {
       project.plugins.withType<KotlinAndroidPluginWrapper> {
          project.extensions.configure<KotlinAndroidExtension> {
-            configureAndroid(project, target.compilations)
+            configureAndroid(project, target.compilations, null)
          }
       }
    }
@@ -372,6 +372,7 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun configureAndroid(
       project: Project,
       compilations: NamedDomainObjectContainer<out KotlinCompilation<out Any>>,
+      target: String?,
    ) {
       // example compilations for a typical project:
       // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
@@ -429,6 +430,8 @@ abstract class KotestPlugin : Plugin<Project> {
             moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
             rootTestReportsDir.set(getRootTestReportsDir(project, name))
             compilationName.set(compilation.name)
+            if (target != null)
+               targetName.set(target + " " + androidBuildType(compilation))
 
             // we depend on the standard android test task to ensure compilation has happened
             dependsOn(androidTestTaskName(compilation))
@@ -438,6 +441,14 @@ abstract class KotestPlugin : Plugin<Project> {
          // this means this kotest task will be run when the user runs "gradle check"
          project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
       }
+   }
+
+   /**
+    * Returns "release" or "debug" depending on the current build type, etc.
+    */
+   private fun androidBuildType(compilation: KotlinCompilation<*>): String {
+      require(compilation.name.endsWith("UnitTest")) { "Only unit tests are supported" }
+      return compilation.name.removeSuffix("UnitTest").lowercase()
    }
 
    /**

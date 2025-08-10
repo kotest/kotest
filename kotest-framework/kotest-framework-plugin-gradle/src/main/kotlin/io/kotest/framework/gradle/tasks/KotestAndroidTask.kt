@@ -62,6 +62,9 @@ abstract class KotestAndroidTask : JavaExec() {
    @get:Input
    abstract val compilationName: Property<String>
 
+   @get:Input
+   abstract val targetName: Property<String>
+
    override fun exec() {
 
       val specs = SpecsResolver.specs(specs, packages, specsClasspath.get())
@@ -73,6 +76,7 @@ abstract class KotestAndroidTask : JavaExec() {
             .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
             .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
             .withInclude(include.orNull)
+            .withTargetName(targetName.orNull)
 //               .withCommandLineTags(tags.orNull)
             .configure(this)
 
