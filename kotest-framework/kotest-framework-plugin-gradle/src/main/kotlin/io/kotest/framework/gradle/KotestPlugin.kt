@@ -1,5 +1,6 @@
 package io.kotest.framework.gradle
 
+import io.kotest.framework.gradle.TestLauncherArgsJavaExecConfiguration.Companion.LAUNCHER_MAIN_CLASS
 import io.kotest.framework.gradle.tasks.AbstractKotestTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.ARTIFACT_TYPE
@@ -20,8 +21,6 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
-import org.gradle.process.ExecOperations
-import org.gradle.process.internal.JavaForkOptionsFactory
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
@@ -37,16 +36,13 @@ import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinNodeJsIr
 import org.jetbrains.kotlin.gradle.targets.js.nodejs.NodeJsPlugin.Companion.kotlinNodeJsEnvSpec
+import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.util.Properties
-import javax.inject.Inject
 
 @Suppress("unused")
-abstract class KotestPlugin @Inject internal constructor(
-   private val executors: ExecOperations,
-   forkOptionsFactory: JavaForkOptionsFactory,
-) : Plugin<Project> {
+abstract class KotestPlugin : Plugin<Project> {
 
    companion object {
       const val TASK_DESCRIPTION = "Runs kotest tests"
@@ -96,35 +92,50 @@ abstract class KotestPlugin @Inject internal constructor(
          val existing = project.tasks.findByName("test")
          when (existing) {
             null -> println("> No test task found in project ${project.name} - no Kotest task will be added")
-            is Test -> {
-
-               // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-               // see https://docs.gradle.org/current/userguide/isolated_projects.html
-               val task = project.tasks.register("kotest", KotestJvmTask::class) {
-
-                  group = JavaBasePlugin.VERIFICATION_GROUP
-                  description = TASK_DESCRIPTION
-
-                  val java = project.extensions.getByType(JavaPluginExtension::class.java)
-                  val sourceSet = java.sourceSets.findByName("test")
-                     ?: throw StopExecutionException("Could not find source set 'test'")
-                  testSourceSetClasspath.set(sourceSet.runtimeClasspath)
-
-                  moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-                  rootTestReportsDir.set(getRootTestReportsDir(project, name))
-
-                  // we can execute check or test tasks with -Pkotest.include and this will then be
-                  // passed to the kotest runtime as an environment variable to filter specs and tests
-                  project.findProperty("kotest.include")?.let { include.set(it.toString()) }
-
-                  inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
-               }
-
-               // this means this kotest task will be run when the user runs "gradle check"
-               project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
-            }
+            is Test -> configureJvmTask("kotest", "test", project)
          }
       }
+   }
+
+   private fun configureJvmTask(name: String, sourceSetName: String, project: Project) {
+      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // see https://docs.gradle.org/current/userguide/isolated_projects.html
+      val task = project.tasks.register(name, KotestJvmTask::class) {
+
+         group = JavaBasePlugin.VERIFICATION_GROUP
+         description = TASK_DESCRIPTION
+
+         val java = project.extensions.getByType(JavaPluginExtension::class.java)
+         val sourceSet = java.sourceSets.findByName(sourceSetName)
+            ?: throw StopExecutionException("Could not find source set '$sourceSetName'")
+
+         // I don't know why this has to be set here and not inside the exec method
+         // it works for JVM but not KMP JVM
+         // I think the KMP version must be shadowing the mainClass variable somewhere
+         mainClass.set(LAUNCHER_MAIN_CLASS)
+         classpath = sourceSet.runtimeClasspath
+
+         // this must be true so we can handle the failure ourselves by throwing GradleException
+         // otherwise we get a nasty stack trace from gradle
+         isIgnoreExitValue = true
+
+         // we need this to scan for specs at runtime
+         testSourceSetClasspath.set(sourceSet.runtimeClasspath)
+
+         moduleName.set(project.name)
+         moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+         rootTestReportsDir.set(getRootTestReportsDir(project, name))
+
+         // we can execute check or test tasks with -Pkotest.include and this will then be
+         // passed to the kotest runtime as an environment variable to filter specs and tests
+         project.findProperty("kotest.include")?.let { include.set(it.toString()) }
+
+         // these are the JVM compile tasks that produce the classes we want to test
+         inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
+      }
+
+      // this means this kotest task will be run when the user runs "gradle check"
+      project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
    }
 
    private fun handleKotlinMultiplatform(project: Project) {
@@ -156,46 +167,11 @@ abstract class KotestPlugin @Inject internal constructor(
    }
 
    private fun handleMultiplatformJvm(target: KotlinTarget) {
-
       val existing = target.project.tasks.findByName("jvmTest")
       when (existing) {
-         null -> println("[Kotest] No test task found in project ${target.project.name}, skipping")
-         is Test -> {
-            println("[Kotest] Found test task in project ${target.project.name}, replacing with Kotest task")
-//
-//            // when we have a JVM project we will update the standard jvmTest task to point to our Kotest runner
-//            val task: KotestJvmTask = target.project.tasks.replace("jvmTest", KotestJvmTask::class)
-
-            // gradle best practice is to only apply to this project, and users add the plugin to each subproject
-            // see https://docs.gradle.org/current/userguide/isolated_projects.html
-//            val task = target.project.tasks.register("jvmKotest", KotestJvmTask::class) {
-
-            existing.doFirst {
-               println("Was test debug set? ${existing.debug}")
-               println("Was test debug port set? ${existing.debugOptions.port.get()}")
-            }
-
-//               doFirst {
-//                  println("Was debug set? ${existing.debug}")
-//                  println("Was debug port set? ${existing.debugOptions.port.get()}")
-//               }
-//
-//               val java = project.extensions.getByType(JavaPluginExtension::class.java)
-//               val sourceSet = java.sourceSets.findByName("jvmTest")
-//                  ?: throw StopExecutionException("Could not find source set '${testSourceSetClasspath.get()}'")
-//
-//               testSourceSetClasspath.set(sourceSet.runtimeClasspath)
-//               moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-//               rootTestReportsDir.set(getRootTestReportsDir(project, name))
-//
-//               inputs.files(project.tasks.named("jvmTest").map { it.outputs.files })
-//            }
-//            // this means this kotest task will be run when the user runs "gradle check"
-//            target.project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
-         }
+         null -> println("> No jvmTest task found in project ${target.project.name} - no jvmKotest task will be added")
+         is KotlinJvmTest -> configureJvmTask("jvmKotest", "jvmTest", target.project)
       }
-
-
    }
 
    private fun handleNative(target: KotlinTarget) {
@@ -205,7 +181,7 @@ abstract class KotestPlugin @Inject internal constructor(
 
          // sometimes a native target might not exist, because either tests are not supported (eg android native)
          // or the target is not buildable on the current host (eg ios target on a linux host)
-         null -> println("[Kotest] Skipping tests for ${target.name}")
+         null -> println("> Skipping tests for ${target.name}")
 
          is KotlinNativeTest -> {
 

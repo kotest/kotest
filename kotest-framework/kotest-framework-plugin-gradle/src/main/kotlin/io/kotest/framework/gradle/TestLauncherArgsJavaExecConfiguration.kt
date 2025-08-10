@@ -1,15 +1,13 @@
 package io.kotest.framework.gradle
 
-import org.gradle.api.file.FileCollection
 import org.gradle.process.JavaExecSpec
 import org.gradle.process.internal.JavaExecAction
 
 /**
- * This [TestLauncherJavaExecConfiguration] is responsible for configuring a [JavaExecAction] that will run tests
- * through the kotest engine by executing the [io.kotest.engine.launcher.MainKt] main class.
+ * This [TestLauncherArgsJavaExecConfiguration] is responsible for configuring the args on a [JavaExecAction]
+ * that will run tests through the kotest engine by executing the [io.kotest.engine.launcher.MainKt] main class.
  */
-internal data class TestLauncherJavaExecConfiguration(
-   private val classpath: FileCollection? = null,
+internal data class TestLauncherArgsJavaExecConfiguration(
    private val tags: String? = null,
    private val include: String? = null,
    private val moduleTestReportsDir: String? = null,
@@ -44,38 +42,28 @@ internal data class TestLauncherJavaExecConfiguration(
       internal const val LAUNCHER_MAIN_CLASS = "io.kotest.engine.launcher.MainKt"
    }
 
-   fun withCommandLineTags(tags: String?): TestLauncherJavaExecConfiguration {
+   fun withCommandLineTags(tags: String?): TestLauncherArgsJavaExecConfiguration {
       return copy(tags = tags)
    }
 
-   fun withClasspath(classpath: FileCollection): TestLauncherJavaExecConfiguration {
-      return copy(classpath = classpath)
-   }
-
-   fun withSpecs(specs: List<String>): TestLauncherJavaExecConfiguration {
+   fun withSpecs(specs: List<String>): TestLauncherArgsJavaExecConfiguration {
       return copy(specs = specs)
    }
 
-   fun withInclude(include: String?): TestLauncherJavaExecConfiguration {
+   fun withInclude(include: String?): TestLauncherArgsJavaExecConfiguration {
       return copy(include = include)
    }
 
-   fun withModuleTestReportsDir(dir: String): TestLauncherJavaExecConfiguration {
+   fun withModuleTestReportsDir(dir: String): TestLauncherArgsJavaExecConfiguration {
       return copy(moduleTestReportsDir = dir)
    }
 
-   fun withRootTestReportsDir(dir: String): TestLauncherJavaExecConfiguration {
+   fun withRootTestReportsDir(dir: String): TestLauncherArgsJavaExecConfiguration {
       return copy(rootTestReportsDir = dir)
    }
 
    fun configure(exec: JavaExecSpec) {
-      exec.mainClass.set(LAUNCHER_MAIN_CLASS)
-      exec.classpath(classpath)
       exec.args(args())
-
-      // this must be true so we can handle the failure ourselves by throwing GradleException
-      // otherwise we get a nasty stack trace from gradle
-      exec.isIgnoreExitValue = true
    }
 
    /**

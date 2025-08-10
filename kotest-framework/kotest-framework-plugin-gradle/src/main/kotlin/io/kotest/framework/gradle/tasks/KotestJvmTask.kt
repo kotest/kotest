@@ -1,7 +1,7 @@
 package io.kotest.framework.gradle.tasks
 
 import io.kotest.framework.gradle.SpecsResolver
-import io.kotest.framework.gradle.TestLauncherJavaExecConfiguration
+import io.kotest.framework.gradle.TestLauncherArgsJavaExecConfiguration
 import org.gradle.api.GradleException
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileCollection
@@ -20,8 +20,9 @@ import org.gradle.api.tasks.options.Option
  * Recognizes that it's a debuggable Gradle task.
  * IntelliJ then automatically sets up and connects a debugger to the forked JVM process, mirroring the behavior it has for standard tests.
  */
-// gradle requires the class be extendable
-@CacheableTask // this allows gradle to cache our inputs
+// this allows gradle to cache our inputs
+@CacheableTask
+// gradle requires the class be open or abstract to be able to subclass it
 abstract class KotestJvmTask : JavaExec() {
 
    @get:Option(option = "specs", description = "The specs list to avoid scanning")
@@ -43,6 +44,10 @@ abstract class KotestJvmTask : JavaExec() {
    @get:Optional
    abstract val include: Property<String>
 
+   @get:Input
+   @get:Optional
+   abstract val moduleName: Property<String>
+
    @get:InputFiles
    @get:PathSensitive(PathSensitivity.RELATIVE)
    @get:Optional
@@ -55,21 +60,26 @@ abstract class KotestJvmTask : JavaExec() {
 
    override fun exec() {
       val specs = SpecsResolver.specs(specs, packages, testSourceSetClasspath.get())
+      if (specs.isEmpty()) {
+         println("> No tests found for module ${moduleName.get()}")
+      } else {
 
-      TestLauncherJavaExecConfiguration()
-         .withClasspath(testSourceSetClasspath.get())
-         .withSpecs(specs)
-         .withInclude(include.orNull)
-         .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
-         .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
+         // builds the arg string at runtime
+         TestLauncherArgsJavaExecConfiguration()
+            .withSpecs(specs)
+            .withInclude(include.orNull)
+            .withModuleTestReportsDir(moduleTestReportsDir.get().asFile.absolutePath)
+            .withRootTestReportsDir(rootTestReportsDir.get().asFile.absolutePath)
 //            .withCommandLineTags(tags.orNull)
-         .configure(this)
+            .configure(this)
 
-      super.exec()
+         println(args.joinToString(" "))
+         super.exec()
 
-      val result = executionResult.get()
-      if (result.exitValue != 0) {
-         throw GradleException("Test suite failed with errors")
+         val result = executionResult.get()
+         if (result.exitValue != 0) {
+            throw GradleException("Test suite failed with errors")
+         }
       }
    }
 }
