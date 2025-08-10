@@ -99,6 +99,8 @@ jobs:
             shell: bash
             run: |
                set -euo pipefail
+               git config --global user.email "sam@sksamuel.com"
+               git config --global user.name "Kotest Release Bot"
                TAG="${{ inputs.version }}"
                # Check if tag already exists remotely
                if git ls-remote --tags origin | grep -q "refs/tags/${TAG}$"; then
