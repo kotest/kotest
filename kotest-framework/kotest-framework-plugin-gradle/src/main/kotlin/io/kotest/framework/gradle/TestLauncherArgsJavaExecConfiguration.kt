@@ -99,8 +99,7 @@ internal data class TestLauncherArgsJavaExecConfiguration(
     * This is used for example when running a single test from the kotest intellij plugin.
     */
    private fun includeArg(): List<String> {
-      if (include == null) return emptyList()
-      return listOf(ARG_INCLUDE, include)
+      return if (include == null) emptyList() else listOf(ARG_INCLUDE, include)
    }
 
    /**
