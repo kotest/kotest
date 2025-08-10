@@ -76,7 +76,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
             callback?.addNoTestsPlaceholder()
 
             if (event.exitCode != 0) {
-               consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code 1", null, true)
+               consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code ${event.exitCode}", null, true)
             } else {
                consoleView.resultsViewer.testsRootNode.setFinished()
             }
