@@ -31,6 +31,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.fileExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinWasmTargetType
 import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBinaryMode
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
@@ -253,7 +254,8 @@ abstract class KotestPlugin : Plugin<Project> {
                            rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
                            nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
-                           compileSyncPath.set(wasmCompileSyncPath(compilation))
+                           compileSyncPath.set(compileSyncPath(compilation))
+                           target.project.findProperty("kotest.include")?.let { include.set(it.toString()) }
                            wasi.set(false)
 
                            dependsOn("wasmJsTestTestDevelopmentExecutableCompileSync")
@@ -329,10 +331,12 @@ abstract class KotestPlugin : Plugin<Project> {
                   val task = target.project.tasks.register("jsNodeKotest", KotestJsTask::class) {
 
                      moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-                     rootTestReportsDir.set(getModuleTestReportsDir(project, name))
+                     rootTestReportsDir.set(getRootTestReportsDir(project, name))
 
                      nodeExecutable.set(target.project.kotlinNodeJsEnvSpec.executable)
-                     compileSyncPath.set(jsCompileSyncPath(compilation))
+                     compileSyncPath.set(compileSyncPath(compilation))
+                     modules.set(compilation.fileExtension.get() == "mjs")
+                     target.project.findProperty("kotest.include")?.let { include.set(it.toString()) }
 
                      dependsOn("kotlinNodeJsSetup")
                      dependsOn("jsTestTestDevelopmentExecutableCompileSync")
@@ -470,30 +474,18 @@ abstract class KotestPlugin : Plugin<Project> {
       return "kotest$capitalTarget"
    }
 
-   private fun jsCompileSyncPath(compilation: KotlinJsIrCompilation): String {
+   private fun compileSyncPath(compilation: KotlinJsIrCompilation): String {
       val moduleName = compilation.outputModuleName.get()
 
-      if (compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.isEmpty())
-         error("No DEVELOPMENT binaries found for compilation ${compilation.name} in project ${compilation.project.name}")
-
-      var path = ""
+      var path: String? = null
       compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.configureEach {
-         path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.js"
+         path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.${compilation.fileExtension.get()}"
       }
-      return path
-   }
-
-   private fun wasmCompileSyncPath(compilation: KotlinJsIrCompilation): String {
-      val moduleName = compilation.outputModuleName.get()
-
-      if (compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.isEmpty())
+      val p = path
+      if (p == null) {
          error("No DEVELOPMENT binaries found for compilation ${compilation.name} in project ${compilation.project.name}")
-
-      var path = ""
-      compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.configureEach {
-         path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.mjs"
       }
-      return path
+      return p
    }
 
    /**

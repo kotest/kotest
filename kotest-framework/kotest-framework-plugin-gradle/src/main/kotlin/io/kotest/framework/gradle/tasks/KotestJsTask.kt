@@ -6,6 +6,7 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
+import java.nio.file.Files
 import java.nio.file.Paths
 import javax.inject.Inject
 import kotlin.io.path.exists
@@ -40,9 +41,15 @@ abstract class KotestJsTask @Inject internal constructor(
    @get:Input
    abstract val nodeExecutable: Property<String>
 
+   @get:Input
+   abstract val modules: Property<Boolean>
+
    @TaskAction
    protected fun execute() {
-      if (!Paths.get(compileSyncPath.get()).exists()) return
+      if (!Paths.get(compileSyncPath.get()).exists()) {
+         println("[kotest] The compileSyncPath '${compileSyncPath.get()}' does not exist. Please ensure the Kotlin JS compilation has run successfully.")
+         return
+      }
 
       executors.exec {
 
@@ -71,13 +78,58 @@ abstract class KotestJsTask @Inject internal constructor(
          val moduleTestReportsDirArg = moduleTestReportsDir.get().asFile.absolutePath
          val rootTestReportsDirArg = rootTestReportsDir.get().asFile.absolutePath
 
-         // this is the entry point passed to node which references the well defined runKotest function
-         val nodeCommand =
-            "require('${compileSyncPath.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $includeArg, '$moduleTestReportsDirArg', '$rootTestReportsDirArg')"
-         println("Node command :$nodeCommand")
+         if (modules.get()) {
 
-         // similar to setting executable + args separately
-         commandLine(nodeExecutable.get(), "-e", nodeCommand)
+            /**
+             * UnsupportedOperationException: Module 'path' could not be imported
+             *     at captureStack (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:16457:11)
+             *     at init_kotlin_UnsupportedOperationException (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:19353:3)
+             *     at UnsupportedOperationException.new_kotlin_UnsupportedOperationException_iaim4v_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:4079:5)
+             *     at path$delegate$lambda (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3011:43)
+             *     at UnsafeLazyImpl.get_value_j01efc_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:11473:56)
+             *     at get_path (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:2972:15)
+             *     at SystemPathSeparator$delegate$lambda (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3259:13)
+             *     at UnsafeLazyImpl.get_value_j01efc_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:11473:56)
+             *     at get_SystemPathSeparator (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3163:15)
+             *     at Path_1 (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:2867:31)
+             * Caused by: ReferenceError: require is not defined
+             *     at eval (eval at path$delegate$lambda (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3006:11), <anonymous>:1:1)
+             *     at path$delegate$lambda (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3006:11)
+             *     at UnsafeLazyImpl.get_value_j01efc_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:11473:56)
+             *     at get_path (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:2972:15)
+             * Caused by: ReferenceError: require is not defined
+             *
+             *     at SystemPathSeparator$delegate$lambda (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3259:13)
+             *     at UnsafeLazyImpl.get_value_j01efc_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlin-kotlin-stdlib.mjs:11473:56)
+             *     at get_SystemPathSeparator (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:3163:15)
+             *     at Path_1 (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotlinx-io-kotlinx-io-core.mjs:2867:31)
+             *     at JunitXmlReportTestEngineListener.writeFile_f7vq6n_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotest-kotest-framework-kotest-framework-engine.mjs:15456:16)
+             *     at JunitXmlReportTestEngineListener.specFinished_sz6l3l_k$ (file:///home/sam/development/workspace/kotest/kotestM8Test/shared/build/compileSync/js/test/testDevelopmentExecutable/kotlin/kotest-kotest-framework-kotest-framework-engine.mjs:15437:10)
+             */
+            // the kotlin.io Path doesn't seem to like modules for some reason, so have to skip it
+            val fn = """exports["$KOTEST_RUN_FN_NAME"]('$listenerArg', $includeArg, null, null)"""
+
+            // must be .mjs to support modules
+            val file = Files.createTempFile("runKotest", ".mjs")
+            file.toFile().deleteOnExit()
+
+            val contents = """
+import * as exports from '${compileSyncPath.get()}';
+$fn;
+"""
+            Files.writeString(file, contents)
+            commandLine(nodeExecutable.get(), file.toFile().absolutePath)
+
+         } else {
+
+            // this is the entry point passed to node which references the well defined runKotest function
+            val nodeCommand =
+               "require('${compileSyncPath.get()}').$KOTEST_JS_GENERATED_PACKAGE.$KOTEST_RUN_FN_NAME('$listenerArg', $includeArg, '$moduleTestReportsDirArg', '$rootTestReportsDirArg')"
+            println("Node command :$nodeCommand")
+
+            // similar to setting executable + args separately
+            commandLine(nodeExecutable.get(), "-e", nodeCommand)
+         }
       }
    }
 }

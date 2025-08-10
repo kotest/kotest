@@ -48,6 +48,7 @@ public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/
 	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestJsTask$Companion;
 	protected final fun execute ()V
 	public abstract fun getCompileSyncPath ()Lorg/gradle/api/provider/Property;
+	public abstract fun getModules ()Lorg/gradle/api/provider/Property;
 	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
 }
 
