@@ -434,8 +434,13 @@ abstract class KotestPlugin : Plugin<Project> {
             moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
             rootTestReportsDir.set(getRootTestReportsDir(project, name))
             compilationName.set(compilation.name)
+
             if (target != null)
                targetName.set(target + " " + androidBuildType(compilation))
+
+            // we can execute check or test tasks with -Pkotest.include and this will then be
+            // passed to the kotest runtime as an environment variable to filter specs and tests
+            project.findProperty("kotest.include")?.let { include.set(it.toString()) }
 
             // we depend on the standard android test task to ensure compilation has happened
             dependsOn(androidTestTaskName(compilation))
