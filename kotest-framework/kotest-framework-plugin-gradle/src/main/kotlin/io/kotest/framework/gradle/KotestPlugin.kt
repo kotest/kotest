@@ -213,34 +213,34 @@ abstract class KotestPlugin : Plugin<Project> {
             // passed to the kotest runtime as an environment variable to filter specs and tests
             val include = target.project.findProperty("KOTEST_INCLUDE")
 
-            existing.doFirst {
-
-               println("Nayan running existing task ${existing.name}")
-
-               if (include != null)
-                  existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
-               println("Nayan include ${include}")
-
-               // we need to switch to TCSM format if running inside of intellij
-               val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
-               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
-               println("Nayan listener ${listener}")
-
-               // it seems the kotlin native test task empties this directory, so this currently does not do anything
-               existing.environment(
-                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR",
-                  moduleTestDirAbsolutePath
-               )
-
-               existing.environment(
-                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR",
-                  rootTestDirAbsolutePath
-               )
-
-               // this sets the target name in the environment, which is used by the xml report generator
-               // to add the target name to the test names
-               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET", targetName)
-            }
+//            existing.doFirst {
+//
+//               println("Nayan running existing task ${existing.name}")
+//
+//               if (include != null)
+//                  existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
+//               println("Nayan include ${include}")
+//
+//               // we need to switch to TCSM format if running inside of intellij
+//               val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
+//               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
+//               println("Nayan listener ${listener}")
+//
+//               // it seems the kotlin native test task empties this directory, so this currently does not do anything
+//               existing.environment(
+//                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR",
+//                  moduleTestDirAbsolutePath
+//               )
+//
+//               existing.environment(
+//                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR",
+//                  rootTestDirAbsolutePath
+//               )
+//
+//               // this sets the target name in the environment, which is used by the xml report generator
+//               // to add the target name to the test names
+//               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET", targetName)
+//            }
 
             // the ksp plugin will create a configuration for each target that contains
             // the symbol processors used by the test configuration. We want to wire in
