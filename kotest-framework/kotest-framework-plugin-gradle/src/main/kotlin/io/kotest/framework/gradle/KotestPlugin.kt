@@ -143,15 +143,9 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun handleKotlinMultiplatform(project: Project) {
       project.plugins.withType<KotlinMultiplatformPluginWrapper> { // this is the multiplatform plugin, not the kotlin plugin
          project.extensions.configure<KotlinMultiplatformExtension> { // this is the multiplatform extension
-
-            for (task in project.tasks) {
-               println("[kotest] existing task: ${task.name} of type ${task::class.java.name} found in project ${project.name}")
-            }
-
             this.targets
                .configureEach {
                   val target = this
-                  println("[kotest] configurating target ${target.name} of type ${target.platformType} with disambiguation classifier ${target.disambiguationClassifier}")
                   if (name !in unsupportedTargets) {
                      when (platformType) {
                         KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target)
@@ -165,7 +159,6 @@ abstract class KotestPlugin : Plugin<Project> {
                         KotlinPlatformType.native -> {
                            // we don't want to wire stuff to non-buildable targets (i.e. ios target on a linux host)
                            // so we check if the target is publishable
-                           println("[kotest] configurating target ${target.name} is publishable ${target.publishable}")
                            if (target.publishable) handleNative(target)
                         }
                      }
@@ -185,10 +178,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleNative(target: KotlinTarget) {
 
-      println("[kotest] handling native target ${target.name} by trying to find task ${nativeTestTaskName(target)}")
       val existing = target.project.tasks.findByName(nativeTestTaskName(target))
-      if (existing != null)
-         println("[kotest] handling native target ${target.name}, existing test task: ${existing::class.java.name}")
       when (existing) {
 
          // sometimes a native target might not exist, because either tests are not supported (eg android native)
@@ -196,7 +186,6 @@ abstract class KotestPlugin : Plugin<Project> {
          null -> println("> Skipping tests for ${target.name} because no task ${nativeTestTaskName(target)} found")
 
          is KotlinNativeTest -> {
-            println("Nayan configuring test ${nativeTestTaskName(target)}")
 
             val moduleTestDir = getModuleTestReportsDir(target.project, existing.name).get()
             moduleTestDir.asFile.mkdirs()
@@ -207,40 +196,36 @@ abstract class KotestPlugin : Plugin<Project> {
             val rootTestDirAbsolutePath = rootTestDir.asFile.absolutePath
 
             // passed to the xml report generator
-            val targetName = target.name.also { println("[Kotest] target name $it") }
+            val targetName = target.name
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
             val include = target.project.findProperty("KOTEST_INCLUDE")
 
-//            existing.doFirst {
-//
-//               println("Nayan running existing task ${existing.name}")
-//
-//               if (include != null)
-//                  existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
-//               println("Nayan include ${include}")
-//
-//               // we need to switch to TCSM format if running inside of intellij
-//               val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
-//               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
-//               println("Nayan listener ${listener}")
-//
-//               // it seems the kotlin native test task empties this directory, so this currently does not do anything
-//               existing.environment(
-//                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR",
-//                  moduleTestDirAbsolutePath
-//               )
-//
-//               existing.environment(
-//                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR",
-//                  rootTestDirAbsolutePath
-//               )
-//
-//               // this sets the target name in the environment, which is used by the xml report generator
-//               // to add the target name to the test names
-//               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET", targetName)
-//            }
+            existing.doFirst {
+
+               if (include != null)
+                  existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
+
+               // we need to switch to TCSM format if running inside of intellij
+               val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
+               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
+
+               // it seems the kotlin native test task empties this directory, so this currently does not do anything
+               existing.environment(
+                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR",
+                  moduleTestDirAbsolutePath
+               )
+
+               existing.environment(
+                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR",
+                  rootTestDirAbsolutePath
+               )
+
+               // this sets the target name in the environment, which is used by the xml report generator
+               // to add the target name to the test names
+               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET", targetName)
+            }
 
             // the ksp plugin will create a configuration for each target that contains
             // the symbol processors used by the test configuration. We want to wire in
