@@ -196,6 +196,7 @@ abstract class KotestPlugin : Plugin<Project> {
          null -> println("> Skipping tests for ${target.name} because no task ${nativeTestTaskName(target)} found")
 
          is KotlinNativeTest -> {
+            println("Nayan configuring test ${nativeTestTaskName(target)}")
 
             val moduleTestDir = getModuleTestReportsDir(target.project, existing.name).get()
             moduleTestDir.asFile.mkdirs()
@@ -214,12 +215,16 @@ abstract class KotestPlugin : Plugin<Project> {
 
             existing.doFirst {
 
+               println("Nayan running existing task ${existing.name}")
+
                if (include != null)
                   existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
+               println("Nayan include ${include}")
 
                // we need to switch to TCSM format if running inside of intellij
                val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
                existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
+               println("Nayan listener ${listener}")
 
                // it seems the kotlin native test task empties this directory, so this currently does not do anything
                existing.environment(
