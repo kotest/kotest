@@ -87,7 +87,7 @@ val launcher = TestEngineLauncher()
 when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
    "console" -> launcher.withConsoleListener().launch()
-   else -> Unit // this stops us running from the non-kotest test targets
+   else -> launcher.withConsoleListener().launch() // this stops us running from the non-kotest test targets
 }
 """.trim()
       ).addCode("\n")
