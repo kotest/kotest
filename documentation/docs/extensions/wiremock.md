@@ -13,8 +13,8 @@ URL, header and body content patterns etc.
 Kotest provides a module ```kotest-extensions-wiremock``` for integration with wiremock.
 
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-wiremock.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest/kotest-extensions-wiremock)
-[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-wiremock%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-wiremock/maven-metadata.xml)
+[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-wiremock.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-wiremock)
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest.extensions/kotest-extensions-wiremock.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest/extensions/kotest-extensions-wiremock/)
 
 
 To begin, add the following dependency to your build:

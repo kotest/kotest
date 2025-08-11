@@ -7,7 +7,7 @@ slug: framework.html
 ![intro_gif](/img/intro_gif.gif)
 
 [![version badge](https://img.shields.io/maven-central/v/io.kotest/kotest-framework-engine.svg?label=release)](https://search.maven.org/search?q=g:io.kotest%20OR%20g:io.kotest.extensions)
-[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml)
+[![version badge](https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.kotest/kotest-framework-engine.svg?label=snapshot)](https://s01.oss.sonatype.org/content/repositories/snapshots/io/kotest/)
 
 Test with Style
 ---------------

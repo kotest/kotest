@@ -15,8 +15,7 @@ If you need to test code that uses `java.lang.System`, Kotest provides extension
 To use this extension, add the dependency to your project:
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-jvm.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest/kotest-extensions-jvm)
-[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-jvm%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-jvm/maven-metadata.xml)
-
+[<img src="https://img.shields.io/nexus/s/https/oss.sonatype.org/io.kotest/kotest-extensions-jvm.svg?label=latest%20snapshot"/>](https://oss.sonatype.org/content/repositories/snapshots/io/kotest-extensions-jvm/)
 
 ```kotlin
 io.kotest:kotest-extensions-jvm:${version}
