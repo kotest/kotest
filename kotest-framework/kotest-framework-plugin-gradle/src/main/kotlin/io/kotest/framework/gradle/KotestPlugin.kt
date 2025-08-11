@@ -210,31 +210,31 @@ abstract class KotestPlugin : Plugin<Project> {
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
-            val include = target.project.findProperty("kotest.include")
+            val include = target.project.findProperty("KOTEST_INCLUDE")
 
             existing.doFirst {
 
                if (include != null)
-                  existing.environment("kotest.framework.runtime.native.include", include.toString())
+                  existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
 
                // we need to switch to TCSM format if running inside of intellij
                val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
-               existing.environment("kotest.framework.runtime.native.listener", listener)
+               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
 
                // it seems the kotlin native test task empties this directory, so this currently does not do anything
                existing.environment(
-                  "kotest.framework.runtime.native.module.test.reports.dir",
+                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR",
                   moduleTestDirAbsolutePath
                )
 
                existing.environment(
-                  "kotest.framework.runtime.native.root.test.reports.dir",
+                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR",
                   rootTestDirAbsolutePath
                )
 
                // this sets the target name in the environment, which is used by the xml report generator
                // to add the target name to the test names
-               existing.environment("kotest.framework.runtime.native.target", targetName)
+               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET", targetName)
             }
 
             // the ksp plugin will create a configuration for each target that contains

@@ -35,19 +35,19 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addCode(
             """
-val includeArg = getenv("kotest.framework.runtime.native.include")?.toKString()
+val includeArg = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE")?.toKString()
 println("includeArg " + includeArg)
 
-val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
+val listenerType = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER")?.toKString() ?: ""
 println("listenerType " + listenerType)
 
-val moduleTestReportsDir = getenv("kotest.framework.runtime.native.module.test.reports.dir")?.toKString()
+val moduleTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR")?.toKString()
 println("moduleTestReportsDir " + moduleTestReportsDir)
 
-val rootTestReportsDir = getenv("kotest.framework.runtime.native.root.test.reports.dir")?.toKString()
+val rootTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR")?.toKString()
 println("rootTestReportsDir " + rootTestReportsDir)
 
-val target = getenv("kotest.framework.runtime.native.target")?.toKString()
+val target = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET")?.toKString()
 println("target " + target)
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
