@@ -1,7 +1,5 @@
 package io.kotest.engine.console
 
-actual val consoleRenderer: ConsoleRenderer = PlainConsoleRenderer
-
 /**
  * An implementation of [ConsoleRenderer] that does not do any formatting, and just outputs
  * to std out using [kotlin.io.print] and [kotlin.io.println].

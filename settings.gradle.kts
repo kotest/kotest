@@ -65,9 +65,6 @@ include(
    // generates KMP tests
    ":kotest-framework:kotest-framework-symbol-processor",
 
-   // generates KMP test reports
-   ":kotest-framework:kotest-framework-multiplatform-reporter",
-
    ":kotest-assertions:kotest-assertions-table",
 
    // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
