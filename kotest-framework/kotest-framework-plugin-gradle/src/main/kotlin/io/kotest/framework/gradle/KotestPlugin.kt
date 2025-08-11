@@ -18,6 +18,7 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.Test
+import org.gradle.internal.cc.base.logger
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
@@ -198,7 +199,7 @@ abstract class KotestPlugin : Plugin<Project> {
             val rootTestDirAbsolutePath = rootTestDir.asFile.absolutePath
 
             // passed to the xml report generator
-            val targetName = target.name
+            val targetName = target.name.also { println("[Kotest] target name $it") }
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
@@ -233,7 +234,7 @@ abstract class KotestPlugin : Plugin<Project> {
             // the symbol processors used by the test configuration. We want to wire in
             // the kotest symbol processor to this configuration so the user doesn't have to manually
             // do it for every different native target (there could be many!)
-            wireKsp(target.project, kspConfigurationName(target))
+            wireKsp(target.project, kspConfigurationName(target).also { println("[kotest] ksp name $it") })
          }
       }
    }
