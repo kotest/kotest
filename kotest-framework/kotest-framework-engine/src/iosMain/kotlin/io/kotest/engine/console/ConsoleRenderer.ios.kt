@@ -1,5 +1,10 @@
 package io.kotest.engine.console
 
+import com.github.ajalt.mordant.rendering.AnsiLevel
+import com.github.ajalt.mordant.rendering.TextColors
+import com.github.ajalt.mordant.rendering.TextStyles
+import com.github.ajalt.mordant.terminal.Terminal
+
 actual val consoleRenderer: ConsoleRenderer = MordantConsoleRenderer
 
 object MordantConsoleRenderer : ConsoleRenderer {
