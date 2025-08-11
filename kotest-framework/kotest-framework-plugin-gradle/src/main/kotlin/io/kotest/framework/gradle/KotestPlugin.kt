@@ -182,11 +182,13 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun handleNative(target: KotlinTarget) {
 
       val existing = target.project.tasks.findByName(nativeTestTaskName(target))
+      if (existing != null)
+         println("[kotest] handling native target ${target.name}, existing test task: ${existing::class.java.name}")
       when (existing) {
 
          // sometimes a native target might not exist, because either tests are not supported (eg android native)
          // or the target is not buildable on the current host (eg ios target on a linux host)
-         null -> println("> Skipping tests for ${target.name}")
+         null -> println("> Skipping tests for ${target.name} because no task ${nativeTestTaskName(target)} found")
 
          is KotlinNativeTest -> {
 
