@@ -15,6 +15,7 @@ import com.intellij.openapi.externalSystem.service.internal.ExternalSystemExecut
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import io.kotest.plugin.intellij.Constants
+import io.kotest.plugin.intellij.gradle.GradleUtils
 import jetbrains.buildServer.messages.serviceMessages.ServiceMessagesParser
 import org.jetbrains.plugins.gradle.util.GradleConstants
 
@@ -89,8 +90,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
    /**
     * Returns true if this implementation of [ExternalSystemExecutionConsoleManager] should be used to
-    * handle the output of the given [task]. We determine true if the task is a Gradle task
-    * that contains a Kotest task name.
+    * handle the output of the given [task]. We determine true if we are running tests and have the
+    * kotest gradle plugin applied to the project
     *
     * This method is invoked for all extensions for each task that is executed by an external system.
     * It is up to this extension to determine if it is applicable for the given task.
@@ -98,10 +99,8 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
    override fun isApplicableFor(task: ExternalSystemTask): Boolean {
       if (task is ExternalSystemExecuteTaskTask) {
          if (task.externalSystemId.id == GradleConstants.SYSTEM_ID.id) {
-            println("Checking is applicable, tasks to execute: ${task.tasksToExecute}")
-            return task.tasksToExecute.any {
-               it.lowercase().endsWith("kotest")
-            }
+            println("Checking is applicable, tasks to execute: ${task.tasksToExecute} state=${task.state} data=${task.userDataString} externalPath=${task.externalProjectPath}")
+            return GradleUtils.hasKotestTask(task.tasksToExecute)
          }
       }
       return false

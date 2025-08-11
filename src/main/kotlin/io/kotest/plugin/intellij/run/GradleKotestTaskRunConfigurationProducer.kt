@@ -16,6 +16,8 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.plugins.gradle.execution.GradleRunConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
+private val KOTEST_RUN = Key.create<Boolean>("KOTEST_RUN")
+
 /**
  * Runs a Kotest individual test or spec using the Kotest Gradle plugin.
  *
@@ -93,7 +95,9 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       // if we set this to true then intellij will send output to its own gradle test console,
       // but we want to display our own KotestSMTRunnerConsoleView.
       configuration.isRunAsTest = false
-      configuration.putUserData<Boolean>(Key.create<Boolean>("kotest"), true)
+      configuration.isShowConsoleOnStdErr = false
+      configuration.isShowConsoleOnStdOut = false
+      configuration.putUserData<Boolean>(KOTEST_RUN, true)
 
       val runManager = RunManager.getInstance(project)
       runManager.setUniqueNameIfNeeded(configuration)

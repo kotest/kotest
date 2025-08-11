@@ -16,6 +16,10 @@ object GradleUtils {
     */
    fun hasGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
+//      GradleSettings.getInstance(module.project).linkedProjectsSettings.forEach { settings ->
+//         val gm = ExternalSystemApiUtil.getManager() as GradleManager
+//         gm.
+//      }
       // if we have any kotest gradle task in the project, we assume the plugin is applied
       return kotestTasks(module).isNotEmpty()
    }
@@ -51,9 +55,11 @@ object GradleUtils {
 
    fun isKotestTaskName(taskName: String): Boolean {
       return taskName == "kotest" // jvm only task name
-         || taskName.endsWith("Kotest") // thinks like linuxX84Kotest or jsKotest
-         || taskName.endsWith("kotestDebugUnitTest") // android
-         || taskName.endsWith("kotestReleaseUnitTest") // android
+         || taskName == "jvmKotest" // multiplatform jvm task name
+         || taskName == "jsKotest" // multiplatform js task name
+         || taskName == "wasmJsKotest" // multiplatform wasm js task name
+         || taskName == "wasmWasiKotest" // multiplatform wasm wasi task name
+         || taskName.matches("kotest[a-z]+UnitTest".toRegex()) // matches kotestReleaseUnitTest, kotestDebugUnitTest, etc.
    }
 
    fun getIncludeArg(taskNames: List<String>): String? {
