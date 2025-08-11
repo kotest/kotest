@@ -18,7 +18,6 @@ import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.Test
-import org.gradle.internal.cc.base.logger
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.support.uppercaseFirstChar
@@ -144,6 +143,11 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun handleKotlinMultiplatform(project: Project) {
       project.plugins.withType<KotlinMultiplatformPluginWrapper> { // this is the multiplatform plugin, not the kotlin plugin
          project.extensions.configure<KotlinMultiplatformExtension> { // this is the multiplatform extension
+
+            for (task in project.tasks) {
+               println("[kotest] existing task: ${task.name} of type ${task::class.java.name} found in project ${project.name}")
+            }
+
             this.targets
                .configureEach {
                   val target = this
@@ -181,6 +185,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleNative(target: KotlinTarget) {
 
+      println("[kotest] handling native target ${target.name} by trying to find task ${nativeTestTaskName(target)}")
       val existing = target.project.tasks.findByName(nativeTestTaskName(target))
       if (existing != null)
          println("[kotest] handling native target ${target.name}, existing test task: ${existing::class.java.name}")
