@@ -332,6 +332,9 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleJs(target: KotlinTarget) {
       if (target is KotlinJsIrTarget) {
+
+         println("[kotest] handling js target ${target.name} with subtargets ${target.subTargets.map { it.name }}")
+
          target.subTargets.configureEach {
             val subtarget = this
             if (subtarget is KotlinNodeJsIr) { // we only support node based JS targets
