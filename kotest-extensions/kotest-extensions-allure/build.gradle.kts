@@ -6,14 +6,14 @@ plugins {
 
 kotlin {
    sourceSets {
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(libs.kotlin.reflect)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.allure.commons)
          }
       }
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(libs.jackson.module.kotlin)
          }
