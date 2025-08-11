@@ -21,12 +21,16 @@ actual fun createAssertionError(
       }
    }
 
-   return KotestAssertionFailedError(
-      message = messageString,
-      cause = cause,
-      expected = expected?.value?.value,
-      actual = actual?.value?.value
-   )
+   return if (expected == null && actual == null) {
+      AssertionError(message, cause)
+   } else {
+      KotestAssertionFailedError(
+         message = messageString,
+         cause = cause,
+         expected = expected?.value?.value,
+         actual = actual?.value?.value
+      )
+   }
 }
 
 /**
