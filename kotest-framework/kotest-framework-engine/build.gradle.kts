@@ -90,13 +90,6 @@ kotlin {
          }
       }
 
-      watchosMain {
-         dependencies {
-            // used to write to the console with fancy colours!
-            implementation(libs.mordant)
-         }
-      }
-
       linuxMain {
          dependencies {
             // used to write to the console with fancy colours!
