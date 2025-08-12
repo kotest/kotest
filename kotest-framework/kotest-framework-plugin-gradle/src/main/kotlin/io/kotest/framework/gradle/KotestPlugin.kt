@@ -20,7 +20,6 @@ import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.register
-import org.gradle.kotlin.dsl.support.uppercaseFirstChar
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -322,9 +321,6 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleJs(target: KotlinTarget) {
       if (target is KotlinJsIrTarget) {
-
-         println("[kotest] handling js target ${target.name} with subtargets ${target.subTargets.map { it.name }}")
-
          target.subTargets.configureEach {
             val subtarget = this
             if (subtarget is KotlinNodeJsIr) { // we only support node based JS targets
@@ -505,39 +501,8 @@ abstract class KotestPlugin : Plugin<Project> {
       return "ksp${target.name.replaceFirstChar { it.uppercase() }}Test"
    }
 
-   /**
-    * Returns the name of the Kotest task for a native compilation.
-    * This will mirror the standard test task naming convention by appending "Kotest" to the compilation name.
-    * Eg `linuxX64Test` will become `linuxX64Kotest`, and `mingwX64Test` will become `mingwX64Kotest`.
-    */
-   private fun nativeKotestTaskName(target: KotlinTarget): String {
-      return target.name + "ConfigureKotest"
-   }
-
    private fun nativeTestTaskName(target: KotlinTarget): String {
       return target.name + "Test"
-   }
-
-   private fun wasmNodeKotestTaskName(target: KotlinTarget): String {
-      return "${target.name}NodeKotest"
-   }
-
-   private fun wasmNodeTestTaskName(target: KotlinTarget): String {
-      return "${target.name}NodeTest"
-   }
-
-   /**
-    * Returns the name of the linker task for a native test compilation.
-    * The format is linkDebugTest<TargetName>.
-    * For example linkDebugTestLinuxX64.
-    */
-   private fun linkDebugNativeTestTaskName(target: KotlinTarget): String {
-      return "linkDebugTest${target.name.uppercaseFirstChar()}"
-   }
-
-   private fun nativeBinaryPath(target: KotlinTarget): String {
-      // this will result in something like build/bin/linuxX64/debugTest/test.kexe
-      return "bin/${target.name}/debugTest/test.kexe"
    }
 
    /**
