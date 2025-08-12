@@ -2975,6 +2975,7 @@ public final class io/kotest/engine/EngineResult {
 	public static synthetic fun copy$default (Lio/kotest/engine/EngineResult;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/engine/EngineResult;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getErrors ()Ljava/util/List;
+	public final fun hasErrors ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -3446,11 +3447,6 @@ public abstract interface class io/kotest/engine/extensions/ExtensionRegistry {
 public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
 	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
 	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
-}
-
-public final class io/kotest/engine/extensions/MultipleExceptions : java/lang/Exception {
-	public fun <init> (Ljava/util/List;)V
-	public final fun getCauses ()Ljava/util/List;
 }
 
 public final class io/kotest/engine/extensions/SystemPropertyTagExtension : io/kotest/core/extensions/TagExtension {

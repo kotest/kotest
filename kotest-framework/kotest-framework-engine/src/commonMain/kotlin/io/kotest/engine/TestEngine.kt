@@ -1,8 +1,8 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.Logger
 import io.kotest.common.Platform
+import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.extensions.ExtensionRegistry
@@ -20,6 +20,10 @@ data class EngineResult(val errors: List<Throwable>) {
 
    fun addError(t: Throwable): EngineResult {
       return EngineResult(errors + t)
+   }
+
+   fun hasErrors(): Boolean {
+      return errors.isNotEmpty()
    }
 }
 

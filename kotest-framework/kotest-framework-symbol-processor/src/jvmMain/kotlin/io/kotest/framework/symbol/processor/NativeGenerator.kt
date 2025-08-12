@@ -75,11 +75,15 @@ val launcher = TestEngineLauncher()
       }
       function.addCode(
          """
-when (listenerType) {
+val result = when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
-   "console" -> launcher.withConsoleListener().launch()
-   else -> launcher.withConsoleListener().launch() // this stops us running from the non-kotest test targets
+   else -> launcher.withConsoleListener().launch()
 }
+
+// fail the execution if there are any errors
+if (result.hasErrors())
+   exitProcess(1)
+
 """.trim()
       ).addCode("\n")
 
@@ -93,6 +97,7 @@ when (listenerType) {
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
          .addFunction(function.build())
          .addProperty(invoker.build())
+         .addImport("kotlin.system", "exitProcess")
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
          .addImport("io.kotest.common", "KotestInternal")
