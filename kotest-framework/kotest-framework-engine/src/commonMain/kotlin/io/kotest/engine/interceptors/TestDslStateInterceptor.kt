@@ -14,7 +14,7 @@ internal object TestDslStateInterceptor : EngineInterceptor {
       val result = execute(context)
       return runCatching { TestDslState.checkState() }.fold(
          { result },
-         { EngineResult(listOf(it) + result.errors) },
+         { result.addError(it) },
       )
    }
 }

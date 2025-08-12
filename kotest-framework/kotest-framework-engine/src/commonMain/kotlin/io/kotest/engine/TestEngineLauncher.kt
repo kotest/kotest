@@ -12,6 +12,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -38,6 +39,7 @@ data class TestEngineLauncher(
    private val registry: ExtensionRegistry,
 ) {
 
+   private val collecting = CollectingTestEngineListener()
    private val logger = Logger(TestEngineLauncher::class)
 
    @Deprecated("Use no arg constructor. Deprecated in 6.0")
@@ -52,7 +54,7 @@ data class TestEngineLauncher(
 
    constructor() : this(
       Platform.JVM,
-      emptyList(),
+      listOf(),
       null,
       emptyList(),
       null,
@@ -169,7 +171,7 @@ data class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
-      val safeListeners = listeners.map {
+      val safeListeners = (listeners + collecting).map {
          ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(it))
       }
 
@@ -189,7 +191,7 @@ data class TestEngineLauncher(
    suspend fun async(): EngineResult {
       logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
-      return engine.execute(TestSuite(refs))
+      return engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
    }
 
    /**
@@ -200,7 +202,7 @@ data class TestEngineLauncher(
       logger.log { "Launching Test Engine" }
       return runBlocking {
          val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs))
+         engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
       }
    }
 
@@ -212,7 +214,7 @@ data class TestEngineLauncher(
       logger.log { "Launching Test Engine in Javascript promise" }
       runPromise {
          val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs))
+         engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
       }
    }
 }

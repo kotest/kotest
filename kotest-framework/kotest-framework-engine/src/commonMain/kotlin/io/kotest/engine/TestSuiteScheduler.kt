@@ -53,7 +53,7 @@ internal class TestSuiteScheduler(
       schedule(default, concurrency())
       logger.log { Pair(null, "Remaining specs have completed") }
 
-      return EngineResult(emptyList())
+      return EngineResult(emptyList(), false)
    }
 
    private suspend fun schedule(

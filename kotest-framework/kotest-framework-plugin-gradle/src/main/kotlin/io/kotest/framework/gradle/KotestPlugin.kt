@@ -199,7 +199,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
-            val include = target.project.findProperty("KOTEST_INCLUDE")
+            val include = target.project.findProperty("kotest.include")
 
             existing.doFirst {
 
@@ -230,7 +230,7 @@ abstract class KotestPlugin : Plugin<Project> {
             // the symbol processors used by the test configuration. We want to wire in
             // the kotest symbol processor to this configuration so the user doesn't have to manually
             // do it for every different native target (there could be many!)
-            wireKsp(target.project, kspConfigurationName(target).also { println("[kotest] ksp name $it") })
+            wireKsp(target.project, kspConfigurationName(target))
          }
       }
    }

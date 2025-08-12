@@ -80,9 +80,10 @@ val result = when (listenerType) {
    else -> launcher.withConsoleListener().launch()
 }
 
-// fail the execution if there are any errors
-if (result.hasErrors())
-   exitProcess(1)
+// fail the execution if there are any test failures or errors
+if (result.errors.isNotEmpty() || result.testFailures) {
+  exitProcess(1)
+}
 
 """.trim()
       ).addCode("\n")
