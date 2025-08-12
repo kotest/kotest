@@ -63,6 +63,7 @@ abstract class KotestAndroidTask : JavaExec() {
    abstract val compilationName: Property<String>
 
    @get:Input
+   @get:Optional
    abstract val targetName: Property<String>
 
    override fun exec() {
