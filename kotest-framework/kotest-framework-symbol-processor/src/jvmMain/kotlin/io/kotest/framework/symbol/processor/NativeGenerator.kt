@@ -36,19 +36,10 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
          .addCode(
             """
 val includeArg = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE")?.toKString()
-println("includeArg " + includeArg)
-
 val listenerType = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER")?.toKString() ?: ""
-println("listenerType " + listenerType)
-
 val moduleTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR")?.toKString()
-println("moduleTestReportsDir " + moduleTestReportsDir)
-
 val rootTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR")?.toKString()
-println("rootTestReportsDir " + rootTestReportsDir)
-
 val target = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET")?.toKString()
-println("target " + target)
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { IncludeDescriptorFilter(it) }
