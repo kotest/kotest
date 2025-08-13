@@ -187,6 +187,8 @@ data class TestEngineLauncher(
 
    /**
     * Launch the [TestEngine] in an existing coroutine without blocking.
+    *
+    * @return the [EngineResult] containing the results of the test execution.
     */
    suspend fun async(): EngineResult {
       logger.log { "Launching Test Engine" }
@@ -197,6 +199,8 @@ data class TestEngineLauncher(
    /**
     * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
     * This method will throw on JS.
+    *
+    * @return the [EngineResult] containing the results of the test execution.
     */
    fun launch(): EngineResult {
       logger.log { "Launching Test Engine" }
@@ -209,10 +213,12 @@ data class TestEngineLauncher(
    /**
     * Launch the [TestEngine] created from this builder using a Javascript promise.
     * This method will throw on JVM or native.
+    *
+    * @return the promise that will resolve to an [EngineResult] when the tests have completed.
     */
-   fun promise() {
+   fun promise(): Any { // will be a Promise<EngineResult> on JS, but an error on other platforms
       logger.log { "Launching Test Engine in Javascript promise" }
-      runPromise {
+      return runPromise {
          val engine = TestEngine(toConfig())
          engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
       }

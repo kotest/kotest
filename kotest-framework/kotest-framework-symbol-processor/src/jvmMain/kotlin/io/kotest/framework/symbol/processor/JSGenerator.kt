@@ -9,9 +9,7 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
-import com.squareup.kotlinpoet.asTypeName
-import kotlin.js.ExperimentalJsExport
+import com.squareup.kotlinpoet.UNIT
 
 class JSGenerator(private val environment: SymbolProcessorEnvironment) {
 
@@ -30,31 +28,23 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
    }
 
    private fun createFileSpec(specs: List<KSClassDeclaration>, configs: List<KSClassDeclaration>): FileSpec {
-      val function = FunSpec.builder("runKotest")
-         .addModifiers(KModifier.PUBLIC)
-         .addAnnotation(ExperimentalJsExport::class)
-         .addAnnotation(ClassName("kotlin.js", "JsExport"))
-         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
-         .addParameter(ParameterSpec.builder("listenerType", String::class).build())
-         .addParameter(ParameterSpec.builder("includeArg", String::class.asTypeName().copy(nullable = true)).build())
-         .addParameter(ParameterSpec.builder("moduleTestReportsDir", String::class.asTypeName().copy(nullable = true)).build())
-         .addParameter(ParameterSpec.builder("rootTestReportsDir", String::class.asTypeName().copy(nullable = true)).build())
+      val function = FunSpec.builder("main")
+         .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
+         .returns(UNIT)
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"UNCHECKED_CAST\"").build())
+//         .addParameter(ParameterSpec.builder("includeArg", String::class.asTypeName().copy(nullable = true)).build())
          .addCode(
             """
-val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { IncludeDescriptorFilter(it) }
-val moduleXmlListener = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, "JS") }
-val rootXmlListener = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, "JS") }
+//val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
+//val filter = descriptor?.let { IncludeDescriptorFilter(it) }
 """.trim()
          )
          .addCode("\n")
          .addCode(
             """
-val launcher = TestEngineLauncher()
+val promise = TestEngineLauncher()
  .withJs()
- .addExtensions(listOfNotNull(filter))
- .withListener(moduleXmlListener)
- .withListener(rootXmlListener)
+// .addExtensions(listOfNotNull(filter))
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
@@ -72,14 +62,22 @@ val launcher = TestEngineLauncher()
             .addCode(""".withProjectConfig(${configs.first().qualifiedName?.asString()}())""")
             .addCode("\n")
       }
+      function
+         .addCode(""".withConsoleListener()""")
+         .addCode("\n")
+         .addCode(""".promise() as Promise<EngineResult>""")
+         .addCode("\n")
+
+// fail the execution if there are any test failures or errors
       function.addCode(
          """
-when (listenerType) {
-   "teamcity" -> launcher.withTeamCityListener().promise()
-   else -> launcher.withConsoleListener().promise()
+val result = promise.await()
+if (result.errors.isNotEmpty() || result.testFailures) {
+   error("Tests failed")
 }
-""".trim()
-      ).addCode("\n")
+
+"""
+      )
 
       val file = FileSpec.builder("io.kotest.framework.runtime.js", "kotest.kt")
          .addFunction(function.build())
@@ -87,8 +85,10 @@ when (listenerType) {
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
+         .addImport("io.kotest.engine", "EngineResult")
          .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
-         .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
+         .addImport("kotlinx.coroutines", "await")
+         .addImport("kotlin.js", "Promise")
       specs.forEach {
          file.addImport(it.packageName.asString(), it.simpleName.asString())
       }

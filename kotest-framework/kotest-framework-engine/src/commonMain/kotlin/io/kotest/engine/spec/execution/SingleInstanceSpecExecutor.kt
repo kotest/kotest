@@ -4,13 +4,13 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 /**
  * Executor for specs that uses the spec seed instance for all tests.
  */
-internal class SingleInstanceSpecExecutor(private val context: EngineContext) : SpecExecutor() {
+internal class SingleInstanceSpecExecutor(private val context: EngineContext) : SpecExecutor {
 
    private val pipeline = SpecInterceptorPipeline(context)
    private val results = TestResults()

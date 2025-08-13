@@ -3005,7 +3005,7 @@ public final class io/kotest/engine/ResultsKt {
 
 public final class io/kotest/engine/RunBlocking_jvmKt {
 	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)V
+	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
@@ -3027,7 +3027,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public final fun launch ()Lio/kotest/engine/EngineResult;
-	public final fun promise ()V
+	public final fun promise ()Ljava/lang/Object;
 	public fun toString ()Ljava/lang/String;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;

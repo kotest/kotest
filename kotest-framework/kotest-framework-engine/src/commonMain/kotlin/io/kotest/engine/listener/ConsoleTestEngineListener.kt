@@ -121,11 +121,15 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       consoleRenderer.println()
       printSpecCounts()
       printTestsCounts()
-      consoleRenderer.print("Time:    ")
-      if (duration.inWholeSeconds > 60)
-         consoleRenderer.println(consoleRenderer.bold("${duration.inWholeMinutes}m ${duration.div(60).inWholeSeconds}s"))
-      else
-         consoleRenderer.println(consoleRenderer.bold("${duration.inWholeSeconds}s"))
+
+      val str = buildString {
+         append("Time:    ")
+         if (duration.inWholeSeconds > 60)
+            append(consoleRenderer.bold("${duration.inWholeMinutes}m ${duration.div(60).inWholeSeconds}s"))
+         else
+            append(consoleRenderer.bold("${duration.inWholeSeconds}s"))
+      }
+      consoleRenderer.println(str)
    }
 
    private fun printThrowable(error: Throwable?, padding: Int) {
@@ -145,45 +149,44 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       val specsSeenSize = specsSeen.distinct().size
       val specsPassedSize = specsSeen.distinct().minus(specsFailed.toSet()).size
       val specsFailedSize = specsFailed.distinct().size
-      consoleRenderer.print("Specs:   ")
-      consoleRenderer.print(consoleRenderer.greenBold("$specsPassedSize passed"))
-      consoleRenderer.print(", ")
-      if (specsFailed.isEmpty()) {
-         consoleRenderer.print(consoleRenderer.bold("$specsFailedSize failed"))
-         consoleRenderer.print(consoleRenderer.bold(", "))
-      } else {
-         consoleRenderer.print(consoleRenderer.redBold("$specsFailedSize failed"))
-         consoleRenderer.print(consoleRenderer.bold(", "))
+      val str = buildString {
+         append("Specs:   ${consoleRenderer.greenBold("$specsPassedSize passed")}, ")
+         if (specsFailed.isEmpty()) {
+            append(consoleRenderer.bold("$specsFailedSize failed") + ", ")
+         } else {
+            append(consoleRenderer.redBold("$specsFailedSize failed") + ", ")
+         }
+         append("$specsSeenSize total")
       }
-      consoleRenderer.println("$specsSeenSize total")
+      consoleRenderer.println(str)
    }
 
    private fun printTestsCounts() {
-      consoleRenderer.print("Tests:   ")
-      consoleRenderer.print(consoleRenderer.greenBold("$testsPassed passed"))
-      consoleRenderer.print(", ")
-      if (testsFailed.isEmpty()) {
-         consoleRenderer.print(consoleRenderer.bold("${testsFailed.size} failed"))
-         consoleRenderer.print(", ")
-      } else {
-         consoleRenderer.print(consoleRenderer.redBold("${testsFailed.size} failed"))
-         consoleRenderer.print(", ")
+      val str = buildString {
+         append("Tests:   ${consoleRenderer.greenBold("$testsPassed passed")}, ")
+         if (testsFailed.isEmpty()) {
+            append(consoleRenderer.bold("${testsFailed.size} failed") + ", ")
+         } else {
+            append(consoleRenderer.redBold("${testsFailed.size} failed") + ", ")
+         }
+         if (testsIgnored > 0) {
+            append(consoleRenderer.yellowBold("$testsIgnored ignored") + ", ")
+         } else {
+            append(consoleRenderer.bold("$testsIgnored ignored") + ", ")
+         }
+         append("${testsPassed + testsFailed.size + testsIgnored} total")
       }
-      if (testsIgnored > 0) {
-         consoleRenderer.print(consoleRenderer.yellowBold("$testsIgnored ignored"))
-         consoleRenderer.print(", ")
-      } else {
-         consoleRenderer.print(consoleRenderer.bold("$testsIgnored ignored"))
-         consoleRenderer.print(", ")
-      }
-      consoleRenderer.println("${testsPassed + testsFailed.size + testsIgnored} total")
+      consoleRenderer.println(str)
    }
 
    override suspend fun specStarted(ref: SpecRef) {
       specsSeen = specsSeen + ref.kclass.toDescriptor()
       val specCount = specsSeen.size
-      consoleRenderer.print(consoleRenderer.bold("$specCount. ".padEnd(4, ' ')))
-      consoleRenderer.bold(formatter.format(ref.kclass))
+      val str = buildString {
+         append(consoleRenderer.bold("$specCount. ".padEnd(4, ' ')))
+         append(consoleRenderer.brightYellowBold(" IGNORED"))
+      }
+      consoleRenderer.println(str)
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
@@ -198,9 +201,12 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       testsIgnored++
-      consoleRenderer.print("".padEnd(testCase.descriptor.depth() * 4, ' '))
-      consoleRenderer.print("- " + formatter.format(testCase))
-      consoleRenderer.println(consoleRenderer.brightYellowBold(" IGNORED"))
+      val str = buildString {
+         append("".padEnd(testCase.descriptor.depth() * 4, ' '))
+         append("- ")
+         append(formatter.format(testCase) + consoleRenderer.brightYellowBold(" IGNORED"))
+      }
+      consoleRenderer.println(str)
    }
 
    private fun durationString(duration: Duration): String {
@@ -226,19 +232,19 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
 
       // we only consoleRenderer.print the name and status for leafs, as containers are consoleRenderer.printed in advance
       if (testCase.type == TestType.Test) {
-         consoleRenderer.print("".padEnd(testCase.descriptor.depth() * 4, ' '))
-         consoleRenderer.print("- " + formatter.format(testCase))
-         when (result) {
-            is TestResult.Success -> consoleRenderer.print(consoleRenderer.greenBold(" OK"))
-            is TestResult.Error -> consoleRenderer.print(consoleRenderer.brightRed(" ERROR"))
-            is TestResult.Failure -> consoleRenderer.print(consoleRenderer.brightRed(" FAILED"))
-            is TestResult.Ignored -> consoleRenderer.print(consoleRenderer.brightYellow(" IGNORED"))
+         val r = when (result) {
+            is TestResult.Success -> consoleRenderer.greenBold(" OK")
+            is TestResult.Error -> consoleRenderer.brightRed(" ERROR")
+            is TestResult.Failure -> consoleRenderer.brightRed(" FAILED")
+            is TestResult.Ignored -> consoleRenderer.brightYellow(" IGNORED")
          }
-
-         if (result.duration > slow) {
-            consoleRenderer.print(" ${durationString(result.duration)}")
+         val str = buildString {
+            append("".padEnd(testCase.descriptor.depth() * 4, ' ') + "- " + formatter.format(testCase) + r)
+            if (result.duration > slow) {
+               append(" ${durationString(result.duration)}")
+            }
          }
-         consoleRenderer.println()
+         consoleRenderer.println(str)
       }
 
       if (result.errorOrNull != null) {
@@ -251,8 +257,12 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
    override suspend fun testStarted(testCase: TestCase) {
       // containers we display straight away without pass / fail message
       if (testCase.type == TestType.Container) {
-         consoleRenderer.print("".padEnd(testCase.descriptor.depth() * 4, ' '))
-         consoleRenderer.println("+ " + formatter.format(testCase))
+         val str = buildString {
+            append("".padEnd(testCase.descriptor.depth() * 4, ' '))
+            append("+ ")
+            append(formatter.format(testCase))
+         }
+         consoleRenderer.println(str)
       }
    }
 }
