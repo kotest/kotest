@@ -2968,6 +2968,7 @@ public final class io/kotest/datatest/WordSpecWhenContainerScopeKt {
 
 public final class io/kotest/engine/EngineResult {
 	public static final field Companion Lio/kotest/engine/EngineResult$Companion;
+	public fun <init> (Ljava/util/List;)V
 	public fun <init> (Ljava/util/List;Z)V
 	public final fun addError (Ljava/lang/Throwable;)Lio/kotest/engine/EngineResult;
 	public final fun addErrors (Ljava/util/List;)Lio/kotest/engine/EngineResult;

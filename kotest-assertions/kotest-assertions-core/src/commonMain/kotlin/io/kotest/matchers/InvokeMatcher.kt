@@ -7,6 +7,7 @@ import io.kotest.assertions.Expected
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
 
+@Suppress("DEPRECATION")
 fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)
