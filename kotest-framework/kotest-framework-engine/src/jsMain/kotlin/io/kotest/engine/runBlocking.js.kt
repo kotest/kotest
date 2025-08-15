@@ -5,8 +5,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 
 @OptIn(DelicateCoroutinesApi::class)
-actual fun runPromise(f: suspend () -> Unit) {
-   GlobalScope.promise { f() }.catch {
+actual fun <T> runPromise(f: suspend () -> T): Any {
+   return GlobalScope.promise { f() }.catch {
       println(it)
       throw it
    }

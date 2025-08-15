@@ -17,11 +17,11 @@ internal object ProjectListenerEngineInterceptor : EngineInterceptor {
 
       // if we have errors in the before project listeners, we'll not execute tests,
       // but instead immediately return those errors.
-      if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors)
+      if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors, false)
 
       val result = execute(context)
 
       val afterErrors = context.projectExtensions().afterProject()
-      return result.copy(errors = result.errors + afterErrors)
+      return result.addErrors(afterErrors)
    }
 }

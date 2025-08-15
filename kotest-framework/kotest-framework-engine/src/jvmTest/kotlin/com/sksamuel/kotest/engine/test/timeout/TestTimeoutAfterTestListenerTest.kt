@@ -3,19 +3,19 @@ package com.sksamuel.kotest.engine.test.timeout
 import io.kotest.common.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.scopes.NoopTestScope
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
@@ -29,10 +29,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class TestTimeoutAfterTestListenerTest : FunSpec() {
    init {
 
-      test("tests that timeout during a blocking operation should still run the 'after test' listeners").config(
-         timeout = 10000.milliseconds,
-         blockingTest = true,
-      ) {
+      test("tests that timeout during a blocking operation should still run the 'after test' listeners") {
 
          val blockingCount = AtomicInteger(0)
 
@@ -47,12 +44,12 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             descriptor = TestTimeoutAfterTestListenerTest::class.toDescriptor().append("wibble"),
             name = TestNameBuilder.builder("wibble").build(),
             spec = this@TestTimeoutAfterTestListenerTest,
-            test = { Thread.sleep(1000000) },
+            test = { Thread.sleep(1000000) }, // set high enough so it will timeout
             source = SourceRef.None,
-            type = TestType.Container,
+            type = TestType.Test,
             parent = null,
             config = TestConfig(
-               timeout = 1.milliseconds,
+               timeout = 100.milliseconds,
                extensions = listOf(listener),
                blockingTest = true
             ),
@@ -70,9 +67,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
          blockingCount.get() shouldBe 1
       }
 
-      test("tests which timeout during a suspending operation should still run the 'after test' listeners").config(
-         timeout = 10000.milliseconds
-      ) {
+      test("tests which timeout during a suspending operation should still run the 'after test' listeners") {
 
          val suspendingCount = AtomicInteger(0)
 
@@ -87,12 +82,12 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
             descriptor = TestTimeoutAfterTestListenerTest::class.toDescriptor().append("wobble"),
             name = TestNameBuilder.builder("wobble").build(),
             spec = this@TestTimeoutAfterTestListenerTest,
-            test = { delay(1000000) },
+            test = { delay(1000000) }, // set high enough so it will timeout
             source = SourceRef.None,
-            type = TestType.Container,
+            type = TestType.Test,
             parent = null,
             config = TestConfig(
-               timeout = 1.milliseconds,
+               timeout = 100.milliseconds,
                extensions = listOf(listener),
                blockingTest = false
             ),

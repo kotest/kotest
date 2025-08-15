@@ -1,7 +1,7 @@
 package io.kotest.permutations
 
+import io.kotest.engine.IterationSkippedException
 import io.kotest.permutations.statistics.Classifications
-import io.kotest.property.AssumptionFailedException
 import io.kotest.property.RandomSource
 import io.kotest.property.statistics.Label
 
@@ -22,8 +22,8 @@ class Permutation(
    fun assume(assumptions: () -> Unit) {
       try {
          assumptions()
-      } catch (e: AssertionError) {
-         throw AssumptionFailedException
+      } catch (_: AssertionError) {
+         throw IterationSkippedException()
       }
    }
 
@@ -33,7 +33,7 @@ class Permutation(
     * If the [predicate] is false, that permutation is discarded.
     */
    fun assume(predicate: Boolean) {
-      if (!predicate) throw AssumptionFailedException
+      if (!predicate) throw IterationSkippedException()
    }
 
    private fun classify(label: Label?, classification: Any?) {

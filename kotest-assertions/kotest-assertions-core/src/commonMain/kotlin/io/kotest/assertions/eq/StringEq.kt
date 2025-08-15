@@ -40,11 +40,11 @@ object StringEq : Eq<String> {
 
          t.matched -> AssertionErrorBuilder.create()
             .withMessage("Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n")
-            .withValues(Expected(StringPrint.print(expected)), Actual(StringPrint.print(actual)))
+            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
             .build()
 
          else -> AssertionErrorBuilder.create()
-            .withValues(Expected(StringPrint.print(expected)), Actual(StringPrint.print(actual)))
+            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
             .build()
       }
    }
@@ -59,11 +59,11 @@ object StringEq : Eq<String> {
       val result = diffLargeString(expected, actual)
       return if (result == null)
          AssertionErrorBuilder.create()
-            .withValues(Expected(StringPrint.print(expected)), Actual(StringPrint.print(actual)))
+            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
             .build()
       else
          AssertionErrorBuilder.create()
-            .withValues(Expected(StringPrint.print(expected)), Actual(StringPrint.print(actual)))
+            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
             .build()
    }
 

@@ -13,12 +13,17 @@ import kotlinx.io.writeString
 import kotlin.reflect.KClass
 import kotlin.time.Clock
 
-class JunitXmlReportTestEngineListener(private val testReportsDir: String, hostname: String?) : TestEngineListener {
+class JunitXmlReportTestEngineListener(
+   private val testReportsDir: String,
+   hostname: String?,
+   target: String?
+) : TestEngineListener {
 
    private val generator = JUnitXmlReportGenerator(
       clock = Clock.System,
       includeStackTraces = true,
       hostname = hostname,
+      target = target,
    )
 
    private val results = mutableMapOf<TestCase, TestResult>()

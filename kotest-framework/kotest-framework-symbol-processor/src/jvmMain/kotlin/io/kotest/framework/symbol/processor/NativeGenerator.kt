@@ -35,13 +35,16 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addCode(
             """
-val includeArg = getenv("kotest.framework.runtime.native.include")?.toKString()
-val listenerType = getenv("kotest.framework.runtime.native.listener")?.toKString() ?: ""
-val testReportsDir = getenv("kotest.framework.runtime.native.test.reports.dir")?.toKString()
+val includeArg = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE")?.toKString()
+val listenerType = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER")?.toKString() ?: ""
+val moduleTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR")?.toKString()
+val rootTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR")?.toKString()
+val target = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET")?.toKString()
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
-val filter = descriptor?.let { IncludeDescriptorFilter(descriptor) }
-val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) }
+val filter = descriptor?.let { IncludeDescriptorFilter(it) }
+val moduleXmlReporter = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
+val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
 
 """.trim()
          )
@@ -51,7 +54,8 @@ val reporter = testReportsDir?.let { JunitXmlReportTestEngineListener(it, null) 
 val launcher = TestEngineLauncher()
  .withNative()
  .addExtensions(listOfNotNull(filter))
- .withListener(reporter)
+ .withListener(moduleXmlReporter)
+ .withListener(rootXmlReporter)
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
@@ -71,11 +75,16 @@ val launcher = TestEngineLauncher()
       }
       function.addCode(
          """
-when (listenerType) {
+val result = when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
-   "console" -> launcher.withConsoleListener().launch()
-   else -> Unit // this stops us running from the non-kotest test targets
+   else -> launcher.withConsoleListener().launch()
 }
+
+// fail the execution if there are any test failures or errors
+if (result.errors.isNotEmpty() || result.testFailures) {
+  exitProcess(1)
+}
+
 """.trim()
       ).addCode("\n")
 
@@ -89,6 +98,7 @@ when (listenerType) {
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
          .addFunction(function.build())
          .addProperty(invoker.build())
+         .addImport("kotlin.system", "exitProcess")
          .addImport("kotlinx.cinterop", "toKString")
          .addImport("platform.posix", "getenv")
          .addImport("io.kotest.common", "KotestInternal")

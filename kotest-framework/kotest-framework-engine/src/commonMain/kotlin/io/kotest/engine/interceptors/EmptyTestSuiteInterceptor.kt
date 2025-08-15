@@ -20,7 +20,7 @@ internal object EmptyTestSuiteInterceptor : EngineInterceptor {
             val collector = CollectingTestEngineListener()
             val result = execute(context.mergeListener(collector))
             when {
-               collector.tests.isEmpty() -> EngineResult(result.errors + EmptyTestSuiteException)
+               collector.tests.isEmpty() -> result.addError(EmptyTestSuiteException)
                else -> result
             }
          }

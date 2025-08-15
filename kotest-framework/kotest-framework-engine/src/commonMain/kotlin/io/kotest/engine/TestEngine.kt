@@ -1,10 +1,11 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.Logger
 import io.kotest.common.Platform
+import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
+import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.EngineInterceptor
@@ -12,14 +13,27 @@ import io.kotest.engine.interceptors.NextEngineInterceptor
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.tags.TagExpression
 
-data class EngineResult(val errors: List<Throwable>) {
+data class EngineResult(
+   val errors: List<Throwable>, // these are errors during engine processing, not test failures
+   val testFailures: Boolean,
+) {
+
+   constructor(errors: List<Throwable>) : this(errors, false)
 
    companion object {
-      val empty = EngineResult(emptyList())
+      val empty = EngineResult(emptyList(), false)
    }
 
    fun addError(t: Throwable): EngineResult {
-      return EngineResult(errors + t)
+      return copy(errors = this.errors + t)
+   }
+
+   fun addErrors(errors: List<ExtensionException.AfterProjectException>): EngineResult {
+      return copy(errors = this.errors + errors)
+   }
+
+   fun withTestFailures(): EngineResult {
+      return copy(testFailures = true)
    }
 }
 

@@ -1,9 +1,12 @@
 package com.sksamuel.kotest.engine.teamcity
 
+import io.kotest.assertions.KotestAssertionFailedError
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldNotContain
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 class TeamCityMessageBuilderTest : ShouldSpec({
 
@@ -54,5 +57,16 @@ ret
          .duration(44.milliseconds)
          .build()
       msg shouldBe """testcity[testFailed name='support comparison values' type='comparisonFailure' message='test failed' actual='act' expected='exp' duration='44']"""
+   }
+
+   should("do not set comparison values if not provided") {
+
+      val msg = TeamCityMessageBuilder.testFailed("testcity", "support comparison values")
+         .id(testCase.descriptor.path().value)
+         .parent(testCase.descriptor.parent.path().value)
+         .duration(4.seconds)
+         .withException(KotestAssertionFailedError("foo", null, null, null))
+         .build()
+      msg.shouldNotContain("comparisonFailure")
    }
 })

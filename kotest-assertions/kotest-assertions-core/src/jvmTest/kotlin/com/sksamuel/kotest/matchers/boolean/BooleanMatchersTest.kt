@@ -8,7 +8,7 @@ import io.kotest.matchers.booleans.shouldNotBeFalse
 import io.kotest.matchers.booleans.shouldNotBeTrue
 import io.kotest.matchers.shouldBe
 
-@Suppress("SimplifyBooleanWithConstants")
+@Suppress("KotlinConstantConditions")
 class BooleanMatchersTest : FreeSpec() {
 
    init {

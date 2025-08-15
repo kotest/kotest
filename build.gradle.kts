@@ -87,7 +87,7 @@ dependencies {
 //   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
    nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
-//   nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
+   nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
 
    // Runner
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)

@@ -39,7 +39,7 @@ class AssertSoftlyTests : FunSpec({
          }
       }
       thrown.message.shouldContainInOrder(
-         """expected:<"First Assertion"> but was:<"first assertion">""",
+         """expected:<First Assertion> but was:<first assertion>""",
          """expected:<1> but was:<0>""",
       )
    }
@@ -52,7 +52,7 @@ class AssertSoftlyTests : FunSpec({
       }
       thrown.message.shouldContainInOrder(
          """expected:<1> but was:<0>""",
-         """expected:<"First Assertion"> but was:<"first assertion">"""
+         """expected:<First Assertion> but was:<first assertion>"""
       )
    }
 })

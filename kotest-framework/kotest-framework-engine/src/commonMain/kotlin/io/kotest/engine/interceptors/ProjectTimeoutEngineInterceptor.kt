@@ -19,7 +19,7 @@ internal object ProjectTimeoutEngineInterceptor : EngineInterceptor {
             }
          } catch (_: TimeoutCancellationException) {
             val ee = ProjectTimeoutException(timeout)
-            EngineResult(listOf(ee))
+            EngineResult(listOf(ee), false)
          }
       }
 

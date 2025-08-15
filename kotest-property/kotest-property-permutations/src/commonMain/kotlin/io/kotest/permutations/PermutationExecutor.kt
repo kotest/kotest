@@ -1,5 +1,6 @@
 package io.kotest.permutations
 
+import io.kotest.engine.IterationSkippedException
 import io.kotest.permutations.checks.AllowCustomSeedBeforeCheck
 import io.kotest.permutations.checks.MaxDiscardCheck
 import io.kotest.permutations.checks.MinSuccessCheck
@@ -8,7 +9,6 @@ import io.kotest.permutations.errors.FailureHandler
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.ClassificationsWriter
 import io.kotest.permutations.statistics.CoverageCheck
-import io.kotest.property.AssumptionFailedException
 import kotlin.time.TimeSource
 
 /**
@@ -47,7 +47,7 @@ internal class PermutationExecutor(
             iterations++
             successes++
 
-         } catch (e: AssumptionFailedException) {
+         } catch (e: IterationSkippedException) {
 
             MaxDiscardCheck.ensureConfigured(context.maxDiscardPercentage)
 

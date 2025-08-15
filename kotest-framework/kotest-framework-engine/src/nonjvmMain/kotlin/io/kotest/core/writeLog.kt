@@ -5,7 +5,7 @@ import kotlin.time.TimeMark
 
 @KotestInternal
 actual fun writeLog(start: TimeMark, t: Throwable?, f: () -> String) {
-   println(start.elapsedNow().inWholeMicroseconds.toString())
+   println(start.elapsedNow().inWholeMilliseconds.toString())
    println("  ")
    println(f())
 }

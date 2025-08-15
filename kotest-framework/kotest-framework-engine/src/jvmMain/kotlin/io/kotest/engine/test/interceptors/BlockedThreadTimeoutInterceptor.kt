@@ -56,6 +56,11 @@ internal class BlockedThreadTimeoutInterceptor(
          val timeout = testConfigResolver.timeout(testCase)
          logger.log { Pair(testCase.name.name, "this test will time out in $timeout") }
 
+         if (timeout.inWholeMilliseconds <= 1)
+            error("Cannot set a blocked thread timeout <= 1ms")
+
+         // this is a separate job that will run on the timeout dispatcher that will shutdown the executor
+         // after the timeout has hit.
          @OptIn(ExperimentalCoroutinesApi::class)
          val timeoutJob = CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
             delay(timeout)

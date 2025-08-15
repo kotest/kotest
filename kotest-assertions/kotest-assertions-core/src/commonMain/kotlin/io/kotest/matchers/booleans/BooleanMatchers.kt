@@ -56,7 +56,7 @@ fun Boolean?.shouldNotBeTrue(): Boolean? {
  * ```
  * false.shouldBeFalse  // Assertion passes
  * true.shouldBeFalse   // Assertion fails
- * null.shouldBeFallse  // Assertion fails
+ * null.shouldBeFalse  // Assertion fails
  *
  * (3 + 3 == 42).shouldBeFalse  // Assertion passes
  * (3 + 3 == 6).shouldBeFalse   // Assertion fails

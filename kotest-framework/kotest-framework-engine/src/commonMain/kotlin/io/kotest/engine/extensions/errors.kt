@@ -23,4 +23,4 @@ sealed class ExtensionException(val t: Throwable) : Exception(t) {
    class IgnoredSpecException(cause: Throwable) : ExtensionException(cause)
 }
 
-class MultipleExceptions(val causes: List<Throwable>) : Exception(causes.first())
+internal class MultipleExceptions(val causes: List<Throwable>) : Exception(causes.first())

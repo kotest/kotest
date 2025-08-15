@@ -108,7 +108,7 @@ interface MatcherResult {
  * An instance of [MatcherResult] that contains the actual and expected values
  * as [Printed] values, along with the failure and negated failure messages.
  *
- * By return this [MatcherResult], Kotest will automatically generate the appropriate
+ * By returning this [MatcherResult], Kotest will automatically generate the appropriate
  * assertion error message that contains the actual and expected values in a way
  * that allows intellij to create a <Click to see difference> link in the IDE output window.
  */

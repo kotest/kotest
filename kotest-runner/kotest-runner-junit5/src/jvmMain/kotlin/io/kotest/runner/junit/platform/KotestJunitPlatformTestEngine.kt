@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.reflection.instantiations
 import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
@@ -19,6 +20,7 @@ import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import java.util.Optional
+import kotlin.reflect.KClass
 
 /**
  * A Kotest implementation of a Junit Platform [TestEngine].
@@ -109,12 +111,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
    /**
     * Creates [Extension]s from configuration parameters
     */
+   @Suppress("UNCHECKED_CAST")
    private fun configurationParameterExtensions(request: EngineDiscoveryRequest): List<Extension> {
       return request.configurationParameters.get("kotest.extensions").orElseGet { "" }
          .split(',')
          .map { it.trim() }
          .filter { it.isNotBlank() }
-         .map { Class.forName(it).getDeclaredConstructor().newInstance() as Extension }
+         .map { instantiations.newInstanceNoArgConstructorOrObjectInstance(Class.forName(it).kotlin as KClass<Extension>) }
    }
 
    /**

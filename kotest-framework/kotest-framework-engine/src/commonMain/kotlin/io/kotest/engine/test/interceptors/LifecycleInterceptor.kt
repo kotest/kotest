@@ -2,10 +2,10 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestExtensions
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
 import kotlin.time.TimeMark
 

@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
 
 internal class InstancePerRootSpecExecutor(
    private val context: EngineContext,
-) : SpecExecutor() {
+) : SpecExecutor {
 
    private val pipeline = SpecInterceptorPipeline(context)
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)

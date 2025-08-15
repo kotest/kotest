@@ -3,6 +3,7 @@ package io.kotest.assertions.eq
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.Expected
+import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
 
 /**
@@ -15,8 +16,10 @@ import io.kotest.assertions.print.print
 internal object DefaultEq : Eq<Any?> {
    override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean): Throwable? {
       return if (test(actual, expected)) null else {
+         val e = if (expected is String) StringPrint.printUnquoted(expected) else expected.print()
+         val a = if (actual is String) StringPrint.printUnquoted(actual) else actual.print()
          AssertionErrorBuilder.create()
-            .withValues(Expected(expected.print()), Actual(actual.print()))
+            .withValues(Expected(e), Actual(a))
             .build()
       }
    }

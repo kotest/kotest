@@ -1,19 +1,19 @@
 package io.kotest.engine.spec.execution
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.platform
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
-import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.flatMap
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.interceptor.NextSpecRefInterceptor
 import io.kotest.engine.spec.interceptor.SpecRefInterceptorPipeline
-import io.kotest.common.reflection.bestName
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 /**
@@ -60,12 +60,9 @@ internal class SpecRefExecutor(
    private suspend fun innerExecute(ref: SpecRef): Result<Map<TestCase, TestResult>> {
       return inflator.inflate(ref).flatMap { spec ->
          try {
-            when (context.specConfigResolver.isolationMode(spec)) {
-               IsolationMode.SingleInstance -> SingleInstanceSpecExecutor(context).execute(ref, spec)
-               IsolationMode.InstancePerRoot -> InstancePerRootSpecExecutor(context).execute(ref, spec)
-               IsolationMode.InstancePerLeaf -> InstancePerLeafSpecExecutor(context).execute(ref, spec)
-               IsolationMode.InstancePerTest -> InstancePerTestSpecExecutor(context).execute(ref, spec)
-            }
+            val executor = specExecutor(context, spec)
+            logger.log { Pair(ref.kclass.bestName(), "Found executor $executor for platform $platform") }
+            executor.execute(ref, spec)
          } catch (t: Throwable) {
             logger.log { Pair(spec::class.bestName(), "Error executing SpecRef $t") }
             Result.failure(t)
@@ -73,6 +70,16 @@ internal class SpecRefExecutor(
       }
    }
 }
+
+/**
+ * Returns a [SpecExecutor] for the given [Spec] suitable for the current platform.
+ * For example, on the JVM it would take into account isolation modes.
+ *
+ * On JS it would return a [KotlinJsSpecExecutor].
+ * On WasmJS it would return either a [KotlinJsSpecExecutor] or a [SingleInstanceSpecExecutor] depending
+ * on the underlying wasm execution environment.
+ */
+internal expect fun specExecutor(context: EngineContext, spec: Spec): SpecExecutor
 
 /**
  * Used to test a [SpecRefExecutor] from another module.

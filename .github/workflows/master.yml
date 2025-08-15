@@ -21,7 +21,6 @@ permissions:
    contents: read
 
 jobs:
-
    validate-api:
       name: Validate API
       if: github.repository == 'kotest/kotest'
@@ -32,35 +31,83 @@ jobs:
          ref: ${{ inputs.ref }}
          task: apiCheck
 
-   validate-linux:
-      name: Validate and publish on primary runner
-      if: github.repository == 'kotest/kotest'
-      uses: ./.github/workflows/run-gradle.yml
+   build-primary:
       needs: validate-api
+      strategy:
+         matrix:
+            include:
+               # KMP
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform"
+               # JVM
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=jvm"
+               # JS
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=js"
+               # Linux
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=linux"
+               # Wasm
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
+               # Android
+               -  os: ubuntu-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=android"
+      uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
+         ref: ${{ inputs.ref }}
+         task: >
+            -P"kotest_enableKotlinJs=true"
+            -P"kotest_enableKotlinNative=true"
+            ${{ matrix.args }}
+            --no-configuration-cache
+            check publishToAppropriateCentralRepository
+         runs-on: ${{ matrix.os }}
+
+      # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
+      # run macos tests if we know the JVM/JS/linux tests pass.
+   build-secondary-targets:
+      needs: build-primary
+      strategy:
+         matrix:
+            include:
+               # Windows: MinGW
+               -  os: windows-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=mingw"
+               # Apple: macOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=macOS"
+               # Apple: iOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=iOS"
+               # Apple: tvOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=tvOS"
+               # Apple: watchOS
+               -  os: macos-latest
+                  args: -P"kotest_enabledPublicationNamePrefixes=watchOS"
+
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         ref: ${{ inputs.ref }}
+         task: >
+            -P"kotest_enableKotlinJs=true"
+            -P"kotest_enableKotlinNative=true"
+            ${{ matrix.args }}
+            --no-configuration-cache
+            check publishToAppropriateCentralRepository
+         runs-on: ${{ matrix.os }}
+
+   build-gradle:
+      needs: build-primary
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         ref: ${{ inputs.ref }}
+         task: >
+            --no-configuration-cache
+            publishKotestGradlePluginPluginMarkerMavenPublicationToDevPublishMavenRepository
          runs-on: ubuntu-latest
-         ref: ${{ inputs.ref }}
-         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=true -P"kotest_enableKotlinNative"=true
-
-   validate-macos:
-      name: Validate and publish on macos
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-linux ]
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: macos-latest
-         ref: ${{ inputs.ref }}
-         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=false -P"kotest_enableKotlinNative"=true
-
-   validate-windows:
-      name: Validate and publish on windows
-      if: github.repository == 'kotest/kotest'
-      needs: [ validate-api, validate-linux ]
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         runs-on: windows-latest
-         ref: ${{ inputs.ref }}
-         task: check publishToAppropriateCentralRepository -P"kotest_enableKotlinJs"=false -P"kotest_enableKotlinNative"=true

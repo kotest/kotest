@@ -75,7 +75,7 @@ class MatchersTest : FreeSpec({
 
          shouldThrow<AssertionError> {
             "a" shouldBe "b"
-         }.message shouldBe """expected:<"b"> but was:<"a">"""
+         }.message shouldBe """expected:<b> but was:<a>"""
       }
 
       "format array errors" {

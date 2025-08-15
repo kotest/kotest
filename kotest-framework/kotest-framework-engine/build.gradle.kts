@@ -40,6 +40,13 @@ kotlin {
          }
       }
 
+      mingwMain {
+         // used to write to the console with fancy colours!
+         dependencies {
+            implementation(libs.mordant)
+         }
+      }
+
       jvmMain {
          dependencies {
 
@@ -76,7 +83,28 @@ kotlin {
          }
       }
 
-      linuxX64Main {
+      tvosMain {
+         dependencies {
+            // used to write to the console with fancy colours!
+            implementation(libs.mordant)
+         }
+      }
+
+      linuxMain {
+         dependencies {
+            // used to write to the console with fancy colours!
+            implementation(libs.mordant)
+         }
+      }
+
+      macosMain {
+         dependencies {
+            // used to write to the console with fancy colours!
+            implementation(libs.mordant)
+         }
+      }
+
+      iosMain {
          dependencies {
             // used to write to the console with fancy colours!
             implementation(libs.mordant)

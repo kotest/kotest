@@ -6,7 +6,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.interceptors.EngineContext
@@ -19,6 +18,7 @@ import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -32,7 +32,7 @@ import kotlin.coroutines.coroutineContext
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
 internal class InstancePerLeafSpecExecutor(
    private val context: EngineContext,
-) : SpecExecutor() {
+) : SpecExecutor {
 
    private val logger = Logger(InstancePerLeafSpecExecutor::class)
    private val pipeline = SpecInterceptorPipeline(context)

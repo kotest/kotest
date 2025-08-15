@@ -68,6 +68,8 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    }
 
    override fun finish() {
+      if (visitor.configs.size > 1)
+         error("Only one ProjectConfig is allowed, found ${visitor.configs.size}:\n${visitor.configs.joinToString("\n") { it.qualifiedName?.asString() ?: it.simpleName.asString() }}")
       val files = visitor.specs.mapNotNull { it.containingFile }
       when (val platform = environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
