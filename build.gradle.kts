@@ -32,26 +32,10 @@ data class PluginDescriptor(
 
 val descriptors = listOf(
    PluginDescriptor(
-      since = "242.*", // this version is 2024.2.x
-      until = "243.*",
-      sdkVersion = "2024.2.2",
-      sourceFolder = "IC-242",
-      useInstaller = true,
-      jdkTarget = JavaVersion.VERSION_17,
-   ),
-   PluginDescriptor(
-      since = "243.*", // this version is 2024.3.x
-      until = "251.*",
-      sdkVersion = "2024.3.1",
-      sourceFolder = "IC-243",
-      useInstaller = true,
-      jdkTarget = JavaVersion.VERSION_17,
-   ),
-   PluginDescriptor(
-      since = "251.*", // this version is 2025.1.x
-      until = "252.*",
-      sdkVersion = "2025.1",
-      sourceFolder = "IC-251",
+      since = "252.*", // this version is 2025.2.x
+      until = "261.*",
+      sdkVersion = "2025.2",
+      sourceFolder = "IC-252",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
    ),
@@ -65,7 +49,7 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
