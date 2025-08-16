@@ -56,10 +56,7 @@ object GradleUtils {
    fun isKotestTaskName(taskName: String): Boolean {
       return taskName == "kotest" // jvm only task name
          || taskName == "jvmKotest" // multiplatform jvm task name
-         || taskName == "jsKotest" // multiplatform js task name
-         || taskName == "wasmJsKotest" // multiplatform wasm js task name
-         || taskName == "wasmWasiKotest" // multiplatform wasm wasi task name
-         || taskName.matches("kotest[a-zA-Z]+UnitTest".toRegex()) // matches kotestReleaseUnitTest, kotestDebugUnitTest, etc.
+         || taskName.matches("kotest[a-zA-Z]+UnitTest".toRegex()) // android task names eg kotestReleaseUnitTest, kotestDebugUnitTest, etc.
    }
 
    fun getIncludeArg(taskNames: List<String>): String? {

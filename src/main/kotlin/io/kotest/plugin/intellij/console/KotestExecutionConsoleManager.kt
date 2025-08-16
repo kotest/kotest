@@ -4,6 +4,7 @@ import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessHandler
 import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.runners.ExecutionEnvironment
+import com.intellij.execution.testDiscovery.JvmToggleAutoTestAction
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
@@ -11,6 +12,8 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.externalSystem.execution.ExternalSystemExecutionConsoleManager
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTask
+import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationEvent
+import com.intellij.openapi.externalSystem.model.task.event.ExternalSystemTaskExecutionEvent
 import com.intellij.openapi.externalSystem.service.internal.ExternalSystemExecuteTaskTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -25,8 +28,6 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
  */
 class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTRunnerConsoleView, ProcessHandler> {
 
-   private val parser = ServiceMessagesParser()
-
    override fun getExternalSystemId(): ProjectSystemId {
       return GradleConstants.SYSTEM_ID
    }
@@ -36,7 +37,9 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
     * @param consoleView – is console into which restart actions will be placed.
     */
    override fun getRestartActions(consoleView: SMTRunnerConsoleView): Array<AnAction> {
-      return emptyArray()
+//      val rerunFailedTestsAction = GradleRerunFailedTestsAction(consoleView)
+//      rerunFailedTestsAction.setModelProvider { consoleView.resultsViewer }
+      return arrayOf(JvmToggleAutoTestAction())
    }
 
    @Suppress("UnstableApiUsage", "OverrideOnly")
@@ -53,9 +56,14 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
 
       val consoleProperties = KotestSMTRunnerConsoleProperties(settings.configuration, env.executor)
 
+      // Cannot invoke "com.intellij.execution.testframework.sm.runner.ui.SMTestRunnerResultsForm.getTestsRootNode()"
+      // because the return value of "com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView.getResultsViewer()"
+      // is null
+
+
       val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FRAMEWORK_NAME)
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
-      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName, publisher, project)
+      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName, publisher)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
       SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
@@ -63,13 +71,15 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       consoleView.resultsViewer.testsRootNode.executionId = env.executionId
       consoleView.resultsViewer.testsRootNode.setSuiteStarted()
 
+//      callback = KotestServiceMessageCallback(consoleView, publisher)
+
       consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
       publisher.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
 
       processHandler.addProcessListener(object : ProcessListener {
          override fun processTerminated(event: ProcessEvent) {
 
-            consoleView.callback.addNoTestsPlaceholder()
+//            consoleView.callback.addNoTestsPlaceholder()
 
             if (event.exitCode != 0) {
                consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code ${event.exitCode}", null, true)
@@ -116,6 +126,13 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       return false
    }
 
+   override fun onStatusChange(executionConsole: SMTRunnerConsoleView, event: ExternalSystemTaskNotificationEvent) {
+      if (event is ExternalSystemTaskExecutionEvent) {
+         println("Status change: $event")
+      }
+      super.onStatusChange(executionConsole, event)
+   }
+
    override fun onOutput(
       executionConsole: SMTRunnerConsoleView,
       processHandler: ProcessHandler,
@@ -123,7 +140,14 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       processOutputType: Key<*>, // is stdout or stderr
    ) {
       when (executionConsole) {
-         is KotestSMTRunnerConsoleView -> parser.parse(text, executionConsole.callback)
+         is KotestSMTRunnerConsoleView ->
+            KotestConsoleViewOnOutputHandler.handle(executionConsole, text, processOutputType)
       }
+   }
+}
+
+object KotestConsoleViewOnOutputHandler {
+   fun handle(console: KotestSMTRunnerConsoleView, text: String, processOutputType: Key<*>) {
+      ServiceMessagesParser().parse(text, KotestServiceMessageCallback(console))
    }
 }
