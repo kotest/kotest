@@ -1,7 +1,10 @@
 package io.kotest.plugin.intellij.toolwindow
 
 import com.intellij.ide.util.treeView.NodeRenderer
+import com.intellij.ide.util.treeView.PresentableNodeDescriptor
 import com.intellij.openapi.project.Project
+import com.intellij.ui.TreeUIHelper
+import javax.swing.tree.DefaultMutableTreeNode
 import javax.swing.tree.TreeModel
 import javax.swing.tree.TreeSelectionModel
 
@@ -20,6 +23,12 @@ class TestFileTree(
       showsRootHandles = true
       isRootVisible = false
       cellRenderer = NodeRenderer()
+      // enable speed search like in the Project tool window, using presentable text
+      TreeUIHelper.getInstance().installTreeSpeedSearch(this, { path ->
+         val node = path.lastPathComponent as? DefaultMutableTreeNode
+         val descriptor = node?.userObject as? PresentableNodeDescriptor<*>
+         descriptor?.presentation?.presentableText ?: node?.userObject?.toString() ?: ""
+      }, false)
       // listens to changes in the selections
       addTreeSelectionListener(testExplorerTreeSelectionListener)
       kotestTestExplorerService.registerModelListener(this)
