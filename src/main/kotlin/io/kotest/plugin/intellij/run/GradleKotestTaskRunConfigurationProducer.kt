@@ -152,7 +152,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
          if (test != null) {
             // if we specified a test descriptor before, it needs to match for this configuration to be the same
             val descriptorArg = GradleUtils.getIncludeArg(configuration.settings.taskNames) ?: return false
-            if (test.descriptor() == descriptorArg) return true
+            if (test.descriptorPath() == descriptorArg) return true
          }
       }
       return false

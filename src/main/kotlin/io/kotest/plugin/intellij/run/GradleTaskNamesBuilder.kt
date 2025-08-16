@@ -6,7 +6,7 @@ import io.kotest.plugin.intellij.gradle.GradleUtils
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * Builds the gradle command line to execute a kotest task.
+ * Builds the gradle command line to execute a kotest test.
  */
 data class GradleTaskNamesBuilder(
    private val module: Module,
@@ -56,6 +56,6 @@ data class GradleTaskNamesBuilder(
 
    private fun includeArg(): String? {
       if (test == null) return null
-      return "$ARG_INCLUDE '${test.descriptor()}'"
+      return "$ARG_INCLUDE '${test.descriptorPath()}'"
    }
 }

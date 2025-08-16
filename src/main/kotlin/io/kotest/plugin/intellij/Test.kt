@@ -83,9 +83,9 @@ data class Test(
    fun testPath(): String = path().joinToString(" -- ") { it.name }
 
    /**
-    * Returns the descriptor string for this test.
+    * Returns the descriptor path for this test.
     */
-   fun descriptor(): String = specClassName.fqName?.asString() + "/" + path().joinToString(" -- ") { it.name }
+   fun descriptorPath(): String = specClassName.fqName?.asString() + "/" + path().joinToString(" -- ") { it.name }
 
    /**
     * Returns the test path without delimiters for display to a user.

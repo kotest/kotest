@@ -9,8 +9,11 @@ class TestFileTree(
    project: Project,
 ) : com.intellij.ui.treeStructure.Tree(),
    KotestTestExplorerService.ModelListener {
+
    private val testExplorerTreeSelectionListener = TestExplorerTreeSelectionListener(project)
-   private val kotestTestExplorerService: KotestTestExplorerService = project.getService(KotestTestExplorerService::class.java)
+   private val kotestTestExplorerService: KotestTestExplorerService =
+      project.getService(KotestTestExplorerService::class.java)
+   private var initialized = false
 
    init {
       selectionModel.selectionMode = TreeSelectionModel.SINGLE_TREE_SELECTION
@@ -20,9 +23,14 @@ class TestFileTree(
       // listens to changes in the selections
       addTreeSelectionListener(testExplorerTreeSelectionListener)
       kotestTestExplorerService.registerModelListener(this)
+      initialized = true
    }
 
    override fun setModel(treeModel: TreeModel) {
+      if (!initialized) {
+         super.setModel(treeModel)
+         return
+      }
       val expanded = isExpanded(0)
       super.setModel(treeModel)
       expandAllNodes()
