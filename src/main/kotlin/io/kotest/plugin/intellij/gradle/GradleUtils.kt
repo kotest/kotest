@@ -59,7 +59,7 @@ object GradleUtils {
          || taskName == "jsKotest" // multiplatform js task name
          || taskName == "wasmJsKotest" // multiplatform wasm js task name
          || taskName == "wasmWasiKotest" // multiplatform wasm wasi task name
-         || taskName.matches("kotest[a-z]+UnitTest".toRegex()) // matches kotestReleaseUnitTest, kotestDebugUnitTest, etc.
+         || taskName.matches("kotest[a-zA-Z]+UnitTest".toRegex()) // matches kotestReleaseUnitTest, kotestDebugUnitTest, etc.
    }
 
    fun getIncludeArg(taskNames: List<String>): String? {

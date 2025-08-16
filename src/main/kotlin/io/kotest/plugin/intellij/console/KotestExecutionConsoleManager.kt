@@ -1,8 +1,8 @@
 package io.kotest.plugin.intellij.console
 
-import com.intellij.execution.process.ProcessAdapter
 import com.intellij.execution.process.ProcessEvent
 import com.intellij.execution.process.ProcessHandler
+import com.intellij.execution.process.ProcessListener
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
@@ -66,7 +66,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
       publisher.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
 
-      processHandler.addProcessListener(object : ProcessAdapter() {
+      processHandler.addProcessListener(object : ProcessListener {
          override fun processTerminated(event: ProcessEvent) {
 
             consoleView.callback.addNoTestsPlaceholder()
@@ -97,10 +97,20 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
     * It is up to this extension to determine if it is applicable for the given task.
     */
    override fun isApplicableFor(task: ExternalSystemTask): Boolean {
+      println("Checking is applicable, task: $task")
       if (task is ExternalSystemExecuteTaskTask) {
          if (task.externalSystemId.id == GradleConstants.SYSTEM_ID.id) {
             println("Checking is applicable, tasks to execute: ${task.tasksToExecute} state=${task.state} data=${task.userDataString} externalPath=${task.externalProjectPath}")
-            return GradleUtils.hasKotestTask(task.tasksToExecute)
+
+            // Checking is applicable, tasks to execute: [kotestDebugUnitTest]
+            // state=NOT_STARTED
+            // data={COPYABLE_USER_MAP_KEY={com.intellij.coverage=com.intellij.execution.configurations.coverage.JavaCoverageEnabledConfiguration@3486f84}, RUN_INPUT_KEY=com.intellij.openapi.externalSystem.util.DiscardingInputStream@6dacfdb6, DEBUG_SERVER_PROCESS=true, DEBUG_ALL_TASKS=false, RUN_AS_TEST=false, IS_TEST_TASK_RERUN=false}{com.intellij.coverage=com.intellij.execution.configurations.coverage.JavaCoverageEnabledConfiguration@3486f84}
+            // externalPath=/home/sam/development/workspace/kotest/kotest-examples/kotest-multiplatform
+
+
+            val hasKotestTask = GradleUtils.hasKotestTask(task.tasksToExecute)
+            println("hasKotestTask: $hasKotestTask")
+            return hasKotestTask
          }
       }
       return false
