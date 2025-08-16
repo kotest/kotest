@@ -48,6 +48,14 @@ val descriptors = listOf(
       jdkTarget = JavaVersion.VERSION_17,
    ),
    PluginDescriptor(
+      since = "251.*", // this version is 2025.1.x
+      until = "261.*",
+      sdkVersion = "2025.1",
+      sourceFolder = "IC-251",
+      useInstaller = true,
+      jdkTarget = JavaVersion.VERSION_21,
+   ),
+   PluginDescriptor(
       since = "252.*", // this version is 2025.2.x
       until = "261.*",
       sdkVersion = "2025.2",
