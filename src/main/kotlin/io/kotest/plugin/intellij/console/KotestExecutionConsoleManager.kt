@@ -7,8 +7,12 @@ import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.testDiscovery.JvmToggleAutoTestAction
 import com.intellij.execution.testframework.sm.SMTestRunnerConnectionUtil
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
+import com.intellij.execution.testframework.sm.runner.SMTestProxy
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
+import com.intellij.execution.testframework.sm.runner.ui.TestTreeRenderer
+import com.intellij.execution.ui.ConsoleViewContentType
 import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.execution.ExternalSystemExecutionConsoleManager
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTask
@@ -24,7 +28,7 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
 
 /**
  * An implementation of [ExternalSystemExecutionConsoleManager] that provides a custom [SMTRunnerConsoleView]
- * for displaying Kotest test results when executing Gradle tasks that run Kotest tests.
+ * for displaying Kotest test results when executing tests via the Kotest Gradle plugin tasks.
  */
 class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTRunnerConsoleView, ProcessHandler> {
 
@@ -54,48 +58,65 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       if (processHandler == null) return null
       val settings = env.runnerAndConfigurationSettings ?: return null
 
-      val consoleProperties = KotestSMTRunnerConsoleProperties(settings.configuration, env.executor)
-
-      // Cannot invoke "com.intellij.execution.testframework.sm.runner.ui.SMTestRunnerResultsForm.getTestsRootNode()"
-      // because the return value of "com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView.getResultsViewer()"
-      // is null
-
+      val consoleProperties = KotestSMTRunnerConsoleProperties(project, settings.configuration, env.executor)
 
       val splitterPropertyName = SMTestRunnerConnectionUtil.getSplitterPropertyName(Constants.FRAMEWORK_NAME)
       val publisher = project.messageBus.syncPublisher(SMTRunnerEventsListener.TEST_STATUS)
-      val consoleView = KotestSMTRunnerConsoleView(consoleProperties, splitterPropertyName, publisher)
+      val console = KotestSMTRunnerConsole(consoleProperties, splitterPropertyName, publisher, project)
 
       // sets up the process listener on the console view, using the properties that were passed to the console
-      SMTestRunnerConnectionUtil.initConsoleView(consoleView, Constants.FRAMEWORK_NAME)
+      SMTestRunnerConnectionUtil.initConsoleView(console, Constants.FRAMEWORK_NAME)
 
-      consoleView.resultsViewer.testsRootNode.executionId = env.executionId
-      consoleView.resultsViewer.testsRootNode.setSuiteStarted()
+//      console.resultsViewer.testsRootNode.executionId = env.executionId
+//      console.resultsViewer.testsRootNode.setSuiteStarted()
 
-//      callback = KotestServiceMessageCallback(consoleView, publisher)
-
-      consoleView.resultsViewer.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
-      publisher.onSuiteStarted(consoleView.resultsViewer.testsRootNode)
+//      publisher.onSuiteStarted(console.resultsViewer.testsRootNode)
+//      console.resultsViewer.onSuiteStarted(console.resultsViewer.testsRootNode)
 
       processHandler.addProcessListener(object : ProcessListener {
-         override fun processTerminated(event: ProcessEvent) {
-
-//            consoleView.callback.addNoTestsPlaceholder()
-
-            if (event.exitCode != 0) {
-               consoleView.resultsViewer.testsRootNode.setTestFailed("Exit code ${event.exitCode}", null, true)
-            } else {
-               consoleView.resultsViewer.testsRootNode.setFinished()
-            }
-
-            consoleView.resultsViewer.onBeforeTestingFinished(consoleView.resultsViewer.testsRootNode)
-            publisher.onBeforeTestingFinished(consoleView.resultsViewer.testsRootNode)
-
-            consoleView.resultsViewer.onTestingFinished(consoleView.resultsViewer.testsRootNode)
-            publisher.onTestingFinished(consoleView.resultsViewer.testsRootNode)
+         override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
+            println("text=${event.text} outputType=${outputType}")
          }
       })
 
-      return consoleView
+      val testsRootNode = console.resultsViewer.testsRootNode
+      testsRootNode.executionId = env.executionId
+      testsRootNode.setSuiteStarted()
+      console.publisher.onTestingStarted(testsRootNode)
+
+      val testTreeView = console.resultsViewer.treeView
+      if (testTreeView != null) {
+         val originalRenderer = testTreeView.getCellRenderer() as? TestTreeRenderer
+         originalRenderer?.setAdditionalRootFormatter { testProxy: SMTestProxy.SMRootTestProxy, renderer: TestTreeRenderer ->
+            if (!testProxy.isInProgress && testProxy.isEmptySuite) {
+               renderer.clear()
+               renderer.append("No tests were found!")
+            }
+         }
+      }
+
+      // this process handler will set the root proxy node to failed if the process exits with non-zero exit code
+      processHandler.addProcessListener(object : ProcessListener {
+         override fun processTerminated(event: ProcessEvent) {
+            if (testsRootNode.isInProgress) {
+               ApplicationManager.getApplication().invokeLater {
+                  if (event.exitCode != 0) {
+                     testsRootNode.setTestFailed("", null, false)
+                  } else {
+                     testsRootNode.setFinished()
+                  }
+                  console.resultsViewer.onBeforeTestingFinished(testsRootNode)
+                  console.resultsViewer.onTestingFinished(testsRootNode)
+               }
+            }
+         }
+      })
+
+//      if (task instanceof ExternalSystemExecuteTaskTask) {
+//            console . addMessageFilter (ReRunTaskFilter((ExternalSystemExecuteTaskTask) task, env));
+//      }
+
+      return console
    }
 
    /**
@@ -116,7 +137,6 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
             // state=NOT_STARTED
             // data={COPYABLE_USER_MAP_KEY={com.intellij.coverage=com.intellij.execution.configurations.coverage.JavaCoverageEnabledConfiguration@3486f84}, RUN_INPUT_KEY=com.intellij.openapi.externalSystem.util.DiscardingInputStream@6dacfdb6, DEBUG_SERVER_PROCESS=true, DEBUG_ALL_TASKS=false, RUN_AS_TEST=false, IS_TEST_TASK_RERUN=false}{com.intellij.coverage=com.intellij.execution.configurations.coverage.JavaCoverageEnabledConfiguration@3486f84}
             // externalPath=/home/sam/development/workspace/kotest/kotest-examples/kotest-multiplatform
-
 
             val hasKotestTask = GradleUtils.hasKotestTask(task.tasksToExecute)
             println("hasKotestTask: $hasKotestTask")
@@ -140,14 +160,32 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       processOutputType: Key<*>, // is stdout or stderr
    ) {
       when (executionConsole) {
-         is KotestSMTRunnerConsoleView ->
-            KotestConsoleViewOnOutputHandler.handle(executionConsole, text, processOutputType)
+         is KotestSMTRunnerConsole -> {
+            executionConsole.print(text, ConsoleViewContentType.getConsoleViewType(processOutputType))
+            executionConsole.onOutputHandler.onOutput(executionConsole, text, processOutputType)
+         }
       }
    }
 }
 
-object KotestConsoleViewOnOutputHandler {
-   fun handle(console: KotestSMTRunnerConsoleView, text: String, processOutputType: Key<*>) {
-      ServiceMessagesParser().parse(text, KotestServiceMessageCallback(console))
+class KotestConsoleViewOnOutputHandler {
+
+   private var buffer = StringBuilder()
+
+   fun onOutput(console: KotestSMTRunnerConsole, text: String, processOutputType: Key<*>) {
+      val startsWith = text.trim().startsWith("##teamcity[")
+      val endsWith = text.trim().endsWith("]")
+      if (startsWith && endsWith) {
+         ServiceMessagesParser().parse(text, KotestServiceMessageCallback(console))
+      } else if (startsWith) {
+         buffer.clear()
+         buffer.append(text)
+      } else if (endsWith) {
+         buffer.append(text)
+         ServiceMessagesParser().parse(buffer.toString(), KotestServiceMessageCallback(console))
+         buffer.clear()
+      } else if (buffer.isNotEmpty()) {
+         buffer.append(text)
+      }
    }
 }

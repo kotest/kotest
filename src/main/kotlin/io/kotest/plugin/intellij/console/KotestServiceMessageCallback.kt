@@ -12,24 +12,24 @@ import java.text.ParseException
  * An implementation of [ServiceMessageParserCallback] that updates the given [console].
  */
 class KotestServiceMessageCallback(
-   private val console: KotestSMTRunnerConsoleView,
+   private val console: KotestSMTRunnerConsole,
 ) : ServiceMessageParserCallback {
 
    fun root(): SMTestProxy.SMRootTestProxy = console.resultsViewer.testsRootNode
 
    // this is text that was a service message but couldn't be parsed
    override fun parseException(p0: ParseException, p1: String) {
-//      NotificationGroupManager.getInstance().getNotificationGroup("kotest.notification.group")
-//         .createNotification("Error parsing test result", NotificationType.ERROR)
-//         .setTitle("Kotest")
-//         .notify(project)
+      println("Error parsing test result: $p1")
+      console.notifyWarn("Error parsing test result", p0.message ?: "")
    }
 
    // this is text that wasn't a service message, we don't care about this
-   override fun regularText(p0: String) {}
+   override fun regularText(p0: String) {
+      if (p0.isNotBlank())
+         println("Regular text: $p0")
+   }
 
    override fun serviceMessage(msg: ServiceMessage) {
-      println(msg)
       when (msg.messageName) {
          ServiceMessageTypes.TEST_SUITE_STARTED -> {
             val proxy = createProxy(msg = msg, suite = true)
@@ -67,6 +67,7 @@ class KotestServiceMessageCallback(
             console.publisher.onTestIgnored(proxy)
          }
          ServiceMessageTypes.TEST_FAILED -> {
+            println("Handle test failed message $msg")
             val proxy = getProxy(msg)
             val attrs = MessageAttributeParser.parse(msg)
             proxy.setTestFailed(attrs.message, attrs.details, true)
