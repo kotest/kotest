@@ -105,14 +105,6 @@ fun PsiElement.isContainedInSpecificSpec(fqn: FqName): Boolean {
 /**
  * Returns true if this [PsiElement] is located inside a class that subclasses any spec.
  */
-fun PsiElement.isContainedInSpec(): Boolean {
-   val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
-   return enclosingClass.isSpec()
-}
-
-/**
- * Returns true if this [PsiElement] is located inside a class that subclasses any spec.
- */
 fun PsiElement.isContainedInSpecEdt(): Boolean {
    val enclosingClass = getStrictParentOfType<KtClass>() ?: return false
    return enclosingClass.isSpecEdt()

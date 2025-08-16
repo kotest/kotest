@@ -27,6 +27,7 @@ import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.idea.refactoring.memberInfo.toKotlinMemberInfo
 import org.jetbrains.kotlin.name.FqName
 import java.util.Properties
+
 /**
  * Used to create "Template" test class files.
  */
@@ -34,8 +35,8 @@ class KotestTestGenerator : TestGenerator {
 
    override fun toString(): String = KotlinLanguage.INSTANCE.displayName
 
-   override fun generateTest(project: Project, d: CreateTestDialog): PsiElement? =
-      if (d.selectedTestFrameworkDescriptor.name == Constants.FRAMEWORK_NAME) {
+   override fun generateTest(project: Project, d: CreateTestDialog): PsiElement? {
+      return if (d.selectedTestFrameworkDescriptor.name == Constants.FRAMEWORK_NAME) {
          PostprocessReformattingAspect.getInstance(project).postponeFormattingInside(Computable {
             ApplicationManager.getApplication().runWriteAction(Computable<PsiElement?> {
                val file = generateTestFile(project, d)
@@ -49,6 +50,7 @@ class KotestTestGenerator : TestGenerator {
       } else {
          null
       }
+   }
 
    private fun styleForSuperClass(fqn: FqName): SpecStyle =
       SpecStyle.Companion.styles.find { it.fqn() == fqn } ?: FunSpecStyle

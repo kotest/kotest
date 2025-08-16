@@ -46,6 +46,12 @@ class KotestTestFramework : TestFramework {
       return false
    }
 
+   /**
+    * Returns the name to display in intellij's test chooser dialog.
+    *
+    * This value is also passed to the [io.kotest.plugin.intellij.tests.KotestTestGenerator] so it
+    * can determine if the user selected kotest as their target framework to generate the tests for.
+    */
    override fun getName(): String = Constants.FRAMEWORK_NAME
    override fun getLanguage(): Language = KotlinLanguage.INSTANCE
    override fun getIcon(): Icon = Icons.KOTEST_16
