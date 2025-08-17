@@ -16,11 +16,12 @@ object Escaper {
                '\'' -> "|'"
                '\n' -> "|n"
                '\r' -> "|r"
+               '\b' -> "|b"
                '[' -> "|["
                ']' -> "|]"
-               '\u2028' -> "|l"
-               '\u0085' -> "|x"
-               '\u2029' -> "|p"
+               '\u2028' -> "|l" // line-separator character
+               '\u0085' -> "|x" // next-line character
+               '\u2029' -> "|p" // paragraph-separator character
                else -> char
             }
          )
