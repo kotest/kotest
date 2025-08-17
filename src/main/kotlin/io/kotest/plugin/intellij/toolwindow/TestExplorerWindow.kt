@@ -1,5 +1,9 @@
 package io.kotest.plugin.intellij.toolwindow
 
+import com.intellij.icons.AllIcons
+import com.intellij.openapi.actionSystem.ActionManager
+import com.intellij.openapi.actionSystem.ActionPlaces
+import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
@@ -13,8 +17,11 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiTreeAnyChangeAbstractAdapter
 import com.intellij.ui.JBColor
+import com.intellij.ui.PopupHandler
 import com.intellij.ui.ScrollPaneFactory
+import io.kotest.plugin.intellij.actions.RunAction
 import io.kotest.plugin.intellij.actions.runNode
+import java.awt.Component
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 
@@ -44,10 +51,32 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       background = JBColor.WHITE
       toolbar = createToolbar(this, tree, project)
       setContent(ScrollPaneFactory.createScrollPane(tree))
+
+      // install context menu with Run/Debug/Coverage on right-click
+      addContextMenuForTests()
+
       listenForSelectedEditorChanges()
       listenForFileChanges()
       listenForDocumentChanges()
       refreshContent()
+   }
+
+   private fun addContextMenuForTests() {
+      val popupGroup = DefaultActionGroup().apply {
+         add(RunAction("Run", AllIcons.Actions.Execute, tree, project, "Run"))
+         add(RunAction("Debug", AllIcons.Actions.StartDebugger, tree, project, "Debug"))
+         add(RunAction("Run with coverage", AllIcons.General.RunWithCoverage, tree, project, "Coverage"))
+      }
+      tree.addMouseListener(object : PopupHandler() {
+         override fun invokePopup(component: Component, x: Int, y: Int) {
+            // select the row under cursor so actions act on that node
+            tree.getPathForLocation(x, y)?.let { tree.selectionPath = it }
+            val popup = ActionManager.getInstance().createActionPopupMenu(
+               ActionPlaces.getPopupPlace("KotestTestTreePopup"), popupGroup
+            )
+            popup.component.show(component, x, y)
+         }
+      })
    }
 
    private fun listenForFileChanges() {
