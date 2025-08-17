@@ -7,7 +7,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.execution.testSpecExecutor
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
@@ -27,7 +27,7 @@ class SpecInitializationErrorTest : FunSpec({
       )
 
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
+      val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
 
       testSpecExecutor(
          EngineContext(null, Platform.JVM).mergeListener(listener),
@@ -62,7 +62,7 @@ class SpecInitializationErrorTest : FunSpec({
       )
 
       val track = EventTrackingEngineExecutionListener()
-      val listener = JUnitTestEngineListener(track, root, FallbackDisplayNameFormatter.default())
+      val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
 
       testSpecExecutor(
          EngineContext(null, Platform.JVM).mergeListener(listener),
