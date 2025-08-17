@@ -2,7 +2,6 @@ package io.kotest.plugin.intellij.console
 
 import com.intellij.build.BuildViewSettingsProvider
 import com.intellij.execution.Platform
-import com.intellij.execution.filters.HyperlinkInfo
 import com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener
 import com.intellij.execution.testframework.sm.runner.SMTestProxy
 import com.intellij.execution.testframework.sm.runner.ui.SMTRunnerConsoleView
@@ -32,10 +31,6 @@ class KotestSMTRunnerConsole(
    private val proxies = mutableMapOf<String, SMTestProxy>()
 
    override fun isExecutionViewHidden() = false
-
-   override fun printHyperlink(hyperlinkText: String, info: HyperlinkInfo?) {
-      super.printHyperlink(hyperlinkText, info)
-   }
 
    override fun print(s: String, contentType: ConsoleViewContentType) {
       if (detectUnwantedEmptyLine(s)) return

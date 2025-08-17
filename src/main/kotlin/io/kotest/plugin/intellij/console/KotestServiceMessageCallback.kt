@@ -19,14 +19,11 @@ class KotestServiceMessageCallback(
 
    // this is text that was a service message but couldn't be parsed
    override fun parseException(p0: ParseException, p1: String) {
-      println("Error parsing test result: $p1")
       console.notifyWarn("Error parsing test result", p0.message ?: "")
    }
 
    // this is text that wasn't a service message, we don't care about this
    override fun regularText(p0: String) {
-      if (p0.isNotBlank())
-         println("Regular text: $p0")
    }
 
    override fun serviceMessage(msg: ServiceMessage) {
@@ -67,7 +64,6 @@ class KotestServiceMessageCallback(
             console.publisher.onTestIgnored(proxy)
          }
          ServiceMessageTypes.TEST_FAILED -> {
-            println("Handle test failed message $msg")
             val proxy = getProxy(msg)
             val attrs = MessageAttributeParser.parse(msg)
             proxy.setTestFailed(attrs.message, attrs.details, true)
@@ -76,25 +72,6 @@ class KotestServiceMessageCallback(
          }
          else -> Unit
       }
-   }
-
-   /**
-    * Adds a placeholder to the console to indicate that no tests were found (if necessary).
-    */
-   fun addNoTestsPlaceholder() {
-      val proxy = TestProxyBuilder.builder("No tests were found", false, root()).build()
-      proxy.setStarted()
-
-      console.resultsViewer.onTestStarted(proxy)
-      console.publisher.onTestStarted(proxy)
-
-      proxy.setTestFailed("No tests were found", null, true)
-      console.resultsViewer.onTestFailed(proxy)
-      console.publisher.onTestFailed(proxy)
-
-      proxy.setFinished()
-      console.resultsViewer.onTestFinished(proxy)
-      console.publisher.onTestFinished(proxy)
    }
 
    private fun createProxy(msg: ServiceMessage, suite: Boolean): SMTestProxy {

@@ -74,6 +74,8 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
       val project = context.project ?: return false
       val module = context.module ?: return false
 
+      println("module = " + module.name)
+
       // we must have the element we clicked on as we are running from the gutter
       val element = sourceElement.get() ?: return false
 
@@ -85,6 +87,7 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
 
       // this is the path to the project on the file system
       val modulePath = GradleUtils.resolveModulePath(module) ?: return false
+      println("modulePath = " + modulePath)
 
       // this is the psi element associated with the run, needed by the JavaRunConfigurationExtensionManager
       val location = context.location ?: return false

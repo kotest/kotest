@@ -65,18 +65,6 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       // sets up the process listener on the console view, using the properties that were passed to the console
       SMTestRunnerConnectionUtil.initConsoleView(console, Constants.FRAMEWORK_NAME)
 
-//      console.resultsViewer.testsRootNode.executionId = env.executionId
-//      console.resultsViewer.testsRootNode.setSuiteStarted()
-
-//      publisher.onSuiteStarted(console.resultsViewer.testsRootNode)
-//      console.resultsViewer.onSuiteStarted(console.resultsViewer.testsRootNode)
-
-      processHandler.addProcessListener(object : ProcessListener {
-         override fun onTextAvailable(event: ProcessEvent, outputType: Key<*>) {
-            println("text=${event.text} outputType=${outputType}")
-         }
-      })
-
       val testsRootNode = console.resultsViewer.testsRootNode
       testsRootNode.executionId = env.executionId
       testsRootNode.setSuiteStarted()
