@@ -1,7 +1,6 @@
 package io.kotest.framework.gradle
 
 import io.kotest.framework.gradle.TestLauncherArgsJavaExecConfiguration.Companion.LAUNCHER_MAIN_CLASS
-import io.kotest.framework.gradle.tasks.AbstractKotestTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.ARTIFACT_TYPE
 import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.TYPE_CLASSES_JAR
@@ -17,6 +16,7 @@ import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
@@ -28,10 +28,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
 import org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper
 import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.fileExtension
 import org.jetbrains.kotlin.gradle.targets.js.KotlinWasmTargetType
-import org.jetbrains.kotlin.gradle.targets.js.dsl.KotlinJsBinaryMode
-import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrCompilation
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinNodeJsIr
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
@@ -43,8 +40,11 @@ import java.util.Properties
 abstract class KotestPlugin : Plugin<Project> {
 
    companion object {
-      const val TASK_DESCRIPTION = "Runs kotest tests"
-      const val TESTS_DIR_NAME = "test-results"
+      internal const val TASK_DESCRIPTION = "Runs kotest tests"
+      internal const val TESTS_DIR_NAME = "test-results"
+      internal const val JVMKOTEST_NAME = "jvmKotest"
+      internal const val JSTEST_NAME = "jsTest"
+      internal const val KSP_PLUGIN_ID = "com.google.devtools.ksp"
       private val unsupportedTargets = listOf("metadata")
    }
 
@@ -52,7 +52,10 @@ abstract class KotestPlugin : Plugin<Project> {
 
    override fun apply(project: Project) {
 
-      configureTaskConventions(project)
+      project.tasks.register("kotest") {
+         group = JavaBasePlugin.VERIFICATION_GROUP
+         description = TASK_DESCRIPTION
+      }
 
       // configures standalone Kotlin JVM projects
       handleKotlinJvm(project)
@@ -74,31 +77,20 @@ abstract class KotestPlugin : Plugin<Project> {
       return props.getProperty("version")
    }
 
-   /**
-    * As kotest tasks are added, this configures them with a group and description, and sets up
-    * check to run them, so we don't have to do it in each task.
-    */
-   private fun configureTaskConventions(project: Project) {
-      project.tasks.withType<AbstractKotestTask>().configureEach {
-         group = JavaBasePlugin.VERIFICATION_GROUP
-         description = TASK_DESCRIPTION
-      }
-   }
-
    private fun handleKotlinJvm(project: Project) {
       project.plugins.withType<KotlinPluginWrapper> {
          val existing = project.tasks.findByName("test")
          when (existing) {
             null -> println("> No test task found in project ${project.name} - no Kotest task will be added")
-            is Test -> configureJvmTask("kotest", "test", project, null) // no need for target name for standalone jvm
+            is Test -> configureJvmTask("test", project, null) // no need for target name for standalone jvm
          }
       }
    }
 
-   private fun configureJvmTask(name: String, sourceSetName: String, project: Project, target: String?) {
+   private fun configureJvmTask(sourceSetName: String, project: Project, target: String?) {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val task = project.tasks.register(name, KotestJvmTask::class) {
+      val jvmKotest = project.tasks.register(JVMKOTEST_NAME, KotestJvmTask::class) {
 
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION
@@ -132,8 +124,10 @@ abstract class KotestPlugin : Plugin<Project> {
          inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
       }
 
-      // this means this kotest task will be run when the user runs "gradle check"
-      project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+      project.tasks.getByName("kotest") {
+         println("> Configuring kotest task for $JVMKOTEST_NAME")
+         dependsOn(jvmKotest)
+      }
    }
 
    private fun handleKotlinMultiplatform(project: Project) {
@@ -168,18 +162,17 @@ abstract class KotestPlugin : Plugin<Project> {
       val existing = target.project.tasks.findByName("jvmTest")
       when (existing) {
          null -> println("> No jvmTest task found in project ${target.project.name} - no jvmKotest task will be added")
-         is KotlinJvmTest -> configureJvmTask("jvmKotest", "jvmTest", target.project, "jvm")
+         is KotlinJvmTest -> configureJvmTask("jvmTest", target.project, "jvm")
       }
    }
 
    private fun handleNative(target: KotlinTarget) {
-
-      val existing = target.project.tasks.findByName(nativeTestTaskName(target))
-      when (existing) {
+      val nativeTaskName = nativeTestTaskName(target)
+      when (val existing = target.project.tasks.findByName(nativeTaskName)) {
 
          // sometimes a native target might not exist, because either tests are not supported (eg android native)
          // or the target is not buildable on the current host (eg ios target on a linux host)
-         null -> println("> Skipping tests for ${target.name} because no task ${nativeTestTaskName(target)} found")
+         null -> println("> Skipping tests for ${target.name} because no task $nativeTaskName found")
 
          is KotlinNativeTest -> {
 
@@ -228,6 +221,11 @@ abstract class KotestPlugin : Plugin<Project> {
             // the kotest symbol processor to this configuration so the user doesn't have to manually
             // do it for every different native target (there could be many!)
             wireKsp(target.project, kspConfigurationName(target))
+
+            target.project.tasks.getByName("kotest") {
+               println("> Configuring kotest task for $nativeTaskName")
+               dependsOn(existing)
+            }
          }
       }
    }
@@ -241,6 +239,10 @@ abstract class KotestPlugin : Plugin<Project> {
                // the symbol processors used by the test configuration. We want to wire in
                // the kotest symbol processor to this configuration so the user doesn't have to manually
                wireKsp(target.project, "kspWasmJsTest")
+               target.project.tasks.getByName("kotest") {
+                  println("> Configuring kotest task for wasmJsTest")
+                  dependsOn(target.project.tasks["wasmJsTest"])
+               }
             }
 
             KotlinWasmTargetType.WASI -> {
@@ -271,6 +273,10 @@ abstract class KotestPlugin : Plugin<Project> {
          // the symbol processors used by the test configuration. We want to wire in
          // the kotest symbol processor to this configuration so the user doesn't have to manually
          wireKsp(target.project, "kspJsTest")
+         target.project.tasks.getByName("kotest") {
+            println("> Configuring kotest task for $JSTEST_NAME")
+            dependsOn(target.project.tasks[JSTEST_NAME])
+         }
       }
    }
 
@@ -327,7 +333,8 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // gradle best practice is to only apply to this project, and users add the plugin to each subproject
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
-         val task = project.tasks.register(androidKotestTaskName(compilation), KotestAndroidTask::class) {
+         val kotestTaskName = androidKotestTaskName(compilation)
+         val task = project.tasks.register(kotestTaskName, KotestAndroidTask::class) {
 
             group = JavaBasePlugin.VERIFICATION_GROUP
             description = TASK_DESCRIPTION
@@ -362,8 +369,11 @@ abstract class KotestPlugin : Plugin<Project> {
             inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
          }
 
-         // this means this kotest task will be run when the user runs "gradle check"
-         project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure { dependsOn(task) }
+         // this means this kotest task will be run when the user runs "gradle kotest"
+         project.tasks.getByName("kotest") {
+            println("> Configuring kotest task for $kotestTaskName")
+            dependsOn(task)
+         }
       }
    }
 
@@ -394,20 +404,6 @@ abstract class KotestPlugin : Plugin<Project> {
       return "kotest$capitalTarget"
    }
 
-   private fun compileSyncPath(compilation: KotlinJsIrCompilation): String {
-      val moduleName = compilation.outputModuleName.get()
-
-      var path: String? = null
-      compilation.binaries.matching { it.mode == KotlinJsBinaryMode.DEVELOPMENT }.configureEach {
-         path = outputDirBase.get().asFile.absolutePath + "/kotlin/$moduleName.${compilation.fileExtension.get()}"
-      }
-      val p = path
-      if (p == null) {
-         error("No DEVELOPMENT binaries found for compilation ${compilation.name} in project ${compilation.project.name}")
-      }
-      return p
-   }
-
    /**
     * Returns the name of the KSP task for a test compilation.
     * The KSP plugin uses the format ksp<TargetName>Test eg kspLinuxX64Test or kspWasmJsTest.
@@ -425,7 +421,7 @@ abstract class KotestPlugin : Plugin<Project> {
     * 2. Wires the Kotest symbol procesor for the target
     */
    internal fun wireKsp(project: Project, configurationName: String) {
-      if (!project.pluginManager.hasPlugin("com.google.devtools.ksp")) {
+      if (!project.pluginManager.hasPlugin(KSP_PLUGIN_ID)) {
          throw StopExecutionException(
             "KSP neither found in root project nor ${project.name}, " +
                "please add 'com.google.devtools.ksp' to the project's plugins"
