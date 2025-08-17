@@ -21,7 +21,7 @@ class FreeSpecEngineKitTest : FunSpec({
          .allEvents().apply {
             started().shouldHaveNames(
                "Kotest",
-               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
+               "FreeSpecSample",
                "a simple failing test",
                "a simple passing test",
                "a simple erroring test",
@@ -64,7 +64,7 @@ class FreeSpecEngineKitTest : FunSpec({
                "a passing test 1",
                "a passing test 2",
                "an outer container with only passing tests",
-               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
+               "FreeSpecSample",
                "Kotest"
             )
             finished().shouldHaveNames(
@@ -86,7 +86,7 @@ class FreeSpecEngineKitTest : FunSpec({
                "a passing test 1",
                "a passing test 2",
                "an outer container with only passing tests",
-               "com.sksamuel.kotest.runner.junit5.FreeSpecSample",
+               "FreeSpecSample",
                "Kotest"
             )
             dynamicallyRegistered().shouldHaveNames(

@@ -83,7 +83,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          finished.toMap() shouldBe mapOf(
             "test2" to TestExecutionResult.Status.FAILED,
             "test1" to TestExecutionResult.Status.SUCCESSFUL,
-            "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTest" to TestExecutionResult.Status.SUCCESSFUL,
+            "JUnitTestRunnerListenerTest" to TestExecutionResult.Status.SUCCESSFUL,
             KotestJunitPlatformTestEngine.ENGINE_NAME to TestExecutionResult.Status.SUCCESSFUL
          )
       }

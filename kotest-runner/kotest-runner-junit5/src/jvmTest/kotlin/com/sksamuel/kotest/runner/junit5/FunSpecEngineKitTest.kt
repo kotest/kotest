@@ -17,7 +17,7 @@ class FunSpecEngineKitTest : FunSpec({
          .allEvents().apply {
             started().shouldHaveNames(
                KotestJunitPlatformTestEngine.ENGINE_NAME,
-               "com.sksamuel.kotest.runner.junit5.FunSpecSample",
+               "FunSpecSample",
                "a failing test",
                "a passing test",
                "an erroring test"
@@ -28,12 +28,12 @@ class FunSpecEngineKitTest : FunSpec({
                "a failing test",
                "an erroring test",
             )
-            succeeded().shouldHaveNames("a passing test", "com.sksamuel.kotest.runner.junit5.FunSpecSample", "Kotest")
+            succeeded().shouldHaveNames("a passing test", "FunSpecSample", "Kotest")
             finished().shouldHaveNames(
                "a failing test",
                "a passing test",
                "an erroring test",
-               "com.sksamuel.kotest.runner.junit5.FunSpecSample",
+               "FunSpecSample",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
