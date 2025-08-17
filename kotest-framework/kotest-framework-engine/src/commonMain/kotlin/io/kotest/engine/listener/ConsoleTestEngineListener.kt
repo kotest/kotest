@@ -8,9 +8,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.console.consoleRenderer
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.TestResult
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.engine.test.names.formatTestPath
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -34,7 +32,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
    private var slow = 500.milliseconds
    private var verySlow = 5000.milliseconds
 
-   private var formatter = FallbackDisplayNameFormatter.Companion.default()
+   private var formatter = DisplayNameFormatting(null)
 
    private val intros = listOf(
       "Feeding the kotest engine with freshly harvested tests",
@@ -85,7 +83,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
 
    override suspend fun engineInitialized(context: EngineContext) {
 
-      formatter = getFallbackDisplayNameFormatter(context.projectConfigResolver, context.testConfigResolver)
+      formatter = DisplayNameFormatting(context.projectConfig)
 
       consoleRenderer.println(consoleRenderer.bold(">> Kotest"))
       consoleRenderer.println("- " + intros.shuffled().first())

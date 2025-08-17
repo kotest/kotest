@@ -14,7 +14,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.engine.test.scopes.TerminalTestScope
 import io.kotest.engine.test.status.isEnabledInternal
 import kotlinx.coroutines.CoroutineName
@@ -24,11 +24,7 @@ import kotlin.coroutines.coroutineContext
 
 internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecExecutor {
 
-   private val formatter = getFallbackDisplayNameFormatter(
-      context.projectConfigResolver,
-      context.testConfigResolver,
-   )
-
+   private val formatter = DisplayNameFormatting(context.projectConfig)
    private val pipeline = SpecInterceptorPipeline(context)
    private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()

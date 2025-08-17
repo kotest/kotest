@@ -4340,23 +4340,6 @@ public final class io/kotest/engine/test/names/DuplicateTestNameException : java
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public final class io/kotest/engine/test/names/FallbackDisplayNameFormatter {
-	public static final field Companion Lio/kotest/engine/test/names/FallbackDisplayNameFormatter$Companion;
-	public fun <init> (Lio/kotest/engine/names/DisplayNameFormatter;Lio/kotest/engine/test/names/DefaultDisplayNameFormatter;)V
-	public fun <init> (Lio/kotest/engine/test/names/DefaultDisplayNameFormatter;)V
-	public final fun format (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
-	public final fun format (Lkotlin/reflect/KClass;)Ljava/lang/String;
-}
-
-public final class io/kotest/engine/test/names/FallbackDisplayNameFormatter$Companion {
-	public final fun default ()Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
-	public final fun default (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
-}
-
-public final class io/kotest/engine/test/names/PathsKt {
-	public static final fun formatTestPath (Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;Lio/kotest/core/test/TestCase;Ljava/lang/String;)Ljava/lang/String;
-}
-
 public final class io/kotest/engine/test/scopes/NoopTestScope : io/kotest/core/test/TestScope {
 	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;

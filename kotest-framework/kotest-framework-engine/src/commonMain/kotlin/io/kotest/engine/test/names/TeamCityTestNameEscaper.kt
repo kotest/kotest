@@ -14,7 +14,7 @@ package io.kotest.engine.test.names
  * Only <test method> is a mandatory part of a full test name.
  *
  */
-internal object TestNameEscaper {
+internal object TeamCityTestNameEscaper {
    fun escape(name: String): String {
       return name.replace(".", " ")
    }

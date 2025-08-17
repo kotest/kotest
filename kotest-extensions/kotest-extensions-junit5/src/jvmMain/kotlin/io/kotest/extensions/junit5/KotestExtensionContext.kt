@@ -3,9 +3,7 @@ package io.kotest.extensions.junit5
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.config.TestConfigResolver
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.extension.ExecutableInvoker
 import org.junit.jupiter.api.extension.ExtensionContext
@@ -24,7 +22,7 @@ class KotestExtensionContext(
    private val testCase: TestCase?
 ) : ExtensionContext {
 
-   private val formatter = getFallbackDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
+   private val formatter = DisplayNameFormatting(null)
 
    override fun getExecutionMode(): ExecutionMode = ExecutionMode.CONCURRENT
 

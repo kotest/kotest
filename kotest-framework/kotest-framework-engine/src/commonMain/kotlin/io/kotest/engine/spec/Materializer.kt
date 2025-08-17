@@ -11,7 +11,7 @@ import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.names.DuplicateTestNameHandler
-import io.kotest.engine.test.names.TestNameEscaper
+import io.kotest.engine.test.names.TeamCityTestNameEscaper
 
 /**
  * Materializes [TestCase]s at runtime from [RootTest] and [NestedTest] definitions.
@@ -105,6 +105,6 @@ class Materializer(
          name.name.startsWith(parent.name) -> "- " + name.name
          else -> name.name
       }
-      return name.copy(name = TestNameEscaper.escape(resolvedName))
+      return name.copy(name = TeamCityTestNameEscaper.escape(resolvedName))
    }
 }

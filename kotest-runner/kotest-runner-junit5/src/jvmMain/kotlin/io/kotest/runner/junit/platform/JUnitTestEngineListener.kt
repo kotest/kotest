@@ -1,21 +1,21 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.names.UniqueNames
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.common.reflection.bestName
+import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -75,7 +75,7 @@ import kotlin.reflect.KClass
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
-   private val formatter: FallbackDisplayNameFormatter,
+   private val formatter: DisplayNameFormatting,
 ) : AbstractTestEngineListener() {
 
    private val logger = Logger(JUnitTestEngineListener::class)

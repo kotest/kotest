@@ -1,11 +1,11 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.core.Logger
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
 
 /**
@@ -13,7 +13,7 @@ import kotlin.reflect.KClass
  */
 internal class TeamCityWriter(
    private val prefix: String,
-   private val formatter: FallbackDisplayNameFormatter,
+   private val formatting: DisplayNameFormatting,
 ) {
 
    private val logger = Logger(TeamCityWriter::class)
@@ -30,7 +30,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestIgnored(testCase: TestCase, result: TestResult.Ignored) {
       val msg = TeamCityMessageBuilder
-         .testIgnored(prefix, formatter.format(testCase))
+         .testIgnored(prefix, formatting.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -46,7 +46,7 @@ internal class TeamCityWriter(
    internal fun outputTestStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "startTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testStarted(prefix, formatter.format(testCase))
+         .testStarted(prefix, formatting.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -87,7 +87,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestFailed(testCase: TestCase, result: TestResult, details: Boolean) {
       val msg = TeamCityMessageBuilder
-         .testFailed(prefix, formatter.format(testCase))
+         .testFailed(prefix, formatting.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -117,7 +117,7 @@ internal class TeamCityWriter(
    internal fun outputTestFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "finishTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testFinished(prefix, formatter.format(testCase))
+         .testFinished(prefix, formatting.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -141,7 +141,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "startTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(testCase))
+         .testSuiteStarted(prefix, formatting.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -155,7 +155,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "finishTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatter.format(testCase))
+         .testSuiteFinished(prefix, formatting.format(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -169,7 +169,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestSuiteFinished(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatter.format(ref.kclass))
+         .testSuiteFinished(prefix, formatting.format(ref.kclass))
          .id(ref.kclass.toDescriptor().path().value)
          .build()
       println(msg)
@@ -177,7 +177,7 @@ internal class TeamCityWriter(
 
    internal fun outputTestSuiteStarted(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatter.format(ref.kclass))
+         .testSuiteStarted(prefix, formatting.format(ref.kclass))
          .id(ref.kclass.toDescriptor().path().value)
          .locationHint(Locations.location(ref))
          .build()
