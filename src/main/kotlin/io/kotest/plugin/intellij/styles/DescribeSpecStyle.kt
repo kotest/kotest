@@ -37,7 +37,7 @@ object DescribeSpecStyle : SpecStyle {
             is KtDotQualifiedExpression -> p.tryDescribeWithConfig()
                ?: p.tryXDescribeWithConfig()
                ?: p.tryContextWithConfig()
-               ?: p.tryContextWithConfig()
+               ?: p.tryXContextWithConfig()
             is KtCallExpression -> p.tryDescribe()
                ?: p.tryXDescribe()
                ?: p.tryContext()
@@ -181,7 +181,7 @@ object DescribeSpecStyle : SpecStyle {
          TestName(null, name.text, name.interpolated),
          name.text.startsWith("!"),
          this,
-         TestType.Test,
+         TestType.Container,
          specClass
       )
    }
@@ -199,7 +199,7 @@ object DescribeSpecStyle : SpecStyle {
          TestName(null, name.text, name.interpolated),
          name.text.startsWith("!"),
          this,
-         TestType.Test,
+         TestType.Container,
          specClass
       )
    }
@@ -213,7 +213,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryXDescribeWithConfig(): Test? {
       val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xdescribe", "config") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container, specClass)
    }
 
    /**
@@ -225,7 +225,7 @@ object DescribeSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
       val specClass = enclosingKtClassOrObject() ?: return null
       val name = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
-      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Test, specClass)
+      return buildTest(TestName(null, name.text, name.interpolated), true, this, TestType.Container, specClass)
    }
 
    private fun buildTest(

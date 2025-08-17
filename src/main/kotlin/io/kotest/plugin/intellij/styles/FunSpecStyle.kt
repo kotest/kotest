@@ -67,7 +67,7 @@ object FunSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
       val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("context", "config") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, false, specClass)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, false, specClass)
    }
 
    /**
@@ -79,7 +79,7 @@ object FunSpecStyle : SpecStyle {
    private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
       val specClass = enclosingKtClassOrObject() ?: return null
       val context = extractLhsStringArgForDotExpressionWithRhsFinalLambda("xcontext", "config") ?: return null
-      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Test, true, specClass)
+      return buildTest(TestName(null, context.text, context.interpolated), this, TestType.Container, true, specClass)
    }
 
    /**
