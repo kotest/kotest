@@ -70,7 +70,7 @@
       <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestStartupActivity"/>
 
       <runConfigurationProducer
-         implementation="io.kotest.plugin.intellij.run.GradleKotestTaskRunConfigurationProducer"/>
+         implementation="io.kotest.plugin.intellij.run.TestOrSpecGradleRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.SpecRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.TestPathRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.PackageRunConfigurationProducer"/>

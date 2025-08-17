@@ -14,6 +14,7 @@ object GradleUtils {
    /**
     * Returns true if we have the Kotest Gradle plugin configured for the given module.
     */
+   @Suppress("UnstableApiUsage")
    fun hasGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
 //      GradleSettings.getInstance(module.project).linkedProjectsSettings.forEach { settings ->
@@ -21,7 +22,7 @@ object GradleUtils {
 //         gm.
 //      }
       // if we have any kotest gradle task in the project, we assume the plugin is applied
-      return kotestTasks(module).isNotEmpty()
+      return listTasks(module).any { isKotestTaskName(it.name) }
    }
 
    @Suppress("UnstableApiUsage")
@@ -35,22 +36,10 @@ object GradleUtils {
    }
 
    /**
-    * Returns true if the given task names contain any Kotest task.
+    * Returns true if any of the given [taskNames] are are the 'kotest' task.
     */
    fun hasKotestTask(taskNames: List<String>): Boolean {
-      // tasks from the gradle plugin are like kotest, jsKotest, jvmKotest, wasmJsKotest, etc.
-      // todo really need some better way of identifying kotest tasks
       return taskNames.any { isKotestTaskName(it) }
-   }
-
-   /**
-    * Returns a list of Kotest tasks for the given module.
-    */
-   @Suppress("UnstableApiUsage")
-   fun kotestTasks(module: Module): List<GradleTaskData> {
-      return listTasks(module)
-         .filter { isKotestTaskName(it.name) }
-         .sortedBy { it.name }
    }
 
    fun isKotestTaskName(taskName: String): Boolean {
@@ -59,9 +48,10 @@ object GradleUtils {
          || taskName.matches("kotest[a-zA-Z]+UnitTest".toRegex()) // android task names eg kotestReleaseUnitTest, kotestDebugUnitTest, etc.
    }
 
+
    fun getIncludeArg(taskNames: List<String>): String? {
-      val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.ARG_INCLUDE) } ?: return null
-      return arg.substringAfter(GradleTaskNamesBuilder.ARG_INCLUDE).trim().removeSurrounding("'")
+      val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.PROPERTY_INCLUDE) } ?: return null
+      return arg.substringAfter(GradleTaskNamesBuilder.PROPERTY_INCLUDE).trim().removePrefix("=").removeSurrounding("'")
    }
 
    @Suppress("UnstableApiUsage")

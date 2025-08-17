@@ -16,8 +16,6 @@ import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.externalSystem.execution.ExternalSystemExecutionConsoleManager
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.model.task.ExternalSystemTask
-import com.intellij.openapi.externalSystem.model.task.ExternalSystemTaskNotificationEvent
-import com.intellij.openapi.externalSystem.model.task.event.ExternalSystemTaskExecutionEvent
 import com.intellij.openapi.externalSystem.service.internal.ExternalSystemExecuteTaskTask
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -144,13 +142,6 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
          }
       }
       return false
-   }
-
-   override fun onStatusChange(executionConsole: SMTRunnerConsoleView, event: ExternalSystemTaskNotificationEvent) {
-      if (event is ExternalSystemTaskExecutionEvent) {
-         println("Status change: $event")
-      }
-      super.onStatusChange(executionConsole, event)
    }
 
    override fun onOutput(

@@ -19,12 +19,12 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 private val KOTEST_RUN = Key.create<Boolean>("KOTEST_RUN")
 
 /**
- * Runs a Kotest individual test or spec using Gradle.
+ * Runs a Kotest individual test or a single spec using Gradle.
  *
  * This uses a [GradleRunConfigurationProducer] which is an intellij provided
  * [com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration] that runs gradle tasks.
  */
-class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer() {
+class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer() {
 
    /**
     * When two configurations are created from the same context by two different producers, checks if the
@@ -86,13 +86,13 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       // this is the path to the project on the file system
       val modulePath = GradleUtils.resolveModulePath(module) ?: return false
 
-      // this is the psi element associated with the run, needed by the java run extension manager
+      // this is the psi element associated with the run, needed by the JavaRunConfigurationExtensionManager
       val location = context.location ?: return false
 
       configuration.name = configurationName(spec, test)
       configuration.isDebugServerProcess = false
-      // shouldn't matter because we intercept gradle tasks to add our own view if kotest task is present
-      configuration.isRunAsTest = true
+      // if this is true, then the GradleTestsExecutionConsoleManager takes ownership of the console
+      configuration.isRunAsTest = false
       configuration.isShowConsoleOnStdErr = false
       configuration.isShowConsoleOnStdOut = false
 
@@ -104,6 +104,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
       configuration.settings.scriptParameters = ""
       configuration.settings.taskNames = taskNames(module, spec, test)
 
+      // executes any RunConfigurationExtensionBase extension points
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
       return true
    }
@@ -119,8 +120,7 @@ class GradleKotestTaskRunConfigurationProducer : GradleRunConfigurationProducer(
     * Returns the list of gradle task names to run for the given [module], [spec] and [test].
     */
    private fun taskNames(module: Module, spec: KtClassOrObject, test: Test?): List<String> {
-      return GradleTaskNamesBuilder.builder(module)
-         .withSpec(spec)
+      return GradleTaskNamesBuilder.builder(module, spec)
          .withTest(test)
          .build()
    }
