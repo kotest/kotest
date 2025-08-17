@@ -74,8 +74,6 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
       val project = context.project ?: return false
       val module = context.module ?: return false
 
-      println("module = " + module.name)
-
       // we must have the element we clicked on as we are running from the gutter
       val element = sourceElement.get() ?: return false
 
@@ -87,15 +85,17 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
 
       // this is the path to the project on the file system
       val modulePath = GradleUtils.resolveModulePath(module) ?: return false
-      println("modulePath = " + modulePath)
 
       // this is the psi element associated with the run, needed by the JavaRunConfigurationExtensionManager
       val location = context.location ?: return false
 
       configuration.name = configurationName(spec, test)
-      configuration.isDebugServerProcess = false
-      // if this is true, then the GradleTestsExecutionConsoleManager takes ownership of the console
+      // this sets the "debug gradle scripts" option which is needed for when the user runs debug mode
+      configuration.isDebugServerProcess = true
+      // if this is true, then the GradleTestsExecutionConsoleManager takes ownership of the console as its higher priority
       configuration.isRunAsTest = false
+
+      // not sure what these do but they're false in the gradle runner
       configuration.isShowConsoleOnStdErr = false
       configuration.isShowConsoleOnStdOut = false
 
