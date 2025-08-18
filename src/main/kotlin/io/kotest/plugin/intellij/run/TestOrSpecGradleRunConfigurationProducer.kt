@@ -99,6 +99,9 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
       configuration.isShowConsoleOnStdErr = false
       configuration.isShowConsoleOnStdOut = false
 
+      configuration.putUserData<Boolean>(KOTEST_RUN, true)
+      configuration.putCopyableUserData<Boolean>(KOTEST_RUN, true)
+
       val runManager = RunManager.getInstance(project)
       runManager.setUniqueNameIfNeeded(configuration)
 
