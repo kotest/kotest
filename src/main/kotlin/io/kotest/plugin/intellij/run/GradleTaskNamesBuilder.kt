@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.run
 
 import com.intellij.openapi.module.Module
 import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.gradle.GradleUtils
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
@@ -24,10 +25,14 @@ data class GradleTaskNamesBuilder(
       return copy(test = test)
    }
 
+   @Suppress("UnstableApiUsage")
    fun build(): List<String> {
       // the debug settings do not propagate from kotest to the other test tasks yet,
       // so if we think we're in a jvm test we can just invoke jvmKotest directly, and then debug will work
-      val task = if (module.name.endsWith(".test")) "jvmKotest" else "kotest"
+      val task = if (module.name.endsWith(".test")) {
+         val tasks = GradleUtils.listTasks(module).map { it.getFqnTaskName() }
+         if (tasks.any { it.endsWith(":jvmKotest") }) "jvmKotest" else "kotest"
+      } else "kotest"
       return listOfNotNull(task, includeArg())
    }
 
