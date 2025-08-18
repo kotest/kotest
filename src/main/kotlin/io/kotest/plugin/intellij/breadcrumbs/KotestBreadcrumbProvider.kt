@@ -11,7 +11,7 @@ class KotestBreadcrumbProvider : BreadcrumbsProvider {
       return true
    }
 
-   override fun getLanguages(): Array<out Language?>? {
+   override fun getLanguages(): Array<out Language?> {
       println("LANGUAGES")
       return arrayOf(KotlinLanguage.INSTANCE)
    }

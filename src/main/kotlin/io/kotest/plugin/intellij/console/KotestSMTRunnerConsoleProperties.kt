@@ -49,7 +49,7 @@ class KotestSMTRunnerConsoleProperties(
 
    override fun getFilterProvider(): TestProxyFilterProvider {
       return TestProxyFilterProvider { p0, p1, p2 ->
-         println("get filter called with p0=$p0, p1=$p1, p2=$p2")
+//         println("get filter called with p0=$p0, p1=$p1, p2=$p2")
          null
       }
    }
