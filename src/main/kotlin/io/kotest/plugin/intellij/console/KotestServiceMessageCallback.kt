@@ -66,7 +66,8 @@ class KotestServiceMessageCallback(
          ServiceMessageTypes.TEST_FAILED -> {
             val proxy = getProxy(msg)
             val attrs = MessageAttributeParser.parse(msg)
-            proxy.setTestFailed(attrs.message, attrs.details, true)
+            val testError = attrs.resultStatus == "Error"
+            proxy.setTestFailed(attrs.message, attrs.details, testError)
             console.resultsViewer.onTestFailed(proxy)
             console.publisher.onTestFailed(proxy)
          }

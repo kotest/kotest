@@ -13,8 +13,9 @@ object MessageAttributeParser {
       val location = msg.attributes["locationHint"]
       val message = msg.attributes["message"]
       val details = msg.attributes["details"]
+      val resultStatus = msg.attributes["result_status"]
       val duration = msg.attributes["duration"]?.toLongOrNull()?.milliseconds
-      return MessageAttributes(id, parentId, name, location, duration, message, details)
+      return MessageAttributes(id, parentId, name, location, duration, message, details, resultStatus)
    }
 }
 
@@ -26,4 +27,5 @@ data class MessageAttributes(
    val duration: Duration?,
    val message: String?,
    val details: String?,
+   val resultStatus: String?,
 )
