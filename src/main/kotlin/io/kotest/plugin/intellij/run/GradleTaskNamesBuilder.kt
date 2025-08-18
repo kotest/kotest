@@ -25,7 +25,10 @@ data class GradleTaskNamesBuilder(
    }
 
    fun build(): List<String> {
-      return listOfNotNull("kotest", includeArg())
+      // the debug settings do not propagate from kotest to the other test tasks yet,
+      // so if we think we're in a jvm test we can just invoke jvmKotest directly, and then debug will work
+      val task = if (module.name.endsWith(".test")) "jvmKotest" else "kotest"
+      return listOfNotNull(task, includeArg())
    }
 
    private fun includeArg(): String? {

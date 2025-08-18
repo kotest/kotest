@@ -66,6 +66,8 @@ class KotestServiceMessageCallback(
          ServiceMessageTypes.TEST_FAILED -> {
             val proxy = getProxy(msg)
             val attrs = MessageAttributeParser.parse(msg)
+            // the test error flag determines if intellij shows a red test icon or a yellow warning icon
+            // yellow is typically used for assertion failures and red for build or general errors
             val testError = attrs.resultStatus == "Error"
             proxy.setTestFailed(attrs.message, attrs.details, testError)
             console.resultsViewer.onTestFailed(proxy)
