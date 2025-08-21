@@ -6,24 +6,7 @@ sidebar_label: Introduction
 ---
 
 Kotest integrates with many other libraries and frameworks. Some are provided by the Kotest team, and others are
-maintained and hosted by third parties.
-
-### Kotest Team Extensions
-
-| Project                               | Description                                                                  |
-|---------------------------------------|------------------------------------------------------------------------------|
-| [Allure](allure.md)                   | Provides output for the allure framework                                     |
-| [Decoroutinator](decoroutinator.md)   | Improves stack traces in Kotlin coroutines                                   |
-| [HTML Reporter](html_reporter.md)     | Generates HTML reports of test results based on [JUnit XML](junit_xml.md)    |
-| [Instant](instant.md)                 | Override the 'now' context in java.time                                      |
-| [JUnit XML](junit_xml.md)             | Provides output in the JUnit XML format for integration with reporting tools |
-| [Ktor](ktor.md)                       | Provides matchers for Ktor endpoints                                         |
-| [Koin](koin.md)                       | Kotlin DI framework                                                          |
-| [Mockserver](mockserver.md)           | Integrate mockserver HTTP servers with the test lifecycle                    |
-| [Spring](spring.md)                   | Adds support for spring beans in tests and spring test annotations           |
-| [System](system.md)                   | Provides utilities for integrating with System.* functions                   |
-| [Testcontainers](test_containers.md)  | Run docker images as part of a test lifecycle                                |
-| [Wiremock](wiremock.md)               | Provides a mock HTTP server. Project homepage [here](http://wiremock.org/).  |
+maintained and hosted by third parties. For extensions provided directly by the Kotest team, see the links on the left.
 
 ### Third Party Extensions
 
