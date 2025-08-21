@@ -5,8 +5,8 @@ slug: project-config.html
 
 :::warning
 This document describes project-level configuration in Kotest 6.0.
-If you were using project-level configuration in Kotest 5.x, note that the location of the project config instance
-is now **required** to be `io.kotest.provided.ProjectConfig`, otherwise it will not be picked up by the framework.
+If you were using project-level configuration in Kotest 5.x, note that the location of the project config instance must
+now be specified, otherwise it will not be picked up by the framework.
 :::
 
 Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec, or how
@@ -25,11 +25,22 @@ ignored tests, global `AssertSoftly`, and reusable listeners or extensions and s
 
 ## Setup
 
-On the JVM, Kotest will inspect the classpath for a class with a FQN of `io.kotest.provided.ProjectConfig` that extends
-`AbstractProjectConfig` and will instantiate it. On native and JS platforms, the config class can be located anywhere but
-must still extend `AbstractProjectConfig`.
+On the JVM, Kotest will inspect the classpath for a class with a specified name and package that extends `AbstractProjectConfig`.
+By default, this class should be named `io.kotest.provided.ProjectConfig`. If you don't want to place your class in that
+particular package, you can specify a different name using the system property `kotest.framework.config.fqn`.
 
-:::tip
+For example, in gradle, you would configure something like this:
+
+```kotlin
+tests.task {
+  useJunitPlatform()
+  systemProperty("kotest.framework.config.fqn", "com.sksamuel.mypackage.WibbleConfig")
+}
+```
+
+On native and JS platforms, the config class can be located anywhere but must still extend `AbstractProjectConfig`.
+
+:::warn
 You should only create a single project config class, otherwise the behavior is undefined.
 If you want to have different configurations per package, see [package level config](./package_level_config.md).
 :::
