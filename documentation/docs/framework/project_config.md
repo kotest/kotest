@@ -40,7 +40,7 @@ tests.task {
 
 On native and JS platforms, the config class can be located anywhere but must still extend `AbstractProjectConfig`.
 
-:::warn
+:::caution
 You should only create a single project config class, otherwise the behavior is undefined.
 If you want to have different configurations per package, see [package level config](./package_level_config.md).
 :::
