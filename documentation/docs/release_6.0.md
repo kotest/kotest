@@ -1,5 +1,5 @@
 ---
-id: release6.0
+id: release6
 title: Features and Changes in Kotest 6.0
 sidebar_label: Release 6.0
 ---
