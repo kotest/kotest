@@ -142,7 +142,15 @@ To register extensions, use one of these approaches:
     // tests here
   }
   ```
+### Data Driven Testing
 
+If you are using the Kotest 5.0+ `withData` support, you no longer need to add the `kotest-framework-data` dependency
+to your project as this has been merged into the core framework.
+
+### Table Driven Testing
+
+If you are using the Kotest 4.x era table driven testing, you will need to add the `kotest-assertions-table` dependency
+to your project as this has been moved out of the core framework.
 
 ### Extension overrides
 
