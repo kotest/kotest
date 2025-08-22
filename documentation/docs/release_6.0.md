@@ -143,6 +143,27 @@ To register extensions, use one of these approaches:
   }
   ```
 
+### Extension overrides
+
+Inside the project config, extensions are now a val not a function.
+So if you had before:
+
+```kotlin
+override fun listeners() = ...
+```
+
+or
+
+```kotlin
+override fun extensions() = ...
+```
+
+Change this to:
+
+```kotlin
+override val extensions = ...
+```
+
 ### Deprecated Isolation Modes
 
 The following isolation modes are now deprecated due to undefined behavior in edge cases:
