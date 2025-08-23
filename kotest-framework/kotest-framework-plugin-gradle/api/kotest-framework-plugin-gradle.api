@@ -1,7 +1,5 @@
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
 	public static final field Companion Lio/kotest/framework/gradle/KotestPlugin$Companion;
-	public static final field TASK_DESCRIPTION Ljava/lang/String;
-	public static final field TESTS_DIR_NAME Ljava/lang/String;
 	public fun <init> ()V
 	public synthetic fun apply (Ljava/lang/Object;)V
 	public fun apply (Lorg/gradle/api/Project;)V
@@ -13,15 +11,6 @@ public final class io/kotest/framework/gradle/KotestPlugin$Companion {
 public final class io/kotest/framework/gradle/SpecsResolver {
 	public static final field DELIMITER Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/framework/gradle/SpecsResolver;
-}
-
-public abstract class io/kotest/framework/gradle/tasks/AbstractKotestTask : org/gradle/api/DefaultTask {
-	public fun <init> ()V
-	public abstract fun getInclude ()Lorg/gradle/api/provider/Property;
-	public abstract fun getModuleTestReportsDir ()Lorg/gradle/api/file/DirectoryProperty;
-	public abstract fun getPackages ()Lorg/gradle/api/provider/Property;
-	public abstract fun getRootTestReportsDir ()Lorg/gradle/api/file/DirectoryProperty;
-	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract class io/kotest/framework/gradle/tasks/KotestAndroidTask : org/gradle/api/tasks/JavaExec {
@@ -44,17 +33,6 @@ public final class io/kotest/framework/gradle/tasks/KotestAndroidTask$Companion 
 	public final fun getARTIFACT_TYPE ()Lorg/gradle/api/attributes/Attribute;
 }
 
-public abstract class io/kotest/framework/gradle/tasks/KotestJsTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
-	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestJsTask$Companion;
-	protected final fun execute ()V
-	public abstract fun getCompileSyncPath ()Lorg/gradle/api/provider/Property;
-	public abstract fun getModules ()Lorg/gradle/api/provider/Property;
-	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
-}
-
-public final class io/kotest/framework/gradle/tasks/KotestJsTask$Companion {
-}
-
 public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : org/gradle/api/tasks/JavaExec {
 	public fun <init> ()V
 	public fun exec ()V
@@ -66,16 +44,5 @@ public abstract class io/kotest/framework/gradle/tasks/KotestJvmTask : org/gradl
 	public abstract fun getSpecs ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTargetName ()Lorg/gradle/api/provider/Property;
 	public abstract fun getTestSourceSetClasspath ()Lorg/gradle/api/provider/Property;
-}
-
-public abstract class io/kotest/framework/gradle/tasks/KotestWasmTask : io/kotest/framework/gradle/tasks/AbstractKotestTask {
-	public static final field Companion Lio/kotest/framework/gradle/tasks/KotestWasmTask$Companion;
-	protected final fun execute ()V
-	public abstract fun getCompileSyncPath ()Lorg/gradle/api/provider/Property;
-	public abstract fun getNodeExecutable ()Lorg/gradle/api/provider/Property;
-	public abstract fun getWasi ()Lorg/gradle/api/provider/Property;
-}
-
-public final class io/kotest/framework/gradle/tasks/KotestWasmTask$Companion {
 }
 

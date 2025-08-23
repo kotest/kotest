@@ -1,15 +1,14 @@
 package io.kotest.engine.test.names
 
 import io.kotest.common.Platform
+import io.kotest.common.platform
+import io.kotest.common.reflection.annotation
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.names.TestNameCase
-import io.kotest.common.platform
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.names.DisplayNameFormatter
-import io.kotest.common.reflection.annotation
-import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
 
 /**
@@ -71,16 +70,12 @@ class DefaultDisplayNameFormatter(
     * Returns a formatted display name for this spec class.
     *
     * If the spec has been annotated with [DisplayName] (on supported platforms), then that will be used,
-    * otherwise the default is to use the fully qualified class name.
-    *
-    * Note: This name must be globally unique. Two specs, even in different packages,
-    * cannot share the same names, so if [DisplayName] is used, developers must ensure it does not
-    * clash with another spec.
+    * otherwise the default is to use the class name.
     */
    override fun format(kclass: KClass<*>): String {
       return when (platform) {
-         Platform.JVM -> kclass.annotation<DisplayName>()?.name ?: kclass.bestName()
-         else -> kclass.bestName()
+         Platform.JVM -> kclass.annotation<DisplayName>()?.name ?: kclass.simpleName ?: "<unknown>"
+         else -> kclass.simpleName ?: "<unknown>"
       }
    }
 

@@ -1,0 +1,199 @@
+---
+id: quickstart
+title: Quick Start
+sidebar_label: Quick Start
+---
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+**Kotest is a flexible and comprehensive testing project for Kotlin with multiplatform support.**
+
+For latest updates see [Changelog](changelog.md).
+
+Kotest is divided into several, stand alone, subprojects, each of which can be used independently:
+
+* [Test framework](framework/index.md)
+* [Assertions library](assertions/index.md)
+* [Property testing](proptest/index.mdx)
+
+You can decide to go _all in_ on Kotest, and use all three together, or you can choose to one or more modules in conjunction with other projects.
+For example, you could use the assertions library with JUnit, or you could use the test framework with another assertions library like assertj.
+
+This page gives setup instructions for various combinations of projects and targets.
+
+:::note
+Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html).
+If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with JVM, such as `kotest-property-jvm`.
+:::
+
+## Test Framework
+
+The Kotest test framework is supported on JVM, Android, Javascript and Native. To setup kotest as your testing framework, follow detailed instructions in the [framework documentation](framework/setup.mdx) page.
+
+
+## Assertions Library
+
+
+
+
+
+The core assertions library framework is supported on all targets. Submodules are supported on the platforms that applicable.
+For example, the JDBC matchers only work for JVM since JDBC is a Java library.
+
+
+
+<Tabs
+   defaultValue="JVM/Gradle"
+   values={[
+      {label: 'JVM/Gradle', value: 'JVM/Gradle'},
+      {label: 'JVM/Maven', value: 'JVM/Maven'},
+      {label: 'Multiplatform', value: 'Multiplatform'},
+   ]}>
+   <TabItem value="JVM/Gradle">
+
+Add the following dependency to your build:
+
+```groovy
+testImplementation 'io.kotest:kotest-assertions-core:$version'
+```
+
+   </TabItem>
+   <TabItem value="JVM/Maven">
+
+Add the following dependency to your build.
+
+```xml
+<dependency>
+   <groupId>io.kotest</groupId>
+   <artifactId>kotest-assertions-core-jvm</artifactId>
+   <version>{version}</version>
+   <scope>test</scope>
+</dependency>
+```
+
+   </TabItem>
+   <TabItem value="Multiplatform">
+
+Add the following dependency to your commonTest dependencies block:
+
+```groovy
+implementation 'io.kotest:kotest-assertions-core:$version'
+```
+
+Alternatively, add the dependency to a specific target. For example, we could add to the Javascript target only.
+
+```kotlin
+kotlin {
+   targets {
+      js {
+         browser()
+         nodejs()
+      }
+   }
+   sourceSets {
+      val jsTest by getting {
+         dependencies {
+            implementation("io.kotest:kotest-assertions-core:$version")
+         }
+      }
+   }
+}
+```
+
+   </TabItem>
+</Tabs>
+
+View the [assertions documentation](assertions/index.md) for more information.
+
+
+
+
+
+
+
+
+
+## Property Testing
+
+
+The property test framework is supported on all targets.
+
+
+<Tabs
+   defaultValue="JVM/Gradle"
+   values={[
+      {label: 'JVM/Gradle', value: 'JVM/Gradle'},
+      {label: 'JVM/Maven', value: 'JVM/Maven'},
+      {label: 'Multiplatform', value: 'Multiplatform'},
+   ]}>
+   <TabItem value="JVM/Gradle">
+
+Add the following dependency to your build:
+
+```groovy
+testImplementation 'io.kotest:kotest-property:$version'
+```
+
+   </TabItem>
+   <TabItem value="JVM/Maven">
+
+
+Add the following dependency to your build.
+
+```xml
+<dependency>
+   <groupId>io.kotest</groupId>
+   <artifactId>kotest-property-jvm</artifactId>
+   <version>${version}</version>
+   <scope>test</scope>
+</dependency>
+```
+
+   </TabItem>
+   <TabItem value="Multiplatform">
+
+Add the following dependency to your commonTest dependencies block:
+
+```groovy
+implementation 'io.kotest:kotest-property:$version'
+```
+
+
+Alternatively, add the dependency to a specific target. For example, we could add to the Javascript target only.
+
+```kotlin
+kotlin {
+   targets {
+      js {
+         browser()
+         nodejs()
+      }
+   }
+   sourceSets {
+      val jsTest by getting {
+         dependencies {
+            implementation("io.kotest:kotest-property:$version")
+         }
+      }
+   }
+}
+```
+
+
+
+   </TabItem>
+</Tabs>
+
+View the [property testing documentation](proptest/index.mdx) for more information.
+
+
+## Snapshots
+
+Snapshot are automatically published on each commit to master.
+If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
+
+```
+https://s01.oss.sonatype.org/content/repositories/snapshots
+```

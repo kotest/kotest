@@ -1,6 +1,7 @@
 module.exports = {
   "docs": [
     "quickstart",
+    "release6",
     "blogs"
   ],
   "proptest": [
@@ -27,21 +28,22 @@ module.exports = {
     "intellij/props"
   ],
   "extensions": [
-    "extensions/index",
-    "extensions/spring",
-    "extensions/ktor",
-    "extensions/system_extensions",
-    "extensions/test_containers",
-    "extensions/mockserver",
-    "extensions/junit_xml",
-    "extensions/html_reporter",
-    "extensions/allure",
-    "extensions/instant",
-    "extensions/koin",
-    "extensions/wiremock",
-    "extensions/clock",
-    "extensions/pitest",
-    "extensions/blockhound"
+     "extensions/index",
+     "extensions/allure",
+     "extensions/blockhound",
+     "extensions/clock",
+     "extensions/decoroutinator",
+     "extensions/instant",
+     "extensions/junit_xml",
+     "extensions/koin",
+     "extensions/ktor",
+     "extensions/html_reporter",
+     "extensions/mockserver",
+     "extensions/pitest",
+     "extensions/spring",
+     "extensions/system_extensions",
+     "extensions/test_containers",
+     "extensions/wiremock"
   ],
   "assertions": [
     "assertions/index",

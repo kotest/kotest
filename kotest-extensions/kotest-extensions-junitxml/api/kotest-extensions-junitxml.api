@@ -1,6 +1,7 @@
 public final class io/kotest/extensions/junitxml/JunitXmlReporter : io/kotest/core/listeners/FinalizeSpecListener, io/kotest/core/listeners/PrepareSpecListener {
 	public static final field ATTRIBUTE_MESSAGE Ljava/lang/String;
 	public static final field ATTRIBUTE_NAME Ljava/lang/String;
+	public static final field ATTRIBUTE_TIMESTAMP Ljava/lang/String;
 	public static final field ATTRIBUTE_TYPE Ljava/lang/String;
 	public static final field Companion Lio/kotest/extensions/junitxml/JunitXmlReporter$Companion;
 	public static final field ELEMENT_ERROR Ljava/lang/String;

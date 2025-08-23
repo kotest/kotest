@@ -1,21 +1,20 @@
 package io.kotest.engine.listener
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.teamcity.TeamCityWriter
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
-import io.kotest.common.reflection.bestName
+import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
 
 /**
@@ -29,7 +28,7 @@ class TeamCityTestEngineListener(
 
    private val logger = Logger(TeamCityTestEngineListener::class)
 
-   private var writer = TeamCityWriter(prefix, FallbackDisplayNameFormatter.default())
+   private var writer: TeamCityWriter = TeamCityWriter(prefix, DisplayNameFormatting(null))
 
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
@@ -58,8 +57,8 @@ class TeamCityTestEngineListener(
 
    override suspend fun engineInitialized(context: EngineContext) {
       writer = TeamCityWriter(
-         prefix,
-         getFallbackDisplayNameFormatter(context.projectConfigResolver, context.testConfigResolver)
+         prefix = prefix,
+         formatting = DisplayNameFormatting(context.projectConfig)
       )
    }
 

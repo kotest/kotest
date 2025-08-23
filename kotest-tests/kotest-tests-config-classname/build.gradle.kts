@@ -3,10 +3,8 @@ plugins {
 }
 
 kotlin {
-
    sourceSets {
-
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
@@ -14,4 +12,9 @@ kotlin {
          }
       }
    }
+}
+
+tasks.jvmTest {
+   useJUnitPlatform()
+   systemProperty("kotest.framework.config.fqn", "com.sksamuel.kotest.config.classname.WibbleConfig")
 }

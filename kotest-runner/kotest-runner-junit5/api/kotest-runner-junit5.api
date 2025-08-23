@@ -1,5 +1,5 @@
 public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
-	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;)V
+	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/engine/test/names/DisplayNameFormatting;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineStarted (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

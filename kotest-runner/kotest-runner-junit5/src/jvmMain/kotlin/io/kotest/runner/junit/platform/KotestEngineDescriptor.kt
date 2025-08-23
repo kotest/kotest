@@ -1,10 +1,10 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
-import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
@@ -35,7 +35,7 @@ internal fun createEngineDescriptor(
       extensions = extensions,
    )
 
-   val formatter = FallbackDisplayNameFormatter.default()
+   val formatter = DisplayNameFormatting(null)
 
    log { "Adding ${specs.size} children to the root descriptor ${KotestEngineDescriptor::class}@${engine.hashCode()}" }
    specs.forEach {

@@ -12,20 +12,20 @@ The Kotest test framework is supported on JVM, Javascript and Native.
 To enable Kotest for multiple platforms, combine the steps for the individual platforms as detailed in the following tabs.
 
 :::caution
-The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugi but a simplified setup.
+The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin but a simplified setup.
 Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
 :::
 
 <Tabs
-defaultValue="JVM/Gradle"
+defaultValue="JVM"
 values={[
-{label: 'JVM/Gradle', value: 'JVM/Gradle'},
+{label: 'JVM', value: 'JVM'},
 {label: 'Kotlin/JS', value: 'JS'},
 {label: 'Kotlin/WasmJS', value: 'WasmJS'},
 {label: 'Kotlin/Native', value: 'Native'},
 {label: 'Android', value: 'Android'},
 ]}>
-<TabItem value="JVM/Gradle">
+<TabItem value="JVM">
 
 :::tip
 A working project with JVM support can be found here:
@@ -39,7 +39,7 @@ To use the Kotest gradle plugin, add the following to your `build.gradle.kts` fi
 
 ```kotlin
 plugins {
-   id("io.kotest") version "$version"
+   id("io.kotest") version "<kotest-version>"
 }
 ```
 
@@ -47,11 +47,11 @@ Add the following dependency to your build:
 
 ```kotlin
 dependencies {
-   testImplementation("io.kotest:kotest-framework-engine:$version")
+   testImplementation("io.kotest:kotest-framework-engine:<kotest-version>")
 }
 ```
 
-And then execute the `kotest` task in gradle, or run tests directly from the IDE.
+And then execute the `jvmKotest` task in gradle, or run tests directly from the IDE.
 
 To use the JUnit Platform plugin, add the following to your `build.gradle.kts` file:
 
@@ -65,7 +65,7 @@ Add the following dependency to your build:
 
 ```kotlin
 dependencies {
-   testImplementation("io.kotest:kotest-runner-junit5:$version")
+   testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
 }
 ```
 
@@ -84,12 +84,12 @@ For example:
 
 ```kotlin
 plugins {
-   id("io.kotest") version "$version"
-   id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+   id("io.kotest") version "<kotest-version>"
+   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
 }
 ```
 
-Add the engine dependency to your `commonTest` or `jsTest` source set:
+Add the `kotest-framework-engine` dependency to your `commonTest` or `jsTest` source set:
 
 ```kotlin
 kotlin {
@@ -97,7 +97,7 @@ kotlin {
    sourceSets {
       jsTest {
          dependencies {
-            implementation("io.kotest:kotest-framework-engine:$version")
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
          }
       }
    }
@@ -105,7 +105,7 @@ kotlin {
 ```
 
 Tests can be placed in either `commonTest` or `jsTest`.
-Run your tests using the `jsKotest` gradle task.
+Run your tests using the `jsTest` gradle task.
 
 :::note
 The JS test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
@@ -125,12 +125,12 @@ For example:
 
 ```kotlin
 plugins {
-   id("io.kotest") version "$version"
-   id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+   id("io.kotest") version "<kotest-version>"
+   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
 }
 ```
 
-Add the engine dependency to your `commonTest` or `wasmJsTest` source set:
+Add the `kotest-framework-engine` dependency to your `commonTest` or `wasmJsTest` source set:
 
 ```kotlin
 kotlin {
@@ -138,7 +138,7 @@ kotlin {
    sourceSets {
       wasmJsTest {
          dependencies {
-            implementation("io.kotest:kotest-framework-engine:$version")
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
          }
       }
    }
@@ -146,7 +146,7 @@ kotlin {
 ```
 
 Tests can be placed in either `commonTest` or `wasmJsTest`.
-Run your tests using the `wasmJsKotest` gradle task.
+Run your tests using the `wasmJsTest` gradle task.
 
 :::note
 The WasmJS test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
@@ -167,12 +167,12 @@ For example:
 
 ```kotlin
 plugins {
-  id("io.kotest") version "$version
-  id("com.google.devtools.ksp") version "2.2.0-2.0.2"
+   id("io.kotest") version "<kotest-version>"
+   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
 }
 ```
 
-Add the engine dependency to your `commonTest`, `nativeTest` or platform specific sourceset:
+Add the `kotest-framework-engine` dependency to your `commonTest`, `nativeTest` or platform specific sourceset:
 
 ```kotlin
 kotlin {
@@ -180,7 +180,7 @@ kotlin {
    sourceSets {
       nativeTest {
          dependencies {
-            implementation("io.kotest:kotest-framework-engine:$version")
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
          }
       }
    }
@@ -188,7 +188,7 @@ kotlin {
 ```
 
 Tests can be placed in either `commonTest` or a specific native sourceset.
-Run your tests using the kotest tasks that mirror the target names, for example `linuxX86Kotest`.
+      Run your tests using the standard test tasks, for example `linuxX86Test`.
 
 :::note
 The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
@@ -200,7 +200,7 @@ based configuration will not work as Kotlin does not expose annotations at runti
 
 :::info
 Currently, only Unit tests are supported in Kotest.
-The following steps enable Kotest to be used for unit tests, where the Android framework is not needed or is mocked that usually reside in the
+The following steps enable Kotest to be used for unit tests - where the Android framework is not needed or is mocked - and that usually reside in the
 `src/test` folder of your module.
 :::
 

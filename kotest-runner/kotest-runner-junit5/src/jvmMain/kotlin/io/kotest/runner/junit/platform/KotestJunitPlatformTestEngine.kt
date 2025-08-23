@@ -8,7 +8,7 @@ import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
 import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterExtractor
@@ -62,7 +62,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
                   request.engineExecutionListener
                ),
                root = root,
-               formatter = FallbackDisplayNameFormatter.default(config)
+               formatter = DisplayNameFormatting(config)
             )
          )
       )

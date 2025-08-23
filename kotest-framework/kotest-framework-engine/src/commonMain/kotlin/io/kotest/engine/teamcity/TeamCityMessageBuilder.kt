@@ -52,12 +52,10 @@ class TeamCityMessageBuilder(
          return TeamCityMessageBuilder(prefix, Messages.TEST_SUITE_FINISHED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testStarted(name: String): TeamCityMessageBuilder = testStarted(TEAM_CITY_PREFIX, name)
       fun testStarted(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_STARTED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testFinished(name: String): TeamCityMessageBuilder = testFinished(TEAM_CITY_PREFIX, name)
       fun testFinished(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_FINISHED).addAttribute(Attributes.NAME, name)
       }
@@ -67,7 +65,6 @@ class TeamCityMessageBuilder(
          return TeamCityMessageBuilder(prefix, Messages.TEST_FAILED).addAttribute(Attributes.NAME, name)
       }
 
-      fun testIgnored(name: String): TeamCityMessageBuilder = testIgnored(TEAM_CITY_PREFIX, name)
       fun testIgnored(prefix: String, name: String): TeamCityMessageBuilder {
          return TeamCityMessageBuilder(prefix, Messages.TEST_IGNORED).addAttribute(Attributes.NAME, name)
       }
@@ -78,6 +75,7 @@ class TeamCityMessageBuilder(
       const val EXPECTED = "expected"
       const val LOCATION_HINT = "locationHint"
       const val NAME = "name"
+      const val OUT = "out"
       const val DURATION = "duration"
       const val DURATION_STRATEGY = "durationStrategy"
       const val TYPE = "type"
@@ -96,6 +94,7 @@ class TeamCityMessageBuilder(
       const val TEST_STARTED = "testStarted"
       const val TEST_FINISHED = "testFinished"
       const val TEST_IGNORED = "testIgnored"
+      const val TEST_STDOUT = "testStdOut"
       const val TEST_FAILED = "testFailed"
    }
 
@@ -113,6 +112,10 @@ class TeamCityMessageBuilder(
    // message contains the textual representation of the error
    fun message(value: String?): TeamCityMessageBuilder =
       if (value != null) addAttribute(Attributes.MESSAGE, value.trim()) else this
+
+   fun out(out:String): TeamCityMessageBuilder {
+      return addAttribute(Attributes.OUT, escapeColonsIn(out))
+   }
 
    // details contains detailed information on the test failure, typically a message and an exception stacktrace
    fun details(value: String?): TeamCityMessageBuilder =
@@ -152,21 +155,17 @@ class TeamCityMessageBuilder(
          } catch (_: Exception) {
             "StackTrace unavailable (Sometimes caused by a mocked exception)"
          }
-         details(escapeColonsIn(truncateStackTrace(stacktrace))) // seems to be some limit to the details field
+         details(escapeColonsIn(stacktrace)) // seems to be some limit to the details field
       }
 
       when (error) {
-         is KotestAssertionFailedError if error.actual != null || error.expected != null ->
+         is KotestAssertionFailedError if (error.actual != null || error.expected != null) ->
             type("comparisonFailure").expected(error.expected).actual(error.actual)
 
          else -> handlePlatformComparisonExceptions(error)
       }
 
       return this
-   }
-
-   private fun truncateStackTrace(stacktrace: String): String {
-      return if (stacktrace.length > 10000) stacktrace.take(10000) + "..." else stacktrace
    }
 
    // sets the test's parents id

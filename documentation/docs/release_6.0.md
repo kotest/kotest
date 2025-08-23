@@ -1,5 +1,5 @@
 ---
-id: release6.0
+id: release6
 title: Features and Changes in Kotest 6.0
 sidebar_label: Release 6.0
 ---
@@ -142,6 +142,37 @@ To register extensions, use one of these approaches:
     // tests here
   }
   ```
+
+### Data Driven Testing
+
+If you are using the Kotest 5.0+ `withData` support, you no longer need to add the `kotest-framework-data` dependency
+to your project as this has been merged into the core framework.
+
+### Table Driven Testing
+
+If you are using the Kotest 4.x era table driven testing, you will need to add the `kotest-assertions-table` dependency
+to your project as this has been moved out of the core framework.
+
+### Extension overrides
+
+Inside the project config, extensions are now a val not a function.
+So if you had before:
+
+```kotlin
+override fun listeners() = ...
+```
+
+or
+
+```kotlin
+override fun extensions() = ...
+```
+
+Change this to:
+
+```kotlin
+override val extensions = ...
+```
 
 ### Deprecated Isolation Modes
 

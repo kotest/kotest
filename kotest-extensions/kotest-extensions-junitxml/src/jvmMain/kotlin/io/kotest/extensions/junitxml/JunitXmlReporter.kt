@@ -5,13 +5,9 @@ import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
-import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.config.TestConfigResolver
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
-import io.kotest.engine.test.names.formatTestPath
-import io.kotest.engine.test.names.getFallbackDisplayNameFormatter
+import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.extensions.junitxml.JunitXmlReporter.Companion.defaultOutputDir
 import org.jdom2.Document
 import org.jdom2.Element
@@ -85,6 +81,7 @@ class JunitXmlReporter(
       const val ELEMENT_FAILURE = "failure"
       const val ELEMENT_ERROR = "error"
       const val ATTRIBUTE_NAME = "name"
+      const val ATTRIBUTE_TIMESTAMP = "timestamp"
       const val ATTRIBUTE_TYPE = "type"
       const val ATTRIBUTE_MESSAGE = "message"
 
@@ -106,8 +103,7 @@ class JunitXmlReporter(
       }
    }
 
-   private val formatter: FallbackDisplayNameFormatter =
-      getFallbackDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
+   private val formatter = DisplayNameFormatting(null)
 
    /** Record the start of each spec, so the duration of each can be measured. */
    private val marks: ConcurrentHashMap<KClass<out Spec>, TimeMark> =
@@ -131,7 +127,7 @@ class JunitXmlReporter(
 
       val document = Document()
       val testSuite = Element("testsuite").apply {
-         setAttribute("timestamp", getCurrentDateTimeIsoString())
+         setAttribute(ATTRIBUTE_TIMESTAMP, getCurrentDateTimeIsoString())
          setAttribute("time", duration.toDouble(DurationUnit.SECONDS).toString())
          setAttribute("hostname", hostname)
          setAttribute("errors", filtered.count { it.value.isError }.toString())
@@ -158,7 +154,7 @@ class JunitXmlReporter(
 
    private fun write(kclass: KClass<*>, document: Document) {
       outputDir
-         .resolve("TEST-" + formatter.format(kclass) + ".xml")
+         .resolve("TEST-${kclass.qualifiedName}.xml")
          .createParentDirectories()
          .bufferedWriter(options = arrayOf(StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.CREATE))
          .use { writer ->

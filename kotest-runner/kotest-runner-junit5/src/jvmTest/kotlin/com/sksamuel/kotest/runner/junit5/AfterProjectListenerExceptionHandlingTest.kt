@@ -35,7 +35,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
          .allEvents().apply {
             started().shouldHaveNames(
                KotestJunitPlatformTestEngine.ENGINE_NAME,
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "AfterProjectListenerExceptionSample",
                "foo",
                "After Project Error",
             )
@@ -44,12 +44,12 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
             failed().shouldHaveNames("After Project Error")
             succeeded().shouldHaveNames(
                "foo",
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "AfterProjectListenerExceptionSample",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "foo",
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "AfterProjectListenerExceptionSample",
                "After Project Error",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
@@ -73,7 +73,7 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
          .allEvents().apply {
             started().shouldHaveNames(
                KotestJunitPlatformTestEngine.ENGINE_NAME,
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "AfterProjectListenerExceptionSample",
                "foo",
                "After Project Error",
                "After Project Error_1"
@@ -83,12 +83,12 @@ class AfterProjectListenerExceptionHandlingTest : FunSpec({
             failed().shouldHaveNames("After Project Error", "After Project Error_1")
             succeeded().shouldHaveNames(
                "foo",
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "AfterProjectListenerExceptionSample",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
                "foo",
-               "com.sksamuel.kotest.runner.junit5.AfterProjectListenerExceptionSample",
+               "AfterProjectListenerExceptionSample",
                "After Project Error",
                "After Project Error_1",
                KotestJunitPlatformTestEngine.ENGINE_NAME,

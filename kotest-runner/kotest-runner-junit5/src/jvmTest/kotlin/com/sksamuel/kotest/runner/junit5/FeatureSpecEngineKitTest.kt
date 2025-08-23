@@ -36,7 +36,7 @@ class FeatureSpecEngineKitTest : FunSpec({
             .allEvents().apply {
                started().shouldHaveNames(
                   KotestJunitPlatformTestEngine.ENGINE_NAME,
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
+                  "FeatureSpecHappyPathSample",
                   "a", "b", "c", "d", "e", "f", "g", "h", "i",
                )
                aborted().shouldBeEmpty()
@@ -46,12 +46,12 @@ class FeatureSpecEngineKitTest : FunSpec({
                )
                succeeded().shouldHaveNames(
                   "b", "d", "f", "e", "c", "a", "h",
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
+                  "FeatureSpecHappyPathSample",
                   KotestJunitPlatformTestEngine.ENGINE_NAME,
                )
                finished().shouldHaveNames(
                   "b", "d", "f", "g", "e", "c", "a", "i", "h",
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecHappyPathSample",
+                  "FeatureSpecHappyPathSample",
                   "Kotest"
                )
                dynamicallyRegistered().shouldHaveNames(
@@ -77,7 +77,7 @@ class FeatureSpecEngineKitTest : FunSpec({
             .allEvents().apply {
                started().shouldHaveNames(
                   "Kotest",
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
+                  "FeatureSpecSample",
                   "a", "b", "c", "h",
                )
                aborted().shouldBeEmpty()
@@ -88,7 +88,7 @@ class FeatureSpecEngineKitTest : FunSpec({
                succeeded().shouldHaveNames(
                   "b",
                   "a",
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
+                  "FeatureSpecSample",
                   KotestJunitPlatformTestEngine.ENGINE_NAME,
                )
                finished().shouldHaveNames(
@@ -96,7 +96,7 @@ class FeatureSpecEngineKitTest : FunSpec({
                   "c",
                   "a",
                   "h",
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecSample",
+                  "FeatureSpecSample",
                   "Kotest"
                )
                dynamicallyRegistered().shouldHaveNames(
@@ -124,7 +124,7 @@ class FeatureSpecEngineKitTest : FunSpec({
                succeeded().shouldHaveNames(
                   "one dummy assertion",
                   "assertion mode",
-                  "com.sksamuel.kotest.runner.junit5.FeatureSpecWithZeroAssertions",
+                  "FeatureSpecWithZeroAssertions",
                   "Kotest"
                )
             }

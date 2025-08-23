@@ -4072,6 +4072,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {
 	public final fun id (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun locationHint (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun message (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+	public final fun out (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun parent (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun result (Lio/kotest/engine/test/TestResult;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun type (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -4090,6 +4091,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes {
 	public static final field LOCATION_HINT Ljava/lang/String;
 	public static final field MESSAGE Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
+	public static final field OUT Ljava/lang/String;
 	public static final field PARENT_ID Ljava/lang/String;
 	public static final field RESULT_STATUS Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
@@ -4097,12 +4099,9 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes {
 
 public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Companion {
 	public final fun testFailed (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testFinished (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testIgnored (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testIgnored (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testReporterAttached (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testStarted (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testSuiteFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
 	public final fun testSuiteStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
@@ -4115,6 +4114,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
 	public static final field TEST_IGNORED Ljava/lang/String;
 	public static final field TEST_REPORTER_ATTACHED Ljava/lang/String;
 	public static final field TEST_STARTED Ljava/lang/String;
+	public static final field TEST_STDOUT Ljava/lang/String;
 	public static final field TEST_SUITE_FINISHED Ljava/lang/String;
 	public static final field TEST_SUITE_STARTED Ljava/lang/String;
 }
@@ -4338,23 +4338,6 @@ public final class io/kotest/engine/test/names/DefaultDisplayNameFormatter : io/
 
 public final class io/kotest/engine/test/names/DuplicateTestNameException : java/lang/RuntimeException {
 	public fun <init> (Ljava/lang/String;)V
-}
-
-public final class io/kotest/engine/test/names/FallbackDisplayNameFormatter {
-	public static final field Companion Lio/kotest/engine/test/names/FallbackDisplayNameFormatter$Companion;
-	public fun <init> (Lio/kotest/engine/names/DisplayNameFormatter;Lio/kotest/engine/test/names/DefaultDisplayNameFormatter;)V
-	public fun <init> (Lio/kotest/engine/test/names/DefaultDisplayNameFormatter;)V
-	public final fun format (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
-	public final fun format (Lkotlin/reflect/KClass;)Ljava/lang/String;
-}
-
-public final class io/kotest/engine/test/names/FallbackDisplayNameFormatter$Companion {
-	public final fun default ()Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
-	public final fun default (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;
-}
-
-public final class io/kotest/engine/test/names/PathsKt {
-	public static final fun formatTestPath (Lio/kotest/engine/test/names/FallbackDisplayNameFormatter;Lio/kotest/core/test/TestCase;Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class io/kotest/engine/test/scopes/NoopTestScope : io/kotest/core/test/TestScope {

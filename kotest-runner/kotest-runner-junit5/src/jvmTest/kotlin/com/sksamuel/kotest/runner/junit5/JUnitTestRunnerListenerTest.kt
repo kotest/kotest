@@ -11,7 +11,7 @@ import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.TestResultBuilder
-import io.kotest.engine.test.names.FallbackDisplayNameFormatter
+import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
@@ -69,7 +69,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
             parent = test1,
          )
 
-         val listener = JUnitTestEngineListener(engineListener, root, FallbackDisplayNameFormatter.default())
+         val listener = JUnitTestEngineListener(engineListener, root, DisplayNameFormatting(null))
          listener.engineStarted()
          listener.specStarted(SpecRef.Reference(JUnitTestRunnerListenerTest::class))
          listener.specStarted(SpecRef.Reference(JUnitTestRunnerListenerTest::class))
@@ -83,7 +83,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
          finished.toMap() shouldBe mapOf(
             "test2" to TestExecutionResult.Status.FAILED,
             "test1" to TestExecutionResult.Status.SUCCESSFUL,
-            "com.sksamuel.kotest.runner.junit5.JUnitTestRunnerListenerTest" to TestExecutionResult.Status.SUCCESSFUL,
+            "JUnitTestRunnerListenerTest" to TestExecutionResult.Status.SUCCESSFUL,
             KotestJunitPlatformTestEngine.ENGINE_NAME to TestExecutionResult.Status.SUCCESSFUL
          )
       }
