@@ -34,7 +34,7 @@ class JunitXmlReporterTest : WordSpec() {
          "include all tests" {
             val root = loadTestFile("with_containers/TEST-com.sksamuel.kotest.DummyBehaviorSpecTest.xml")
             assertSoftly {
-               root.getAttributeValue("name") shouldBe "com.sksamuel.kotest.DummyBehaviorSpecTest"
+               root.getAttributeValue("name") shouldBe "DummyBehaviorSpecTest"
                root.getAttributeValue("tests") shouldBe "6"
                root.getAttributeValue("skipped") shouldBe "0"
                root.getAttributeValue("errors") shouldBe "0"
@@ -65,7 +65,7 @@ class JunitXmlReporterTest : WordSpec() {
          "only include leaf tests" {
             val root = loadTestFile("without_containers/TEST-com.sksamuel.kotest.DummyBehaviorSpecTest.xml")
             assertSoftly {
-               root.getAttributeValue("name") shouldBe "com.sksamuel.kotest.DummyBehaviorSpecTest"
+               root.getAttributeValue("name") shouldBe "DummyBehaviorSpecTest"
                root.getAttributeValue("tests") shouldBe "3"
                root.getAttributeValue("skipped") shouldBe "0"
                root.getAttributeValue("errors") shouldBe "0"
