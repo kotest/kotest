@@ -114,7 +114,8 @@ All extensions are now published under the `io.kotest` group:
 
 The location of the project config instance is now required to be at a specific path:
 
-- Must be at `io.kotest.provided.ProjectConfig`
+- By default will be at `io.kotest.provided.ProjectConfig`
+- Can be overridden by setting the `kotest.framework.config.fqn` system property
 - Will not be picked up by the framework if located elsewhere
 - Different from Kotest 5.x behavior
 
@@ -172,6 +173,10 @@ Change this to:
 ```kotlin
 override val extensions = ...
 ```
+
+### Removed listeners
+
+The System.exit and System.env override extensions have been removed due to the deprecation of the SecurityManager in Java.
 
 ### Deprecated Isolation Modes
 
