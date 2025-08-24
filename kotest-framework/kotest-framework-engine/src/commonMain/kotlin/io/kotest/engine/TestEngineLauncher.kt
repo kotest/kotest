@@ -39,6 +39,7 @@ data class TestEngineLauncher(
    private val registry: ExtensionRegistry,
 ) {
 
+   // we use this to capture any test failures so we know to exit appropriately
    private val collecting = CollectingTestEngineListener()
    private val logger = Logger(TestEngineLauncher::class)
 
@@ -167,12 +168,14 @@ data class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
-      val safeListeners = (listeners + collecting).map {
-         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(it))
-      }
+      val safeListener = ThreadSafeTestEngineListener( // to avoid race conditions with concurrent spec execution
+         PinnedSpecTestEngineListener( // to ensure we don't interleave output in TCSM which requires sequential outputs
+            CompositeTestEngineListener(listeners + collecting)
+         )
+      )
 
       return TestEngineConfig(
-         listener = CompositeTestEngineListener(safeListeners),
+         listener = (safeListener),
          interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,

@@ -1,7 +1,6 @@
 package io.kotest.engine.test
 
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 
 interface TestCaseExecutionListener {
    suspend fun testStarted(testCase: TestCase)
