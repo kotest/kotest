@@ -16,13 +16,13 @@ class SystemPropertyConfigClassTest : FunSpec() {
             .withListener(collector)
             .withClasses(FooTest::class)
             .launch()
-         collector.result("a")?.errorOrNull?.message shouldBe "Test 'a' did not complete within 1ms"
+         collector.result("a")?.errorOrNull?.message shouldBe "Test 'a' did not complete within 15ms"
       }
    }
 }
 
 class WibbleConfig : AbstractProjectConfig() {
-   override val invocationTimeout = 1.milliseconds
+   override val invocationTimeout = 15.milliseconds
 }
 
 private class FooTest : FunSpec({
