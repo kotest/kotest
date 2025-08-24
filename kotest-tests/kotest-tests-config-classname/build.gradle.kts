@@ -18,3 +18,8 @@ tasks.jvmTest {
    useJUnitPlatform()
    systemProperty("kotest.framework.config.fqn", "com.sksamuel.kotest.config.classname.WibbleConfig")
 }
+
+tasks.jvmMaxJdkTest {
+   useJUnitPlatform()
+   systemProperty("kotest.framework.config.fqn", "com.sksamuel.kotest.config.classname.WibbleConfig")
+}
