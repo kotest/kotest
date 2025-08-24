@@ -14,10 +14,10 @@ import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
 import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
+import io.kotest.engine.test.interceptors.HandleSkippedExceptionsTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
-import io.kotest.engine.test.interceptors.HandleSkippedExceptionsTestInterceptor
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
 import io.kotest.engine.test.interceptors.SupervisorScopeInterceptor
@@ -31,6 +31,7 @@ import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import io.kotest.engine.testInterceptorsForPlatform
+import kotlinx.coroutines.withContext
 import kotlin.time.TimeSource
 
 /**
@@ -105,6 +106,11 @@ internal class TestCaseExecutor(
 
       val innerExecute = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.name, "Executing test") }
+
+         // workaround for anyone using delay in a test on wasm
+         // https://github.com/Kotlin/kotlinx.coroutines/issues/4239
+         withContext(scope.coroutineContext) { }
+
          tc.test(scope)
          TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).build()
       }

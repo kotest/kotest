@@ -63,7 +63,6 @@ data class TestEngineLauncher(
 
    /**
     * Convenience function to add a [TeamCityTestEngineListener].
-    *
     * Returns a copy of this launcher with the listener added.
     */
    fun withTeamCityListener(): TestEngineLauncher {
@@ -72,7 +71,6 @@ data class TestEngineLauncher(
 
    /**
     * Convenience function to add a [ConsoleTestEngineListener].
-    *
     * Returns a copy of this launcher with the listener added.
     */
    fun withConsoleListener(): TestEngineLauncher {
@@ -80,10 +78,8 @@ data class TestEngineLauncher(
    }
 
    /**
-    * Sets the [TestEngineListener] to be notified of [TestEngine] events.
-    *
-    * Returns a copy of this launcher with the given [TestEngineListener] set.
-    * This will override the current listener.
+    * Adds the [TestEngineListener] to be notified of [TestEngine] events.
+    * Returns a copy of this launcher with the given [TestEngineListener] added.
     */
    fun withListener(listener: TestEngineListener?): TestEngineLauncher {
       return if (listener == null) this else copy(listeners = listeners + listener)

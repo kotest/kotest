@@ -72,10 +72,7 @@ val promise = TestEngineLauncher()
       function.addCode(
          """
 val result = promise.await()
-if (result.errors.isNotEmpty() || result.testFailures) {
-   error("Tests failed")
-}
-
+handleEngineResult(result)
 """
       )
 
@@ -86,6 +83,7 @@ if (result.errors.isNotEmpty() || result.testFailures) {
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
          .addImport("io.kotest.engine", "EngineResult")
+         .addImport("io.kotest.engine.errors", "handleEngineResult")
          .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("kotlinx.coroutines", "await")
          .addImport("kotlin.js", "Promise")

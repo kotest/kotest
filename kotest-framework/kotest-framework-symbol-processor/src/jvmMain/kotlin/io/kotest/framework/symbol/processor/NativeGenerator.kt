@@ -79,12 +79,7 @@ val result = when (listenerType) {
    "teamcity" -> launcher.withTeamCityListener().launch()
    else -> launcher.withConsoleListener().launch()
 }
-
-// fail the execution if there are any test failures or errors
-if (result.errors.isNotEmpty() || result.testFailures) {
-  exitProcess(1)
-}
-
+handleEngineResult(result)
 """.trim()
       ).addCode("\n")
 
@@ -105,6 +100,7 @@ if (result.errors.isNotEmpty() || result.testFailures) {
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
+         .addImport("io.kotest.engine.errors", "handleEngineResult")
          .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
       specs.forEach {
