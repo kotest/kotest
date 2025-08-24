@@ -30,7 +30,7 @@ class SpecExtensionTest : FunSpec() {
             override val extensions = listOf(ext)
          }
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(SpecInterceptSingleInstance::class)
             .withProjectConfig(c)
             .launch()
@@ -52,7 +52,7 @@ class SpecExtensionTest : FunSpec() {
             override val extensions = listOf(ext)
          }
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(SpecInterceptInstancePerRoot::class)
             .withProjectConfig(c)
             .launch()
@@ -72,7 +72,7 @@ class SpecExtensionTest : FunSpec() {
 
          val collecting = CollectingTestEngineListener()
 
-         TestEngineLauncher(collecting)
+         TestEngineLauncher().withListener(collecting)
             .withClasses(SpecInterceptInstancePerRoot::class)
             .withProjectConfig(c)
             .launch()

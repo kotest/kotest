@@ -21,7 +21,7 @@ class PostInstantiationExtensionTest : FunSpec() {
             override val extensions = listOf(MyPostInstantiationExtension)
          }
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MySpec::class)
             .withProjectConfig(p)
             .launch()

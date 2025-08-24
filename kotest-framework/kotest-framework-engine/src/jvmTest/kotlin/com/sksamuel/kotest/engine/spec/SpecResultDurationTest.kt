@@ -14,7 +14,7 @@ class SpecResultDurationTest : FunSpec() {
 
       test("spec finished callback should include construction time in duration") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(Wobble::class)
             .launch()
          listener.specs.values.first().duration.inWholeMicroseconds.shouldBeGreaterThan(1000)

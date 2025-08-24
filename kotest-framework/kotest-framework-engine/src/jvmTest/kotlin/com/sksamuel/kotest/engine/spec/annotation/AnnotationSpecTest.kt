@@ -17,27 +17,27 @@ class AnnotationSpecTest : DescribeSpec({
 
       it("should detect public and private methods annotated with @Test") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecClass::class).launch()
+         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecClass::class).launch()
          listener.tests.shouldHaveSize(2)
       }
 
       it("should support throwing exceptions with @Test(expected=foo)") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
+         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
          val ds = listener.tests.mapKeys { it.key.descriptor.id }
          ds[DescriptorId("test1")]?.isSuccess shouldBe true
       }
 
       it("should fail on unexpected exception") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
+         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
          val ds = listener.tests.mapKeys { it.key.descriptor.id }
          ds[DescriptorId("test2")]?.isFailure shouldBe true
       }
 
       it("should fail on expected exception that wasn't thrown") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
+         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecWithExceptions::class).launch()
          val ds = listener.tests.mapKeys { it.key.descriptor.id }
          ds[DescriptorId("test3")]?.isFailure shouldBe true
       }

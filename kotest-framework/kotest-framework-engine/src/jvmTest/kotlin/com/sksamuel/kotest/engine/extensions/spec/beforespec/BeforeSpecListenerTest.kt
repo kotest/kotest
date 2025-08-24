@@ -40,7 +40,7 @@ class BeforeSpecListenerTest : FunSpec() {
          }
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecTests::class)
             .withProjectConfig(c)
             .launch()
@@ -54,7 +54,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener via method override should be triggered for a spec with tests") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecOverrideMethodTests::class)
             .launch()
 
@@ -67,7 +67,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener inline should be triggered for a spec with tests") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineTest::class)
             .launch()
 
@@ -80,11 +80,11 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener inline should be triggered before tests") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineOrderFunSpecTest::class)
             .launch()
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineOrderDescribeSpecTest::class)
             .launch()
 
@@ -94,7 +94,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener inline should be triggered before user level test interceptors") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineWithTestInterceptor::class)
             .launch()
 
@@ -104,7 +104,7 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener registered by overriding extensions should be triggered for a spec with tests") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecByReturningExtensionsTest::class)
             .launch()
 
@@ -120,7 +120,7 @@ class BeforeSpecListenerTest : FunSpec() {
             override val extensions = listOf(MyBeforeSpecListener)
          }
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(BeforeSpecNoTests::class)
             .withProjectConfig(c)
             .launch()
@@ -134,7 +134,7 @@ class BeforeSpecListenerTest : FunSpec() {
             override val extensions = listOf(MyBeforeSpecListener)
          }
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(BeforeSpecErrorNoTests::class)
             .withProjectConfig(c)
             .launch()
@@ -148,7 +148,7 @@ class BeforeSpecListenerTest : FunSpec() {
             override val extensions = listOf(MyBeforeSpecListener)
          }
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(BeforeSpecDisabledOnlyTests::class)
             .withProjectConfig(c)
             .launch()
@@ -161,7 +161,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val config = object : AbstractProjectConfig() {
             override val isolationMode = IsolationMode.SingleInstance
          }
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withProjectConfig(config)
             .withClasses(BeforeSpecFunctionOverrideWithError::class)
             .launch()
@@ -177,7 +177,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val config = object : AbstractProjectConfig() {
             override val isolationMode = IsolationMode.InstancePerRoot
          }
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withProjectConfig(config)
             .withClasses(BeforeSpecFunctionOverrideWithError::class)
             .launch()

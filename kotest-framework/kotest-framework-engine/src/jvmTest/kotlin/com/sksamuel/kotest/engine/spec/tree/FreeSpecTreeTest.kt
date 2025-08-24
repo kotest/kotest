@@ -15,7 +15,7 @@ class FreeSpecTreeTest : FunSpec() {
    init {
       test("free spec should nest context's properly") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(MyFreeSpec::class)
             .launch()
          collector.tests.mapKeys { it.key.descriptor.path() }.keys shouldBe setOf(

@@ -16,7 +16,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
 
       it("should ignore banged tests") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithBangTest::class).launch()
+         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecWithBangTest::class).launch()
          listener.tests
             .mapKeys { it.key.name.name }
             .mapValues { it.value.reasonOrNull } shouldBe mapOf("foo" to "Disabled by bang")
@@ -24,7 +24,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
 
       it("should ignore tests annotated with @Ignore") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecAtIgnoreTest::class).launch()
+         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecAtIgnoreTest::class).launch()
          listener.tests
             .mapKeys { it.key.name.name }
             .mapValues { it.value.reasonOrNull } shouldBe mapOf("bar" to "Disabled by xmethod")

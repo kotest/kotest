@@ -9,7 +9,7 @@ class EnabledIfErrorsTest : FunSpec() {
    init {
       test("error in enabledIf should disable test but run others") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(EnabledIfFailues::class)
             .launch()
 

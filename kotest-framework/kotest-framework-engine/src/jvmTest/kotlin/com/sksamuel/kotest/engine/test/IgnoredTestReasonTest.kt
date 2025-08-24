@@ -19,7 +19,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("enabledOrReasonIf should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(EnabledOrReasonIfSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "wobble"
@@ -33,7 +33,7 @@ class IgnoredTestReasonTest : FunSpec() {
             override val extensions = listOf(ext)
          }
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(MyFunSpec::class)
             .withProjectConfig(c)
             .launch()
@@ -42,7 +42,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("xdisabled in fun spec should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(XReasonFunSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "Disabled by xmethod"
@@ -50,7 +50,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("xdisabled in describe spec should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(XReasonDescribeSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "Disabled by xmethod"
@@ -58,7 +58,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("xdisabled in should spec should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(XReasonShouldSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "Disabled by xmethod"
@@ -66,7 +66,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("enabled should report some reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(EnabledSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "Disabled by enabled flag in config"
@@ -74,7 +74,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("enabledIf should report some reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(EnabledIfSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "Disabled by enabledIf flag in config"
@@ -82,7 +82,7 @@ class IgnoredTestReasonTest : FunSpec() {
 
       test("bang should report some reason for skipping") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(BangSpec::class)
             .launch()
          collector.tests.toList().first().second.reasonOrNull shouldBe "Disabled by bang"

@@ -16,7 +16,7 @@ class ProjectWideFailFastTest : FunSpec() {
       }
 
       val listener = CollectingTestEngineListener()
-      TestEngineLauncher(listener)
+      TestEngineLauncher().withListener(listener)
          .withProjectConfig(c)
          .withClasses(A::class, B::class)
          .launch()

@@ -18,7 +18,7 @@ class BeforeSpecIsolatedTestModeTest : FunSpec({
    xtest("parallelism with IsolationMode.InstancePerRoot and beforeSpec") {
 
       val collector = CollectingTestEngineListener()
-      TestEngineLauncher(collector)
+      TestEngineLauncher().withListener(collector)
          .withClasses(ParallelTests::class)
          .launch()
 

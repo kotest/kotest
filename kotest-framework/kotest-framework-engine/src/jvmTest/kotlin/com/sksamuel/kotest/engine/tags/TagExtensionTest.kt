@@ -29,7 +29,7 @@ class TagExtensionTest : StringSpec() {
             }
 
             val collector = CollectingTestEngineListener()
-            TestEngineLauncher(collector)
+            TestEngineLauncher().withListener(collector)
                .withClasses(TestWithTags::class)
                .withProjectConfig(c)
                .launch()

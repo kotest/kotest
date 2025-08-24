@@ -21,7 +21,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
 
       test("FunSpec") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FunSpecWithAfterEach::class)
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
@@ -31,7 +31,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
       test("ShouldSpec") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(ShouldSpecWithAfterEach::class)
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
@@ -41,7 +41,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
       test("ExpectSpec") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(ExpectSpecWithAfterEach::class)
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
@@ -51,7 +51,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
       test("WordSpec") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(WordSpecWithAfterEach::class)
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
@@ -61,7 +61,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
       test("FreeSpec") {
 
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FreeSpecWithAfterEach::class)
             .launch()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()

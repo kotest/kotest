@@ -33,7 +33,7 @@ class RetryTests : FunSpec() {
       test("regular") {
          val collector = CollectingTestEngineListener()
 
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(InnerRetryTest::class)
             .async()
 
@@ -43,7 +43,7 @@ class RetryTests : FunSpec() {
       test("with spec default") {
          val collector = CollectingTestEngineListener()
 
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(InnerRetryWithSpecDefaultTest::class)
             .async()
 

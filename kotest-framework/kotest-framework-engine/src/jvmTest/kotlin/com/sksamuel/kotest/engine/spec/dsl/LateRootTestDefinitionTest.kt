@@ -22,7 +22,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 
       test("expect spec") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(ExpectSpecWithExtraRootTests::class)
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -30,7 +30,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 
       test("feature spec") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FeatureSpecWithExtraRootTests::class)
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -38,7 +38,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 
       test("free spec") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FreeSpecWithExtraRootTests::class)
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -46,7 +46,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 
       test("fun spec") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FunSpecWithExtraRootTests::class)
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
@@ -54,7 +54,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 
       test("should spec") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(ShouldSpecWithExtraRootTests::class)
             .launch()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()

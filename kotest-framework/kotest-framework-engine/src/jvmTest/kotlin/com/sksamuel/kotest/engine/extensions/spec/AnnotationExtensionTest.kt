@@ -34,7 +34,7 @@ class AnnotationExtensionTest : FunSpec() {
       }
 
       test("a spec annotated with ApplyExtension should have that extension applied") {
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MyAnnotatedSpec1::class)
             .launch()
          instantiations.shouldBe(1)
@@ -48,7 +48,7 @@ class AnnotationExtensionTest : FunSpec() {
       }
 
       test("a spec annotated with multiple ApplyExtension's should have all extensions applied") {
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MyAnnotatedSpec2::class)
             .launch()
          instantiations.shouldBe(2)
@@ -62,7 +62,7 @@ class AnnotationExtensionTest : FunSpec() {
       }
 
       test("ApplyExtension should only apply to the spec they are annotating") {
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MyAnnotatedSpec1::class, NotAnnotatedSpec::class)
             .launch()
          instantiations.shouldBe(1)
