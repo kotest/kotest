@@ -3,7 +3,6 @@ package io.kotest.engine.spec
 import io.kotest.core.TestConfiguration
 import java.io.File
 import kotlin.io.path.ExperimentalPathApi
-import kotlin.io.path.deleteRecursively
 
 @OptIn(ExperimentalPathApi::class)
 fun TestConfiguration.tempdir(prefix: String? = null, suffix: String? = null, keepOnFailure: Boolean = false): File {
@@ -12,7 +11,7 @@ fun TestConfiguration.tempdir(prefix: String? = null, suffix: String? = null, ke
    afterAny { (_, result) -> if (result.isErrorOrFailure) hasErrors = true }
    afterSpec {
       runCatching {
-         if (keepOnFailure && hasErrors) Unit else dir.toPath().deleteRecursively()
+         if (keepOnFailure && hasErrors) Unit else dir.deleteRecursively()
       }.onFailure {
          throw TempDirDeletionException(dir)
       }
