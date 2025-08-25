@@ -1,15 +1,14 @@
 package io.kotest.engine.js
 
 /**
- * A view of the test infrastructure API provided by the Kotlin Gradle plugins.
+ * The entry point that the Kotest Test Engine can invoke to run tests on javascript platforms.
  *
- * API description:
- * - https://github.com/JetBrains/kotlin/blob/v1.9.23/libraries/kotlin.test/js/src/main/kotlin/kotlin/test/TestApi.kt#L38
- * NOTE: This API does not require `kotlin.test` as a dependency. It is actually provided by
- * - https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-gradle-plugin/src/common/kotlin/org/jetbrains/kotlin/gradle/targets/js/testing/mocha/KotlinMocha.kt
- * - https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner
+ * Since js and wasmJs differ slightly in how they operate at runtime, the test engine invokes
+ * the suite and test methods in this interface. Then at runtime, the appropriate implementation
+ * of this handles the nuances of the underlying platform.
  *
  * Nesting of test suites may not be supported by TeamCity reporters of kotlin-test-js-runner.
+ * @see https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner
  */
 internal interface KotlinJsTestFramework {
 
