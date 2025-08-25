@@ -48,7 +48,7 @@ abstract class KotestPlugin : Plugin<Project> {
       private val unsupportedTargets = listOf("metadata")
    }
 
-   private val version = version()
+   private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
 
    override fun apply(project: Project) {
 
