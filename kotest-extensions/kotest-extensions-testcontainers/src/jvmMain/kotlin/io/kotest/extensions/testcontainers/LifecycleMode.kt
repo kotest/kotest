@@ -1,6 +1,6 @@
 package io.kotest.extensions.testcontainers
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpeccExtension instead")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead")
 enum class LifecycleMode {
    Spec, EveryTest, Leaf, Root
 }
