@@ -26,75 +26,6 @@ io.kotest:kotest-extensions-jvm:${version}
 This extension does not support concurrent test execution. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is undefined.
 :::
 
-### System Environment
-
-With *System Environment Extension* you can simulate how the System Environment is behaving. That is, what you're obtaining from `System.getenv()`.
-
-Kotest provides some extension functions that provides a System Environment in a specific scope:
-
-```kotlin
-test("foo") {
-  withEnvironment("FooKey", "BarValue") {
-    System.getenv("FooKey") shouldBe "BarValue" // System environment overridden!
-  }
-}
-```
-
-:::info
-To use `withEnvironment` with JDK17+ you need to add `--add-opens=java.base/java.util=ALL-UNNAMED`
-and `--add-opens=java.base/java.lang=ALL-UNNAMED` to the arguments for the JVM that runs the tests.
-
-If you run tests with gradle, you can add the following to your `build.gradle.kts`:
-
-```kotlin
-tasks.withType<Test>().configureEach {
-  jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.lang=ALL-UNNAMED")
-}
-```
-:::
-
-You can also use multiple values in this extension, through a map or list of pairs.
-
-```kotlin
-test("foo") {
-  withEnvironment(mapOf("FooKey" to "BarValue", "BarKey" to "FooValue")) {
-    // Use FooKey and BarKey
-  }
-}
-```
-
-These functions will add the keys and values if they're not currently present in the environment, and will override them if they are. Any keys untouched by the function will remain in the environment, and won't be messed with.
-
-Instead of extension functions, you can also use the provided Listeners to apply these functionalities in a bigger scope. There's an alternative for the Spec/Per test level, and an alternative for the Project Level.
-
-```kotlin
-class MyTest : FreeSpec() {
-  override fun listeners() = listOf(
-    SystemEnvironmentTestListener(
-      environment = mapOf(
-        "foo" to "bar",
-        "bar" to null, // Useful for resetting environment variables
-      ),
-      mode = OverrideMode.SetOrOverride,
-    )
-  )
-
-  init {
-    "MyTest" {
-      System.getenv("foo") shouldBe "bar"
-      System.getenv("bar") shouldBe null
-    }
-  }
-}
-```
-
-```kotlin
-class ProjectConfig : AbstractProjectConfig() {
-  override fun listeners(): List<TestListener> = listOf(SystemEnvironmentProjectListener("foo", "bar"))
-}
-```
-
-
 
 ### System Property Extension
 
@@ -115,50 +46,6 @@ class MyTest : FreeSpec() {
   init {
     "MyTest" {
       System.getProperty("foo") shouldBe "bar"
-    }
-  }
-}
-```
-
-
-
-### System Security Manager
-
-Similarly, with System Security Manager you can override the System Security Manager (`System.getSecurityManager()`)
-
-```kotlin
-withSecurityManager(myManager) {
-  // Usage of security manager
-}
-```
-
-And the Listeners:
-
-```kotlin
-class MyTest : FreeSpec() {
-  override fun listeners() = listOf(SecurityManagerListener(myManager))
-
-  init {
-    // Use my security manager
-  }
-}
-```
-
-### System Exit Extensions
-
-Sometimes you want to test that your code calls `System.exit`. For that you can use the `System Exit Listeners`. The Listener will throw an exception when the `System.exit` is called, allowing you to catch it and verify:
-
-```kotlin
-class MyTest : FreeSpec() {
-  override fun listeners() = listOf(SpecSystemExitListener)
-
-  init {
-    "Catch exception" {
-      val thrown: SystemExitException = shouldThrow<SystemExitException> {
-        System.exit(22)
-      }
-
-      thrown.exitCode shouldBe 22
     }
   }
 }
