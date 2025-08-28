@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.tests.json
 
-import com.jayway.jsonpath.JsonPath
 import io.kotest.assertions.asClue
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
