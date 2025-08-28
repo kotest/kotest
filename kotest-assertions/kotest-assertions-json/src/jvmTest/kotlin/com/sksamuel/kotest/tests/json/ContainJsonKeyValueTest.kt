@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.tests.json
 
+import com.jayway.jsonpath.JsonPath
 import io.kotest.assertions.asClue
 import io.kotest.assertions.json.shouldContainJsonKeyValue
 import io.kotest.assertions.json.shouldNotContainJsonKeyValue
@@ -123,5 +124,21 @@ class ContainJsonKeyValueTest : StringSpec({
       """{ "value": 0.46479126999899145 }""".shouldContainJsonKeyValue<Any>("$.value", 0.46479126999899145)
       """{ "value": 3.14 }""".shouldContainJsonKeyValue<Any>("$.value", 3.14f)
       """{ "value": null }""".shouldContainJsonKeyValue<Any?>("$.value", null)
+   }
+
+   "should handle list as expected value" {
+      @Language("JSON")
+      val jsonString = """
+        {"v": ["a", "b"]}
+    """.trimIndent()
+      jsonString.shouldContainJsonKeyValue("$.v", listOf("a", "b"))
+   }
+
+   "should handle map as expected value" {
+      @Language("JSON")
+      val jsonString = """
+        {"v": {"a": "b"}}
+    """.trimIndent()
+      jsonString.shouldContainJsonKeyValue("$.v", mapOf("a" to "b"))
    }
 })
