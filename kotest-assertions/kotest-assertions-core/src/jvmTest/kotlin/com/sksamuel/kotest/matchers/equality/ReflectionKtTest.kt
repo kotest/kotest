@@ -315,6 +315,78 @@ class ReflectionKtTest : FunSpec() {
             Test(ByteArray(1)) shouldBeEqualToComparingFields Test(actual)
          }.message shouldContain "expected:<[1]> but was:<[0]>"
       }
+
+      test("shouldBeEqualToComparingFields handles CharArray") {
+         class Test(
+            val test: kotlin.CharArray
+         )
+         Test(CharArray(1)) shouldBeEqualToComparingFields Test(CharArray(1))
+         val actual = CharArray(1)
+         actual[0] = '1'
+         shouldFail {
+            Test(CharArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<['1']> but was:<['\u0000']>"
+      }
+
+      test("shouldBeEqualToComparingFields handles ShortArray") {
+         class Test(
+            val test: kotlin.ShortArray
+         )
+         Test(ShortArray(1)) shouldBeEqualToComparingFields Test(ShortArray(1))
+         val actual = ShortArray(1)
+         actual[0] = 1
+         shouldFail {
+            Test(ShortArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<[1]> but was:<[0]>"
+      }
+
+      test("shouldBeEqualToComparingFields handles IntArray") {
+         class Test(
+            val test: kotlin.IntArray
+         )
+         Test(IntArray(1)) shouldBeEqualToComparingFields Test(IntArray(1))
+         val actual = IntArray(1)
+         actual[0] = 1
+         shouldFail {
+            Test(IntArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<[1]> but was:<[0]>"
+      }
+
+      test("shouldBeEqualToComparingFields handles LongArray") {
+         class Test(
+            val test: kotlin.LongArray
+         )
+         Test(LongArray(1)) shouldBeEqualToComparingFields Test(LongArray(1))
+         val actual = LongArray(1)
+         actual[0] = 1L
+         shouldFail {
+            Test(LongArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<[1L]> but was:<[0L]>"
+      }
+
+      test("shouldBeEqualToComparingFields handles FloatArray") {
+         class Test(
+            val test: kotlin.FloatArray
+         )
+         Test(FloatArray(1)) shouldBeEqualToComparingFields Test(FloatArray(1))
+         val actual = FloatArray(1)
+         actual[0] = 1.0F
+         shouldFail {
+            Test(FloatArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<[1.0f]> but was:<[0.0f]>"
+      }
+
+      test("shouldBeEqualToComparingFields handles DoubleArray") {
+         class Test(
+            val test: kotlin.DoubleArray
+         )
+         Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(DoubleArray(1))
+         val actual = DoubleArray(1)
+         actual[0] = 1.0
+         shouldFail {
+            Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<[1.0]> but was:<[0.0]>"
+      }
    }
 
    data class KeyValuePair<T : Any>(
