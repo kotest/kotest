@@ -303,6 +303,18 @@ class ReflectionKtTest : FunSpec() {
             EnumWrapper(EnumWithProperties.ONE).shouldBeEqualToComparingFields(EnumWrapper(EnumWithProperties.TWO))
          }.message.shouldContain("expected:<TWO> but was:<ONE>")
       }
+
+      test("shouldBeEqualToComparingFields handles ByteArray") {
+         class Test(
+            val test: kotlin.ByteArray
+         )
+         Test(ByteArray(1)) shouldBeEqualToComparingFields Test(ByteArray(1))
+         val actual = ByteArray(1)
+         actual[0] = 1
+         shouldFail {
+            Test(ByteArray(1)) shouldBeEqualToComparingFields Test(actual)
+         }.message shouldContain "expected:<[1]> but was:<[0]>"
+      }
    }
 
    data class KeyValuePair<T : Any>(
