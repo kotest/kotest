@@ -50,7 +50,7 @@ class ApplyExtensionsInterceptorTest : FunSpec() {
       test("ApplyExtensionsInterceptor should apply extensions where the referenced extension is an object") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(MyAnnotatedSpec3::class)
             .launch()
 

@@ -36,7 +36,7 @@ class ExcludeTagExtensionTest : FunSpec() {
             override val extensions = listOf(ExcludeTagExtension)
          }
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(ExcludedSpec::class)
             .withProjectConfig(c)
             .launch()

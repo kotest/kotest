@@ -18,7 +18,7 @@ class EngineTimeoutTest : FunSpec() {
 
       test("timeouts should be applied by the engine to suspend delays") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(DannyDelay::class)
             .launch()
          collector.names shouldBe listOf("a")
@@ -29,7 +29,7 @@ class EngineTimeoutTest : FunSpec() {
 
       test("timeouts should be applied by the engine to suspend inside launched coroutines") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(LarryLauncher::class)
             .launch()
          collector.names shouldBe listOf("a")
@@ -40,7 +40,7 @@ class EngineTimeoutTest : FunSpec() {
 
       test("timeouts should be applied by the engine to blocked threads") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(BillyBlocked::class)
             .launch()
          collector.names shouldBe listOf("a")

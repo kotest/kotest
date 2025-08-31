@@ -182,7 +182,7 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       val specCount = specsSeen.size
       val str = buildString {
          append(consoleRenderer.bold("$specCount. ".padEnd(4, ' ')))
-         append(consoleRenderer.brightYellowBold(" IGNORED"))
+         append(consoleRenderer.bold(formatter.format(ref.kclass)))
       }
       consoleRenderer.println(str)
    }

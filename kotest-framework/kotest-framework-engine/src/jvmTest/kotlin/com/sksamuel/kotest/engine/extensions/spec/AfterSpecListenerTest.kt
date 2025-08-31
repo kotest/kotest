@@ -34,7 +34,7 @@ class AfterSpecListenerTest : FunSpec() {
          }
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(MyPopulatedSpec2::class)
             .withProjectConfig(c)
             .launch()
@@ -47,7 +47,7 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("AfterSpecListener's exceptions should be propagated to specExit") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(MyErrorSpec2::class)
             .launch()
          collector.specs.size shouldBe 1
@@ -62,7 +62,7 @@ class AfterSpecListenerTest : FunSpec() {
          }
          counter.set(0)
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MyEmptySpec2::class)
             .withProjectConfig(c)
             .launch()
@@ -77,7 +77,7 @@ class AfterSpecListenerTest : FunSpec() {
          }
          counter.set(0)
 
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(NoActiveTestsSpec2::class)
             .withProjectConfig(c)
             .launch()
@@ -86,7 +86,7 @@ class AfterSpecListenerTest : FunSpec() {
       }
 
       test("inline afterSpec functions should be invoked") {
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(InlineAfterSpec::class)
             .launch()
          inlineAfterSpec.shouldBeTrue()
@@ -101,7 +101,7 @@ class AfterSpecListenerTest : FunSpec() {
             val config = object : AbstractProjectConfig() {
                override val isolationMode = isolationMode
             }
-            TestEngineLauncher(collector)
+            TestEngineLauncher().withListener(collector)
                .withProjectConfig(config)
                .withClasses(InlineAfterSpecError::class)
                .launch()

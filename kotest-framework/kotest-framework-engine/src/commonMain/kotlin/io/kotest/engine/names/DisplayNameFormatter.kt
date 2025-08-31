@@ -12,11 +12,11 @@ interface DisplayNameFormatter {
    /**
     * Returns a formatted name for a test.
     */
-   fun format(testCase: TestCase): String
+   fun format(testCase: TestCase): String?
 
    /**
     * Returns a formatted name for a spec.
     *
     */
-   fun format(kclass: KClass<*>): String
+   fun format(kclass: KClass<*>): String?
 }

@@ -75,7 +75,7 @@ jobs:
             include:
                # Windows: MinGW
                -  os: windows-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=mingw"
+                  args: -P"kotest_enabledPublicationNamePrefixes=jvm,mingw"
                # Apple: macOS
                -  os: macos-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=macOS"

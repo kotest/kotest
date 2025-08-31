@@ -42,13 +42,14 @@ abstract class KotestPlugin : Plugin<Project> {
    companion object {
       internal const val TASK_DESCRIPTION = "Runs kotest tests"
       internal const val TESTS_DIR_NAME = "test-results"
-      internal const val JVMKOTEST_NAME = "jvmKotest"
+      internal const val JVM_KOTEST_NAME = "jvmKotest"
+      internal const val JVM_TEST_NAME = "jvmTest"
       internal const val JSTEST_NAME = "jsTest"
       internal const val KSP_PLUGIN_ID = "com.google.devtools.ksp"
       private val unsupportedTargets = listOf("metadata")
    }
 
-   private val version = version()
+   private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
 
    override fun apply(project: Project) {
 
@@ -90,7 +91,7 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun configureJvmTask(sourceSetName: String, project: Project, target: String?) {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val jvmKotest = project.tasks.register(JVMKOTEST_NAME, KotestJvmTask::class) {
+      val jvmKotest = project.tasks.register(JVM_KOTEST_NAME, KotestJvmTask::class) {
 
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION
@@ -125,7 +126,7 @@ abstract class KotestPlugin : Plugin<Project> {
       }
 
       project.tasks.getByName("kotest") {
-         println("> Configuring kotest task for $JVMKOTEST_NAME")
+         println("> Configuring kotest task for $JVM_KOTEST_NAME")
          dependsOn(jvmKotest)
       }
    }
@@ -159,10 +160,10 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun handleMultiplatformJvm(target: KotlinTarget) {
-      val existing = target.project.tasks.findByName("jvmTest")
+      val existing = target.project.tasks.findByName(JVM_TEST_NAME)
       when (existing) {
-         null -> println("> No jvmTest task found in project ${target.project.name} - no jvmKotest task will be added")
-         is KotlinJvmTest -> configureJvmTask("jvmTest", target.project, "jvm")
+         null -> println("> No $JVM_TEST_NAME task found in project ${target.project.name} - no $JVM_KOTEST_NAME task will be added")
+         is KotlinJvmTest -> configureJvmTask(JVM_TEST_NAME, target.project, "jvm")
       }
    }
 

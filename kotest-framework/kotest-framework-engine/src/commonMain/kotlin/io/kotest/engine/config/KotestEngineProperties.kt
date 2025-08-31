@@ -9,9 +9,17 @@ object KotestEngineProperties {
     */
    internal const val TAG_EXPRESSION = "kotest.tags"
 
-   internal const val excludeTags = "kotest.tags.exclude"
+   /**
+    * A comma separated list of tags to exclude.
+    * For a more powerful way of including and excluding tags see [TAG_EXPRESSION].
+    */
+   internal const val EXCLUDE_TAGS = "kotest.tags.exclude"
 
-   internal const val includeTags = "kotest.tags.include"
+   /**
+    * A comma separated list of tags to include.
+    * For a more powerful way of including and excluding tags see [TAG_EXPRESSION].
+    */
+   internal const val INCLUDE_TAGS = "kotest.tags.include"
 
    /**
     * A regex expression that is used to match the test [io.kotest.core.descriptors.Descriptor]'s path

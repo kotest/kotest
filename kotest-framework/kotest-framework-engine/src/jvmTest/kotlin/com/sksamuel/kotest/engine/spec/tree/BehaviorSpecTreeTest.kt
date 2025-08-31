@@ -15,7 +15,7 @@ class BehaviorSpecTreeTest : FunSpec() {
    init {
       test("BehaviorSpec should nest tests properly") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(MyBehaviorSpecTree::class)
             .launch()
          collector.tests.mapKeys { it.key.descriptor.path() }.keys shouldBe setOf(

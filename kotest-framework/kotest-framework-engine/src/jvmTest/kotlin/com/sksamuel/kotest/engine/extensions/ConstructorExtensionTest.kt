@@ -24,7 +24,7 @@ class ConstructorExtensionTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
 
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(DummySpec::class)
             .withProjectConfig(c)
             .launch()
@@ -37,7 +37,7 @@ class ConstructorExtensionTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
 
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(FunkySpec::class)
             .launch()
 

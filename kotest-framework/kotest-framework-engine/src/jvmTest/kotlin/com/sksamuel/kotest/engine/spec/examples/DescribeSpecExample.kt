@@ -22,7 +22,7 @@ class DescribeSpecExampleTest : FunSpec({
       val collector = CollectingTestEngineListener()
 
       val duration = testTimeSource().measureTime {
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(DescribeSpecExample::class)
             .async()
       }

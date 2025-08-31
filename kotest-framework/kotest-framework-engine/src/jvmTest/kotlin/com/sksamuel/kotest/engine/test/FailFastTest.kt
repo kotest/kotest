@@ -18,7 +18,7 @@ class FailFastTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FailFastFunSpec::class)
             .launch()
 
@@ -39,7 +39,7 @@ class FailFastTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(FailFastFreeSpec::class)
             .launch()
 
@@ -60,7 +60,7 @@ class FailFastTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(GrandfatherFailFastFreeSpec::class)
             .launch()
 

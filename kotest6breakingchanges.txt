@@ -1,2 +1,0 @@
-system exit listener removed
-env var listener removed

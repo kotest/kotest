@@ -52,7 +52,7 @@ class GlobalAssertionTest : FunSpec({
          override val globalAssertSoftly = true
       }
 
-      TestEngineLauncher(collector)
+      TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
          .withClasses(ShouldThrowSoftlyTest::class)
          .launch()
@@ -70,7 +70,7 @@ class GlobalAssertionTest : FunSpec({
          override val globalAssertSoftly = true
       }
 
-      TestEngineLauncher(collector)
+      TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
          .withClasses(FooTest::class)
          .launch()
@@ -86,7 +86,7 @@ class GlobalAssertionTest : FunSpec({
          override val globalAssertSoftly = true
       }
 
-      TestEngineLauncher(collector)
+      TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
          .withClasses(FooTest::class)
          .launch()

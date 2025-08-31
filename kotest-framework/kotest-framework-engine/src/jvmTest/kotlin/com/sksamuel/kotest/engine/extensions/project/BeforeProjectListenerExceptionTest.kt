@@ -36,7 +36,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          })
       }
 
-      TestEngineLauncher(listener)
+      TestEngineLauncher().withListener(listener)
          .withClasses(DummySpec3::class)
          .withProjectConfig(c)
          .launch()
@@ -72,7 +72,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
          override val extensions = listOf(projectListener1, projectListener2)
       }
 
-      TestEngineLauncher(listener)
+      TestEngineLauncher().withListener(listener)
          .withClasses(DummySpec3::class)
          .withProjectConfig(c)
          .launch()

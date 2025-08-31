@@ -10,8 +10,7 @@ import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 
 /**
  * [TestAbortedException] is an exception that can be used to mark a test as ignored (aborted).
- * This interceptor catches Kotest's own [TestAbortedException]s as well as the ones from opentest4j
- * and converts the result to an [TestResult.Ignored].
+ * This interceptor catches opentest4j exceptions and converts the result to an [TestResult.Ignored].
  */
 @JVMOnly
 internal object MarkPlatformAbortedExceptionsAsSkippedTestInterceptor : TestExecutionInterceptor {
@@ -21,8 +20,7 @@ internal object MarkPlatformAbortedExceptionsAsSkippedTestInterceptor : TestExec
       test: NextTestExecutionInterceptor
    ): TestResult {
       return test(testCase, scope).let { testResult ->
-         val error = testResult.errorOrNull
-         when (error) {
+         when (val error = testResult.errorOrNull) {
             is org.opentest4j.TestAbortedException -> TestResult.Ignored(error.message)
             is org.opentest4j.TestSkippedException -> TestResult.Ignored(error.message)
             else -> testResult

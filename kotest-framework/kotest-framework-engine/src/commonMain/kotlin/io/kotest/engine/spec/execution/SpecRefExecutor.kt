@@ -73,11 +73,8 @@ internal class SpecRefExecutor(
 
 /**
  * Returns a [SpecExecutor] for the given [Spec] suitable for the current platform.
- * For example, on the JVM it would take into account isolation modes.
- *
- * On JS it would return a [KotlinJsSpecExecutor].
- * On WasmJS it would return either a [KotlinJsSpecExecutor] or a [SingleInstanceSpecExecutor] depending
- * on the underlying wasm execution environment.
+ * For example, on the JVM it would take into account isolation modes, and on Wasm it will
+ * detect if we have a JS hosted environment.
  */
 internal expect fun specExecutor(context: EngineContext, spec: Spec): SpecExecutor
 

@@ -17,7 +17,7 @@ class AbortedExceptionTest : FreeSpec({
    "opentest4j TestAbortedException is handled" {
       val collector = CollectingTestEngineListener()
 
-      TestEngineLauncher(collector)
+      TestEngineLauncher().withListener(collector)
          .withClasses(DummySpec::class)
          .launch()
 

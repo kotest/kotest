@@ -39,6 +39,7 @@ data class TestEngineLauncher(
    private val registry: ExtensionRegistry,
 ) {
 
+   // we use this to capture any test failures so we know to exit appropriately
    private val collecting = CollectingTestEngineListener()
    private val logger = Logger(TestEngineLauncher::class)
 
@@ -63,7 +64,6 @@ data class TestEngineLauncher(
 
    /**
     * Convenience function to add a [TeamCityTestEngineListener].
-    *
     * Returns a copy of this launcher with the listener added.
     */
    fun withTeamCityListener(): TestEngineLauncher {
@@ -72,7 +72,6 @@ data class TestEngineLauncher(
 
    /**
     * Convenience function to add a [ConsoleTestEngineListener].
-    *
     * Returns a copy of this launcher with the listener added.
     */
    fun withConsoleListener(): TestEngineLauncher {
@@ -80,10 +79,8 @@ data class TestEngineLauncher(
    }
 
    /**
-    * Sets the [TestEngineListener] to be notified of [TestEngine] events.
-    *
-    * Returns a copy of this launcher with the given [TestEngineListener] set.
-    * This will override the current listener.
+    * Adds the [TestEngineListener] to be notified of [TestEngine] events.
+    * Returns a copy of this launcher with the given [TestEngineListener] added.
     */
    fun withListener(listener: TestEngineListener?): TestEngineLauncher {
       return if (listener == null) this else copy(listeners = listeners + listener)
@@ -171,12 +168,14 @@ data class TestEngineLauncher(
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
-      val safeListeners = (listeners + collecting).map {
-         ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(it))
-      }
+      val safeListener = ThreadSafeTestEngineListener( // to avoid race conditions with concurrent spec execution
+         PinnedSpecTestEngineListener( // to ensure we don't interleave output in TCSM which requires sequential outputs
+            CompositeTestEngineListener(listeners + collecting)
+         )
+      )
 
       return TestEngineConfig(
-         listener = CompositeTestEngineListener(safeListeners),
+         listener = (safeListener),
          interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,

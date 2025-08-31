@@ -9,8 +9,8 @@ import io.kotest.common.syspropOrEnv
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties:
- * [KotestEngineProperties.TAG_EXPRESSION], [KotestEngineProperties.includeTags]
- * and [KotestEngineProperties.excludeTags].
+ * [KotestEngineProperties.TAG_EXPRESSION], [KotestEngineProperties.INCLUDE_TAGS]
+ * and [KotestEngineProperties.EXCLUDE_TAGS].
  *
  * Note: If [KotestEngineProperties.TAG_EXPRESSION] is used then the other two properties will be ignored.
  *
@@ -23,8 +23,8 @@ object SystemPropertyTagExtension : TagExtension {
       fun readTagsProperty(name: String): List<Tag> =
          (syspropOrEnv(name) ?: "").split(',').filter { it.isNotBlank() }.map { NamedTag(it.trim()) }
 
-      val includedTags = readTagsProperty(KotestEngineProperties.includeTags)
-      val excludedTags = readTagsProperty(KotestEngineProperties.excludeTags)
+      val includedTags = readTagsProperty(KotestEngineProperties.INCLUDE_TAGS)
+      val excludedTags = readTagsProperty(KotestEngineProperties.EXCLUDE_TAGS)
       val expression = syspropOrEnv(KotestEngineProperties.TAG_EXPRESSION)
 
       return if (expression == null)

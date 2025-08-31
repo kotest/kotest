@@ -12,7 +12,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
       test("with describe spec repeated names should have count appended") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesDescribeSpec::class)
             .launch()
 
@@ -31,7 +31,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
       test("with describe spec repeated names at root should have count appended") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesDescribeSpecRoot::class)
             .launch()
 
@@ -49,7 +49,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
       test("with fun spec repeated names should have count appended") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesFunSpec::class)
             .launch()
 
@@ -68,7 +68,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
       test("with fun spec repeated names at root should have count appended") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesRootFunSpec::class)
             .launch()
 

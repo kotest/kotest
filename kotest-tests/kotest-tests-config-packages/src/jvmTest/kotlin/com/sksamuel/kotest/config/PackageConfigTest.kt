@@ -13,11 +13,12 @@ class PackageConfigTest : FunSpec() {
    init {
       test("package level config should be detected") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(BarTest::class)
             .launch()
          // if the package config isn't picked up, this test won't timeout
-         collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 2ms"
+         collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 22ms"
       }
    }
 }

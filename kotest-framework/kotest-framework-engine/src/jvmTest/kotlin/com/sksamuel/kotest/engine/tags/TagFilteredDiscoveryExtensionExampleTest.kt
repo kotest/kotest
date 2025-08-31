@@ -26,7 +26,7 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions: List<Extension> = listOf(ext)
          }
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withProjectConfig(c)
             .withClasses(ShouldBeExcluded::class)
             .launch()

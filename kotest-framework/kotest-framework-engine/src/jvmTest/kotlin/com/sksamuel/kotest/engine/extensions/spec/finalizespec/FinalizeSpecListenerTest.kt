@@ -42,7 +42,7 @@ class FinalizeSpecTest : FunSpec() {
             override val extensions = listOf(FinalizeSpecTestListener1(), FinalizeSpecTestListener2())
          }
          counter.set(0)
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(FinalizeSpec::class)
             .withProjectConfig(c)
             .launch()

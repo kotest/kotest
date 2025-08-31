@@ -25,6 +25,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
@@ -39,6 +41,8 @@ internal class InstancePerLeafSpecExecutor(
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
    private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
+   @OptIn(ExperimentalAtomicApi::class)
+   private val seedUsed = AtomicBoolean(false)
 
    private val inflator = SpecRefInflator(
       registry = context.registry,
@@ -49,6 +53,8 @@ internal class InstancePerLeafSpecExecutor(
    /**
     * The intention of this runner is that each **leaf** [TestCase] executes in its own instance
     * of the containing [Spec] class, but parent tests (containers) are executed in a single shared instance.
+    *
+    * The seed spec will be used for the first leaf discovered.
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance
@@ -160,8 +166,9 @@ internal class InstancePerLeafSpecExecutor(
 
       private val logger = Logger(LeafLaunchingScope::class)
 
+      @OptIn(ExperimentalAtomicApi::class)
       override suspend fun registerTestCase(nested: NestedTest) {
-         logger.log { Pair(testCase.name.name, "Discovered nested test '${nested}'") }
+         logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
          val nestedTestCase = materializer.materialize(nested, testCase)
 
          // we care about two scenarios:
@@ -170,11 +177,23 @@ internal class InstancePerLeafSpecExecutor(
          if (target == null) {
             logger.log { Pair(testCase.name.name, "Launching discovered test in discovery mode") }
             when (nestedTestCase.type) {
-               TestType.Container -> executeTest(nestedTestCase, null, specContext, ref)
-               TestType.Test -> executeInFreshSpec(nestedTestCase, ref, specContext)
+               TestType.Container -> {
+                  logger.log { Pair(testCase.name.name, "Executing CONTAINER type in existing spec") }
+                  executeTest(nestedTestCase, null, specContext, ref)
+               }
+               TestType.Test -> {
+                  if (!seedUsed.compareAndExchange(expectedValue = false, newValue = true)) {
+                     logger.log { Pair(testCase.name.name, "Executing TEST type in seed spec") }
+                     executeTest(nestedTestCase, null, specContext, ref)
+                  } else {
+                     logger.log { Pair(testCase.name.name, "Executing TEST type in fresh spec") }
+                     executeInFreshSpec(nestedTestCase, ref, specContext)
+                  }
+               }
             }
             return
          } else if (nestedTestCase.descriptor.isPrefixOf(target)) {
+            logger.log { Pair(testCase.name.name, "Executing prefix in existing spec") }
             executeTest(nestedTestCase, target, specContext, ref)
          }
       }

@@ -37,7 +37,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          }
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
             .withProjectConfig(c)
             .launch()
@@ -48,7 +48,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          }
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
             .withProjectConfig(c)
             .launch()
@@ -59,7 +59,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(FooTagExtension)
          }
-         TestEngineLauncher(NoopTestEngineListener)
+         TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(TestWithListenerAndTag::class)
             .withProjectConfig(c)
             .launch()

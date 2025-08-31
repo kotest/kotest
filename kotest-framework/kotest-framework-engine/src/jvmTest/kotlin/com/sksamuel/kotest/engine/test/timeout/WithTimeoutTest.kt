@@ -17,7 +17,7 @@ class WithTimeoutTest : FunSpec() {
       test("a users withTimeout should not be caught by InvocationTimeoutInterceptor") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher().withListener(collector)
             .withClasses(WithTimeoutSpec::class)
             .launch()
          collector.result("a")!!.errorOrNull!!.message shouldBe """Timed out waiting for 1000 ms"""

@@ -64,6 +64,8 @@ val promise = TestEngineLauncher()
       function
          .addCode(""".withConsoleListener()""")
          .addCode("\n")
+         .addCode(""".withTeamCityListener()""")
+         .addCode("\n")
          .addCode(""".promise() as Promise<JsAny?>""")
          .addCode("\n")
 
@@ -71,9 +73,7 @@ val promise = TestEngineLauncher()
       function.addCode(
          """
 val result = promise.await<EngineResult>()
-//if (result.errors.isNotEmpty() || result.testFailures) {
-//   error("Tests failed")
-//}
+handleEngineResult(result)
 """
       )
 
@@ -84,6 +84,7 @@ val result = promise.await<EngineResult>()
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "EngineResult")
          .addImport("io.kotest.engine", "TestEngineLauncher")
+         .addImport("io.kotest.engine.errors", "handleEngineResult")
          .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("kotlinx.coroutines", "await")
          .addImport("kotlin.js", "Promise")

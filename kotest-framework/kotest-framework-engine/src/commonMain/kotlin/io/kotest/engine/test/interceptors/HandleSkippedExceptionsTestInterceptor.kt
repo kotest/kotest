@@ -13,8 +13,7 @@ internal object HandleSkippedExceptionsTestInterceptor : TestExecutionIntercepto
       test: NextTestExecutionInterceptor
    ): TestResult {
       return test(testCase, scope).let { testResult ->
-         val error = testResult.errorOrNull
-         when (error) {
+         when (val error = testResult.errorOrNull) {
             is TestAbortedException -> TestResult.Ignored(error.reason)
             is IterationSkippedException -> TestResult.Ignored(error.reason)
             else -> testResult

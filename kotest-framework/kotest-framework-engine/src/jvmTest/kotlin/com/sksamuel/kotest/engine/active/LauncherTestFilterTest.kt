@@ -33,7 +33,7 @@ class LauncherTestFilterTest : FunSpec() {
             }
          }
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(MyTestClass::class)
             .addExtensions(filter)
             .launch()
@@ -54,7 +54,7 @@ class LauncherTestFilterTest : FunSpec() {
             }
          }
 
-         TestEngineLauncher(listener)
+         TestEngineLauncher().withListener(listener)
             .withClasses(MyTestClass::class)
             .addExtensions(filter)
             .launch()
