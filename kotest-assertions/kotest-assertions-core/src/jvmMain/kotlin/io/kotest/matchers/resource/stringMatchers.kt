@@ -84,23 +84,23 @@ fun matchResource(
 ) = object : Matcher<String> {
 
    override fun test(value: String): MatcherResult {
-      val resource = getResource(resourcePath)
-      val resourceValue = resource.readText()
+      val expectedUrl = getResource(resourcePath)
+      val expected = expectedUrl.readText()
 
       val normalizedActual = if (ignoreLineSeparators) value.toLF() else value
-      val normalizedExpected = if (ignoreLineSeparators) resourceValue.toLF() else resourceValue
+      val normalizedExpected = if (ignoreLineSeparators) expected.toLF() else expected
 
       val trimmedActual = if (trim) normalizedActual.trim() else normalizedActual
       val trimmedExpected = if (trim) normalizedExpected.trim() else normalizedExpected
 
-      return matcherProvider(normalizedExpected).test(normalizedActual).let {
+      return matcherProvider(trimmedExpected).test(trimmedActual).let {
          ComparisonMatcherResult(
             passed = it.passed(),
             actual = StringPrint.printUnquoted(trimmedActual),
             expected = StringPrint.printUnquoted(trimmedExpected),
             failureMessageFn = {
 
-               val actualFilePath = normalizedActual.writeToActualValueFile(resource)
+               val actualFilePath = normalizedActual.writeToActualValueFile(expectedUrl)
 
                """${it.failureMessage()}
 
