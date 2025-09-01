@@ -1,6 +1,7 @@
 package io.kotest.assertions.json
 
-import io.kotest.matchers.ComparableMatcherResult
+import io.kotest.assertions.print.StringPrint
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -20,7 +21,7 @@ fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val actualJson = try {
          value?.let(pretty::parseToJsonElement)
-      } catch (ex: Exception) {
+      } catch (_: Exception) {
          return MatcherResult(
             false,
             { "expected: actual json to be valid json: $value" },
@@ -30,7 +31,7 @@ fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
 
       val expectedJson = try {
          expected?.let(pretty::parseToJsonElement)
-      } catch (ex: Exception) {
+      } catch (_: Exception) {
          return MatcherResult(
             false,
             { "expected: expected json to be valid json: $expected" },
@@ -38,12 +39,12 @@ fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
          )
       }
 
-      return ComparableMatcherResult(
-         actualJson == expectedJson,
+      return ComparisonMatcherResult(
+         passed = actualJson == expectedJson,
+         actual = StringPrint.printUnquoted(actualJson.toString()),
+         expected = StringPrint.printUnquoted(expectedJson.toString()),
          { "expected json to match, but they differed\n" },
          { "expected not to match with: $expectedJson but match: $actualJson" },
-         actualJson.toString(),
-         expectedJson.toString()
       )
    }
 }
@@ -57,7 +58,7 @@ fun beValidJson() = object : Matcher<String?> {
             { "expected: actual json to be valid json: $value" },
             { "expected: actual json to be invalid json: $value" }
          )
-      } catch (ex: Exception) {
+      } catch (_: Exception) {
          MatcherResult(
             false,
             { "expected: actual json to be valid json: $value" },
@@ -72,7 +73,7 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       val element = try {
          value?.let(pretty::parseToJsonElement)
-      } catch (ex: Exception) {
+      } catch (_: Exception) {
          return MatcherResult(
             false,
             { "expected: actual json to be valid json: $value" },

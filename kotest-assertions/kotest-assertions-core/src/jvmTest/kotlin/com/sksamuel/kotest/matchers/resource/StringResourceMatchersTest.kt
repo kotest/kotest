@@ -57,6 +57,22 @@ class StringResourceMatchersTest : ShouldSpec({
          actualValueFile.readText() shouldBe givenValue
       }
 
+      should("include diff") {
+         val givenValue = "not a test resource"
+
+         val errorMessage = shouldThrow<AssertionError> {
+            givenValue shouldMatchResource "/resourceMatchersTest/expected/testResource.txt"
+         }.message ?: AssertionErrorBuilder.fail("Cannot get error message")
+
+         errorMessage shouldContain """expected:<test
+resource
+> but was:<not a test resource>"""
+      }
+
+      should("support trim") {
+         val givenValue = "     not a test resource       "
+         givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt", trim = true)
+      }
    }
 
    context("shouldMatchResource with custom matcher") {
