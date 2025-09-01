@@ -16,7 +16,7 @@ class DefaultFqnConfigClassTest : FunSpec() {
             .withListener(collector)
             .withClasses(BarTest::class)
             .launch()
-         collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 2ms"
+         collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 25ms"
       }
    }
 }
