@@ -52,20 +52,16 @@ class InstancePerLeafTest2 : DescribeSpec({
    }
 
    describe("d1") {
-      println("d1")
       trace += "d1_"
 
       context("c1") {
-         println("c1")
          trace += "c1_"
 
          it("i1") {
-            println("i1")
             trace += "i1_"
          }
 
          it("i2") {
-            println("i2")
             trace += "i2_"
          }
       }
