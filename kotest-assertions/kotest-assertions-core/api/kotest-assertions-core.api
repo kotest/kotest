@@ -1772,7 +1772,9 @@ public final class io/kotest/matchers/compose/AnyKt {
 
 public final class io/kotest/matchers/concurrent/ConcurrentKt {
 	public static final fun shouldCompleteWithin (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public static final fun shouldCompleteWithin-VtjQ1oo (JLkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function0;)V
+	public static final fun shouldTimeout-VtjQ1oo (JLkotlin/jvm/functions/Function0;)V
 }
 
 public final class io/kotest/matchers/concurrent/ThreadsKt {
