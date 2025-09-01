@@ -124,4 +124,20 @@ class ContainJsonKeyValueTest : StringSpec({
       """{ "value": 3.14 }""".shouldContainJsonKeyValue<Any>("$.value", 3.14f)
       """{ "value": null }""".shouldContainJsonKeyValue<Any?>("$.value", null)
    }
+
+   "should handle list as expected value" {
+      @Language("JSON")
+      val jsonString = """
+        {"v": ["a", "b"]}
+    """.trimIndent()
+      jsonString.shouldContainJsonKeyValue("$.v", listOf("a", "b"))
+   }
+
+   "should handle map as expected value" {
+      @Language("JSON")
+      val jsonString = """
+        {"v": {"a": "b"}}
+    """.trimIndent()
+      jsonString.shouldContainJsonKeyValue("$.v", mapOf("a" to "b"))
+   }
 })
