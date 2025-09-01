@@ -11,7 +11,7 @@ class InstancePerLeafTest : DescribeSpec({
    isolationMode = IsolationMode.InstancePerLeaf
 
    afterSpec {
-      trace shouldBe "d1_c1_i1_c2_d1_c2_i2_"
+      trace shouldBe "d1_c1_i_d1_c2_i2_"
    }
 
    describe("d1") {
