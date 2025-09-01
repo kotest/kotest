@@ -44,7 +44,7 @@ class EqualTest : FunSpec() {
          }.shouldHaveMessage("Expected values to not match")
       }
 
-      test("f:comparing strings in objects") {
+      test("comparing strings in objects") {
 
          checkAll(Arb.string(1..10, Codepoint.az())) { string ->
             val a = """ { "a" : "$string" } """
