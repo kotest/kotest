@@ -41,6 +41,7 @@ internal class InstancePerLeafSpecExecutor(
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
    private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
+
    @OptIn(ExperimentalAtomicApi::class)
    private val seedUsed = AtomicBoolean(false)
 
@@ -103,7 +104,6 @@ internal class InstancePerLeafSpecExecutor(
     * It will locate the root that is the parent of the given [TestCase] and execute it in the new spec instance.
     */
    private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef, specContext: SpecContext) {
-      require(testCase.type == TestType.Test) { "Only leaf tests should be executed in a fresh spec" }
       logger.log { "Enqueuing in a fresh spec ${testCase.descriptor}" }
 
       val spec = inflator.inflate(ref).getOrThrow()
@@ -163,6 +163,7 @@ internal class InstancePerLeafSpecExecutor(
       override val coroutineContext: CoroutineContext,
       private val ref: SpecRef,
    ) : TestScope {
+      private var hasVisitedFirstNode = false
 
       private val logger = Logger(LeafLaunchingScope::class)
 
@@ -171,29 +172,35 @@ internal class InstancePerLeafSpecExecutor(
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
          val nestedTestCase = materializer.materialize(nested, testCase)
 
-         // we care about two scenarios:
-         // - if the target is null, we are in discovery mode and nested tests will be executed if a container, or queued up if a leaf
-         // - if the target is not null, we are trying to reach a specific test, and we will execute nested tests on the path to the target
+         if (target != null && !nestedTestCase.descriptor.isPrefixOf(target)) {
+            // Should execute the given test case described by target but traversing an irrelevant test case now
+            // Just return to abort from this logic
+            return
+         }
+         if (hasVisitedFirstNode) {
+            logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
+            executeInFreshSpec(nestedTestCase, ref, specContext)
+            return
+         }
+         hasVisitedFirstNode = true
+
          if (target == null) {
             logger.log { Pair(testCase.name.name, "Launching discovered test in discovery mode") }
             when (nestedTestCase.type) {
                TestType.Container -> {
                   logger.log { Pair(testCase.name.name, "Executing CONTAINER type in existing spec") }
-                  executeTest(nestedTestCase, null, specContext, ref)
                }
+
                TestType.Test -> {
-                  if (!seedUsed.compareAndExchange(expectedValue = false, newValue = true)) {
-                     logger.log { Pair(testCase.name.name, "Executing TEST type in seed spec") }
-                     executeTest(nestedTestCase, null, specContext, ref)
-                  } else {
-                     logger.log { Pair(testCase.name.name, "Executing TEST type in fresh spec") }
-                     executeInFreshSpec(nestedTestCase, ref, specContext)
-                  }
+                  logger.log { Pair(testCase.name.name, "Executing TEST type in existing spec") }
                }
             }
-            return
+            executeTest(nestedTestCase, null, specContext, ref)
+         } else if (nestedTestCase.descriptor == target) {
+            logger.log { Pair(testCase.name.name, "Start discovering tests from children nodes") }
+            executeTest(nestedTestCase, null, specContext, ref)
          } else if (nestedTestCase.descriptor.isPrefixOf(target)) {
-            logger.log { Pair(testCase.name.name, "Executing prefix in existing spec") }
+            logger.log { Pair(testCase.name.name, "Proceed discovery phase to the next node of target") }
             executeTest(nestedTestCase, target, specContext, ref)
          }
       }
