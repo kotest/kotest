@@ -70,7 +70,7 @@ resource
       }
 
       should("support trim") {
-         val givenValue = "     not a test resource       "
+         val givenValue = "      test\nresource\n      "
          givenValue.shouldMatchResource("/resourceMatchersTest/expected/testResource.txt", trim = true)
       }
    }
