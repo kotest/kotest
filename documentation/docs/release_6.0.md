@@ -190,7 +190,7 @@ It is recommended to use `InstancePerRoot` instead.
 
 ### API changes
 
-* Removed `Print<A>.print(A, level)` in favor of the now-undeprecated `print(A)`.
+* Removed `io.kotest.assertions.print.Print<A>.print(A, level)` in favor of the now-undeprecated `print(A)`.
 * Renamed `io.kotest.matchers.maps.contain` to `io.kotest.matchers.maps.mapcontain`.
 
 ## Improvements
