@@ -37,7 +37,7 @@ For example:
 
 class SomeTest : FunSpec({
   val customerServiceServer = WireMockServer(9000)
-  listener(WireMockListener(customerServiceServer, ListenerMode.PER_SPEC))
+  extension(WireMockListener(customerServiceServer, ListenerMode.PER_SPEC))
 
   test("let me get customer information") {
     customerServiceServer.stubFor(
@@ -62,7 +62,7 @@ You can use `WireMockServer.perSpec(customerServiceServer)` to achieve same resu
 
 class SomeTest : FunSpec({
   val customerServiceServer = WireMockServer(9000)
-  listener(WireMockListener(customerServiceServer, ListenerMode.PER_TEST))
+  extension(WireMockListener(customerServiceServer, ListenerMode.PER_TEST))
 
   test("let me get customer information") {
     customerServiceServer.stubFor(
