@@ -25,8 +25,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import kotlin.concurrent.atomics.AtomicBoolean
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.coroutineContext
 
@@ -41,9 +39,6 @@ internal class InstancePerLeafSpecExecutor(
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
    private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
-
-   @OptIn(ExperimentalAtomicApi::class)
-   private val seedUsed = AtomicBoolean(false)
 
    private val inflator = SpecRefInflator(
       registry = context.registry,
@@ -167,7 +162,6 @@ internal class InstancePerLeafSpecExecutor(
 
       private val logger = Logger(LeafLaunchingScope::class)
 
-      @OptIn(ExperimentalAtomicApi::class)
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
          val nestedTestCase = materializer.materialize(nested, testCase)
