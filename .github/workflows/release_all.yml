@@ -49,7 +49,7 @@ jobs:
                   args: -P"kotest_enabledPublicationNamePrefixes=linux"
                # Wasm
                -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
+                  args: -P"kotest_enabledPublicationNamePrefixes=wasm"
                # Publish 'common' components (KotlinMultiplatform,jvm,js) only on Linux, to avoid duplicate publications
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=android"
