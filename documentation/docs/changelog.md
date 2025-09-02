@@ -4,6 +4,26 @@ sidebar_label: Changelog
 slug: changelog.html
 ---
 
+
+## 6.0.2 September 2025
+
+### What's Changed
+
+* Replace typo in deprecation message of ContainerExtension by @gpopides in #5030
+* support arrays of primitives in shouldBeEqualToComparingFields by @AlexCue987 in #5043
+* Improved resource and json matchers by @sksamuel in #5045
+* Record (some) breaking changes in 6.0 by @TWiStErRob in #5046
+* lists-maps-in-json by @AlexCue987 in #5039
+* Replace prints with logger in gradle plugin by @sksamuel in #5047
+* Add test for boolean matchers by @sksamuel in #5048
+* Fix InstancePerLeaf execution order by @T45K in #5044
+* Fix shouldCompleteWithin masking errors by @sksamuel in #5049
+
+### New Contributors
+
+* @gpopides made their first contribution in #5030
+* @T45K made their first contribution in #5044
+
 ## 5.7.2 September 2023
 
 #### Fixes
