@@ -20,10 +20,10 @@ class Logger(private val kclass: KClass<*>) {
    @OverloadResolutionByLambdaReturnType
    fun log(f: () -> Pair<String?, String>) {
       log(null) {
-         val (testName, message) = f()
+         val (context, message) = f()
          listOf(
             (kclass.simpleName ?: "").padEnd(60, ' '),
-            (testName ?: "").padEnd(70, ' ').take(70),
+            (context ?: "").padEnd(70, ' ').take(70),
             message
          ).joinToString("  ")
       }

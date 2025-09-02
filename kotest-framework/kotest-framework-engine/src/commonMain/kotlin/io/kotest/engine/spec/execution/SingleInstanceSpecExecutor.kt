@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.execution
 
+import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
@@ -27,6 +28,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
    private val pipeline = SpecInterceptorPipeline(context)
    private val results = TestResults()
    private val materializer = Materializer(context.specConfigResolver)
+   private val logger = Logger(SingleInstanceSpecExecutor::class)
 
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
@@ -40,7 +42,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
    }
 
    private suspend fun launchRootTests(spec: Spec, specContext: SpecContext) {
-
+      logger.log { Pair(spec::class.simpleName, "Launching root tests") }
       val rootTests = materializer.materialize(spec)
 
       // controls how many tests to execute concurrently

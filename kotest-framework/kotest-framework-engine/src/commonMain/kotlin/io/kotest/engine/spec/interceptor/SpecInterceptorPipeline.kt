@@ -6,8 +6,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
-import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerInterceptor
-import io.kotest.engine.spec.interceptor.instance.BeforeSpecFailureInterceptor
+import io.kotest.engine.spec.interceptor.instance.BeforeAfterSpecListenersInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineScopeInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
@@ -43,11 +42,7 @@ internal class SpecInterceptorPipeline(
       val interceptors = createPipeline(context)
       logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
       return interceptors.foldRight(initial) { ext, next ->
-         object : NextSpecInterceptor {
-            override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
-               return ext.intercept(spec, next)
-            }
-         }
+         NextSpecInterceptor { spec -> ext.intercept(spec, next) }
       }.invoke(spec)
    }
 
@@ -61,8 +56,7 @@ internal class SpecInterceptorPipeline(
          ProjectContextInterceptor(this.context.toProjectContext()),
          SpecExtensionInterceptor(context.specExtensions()),
          InlineTagSpecInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
-         BeforeSpecFailureInterceptor(specContext),
-         AfterSpecListenerInterceptor(specContext, context.specExtensions()),
+         BeforeAfterSpecListenersInterceptor(context)
       )
    }
 }
