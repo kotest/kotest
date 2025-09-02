@@ -40,6 +40,12 @@ class ConcurrentTest : FunSpec({
       testDuration shouldBe 1.seconds
    }
 
+   test("shouldCompleteWithin should not swallow threads #4892") {
+      shouldCompleteWithin(5.seconds) {
+         1 shouldBe 2
+      }
+   }
+
    test("shouldCompleteBetween - should not fail when operation completes in given time range") {
       val testDuration = testTimeSource().measureTime {
          shouldNotThrowAny {
