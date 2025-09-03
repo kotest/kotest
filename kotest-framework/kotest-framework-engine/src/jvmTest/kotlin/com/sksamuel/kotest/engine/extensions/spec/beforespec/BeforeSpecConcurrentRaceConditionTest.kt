@@ -15,12 +15,6 @@ import kotlinx.coroutines.runBlocking
 import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
-/**
- * Test to reproduce Issue #5040 - Race condition in beforeSpec with concurrent test execution
- * 
- * When tests run concurrently, they don't wait for beforeSpec to complete before executing,
- * leading to tests running while beforeSpec is still executing its async operations.
- */
 class BeforeSpecConcurrentRaceConditionTest : FunSpec() {
    init {
       test("concurrent tests should wait for beforeSpec to complete before executing") {
@@ -35,17 +29,14 @@ class BeforeSpecConcurrentRaceConditionTest : FunSpec() {
             .withClasses(ParallelTestsInSpec::class)
             .launch()
 
-         // Analyze the event order
          val eventList = events.toList()
          println("Event order:")
          eventList.forEach { println("  $it") }
 
-         // Check if any test started before beforeSpec completed
          val beforeSpecEndIndex = eventList.indexOf("beforeSpec:end")
          val testEvents = eventList.filter { it.startsWith("test") }
          val testBeforeSpecEnd = testEvents.any { eventList.indexOf(it) < beforeSpecEndIndex }
 
-         // The race condition manifests as tests running before beforeSpec completes
          testBeforeSpecEnd shouldBe false
          ParallelTestsInSpec.testRanBeforeSpecCompleted.get() shouldBe false
       }
@@ -68,7 +59,6 @@ class ParallelTestsInSpec : StringSpec(), BeforeSpecListener {
       runBlocking {
          for (i in 1..2) {
             async {
-               // some long operation, e.g. network call
                delay(1000)
                events.add("beforeSpec:task$i")
                println("  task $i done")

@@ -36,26 +36,22 @@ internal class BeforeSpecListenerInterceptor(
       )
 
       return if (shouldRun) {
-         // Initialize the CompletableDeferred before running beforeSpec
          specContext.beforeSpecCompletion = CompletableDeferred()
          
          specExtensions
             .beforeSpec(testCase.spec)
             .fold(
                {
-                  // Complete the deferred on success
                   specContext.beforeSpecCompletion?.complete(Unit)
                   test(testCase, scope)
                },
                {
                   specContext.beforeSpecError = it
-                  // Complete exceptionally on failure
                   specContext.beforeSpecCompletion?.completeExceptionally(it)
                   TestResultBuilder.builder().withError(it).build()
                }
             )
       } else {
-         // Wait for beforeSpec to complete before proceeding
          try {
             specContext.beforeSpecCompletion?.await()
             if (specContext.beforeSpecError == null) {
