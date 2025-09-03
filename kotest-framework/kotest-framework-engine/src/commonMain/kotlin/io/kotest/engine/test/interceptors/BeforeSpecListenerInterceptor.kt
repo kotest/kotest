@@ -7,7 +7,6 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import kotlinx.coroutines.CompletableDeferred
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
@@ -29,31 +28,29 @@ internal class BeforeSpecListenerInterceptor(
       scope: TestScope,
       test: NextTestExecutionInterceptor,
    ): TestResult {
-
+      
       val shouldRun = specContext.beforeSpecInvoked.compareAndSet(
          expectedValue = false,
          newValue = true,
       )
-
+      
       return if (shouldRun) {
-         specContext.beforeSpecCompletion = CompletableDeferred()
-         
          specExtensions
             .beforeSpec(testCase.spec)
             .fold(
                {
-                  specContext.beforeSpecCompletion?.complete(Unit)
+                  specContext.beforeSpecCompletion.complete(Unit)
                   test(testCase, scope)
                },
                {
                   specContext.beforeSpecError = it
-                  specContext.beforeSpecCompletion?.completeExceptionally(it)
+                  specContext.beforeSpecCompletion.completeExceptionally(it)
                   TestResultBuilder.builder().withError(it).build()
                }
             )
       } else {
          try {
-            specContext.beforeSpecCompletion?.await()
+            specContext.beforeSpecCompletion.await()
             if (specContext.beforeSpecError == null) {
                test(testCase, scope)
             } else {

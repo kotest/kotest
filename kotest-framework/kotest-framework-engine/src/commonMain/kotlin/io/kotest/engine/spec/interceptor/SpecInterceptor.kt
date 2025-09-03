@@ -27,12 +27,15 @@ internal interface SpecInterceptor {
 @OptIn(ExperimentalAtomicApi::class)
 internal data class SpecContext(
    val beforeSpecInvoked: AtomicBoolean,
-   var beforeSpecError: Throwable? = null,
-   var beforeSpecCompletion: CompletableDeferred<Unit>? = null,
+   val beforeSpecCompletion: CompletableDeferred<Unit>,
+   @Volatile var beforeSpecError: Throwable? = null,
    var testFailed: Boolean = false,
 ) {
    companion object {
-      fun create() = SpecContext(AtomicBoolean(false), null, null)
+      fun create() = SpecContext(
+         AtomicBoolean(false), 
+         CompletableDeferred()
+      )
    }
 }
 
