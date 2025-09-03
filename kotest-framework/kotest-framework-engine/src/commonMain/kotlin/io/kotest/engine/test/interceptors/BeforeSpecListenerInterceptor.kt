@@ -7,6 +7,7 @@ import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
+import kotlinx.coroutines.CompletableDeferred
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
@@ -35,22 +36,36 @@ internal class BeforeSpecListenerInterceptor(
       )
 
       return if (shouldRun) {
+         // Initialize the CompletableDeferred before running beforeSpec
+         specContext.beforeSpecCompletion = CompletableDeferred()
+         
          specExtensions
             .beforeSpec(testCase.spec)
             .fold(
                {
+                  // Complete the deferred on success
+                  specContext.beforeSpecCompletion?.complete(Unit)
                   test(testCase, scope)
                },
                {
                   specContext.beforeSpecError = it
+                  // Complete exceptionally on failure
+                  specContext.beforeSpecCompletion?.completeExceptionally(it)
                   TestResultBuilder.builder().withError(it).build()
                }
             )
       } else {
-         if (specContext.beforeSpecError == null)
-            test(testCase, scope)
-         else
+         // Wait for beforeSpec to complete before proceeding
+         try {
+            specContext.beforeSpecCompletion?.await()
+            if (specContext.beforeSpecError == null) {
+               test(testCase, scope)
+            } else {
+               TestResultBuilder.builder().withIgnoreReason("Skipped due to beforeSpec failure").build()
+            }
+         } catch (e: Exception) {
             TestResultBuilder.builder().withIgnoreReason("Skipped due to beforeSpec failure").build()
+         }
       }
    }
 }
