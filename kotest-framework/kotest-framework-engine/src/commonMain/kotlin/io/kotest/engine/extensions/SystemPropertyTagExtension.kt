@@ -1,11 +1,11 @@
 package io.kotest.engine.extensions
 
+import io.kotest.common.syspropOrEnv
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.extensions.TagExtension
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.common.syspropOrEnv
+import io.kotest.engine.tags.TagExpression
 
 /**
  * This [TagExtension] includes and excludes tags using the system properties:
@@ -13,6 +13,8 @@ import io.kotest.common.syspropOrEnv
  * and [KotestEngineProperties.EXCLUDE_TAGS].
  *
  * Note: If [KotestEngineProperties.TAG_EXPRESSION] is used then the other two properties will be ignored.
+ *
+ * This extension is registered automatically by the Kotest engine.
  *
  * On non-JVM targets this extension will have no effect.
  */

@@ -8,7 +8,7 @@ class SealedTagsTest : FunSpec() {
    init {
       test("do not allow tags after spec is initialized") {
          shouldThrow<InvalidDslException> {
-            tags(Exclude)
+            tags(Exclude1)
          }
       }
    }
