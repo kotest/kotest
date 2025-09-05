@@ -462,13 +462,28 @@ internal fun comparisonToUse(
    (expected is List<*> && actual is List<*>) -> FieldComparison.LIST
    (expected is Map<*, *> && actual is Map<*, *>) -> FieldComparison.MAP
    (expected is Set<*> && actual is Set<*>) -> FieldComparison.SET
-   (expected is Array<*> && actual is Array<*>) -> FieldComparison.ARRAY
+   (isArray(expected) && isArray(actual)) -> FieldComparison.ARRAY
    typeIsJavaOrKotlinBuiltIn(expected) || typeIsJavaOrKotlinBuiltIn(actual) -> FieldComparison.DEFAULT
    useDefaultEqualForFields.contains(expected::class.java.canonicalName) ||
       useDefaultEqualForFields.contains(actual::class.java.canonicalName) -> FieldComparison.DEFAULT
 
    actual::class != expected::class -> FieldComparison.DEFAULT
    else -> FieldComparison.RECURSIVE
+}
+
+internal fun isArray(value: Any?) = when (value) {
+   null -> false
+   is Array<*> -> true
+   value::class.java.isArray -> true
+   is ByteArray -> true
+   is ShortArray -> true
+   is IntArray -> true
+   is LongArray -> true
+   is FloatArray -> true
+   is DoubleArray -> true
+   is CharArray -> true
+   is BooleanArray -> true
+   else -> false
 }
 
 internal fun isEnum(value: Any?) = when (value) {

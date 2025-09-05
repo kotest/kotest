@@ -50,7 +50,7 @@ jobs:
                   args: -P"kotest_enabledPublicationNamePrefixes=linux"
                # Wasm
                -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=wasmJs"
+                  args: -P"kotest_enabledPublicationNamePrefixes=wasm"
                # Android
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=android"

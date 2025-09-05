@@ -188,6 +188,11 @@ The following isolation modes are now deprecated due to undefined behavior in ed
 
 It is recommended to use `InstancePerRoot` instead.
 
+### API changes
+
+* Removed `io.kotest.assertions.print.Print<A>.print(A, level)` in favor of the now-undeprecated `print(A)`.
+* Renamed `io.kotest.matchers.maps.contain` to `io.kotest.matchers.maps.mapcontain`.
+
 ## Improvements
 
 ### Coroutine Debug Probes

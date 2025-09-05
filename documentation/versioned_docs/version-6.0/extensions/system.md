@@ -10,7 +10,8 @@ slug: system_extensions.html
 
 ## System Extensions
 
-If you need to test code that uses `java.lang.System`, Kotest provides extensions that can alter the system and restore it after each test. This extension is only available on the JVM.
+If you need to test code that uses `java.lang.System`, Kotest provides extensions that can alter the system and restore it after each test.
+This extension is only available on the JVM.
 
 To use this extension, add the dependency to your project:
 
@@ -19,16 +20,20 @@ To use this extension, add the dependency to your project:
 
 
 ```kotlin
-io.kotest:kotest-extensions-jvm:${version}
+io.kotest:kotest-extensions:${version}
 ```
 
 :::caution
 This extension does not support concurrent test execution. Due to the JVM specification there can only be one instance of these extensions running (For example: Only one Environment map must exist). If you try to run more than one instance at a time, the result is undefined.
 :::
 
+
 ### System Property Extension
 
-In the same fashion as the Environment Extensions, you can override the System Properties (`System.getProperties()`):
+You can override the System Properties (`System.getProperties()`) by either using a listener at the spec level,
+or by using the `withSystemProperty` function to wrap any arbitrary code.
+
+With the function:
 
 ```kotlin
 withSystemProperty("foo", "bar") {
@@ -36,11 +41,11 @@ withSystemProperty("foo", "bar") {
 }
 ```
 
-And with similar Listeners:
+And as an extension:
 
 ```kotlin
 class MyTest : FreeSpec() {
-  override fun listeners() = listOf(SystemPropertyListener("foo", "bar"))
+  override val extensions = listOf(SystemPropertyTestListener("foo", "bar"))
 
   init {
     "MyTest" {
@@ -50,7 +55,6 @@ class MyTest : FreeSpec() {
 }
 ```
 
-
 ### No-stdout / no-stderr listeners
 
 Maybe you want to guarantee that you didn't leave any debug messages around, or that you're always using a Logger in your logging.
@@ -59,7 +63,7 @@ For that, Kotest provides you with `NoSystemOutListener` and `NoSystemErrListene
 
 ```kotlin
 // In Project or in Spec
-override fun listeners() = listOf(NoSystemOutListener, NoSystemErrListener)
+override val extensions = listOf(NoSystemOutListener, NoSystemErrListener)
 ```
 
 ### Locale/Timezone listeners
@@ -77,11 +81,11 @@ withDefaultTimeZone(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo"))) {
 }
 ```
 
-And with the listeners
+And as an extension:
 
 ```kotlin
 // In Project or in Spec
-override fun listeners() = listOf(
+override val extensions = listOf(
   LocaleTestListener(Locale.FRANCE),
   TimeZoneTestListener(TimeZone.getTimeZone(ZoneId.of("America/Sao_Paulo")))
 )

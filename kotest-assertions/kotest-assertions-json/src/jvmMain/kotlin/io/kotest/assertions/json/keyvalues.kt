@@ -27,7 +27,14 @@ inline fun <reified T> String.shouldNotContainJsonKeyValue(@Language("JSONPath")
    this shouldNot containJsonKeyValue(path, value)
 
 inline fun <reified T> containJsonKeyValue(@Language("JSONPath") path: String, t: T) =
-   containJsonKeyValue(path, t, t?.let { it::class.java } ?: Nothing::class.java)
+   containJsonKeyValue(path, t, clazz<T>(t))
+
+inline fun <reified T> clazz(t: T?) = t?.let {
+   when {
+      t is Collection<*> -> List::class.java
+      t is Map<*, *> -> Map::class.java
+   else -> it::class.java
+} } ?: Nothing::class.java
 
 @KotestInternal
 fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = object : Matcher<String?> {

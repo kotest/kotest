@@ -44,8 +44,15 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val TESTS_DIR_NAME = "test-results"
       internal const val JVM_KOTEST_NAME = "jvmKotest"
       internal const val JVM_TEST_NAME = "jvmTest"
-      internal const val JSTEST_NAME = "jsTest"
+      internal const val JS_TEST_TASK_NAME = "jsTest"
+      internal const val WASM_JS_TEST_TASK_NAME = "wasmJsTest"
+      internal const val KOTEST_TASK_NAME = "kotest"
       internal const val KSP_PLUGIN_ID = "com.google.devtools.ksp"
+      internal const val KSP_JS_SOURCESET = "kspJsTest"
+      internal const val KSP_WASM_JS_SOURCESET = "kspWasmJsTest"
+      internal const val TEST_TASK_NAME = "test"
+      internal const val ANDROID_UNIT_TEST_SUFFIX = "UnitTest"
+      internal const val KOTEST_INCLUDE_PROPERTY = "kotest.include"
       private val unsupportedTargets = listOf("metadata")
    }
 
@@ -53,7 +60,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    override fun apply(project: Project) {
 
-      project.tasks.register("kotest") {
+      project.tasks.register(KOTEST_TASK_NAME) {
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION
       }
@@ -80,10 +87,10 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun handleKotlinJvm(project: Project) {
       project.plugins.withType<KotlinPluginWrapper> {
-         val existing = project.tasks.findByName("test")
+         val existing = project.tasks.findByName(TEST_TASK_NAME)
          when (existing) {
-            null -> println("> No test task found in project ${project.name} - no Kotest task will be added")
-            is Test -> configureJvmTask("test", project, null) // no need for target name for standalone jvm
+            null -> project.logger.info("> No test task found in project ${project.name} - no Kotest task will be added")
+            is Test -> configureJvmTask(TEST_TASK_NAME, project, null) // no need for target name for standalone jvm
          }
       }
    }
@@ -119,14 +126,14 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // we can execute check or test tasks with -Pkotest.include and this will then be
          // passed to the kotest runtime as an environment variable to filter specs and tests
-         project.findProperty("kotest.include")?.let { include.set(it.toString()) }
+         project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
 
          // these are the JVM compile tasks that produce the classes we want to test
          inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
       }
 
-      project.tasks.getByName("kotest") {
-         println("> Configuring kotest task for $JVM_KOTEST_NAME")
+      project.tasks.getByName(KOTEST_TASK_NAME) {
+         project.logger.info("Configuring kotest task for $sourceSetName")
          dependsOn(jvmKotest)
       }
    }
@@ -162,7 +169,7 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun handleMultiplatformJvm(target: KotlinTarget) {
       val existing = target.project.tasks.findByName(JVM_TEST_NAME)
       when (existing) {
-         null -> println("> No $JVM_TEST_NAME task found in project ${target.project.name} - no $JVM_KOTEST_NAME task will be added")
+         null -> target.project.logger.info("> No $JVM_TEST_NAME task found in project ${target.project.name} - no $JVM_KOTEST_NAME task will be added")
          is KotlinJvmTest -> configureJvmTask(JVM_TEST_NAME, target.project, "jvm")
       }
    }
@@ -173,7 +180,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // sometimes a native target might not exist, because either tests are not supported (eg android native)
          // or the target is not buildable on the current host (eg ios target on a linux host)
-         null -> println("> Skipping tests for ${target.name} because no task $nativeTaskName found")
+         null -> target.project.logger.info("> Skipping tests for ${target.name} because no task $nativeTaskName found")
 
          is KotlinNativeTest -> {
 
@@ -190,7 +197,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
-            val include = target.project.findProperty("kotest.include")
+            val include = target.project.findProperty(KOTEST_INCLUDE_PROPERTY)
 
             existing.doFirst {
 
@@ -223,8 +230,8 @@ abstract class KotestPlugin : Plugin<Project> {
             // do it for every different native target (there could be many!)
             wireKsp(target.project, kspConfigurationName(target))
 
-            target.project.tasks.getByName("kotest") {
-               println("> Configuring kotest task for $nativeTaskName")
+            target.project.tasks.getByName(KOTEST_TASK_NAME) {
+               target.project.logger.info("> Configuring kotest task for $nativeTaskName")
                dependsOn(existing)
             }
          }
@@ -239,10 +246,10 @@ abstract class KotestPlugin : Plugin<Project> {
                // the ksp plugin will create a configuration named kspWasmJsTest that contains
                // the symbol processors used by the test configuration. We want to wire in
                // the kotest symbol processor to this configuration so the user doesn't have to manually
-               wireKsp(target.project, "kspWasmJsTest")
-               target.project.tasks.getByName("kotest") {
-                  println("> Configuring kotest task for wasmJsTest")
-                  dependsOn(target.project.tasks["wasmJsTest"])
+               wireKsp(target.project, KSP_WASM_JS_SOURCESET)
+               target.project.tasks.getByName(KOTEST_TASK_NAME) {
+                  target.project.logger.info("> Configuring kotest task for $KSP_WASM_JS_SOURCESET")
+                  dependsOn(target.project.tasks[WASM_JS_TEST_TASK_NAME])
                }
             }
 
@@ -273,10 +280,10 @@ abstract class KotestPlugin : Plugin<Project> {
          // the ksp plugin will create a configuration named kspJsTest that contains
          // the symbol processors used by the test configuration. We want to wire in
          // the kotest symbol processor to this configuration so the user doesn't have to manually
-         wireKsp(target.project, "kspJsTest")
-         target.project.tasks.getByName("kotest") {
-            println("> Configuring kotest task for $JSTEST_NAME")
-            dependsOn(target.project.tasks[JSTEST_NAME])
+         wireKsp(target.project, KSP_JS_SOURCESET)
+         target.project.tasks.getByName(KOTEST_TASK_NAME) {
+            target.project.logger.info("> Configuring kotest task for $JS_TEST_TASK_NAME")
+            dependsOn(target.project.tasks[JS_TEST_TASK_NAME])
          }
       }
    }
@@ -311,7 +318,7 @@ abstract class KotestPlugin : Plugin<Project> {
       // Kotest only supports unit tests, not instrumentation tests, so we can filter to
       // compilations that ends with UnitTest. In a standard android project these would be debugUnitTest
       // and releaseUnitTest, but if someone has custom build types then there could be more.
-      compilations.matching { it.name.endsWith("UnitTest") }.configureEach {
+      compilations.matching { it.name.endsWith(ANDROID_UNIT_TEST_SUFFIX) }.configureEach {
          val compilation = this
 
          val runtimeDependencyConfigurationName = compilation.runtimeDependencyConfigurationName
@@ -363,7 +370,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
-            project.findProperty("kotest.include")?.let { include.set(it.toString()) }
+            project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
 
             // we depend on the standard android test task to ensure compilation has happened
             dependsOn(androidTestTaskName(compilation))
@@ -371,8 +378,8 @@ abstract class KotestPlugin : Plugin<Project> {
          }
 
          // this means this kotest task will be run when the user runs "gradle kotest"
-         project.tasks.getByName("kotest") {
-            println("> Configuring kotest task for $kotestTaskName")
+         project.tasks.getByName(KOTEST_TASK_NAME) {
+            project.logger.info("> Configuring kotest task for $kotestTaskName")
             dependsOn(task)
          }
       }
@@ -382,8 +389,8 @@ abstract class KotestPlugin : Plugin<Project> {
     * Returns "release" or "debug" depending on the current build type, etc.
     */
    private fun androidBuildType(compilation: KotlinCompilation<*>): String {
-      require(compilation.name.endsWith("UnitTest")) { "Only unit tests are supported" }
-      return compilation.name.removeSuffix("UnitTest").lowercase()
+      require(compilation.name.endsWith(ANDROID_UNIT_TEST_SUFFIX)) { "Only unit tests are supported" }
+      return compilation.name.removeSuffix(ANDROID_UNIT_TEST_SUFFIX).lowercase()
    }
 
    /**

@@ -2,11 +2,13 @@ package com.sksamuel.kotest.matchers.concurrent.suspension
 
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.common.testTimeSource
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.concurrent.suspension.shouldCompleteBetween
 import io.kotest.matchers.concurrent.suspension.shouldCompleteWithin
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTime
@@ -38,6 +40,14 @@ class ConcurrentTest : FunSpec({
 
       failure.message shouldBe "Operation took longer than expected. Expected that operation completed within 1s, but it took longer and was cancelled."
       testDuration shouldBe 1.seconds
+   }
+
+   test("shouldCompleteWithin should not swallow threads #4892") {
+      shouldThrowAny {
+         shouldCompleteWithin(5.seconds) {
+            1 shouldBe 2
+         }
+      }.message.shouldContain("""expected:<2> but was:<1>""")
    }
 
    test("shouldCompleteBetween - should not fail when operation completes in given time range") {

@@ -124,7 +124,7 @@ data class ComparisonMatcherResult(
    override fun negatedFailureMessage(): String = negatedFailureMessageFn()
 }
 
-@Deprecated("Use ValuesMatcherResult")
+@Deprecated("Use ComparisonMatcherResult")
 interface ComparableMatcherResult : MatcherResult {
 
    fun actual(): String
@@ -148,7 +148,7 @@ interface ComparableMatcherResult : MatcherResult {
    }
 }
 
-@Deprecated("Use ValuesMatcherResult")
+@Deprecated("Use ComparisonMatcherResult")
 interface EqualityMatcherResult : MatcherResult {
 
    fun actual(): Any?

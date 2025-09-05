@@ -24,6 +24,7 @@ values={[
 {label: 'Kotlin/WasmJS', value: 'WasmJS'},
 {label: 'Kotlin/Native', value: 'Native'},
 {label: 'Android', value: 'Android'},
+{label: 'Multiplatform', value: 'Multiplatform'},
 ]}>
 <TabItem value="JVM">
 
@@ -95,7 +96,7 @@ Add the `kotest-framework-engine` dependency to your `commonTest` or `jsTest` so
 kotlin {
    js()
    sourceSets {
-      jsTest {
+      commonTest {
          dependencies {
             implementation("io.kotest:kotest-framework-engine:<kotest-version>")
          }
@@ -136,7 +137,7 @@ Add the `kotest-framework-engine` dependency to your `commonTest` or `wasmJsTest
 kotlin {
    wasmJs()
    sourceSets {
-      wasmJsTest {
+      commonTest {
          dependencies {
             implementation("io.kotest:kotest-framework-engine:<kotest-version>")
          }
@@ -178,7 +179,7 @@ Add the `kotest-framework-engine` dependency to your `commonTest`, `nativeTest` 
 kotlin {
    linuxX64() // add any supported native target
    sourceSets {
-      nativeTest {
+      commonTest {
          dependencies {
             implementation("io.kotest:kotest-framework-engine:<kotest-version>")
          }
@@ -235,7 +236,40 @@ A working multiplatform project with JVM, JS and native targets, and unit and da
 https://github.com/kotest/kotest-examples
 :::
 
-To configure the test framework for multiplatform, combie the steps for JVM, JS and Native as detailed in the previous tabs.
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+
+For example:
+
+```kotlin
+plugins {
+   id("io.kotest") version "<kotest-version>"
+   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
+}
+```
+
+Add the `kotest-framework-engine` dependency to your `commonTest` source set:
+
+```kotlin
+kotlin {
+   sourceSets {
+      commonTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
+         }
+      }
+   }
+}
+```
+
+Tests can be placed in either `commonTest` or a platform specific directory such as `jsTest` or `macosX64Test` etc.
+Run your tests using the gradle `check` task, or a platform specific test task such as `macosX64Test`
+
+:::note
+The JS, Wasm and native test engines are feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to non-JVM platforms.
+:::
 
    </TabItem>
 </Tabs>
+
+

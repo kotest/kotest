@@ -26,7 +26,7 @@ To configure in your project, you need to add the `JunitXmlReporter` using [proj
 
 ```kotlin
 class MyConfig : AbstractProjectConfig() {
-  override fun extensions(): List<Extension> = listOf(
+  override val extensions: List<Extension> = listOf(
     JunitXmlReporter(
       includeContainers = false, // don't write out status for all tests
       useTestPathAsName = true, // use the full test path (ie, includes parent test names)

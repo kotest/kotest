@@ -1772,7 +1772,9 @@ public final class io/kotest/matchers/compose/AnyKt {
 
 public final class io/kotest/matchers/concurrent/ConcurrentKt {
 	public static final fun shouldCompleteWithin (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
+	public static final fun shouldCompleteWithin-VtjQ1oo (JLkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun shouldTimeout (JLjava/util/concurrent/TimeUnit;Lkotlin/jvm/functions/Function0;)V
+	public static final fun shouldTimeout-VtjQ1oo (JLkotlin/jvm/functions/Function0;)V
 }
 
 public final class io/kotest/matchers/concurrent/ThreadsKt {
@@ -2955,14 +2957,13 @@ public final class io/kotest/matchers/resource/ByteArrayMatchersKt {
 }
 
 public final class io/kotest/matchers/resource/StringMatchersKt {
-	public static final fun matchResource (Ljava/lang/String;Lkotlin/jvm/functions/Function1;Z)Lio/kotest/matchers/Matcher;
-	public static final fun resourceAsString (Ljava/lang/String;)Ljava/lang/String;
+	public static final fun matchResource (Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZZ)Lio/kotest/matchers/Matcher;
 	public static final fun shouldMatchResource (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldMatchResource (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Z)Ljava/lang/String;
-	public static synthetic fun shouldMatchResource$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Ljava/lang/String;
+	public static final fun shouldMatchResource (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZZ)Ljava/lang/String;
+	public static synthetic fun shouldMatchResource$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZZILjava/lang/Object;)Ljava/lang/String;
 	public static final fun shouldNotMatchResource (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldNotMatchResource (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Z)Ljava/lang/String;
-	public static synthetic fun shouldNotMatchResource$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Ljava/lang/String;
+	public static final fun shouldNotMatchResource (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZZ)Ljava/lang/String;
+	public static synthetic fun shouldNotMatchResource$default (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZZILjava/lang/Object;)Ljava/lang/String;
 }
 
 public final class io/kotest/matchers/result/FailureMatcher : io/kotest/matchers/Matcher {
