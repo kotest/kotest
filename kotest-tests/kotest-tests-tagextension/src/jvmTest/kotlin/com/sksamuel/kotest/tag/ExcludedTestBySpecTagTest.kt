@@ -7,10 +7,11 @@ import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.tags.TagExpression
 
-object Exclude : Tag()
+object Exclude1 : Tag()
+object Exclude2 : Tag()
 
 object ExcludeTagExtension : TagExtension {
-   override fun tags(): TagExpression = TagExpression.exclude(Exclude)
+   override fun tags(): TagExpression = TagExpression.exclude(Exclude1)
 }
 
 class ProjectConfig : AbstractProjectConfig() {
@@ -23,9 +24,9 @@ class ProjectConfig : AbstractProjectConfig() {
  */
 class ExcludedTestByInlineTagTest : StringSpec({
 
-   tags(Exclude)
+   tags(Exclude1)
 
-   "should not run" {
+   "should not run as Exclude1 is excluded by a tag extension at the project config level" {
       AssertionErrorBuilder.fail("Shouldn't get here")
    }
 })
@@ -37,13 +38,12 @@ class ExcludedTestByInlineTagTest : StringSpec({
 class ExcludedTestByOverrideTagTest : StringSpec() {
 
    override fun tags(): Set<Tag> {
-      return setOf(Exclude)
+      return setOf(Exclude2)
    }
 
    init {
-      "should not run" {
+      "should not run as Exclude2 is excluded by the kotest.tags system property" {
          AssertionErrorBuilder.fail("Shouldn't get here")
       }
    }
 }
-
