@@ -31,7 +31,7 @@ class ShouldBeEqualTest : FunSpec() {
          val listA = listOf(1, 2, 3, 4)
          val listB = listOf(1, 2, 3)
          shouldThrow<AssertionError> { listA shouldBeEqual listB }.message shouldBe """[1, 2, 3, 4] should be equal to [1, 2, 3]
-expected:<[1, 2, 3]> but was:<[1, 2, 3]>"""
+expected:<[1, 2, 3]> but was:<[1, 2, 3, 4]>"""
       }
    }
 }

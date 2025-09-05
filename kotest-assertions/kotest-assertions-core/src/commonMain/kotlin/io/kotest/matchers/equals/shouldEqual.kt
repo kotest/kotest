@@ -23,7 +23,7 @@ fun <A> beEqual(expected: A): Matcher<A> = object : Matcher<A> {
    override fun test(value: A) = ComparisonMatcherResult(
       passed = value == expected,
       expected = expected.print(),
-      actual = expected.print(),
+      actual = value.print(),
       failureMessageFn = { "$value should be equal to $expected" },
       negatedFailureMessageFn = { "$value should not be equal to $expected" })
 }
