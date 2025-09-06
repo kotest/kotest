@@ -3,6 +3,7 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
+import kotlinx.coroutines.CompletableDeferred
 import kotlin.concurrent.atomics.AtomicBoolean
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
@@ -26,11 +27,15 @@ internal interface SpecInterceptor {
 @OptIn(ExperimentalAtomicApi::class)
 internal data class SpecContext(
    val beforeSpecInvoked: AtomicBoolean,
-   var beforeSpecError: Throwable? = null,
+   val beforeSpecCompletion: CompletableDeferred<Unit>,
+   @Volatile var beforeSpecError: Throwable? = null,
    var testFailed: Boolean = false,
 ) {
    companion object {
-      fun create() = SpecContext(AtomicBoolean(false), null)
+      fun create() = SpecContext(
+         AtomicBoolean(false), 
+         CompletableDeferred()
+      )
    }
 }
 
