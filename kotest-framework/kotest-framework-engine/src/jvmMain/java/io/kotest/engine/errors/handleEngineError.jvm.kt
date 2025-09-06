@@ -3,8 +3,13 @@
 package io.kotest.engine.errors
 
 import io.kotest.engine.EngineResult
-import kotlin.system.exitProcess
+import io.kotest.engine.extensions.MultipleExceptions
 
 actual fun handleEngineResult(result: EngineResult) {
-   exitProcess(1)
+   if (result.testFailures) {
+      error("Tests failed")
+   }
+   if (result.errors.isNotEmpty()) {
+      throw MultipleExceptions(result.errors)
+   }
 }
