@@ -16,7 +16,8 @@ import io.kotest.engine.test.status.isEnabled
  * If the test is disabled, then a [TestResult.Ignored] is returned.
  *
  * Note: This extension must execute before any other extension that invokes lifecycle callbacks
- * on the test engine listener, because in reporters like TeamCity or junit, ignored cannot happen after started.
+ * on the test engine listener, because in reporters like TeamCity or JUnit, the test-ignored callback
+ * cannot be fired if the test-started callback has already fired.
  */
 internal class TestEnabledCheckInterceptor(
    private val projectConfigResolver: ProjectConfigResolver,
