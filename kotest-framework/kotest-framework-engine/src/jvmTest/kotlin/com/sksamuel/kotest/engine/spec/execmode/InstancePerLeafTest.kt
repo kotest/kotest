@@ -14,10 +14,6 @@ class InstancePerLeafTest : DescribeSpec({
       trace = ""
    }
 
-   afterSpec {
-      trace shouldBe "d1_c1_i1_d1_c2_i2_"
-   }
-
    describe("d1") {
       trace += "d1_"
 
@@ -26,6 +22,7 @@ class InstancePerLeafTest : DescribeSpec({
 
          it("i1") {
             trace += "i1_"
+            trace shouldBe "d1_c1_i1_"
          }
       }
 
@@ -34,6 +31,7 @@ class InstancePerLeafTest : DescribeSpec({
 
          it("i2") {
             trace += "i2_"
+            trace shouldBe "d1_c2_i2_"
          }
       }
    }
@@ -47,10 +45,6 @@ class InstancePerLeafTest2 : DescribeSpec({
       trace = ""
    }
 
-   afterSpec {
-      trace shouldBe "d1_c1_i1_d1_c1_i2_d1_c2_i3_"
-   }
-
    describe("d1") {
       trace += "d1_"
 
@@ -59,10 +53,12 @@ class InstancePerLeafTest2 : DescribeSpec({
 
          it("i1") {
             trace += "i1_"
+            trace shouldBe "d1_c1_i1_"
          }
 
          it("i2") {
             trace += "i2_"
+            trace shouldBe "d1_c1_i2_"
          }
       }
 
@@ -71,6 +67,7 @@ class InstancePerLeafTest2 : DescribeSpec({
 
          it("i3") {
             trace += "i3_"
+            trace shouldBe "d1_c2_i3_"
          }
       }
    }
@@ -84,10 +81,6 @@ class InstancePerLeafTest3 : DescribeSpec({
       trace = ""
    }
 
-   afterSpec {
-      trace shouldBe "d1_c1_i1_d2_c2_i2_"
-   }
-
    describe("d1") {
       trace += "d1_"
 
@@ -96,6 +89,7 @@ class InstancePerLeafTest3 : DescribeSpec({
 
          it("i1") {
             trace += "i1_"
+            trace shouldBe "d1_c1_i1_"
          }
       }
    }
@@ -108,6 +102,7 @@ class InstancePerLeafTest3 : DescribeSpec({
 
          it("i2") {
             trace += "i2_"
+            trace shouldBe "d2_c2_i2_"
          }
       }
    }
