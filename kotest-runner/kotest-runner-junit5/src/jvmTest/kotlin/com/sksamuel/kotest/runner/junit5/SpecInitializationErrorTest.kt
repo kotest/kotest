@@ -9,9 +9,9 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.execution.testSpecExecutor
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.EngineDescriptorBuilder
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
-import io.kotest.runner.junit.platform.createEngineDescriptor
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 
@@ -20,11 +20,10 @@ class SpecInitializationErrorTest : FunSpec({
 
    test("an error in a class field should fail spec") {
 
-      val root = createEngineDescriptor(
-         UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
-         listOf(SpecWithInstanceFieldError::class),
-         emptyList(),
-      )
+      val root = EngineDescriptorBuilder
+         .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+         .withSpecs(listOf(SpecWithInstanceFieldError::class))
+         .build()
 
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
@@ -55,11 +54,10 @@ class SpecInitializationErrorTest : FunSpec({
 
    test("an error in a class initializer should fail spec") {
 
-      val root = createEngineDescriptor(
-         UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
-         listOf(SpecWithInitError::class),
-         emptyList(),
-      )
+      val root = EngineDescriptorBuilder
+         .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+         .withSpecs(listOf(SpecWithInitError::class))
+         .build()
 
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
@@ -90,6 +88,7 @@ class SpecInitializationErrorTest : FunSpec({
 })
 
 private class SpecWithInstanceFieldError : FunSpec() {
+   @Suppress("unused")
    private val err = "failme".apply { error("foo") }
 
    init {

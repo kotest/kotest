@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.engine.reporting.FileEntry
 import org.junit.platform.engine.reporting.ReportEntry
 
 internal class SynchronizedEngineExecutionListener(val listener: EngineExecutionListener) : EngineExecutionListener {
@@ -10,6 +11,12 @@ internal class SynchronizedEngineExecutionListener(val listener: EngineExecution
    override fun executionFinished(testDescriptor: TestDescriptor, testExecutionResult: TestExecutionResult?) {
       synchronized(listener) {
          listener.executionFinished(testDescriptor, testExecutionResult)
+      }
+   }
+
+   override fun fileEntryPublished(testDescriptor: TestDescriptor?, file: FileEntry?) {
+      synchronized(listener) {
+         listener.fileEntryPublished(testDescriptor, file)
       }
    }
 

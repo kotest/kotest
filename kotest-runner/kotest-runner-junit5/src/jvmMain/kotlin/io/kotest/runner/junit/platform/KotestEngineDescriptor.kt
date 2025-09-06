@@ -19,27 +19,29 @@ class KotestEngineDescriptor(
    override fun mayRegisterTests(): Boolean = classes.isEmpty()
 }
 
-internal fun createEmptyEngineDescriptor(id: UniqueId): KotestEngineDescriptor {
-   return KotestEngineDescriptor(id, emptyList(), emptyList())
-}
+internal data class EngineDescriptorBuilder(
+   private val id: UniqueId,
+   private val specs: List<KClass<out Spec>>,
+   private val extensions: List<Extension>,
+   private val formatter: DisplayNameFormatting,
+) {
 
-internal fun createEngineDescriptor(
-   uniqueId: UniqueId,
-   specs: List<KClass<out Spec>>,
-   extensions: List<Extension>, // extensions can be added via junit configuration parameters
-): KotestEngineDescriptor {
-
-   val engine = KotestEngineDescriptor(
-      id = uniqueId,
-      classes = specs,
-      extensions = extensions,
-   )
-
-   val formatter = DisplayNameFormatting(null)
-
-   log { "Adding ${specs.size} children to the root descriptor ${KotestEngineDescriptor::class}@${engine.hashCode()}" }
-   specs.forEach {
-      engine.addChild(createSpecTestDescriptor(engine, it.toDescriptor(), formatter.format(it)))
+   companion object {
+      fun builder(id: UniqueId): EngineDescriptorBuilder {
+         return EngineDescriptorBuilder(id, emptyList(), emptyList(), DisplayNameFormatting(null))
+      }
    }
-   return engine
+
+   fun withSpecs(specs: List<KClass<out Spec>>): EngineDescriptorBuilder = copy(specs = specs)
+   fun withExtensions(extensions: List<Extension>): EngineDescriptorBuilder = copy(extensions = extensions)
+   fun withFormatter(formatting: DisplayNameFormatting): EngineDescriptorBuilder = copy(formatter = formatting)
+
+   fun build(): KotestEngineDescriptor {
+      val engine = KotestEngineDescriptor(id = id, classes = specs, extensions = extensions)
+      log { "Adding ${specs.size} specs to the engine ${KotestEngineDescriptor::class}@${engine.hashCode()}" }
+      specs.forEach {
+         engine.addChild(createSpecTestDescriptor(engine, it.toDescriptor(), formatter.format(it)))
+      }
+      return engine
+   }
 }
