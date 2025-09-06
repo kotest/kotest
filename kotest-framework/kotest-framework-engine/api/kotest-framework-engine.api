@@ -1625,8 +1625,6 @@ public abstract class io/kotest/core/spec/Extendable {
 	public final fun extensions ()Ljava/util/List;
 	public final fun extensions (Ljava/util/List;)V
 	public final fun extensions ([Lio/kotest/core/extensions/Extension;)V
-	public final fun prependExtension (Lio/kotest/core/extensions/Extension;)V
-	public final fun prependExtensions (Ljava/util/List;)V
 }
 
 public final class io/kotest/core/spec/InvalidDslException : java/lang/Exception {
@@ -3245,7 +3243,6 @@ public final class io/kotest/engine/config/TestConfigResolver {
 	public final fun coroutineDebugProbes (Lio/kotest/core/test/TestCase;)Z
 	public final fun coroutineTestScope (Lio/kotest/core/test/TestCase;)Z
 	public final fun enabled (Lio/kotest/core/test/TestCase;)Lkotlin/jvm/functions/Function1;
-	public final fun extensions (Lio/kotest/core/test/TestCase;)Ljava/util/List;
 	public final fun failfast (Lio/kotest/core/test/TestCase;)Z
 	public final fun invocationTimeout-5sfh64U (Lio/kotest/core/test/TestCase;)J
 	public final fun invocations (Lio/kotest/core/test/TestCase;)I
