@@ -1,5 +1,7 @@
 package com.sksamuel.kt.extensions.system
 
+import io.kotest.core.annotation.DisabledIf
+import io.kotest.core.annotation.WindowsCondition
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.WordSpec
@@ -12,6 +14,7 @@ import io.kotest.inspectors.forAll
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 
+@DisabledIf(WindowsCondition::class)
 class SystemEnvironmentExtensionTest : FreeSpec() {
 
    private val key = "SystemEnvironmentExtensionTestFoo"
@@ -63,6 +66,7 @@ class SystemEnvironmentExtensionTest : FreeSpec() {
 
 }
 
+@DisabledIf(WindowsCondition::class)
 class SystemEnvironmentTestListenerTest : WordSpec() {
 
    private val setl = SystemEnvironmentTestListener(
