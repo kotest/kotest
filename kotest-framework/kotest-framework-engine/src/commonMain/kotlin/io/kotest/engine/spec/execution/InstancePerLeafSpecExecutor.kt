@@ -98,7 +98,7 @@ internal class InstancePerLeafSpecExecutor(
     *
     * It will locate the root that is the parent of the given [TestCase] and execute it in the new spec instance.
     */
-   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef, specContext: SpecContext) {
+   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef) {
       logger.log { "Enqueuing in a fresh spec ${testCase.descriptor}" }
 
       val spec = inflator.inflate(ref).getOrThrow()
@@ -106,6 +106,8 @@ internal class InstancePerLeafSpecExecutor(
       // we need to find the same root test but in the newly created spec
       val root = materializer.materialize(spec).first { it.descriptor.isPrefixOf(testCase.descriptor) }
       logger.log { "Located root for target $root" }
+
+      val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
@@ -173,7 +175,7 @@ internal class InstancePerLeafSpecExecutor(
          }
          if (hasVisitedFirstNode) {
             logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-            executeInFreshSpec(nestedTestCase, ref, specContext)
+            executeInFreshSpec(nestedTestCase, ref)
             return
          }
          hasVisitedFirstNode = true
