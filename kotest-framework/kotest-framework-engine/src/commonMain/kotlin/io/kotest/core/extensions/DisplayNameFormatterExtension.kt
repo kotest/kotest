@@ -8,6 +8,6 @@ import io.kotest.engine.names.DisplayNameFormatter
  * Note: If multiple [DisplayNameFormatterExtension]s are registered, then one
  * will be picked arbitrarily.
  */
-interface DisplayNameFormatterExtension {
+interface DisplayNameFormatterExtension : Extension {
    fun formatter(): DisplayNameFormatter
 }

@@ -20,7 +20,7 @@ internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecD
 
 /**
  * Creates a [TestDescriptor] from the given spec.
- * This descriptor needs to be added to the engine parent.
+ * This descriptor needs to be added to the parent engine descriptor.
  */
 internal fun createSpecTestDescriptor(
    engine: EngineDescriptor,
