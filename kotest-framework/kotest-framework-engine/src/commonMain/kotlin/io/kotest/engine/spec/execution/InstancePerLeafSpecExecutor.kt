@@ -62,13 +62,13 @@ internal class InstancePerLeafSpecExecutor(
          // but any leaf tests will execute in a fresh instance of the spec.
 
          pipeline.execute(seed, specContext) {
-            launchRootTests(seed, ref, specContext)
+            launchRootTests(seed, ref)
             Result.success(results.toMap())
          }.map { results.toMap() }
       }
    }
 
-   private suspend fun launchRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
+   private suspend fun launchRootTests(seed: Spec, ref: SpecRef) {
 
       val roots = materializer.materialize(seed)
 
@@ -81,6 +81,7 @@ internal class InstancePerLeafSpecExecutor(
 
       coroutineScope { // will wait for all tests to complete
          roots.forEach {
+            val specContext = SpecContext.create()
             launch {
                semaphore.withPermit {
                   executeTest(it, null, specContext, ref)
