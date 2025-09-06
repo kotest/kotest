@@ -8,7 +8,6 @@ kotlin {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(projects.kotestRunner.kotestRunnerJunit5)
          }
       }
    }

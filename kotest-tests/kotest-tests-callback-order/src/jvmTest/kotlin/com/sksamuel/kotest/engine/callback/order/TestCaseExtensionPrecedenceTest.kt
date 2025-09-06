@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.extensions.test.testextension
+package com.sksamuel.kotest.engine.callback.order
 
 import io.kotest.core.annotation.Description
 import io.kotest.core.annotation.EnabledIf
@@ -17,6 +17,10 @@ class TestCaseExtensionAppender(private val char: Char) : TestCaseExtension {
       val result = execute(testCase)
       return result
    }
+
+   override fun toString(): String {
+      return "test extension $char"
+   }
 }
 
 @Description("Tests the specification of precedence for TestCaseExtensions")
@@ -27,11 +31,11 @@ class TestCaseExtensionPrecedenceTest : FunSpec() {
 
    init {
 
-      this@TestCaseExtensionPrecedenceTest.extensions(TestCaseExtensionAppender('c'), TestCaseExtensionAppender('d'))
+      extensions(TestCaseExtensionAppender('c'), TestCaseExtensionAppender('d'))
 
       test("precedence specification").config(extensions = listOf(TestCaseExtensionAppender('e'))) {
          // closest TestCaseExtensions should run last so they can override project/spec level TestCaseExtensions
-         string shouldBe "dcbae"
+         string shouldBe "abcde"
       }
    }
 }

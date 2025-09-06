@@ -42,13 +42,13 @@ internal class LifecycleInterceptor(
       logger.log { Pair(testCase.name.name, "Notifying listener test started") }
       listener.testStarted(testCase)
 
-      return testExtensions.beforeTestBeforeAnyBeforeContainer(testCase)
+      return testExtensions.beforeTestBeforeEachBeforeContainer(testCase)
          .fold(
             {
                val result = test(testCase, scope)
                // any error in the after listeners will override the test result unless the test was already an error
                testExtensions
-                  .afterTestAfterAnyAfterContainer(testCase, result)
+                  .afterTestAfterEachAfterContainer(testCase, result)
                   .fold(
                      { result },
                      {
@@ -60,7 +60,7 @@ internal class LifecycleInterceptor(
             {
                val result = TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(it).build()
                // can ignore errors here as we already have the before errors to show
-               testExtensions.afterTestAfterAnyAfterContainer(testCase, result)
+               testExtensions.afterTestAfterEachAfterContainer(testCase, result)
                result
             }
          )
