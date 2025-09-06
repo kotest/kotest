@@ -16,9 +16,9 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.EngineDescriptorBuilder
 import io.kotest.runner.junit.platform.JUnitTestEngineListener
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
-import io.kotest.runner.junit.platform.createEngineDescriptor
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
@@ -31,11 +31,10 @@ import kotlin.time.Duration.Companion.seconds
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class JUnitTestEngineListenerTest : FunSpec({
 
-   val root = createEngineDescriptor(
-      uniqueId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
-      specs = listOf(MySpec::class),
-      extensions = emptyList()
-   )
+   val root = EngineDescriptorBuilder
+      .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+      .withSpecs(listOf(MySpec::class))
+      .build()
 
    val tc1 = TestCase(
       MySpec::class.toDescriptor().append("foo"),
@@ -282,11 +281,10 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("state should be reset after spec") {
 
-      val root2 = createEngineDescriptor(
-         UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
-         listOf(MySpec::class, MySpec2::class),
-         emptyList(),
-      )
+      val root2 = EngineDescriptorBuilder
+         .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+         .withSpecs(listOf(MySpec::class, MySpec2::class))
+         .build()
 
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root2, DisplayNameFormatting(null))
@@ -331,11 +329,10 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    test("state should be reset after ignored spec") {
 
-      val root2 = createEngineDescriptor(
-         UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID),
-         listOf(MySpec::class, MySpec2::class),
-         emptyList(),
-      )
+      val root2 = EngineDescriptorBuilder
+         .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+         .withSpecs(listOf(MySpec::class, MySpec2::class))
+         .build()
 
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root2, DisplayNameFormatting(null))

@@ -93,19 +93,25 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { request.string() }
 
       if (!isEngineIncluded(request) || !shouldRunTests(request))
-         return createEmptyEngineDescriptor(uniqueId)
+         return EngineDescriptorBuilder.builder(uniqueId).build()
 
       val result = Discovery.discover(uniqueId, request)
 
-      val descriptor = createEngineDescriptor(
-         uniqueId,
-         result.specs,
-         configurationParameterExtensions(request) + listOfNotNull(gradleTestFilterExtension(request)),
-      )
+      // we need to load this here as well so we can configure the formatter
+      // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
+      val config = ProjectConfigLoader.load()
 
-      logger.log { "JUnit discovery completed [descriptor=$descriptor]" }
-      logger.log { "Final specs [${descriptor.classes.joinToString(", ")}]" }
-      return descriptor
+      val formatting = DisplayNameFormatting(config)
+
+      val engine = EngineDescriptorBuilder.builder(uniqueId)
+         .withSpecs(result.specs)
+         .withExtensions(configurationParameterExtensions(request) + listOfNotNull(gradleTestFilterExtension(request)))
+         .withFormatter(formatting)
+         .build()
+
+      logger.log { "JUnit discovery completed [descriptor=$engine]" }
+      logger.log { "Final specs [${engine.classes.joinToString(", ")}]" }
+      return engine
    }
 
    /**
@@ -144,7 +150,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
-    * If we are excluded from the engines then we do not run discovery
+    * If we are excluded from the engines then we do not run discovery.
     */
    private fun isEngineIncluded(request: EngineDiscoveryRequest): Boolean {
       return request.engineFilters().all { it.toPredicate().test(this) }
