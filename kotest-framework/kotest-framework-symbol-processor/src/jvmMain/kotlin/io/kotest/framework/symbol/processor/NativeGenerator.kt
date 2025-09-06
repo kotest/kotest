@@ -37,14 +37,9 @@ class NativeGenerator(private val environment: SymbolProcessorEnvironment) {
             """
 val includeArg = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE")?.toKString()
 val listenerType = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER")?.toKString() ?: ""
-val moduleTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR")?.toKString()
-val rootTestReportsDir = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR")?.toKString()
-val target = getenv("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET")?.toKString()
 
 val descriptor = includeArg?.let { DescriptorPaths.parse(it) }
 val filter = descriptor?.let { IncludeDescriptorFilter(it) }
-val moduleXmlReporter = moduleTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
-val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener(it, null, target) }
 
 """.trim()
          )
@@ -53,9 +48,8 @@ val rootXmlReporter = rootTestReportsDir?.let { JunitXmlReportTestEngineListener
             """
 val launcher = TestEngineLauncher()
  .withNative()
+ .withTeamCityListener() // TCSM is always included to hook into the native test task reporting
  .addExtensions(listOfNotNull(filter))
- .withListener(moduleXmlReporter)
- .withListener(rootXmlReporter)
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
@@ -76,7 +70,7 @@ val launcher = TestEngineLauncher()
       function.addCode(
          """
 val result = when (listenerType) {
-   "teamcity" -> launcher.withTeamCityListener().launch()
+   "teamcity" -> launcher.launch()
    else -> launcher.withConsoleListener().launch()
 }
 handleEngineResult(result)
