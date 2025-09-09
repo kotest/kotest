@@ -396,7 +396,7 @@ public final class io/kotest/extensions/testcontainers/TestContainerProjectExten
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public fun mount (Lkotlin/jvm/functions/Function1;)V
+	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/GenericContainer;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -416,7 +416,7 @@ public final class io/kotest/extensions/testcontainers/TestContainerSpecExtensio
 	public fun beforeTest (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-	public fun mount (Lkotlin/jvm/functions/Function1;)V
+	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/GenericContainer;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

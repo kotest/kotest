@@ -16,13 +16,14 @@ import org.testcontainers.containers.GenericContainer
  *
  * @param container the specific test container type
  */
-class TestContainerProjectExtension(
-   private val container: GenericContainer<*>,
-) : MountableExtension<GenericContainer<*>, Unit>, AfterProjectListener, TestListener {
+class TestContainerProjectExtension<T : GenericContainer<*>>(
+   private val container: T,
+) : MountableExtension<T, T>, AfterProjectListener, TestListener {
 
-   override fun mount(configure: GenericContainer<*>.() -> Unit): Unit {
+   override fun mount(configure: T.() -> Unit): T {
       configure(container)
       container.start()
+      return container
    }
 
    override suspend fun afterProject() {
