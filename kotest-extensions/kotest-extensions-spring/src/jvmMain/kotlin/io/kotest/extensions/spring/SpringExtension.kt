@@ -23,6 +23,7 @@ import org.springframework.test.context.TestContextManager
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.primaryConstructor
 
@@ -40,6 +41,11 @@ class SpringExtension(
    private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
 ) : ConstructorExtension, SpecExtension, TestCaseExtension, BeforeTestListener, AfterTestListener {
 
+   companion object {
+      // Cache to store TestContextManager instances per spec class to avoid double initialization
+      private val testContextManagerCache = ConcurrentHashMap<Class<*>, TestContextManager>()
+   }
+
    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
       // we only instantiate via spring if there's actually parameters in the constructor
       // otherwise there's nothing to inject there
@@ -47,7 +53,7 @@ class SpringExtension(
       return if (constructor == null || constructor.parameters.isEmpty()) {
          null
       } else {
-         val manager = TestContextManager(clazz.java)
+         val manager = testContextManagerCache.computeIfAbsent(clazz.java) { TestContextManager(it) }
          val context = manager.testContext.applicationContext
          context.autowireCapableBeanFactory.autowire(
             clazz.java,
@@ -61,7 +67,7 @@ class SpringExtension(
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
       safeClassName(spec::class)
 
-      val context = TestContextManager(spec::class.java)
+      val context = testContextManagerCache.computeIfAbsent(spec::class.java) { TestContextManager(it) }
       withContext(SpringTestContextCoroutineContextElement(context)) {
          testContextManager().beforeTestClass()
          testContextManager().prepareTestInstance(spec)

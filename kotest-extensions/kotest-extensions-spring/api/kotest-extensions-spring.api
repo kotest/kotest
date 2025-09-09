@@ -9,6 +9,7 @@ public final class io/kotest/extensions/spring/SpringAutowireConstructorExtensio
 }
 
 public final class io/kotest/extensions/spring/SpringExtension : io/kotest/core/extensions/ConstructorExtension, io/kotest/core/extensions/SpecExtension, io/kotest/core/extensions/TestCaseExtension, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeTestListener {
+	public static final field Companion Lio/kotest/extensions/spring/SpringExtension$Companion;
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;)V
 	public synthetic fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -21,6 +22,9 @@ public final class io/kotest/extensions/spring/SpringExtension : io/kotest/core/
 	public fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun intercept (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun setIgnoreSpringListenerOnFinalClassWarning (Z)V
+}
+
+public final class io/kotest/extensions/spring/SpringExtension$Companion {
 }
 
 public final class io/kotest/extensions/spring/SpringTestContextCoroutineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
