@@ -2944,6 +2944,23 @@ public final class io/kotest/datatest/ShouldSpecRootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 }
 
+public final class io/kotest/datatest/StringSpecRootKt {
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+}
+
 public final class io/kotest/datatest/WordSpecRootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
