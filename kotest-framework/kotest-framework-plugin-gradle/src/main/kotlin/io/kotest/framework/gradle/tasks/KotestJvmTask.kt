@@ -78,6 +78,9 @@ abstract class KotestJvmTask : JavaExec() {
             .configure(this)
 
          super.exec()
+         executionResult.get().rethrowFailure()
+         if (executionResult.get().exitValue == 1)
+            error("There were failing tests")
       }
    }
 }
