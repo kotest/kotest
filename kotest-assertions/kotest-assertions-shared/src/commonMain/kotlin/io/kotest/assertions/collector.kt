@@ -21,6 +21,7 @@ fun ErrorCollector.throwCollectedErrors() {
  */
 expect fun ErrorCollector.collectErrors(): AssertionError?
 
+@Suppress("DEPRECATION")
 internal fun List<Throwable>.toAssertionError(depth: Int, subject: Printed?): AssertionError? {
    return when {
       isEmpty() -> null

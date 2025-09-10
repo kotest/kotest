@@ -1,5 +1,7 @@
 package io.kotest.engine.spec.execution
 
+import io.kotest.common.reflection.bestName
+import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
@@ -24,11 +26,14 @@ import kotlinx.coroutines.withContext
  */
 internal class SingleInstanceSpecExecutor(private val context: EngineContext) : SpecExecutor {
 
+   private val logger = Logger(SingleInstanceSpecExecutor::class)
    private val pipeline = SpecInterceptorPipeline(context)
    private val results = TestResults()
    private val materializer = Materializer(context.specConfigResolver)
+   private val testExecutor = TestCaseExecutor(context)
 
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
+      logger.log { Pair(ref.kclass.bestName(), "Executing spec $seed") }
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
@@ -42,6 +47,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
    private suspend fun launchRootTests(spec: Spec, specContext: SpecContext) {
 
       val rootTests = materializer.materialize(spec)
+      logger.log { Pair(spec::class.bestName(), "Launching ${rootTests.size} root tests") }
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(spec).concurrency
@@ -71,7 +77,6 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
       val duplicateTestNameHandler = DuplicateTestNameHandler()
       val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
 
-      val testExecutor = TestCaseExecutor(context)
       val result = testExecutor.execute(
          testCase = testCase,
          testScope = DefaultTestScope(testCase) {

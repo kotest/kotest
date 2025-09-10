@@ -42,8 +42,8 @@ abstract class KotestPlugin : Plugin<Project> {
    companion object {
       internal const val TASK_DESCRIPTION = "Runs kotest tests"
       internal const val TESTS_DIR_NAME = "test-results"
-      internal const val JVM_KOTEST_NAME = "jvmKotest"
-      internal const val JVM_TEST_NAME = "jvmTest"
+      internal const val JVM_KOTEST_TASK_NAME = "jvmKotest"
+      internal const val JVM_TEST_TASK_NAME = "jvmTest"
       internal const val JS_TEST_TASK_NAME = "jsTest"
       internal const val WASM_JS_TEST_TASK_NAME = "wasmJsTest"
       internal const val KOTEST_TASK_NAME = "kotest"
@@ -98,7 +98,7 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun configureJvmTask(sourceSetName: String, project: Project, target: String?) {
       // gradle best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
-      val jvmKotest = project.tasks.register(JVM_KOTEST_NAME, KotestJvmTask::class) {
+      val jvmKotest = project.tasks.register(JVM_KOTEST_TASK_NAME, KotestJvmTask::class) {
 
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION
@@ -163,10 +163,10 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun handleMultiplatformJvm(target: KotlinTarget) {
-      val existing = target.project.tasks.findByName(JVM_TEST_NAME)
+      val existing = target.project.tasks.findByName(JVM_TEST_TASK_NAME)
       when (existing) {
-         null -> target.project.logger.info("> No $JVM_TEST_NAME task found in project ${target.project.name} - no $JVM_KOTEST_NAME task will be added")
-         is KotlinJvmTest -> configureJvmTask(JVM_TEST_NAME, target.project, "jvm")
+         null -> target.project.logger.info("> No $JVM_TEST_TASK_NAME task found in project ${target.project.name} - no $JVM_KOTEST_TASK_NAME task will be added")
+         is KotlinJvmTest -> configureJvmTask(JVM_TEST_TASK_NAME, target.project, "jvm")
       }
    }
 
@@ -182,17 +182,6 @@ abstract class KotestPlugin : Plugin<Project> {
             // we don't want to wire stuff to non-enabled targets (i.e. ios target on a linux host)
             // so we check if the task is enabled
             if (!existing.isEnabled) return
-
-            val moduleTestDir = getModuleTestReportsDir(target.project, existing.name).get()
-            moduleTestDir.asFile.mkdirs()
-            val moduleTestDirAbsolutePath = moduleTestDir.asFile.absolutePath
-
-            val rootTestDir = getRootTestReportsDir(target.project, existing.name).get()
-            rootTestDir.asFile.mkdirs()
-            val rootTestDirAbsolutePath = rootTestDir.asFile.absolutePath
-
-            // passed to the xml report generator
-            val targetName = target.name
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
