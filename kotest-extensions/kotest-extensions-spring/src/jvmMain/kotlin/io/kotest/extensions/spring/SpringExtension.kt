@@ -44,7 +44,11 @@ class SpringExtension(
    companion object {
       // Cache to store TestContextManager instances per spec class to avoid double initialization
       private val testContextManagerCache = ConcurrentHashMap<Class<*>, TestContextManager>()
+      
+      // Track which spec classes have already had their lifecycle methods called
+      private val lifecycleExecutedSpecs = ConcurrentHashMap.newKeySet<Class<*>>()
    }
+
 
    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
       // we only instantiate via spring if there's actually parameters in the constructor
@@ -68,11 +72,23 @@ class SpringExtension(
       safeClassName(spec::class)
 
       val context = testContextManagerCache.computeIfAbsent(spec::class.java) { TestContextManager(it) }
+      
+      // Only call lifecycle methods once per spec class, regardless of how many SpringExtension instances exist
+      val isFirstExecution = lifecycleExecutedSpecs.add(spec::class.java)
+      
       withContext(SpringTestContextCoroutineContextElement(context)) {
-         testContextManager().beforeTestClass()
-         testContextManager().prepareTestInstance(spec)
-         execute(spec)
-         testContextManager().afterTestClass()
+         if (isFirstExecution) {
+            testContextManager().beforeTestClass()
+            testContextManager().prepareTestInstance(spec)
+         }
+         try {
+            execute(spec)
+         } finally {
+            if (isFirstExecution) {
+               testContextManager().afterTestClass()
+               lifecycleExecutedSpecs.remove(spec::class.java)
+            }
+         }
       }
    }
 
