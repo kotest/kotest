@@ -120,8 +120,10 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version 
 
 pitest = { module = "org.pitest:pitest", version.ref = "pitest" }
 
+spring-beans = { group = "org.springframework", name = "spring-beans", version.ref = "spring" }
 spring-context = { group = "org.springframework", name = "spring-context", version.ref = "spring" }
 spring-test = { group = "org.springframework", name = "spring-test", version.ref = "spring" }
+spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "spring-boot" }
 spring-boot-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot" }
 byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte-buddy" }
 

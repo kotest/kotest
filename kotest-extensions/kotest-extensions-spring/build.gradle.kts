@@ -9,6 +9,7 @@ kotlin {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlin.reflect)
+            implementation(libs.spring.beans)
             implementation(libs.spring.context)
             implementation(libs.spring.test)
             implementation(libs.byte.buddy)
@@ -16,6 +17,7 @@ kotlin {
       }
       jvmTest {
          dependencies {
+            implementation(libs.spring.boot.starter.web)
             implementation(libs.spring.boot.test)
          }
       }
