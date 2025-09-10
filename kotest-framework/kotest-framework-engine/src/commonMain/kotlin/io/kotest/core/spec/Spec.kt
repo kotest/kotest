@@ -340,7 +340,7 @@ abstract class Spec : TestConfiguration() {
     * top level callbacks.
     */
    final override fun afterTest(f: AfterTest) {
-      prependExtension(object : AfterTestListener {
+      extension(object : AfterTestListener {
          override suspend fun afterTest(testCase: TestCase, result: TestResult) {
             if (testCase.spec::class == this@Spec::class)
                f(Tuple2(testCase, result))

@@ -38,20 +38,4 @@ abstract class Extendable {
       require(extensions.isNotEmpty()) { "Cannot register empty list of extensions" }
       extensions(extensions.toList())
    }
-
-   /**
-    * Register [Extension]s to be invoked before all other extensions that have
-    * been directly registered on this class.
-    */
-   fun prependExtensions(extensions: List<Extension>) {
-      _extensions = extensions + _extensions
-   }
-
-   /**
-    * Registers an [Extension] to be invoked before all other extensions that have
-    * been directly registered on this class.
-    */
-   fun prependExtension(extension: Extension) {
-      prependExtensions(listOf(extension))
-   }
 }

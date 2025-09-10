@@ -145,7 +145,7 @@ abstract class TestConfiguration : Extendable() {
     * top level callbacks.
     */
    fun afterContainer(f: AfterContainer) {
-      prependExtension(object : AfterContainerListener {
+      extension(object : AfterContainerListener {
          override suspend fun afterContainer(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -176,7 +176,7 @@ abstract class TestConfiguration : Extendable() {
     * top level callbacks.
     */
    fun afterEach(f: AfterEach) {
-      prependExtension(object : AfterEachListener {
+      extension(object : AfterEachListener {
          override suspend fun afterEach(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }
@@ -237,7 +237,7 @@ abstract class TestConfiguration : Extendable() {
     * top level callbacks.
     */
    fun afterAny(f: AfterAny) {
-      prependExtension(object : AfterTestListener {
+      extension(object : AfterTestListener {
          override suspend fun afterAny(testCase: TestCase, result: TestResult) {
             f(Tuple2(testCase, result))
          }

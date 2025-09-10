@@ -6,6 +6,7 @@ slug: nested-tests.html
 
 Kotest's data testing is extremely flexible and allows to unlimited nesting of data test constructs.
 Each extra nest will create another layer of nesting in the test output providing the cartesian join of all inputs.
+Please note that while `StringSpec` supports `withData`, this spec does not support `Nested Data Tests`.
 
 For example, in the following code snippet, we have two layers of nesting.
 

@@ -172,13 +172,13 @@ class TestConfigResolver(
       val projectEnabledOrReasonIf = projectConfig?.enabledOrReasonIf
       return { testCase ->
          when {
-            disabledByTestConfig == true -> this@TestConfigResolver.disabledByTestConfig
-            testEnabledIf != null -> if (testEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
+            disabledByTestConfig -> this@TestConfigResolver.disabledByTestConfig
+            testEnabledIf != null -> if (testEnabledIf(testCase)) Enabled.enabled else disabledByEnabledIf
             testEnabledOrReasonIf != null -> testEnabledOrReasonIf.invoke(testCase)
-            specEnabledIf != null -> if (specEnabledIf(testCase)) Enabled.Companion.enabled else disabledByEnabledIf
+            specEnabledIf != null -> if (specEnabledIf(testCase)) Enabled.enabled else disabledByEnabledIf
             specEnabledOrReasonIf != null -> specEnabledOrReasonIf.invoke(testCase)
             projectEnabledOrReasonIf != null -> projectEnabledOrReasonIf.invoke(testCase)
-            else -> Enabled.Companion.enabled
+            else -> Enabled.enabled
          }
       }
    }
@@ -187,15 +187,21 @@ class TestConfigResolver(
     * Returns all [Extension]s applicable to the given [TestCase]. This includes extensions
     * included in test case config, those at the spec level, those from project config, and
     * globally registered extensions in the [ExtensionRegistry].
+    *
+    * @param order - controls the order of extensions returned
     */
-   fun extensions(testCase: TestCase): List<Extension> {
-      return testConfigs(testCase).flatMap { it.extensions ?: emptyList() } +
+   internal fun extensions(testCase: TestCase, order: ExtensionsOrder): List<Extension> {
+      val ext = registry.all() +
+         (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
+         loadPackageConfigs(testCase.spec).flatMap { it.extensions } + // package level extensions
          testCase.spec.extensions + // overriding the extensions val in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}
          testCase.spec.extensions() + // added to the spec via dsl eg beforeTest { tc -> }
-         loadPackageConfigs(testCase.spec).flatMap { it.extensions } + // package level extensions
-         (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
-         registry.all()
+         testConfigs(testCase).flatMap { it.extensions ?: emptyList() }
+      return when (order) {
+         ExtensionsOrder.GLOBAL_FIRST -> ext
+         ExtensionsOrder.LOCAL_FIRST -> ext.reversed()
+      }
    }
 
    /**
@@ -207,4 +213,29 @@ class TestConfigResolver(
       val config = listOfNotNull(testCase.config)
       return if (parent == null) config else config + testConfigs(parent)
    }
+}
+
+/**
+ * Controls the order of extensions loaded from a [TestConfigResolver].
+ */
+internal enum class ExtensionsOrder {
+
+   /**
+    * Extensions are loaded with global first - eg those registered globally in the [ExtensionRegistry],
+    * those from project config, those at the spec level, and finally those at test level.
+    *
+    * At each level extensions are returned in definition order. That is, if two extensions are defined
+    * at the same level, the first one registered will be the first extension invoked.
+    */
+   GLOBAL_FIRST,
+
+   /**
+    * Extensions are loaded with most specific first - eg those defined in a test, those at the spec level,
+    * those from project config, and globally registered extensions in the [ExtensionRegistry].
+    *
+    * At each level extensions are returned in reversed definition order. That is, if two extensions are defined
+    * at the same level, the last one registered will be the first extension invoked.
+    */
+   LOCAL_FIRST,
+
 }
