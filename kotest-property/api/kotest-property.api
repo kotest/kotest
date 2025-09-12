@@ -1018,13 +1018,6 @@ public final class io/kotest/property/arbitrary/GeoLocation {
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/property/arbitrary/InstantKt {
-	public static final fun kotlinInstant (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedRange;)Lio/kotest/property/Arb;
-	public static final fun kotlinInstant (Lio/kotest/property/Arb$Companion;Lkotlin/time/Instant;Lkotlin/time/Instant;)Lio/kotest/property/Arb;
-	public static synthetic fun kotlinInstant$default (Lio/kotest/property/Arb$Companion;Lkotlin/time/Instant;Lkotlin/time/Instant;ILjava/lang/Object;)Lio/kotest/property/Arb;
-	public static final fun random (Lkotlin/ranges/ClosedRange;Lkotlin/random/Random;)Lkotlin/time/Instant;
-}
-
 public final class io/kotest/property/arbitrary/IntRangeShrinker : io/kotest/property/Shrinker {
 	public fun <init> ()V
 	public synthetic fun shrink (Ljava/lang/Object;)Ljava/util/List;
@@ -1062,6 +1055,13 @@ public final class io/kotest/property/arbitrary/IntsKt {
 public final class io/kotest/property/arbitrary/JvmbindKt {
 	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Ljava/util/Map;Lkotlin/reflect/KClass;Lkotlin/reflect/KType;)Lio/kotest/property/Arb;
 	public static final fun bind (Lio/kotest/property/Arb$Companion;Ljava/util/Map;Lkotlin/reflect/KClass;)Lio/kotest/property/Arb;
+}
+
+public final class io/kotest/property/arbitrary/KotlinInstantKt {
+	public static final fun kotlinInstant (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedRange;)Lio/kotest/property/Arb;
+	public static final fun kotlinInstant (Lio/kotest/property/Arb$Companion;Lkotlin/time/Instant;Lkotlin/time/Instant;)Lio/kotest/property/Arb;
+	public static synthetic fun kotlinInstant$default (Lio/kotest/property/Arb$Companion;Lkotlin/time/Instant;Lkotlin/time/Instant;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun random (Lkotlin/ranges/ClosedRange;Lkotlin/random/Random;)Lkotlin/time/Instant;
 }
 
 public final class io/kotest/property/arbitrary/ListShrinker : io/kotest/property/Shrinker {
