@@ -19,6 +19,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
+import java.time.zone.ZoneOffsetTransition
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -365,4 +366,31 @@ fun Arb.Companion.javaDate(
       maxDate = dateFormat.format(maxDate),
       zoneId = zoneId
    )
+}
+
+data class LocalDateTimeChange(
+   val dateTimeBefore: LocalDateTime,
+   val dateTimeAfter: LocalDateTime,
+   val type: LocalDateTimeChangeType,
+) {
+   enum class LocalDateTimeChangeType { GAP, OVERLAP, }
+}
+
+fun ZoneId.localDateTimeChanges(start: LocalDateTime): Sequence<LocalDateTimeChange> {
+   val rules = this.rules
+   var time = start.atZone(this).toInstant()
+   return sequence {
+      while(true) {
+         val transition: ZoneOffsetTransition? = rules.nextTransition(time)
+         transition?.let {
+            time = transition.instant.plusSeconds(1)
+            yield(LocalDateTimeChange(
+                  dateTimeBefore = transition.dateTimeBefore,
+                  dateTimeAfter = transition.dateTimeAfter,
+                  type = if (transition.isGap) LocalDateTimeChange.LocalDateTimeChangeType.GAP else LocalDateTimeChange.LocalDateTimeChangeType.OVERLAP,
+               )
+            ) ?: break
+         }
+      }
+   }
 }
