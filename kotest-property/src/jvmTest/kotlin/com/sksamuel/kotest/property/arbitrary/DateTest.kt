@@ -146,6 +146,20 @@ class DateTest : WordSpec({
 
          dates shouldBe generateSequence(minDate) { it.plusDays(1) }.takeWhile { it <= maxDate }.toSet()
       }
+
+      "include changes of daylight saving time in edge cases" {
+         val arb = Arb.localDate(
+            minDate = LocalDate.of(2025, 1, 1),
+            maxDate = LocalDate.of(2025, 12, 31),
+            zoneId = ZoneId.of("America/Chicago")
+         )
+         arb.edgecases().toList() shouldContainExactlyInAnyOrder listOf(
+            LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 3, 9),
+            LocalDate.of(2025, 11, 2),
+            LocalDate.of(2025, 12, 31),
+         )
+      }
    }
 
    "Arb.localTime()" should {
