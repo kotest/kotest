@@ -390,8 +390,8 @@ fun ZoneId.localDateTimeChanges(start: LocalDateTime): Sequence<LocalDateTimeCha
    val rules = this.rules
    var time = start.atZone(this).toInstant()
    return sequence {
-      while(time != null) {
-         val transition: ZoneOffsetTransition? = rules.nextTransition(time)
+      var transition = rules.nextTransition(time)
+      while(transition != null) {
          transition?.let {
             time = transition.instant.plusSeconds(1)
             yield(LocalDateTimeChange(
@@ -401,7 +401,7 @@ fun ZoneId.localDateTimeChanges(start: LocalDateTime): Sequence<LocalDateTimeCha
                )
             )
          }
-         if (transition == null) time = null
+         transition = rules.nextTransition(time)
       }
    }
 }
