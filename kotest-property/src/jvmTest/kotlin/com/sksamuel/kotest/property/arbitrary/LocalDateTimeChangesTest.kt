@@ -25,5 +25,10 @@ class LocalDateTimeChangesTest: StringSpec() {
              ),
           )
        }
+      "works for UTC - no changes" {
+         ZoneId.of("UTC").localDateTimeChanges(
+            LocalDateTime.of(2025, 9, 12, 1, 2,3)
+         ).toList() shouldBe listOf()
+      }
    }
 }

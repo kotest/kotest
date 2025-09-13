@@ -160,6 +160,18 @@ class DateTest : WordSpec({
             LocalDate.of(2025, 12, 31),
          )
       }
+
+      "work for UTC when there is no daylight saving time" {
+         val arb = Arb.localDate(
+            minDate = LocalDate.of(2025, 1, 1),
+            maxDate = LocalDate.of(2025, 12, 31),
+            zoneId = ZoneId.of("UTC")
+         )
+         arb.edgecases().toList() shouldContainExactlyInAnyOrder listOf(
+            LocalDate.of(2025, 1, 1),
+            LocalDate.of(2025, 12, 31),
+         )
+      }
    }
 
    "Arb.localTime()" should {
