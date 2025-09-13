@@ -873,8 +873,8 @@ public final class io/kotest/property/arbitrary/DatesKt {
 	public static final fun javaInstant (Lio/kotest/property/Arb$Companion;Lkotlin/ranges/ClosedRange;)Lio/kotest/property/Arb;
 	public static synthetic fun javaInstant$default (Lio/kotest/property/Arb$Companion;Ljava/time/Instant;Ljava/time/Instant;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun localDate (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
-	public static final fun localDate (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDate;Ljava/time/LocalDate;)Lio/kotest/property/Arb;
-	public static synthetic fun localDate$default (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDate;Ljava/time/LocalDate;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun localDate (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDate;Ljava/time/LocalDate;Ljava/time/ZoneId;)Lio/kotest/property/Arb;
+	public static synthetic fun localDate$default (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDate;Ljava/time/LocalDate;Ljava/time/ZoneId;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun localDateTime (Lio/kotest/property/Arb$Companion;II)Lio/kotest/property/Arb;
 	public static final fun localDateTime (Lio/kotest/property/Arb$Companion;ILjava/lang/Integer;)Lio/kotest/property/Arb;
 	public static final fun localDateTime (Lio/kotest/property/Arb$Companion;Ljava/lang/Integer;I)Lio/kotest/property/Arb;
@@ -882,6 +882,7 @@ public final class io/kotest/property/arbitrary/DatesKt {
 	public static synthetic fun localDateTime$default (Lio/kotest/property/Arb$Companion;ILjava/lang/Integer;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static synthetic fun localDateTime$default (Lio/kotest/property/Arb$Companion;Ljava/lang/Integer;IILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static synthetic fun localDateTime$default (Lio/kotest/property/Arb$Companion;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;ILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static final fun localDateTimeChanges (Ljava/time/ZoneId;Ljava/time/LocalDateTime;)Lkotlin/sequences/Sequence;
 	public static final fun localTime (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 	public static final fun localTime (Lio/kotest/property/Arb$Companion;Ljava/time/LocalTime;Ljava/time/LocalTime;)Lio/kotest/property/Arb;
 	public static synthetic fun localTime$default (Lio/kotest/property/Arb$Companion;Ljava/time/LocalTime;Ljava/time/LocalTime;ILjava/lang/Object;)Lio/kotest/property/Arb;
@@ -1068,6 +1069,29 @@ public final class io/kotest/property/arbitrary/ListShrinker : io/kotest/propert
 	public fun <init> (Lkotlin/ranges/IntRange;)V
 	public synthetic fun shrink (Ljava/lang/Object;)Ljava/util/List;
 	public fun shrink (Ljava/util/List;)Ljava/util/List;
+}
+
+public final class io/kotest/property/arbitrary/LocalDateTimeChange {
+	public fun <init> (Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;)V
+	public final fun component1 ()Ljava/time/LocalDateTime;
+	public final fun component2 ()Ljava/time/LocalDateTime;
+	public final fun component3 ()Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;
+	public final fun copy (Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;)Lio/kotest/property/arbitrary/LocalDateTimeChange;
+	public static synthetic fun copy$default (Lio/kotest/property/arbitrary/LocalDateTimeChange;Ljava/time/LocalDateTime;Ljava/time/LocalDateTime;Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;ILjava/lang/Object;)Lio/kotest/property/arbitrary/LocalDateTimeChange;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getDateTimeAfter ()Ljava/time/LocalDateTime;
+	public final fun getDateTimeBefore ()Ljava/time/LocalDateTime;
+	public final fun getType ()Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType : java/lang/Enum {
+	public static final field GAP Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;
+	public static final field OVERLAP Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;
+	public static fun values ()[Lio/kotest/property/arbitrary/LocalDateTimeChange$LocalDateTimeChangeType;
 }
 
 public final class io/kotest/property/arbitrary/LocaleKt {
