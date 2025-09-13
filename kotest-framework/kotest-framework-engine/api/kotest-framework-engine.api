@@ -3348,11 +3348,13 @@ public final class io/kotest/engine/errors/HandleEngineError_jvmKt {
 public final class io/kotest/engine/extensions/DefaultExtensionRegistry : io/kotest/engine/extensions/ExtensionRegistry {
 	public fun <init> ()V
 	public fun add (Lio/kotest/core/extensions/Extension;)V
+	public fun add (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 	public fun all ()Ljava/util/List;
 	public fun clear ()V
 	public fun isEmpty ()Z
 	public fun isNotEmpty ()Z
 	public fun remove (Lio/kotest/core/extensions/Extension;)V
+	public fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
 
 public abstract interface class io/kotest/engine/extensions/DescriptorFilter : io/kotest/core/extensions/Extension {
@@ -3383,11 +3385,13 @@ public final class io/kotest/engine/extensions/DescriptorFilterResult$Include : 
 public final class io/kotest/engine/extensions/EmptyExtensionRegistry : io/kotest/engine/extensions/ExtensionRegistry {
 	public static final field INSTANCE Lio/kotest/engine/extensions/EmptyExtensionRegistry;
 	public fun add (Lio/kotest/core/extensions/Extension;)V
+	public fun add (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 	public fun all ()Ljava/util/List;
 	public fun clear ()V
 	public fun isEmpty ()Z
 	public fun isNotEmpty ()Z
 	public fun remove (Lio/kotest/core/extensions/Extension;)V
+	public fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
 
 public abstract class io/kotest/engine/extensions/ExtensionException : java/lang/Exception {
@@ -3459,11 +3463,13 @@ public final class io/kotest/engine/extensions/ExtensionException$PrepareSpecExc
 
 public abstract interface class io/kotest/engine/extensions/ExtensionRegistry {
 	public abstract fun add (Lio/kotest/core/extensions/Extension;)V
+	public abstract fun add (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 	public abstract fun all ()Ljava/util/List;
 	public abstract fun clear ()V
 	public abstract fun isEmpty ()Z
 	public abstract fun isNotEmpty ()Z
 	public abstract fun remove (Lio/kotest/core/extensions/Extension;)V
+	public abstract fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
 
 public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
