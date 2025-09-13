@@ -27,7 +27,7 @@ fun targetDefaultForType(
    type: KType
 ): Arb<*>? {
    when (type) {
-      typeOf<Instant>(), typeOf<Instant?>() -> Arb.instant()
+      typeOf<Instant>(), typeOf<Instant?>() -> Arb.javaInstant()
       typeOf<Date>(), typeOf<Date?>() -> Arb.javaDate()
       typeOf<LocalDate>(), typeOf<LocalDate?>() -> Arb.localDate()
       typeOf<LocalDateTime>(), typeOf<LocalDateTime?>() -> Arb.localDateTime()
