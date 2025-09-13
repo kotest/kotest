@@ -1056,8 +1056,8 @@ public final class io/kotest/matchers/bigdecimal/ToleranceMatcher : io/kotest/ma
 }
 
 public final class io/kotest/matchers/booleans/BooleanMatchersKt {
-	public static final fun shouldBeFalse (Ljava/lang/Boolean;)Ljava/lang/Boolean;
-	public static final fun shouldBeTrue (Ljava/lang/Boolean;)Ljava/lang/Boolean;
+	public static final fun shouldBeFalse (Ljava/lang/Boolean;)Z
+	public static final fun shouldBeTrue (Ljava/lang/Boolean;)Z
 	public static final fun shouldNotBeFalse (Ljava/lang/Boolean;)Ljava/lang/Boolean;
 	public static final fun shouldNotBeTrue (Ljava/lang/Boolean;)Ljava/lang/Boolean;
 }
