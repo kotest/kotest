@@ -1440,7 +1440,7 @@ public abstract interface class io/kotest/core/listeners/InstantiationErrorListe
 	public abstract fun instantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/listeners/InstantiationListener {
+public abstract interface class io/kotest/core/listeners/InstantiationListener : io/kotest/core/extensions/Extension {
 	public abstract fun specInstantiated (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
