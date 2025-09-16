@@ -2,6 +2,8 @@ package io.kotest.matchers.booleans
 
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.contract
 
 /**
  * Asserts that this [Boolean] is true
@@ -20,9 +22,14 @@ import io.kotest.matchers.shouldNotBe
  * @see [Boolean?.shouldNotBeFalse]
  * @see [Boolean?.shouldBeFalse]
  */
-fun Boolean?.shouldBeTrue(): Boolean? {
+@OptIn(ExperimentalContracts::class)
+fun Boolean?.shouldBeTrue(): Boolean {
+   contract {
+      returns() implies (this@shouldBeTrue != null)
+   }
+
    this shouldBe true
-   return this
+   return this!!
 }
 
 /**
@@ -64,9 +71,14 @@ fun Boolean?.shouldNotBeTrue(): Boolean? {
  * @see [Boolean?.shouldNotBeTrue]
  * @see [Boolean?.shouldBeTrue]
  */
-fun Boolean?.shouldBeFalse(): Boolean? {
+@OptIn(ExperimentalContracts::class)
+fun Boolean?.shouldBeFalse(): Boolean {
+   contract {
+      returns() implies (this@shouldBeFalse != null)
+   }
+
    this shouldBe false
-   return this
+   return this!!
 }
 
 /**

@@ -2,7 +2,6 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.asSample
-import io.kotest.property.RandomSource
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -291,7 +290,22 @@ fun InstantRange.random(random: Random): Instant {
 /**
  * Arberates a stream of random [Instant]
  */
-fun Arb.Companion.instant(range: InstantRange): Arb<Instant> =
+@Deprecated("Use javaInstant instead", ReplaceWith("javaInstant(range)"))
+fun Arb.Companion.instant(range: InstantRange): Arb<Instant> = javaInstant(range)
+
+/**
+ * Arberates a stream of random [Instant]
+ */
+@Deprecated("Use javaInstant instead", ReplaceWith("javaInstant(minValue, maxValue)"))
+fun Arb.Companion.instant(
+   minValue: Instant = Instant.MIN,
+   maxValue: Instant = Instant.MAX
+): Arb<Instant> = javaInstant(minValue, maxValue)
+
+/**
+ * Arberates a stream of random [Instant]
+ */
+fun Arb.Companion.javaInstant(range: InstantRange): Arb<Instant> =
    arbitrary(listOf(range.start, range.endInclusive)) {
       range.random(it.random)
    }
@@ -299,10 +313,10 @@ fun Arb.Companion.instant(range: InstantRange): Arb<Instant> =
 /**
  * Arberates a stream of random [Instant]
  */
-fun Arb.Companion.instant(
+fun Arb.Companion.javaInstant(
    minValue: Instant = Instant.MIN,
    maxValue: Instant = Instant.MAX
-) = instant(minValue..maxValue)
+) = javaInstant(minValue..maxValue)
 
 /**
  * Arberates a stream of random [OffsetDateTime]
@@ -324,7 +338,7 @@ fun Arb.Companion.offsetDateTime(
    maxValue: Instant,
    zoneOffset: Arb<ZoneOffset> = zoneOffset()
 ): Arb<OffsetDateTime> = Arb.bind(
-   instant(minValue, maxValue),
+   javaInstant(minValue, maxValue),
    zoneOffset
 ) { time, offset -> time.atOffset(offset) }
 
