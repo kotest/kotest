@@ -1199,7 +1199,7 @@ public final class io/kotest/core/extensions/RuntimeTagExtension : io/kotest/cor
 	public fun tags ()Lio/kotest/engine/tags/TagExpression;
 }
 
-public abstract interface class io/kotest/core/extensions/SpecExecutionOrderExtension {
+public abstract interface class io/kotest/core/extensions/SpecExecutionOrderExtension : io/kotest/core/extensions/Extension {
 	public abstract fun sort (Ljava/util/List;)Ljava/util/List;
 }
 
@@ -1211,7 +1211,7 @@ public final class io/kotest/core/extensions/SpecExtension$DefaultImpls {
 	public static fun intercept (Lio/kotest/core/extensions/SpecExtension;Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/extensions/SpecRefExtension {
+public abstract interface class io/kotest/core/extensions/SpecRefExtension : io/kotest/core/extensions/Extension {
 	public abstract fun interceptRef (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
