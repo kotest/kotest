@@ -102,10 +102,13 @@ internal class InstancePerLeafSpecExecutor(
 
    private suspend fun launchRootTest(seed: Spec, root: TestCase, ref: SpecRef) {
       val specContext = SpecContext.create()
+      val spec = inflator.inflate(ref).getOrThrow()
 
-      pipeline.execute(seed, specContext) {
-         val result = executeTest(root, null, specContext, ref)
-         Result.success(mapOf(root to result))
+      withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
+         pipeline.execute(seed, specContext) {
+            val result = executeTest(root, null, specContext, ref)
+            Result.success(mapOf(root to result))
+         }
       }
 
       while (testQueue.isNotEmpty()) {
