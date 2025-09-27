@@ -3,6 +3,8 @@ package com.sksamuel.kotest.engine.spec.execmode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.currentCoroutineContext
 
 private var trace = ""
 
@@ -105,5 +107,25 @@ class InstancePerLeafTest3 : DescribeSpec({
             trace shouldBe "d2_c2_i2_"
          }
       }
+   }
+})
+
+class InstancePerLeafTest4 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   afterSpec {
+      println("afterSpec")
+      println(currentCoroutineContext()[CoroutineName.Key]?.name)
+   }
+
+   describe("foo") {
+      println("d")
+      context("a") { it("a") { println("a"); println(currentCoroutineContext()[CoroutineName.Key]?.name) } }
+      context("b") {
+         it("b") { println("b"); println(currentCoroutineContext()[CoroutineName.Key]?.name) }
+         it("b2") { println("b2"); println(currentCoroutineContext()[CoroutineName.Key]?.name) }
+      }
+      context("c") { it("c") { println("c"); println(currentCoroutineContext()[CoroutineName.Key]?.name) } }
    }
 })

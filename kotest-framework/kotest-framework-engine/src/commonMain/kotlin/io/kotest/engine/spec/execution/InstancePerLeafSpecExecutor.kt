@@ -39,6 +39,7 @@ internal class InstancePerLeafSpecExecutor(
    private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
    private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
+   private val testQueue = ArrayDeque<Pair<TestCase, SpecRef>>()
 
    private val inflator = SpecRefInflator(
       registry = context.registry,
@@ -56,10 +57,15 @@ internal class InstancePerLeafSpecExecutor(
       // we switch to a new coroutine for each spec instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
-
-         // for the seed spec that is passed in, we need to run the instance pipeline,
-         // then register all the root tests. Any root tests that are containers will execute in the seed instance,
-         // but any leaf tests will execute in a fresh instance of the spec.
+//
+//         // for the seed spec that is passed in, we need to run the instance pipeline,
+//         // then register all the root tests. Any root tests that are containers will execute in the seed instance,
+//         // but any leaf tests will execute in a fresh instance of the spec.
+//
+//         pipeline.execute(seed, specContext) {
+//            launchRootTests(seed, ref)
+//            Result.success(results.toMap())
+//         }.map { results.toMap() }
 
          pipeline.execute(seed, specContext) {
             launchRootTests(seed, ref)
@@ -80,14 +86,31 @@ internal class InstancePerLeafSpecExecutor(
       // the semaphore will control how many can actually run concurrently
 
       coroutineScope { // will wait for all tests to complete
-         roots.forEach {
-            val specContext = SpecContext.create()
+         roots.forEach { root ->
+            // create new specs for each root
+//            val specContext = SpecContext.create()
             launch {
                semaphore.withPermit {
-                  executeTest(it, null, specContext, ref)
+//                  val spec = inflator.inflate(ref).getOrThrow()
+//                  executeTest(it, null, specContext, ref)
+                  launchRootTest(seed, root, ref)
                }
             }
          }
+      }
+   }
+
+   private suspend fun launchRootTest(seed: Spec, root: TestCase, ref: SpecRef) {
+      val specContext = SpecContext.create()
+
+      pipeline.execute(seed, specContext) {
+         val result = executeTest(root, null, specContext, ref)
+         Result.success(mapOf(root to result))
+      }
+
+      while (testQueue.isNotEmpty()) {
+         val (testCase, ref) = testQueue.removeFirst()
+         executeInFreshSpec(testCase, ref)
       }
    }
 
@@ -136,18 +159,22 @@ internal class InstancePerLeafSpecExecutor(
          listener = TargetListeningListener(target, context.listener),
          context = context
       )
+      val testScope = LeafLaunchingScope(
+         testCase = testCase,
+         target = target,
+         specContext = specContext,
+         coroutineContext = currentCoroutineContext(),
+         ref = ref
+      )
       val result = executor.execute(
          testCase = testCase,
-         testScope = LeafLaunchingScope(
-            testCase = testCase,
-            target = target,
-            specContext = specContext,
-            coroutineContext = currentCoroutineContext(),
-            ref = ref
-         ),
+         testScope = testScope,
          specContext = specContext
       )
+      println(testCase)
+      println(result)
       results.completed(testCase, result)
+      testScope.internalTestQueue.forEach { testQueue.addFirst(it) }
       return result
    }
 
@@ -165,6 +192,8 @@ internal class InstancePerLeafSpecExecutor(
 
       private val logger = Logger(LeafLaunchingScope::class)
 
+      val internalTestQueue = ArrayDeque<Pair<TestCase, SpecRef>>()
+
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
          val nestedTestCase = materializer.materialize(nested, testCase)
@@ -176,7 +205,8 @@ internal class InstancePerLeafSpecExecutor(
          }
          if (hasVisitedFirstNode) {
             logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-            executeInFreshSpec(nestedTestCase, ref)
+//            executeInFreshSpec(nestedTestCase, ref)
+            internalTestQueue.addFirst(nestedTestCase to ref)
             return
          }
          hasVisitedFirstNode = true
