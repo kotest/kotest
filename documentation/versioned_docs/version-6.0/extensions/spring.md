@@ -8,10 +8,10 @@ slug: spring.html
 Kotest offers a Spring extension that allows you to test code that uses the Spring framework for dependency injection.
 
 :::tip
-If you prefer to see an example rather than read docs, then there is a sample project using spring webflux [here](https://github.com/kotest/kotest-examples-spring-webflux)
+If you prefer to see an example rather than read docs, then there is a sample project using spring webflux [here](https://github.com/kotest/kotest-examples/tree/master/kotest-spring-webflux)
 :::
 
-In order to use this extension, you need to add `io.kotest:kotest-extensions-spring` module to your test compile path. The latest version can always be found on maven central [here](https://search.maven.org/search?q=a:kotest-extensions-spring%20AND%20g:io.kotest.extensions).
+In order to use this extension, you need to add `io.kotest:kotest-extensions-spring` module to your test compile path. The latest version can always be found on maven central [here](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-spring).
 
 :::note
 Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
@@ -19,7 +19,7 @@ main Kotest releases.
 :::
 
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-spring.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-spring)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-spring.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-spring)
 [<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-spring%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-spring/maven-metadata.xml)
 
 
@@ -109,7 +109,7 @@ By default, this is on the leaf node. You can set these to fire on the root node
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
-   override fun extensions() = listOf(SpringTestExtension(SpringTestLifecycleMode.Root))
+   override val extensions = listOf(SpringExtension(SpringTestLifecycleMode.Root))
 }
 ```
 

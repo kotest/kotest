@@ -56,6 +56,7 @@ public final class io/kotest/assertions/ExtractingKt {
 }
 
 public final class io/kotest/assertions/FailKt {
+	public static final fun fail (Ljava/lang/String;)Ljava/lang/Void;
 	public static final fun shouldFail (Lkotlin/jvm/functions/Function0;)Ljava/lang/AssertionError;
 	public static final fun shouldFailWithMessage (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Ljava/lang/AssertionError;
 }
@@ -1055,8 +1056,8 @@ public final class io/kotest/matchers/bigdecimal/ToleranceMatcher : io/kotest/ma
 }
 
 public final class io/kotest/matchers/booleans/BooleanMatchersKt {
-	public static final fun shouldBeFalse (Ljava/lang/Boolean;)Ljava/lang/Boolean;
-	public static final fun shouldBeTrue (Ljava/lang/Boolean;)Ljava/lang/Boolean;
+	public static final fun shouldBeFalse (Ljava/lang/Boolean;)Z
+	public static final fun shouldBeTrue (Ljava/lang/Boolean;)Z
 	public static final fun shouldNotBeFalse (Ljava/lang/Boolean;)Ljava/lang/Boolean;
 	public static final fun shouldNotBeTrue (Ljava/lang/Boolean;)Ljava/lang/Boolean;
 }

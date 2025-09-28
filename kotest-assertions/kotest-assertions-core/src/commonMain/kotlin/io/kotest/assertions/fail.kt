@@ -48,3 +48,5 @@ inline fun shouldFailWithMessage(message: String, block: () -> Any?): AssertionE
    shouldFail(block).also { t ->
       t.message shouldBe message
    }
+
+fun fail(msg: String): Nothing = AssertionErrorBuilder.fail(msg)

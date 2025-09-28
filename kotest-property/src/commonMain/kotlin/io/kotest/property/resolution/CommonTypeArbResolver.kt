@@ -8,6 +8,7 @@ import io.kotest.property.arbitrary.char
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.float
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.kotlinInstant
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.short
@@ -42,6 +43,7 @@ internal object CommonTypeArbResolver : ArbResolver {
          "java.lang.Double", "kotlin.Double", "Double" -> Arb.double()
          "java.lang.Float", "kotlin.Float", "Float" -> Arb.float()
          "java.lang.Boolean", "kotlin.Boolean", "Boolean" -> Arb.boolean()
+         "kotlin.time.Instant" -> Arb.kotlinInstant()
          else -> null
       }
 
