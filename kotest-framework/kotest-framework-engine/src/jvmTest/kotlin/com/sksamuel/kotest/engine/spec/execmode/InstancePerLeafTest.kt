@@ -114,18 +114,30 @@ class InstancePerLeafTest4 : DescribeSpec({
 
    isolationMode = IsolationMode.InstancePerLeaf
 
-   afterSpec {
-      println("afterSpec")
-      println(currentCoroutineContext()[CoroutineName.Key]?.name)
-   }
+//   afterSpec {
+//      println("afterSpec")
+//      println(currentCoroutineContext()[CoroutineName.Key]?.name)
+//   }
 
-   describe("foo") {
+   describe("d") {
       println("d")
-      context("a") { it("a") { println("a"); println(currentCoroutineContext()[CoroutineName.Key]?.name) } }
-      context("b") {
-         it("b") { println("b"); println(currentCoroutineContext()[CoroutineName.Key]?.name) }
-         it("b2") { println("b2"); println(currentCoroutineContext()[CoroutineName.Key]?.name) }
+      context("c1") {
+         it("i1") {
+            println("a")
+         }
       }
-      context("c") { it("c") { println("c"); println(currentCoroutineContext()[CoroutineName.Key]?.name) } }
+      context("c2") {
+         it("i2") {
+            println("b")
+         }
+         it("i3") {
+            println("b2")
+         }
+      }
+      context("c3") {
+         it("i4") {
+            println("c")
+         }
+      }
    }
 })

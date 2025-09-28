@@ -93,21 +93,24 @@ internal class InstancePerLeafSpecExecutor(
                semaphore.withPermit {
 //                  val spec = inflator.inflate(ref).getOrThrow()
 //                  executeTest(it, null, specContext, ref)
-                  launchRootTest(seed, root, ref)
+                  launchRootTest(root, ref)
                }
             }
          }
       }
    }
 
-   private suspend fun launchRootTest(seed: Spec, root: TestCase, ref: SpecRef) {
+   private suspend fun launchRootTest(root: TestCase, ref: SpecRef) {
       val specContext = SpecContext.create()
       val spec = inflator.inflate(ref).getOrThrow()
 
+      // Map the root from the seed instance to the corresponding root in this fresh spec instance
+      val freshRoot = materializer.materialize(spec).first { it.descriptor == root.descriptor }
+
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
-         pipeline.execute(seed, specContext) {
-            val result = executeTest(root, null, specContext, ref)
-            Result.success(mapOf(root to result))
+         pipeline.execute(spec, specContext) {
+            val result = executeTest(freshRoot, null, specContext, ref)
+            Result.success(mapOf(freshRoot to result))
          }
       }
 
@@ -174,10 +177,8 @@ internal class InstancePerLeafSpecExecutor(
          testScope = testScope,
          specContext = specContext
       )
-      println(testCase)
-      println(result)
       results.completed(testCase, result)
-      testScope.internalTestQueue.forEach { testQueue.addFirst(it) }
+      testQueue.addAll(0, testScope.internalTestQueue)
       return result
    }
 
@@ -208,8 +209,7 @@ internal class InstancePerLeafSpecExecutor(
          }
          if (hasVisitedFirstNode) {
             logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-//            executeInFreshSpec(nestedTestCase, ref)
-            internalTestQueue.addFirst(nestedTestCase to ref)
+            internalTestQueue.add(nestedTestCase to ref)
             return
          }
          hasVisitedFirstNode = true
@@ -242,7 +242,11 @@ internal class InstancePerLeafSpecExecutor(
    ) : TestCaseExecutionListener {
 
       override suspend fun testStarted(testCase: TestCase) {
-         if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
+         if (target == null || testCase.type == TestType.Test) {
+            println("start")
+            println(testCase.descriptor)
+            delegate.testStarted(testCase)
+         }
       }
 
       override suspend fun testIgnored(testCase: TestCase, reason: String?) {
@@ -250,7 +254,11 @@ internal class InstancePerLeafSpecExecutor(
       }
 
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-         if (target == null || testCase.type == TestType.Test) delegate.testFinished(testCase, result)
+         if (target == null || testCase.type == TestType.Test) {
+            println("finish")
+            println(testCase.descriptor)
+            delegate.testFinished(testCase, result)
+         }
       }
    }
 }
