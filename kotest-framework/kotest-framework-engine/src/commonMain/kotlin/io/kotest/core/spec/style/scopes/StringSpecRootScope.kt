@@ -9,6 +9,8 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.datatest.WithDataRootRegistrar
+import io.kotest.datatest.WithDataTerminalRegistrar
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -22,7 +24,7 @@ import kotlin.time.Duration
  * }
  * ```
  */
-interface StringSpecRootScope : RootScope {
+interface StringSpecRootScope : RootScope, WithDataRootRegistrar<StringSpecScope> {
 
    fun String.config(
       enabled: Boolean? = null,
@@ -71,6 +73,13 @@ interface StringSpecRootScope : RootScope {
          StringSpecScope(this.coroutineContext, testCase).test()
       }
    }
+
+   override fun registerWithDataTest(
+      name: String,
+      test: suspend StringSpecScope.() -> Unit
+   ) {
+      name.invoke { test() }
+   }
 }
 
 /**
@@ -80,4 +89,4 @@ interface StringSpecRootScope : RootScope {
 class StringSpecScope(
    override val coroutineContext: CoroutineContext,
    override val testCase: TestCase,
-) : TerminalScope()
+) : TerminalScope(), WithDataTerminalRegistrar<StringSpecScope>

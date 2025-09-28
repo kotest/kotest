@@ -1847,6 +1847,7 @@ public abstract class io/kotest/core/spec/style/BehaviorSpec : io/kotest/core/sp
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public final fun given (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public final fun when (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun xContext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xGiven (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -1866,6 +1867,7 @@ public final class io/kotest/core/spec/style/BehaviorSpecTestFactoryConfiguratio
 	public fun addGiven (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xContext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xGiven (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -1881,6 +1883,7 @@ public abstract class io/kotest/core/spec/style/DescribeSpec : io/kotest/core/sp
 	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -1899,6 +1902,7 @@ public final class io/kotest/core/spec/style/DescribeSpecTestFactoryConfiguratio
 	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -1914,6 +1918,7 @@ public abstract class io/kotest/core/spec/style/ExpectSpec : io/kotest/core/spec
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun expect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -1930,6 +1935,7 @@ public final class io/kotest/core/spec/style/ExpectSpecTestFactoryConfiguration 
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun expect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -1942,6 +1948,7 @@ public abstract class io/kotest/core/spec/style/FeatureSpec : io/kotest/core/spe
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun feature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xfeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
@@ -1954,6 +1961,7 @@ public final class io/kotest/core/spec/style/FeatureSpecTestFactoryConfiguration
 	public fun <init> ()V
 	public fun feature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xfeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
@@ -1969,6 +1977,7 @@ public abstract class io/kotest/core/spec/style/FreeSpec : io/kotest/core/spec/D
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/FreeSpecKt {
@@ -1984,6 +1993,7 @@ public final class io/kotest/core/spec/style/FreeSpecTestFactoryConfiguration : 
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public abstract class io/kotest/core/spec/style/FunSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/FunSpecRootScope {
@@ -1992,6 +2002,7 @@ public abstract class io/kotest/core/spec/style/FunSpec : io/kotest/core/spec/Ds
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun test (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2008,6 +2019,7 @@ public final class io/kotest/core/spec/style/FunSpecTestFactoryConfiguration : i
 	public fun <init> ()V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun test (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2022,6 +2034,7 @@ public abstract class io/kotest/core/spec/style/ShouldSpec : io/kotest/core/spec
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2038,6 +2051,7 @@ public final class io/kotest/core/spec/style/ShouldSpecTestFactoryConfiguration 
 	public fun <init> ()V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2052,6 +2066,7 @@ public abstract class io/kotest/core/spec/style/StringSpec : io/kotest/core/spec
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/StringSpecKt {
@@ -2062,6 +2077,7 @@ public final class io/kotest/core/spec/style/StringSpecTestFactoryConfiguration 
 	public fun <init> ()V
 	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/UnwrapIfReflectionCallKt {
@@ -2073,6 +2089,7 @@ public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/D
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2087,6 +2104,7 @@ public final class io/kotest/core/spec/style/WordSpecKt {
 public final class io/kotest/core/spec/style/WordSpecTestFactoryConfiguration : io/kotest/core/factory/TestFactoryConfiguration, io/kotest/core/spec/style/scopes/WordSpecRootScope {
 	public fun <init> ()V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2094,16 +2112,17 @@ public final class io/kotest/core/spec/style/WordSpecTestFactoryConfiguration : 
 	public fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun Given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xGiven (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xgiven (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun And (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun Then (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
@@ -2111,6 +2130,7 @@ public final class io/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerSc
 	public final fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun and (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun then (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
 	public final fun then (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2124,13 +2144,14 @@ public final class io/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerSc
 	public final fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/BehaviorSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/BehaviorSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun Context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun Given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun addContext (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
 	public fun addGiven (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xContext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xGiven (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2144,19 +2165,21 @@ public final class io/kotest/core/spec/style/scopes/BehaviorSpecRootScope$Defaul
 	public static fun addGiven (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
 	public static fun context (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun given (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xContext (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xGiven (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xgiven (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun And (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun Then (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
 	public final fun Then (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun and (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun then (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
 	public final fun then (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xAnd (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2204,7 +2227,7 @@ public final class io/kotest/core/spec/style/scopes/ContainerWithConfigBuilder {
 	public static synthetic fun config-Q9yt8Vw$default (Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public final class io/kotest/core/spec/style/scopes/DescribeSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/DescribeSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2213,6 +2236,7 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecContainerScope :
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun it (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
@@ -2221,12 +2245,13 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecContainerScope :
 	public final fun xit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/DescribeSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/DescribeSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2240,6 +2265,7 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecRootScope$Defaul
 	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun it (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2247,22 +2273,24 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecRootScope$Defaul
 	public static fun xit (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/ExpectSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/ExpectSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun expect (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xexpect (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xexpect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/ExpectSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/ExpectSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun expect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -2274,16 +2302,18 @@ public final class io/kotest/core/spec/style/scopes/ExpectSpecRootScope$DefaultI
 	public static fun context (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun expect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun expect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xexpect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun xexpect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/FeatureSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/FeatureSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun scenario (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun scenario (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2291,9 +2321,10 @@ public final class io/kotest/core/spec/style/scopes/FeatureSpecContainerScope : 
 	public final fun xscenario (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/FeatureSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/FeatureSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun feature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xfeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
@@ -2301,11 +2332,12 @@ public abstract interface class io/kotest/core/spec/style/scopes/FeatureSpecRoot
 public final class io/kotest/core/spec/style/scopes/FeatureSpecRootScope$DefaultImpls {
 	public static fun feature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun feature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xfeature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xfeature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/FreeSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/FreeSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun config-0Nu1UfI (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2316,6 +2348,7 @@ public final class io/kotest/core/spec/style/scopes/FreeSpecContainerScope : io/
 	public final fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun minus (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder {
@@ -2331,7 +2364,7 @@ public final class io/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/FreeSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/FreeSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;
 	public fun config-0Nu1UfI (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
@@ -2341,6 +2374,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/FreeSpecRootSco
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun minus (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/FreeSpecRootScope$DefaultImpls {
@@ -2353,6 +2387,7 @@ public final class io/kotest/core/spec/style/scopes/FreeSpecRootScope$DefaultImp
 	public static fun invoke (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Lio/kotest/core/spec/style/scopes/FreeSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun minus (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/FreeSpecTerminalScope : io/kotest/core/spec/style/scopes/TerminalScope {
@@ -2363,10 +2398,11 @@ public final class io/kotest/core/spec/style/scopes/FreeSpecTerminalScope : io/k
 	public final fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/core/spec/style/scopes/FunSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/FunSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun test (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
@@ -2375,9 +2411,10 @@ public final class io/kotest/core/spec/style/scopes/FunSpecContainerScope : io/k
 	public final fun xtest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/FunSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/FunSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun test (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2389,6 +2426,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/FunSpecRootScop
 public final class io/kotest/core/spec/style/scopes/FunSpecRootScope$DefaultImpls {
 	public static fun context (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun context (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun test (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun test (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2420,11 +2458,12 @@ public final class io/kotest/core/spec/style/scopes/RootTestWithConfigBuilder {
 	public static synthetic fun config-n4j-3yA$default (Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/ShouldSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/ShouldSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun should (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
@@ -2433,9 +2472,10 @@ public final class io/kotest/core/spec/style/scopes/ShouldSpecContainerScope : i
 	public final fun xshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/ShouldSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/ShouldSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2447,6 +2487,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/ShouldSpecRootS
 public final class io/kotest/core/spec/style/scopes/ShouldSpecRootScope$DefaultImpls {
 	public static fun context (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun context (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun should (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun should (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2455,19 +2496,21 @@ public final class io/kotest/core/spec/style/scopes/ShouldSpecRootScope$DefaultI
 	public static fun xshould (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/StringSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/StringSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun config-rDtbm-Q (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public static synthetic fun config-rDtbm-Q$default (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/StringSpecRootScope$DefaultImpls {
 	public static fun config-rDtbm-Q (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public static synthetic fun config-rDtbm-Q$default (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static fun invoke (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/StringSpecScope : io/kotest/core/spec/style/scopes/TerminalScope {
+public final class io/kotest/core/spec/style/scopes/StringSpecScope : io/kotest/core/spec/style/scopes/TerminalScope, io/kotest/datatest/WithDataTerminalRegistrar {
 	public fun <init> (Lkotlin/coroutines/CoroutineContext;Lio/kotest/core/test/TestCase;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getTestCase ()Lio/kotest/core/test/TestCase;
@@ -2493,8 +2536,9 @@ public final class io/kotest/core/spec/style/scopes/TestWithConfigBuilder {
 	public static synthetic fun config-ZKvTVp0$default (Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
-public abstract interface class io/kotest/core/spec/style/scopes/WordSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+public abstract interface class io/kotest/core/spec/style/scopes/WordSpecRootScope : io/kotest/core/spec/style/scopes/RootScope, io/kotest/datatest/WithDataRootRegistrar {
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2504,6 +2548,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/WordSpecRootSco
 
 public final class io/kotest/core/spec/style/scopes/WordSpecRootScope$DefaultImpls {
 	public static fun When (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun registerWithDataTest (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun should (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun when (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2511,7 +2556,7 @@ public final class io/kotest/core/spec/style/scopes/WordSpecRootScope$DefaultImp
 	public static fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/WordSpecShouldContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/WordSpecShouldContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataTerminalRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun config-V--OhEU (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun config-V--OhEU$default (Lio/kotest/core/spec/style/scopes/WordSpecShouldContainerScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -2527,11 +2572,12 @@ public final class io/kotest/core/spec/style/scopes/WordSpecTerminalScope : io/k
 	public final fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function0;)Lkotlin/jvm/functions/Function0;
 }
 
-public final class io/kotest/core/spec/style/scopes/WordSpecWhenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
+public final class io/kotest/core/spec/style/scopes/WordSpecWhenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope, io/kotest/datatest/WithDataContainerRegistrar {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun Should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2784,201 +2830,43 @@ public final class io/kotest/core/test/config/TestConfig {
 	public final fun withXDisabled ()Lio/kotest/core/test/config/TestConfig;
 }
 
-public final class io/kotest/datatest/BehaviorSpecContextContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public abstract interface class io/kotest/datatest/WithDataContainerRegistrar {
+	public abstract fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/datatest/BehaviorSpecGivenContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class io/kotest/datatest/WithDataRegistrarsKt {
+	public static final fun withData (Lio/kotest/datatest/WithDataContainerRegistrar;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/datatest/WithDataContainerRegistrar;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/datatest/WithDataContainerRegistrar;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/datatest/WithDataContainerRegistrar;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/datatest/WithDataContainerRegistrar;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/datatest/WithDataContainerRegistrar;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withData (Lio/kotest/datatest/WithDataRootRegistrar;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/datatest/WithDataRootRegistrar;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/datatest/WithDataRootRegistrar;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/datatest/WithDataRootRegistrar;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/datatest/WithDataRootRegistrar;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/datatest/WithDataRootRegistrar;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withData (Lio/kotest/datatest/WithDataTerminalRegistrar;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/datatest/WithDataTerminalRegistrar;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/datatest/WithDataTerminalRegistrar;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/datatest/WithDataTerminalRegistrar;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withData (Lio/kotest/datatest/WithDataTerminalRegistrar;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
+	public static final fun withDataMap (Lio/kotest/datatest/WithDataContainerRegistrar;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withDataMap (Lio/kotest/datatest/WithDataRootRegistrar;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
 }
 
-public final class io/kotest/datatest/BehaviorSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+public abstract interface class io/kotest/datatest/WithDataRootRegistrar {
+	public abstract fun registerWithDataTest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/datatest/BehaviorSpecWhenContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public abstract interface class io/kotest/datatest/WithDataTerminalRegistrar {
+	public static final field Companion Lio/kotest/datatest/WithDataTerminalRegistrar$Companion;
+	public static final field ERROR_MESSAGE Ljava/lang/String;
 }
 
-public final class io/kotest/datatest/DescribeSpecContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/datatest/DescribeSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/ExpectSpecContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/ExpectSpecContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/datatest/ExpectSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/FeatureSpecContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/FeatureSpecContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/datatest/FeatureSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/FreeSpecContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/FreeSpecContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/datatest/FreeSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FreeSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/FunSpecContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/FunSpecContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/datatest/FunSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/ShouldSpecContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/ShouldSpecContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public final class io/kotest/datatest/ShouldSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/StringSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/StringSpecScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)Ljava/lang/Void;
-}
-
-public final class io/kotest/datatest/WordSpecRootKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
-}
-
-public final class io/kotest/datatest/WordSpecWhenContainerScopeKt {
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withData (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+public final class io/kotest/datatest/WithDataTerminalRegistrar$Companion {
+	public static final field ERROR_MESSAGE Ljava/lang/String;
 }
 
 public final class io/kotest/engine/EngineResult {

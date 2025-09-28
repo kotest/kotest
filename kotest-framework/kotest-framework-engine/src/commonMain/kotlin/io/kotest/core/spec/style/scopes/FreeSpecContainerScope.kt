@@ -7,9 +7,10 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
+import io.kotest.datatest.WithDataContainerRegistrar
 import kotlin.time.Duration
 
-class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope) {
+class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(testScope), WithDataContainerRegistrar<FreeSpecContainerScope> {
 
    /**
     * Creates a new container scope inside this spec.
@@ -127,5 +128,12 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
          failfast = failfast,
       )
       return FreeSpecContextConfigBuilder(this, config)
+   }
+
+   override suspend fun registerWithDataTest(
+      name: String,
+      test: suspend FreeSpecContainerScope.() -> Unit
+   ) {
+      name.minus { test() }
    }
 }

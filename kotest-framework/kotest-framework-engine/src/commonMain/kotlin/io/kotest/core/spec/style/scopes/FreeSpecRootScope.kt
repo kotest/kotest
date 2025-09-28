@@ -7,11 +7,12 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
+import io.kotest.datatest.WithDataRootRegistrar
 import kotlin.time.Duration
 
 data class FreeSpecContextConfigBuilder(val name: String, val config: TestConfig)
 
-interface FreeSpecRootScope : RootScope {
+interface FreeSpecRootScope : RootScope, WithDataRootRegistrar<FreeSpecContainerScope> {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
@@ -129,5 +130,12 @@ interface FreeSpecRootScope : RootScope {
 
    fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit): FreeSpecContextConfigBuilder {
       return FreeSpecContextConfigBuilder(this, config)
+   }
+
+   override fun registerWithDataTest(
+      name: String,
+      test: suspend FreeSpecContainerScope.() -> Unit
+   ) {
+      name.minus { test() }
    }
 }

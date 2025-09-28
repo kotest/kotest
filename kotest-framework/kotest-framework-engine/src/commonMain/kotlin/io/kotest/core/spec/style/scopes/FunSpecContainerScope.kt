@@ -4,6 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
+import io.kotest.datatest.WithDataContainerRegistrar
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -16,7 +17,7 @@ import io.kotest.core.test.TestScope
 @KotestTestScope
 class FunSpecContainerScope(
    testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope(testScope), WithDataContainerRegistrar<FunSpecContainerScope> {
 
    /**
     * Adds a 'context' container test as a child of the current test case.
@@ -95,5 +96,12 @@ class FunSpecContainerScope(
     */
    suspend fun xtest(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(name = TestNameBuilder.builder(name).build(), disabled = true, config = null, test = test)
+   }
+
+   override suspend fun registerWithDataTest(
+      name: String,
+      test: suspend FunSpecContainerScope.() -> Unit
+   ) {
+      context(name) { test() }
    }
 }

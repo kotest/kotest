@@ -1,9 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.test.TestScope
+import io.kotest.datatest.WithDataRootRegistrar
 
 /**
  * A context that allows root tests to be registered using the syntax:
@@ -18,7 +18,7 @@ import io.kotest.core.test.TestScope
  * xdescribe("some disabled test")
  * ```
  */
-interface DescribeSpecRootScope : RootScope {
+interface DescribeSpecRootScope : RootScope, WithDataRootRegistrar<DescribeSpecContainerScope> {
 
    fun context(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(TestNameBuilder.builder(name).withPrefix("Context: ").build(), false, null) { DescribeSpecContainerScope(this).test() }
@@ -74,5 +74,12 @@ interface DescribeSpecRootScope : RootScope {
 
    fun xit(name: String, test: suspend TestScope.() -> Unit) {
       addTest(TestNameBuilder.builder(name).build(), true, null, test)
+   }
+
+   override fun registerWithDataTest(
+      name: String,
+      test: suspend DescribeSpecContainerScope.() -> Unit
+   ) {
+      context(name) { test() }
    }
 }
