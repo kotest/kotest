@@ -40,6 +40,7 @@ internal class InstancePerLeafSpecExecutor(
    private val materializer = Materializer(context.specConfigResolver)
    private val results = TestResults()
    private val testQueue = ArrayDeque<Pair<TestCase, SpecRef>>()
+   private val testFinishListener = mutableListOf<Pair<TestCase, TestResult>>()
 
    private val inflator = SpecRefInflator(
       registry = context.registry,
@@ -69,6 +70,9 @@ internal class InstancePerLeafSpecExecutor(
 
          pipeline.execute(seed, specContext) {
             launchRootTests(seed, ref)
+            testFinishListener.sortedByDescending { (testCase, _) -> testCase.descriptor.depth() }
+               .forEach { (testCase, testResult) -> context.listener.testFinished(testCase, testResult) }
+
             Result.success(results.toMap())
          }.map { results.toMap() }
       }
@@ -236,17 +240,13 @@ internal class InstancePerLeafSpecExecutor(
       }
    }
 
-   internal class TargetListeningListener(
+   inner class TargetListeningListener(
       private val target: Descriptor.TestDescriptor?,
       private val delegate: TestEngineListener,
    ) : TestCaseExecutionListener {
 
       override suspend fun testStarted(testCase: TestCase) {
-         if (target == null || testCase.type == TestType.Test) {
-            println("start")
-            println(testCase.descriptor)
-            delegate.testStarted(testCase)
-         }
+         if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
       }
 
       override suspend fun testIgnored(testCase: TestCase, reason: String?) {
@@ -254,10 +254,10 @@ internal class InstancePerLeafSpecExecutor(
       }
 
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-         if (target == null || testCase.type == TestType.Test) {
-            println("finish")
-            println(testCase.descriptor)
+         if (testCase.type == TestType.Test) {
             delegate.testFinished(testCase, result)
+         } else if (target == null) {
+            testFinishListener += testCase to result
          }
       }
    }

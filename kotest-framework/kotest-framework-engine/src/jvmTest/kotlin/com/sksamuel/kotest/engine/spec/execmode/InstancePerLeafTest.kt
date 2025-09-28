@@ -3,8 +3,6 @@ package com.sksamuel.kotest.engine.spec.execmode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.currentCoroutineContext
 
 private var trace = ""
 
@@ -114,10 +112,13 @@ class InstancePerLeafTest4 : DescribeSpec({
 
    isolationMode = IsolationMode.InstancePerLeaf
 
-//   afterSpec {
-//      println("afterSpec")
-//      println(currentCoroutineContext()[CoroutineName.Key]?.name)
-//   }
+   beforeSpec {
+      println("beforeSpec")
+   }
+
+   afterSpec {
+      println("afterSpec")
+   }
 
    describe("d") {
       println("d")
