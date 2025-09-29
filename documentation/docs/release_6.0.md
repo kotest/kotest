@@ -192,6 +192,12 @@ It is recommended to use `InstancePerRoot` instead.
 
 * Removed `io.kotest.assertions.print.Print<A>.print(A, level)` in favor of the now-undeprecated `print(A)`.
 * Renamed `io.kotest.matchers.maps.contain` to `io.kotest.matchers.maps.mapcontain`.
+* Moved code from `io.kotest:kotest-assertions-api` to `io.kotest:kotest-assertions-shared`, and `io.kotest:kotest-assertions-api` is artifact is no longer published.
+  * `io.kotest.matchers.Matcher`
+  * `io.kotest.matchers.MatcherResult`
+  * `io.kotest.matchers.and`
+  * `io.kotest.matchers.or`
+  *  and [a few more](https://github.com/kotest/kotest/pull/4239)
 
 ## Improvements
 
