@@ -23,6 +23,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -30,7 +31,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
@@ -91,21 +91,32 @@ internal class InstancePerLeafSpecExecutor(
     * Then, executes each discovered test case in a fresh spec instance.
     */
    inner class RootTestExecutor {
-      private val instancePerLeafOperationQueue = ArrayDeque<InstancePerLeafOperation>()
+      private val discoveredOperations = ArrayDeque<InstancePerLeafOperation>()
 
       suspend fun launchRootTest(root: TestCase, ref: SpecRef) {
          val spec = inflator.inflate(ref).getOrThrow()
          val freshRoot = materializer.materialize(spec)
             .first { it.descriptor == root.descriptor }
 
+         val operationQueue = ArrayDeque<InstancePerLeafOperation>()
+
          executeInNewSpec(newSpec = spec) {
             val result = executeTest(freshRoot, null, it, ref)
+            operationQueue.addAll(discoveredOperations)
+            discoveredOperations.clear()
             Result.success(mapOf(freshRoot to result))
          }
 
-         while (instancePerLeafOperationQueue.isNotEmpty()) {
-            when (val ops = instancePerLeafOperationQueue.removeFirst()) {
-               is TestExecutionInFreshSpec -> executeInFreshSpec(ops.testCase, ops.ref)
+         while (operationQueue.isNotEmpty()) {
+            when (val ops = operationQueue.removeFirst()) {
+               is TestExecutionInFreshSpec -> {
+                  executeInFreshSpec(ops.testCase, ops.ref)
+                  // Put all discovered operations to top of operation queue because they are children of this `ops`
+                  // and therefore should be handled before the rest of operation queue elements.
+                  operationQueue.addAll(0, discoveredOperations)
+                  discoveredOperations.clear()
+               }
+
                is SendIgnoredNotification -> context.listener.testIgnored(ops.testCase, ops.reason)
                is SendFinishedNotification -> context.listener.testFinished(ops.testCase, ops.result)
             }
@@ -177,8 +188,8 @@ internal class InstancePerLeafSpecExecutor(
          )
          results.completed(testCase, result)
 
-         // We can send test result notification immediately because the testCase doesn't have multiple children
-         if (testScope.internalTestQueue.isEmpty()) {
+         if (testScope.discoveredTests.isEmpty()) {
+            // We can send test result notification immediately because the testCase doesn't have multiple children
             listener.testListenerOperation?.let {
                when (it) {
                   is SendIgnoredNotification -> context.listener.testIgnored(it.testCase, it.reason)
@@ -186,11 +197,11 @@ internal class InstancePerLeafSpecExecutor(
                }
             }
          } else {
+            // Child test cases are registered before test result notification.
+            discoveredOperations.addAll(testScope.discoveredTests)
             // We should delay sending test result notification because the testCase has multiple children.
             // The test results should be notified after completing all child test case executions.
-            listener.testListenerOperation?.let { instancePerLeafOperationQueue.addFirst(it) }
-            // Child test cases are registered before test result notification.
-            instancePerLeafOperationQueue.addAll(0, testScope.internalTestQueue)
+            listener.testListenerOperation?.let { discoveredOperations.add(it) }
          }
 
          return result
@@ -210,7 +221,7 @@ internal class InstancePerLeafSpecExecutor(
 
          private val logger = Logger(LeafLaunchingScope::class)
 
-         val internalTestQueue = ArrayDeque<TestExecutionInFreshSpec>()
+         val discoveredTests = mutableListOf<TestExecutionInFreshSpec>()
 
          override suspend fun registerTestCase(nested: NestedTest) {
             logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
@@ -223,7 +234,7 @@ internal class InstancePerLeafSpecExecutor(
             }
             if (hasVisitedFirstNode) {
                logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-               internalTestQueue.add(TestExecutionInFreshSpec(nestedTestCase, ref))
+               discoveredTests.add(TestExecutionInFreshSpec(nestedTestCase, ref))
                return
             }
             hasVisitedFirstNode = true
