@@ -19,7 +19,6 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
-import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -27,6 +26,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
@@ -80,8 +80,8 @@ internal class InstancePerLeafSpecExecutor(
    }
 
    inner class RootTestExecutor {
-      private val testCasesToBeExecutedInFreshSpec = ArrayDeque<Pair<TestCase, SpecRef>>()
-      private val finishedTestCases = mutableListOf<Pair<TestCase, TestResult>>()
+      private val testCasesToBeExecutedInFreshSpec = ArrayDeque<Ops>()
+//      private val finishedTestCases = mutableListOf<Pair<TestCase, TestResult>>()
 
       suspend fun launchRootTest(root: TestCase, ref: SpecRef) {
          val spec = inflator.inflate(ref).getOrThrow()
@@ -91,13 +91,15 @@ internal class InstancePerLeafSpecExecutor(
             Result.success(mapOf(root to result))
          }
 
-         while (testCasesToBeExecutedInFreshSpec.isNotEmpty()) {
-            val (testCase, ref) = testCasesToBeExecutedInFreshSpec.removeFirst()
-            executeInFreshSpec(testCase, ref)
-         }
+//         println("start kick queue")
 
-         finishedTestCases.sortedByDescending { (testCase, _) -> testCase.descriptor.depth() }
-            .forEach { (testCase, testResult) -> context.listener.testFinished(testCase, testResult) }
+         while (testCasesToBeExecutedInFreshSpec.isNotEmpty()) {
+            //            println(ops)
+            when (val ops = testCasesToBeExecutedInFreshSpec.removeFirst()) {
+               is Ops.TestExecution -> executeInFreshSpec(ops.testCase, ops.ref)
+               is Ops.SendFinishNotification -> context.listener.testFinished(ops.testCase, ops.result)
+            }
+         }
       }
 
       private suspend fun executeInNewSpec(
@@ -148,9 +150,10 @@ internal class InstancePerLeafSpecExecutor(
          specContext: SpecContext,
          ref: SpecRef
       ): TestResult {
+         val listener = TargetListeningListener(target, context.listener)
          val executor = TestCaseExecutor(
             // we need a special listener that only listens to the target test case events
-            listener = TargetListeningListener(target, context.listener),
+            listener = listener,
             context = context
          )
          val testScope = LeafLaunchingScope(
@@ -166,7 +169,18 @@ internal class InstancePerLeafSpecExecutor(
             specContext = specContext
          )
          results.completed(testCase, result)
-         testCasesToBeExecutedInFreshSpec.addAll(0, testScope.internalTestQueue)
+
+         if (testScope.internalTestQueue.isEmpty()) {
+            listener.finishedTest?.let { context.listener.testFinished(it.testCase, it.result) }
+         } else {
+            listener.finishedTest?.let { testCasesToBeExecutedInFreshSpec.addFirst(it) }
+            testCasesToBeExecutedInFreshSpec.addAll(0, testScope.internalTestQueue)
+         }
+
+//         println("execute finish: $testCase")
+//         println(listener.finishedTest)
+//         println(testScope.internalTestQueue)
+
          return result
       }
 
@@ -184,7 +198,7 @@ internal class InstancePerLeafSpecExecutor(
 
          private val logger = Logger(LeafLaunchingScope::class)
 
-         val internalTestQueue = ArrayDeque<Pair<TestCase, SpecRef>>()
+         val internalTestQueue = ArrayDeque<Ops.TestExecution>()
 
          override suspend fun registerTestCase(nested: NestedTest) {
             logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
@@ -197,7 +211,7 @@ internal class InstancePerLeafSpecExecutor(
             }
             if (hasVisitedFirstNode) {
                logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-               internalTestQueue.add(nestedTestCase to ref)
+               internalTestQueue.add(Ops.TestExecution(nestedTestCase, ref))
                return
             }
             hasVisitedFirstNode = true
@@ -228,8 +242,10 @@ internal class InstancePerLeafSpecExecutor(
          private val target: Descriptor.TestDescriptor?,
          private val delegate: TestEngineListener,
       ) : TestCaseExecutionListener {
+         var finishedTest: Ops.SendFinishNotification? = null
 
          override suspend fun testStarted(testCase: TestCase) {
+//            println("testStarted: $testCase")
             if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
          }
 
@@ -238,14 +254,19 @@ internal class InstancePerLeafSpecExecutor(
          }
 
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+//            println("testFinished: $testCase")
             if (testCase.type == TestType.Test) {
                delegate.testFinished(testCase, result)
             } else if (target == null) {
-               finishedTestCases += testCase to result
+               finishedTest = Ops.SendFinishNotification(testCase, result)
+//               finishedTestCases += testCase to result
             }
          }
       }
    }
 }
 
-
+internal sealed interface Ops {
+   data class TestExecution(val testCase: TestCase, val ref: SpecRef) : Ops
+   data class SendFinishNotification(val testCase: TestCase, val result: TestResult) : Ops
+}
