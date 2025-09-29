@@ -121,8 +121,8 @@ class InstancePerLeafTest4 : DescribeSpec({
 
    afterSpec {
       when (counter) {
-         1 -> trace shouldBe "d1_c1_i1_hoge"
-         2 -> trace shouldBe "d1_c2_i2_hoge"
+         1 -> trace shouldBe "d1_c1_i1_"
+         2 -> trace shouldBe "d1_c2_i2_"
          else -> error("Should have run 2 tests")
       }
    }

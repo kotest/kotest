@@ -55,8 +55,14 @@ internal class InstancePerLeafSpecExecutor(
     * Each root will be executed in new specs for isolation.
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
-      launchRootTests(seed, ref)
-      return Result.success(results.toMap())
+      val specContext = SpecContext.create()
+
+      return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
+         pipeline.execute(seed, specContext) {
+            launchRootTests(seed, ref)
+            Result.success(results.toMap())
+         }
+      }.map { results.toMap() }
    }
 
    private suspend fun launchRootTests(seed: Spec, ref: SpecRef) {
@@ -89,10 +95,12 @@ internal class InstancePerLeafSpecExecutor(
 
       suspend fun launchRootTest(root: TestCase, ref: SpecRef) {
          val spec = inflator.inflate(ref).getOrThrow()
+         val freshRoot = materializer.materialize(spec)
+            .first { it.descriptor == root.descriptor }
 
          executeInNewSpec(newSpec = spec) {
-            val result = executeTest(root, null, it, ref)
-            Result.success(mapOf(root to result))
+            val result = executeTest(freshRoot, null, it, ref)
+            Result.success(mapOf(freshRoot to result))
          }
 
          while (instancePerLeafOperationQueue.isNotEmpty()) {
@@ -114,7 +122,7 @@ internal class InstancePerLeafSpecExecutor(
             pipeline.execute(newSpec, specContext) {
                executor(specContext)
             }
-         }
+         }.getOrThrow()
       }
 
       /**
