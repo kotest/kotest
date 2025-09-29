@@ -108,7 +108,7 @@ All extensions are now published under the `io.kotest` group:
 
 - Version cadence tied to main Kotest releases
 - Simplifies dependency management
-- Affects all extension modules (Allure, Koin, Ktor, MockServer, Spring, etc.)
+- Affects all extension modules (Allure, Koin, Ktor, MockServer, WireMock, Spring, etc.)
 
 ### Project Configuration Location
 
