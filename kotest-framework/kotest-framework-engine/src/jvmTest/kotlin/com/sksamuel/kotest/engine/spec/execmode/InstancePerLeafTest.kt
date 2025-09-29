@@ -108,36 +108,41 @@ class InstancePerLeafTest3 : DescribeSpec({
    }
 })
 
+private var counter = 0 // to confirm afterSpec hook in InstancePerLeafTest4
+
 class InstancePerLeafTest4 : DescribeSpec({
 
    isolationMode = IsolationMode.InstancePerLeaf
 
    beforeSpec {
-      println("beforeSpec")
+      trace = ""
+      counter++
    }
 
    afterSpec {
-      println("afterSpec")
+      when (counter) {
+         1 -> trace shouldBe "d1_c1_i1_hoge"
+         2 -> trace shouldBe "d1_c2_i2_hoge"
+         else -> error("Should have run 2 tests")
+      }
    }
 
-   describe("d") {
-      println("d")
+   describe("d1") {
+      trace += "d1_"
+
       context("c1") {
+         trace += "c1_"
+
          it("i1") {
-            println("a")
+            trace += "i1_"
          }
       }
+
       context("c2") {
+         trace += "c2_"
+
          it("i2") {
-            println("b")
-         }
-         it("i3") {
-            println("b2")
-         }
-      }
-      context("c3") {
-         it("i4") {
-            println("c")
+            trace += "i2_"
          }
       }
    }
