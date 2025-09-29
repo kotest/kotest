@@ -14,6 +14,10 @@ import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.TestResults
+import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLeafOperation.TestExecutionInFreshSpec
+import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLeafOperation.TestListenerOperation
+import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLeafOperation.TestListenerOperation.SendFinishedNotification
+import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLeafOperation.TestListenerOperation.SendIgnoredNotification
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
@@ -47,10 +51,8 @@ internal class InstancePerLeafSpecExecutor(
    )
 
    /**
-    * The intention of this runner is that each **leaf** [TestCase] executes in its own instance
-    * of the containing [Spec] class, but parent tests (containers) are executed in a single shared instance.
-    *
-    * The seed spec will be used for the first leaf discovered.
+    * @param seed will be used to identify roots to be executed in [launchRootTests].
+    * Each root will be executed in new specs for isolation.
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       launchRootTests(seed, ref)
@@ -58,16 +60,14 @@ internal class InstancePerLeafSpecExecutor(
    }
 
    private suspend fun launchRootTests(seed: Spec, ref: SpecRef) {
-
       val roots = materializer.materialize(seed)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
       val semaphore = Semaphore(concurrency)
 
-      // all root test coroutines are launched immediately,
-      // the semaphore will control how many can actually run concurrently
-
+      // All root test coroutines are launched immediately.
+      // The semaphore will control how many can actually run concurrently.
       coroutineScope { // will wait for all tests to complete
          roots.forEach { root ->
             launch {
@@ -79,9 +79,13 @@ internal class InstancePerLeafSpecExecutor(
       }
    }
 
+   /**
+    * Executes all test cases in a single root.
+    * First, it discovers test case candidates by traversing the root test case with executing the first leaf.
+    * Then, executes each discovered test case in a fresh spec instance.
+    */
    inner class RootTestExecutor {
-      private val testCasesToBeExecutedInFreshSpec = ArrayDeque<Ops>()
-//      private val finishedTestCases = mutableListOf<Pair<TestCase, TestResult>>()
+      private val instancePerLeafOperationQueue = ArrayDeque<InstancePerLeafOperation>()
 
       suspend fun launchRootTest(root: TestCase, ref: SpecRef) {
          val spec = inflator.inflate(ref).getOrThrow()
@@ -91,13 +95,11 @@ internal class InstancePerLeafSpecExecutor(
             Result.success(mapOf(root to result))
          }
 
-//         println("start kick queue")
-
-         while (testCasesToBeExecutedInFreshSpec.isNotEmpty()) {
-            //            println(ops)
-            when (val ops = testCasesToBeExecutedInFreshSpec.removeFirst()) {
-               is Ops.TestExecution -> executeInFreshSpec(ops.testCase, ops.ref)
-               is Ops.SendFinishNotification -> context.listener.testFinished(ops.testCase, ops.result)
+         while (instancePerLeafOperationQueue.isNotEmpty()) {
+            when (val ops = instancePerLeafOperationQueue.removeFirst()) {
+               is TestExecutionInFreshSpec -> executeInFreshSpec(ops.testCase, ops.ref)
+               is SendIgnoredNotification -> context.listener.testIgnored(ops.testCase, ops.reason)
+               is SendFinishedNotification -> context.listener.testFinished(ops.testCase, ops.result)
             }
          }
       }
@@ -150,12 +152,9 @@ internal class InstancePerLeafSpecExecutor(
          specContext: SpecContext,
          ref: SpecRef
       ): TestResult {
+         // we need a special listener that only listens to the target test case events
          val listener = TargetListeningListener(target, context.listener)
-         val executor = TestCaseExecutor(
-            // we need a special listener that only listens to the target test case events
-            listener = listener,
-            context = context
-         )
+         val executor = TestCaseExecutor(listener, context)
          val testScope = LeafLaunchingScope(
             testCase = testCase,
             target = target,
@@ -170,16 +169,21 @@ internal class InstancePerLeafSpecExecutor(
          )
          results.completed(testCase, result)
 
+         // We can send test result notification immediately because the testCase doesn't have multiple children
          if (testScope.internalTestQueue.isEmpty()) {
-            listener.finishedTest?.let { context.listener.testFinished(it.testCase, it.result) }
+            listener.testListenerOperation?.let {
+               when (it) {
+                  is SendIgnoredNotification -> context.listener.testIgnored(it.testCase, it.reason)
+                  is SendFinishedNotification -> context.listener.testFinished(it.testCase, it.result)
+               }
+            }
          } else {
-            listener.finishedTest?.let { testCasesToBeExecutedInFreshSpec.addFirst(it) }
-            testCasesToBeExecutedInFreshSpec.addAll(0, testScope.internalTestQueue)
+            // We should delay sending test result notification because the testCase has multiple children.
+            // The test results should be notified after completing all child test case executions.
+            listener.testListenerOperation?.let { instancePerLeafOperationQueue.addFirst(it) }
+            // Child test cases are registered before test result notification.
+            instancePerLeafOperationQueue.addAll(0, testScope.internalTestQueue)
          }
-
-//         println("execute finish: $testCase")
-//         println(listener.finishedTest)
-//         println(testScope.internalTestQueue)
 
          return result
       }
@@ -198,7 +202,7 @@ internal class InstancePerLeafSpecExecutor(
 
          private val logger = Logger(LeafLaunchingScope::class)
 
-         val internalTestQueue = ArrayDeque<Ops.TestExecution>()
+         val internalTestQueue = ArrayDeque<TestExecutionInFreshSpec>()
 
          override suspend fun registerTestCase(nested: NestedTest) {
             logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
@@ -211,7 +215,7 @@ internal class InstancePerLeafSpecExecutor(
             }
             if (hasVisitedFirstNode) {
                logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-               internalTestQueue.add(Ops.TestExecution(nestedTestCase, ref))
+               internalTestQueue.add(TestExecutionInFreshSpec(nestedTestCase, ref))
                return
             }
             hasVisitedFirstNode = true
@@ -238,35 +242,41 @@ internal class InstancePerLeafSpecExecutor(
          }
       }
 
+      /**
+       * To delay sending test result notification (ignored/finished) on test container execution,
+       * TargetListeningListener has a nullable property and stores the test results there temporarily.
+       *
+       * @property testListenerOperation will contain test results when testIgnored or testFinished listener is called.
+       * The property will be referred in [executeTest] method and will be notified at the right time.
+       */
       inner class TargetListeningListener(
          private val target: Descriptor.TestDescriptor?,
          private val delegate: TestEngineListener,
       ) : TestCaseExecutionListener {
-         var finishedTest: Ops.SendFinishNotification? = null
+         var testListenerOperation: TestListenerOperation? = null
 
          override suspend fun testStarted(testCase: TestCase) {
-//            println("testStarted: $testCase")
             if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
          }
 
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-            if (target == null || testCase.type == TestType.Test) delegate.testIgnored(testCase, reason)
+            if (testCase.type == TestType.Test) delegate.testIgnored(testCase, reason)
+            else if (target == null) testListenerOperation = SendIgnoredNotification(testCase, reason)
          }
 
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-//            println("testFinished: $testCase")
-            if (testCase.type == TestType.Test) {
-               delegate.testFinished(testCase, result)
-            } else if (target == null) {
-               finishedTest = Ops.SendFinishNotification(testCase, result)
-//               finishedTestCases += testCase to result
-            }
+            if (testCase.type == TestType.Test) delegate.testFinished(testCase, result)
+            else if (target == null) testListenerOperation = SendFinishedNotification(testCase, result)
          }
       }
    }
-}
 
-internal sealed interface Ops {
-   data class TestExecution(val testCase: TestCase, val ref: SpecRef) : Ops
-   data class SendFinishNotification(val testCase: TestCase, val result: TestResult) : Ops
+   internal sealed interface InstancePerLeafOperation {
+      data class TestExecutionInFreshSpec(val testCase: TestCase, val ref: SpecRef) : InstancePerLeafOperation
+
+      sealed interface TestListenerOperation : InstancePerLeafOperation {
+         data class SendIgnoredNotification(val testCase: TestCase, val reason: String?) : TestListenerOperation
+         data class SendFinishedNotification(val testCase: TestCase, val result: TestResult) : TestListenerOperation
+      }
+   }
 }
