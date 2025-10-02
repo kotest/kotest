@@ -28,29 +28,37 @@ internal class BeforeSpecListenerInterceptor(
       scope: TestScope,
       test: NextTestExecutionInterceptor,
    ): TestResult {
-
+      
       val shouldRun = specContext.beforeSpecInvoked.compareAndSet(
          expectedValue = false,
          newValue = true,
       )
-
+      
       return if (shouldRun) {
          specExtensions
             .beforeSpec(testCase.spec)
             .fold(
                {
+                  specContext.beforeSpecCompletion.complete(Unit)
                   test(testCase, scope)
                },
                {
                   specContext.beforeSpecError = it
+                  specContext.beforeSpecCompletion.completeExceptionally(it)
                   TestResultBuilder.builder().withError(it).build()
                }
             )
       } else {
-         if (specContext.beforeSpecError == null)
-            test(testCase, scope)
-         else
+         try {
+            specContext.beforeSpecCompletion.await()
+            if (specContext.beforeSpecError == null) {
+               test(testCase, scope)
+            } else {
+               TestResultBuilder.builder().withIgnoreReason("Skipped due to beforeSpec failure").build()
+            }
+         } catch (e: Exception) {
             TestResultBuilder.builder().withIgnoreReason("Skipped due to beforeSpec failure").build()
+         }
       }
    }
 }

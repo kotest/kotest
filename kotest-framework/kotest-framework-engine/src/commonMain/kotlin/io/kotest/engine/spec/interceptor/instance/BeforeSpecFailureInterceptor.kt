@@ -16,7 +16,7 @@ internal class BeforeSpecFailureInterceptor(private val specContext: SpecContext
    override suspend fun intercept(spec: Spec, next: NextSpecInterceptor): Result<Map<TestCase, TestResult>> {
       return next.invoke(spec).flatMap { results ->
          when (val error = specContext.beforeSpecError) {
-            null -> Result.success(results)// no change
+            null -> Result.success(results)
             else -> Result.failure(error)
          }
       }
