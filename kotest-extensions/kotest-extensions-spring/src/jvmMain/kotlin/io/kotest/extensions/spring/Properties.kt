@@ -1,5 +1,5 @@
 package io.kotest.extensions.spring
 
 object Properties {
-   const val springIgnoreWarning = "kotest.listener.spring.ignore.warning"
+   const val SPRING_IGNORE_WARNING = "kotest.listener.spring.ignore.warning"
 }
