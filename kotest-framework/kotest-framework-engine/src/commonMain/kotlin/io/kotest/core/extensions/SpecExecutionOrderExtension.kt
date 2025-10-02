@@ -12,6 +12,6 @@ import io.kotest.core.spec.SpecRef
  * sorted using the [io.kotest.engine.spec.DefaultSpecExecutionOrderExtension] which uses the value of
  * [io.kotest.core.config.AbstractProjectConfig.specExecutionOrder] defined in configuration.
  */
-interface SpecExecutionOrderExtension {
+interface SpecExecutionOrderExtension : Extension {
    fun sort(specs: List<SpecRef>): List<SpecRef>
 }
