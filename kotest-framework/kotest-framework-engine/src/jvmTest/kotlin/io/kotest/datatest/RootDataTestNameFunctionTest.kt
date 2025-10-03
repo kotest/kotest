@@ -28,13 +28,13 @@ class RootDataTestNameFunctionTest : FunSpec({
       AnotherDummyClass("a2", "b2")
    ) {}
 
-   withData<SimpleClass>(
+   withData<SimpleClass,_>(
       { "simple${it.a}${it.b}" },
       SimpleClass("a1", "b1"),
       SimpleClass("a2", "b2"),
    ) {}
 
-   withData<SimpleClass>(
+   withData<SimpleClass,_>(
       { "simple${it.a}${it.b}" },
       sequenceOf(
          SimpleClass("a1", "b1"),
@@ -42,7 +42,7 @@ class RootDataTestNameFunctionTest : FunSpec({
       )
    ) {}
 
-   withData<SimpleClass>(
+   withData<SimpleClass,_>(
       { "simple${it.a}${it.b}" },
       listOf(
          SimpleClass("a1", "b1"),
@@ -50,7 +50,7 @@ class RootDataTestNameFunctionTest : FunSpec({
       )
    ) {}
 
-   withData<Int>(
+   withData<Int,_>(
       { i: Int -> "Test $i" },
       1..3
    ) {}

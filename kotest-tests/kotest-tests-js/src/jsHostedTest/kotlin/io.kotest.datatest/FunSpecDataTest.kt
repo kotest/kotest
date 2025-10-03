@@ -28,7 +28,7 @@ class FunSpecDataTest : FunSpec() {
       }
 
       // name function
-      withData<PythagTriple>(
+      withData<PythagTriple,_>(
          { "For pythag triple: ${it.a}^2 * ${it.b}^2 = ${it.c}^2" },
          PythagTriple(3, 4, 5),
          PythagTriple(6, 8, 10),
