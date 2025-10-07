@@ -21,7 +21,7 @@ import kotlin.reflect.jvm.isAccessible
  *
  * Opposite of [shouldNotBeEqualToUsingFields]
  *
- * Example:
+ * Example with same type:
  * ```
  * data class Foo(val id: Int, val description: String)
  *
@@ -32,11 +32,23 @@ import kotlin.reflect.jvm.isAccessible
  *
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
+ * Example with different type asserting on the same properties:
+ * ```
+ * data class Foo(val id: Int, val description: String)
+ * data class Fuu(val id: Int, val description: String, val isActive: Boolean)
+ *
+ * val foo = Foo(1, "Bar!")
+ * val fuu = Fuu(2, "Bar!", false)
+ *
+ * foo.shouldBeEqualToUsingFields(fuu, Foo::description) // Assertion passes
+ *
+ * foo shouldBe fuu // Assertion fails, `equals` is false!
+ * ```
  *
  * Note: Throws [IllegalArgumentException] if [properties] contains any non public property
  *
  */
-fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
+fun <T : Any, V: Any> T.shouldBeEqualToUsingFields(other: V, vararg properties: KProperty1<T, *>) {
    this should beEqualToUsingFields(other, *properties)
 }
 
@@ -96,7 +108,7 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  * @see [beEqualToIgnoringFields]
  *
  */
-fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
+fun <T : Any, V: Any> beEqualToUsingFields(other: V, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
       val hasNonPublicFields = fields.any { it.visibility != KVisibility.PUBLIC }
       if (hasNonPublicFields) {
@@ -389,13 +401,35 @@ fun <T : Any> beEqualComparingFields(
    }
 }
 
-private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: T): List<String> {
-   return fields.mapNotNull {
-      val actual = it.getter.call(value)
-      val expected = it.getter.call(other)
+private fun <T, V> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: V): List<String> {
+   requireNotNull(value)
+   requireNotNull(other)
+   val equalityChecker: (actual: Any?, expected: Any?, propertyName: String) -> String? =
+      { actual, expected, propertyName ->
+         val isEqual = EqCompare.compare(actual, expected, false) == null
+         if (isEqual) null else "$propertyName: ${actual.print().value} != ${expected.print().value}"
+      }
+   return when (value::class == other::class) {
+      true -> fields.mapNotNull {
+         val actual = it.getter.call(value)
+         val expected = it.getter.call(other)
+         equalityChecker(actual, expected, it.name)
+      }
 
-      val isEqual = EqCompare.compare(actual, expected, false) == null
-      if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
+      false -> {
+         val otherPropertiesByName = other::class.memberProperties.associateBy { it.name }
+         return fields.mapNotNull { tProperty ->
+            val actual = tProperty.getter.call(value)
+            val propOfV = otherPropertiesByName[tProperty.name]
+
+            if (propOfV == null) {
+               "${tProperty.name}: property not found in ${other::class.simpleName}"
+            } else {
+               val expected = propOfV.getter.call(other)
+               equalityChecker(actual, expected, tProperty.name)
+            }
+         }
+      }
    }
 }
 
