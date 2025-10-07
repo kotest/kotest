@@ -2248,7 +2248,7 @@ public final class io/kotest/matchers/equality/ReflectionKt {
 	public static synthetic fun shouldBeEqualToComparingFields$default (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;ILjava/lang/Object;)V
 	public static final fun shouldBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
-	public static final fun shouldBeEqualToUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty;)V
+	public static final fun shouldBeEqualToUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty1;)V
 	public static final fun shouldNotBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;)V
 	public static final fun shouldNotBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
