@@ -403,10 +403,10 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 
 
 
-| Selective Matchers                                                             ||
-|--------------------------------------------------------------------------------| ---- |
-| `any.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>)`    | Asserts that the any is equal to other considering only given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L20) |
-| `any.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>)` | Asserts that the any is equal to other ignoring the given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L127) |
+| Selective Matchers                                                              ||
+|---------------------------------------------------------------------------------| ---- |
+| `any.shouldBeEqualToUsingFields(other: V, vararg properties: KProperty1<T, *>)` | Asserts that the any is equal to other considering only given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L20) |
+| `any.shouldBeEqualToIgnoringFields(other: T, vararg properties: KProperty<*>)`  | Asserts that the any is equal to other ignoring the given properties. See [Example](https://github.com/kotest/kotest/blob/1f4069d78faead65a0d7e8c7f1b689b417a655d2/kotest-assertions/kotest-assertions-core/src/jvmMain/kotlin/io/kotest/matchers/equality/reflection.kt#L127) |
 
 
 | Field by Field Comparison Matchers                                                                                                                          |                                                                                                                                                                                                                                                                                                                                         |
