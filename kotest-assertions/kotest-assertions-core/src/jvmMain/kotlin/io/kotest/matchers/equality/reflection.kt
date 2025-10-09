@@ -13,7 +13,7 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
 /**
- * Asserts that this is equal to [other] using specific fields
+ * Asserts that this [T] is equal to [other] : [T] using specific fields
  *
  * Verifies that [this] instance is equal to [other] using only some specific fields. This is useful for matching
  * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
@@ -21,7 +21,7 @@ import kotlin.reflect.jvm.isAccessible
  *
  * Opposite of [shouldNotBeEqualToUsingFields]
  *
- * Example with same type:
+ * Example:
  * ```
  * data class Foo(val id: Int, val description: String)
  *
@@ -32,7 +32,24 @@ import kotlin.reflect.jvm.isAccessible
  *
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
- * Example with different type asserting on the same properties:
+ *
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non public property
+ *
+ */
+fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty1<T, *>) {
+   this should beEqualToUsingFields(other, *properties)
+}
+
+/**
+ * Asserts that this [T] is equal to [other] : [V] using specific fields
+ *
+ * Verifies that [this] instance is equal to [other] using only some specific fields. This is useful in scenarios where
+ * you want to compare objects that share common properties but are not of the same class,
+ * such as comparing a domain model with a DTO.
+ *
+ * Opposite of [shouldNotBeEqualToUsingFields]
+ *
+ * Example:
  * ```
  * data class Foo(val id: Int, val description: String)
  * data class Fuu(val id: Int, val description: String, val isActive: Boolean)
@@ -45,10 +62,10 @@ import kotlin.reflect.jvm.isAccessible
  * foo shouldBe fuu // Assertion fails, `equals` is false!
  * ```
  *
- * Note: Throws [IllegalArgumentException] if [properties] contains any non public property
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
  *
  */
-fun <T : Any, V: Any> T.shouldBeEqualToUsingFields(other: V, vararg properties: KProperty1<T, *>) {
+fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeUsingFields(other: V, vararg properties: KProperty1<T, *>) {
    this should beEqualToUsingFields(other, *properties)
 }
 

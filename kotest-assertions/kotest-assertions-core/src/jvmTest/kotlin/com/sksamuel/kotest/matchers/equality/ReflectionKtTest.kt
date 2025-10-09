@@ -62,7 +62,7 @@ class ReflectionKtTest : FunSpec() {
          Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::a, Foo::c)
          Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::c, Foo::a)
          Foo("sammy", 42, true).shouldBeEqualToUsingFields(Foo("sammy", 42, true))
-         Foo("sammy", 13, true).shouldBeEqualToUsingFields(Fuu("sammy", 345435, false), Foo::a)
+         Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, false), Foo::a)
       }
 
       test("shouldBeEqualToUsingFields failure message") {
@@ -76,11 +76,11 @@ class ReflectionKtTest : FunSpec() {
          }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: \"sammy\" != \"stef\", c: true != false]"
 
          shouldThrow<AssertionError> {
-            Foo("sammy", 13, true).shouldBeEqualToUsingFields(Fuu("alfonso", 13, false), Foo::a, Foo::c)
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("alfonso", 13, false), Foo::a, Foo::c)
          }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Fuu(a=alfonso, b=13, c=false, d=0.0) using fields [a, c]; Failed for [a: \"sammy\" != \"alfonso\", c: true != false]"
 
          shouldThrow<AssertionError> {
-            Fuu("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, false), Fuu::a, Fuu::d)
+            Fuu("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Foo("sammy", 345435, false), Fuu::a, Fuu::d)
          }.message shouldBe "Fuu(a=sammy, b=13, c=true, d=0.0) should be equal to Foo(a=sammy, b=345435, c=false) using fields [a, d]; Failed for [d: property not found in Foo]"
       }
 
@@ -137,7 +137,7 @@ class ReflectionKtTest : FunSpec() {
          val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
 
          assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
-            car.shouldBeEqualToUsingFields(anotherCar, aPrivateField)
+            car.shouldBeEqualToDifferentTypeUsingFields(anotherCar, aPrivateField)
          }
       }
 
