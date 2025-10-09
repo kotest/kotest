@@ -19,14 +19,14 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 @Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
@@ -62,13 +62,13 @@ internal class InstancePerLeafSpecExecutor(
          // but any leaf tests will execute in a fresh instance of the spec.
 
          pipeline.execute(seed, specContext) {
-            launchRootTests(seed, ref, specContext)
+            launchRootTests(seed, ref)
             Result.success(results.toMap())
          }.map { results.toMap() }
       }
    }
 
-   private suspend fun launchRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
+   private suspend fun launchRootTests(seed: Spec, ref: SpecRef) {
 
       val roots = materializer.materialize(seed)
 
@@ -81,6 +81,7 @@ internal class InstancePerLeafSpecExecutor(
 
       coroutineScope { // will wait for all tests to complete
          roots.forEach {
+            val specContext = SpecContext.create()
             launch {
                semaphore.withPermit {
                   executeTest(it, null, specContext, ref)
@@ -98,7 +99,7 @@ internal class InstancePerLeafSpecExecutor(
     *
     * It will locate the root that is the parent of the given [TestCase] and execute it in the new spec instance.
     */
-   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef, specContext: SpecContext) {
+   private suspend fun executeInFreshSpec(testCase: TestCase, ref: SpecRef) {
       logger.log { "Enqueuing in a fresh spec ${testCase.descriptor}" }
 
       val spec = inflator.inflate(ref).getOrThrow()
@@ -106,6 +107,8 @@ internal class InstancePerLeafSpecExecutor(
       // we need to find the same root test but in the newly created spec
       val root = materializer.materialize(spec).first { it.descriptor.isPrefixOf(testCase.descriptor) }
       logger.log { "Located root for target $root" }
+
+      val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
@@ -139,7 +142,7 @@ internal class InstancePerLeafSpecExecutor(
             testCase = testCase,
             target = target,
             specContext = specContext,
-            coroutineContext = coroutineContext,
+            coroutineContext = currentCoroutineContext(),
             ref = ref
          ),
          specContext = specContext
@@ -173,7 +176,7 @@ internal class InstancePerLeafSpecExecutor(
          }
          if (hasVisitedFirstNode) {
             logger.log { Pair(testCase.name.name, "Executing in fresh spec") }
-            executeInFreshSpec(nestedTestCase, ref, specContext)
+            executeInFreshSpec(nestedTestCase, ref)
             return
          }
          hasVisitedFirstNode = true

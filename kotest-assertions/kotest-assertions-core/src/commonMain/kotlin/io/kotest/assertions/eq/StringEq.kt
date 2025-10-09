@@ -32,20 +32,24 @@ object StringEq : Eq<String> {
          equalIgnoringWhitespace(actual, expected) -> AssertionErrorBuilder.create()
             .withMessage("(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n")
             .withValues(
-               Expected(Printed(escapeLineBreaks(expected))),
-               Actual(Printed(escapeLineBreaks(actual)))
+               expected = Expected(Printed(escapeLineBreaks(expected))),
+               actual = Actual(Printed(escapeLineBreaks(actual)))
             ).build()
 
          useDiff(expected, actual) -> diff(expected, actual)
 
          t.matched -> AssertionErrorBuilder.create()
             .withMessage("Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n")
-            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
-            .build()
+            .withValues(
+               expected = Expected(StringPrint.printUnquoted(expected)),
+               actual = Actual(StringPrint.printUnquoted(actual))
+            ).build()
 
          else -> AssertionErrorBuilder.create()
-            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
-            .build()
+            .withValues(
+               expected = Expected(StringPrint.printUnquoted(expected)),
+               actual = Actual(StringPrint.printUnquoted(actual))
+            ).build()
       }
    }
 

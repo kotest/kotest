@@ -2,7 +2,6 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.asSample
-import io.kotest.property.RandomSource
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
@@ -19,6 +18,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
+import java.time.zone.ZoneOffsetTransition
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -63,7 +63,8 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
  */
 fun Arb.Companion.localDate(
    minDate: LocalDate = LocalDate.of(1970, 1, 1),
-   maxDate: LocalDate = LocalDate.of(2030, 12, 31)
+   maxDate: LocalDate = LocalDate.of(2030, 12, 31),
+   zoneId: ZoneId? = null,
 ): Arb<LocalDate> {
    require(minDate <= maxDate) { "minDate must be before or equal to maxDate" }
    if (minDate == maxDate) return Arb.constant(minDate)
@@ -75,6 +76,15 @@ fun Arb.Companion.localDate(
 
    val centuryYear = (minDate.year..maxDate.year).firstOrNull { it % 100 == 0 && LocalDate.of(it, 1, 1) in minDate..maxDate }
    if (centuryYear != null) { edgeCases += LocalDate.of(centuryYear, 1, 1) }
+
+   zoneId?.let { zoneId ->
+      edgeCases.addAll(
+         zoneId.localDateTimeChanges(minDate.atStartOfDay())
+         .map { it.dateTimeBefore.toLocalDate() }
+         .filter { it in minDate..maxDate }
+         .take(2)
+      )
+   }
 
    return arbitrary(edgeCases) { rs ->
       val daysBetween = ChronoUnit.DAYS.between(minDate, maxDate)
@@ -291,7 +301,22 @@ fun InstantRange.random(random: Random): Instant {
 /**
  * Arberates a stream of random [Instant]
  */
-fun Arb.Companion.instant(range: InstantRange): Arb<Instant> =
+@Deprecated("Use javaInstant instead", ReplaceWith("javaInstant(range)"))
+fun Arb.Companion.instant(range: InstantRange): Arb<Instant> = javaInstant(range)
+
+/**
+ * Arberates a stream of random [Instant]
+ */
+@Deprecated("Use javaInstant instead", ReplaceWith("javaInstant(minValue, maxValue)"))
+fun Arb.Companion.instant(
+   minValue: Instant = Instant.MIN,
+   maxValue: Instant = Instant.MAX
+): Arb<Instant> = javaInstant(minValue, maxValue)
+
+/**
+ * Arberates a stream of random [Instant]
+ */
+fun Arb.Companion.javaInstant(range: InstantRange): Arb<Instant> =
    arbitrary(listOf(range.start, range.endInclusive)) {
       range.random(it.random)
    }
@@ -299,10 +324,10 @@ fun Arb.Companion.instant(range: InstantRange): Arb<Instant> =
 /**
  * Arberates a stream of random [Instant]
  */
-fun Arb.Companion.instant(
+fun Arb.Companion.javaInstant(
    minValue: Instant = Instant.MIN,
    maxValue: Instant = Instant.MAX
-) = instant(minValue..maxValue)
+) = javaInstant(minValue..maxValue)
 
 /**
  * Arberates a stream of random [OffsetDateTime]
@@ -324,7 +349,7 @@ fun Arb.Companion.offsetDateTime(
    maxValue: Instant,
    zoneOffset: Arb<ZoneOffset> = zoneOffset()
 ): Arb<OffsetDateTime> = Arb.bind(
-   instant(minValue, maxValue),
+   javaInstant(minValue, maxValue),
    zoneOffset
 ) { time, offset -> time.atOffset(offset) }
 
@@ -365,4 +390,32 @@ fun Arb.Companion.javaDate(
       maxDate = dateFormat.format(maxDate),
       zoneId = zoneId
    )
+}
+
+data class LocalDateTimeChange(
+   val dateTimeBefore: LocalDateTime,
+   val dateTimeAfter: LocalDateTime,
+   val type: LocalDateTimeChangeType,
+) {
+   enum class LocalDateTimeChangeType { GAP, OVERLAP, }
+}
+
+fun ZoneId.localDateTimeChanges(start: LocalDateTime): Sequence<LocalDateTimeChange> {
+   val rules = this.rules
+   var time = start.atZone(this).toInstant()
+   return sequence {
+      var transition = rules.nextTransition(time)
+      while(transition != null) {
+         transition?.let {
+            time = transition.instant.plusSeconds(1)
+            yield(LocalDateTimeChange(
+                  dateTimeBefore = transition.dateTimeBefore,
+                  dateTimeAfter = transition.dateTimeAfter,
+                  type = if (transition.isGap) LocalDateTimeChange.LocalDateTimeChangeType.GAP else LocalDateTimeChange.LocalDateTimeChangeType.OVERLAP,
+               )
+            )
+         }
+         transition = rules.nextTransition(time)
+      }
+   }
 }

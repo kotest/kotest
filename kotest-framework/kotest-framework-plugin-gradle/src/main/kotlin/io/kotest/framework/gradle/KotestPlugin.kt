@@ -207,21 +207,6 @@ abstract class KotestPlugin : Plugin<Project> {
                // we need to switch to TCSM format if running inside of intellij
                val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
                existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
-
-               // it seems the kotlin native test task empties this directory, so this currently does not do anything
-               existing.environment(
-                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_MODULE_TEST_REPORTS_DIR",
-                  moduleTestDirAbsolutePath
-               )
-
-               existing.environment(
-                  "KOTEST_FRAMEWORK_RUNTIME_NATIVE_ROOT_TEST_REPORTS_DIR",
-                  rootTestDirAbsolutePath
-               )
-
-               // this sets the target name in the environment, which is used by the xml report generator
-               // to add the target name to the test names
-               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_TARGET", targetName)
             }
 
             // the ksp plugin will create a configuration for each target that contains
@@ -230,6 +215,7 @@ abstract class KotestPlugin : Plugin<Project> {
             // do it for every different native target (there could be many!)
             wireKsp(target.project, kspConfigurationName(target))
 
+            // wire in the kmp test task into our kotest task
             target.project.tasks.getByName(KOTEST_TASK_NAME) {
                target.project.logger.info("> Configuring kotest task for $nativeTaskName")
                dependsOn(existing)

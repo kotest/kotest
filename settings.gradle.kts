@@ -150,10 +150,14 @@ include(
    // adds support for the wiremock framework - see more https://www.wiremock.io/
    ":kotest-extensions:kotest-extensions-wiremock",
 
+
    // the tests modules each test a piece of functionality
    // it is useful to have separate modules so each can set their own project config that
    // may be required as part of the tests
    ":kotest-tests:kotest-tests-core",
+
+   // defines the order of callbacks
+   ":kotest-tests:kotest-tests-callback-order",
 
    ":kotest-tests:kotest-tests-concurrency-tests",
    ":kotest-tests:kotest-tests-concurrency-specs",
@@ -165,6 +169,7 @@ include(
    ":kotest-tests:kotest-tests-config-properties",
    ":kotest-tests:kotest-tests-htmlreporter",
    ":kotest-tests:kotest-tests-junitxml",
+   ":kotest-tests:kotest-tests-junit-displaynameformatter",
    ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
    ":kotest-tests:kotest-tests-power-assert",
    ":kotest-tests:kotest-tests-spec-parallelism",

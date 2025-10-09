@@ -2,6 +2,7 @@ package io.kotest.datatest
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
@@ -132,6 +133,20 @@ private class RepeatedNamesFunSpec : FunSpec() {
 }
 
 private class RepeatedNamesRootFunSpec : FunSpec() {
+   init {
+      withData(
+         Foo("sam"),
+         Foo("ham"),
+         Foo("sham"),
+         Foo("sham"),
+         Foo("ham"),
+         Foo("ham"),
+         Foo("sam"),
+      ) { }
+   }
+}
+
+private class RepeatedNamesRootStringSpec : StringSpec() {
    init {
       withData(
          Foo("sam"),

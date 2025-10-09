@@ -1,20 +1,21 @@
 package com.sksamuel.kotest.engine.spec.sorts
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.name
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ProjectConfigResolver
+import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
 class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
    describe("The DefaultSpecExecutionOrder extension should support") {
@@ -103,16 +104,54 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
             DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfigResolver()).sort(specs)
          }
       }
+
+      it("should be detected from project config") {
+
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(MySpecExecutionOrderExtension)
+         }
+
+         val listener = CollectingTestEngineListener()
+
+         TestEngineLauncher()
+            .withListener(listener)
+            .withClasses(ASpec::class, ZSpec::class, YSpec::class)
+            .withProjectConfig(c)
+            .launch()
+
+         listener.names shouldBe listOf("z", "y", "a")
+
+      }
    }
 
 })
 
 @Order(3)
-private class ASpec : FunSpec()
+private class ASpec : FunSpec() {
+   init {
+      test("a") {}
+   }
+}
 
-private class ZSpec : FunSpec()
+private class YSpec : FunSpec() {
+   init {
+      test("y") {}
+   }
+}
+
+private class ZSpec : FunSpec() {
+   init {
+      test("z") {}
+   }
+}
 
 @Order(2)
 private class SpecA : FunSpec()
 
 private class SpecZ : FunSpec()
+
+object MySpecExecutionOrderExtension : SpecExecutionOrderExtension {
+   override fun sort(specs: List<SpecRef>): List<SpecRef> {
+      return specs.sortedBy { it.name() }.reversed()
+   }
+}

@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine
+package com.sksamuel.kotest.engine.callback.order
 
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.extensions.SpecExtension
@@ -7,9 +7,9 @@ import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 
 class LifecycleOrderTest : FunSpec() {
@@ -17,7 +17,8 @@ class LifecycleOrderTest : FunSpec() {
 
       test("project, spec and test interceptors should wrap each other") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(LifecycleTests::class)
             .addExtensions(LifecycleExtension("engine"))
             .launch()
