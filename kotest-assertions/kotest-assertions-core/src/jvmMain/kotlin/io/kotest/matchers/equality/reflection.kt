@@ -36,7 +36,7 @@ import kotlin.reflect.jvm.isAccessible
  * Note: Throws [IllegalArgumentException] if [properties] contains any non public property
  *
  */
-fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty1<T, *>) {
+fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
    this should beEqualToUsingFields(other, *properties)
 }
 
