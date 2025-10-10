@@ -46,7 +46,7 @@ Note, however, that `failSoftly` is compatible with `assertSoftly`, so the follo
 
 ```kotlin
 assertSoftly {
-  foo shouldBe bar
+  2*2 shouldBe 5
   failSoftly("Something happened")
 }
 ```
