@@ -1,6 +1,7 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
+import io.kotest.matchers.errorCollector
 
 /**
  * Use this object to create exceptions on a target platform.
@@ -29,6 +30,20 @@ data class AssertionErrorBuilder(
        */
       fun fail(message: String): Nothing {
          throw create().withMessage(message).build()
+      }
+
+      /**
+       * Convenience method to create an [AssertionError] with the given [message] and throw or collect it.
+       * The error message provided will have any clue context prepended.
+       *
+       * Use this method when you want to throw or collect an [AssertionError] with a specific message and have
+       * no expected or actual values to compare, or any underlying cause.
+       * The collected message will work within `assertSoftly { }` blocks.
+       */
+      fun failSoftly(message: String) {
+         errorCollector.collectOrThrow(
+            create().withMessage(message).build()
+         )
       }
 
       /**

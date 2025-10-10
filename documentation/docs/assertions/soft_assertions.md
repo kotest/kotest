@@ -42,6 +42,15 @@ assertSoftly {
 }
 ```
 
+Note, however, that `failSoftly` is compatible with `assertSoftly`, so the following code will report both failures:
+
+```kotlin
+assertSoftly {
+  2*2 shouldBe 5
+  failSoftly("Something happened")
+}
+```
+
 Likewise, if `mockk`'s `verify(...)` fails in the following example, the second assertion will not execute:
 
 ```kotlin

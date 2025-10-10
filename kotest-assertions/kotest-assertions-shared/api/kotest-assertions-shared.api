@@ -30,6 +30,7 @@ public final class io/kotest/assertions/AssertionErrorBuilder {
 public final class io/kotest/assertions/AssertionErrorBuilder$Companion {
 	public final fun create ()Lio/kotest/assertions/AssertionErrorBuilder;
 	public final fun fail (Ljava/lang/String;)Ljava/lang/Void;
+	public final fun failSoftly (Ljava/lang/String;)V
 }
 
 public final class io/kotest/assertions/AssertionErrorBuilder_jvmKt {
