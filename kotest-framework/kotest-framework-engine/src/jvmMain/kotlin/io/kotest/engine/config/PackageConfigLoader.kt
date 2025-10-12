@@ -4,6 +4,7 @@ import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.spec.Spec
 import io.kotest.engine.instantiateOrObject
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.full.isSubclassOf
 
 internal actual fun loadPackageConfigs(spec: Spec): List<AbstractPackageConfig> = PackageConfigLoader.configs(spec)
 
@@ -56,19 +57,19 @@ internal object PackageConfigLoader {
     * Behavior:
     * - Returns `null` if the class does not exist.
     * - Returns `null` if the class exists but does not extend `AbstractPackageConfig`.
-    * - Returns an `AbstractPackageConfig` instance if the class is a valid subtype and can be instantiated.
-    * - Throws if the class exists and is a subtype of `AbstractPackageConfig` but instantiation fails.
+    * - Returns an `AbstractPackageConfig` if the class exists, extends `AbstractPackageConfig` and can be instantiated.
+    * - Throws if the class exists, extends `AbstractPackageConfig` but instantiation fails.
     *
     * @param packageName the package to probe.
-    * @return the instantiated `AbstractPackageConfig` or `null` when not present or not a subtype.
+    * @return the instantiated `AbstractPackageConfig` or `null` when not present or not a subClass.
     * @throws Throwable if instantiation of a valid subtype fails.
     */
    private fun loadPackageConfig(packageName: String): AbstractPackageConfig? {
-      val kclass = runCatching { Class.forName(packageConfigName(packageName)).kotlin }.getOrNull()
-         ?.takeIf { AbstractPackageConfig::class.java.isAssignableFrom(it.java) }
+      val kClass = runCatching { Class.forName(packageConfigName(packageName)).kotlin }.getOrNull()
+         ?.takeIf { it.isSubclassOf(AbstractPackageConfig::class) }
          ?: return null
 
-      return instantiateOrObject(kclass).getOrThrow() as AbstractPackageConfig
+      return instantiateOrObject(kClass).getOrThrow() as AbstractPackageConfig
    }
 
    private fun packageConfigName(packageName: String) = "$packageName.PackageConfig"
