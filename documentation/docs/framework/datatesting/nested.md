@@ -48,7 +48,7 @@ context("each service should support all http methods") {
     val methods = listOf("GET", "POST", "PUT")
 
     withData(services) { service ->
-       withData<String>({ "should support HTTP $it" }, methods) { method ->
+       withData(nameFn = { "should support HTTP $it" }, methods) { method ->
           // test service against method
        }
     }

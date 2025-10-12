@@ -3,10 +3,7 @@ package io.kotest.datatest
 import io.kotest.engine.names.WithDataTestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.spec.style.scopes.FunSpecContainerScope
-import io.kotest.core.spec.style.scopes.FunSpecRootScope
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.stable.IsStableType
 import io.kotest.matchers.shouldBe
@@ -42,16 +39,16 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
    context("data test with name function and varargs") {
-      withData<SimpleClass,_>(
-         { "simple${it.a}${it.b}" },
+      withData(
+         nameFn = { "simple${it.a}${it.b}" },
          SimpleClass("a1", "b1"),
          SimpleClass("a2", "b2"),
       ) {}
    }
 
    context("data test with name function and sequence") {
-      withData<SimpleClass,_>(
-         { "simple${it.a}${it.b}" },
+      withData(
+         nameFn = { "simple${it.a}${it.b}" },
          sequenceOf(
             SimpleClass("a1", "b1"),
             SimpleClass("a2", "b2"),
@@ -60,8 +57,8 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
    context("data test with name function and collection") {
-      withData<SimpleClass,_>(
-         { "simple${it.a}${it.b}" },
+      withData(
+         nameFn = { "simple${it.a}${it.b}" },
          listOf(
             SimpleClass("a1", "b1"),
             SimpleClass("a2", "b2"),
@@ -70,8 +67,8 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
    context("data test with name function and range") {
-      withData<Int,_>(
-         { i: Int -> "Test $i" },
+      withData(
+         nameFn = { i: Int -> "Test $i" },
          1..3
       ) {}
    }

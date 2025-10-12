@@ -12,9 +12,9 @@ class NullableDataTest : FunSpec() {
       )
 
       context("data tests should support nulls") {
-         withData<String?,_>({ "Test with $it" }, listOfData) { }
+         withData(nameFn = { "Test with $it" }, listOfData) { }
       }
 
-      withData<String?,_>({ "Test with $it" }, listOfData) { }
+      withData(nameFn = { "Test with $it" }, listOfData) { }
    }
 }

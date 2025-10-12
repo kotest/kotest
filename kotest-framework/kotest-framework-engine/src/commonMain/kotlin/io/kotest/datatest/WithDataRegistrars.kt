@@ -48,7 +48,7 @@ fun <T, C : TestScope> WithDataRootRegistrar<C>.withData(
  */
 suspend fun <T, C : TestScope> WithDataContainerRegistrar<C>.withData(
    first: T,
-   second: T, // we need second to help the compiler disambiguate between this and the sequence version
+   second: T, // we need two elements here so the compiler can disambiguate from the sequence version
    vararg rest: T,
    test: suspend C.(T) -> Unit
 ) {
@@ -64,7 +64,7 @@ suspend fun <T, C : TestScope> WithDataContainerRegistrar<C>.withData(
 )
 fun <T, C : TerminalScope> WithDataTerminalRegistrar<C>.withData(
    first: T,
-   second: T, // we need second to help the compiler disambiguate between this and the sequence version
+   second: T, // we need two elements here so the compiler can disambiguate from the sequence version
    vararg rest: T,
    test: suspend C.(T) -> Unit
 ): Nothing = error(WithDataTerminalRegistrar.ERROR_MESSAGE)
@@ -76,7 +76,7 @@ fun <T, C : TerminalScope> WithDataTerminalRegistrar<C>.withData(
 fun <T, C : TestScope> WithDataRootRegistrar<C>.withData(
    nameFn: (T) -> String,
    first: T,
-   second: T,  // we need two elements here so the compiler can disambiguate from the sequence version
+   second: T, // we need two elements here so the compiler can disambiguate from the sequence version
    vararg rest: T,
    test: suspend C.(T) -> Unit
 ) {
