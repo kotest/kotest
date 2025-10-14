@@ -154,11 +154,7 @@ abstract class KotestPlugin : Plugin<Project> {
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
                         // Testable target: mingwX64, platformType: native, disambiguationClassifier: mingwX64
                         KotlinPlatformType.wasm -> handleWasm(target)
-                        KotlinPlatformType.native -> {
-                           // we don't want to wire stuff to non-buildable targets (i.e. ios target on a linux host)
-                           // so we check if the target is publishable
-                           if (target.publishable) handleNative(target)
-                        }
+                        KotlinPlatformType.native -> handleNative(target)
                      }
                   }
                }
@@ -183,6 +179,9 @@ abstract class KotestPlugin : Plugin<Project> {
          null -> target.project.logger.info("> Skipping tests for ${target.name} because no task $nativeTaskName found")
 
          is KotlinNativeTest -> {
+            // we don't want to wire stuff to non-enabled targets (i.e. ios target on a linux host)
+            // so we check if the task is enabled
+            if (!existing.isEnabled) return
 
             val moduleTestDir = getModuleTestReportsDir(target.project, existing.name).get()
             moduleTestDir.asFile.mkdirs()

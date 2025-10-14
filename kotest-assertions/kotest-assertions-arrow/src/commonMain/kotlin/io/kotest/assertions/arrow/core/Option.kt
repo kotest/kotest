@@ -5,6 +5,7 @@ import arrow.core.Option
 import arrow.core.Some
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
+import io.kotest.matchers.assertionCounter
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -28,20 +29,22 @@ import kotlin.contracts.contract
  */
 @OptIn(ExperimentalContracts::class)
 public fun <A> Option<A>.shouldBeSome(failureMessage: () -> String = { "Expected Some, but found None" }): A {
-  contract {
-    returns() implies (this@shouldBeSome is Some<A>)
-  }
-  return when (this) {
-    None -> throw AssertionError(failureMessage())
-    is Some -> value
-  }
+   contract {
+      returns() implies (this@shouldBeSome is Some<A>)
+   }
+   assertionCounter.inc()
+
+   return when (this) {
+      None -> throw AssertionError(failureMessage())
+      is Some -> value
+   }
 }
 
 public infix fun <A> Option<A>.shouldBeSome(a: A): A =
-  shouldBeSome().shouldBe(a)
+   shouldBeSome().shouldBe(a)
 
 public infix fun <A> Option<A>.shouldNotBeSome(a: A): A =
-  shouldBeSome().shouldNotBe(a)
+   shouldBeSome().shouldNotBe(a)
 
 /**
  * smart casts to [None] and fails with [failureMessage] otherwise.
@@ -63,11 +66,13 @@ public infix fun <A> Option<A>.shouldNotBeSome(a: A): A =
  */
 @OptIn(ExperimentalContracts::class)
 public fun <A> Option<A>.shouldBeNone(failureMessage: (Some<A>) -> String = { "Expected None, but found Some with value ${it.value}" }): None {
-  contract {
-    returns() implies (this@shouldBeNone is None)
-  }
-  return when (this) {
-    None -> None
-    is Some -> throw AssertionError(failureMessage(this))
-  }
+   contract {
+      returns() implies (this@shouldBeNone is None)
+   }
+   assertionCounter.inc()
+
+   return when (this) {
+      None -> None
+      is Some -> throw AssertionError(failureMessage(this))
+   }
 }
