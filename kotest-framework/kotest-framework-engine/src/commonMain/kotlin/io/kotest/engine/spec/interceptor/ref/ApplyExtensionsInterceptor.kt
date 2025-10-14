@@ -37,6 +37,10 @@ internal class ApplyExtensionsInterceptor(
       return runCatching {
          val classes = ref.kclass.annotation<ApplyExtension>()?.extensions?.toList() ?: emptyList()
          classes.map { instantiations.newInstanceNoArgConstructorOrObjectInstance(it) }
+      }.onFailure {
+         // spec would not have been started at this point, so we need to start it so we can fail it with an error
+         listener.specStarted(ref)
+         listener.specFinished(ref, TestResultBuilder.builder().withError(it).build())
       }.flatMap { exts ->
 
          exts.forEach {
@@ -50,11 +54,6 @@ internal class ApplyExtensionsInterceptor(
                registry.remove(it, ref.kclass)
             }
          }
-
-      }.onFailure {
-         // spec would not have been started at this point, so we need to start it so we can fail it with an error
-         listener.specStarted(ref)
-         listener.specFinished(ref, TestResultBuilder.builder().withError(it).build())
       }
    }
 }
