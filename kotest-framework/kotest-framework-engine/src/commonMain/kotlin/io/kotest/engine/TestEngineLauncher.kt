@@ -15,6 +15,7 @@ import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.ConsoleTestEngineListener
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -86,13 +87,17 @@ data class TestEngineLauncher(
       return if (listener == null) this else copy(listeners = listeners + listener)
    }
 
+   fun withNoOpListener(): TestEngineLauncher {
+      return withListener(NoopTestEngineListener)
+   }
+
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
    fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher =
       withSpecRefs(specs.map { SpecRef.Reference(it) })
 
    fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
    fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {
-      return copy(refs = refs)
+      return copy(refs = this.refs + refs)
    }
 
    /**
@@ -170,7 +175,7 @@ data class TestEngineLauncher(
 
       val safeListener = ThreadSafeTestEngineListener( // to avoid race conditions with concurrent spec execution
          PinnedSpecTestEngineListener( // to ensure we don't interleave output in TCSM which requires sequential outputs
-            CompositeTestEngineListener(listeners + collecting)
+            CompositeTestEngineListener(listeners + collecting) // add in a collecting listener so we know to exit appropriately on errors
          )
       )
 
@@ -222,4 +227,5 @@ data class TestEngineLauncher(
          engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
       }
    }
+
 }

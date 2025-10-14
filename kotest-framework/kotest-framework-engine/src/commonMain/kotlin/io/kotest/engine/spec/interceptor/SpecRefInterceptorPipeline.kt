@@ -58,7 +58,7 @@ internal class SpecRefInterceptorPipeline(
          if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
          if (platform == Platform.JVM) DisabledIfInterceptor(listener, context.specExtensions()) else null,
          IgnoredSpecInterceptor(listener, context.specExtensions()),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.registry) else null,
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.listener, context.registry) else null,
          DescriptorFilterSpecRefInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
 //         SystemPropertyDescriptorFilterInterceptor(listener, context.specExtensions()),
          TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
