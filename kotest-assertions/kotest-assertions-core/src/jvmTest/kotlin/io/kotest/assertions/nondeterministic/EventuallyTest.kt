@@ -1,7 +1,7 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
@@ -136,7 +136,7 @@ class EventuallyTest : FunSpec() {
                throw RuntimeException("foo")
             }
          }
-         failure.message shouldContain "Block failed after 150ms; attempted 6 time(s)"
+         failure.message shouldContain "Block failed after 150ms; attempted 7 time(s)"
          failure.message shouldContain "The first error was caused by: foo"
          failure.message shouldContain "The last error was caused by: foo"
       }
@@ -247,13 +247,13 @@ class EventuallyTest : FunSpec() {
          val message = shouldFail {
             testEventually(400.milliseconds) {
                if (count++ == 0) {
-                 AssertionErrorBuilder.fail("first")
+                  AssertionErrorBuilder.fail("first")
                } else {
-                 AssertionErrorBuilder.fail("last")
+                  AssertionErrorBuilder.fail("last")
                }
             }
          }.message
-         message shouldContain "Block failed after 400ms; attempted $count time(s)"
+         message shouldContain "Block failed after 400ms; attempted ${count + 1} time(s)"
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
@@ -268,7 +268,7 @@ class EventuallyTest : FunSpec() {
          val message = shouldFail {
             testEventually(config) {
                if (count++ == 0) {
-                 AssertionErrorBuilder.fail("first")
+                  AssertionErrorBuilder.fail("first")
                } else {
                   error("last")
                }
@@ -308,7 +308,7 @@ class EventuallyTest : FunSpec() {
                str.shouldNotBeNull()
             }
          }
-         failure.message shouldContain "Block failed after 50ms; attempted 2 time(s)"
+         failure.message shouldContain "Block failed after 50ms; attempted 3 time(s)"
          failure.message shouldContain "The first error was caused by: Expected value to not be null, but was null."
          failure.message shouldContain "The last error was caused by: Expected value to not be null, but was null."
          start.elapsedNow() shouldBe 50.milliseconds
@@ -387,7 +387,7 @@ class EventuallyTest : FunSpec() {
                withClue("Eventually which should pass") {
                   testEventually(2.seconds) {
                      if (target.hasNotPassedNow()) {
-                       AssertionErrorBuilder.fail("target has not passed")
+                        AssertionErrorBuilder.fail("target has not passed")
                      }
                   }
                }
@@ -469,9 +469,9 @@ class EventuallyTest : FunSpec() {
             }
             testEventually(config) {
                if (count++ == 0) {
-                 AssertionErrorBuilder.fail("first")
+                  AssertionErrorBuilder.fail("first")
                } else {
-                 AssertionErrorBuilder.fail("last")
+                  AssertionErrorBuilder.fail("last")
                }
             }
          }.message shouldNotContain "The first error was caused by: first"
@@ -523,6 +523,28 @@ class EventuallyTest : FunSpec() {
             count shouldBe 100
          }
          count shouldBe 100
+      }
+
+      test("eventually should throw AssertionError if function suspends and does not pass after duration").config(
+         coroutineTestScope = false
+      ) {
+         shouldThrow<AssertionError> {
+            eventually(100.milliseconds) {
+               delay(10)
+               "error" shouldBe "ok"
+            }
+         }
+      }
+
+      test("eventually should throw AssertionError if function does not return within specified duration").config(
+         coroutineTestScope = false
+      ) {
+         shouldThrow<AssertionError> {
+            eventually(10.milliseconds) {
+               delay(1.days)
+               "error" shouldBe "ok"
+            }
+         }
       }
    }
 }
