@@ -1,19 +1,14 @@
 package io.kotest.engine.spec
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
-import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.instantiateOrObject
 import io.kotest.engine.mapError
-import io.kotest.common.reflection.annotation
 import kotlin.reflect.KClass
-import kotlin.reflect.full.createInstance
-import kotlin.reflect.full.isSubclassOf
 
 /**
  * Creates an instance of a [Spec].
@@ -61,26 +56,18 @@ class SpecInstantiator(
       }
    }
 
-   /**
-    * Returns any Extensions of type T registered via @ApplyExtension on the spec.
-    */
-   private inline fun <reified T : Extension> extensionsFromApplyExtension(kclass: KClass<*>): List<T> {
-      val components = kclass.annotation<ApplyExtension>()?.extensions ?: return emptyList()
-      return components.filter { it.isSubclassOf(T::class) }.map { (it.objectInstance ?: it.createInstance()) as T }
-   }
-
    private fun constructorExtensions(
       kclass: KClass<*>
    ): List<ConstructorExtension> {
       return projectConfigResolver.extensionsOf<ConstructorExtension>() +
-         extensionsFromApplyExtension<ConstructorExtension>(kclass)
+         registry.get(kclass).filterIsInstance<ConstructorExtension>()
    }
 
    private fun postInstantiationExtensions(
       kclass: KClass<*>
    ): List<PostInstantiationExtension> {
       return projectConfigResolver.extensionsOf<PostInstantiationExtension>() +
-         extensionsFromApplyExtension<PostInstantiationExtension>(kclass)
+         registry.get(kclass).filterIsInstance<PostInstantiationExtension>()
    }
 }
 

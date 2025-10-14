@@ -18,7 +18,7 @@ private var counter = 0
 class LauncherTestFilterTest : FunSpec() {
    init {
       // disabled until filters can be added to one launcher independently
-      test("!filter added via launcher should filter test cases") {
+      test("filter added via launcher should filter test cases") {
 
          val filter = object : DescriptorFilter {
             override fun filter(descriptor: Descriptor): DescriptorFilterResult {
@@ -39,7 +39,7 @@ class LauncherTestFilterTest : FunSpec() {
             .launch()
       }
 
-      test("!filter with test path added via launcher should filter test cases") {
+      test("filter with test path added via launcher should filter test cases") {
 
          val filter = object : DescriptorFilter {
             override fun filter(descriptor: Descriptor): DescriptorFilterResult {
