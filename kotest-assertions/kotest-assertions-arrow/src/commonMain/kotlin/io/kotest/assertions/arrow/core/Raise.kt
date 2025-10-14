@@ -4,6 +4,7 @@ import arrow.core.raise.Raise
 import arrow.core.raise.recover
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
+import io.kotest.matchers.assertionCounter
 
 /**
  * Verifies if a block of code will raise a specified type of [T] (or subclasses).
@@ -18,17 +19,19 @@ import io.kotest.assertions.print.print
  * ```
  */
 public inline fun <reified T> shouldRaise(block: Raise<Any?>.() -> Any?): T {
-  val expectedRaiseClass = T::class
-  return recover({
-    block(this)
-     AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but nothing was raised.")
-  }) { raised ->
-    when (raised) {
-      is T -> raised
-      null -> AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but <null> was raised instead.")
-      else -> AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but ${raised::class.simpleName} was raised instead.")
-    }
-  }
+   assertionCounter.inc()
+
+   val expectedRaiseClass = T::class
+   return recover({
+      block(this)
+      AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but nothing was raised.")
+   }) { raised ->
+      when (raised) {
+         is T -> raised
+         null -> AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but <null> was raised instead.")
+         else -> AssertionErrorBuilder.fail("Expected to raise ${expectedRaiseClass.simpleName} but ${raised::class.simpleName} was raised instead.")
+      }
+   }
 }
 
 /**
@@ -41,7 +44,9 @@ public inline fun <reified T> shouldRaise(block: Raise<Any?>.() -> Any?): T {
  * ```
  */
 public inline fun <T> shouldNotRaise(block: Raise<Any?>.() -> T): T {
-  return recover(block) { raised ->
-     AssertionErrorBuilder.fail("No raise expected, but ${raised.print().value} was raised.")
-  }
+   assertionCounter.inc()
+
+   return recover(block) { raised ->
+      AssertionErrorBuilder.fail("No raise expected, but ${raised.print().value} was raised.")
+   }
 }
