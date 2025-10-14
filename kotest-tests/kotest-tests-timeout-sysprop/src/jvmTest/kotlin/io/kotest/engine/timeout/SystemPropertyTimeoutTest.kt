@@ -17,7 +17,8 @@ class SystemPropertyTimeoutTest : FunSpec() {
       test("system properties can be used for test timeouts") {
          withSystemProperty(KotestEngineProperties.TIMEOUT, "500") {
             val collector = CollectingTestEngineListener()
-            TestEngineLauncher(collector)
+            TestEngineLauncher()
+               .withListener(collector)
                .withClasses(TimeoutTest::class)
                .launch()
             collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
@@ -27,7 +28,8 @@ class SystemPropertyTimeoutTest : FunSpec() {
       test("system properties can be used for invocation timeouts") {
          withSystemProperty(KotestEngineProperties.INVOCATION_TIMEOUT, "10") {
             val collector = CollectingTestEngineListener()
-            TestEngineLauncher(collector)
+            TestEngineLauncher()
+               .withListener(collector)
                .withClasses(TimeoutTest::class)
                .launch()
             collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
