@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package io.kotest.matchers
 
 import io.kotest.assertions.print.Printed
