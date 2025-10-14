@@ -1,0 +1,18 @@
+
+<configuration>
+    <appender name="MEMORY" class="ch.qos.logback.core.read.ListAppender">
+    </appender>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} -%kvp- %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT" />
+    </root>
+    <logger name="org.springframework.boot.web.embedded.tomcat.TomcatWebServer"
+            level="INFO">
+        <appender-ref ref="MEMORY"/>
+    </logger>
+</configuration>

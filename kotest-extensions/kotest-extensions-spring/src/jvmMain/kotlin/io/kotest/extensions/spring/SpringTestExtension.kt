@@ -6,9 +6,9 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.isRootTest
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.withContext
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
@@ -18,32 +18,7 @@ import org.springframework.test.context.TestContextManager
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.UUID
-import kotlin.coroutines.AbstractCoroutineContextElement
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 import kotlin.reflect.KClass
-
-class SpringTestContextCoroutineContextElement(val value: TestContextManager) : AbstractCoroutineContextElement(Key) {
-   companion object Key : CoroutineContext.Key<SpringTestContextCoroutineContextElement>
-}
-
-/**
- * Determines how the spring test context lifecycle is mapped to test cases.
- *
- * [SpringTestLifecycleMode.Root] will setup and teardown the test context before and after root tests only.
- * [SpringTestLifecycleMode.Test] will setup and teardown the test context only at leaf tests.
- *
- */
-enum class SpringTestLifecycleMode {
-   Root, Test
-}
-
-/**
- * Returns the [TestContextManager] from a test or spec.
- */
-suspend fun testContextManager(): TestContextManager =
-   coroutineContext[SpringTestContextCoroutineContextElement]?.value
-      ?: error("No TestContextManager defined in this coroutine context")
 
 @Deprecated("Use SpringExtension which combines this and SpringAutowireConstructorExtension. Deprecated since 6.0")
 class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test) : TestCaseExtension,
@@ -138,5 +113,5 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
 
    private val ignoreFinalWarning =
       ignoreSpringListenerOnFinalClassWarning ||
-         !System.getProperty(Properties.springIgnoreWarning, "false").toBoolean()
+         !System.getProperty(Properties.SPRING_IGNORE_WARNING, "false").toBoolean()
 }

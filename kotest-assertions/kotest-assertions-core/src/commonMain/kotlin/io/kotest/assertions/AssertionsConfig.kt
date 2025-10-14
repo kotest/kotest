@@ -4,7 +4,9 @@ import io.kotest.common.sysprop
 import io.kotest.common.syspropOrEnv
 
 object AssertionsConfigSystemProperties {
-   const val DISABLE_NA_NEQUALITY = "kotest.assertions.nan.equality.disable"
+   const val DISABLE_NAN_NEQUALITY = "kotest.assertions.nan.equality.disable"
+   @Deprecated("Use correct spelling")
+   const val DISABLE_NA_NEQUALITY = DISABLE_NAN_NEQUALITY
    const val COLLECTIONS_PRINT_SIZE = "kotest.assertions.collection.print.size"
 }
 
@@ -29,7 +31,7 @@ object AssertionsConfig {
       get() = sysprop("kotest.assertions.collection.enumerate.size")?.toIntOrNull() ?: 20
 
    val disableNaNEquality: Boolean
-      get() = sysprop(AssertionsConfigSystemProperties.DISABLE_NA_NEQUALITY)?.toBoolean() ?: false
+      get() = sysprop(AssertionsConfigSystemProperties.DISABLE_NAN_NEQUALITY)?.toBoolean() ?: false
 
    val maxCollectionPrintSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue(AssertionsConfigSystemProperties.COLLECTIONS_PRINT_SIZE, 20, String::toInt)

@@ -68,6 +68,9 @@ class EqualityOfFieldsTest: WordSpec() {
          "false for custom type" {
             typeIsJavaOrKotlinBuiltIn(ReflectionKtTest.Car("C1", 10000, 430)) shouldBe false
          }
+         "false for anonymous classes" {
+            typeIsJavaOrKotlinBuiltIn(object : Any() {}) shouldBe false
+         }
       }
    }
 }

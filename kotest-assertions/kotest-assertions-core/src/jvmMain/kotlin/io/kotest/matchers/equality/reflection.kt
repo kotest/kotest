@@ -545,7 +545,7 @@ internal fun isEnum(value: Any?) = when (value) {
 }
 
 internal fun typeIsJavaOrKotlinBuiltIn(value: Any): Boolean {
-   val typeName = value::class.java.canonicalName
+   val typeName = value::class.java.canonicalName ?: return false
    return typeName.startsWith("kotlin.") || typeName.startsWith("java.")
 }
 
