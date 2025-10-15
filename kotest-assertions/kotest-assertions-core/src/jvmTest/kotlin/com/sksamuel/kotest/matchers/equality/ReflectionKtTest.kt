@@ -15,7 +15,9 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
 class ReflectionKtTest : FunSpec() {
-   class HasComputedField(val name: String) { val random: Int get() = Random.nextInt()}
+   class HasComputedField(val name: String) {
+      val random: Int get() = Random.nextInt()
+   }
 
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
@@ -35,7 +37,7 @@ class ReflectionKtTest : FunSpec() {
       name: String,
       val students: Array<Person> = emptyArray(),
       internal val age: Int = 123
-   ): Person(name)
+   ) : Person(name)
 
    class DocMetadata(val field1: String)
 
@@ -387,10 +389,20 @@ class ReflectionKtTest : FunSpec() {
             Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(actual)
          }.message shouldContain "expected:<[1.0]> but was:<[0.0]>"
       }
+
+      test("should work for nested classes") {
+         X.Y("a", "b") shouldBeEqualToComparingFields X.Y("a", "b")
+      }
    }
 
    data class KeyValuePair<T : Any>(
       val key: String,
       val value: T
-      )
+   )
+
+   class X {
+      class Y(val a: String, val b: String)
+   }
 }
+
+

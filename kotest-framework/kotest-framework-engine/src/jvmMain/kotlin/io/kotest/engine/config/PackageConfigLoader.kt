@@ -4,6 +4,7 @@ import io.kotest.core.config.AbstractPackageConfig
 import io.kotest.core.spec.Spec
 import io.kotest.engine.instantiateOrObject
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.reflect.full.isSubclassOf
 
 internal actual fun loadPackageConfigs(spec: Spec): List<AbstractPackageConfig> = PackageConfigLoader.configs(spec)
 
@@ -50,11 +51,25 @@ internal object PackageConfigLoader {
          listOf(packageName)
    }
 
+   /**
+    * Loads the package configuration class whose expected FQN is derived from [packageConfigName].
+    *
+    * Behavior:
+    * - Returns `null` if the class does not exist.
+    * - Returns `null` if the class exists but does not extend `AbstractPackageConfig`.
+    * - Returns an `AbstractPackageConfig` if the class exists, extends `AbstractPackageConfig` and can be instantiated.
+    * - Throws if the class exists, extends `AbstractPackageConfig` but instantiation fails.
+    *
+    * @param packageName the package to probe.
+    * @return the instantiated `AbstractPackageConfig` or `null` when not present or not a subClass.
+    * @throws Throwable if instantiation of a valid subtype fails.
+    */
    private fun loadPackageConfig(packageName: String): AbstractPackageConfig? {
-      // ok to skip if the class doesn't exist
-      val kclass = runCatching { Class.forName(packageConfigName(packageName)).kotlin }.getOrNull() ?: return null
-      // but should fail if the class exists but cannot be instantiated
-      return instantiateOrObject(kclass).getOrThrow() as AbstractPackageConfig
+      val kClass = runCatching { Class.forName(packageConfigName(packageName)).kotlin }.getOrNull()
+         ?.takeIf { it.isSubclassOf(AbstractPackageConfig::class) }
+         ?: return null
+
+      return instantiateOrObject(kClass).getOrThrow() as AbstractPackageConfig
    }
 
    private fun packageConfigName(packageName: String) = "$packageName.PackageConfig"

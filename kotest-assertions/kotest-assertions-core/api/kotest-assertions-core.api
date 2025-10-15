@@ -31,6 +31,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 
 public final class io/kotest/assertions/AssertionsConfigSystemProperties {
 	public static final field COLLECTIONS_PRINT_SIZE Ljava/lang/String;
+	public static final field DISABLE_NAN_NEQUALITY Ljava/lang/String;
 	public static final field DISABLE_NA_NEQUALITY Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfigSystemProperties;
 }
