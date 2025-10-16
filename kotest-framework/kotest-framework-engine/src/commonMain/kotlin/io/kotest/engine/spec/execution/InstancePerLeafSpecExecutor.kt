@@ -118,10 +118,7 @@ internal class InstancePerLeafSpecExecutor(
                }
 
                is SendIgnoredNotification -> context.listener.testIgnored(ops.testCase, ops.reason)
-               is SendFinishedNotification -> {
-                  println("test finished: ${ops.testCase.descriptor.path()}")
-                  context.listener.testFinished(ops.testCase, ops.result)
-               }
+               is SendFinishedNotification -> context.listener.testFinished(ops.testCase, ops.result)
             }
          }
       }
@@ -174,9 +171,6 @@ internal class InstancePerLeafSpecExecutor(
          specContext: SpecContext,
          ref: SpecRef
       ): TestResult {
-         println("executeTest: start")
-         println(testCase.descriptor.path())
-
          // we need a special listener that only listens to the target test case events
          val listener = TargetListeningListener(target, context.listener)
          val executor = TestCaseExecutor(listener, context)
@@ -193,12 +187,6 @@ internal class InstancePerLeafSpecExecutor(
             specContext = specContext
          )
          results.completed(testCase, result)
-
-         println("executeTest: finish")
-         println(testCase.descriptor.path())
-
-         println(testScope.discoveredTests)
-         println(listener.testListenerOperation)
 
          // Add all discovered tests first if they exist
          discoveredOperations.addAll(testScope.discoveredTests)
@@ -278,10 +266,7 @@ internal class InstancePerLeafSpecExecutor(
          var testListenerOperation: TestListenerOperation? = null
 
          override suspend fun testStarted(testCase: TestCase) {
-            if (target == null || testCase.type == TestType.Test) {
-               println("test started: ${testCase.descriptor.path()}")
-               delegate.testStarted(testCase)
-            }
+            if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
          }
 
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {
@@ -290,10 +275,8 @@ internal class InstancePerLeafSpecExecutor(
          }
 
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            if (testCase.type == TestType.Test) {
-               println("test finished: ${testCase.descriptor.path()}")
-               delegate.testFinished(testCase, result)
-            } else if (target == null) testListenerOperation = SendFinishedNotification(testCase, result)
+            if (testCase.type == TestType.Test) delegate.testFinished(testCase, result)
+            else if (target == null) testListenerOperation = SendFinishedNotification(testCase, result)
          }
       }
    }
