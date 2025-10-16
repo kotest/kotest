@@ -118,7 +118,10 @@ internal class InstancePerLeafSpecExecutor(
                }
 
                is SendIgnoredNotification -> context.listener.testIgnored(ops.testCase, ops.reason)
-               is SendFinishedNotification -> context.listener.testFinished(ops.testCase, ops.result)
+               is SendFinishedNotification -> {
+                  println("test finished: ${ops.testCase.descriptor.path()}")
+                  context.listener.testFinished(ops.testCase, ops.result)
+               }
             }
          }
       }
@@ -171,6 +174,9 @@ internal class InstancePerLeafSpecExecutor(
          specContext: SpecContext,
          ref: SpecRef
       ): TestResult {
+         println("executeTest: start")
+         println(testCase.descriptor.path())
+
          // we need a special listener that only listens to the target test case events
          val listener = TargetListeningListener(target, context.listener)
          val executor = TestCaseExecutor(listener, context)
@@ -188,21 +194,18 @@ internal class InstancePerLeafSpecExecutor(
          )
          results.completed(testCase, result)
 
-         if (testScope.discoveredTests.isEmpty()) {
-            // We can send test result notification immediately because the testCase doesn't have multiple children
-            listener.testListenerOperation?.let {
-               when (it) {
-                  is SendIgnoredNotification -> context.listener.testIgnored(it.testCase, it.reason)
-                  is SendFinishedNotification -> context.listener.testFinished(it.testCase, it.result)
-               }
-            }
-         } else {
-            // Child test cases are registered before test result notification.
-            discoveredOperations.addAll(testScope.discoveredTests)
-            // We should delay sending test result notification because the testCase has multiple children.
-            // The test results should be notified after completing all child test case executions.
-            listener.testListenerOperation?.let { discoveredOperations.add(it) }
-         }
+         println("executeTest: finish")
+         println(testCase.descriptor.path())
+
+         println(testScope.discoveredTests)
+         println(listener.testListenerOperation)
+
+         // Add all discovered tests first if they exist
+         discoveredOperations.addAll(testScope.discoveredTests)
+
+         // Always add the test listener operation if it exists
+         // The order matters - discovered tests should be processed before the listener operation
+         listener.testListenerOperation?.let { discoveredOperations.add(it) }
 
          return result
       }
@@ -275,7 +278,10 @@ internal class InstancePerLeafSpecExecutor(
          var testListenerOperation: TestListenerOperation? = null
 
          override suspend fun testStarted(testCase: TestCase) {
-            if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
+            if (target == null || testCase.type == TestType.Test) {
+               println("test started: ${testCase.descriptor.path()}")
+               delegate.testStarted(testCase)
+            }
          }
 
          override suspend fun testIgnored(testCase: TestCase, reason: String?) {
@@ -284,8 +290,10 @@ internal class InstancePerLeafSpecExecutor(
          }
 
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-            if (testCase.type == TestType.Test) delegate.testFinished(testCase, result)
-            else if (target == null) testListenerOperation = SendFinishedNotification(testCase, result)
+            if (testCase.type == TestType.Test) {
+               println("test finished: ${testCase.descriptor.path()}")
+               delegate.testFinished(testCase, result)
+            } else if (target == null) testListenerOperation = SendFinishedNotification(testCase, result)
          }
       }
    }
