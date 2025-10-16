@@ -1,6 +1,7 @@
 package io.kotest.assertions.arrow.fx.coroutines
 
 import arrow.fx.coroutines.ExitCase
+import io.kotest.assertions.AssertionErrorBuilder
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import kotlinx.coroutines.CancellationException
@@ -13,9 +14,9 @@ public fun ExitCase.shouldBeCancelled(
     returns() implies (this@shouldBeCancelled is ExitCase.Cancelled)
   }
   return when (this) {
-    is ExitCase.Completed -> throw AssertionError(failureMessage(this))
+    is ExitCase.Completed -> AssertionErrorBuilder.fail(failureMessage(this))
     is ExitCase.Cancelled -> this
-    is ExitCase.Failure -> throw AssertionError(failureMessage(this))
+    is ExitCase.Failure -> AssertionErrorBuilder.fail(failureMessage(this))
   }
 }
 
@@ -38,8 +39,8 @@ public fun ExitCase.shouldBeCompleted(
   }
   return when (this) {
     is ExitCase.Completed -> this
-    is ExitCase.Cancelled -> throw AssertionError(failureMessage(this))
-    is ExitCase.Failure -> throw AssertionError(failureMessage(this))
+    is ExitCase.Cancelled -> AssertionErrorBuilder.fail(failureMessage(this))
+    is ExitCase.Failure -> AssertionErrorBuilder.fail(failureMessage(this))
   }
 }
 
@@ -51,8 +52,8 @@ public fun ExitCase.shouldBeFailure(
     returns() implies (this@shouldBeFailure is ExitCase.Failure)
   }
   return when (this) {
-    is ExitCase.Completed -> throw AssertionError(failureMessage(this))
-    is ExitCase.Cancelled -> throw AssertionError(failureMessage(this))
+    is ExitCase.Completed -> AssertionErrorBuilder.fail(failureMessage(this))
+       is ExitCase.Cancelled -> AssertionErrorBuilder.fail(failureMessage(this))
     is ExitCase.Failure -> this
   }
 }

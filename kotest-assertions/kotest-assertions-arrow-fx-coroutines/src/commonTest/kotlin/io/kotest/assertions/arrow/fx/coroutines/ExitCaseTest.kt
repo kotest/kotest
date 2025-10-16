@@ -2,6 +2,7 @@ package io.kotest.assertions.arrow.fx.coroutines
 
 import arrow.fx.coroutines.ExitCase
 import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.map
@@ -73,4 +74,42 @@ class ExitCaseTest : StringSpec({
       ExitCase.Failure(e).shouldBeFailure(e)
     }
   }
+
+   "shouldBeCancelled collects clues" {
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected ExitCase.Cancelled, but found ExitCase.Completed") {
+         withClue("a clue:") { ExitCase.Completed.shouldBeCancelled() }
+      }
+
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected ExitCase.Cancelled, but found Failure(failure=java.lang.RuntimeException: an error)") {
+         withClue("a clue:") { ExitCase.Failure(RuntimeException("an error")).shouldBeCancelled() }
+      }
+   }
+
+   "shouldBeCompleted collects clues" {
+      shouldThrowWithMessage<AssertionError>(
+         "a clue:\nExpected ExitCase.Completed, but found Cancelled(exception=java.util.concurrent.CancellationException: an error)",
+      ) {
+         withClue("a clue:") { ExitCase.Cancelled(CancellationException("an error")).shouldBeCompleted() }
+      }
+
+      shouldThrowWithMessage<AssertionError>(
+         "a clue:\nExpected ExitCase.Completed, but found Failure(failure=java.lang.RuntimeException: an error)",
+      ) {
+         withClue("a clue:") { ExitCase.Failure(RuntimeException("an error")).shouldBeCompleted() }
+      }
+   }
+
+   "shouldBeFailure collects clues" {
+      shouldThrowWithMessage<AssertionError>(
+         "a clue:\nExpected ExitCase.Failure, but found ExitCase.Completed",
+      ) {
+         withClue("a clue:") { ExitCase.Completed.shouldBeFailure() }
+      }
+
+      shouldThrowWithMessage<AssertionError>(
+         "a clue:\nExpected ExitCase.Failure, but found Cancelled(exception=java.util.concurrent.CancellationException: an error)",
+      ) {
+         withClue("a clue:") { ExitCase.Cancelled(CancellationException("an error")).shouldBeFailure() }
+      }
+   }
 })
