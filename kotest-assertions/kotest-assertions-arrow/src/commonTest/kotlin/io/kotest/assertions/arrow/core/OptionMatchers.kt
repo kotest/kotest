@@ -1,8 +1,11 @@
 package io.kotest.assertions.arrow.core
 
+import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -52,4 +55,16 @@ class OptionMatchers : StringSpec({
 
     Option.fromNullable<String>(null).shouldBeNone()
   }
+
+   "shouldNotBeSome collects clues" {
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected Some, but found None") {
+         withClue("a clue:") { None.shouldBeSome() }
+      }
+   }
+
+   "shouldNotBeNone collects clues" {
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected None, but found Some with value 1") {
+         withClue("a clue:") { Some(1).shouldBeNone() }
+      }
+   }
 })

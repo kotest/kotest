@@ -1,7 +1,10 @@
 package io.kotest.assertions.arrow.core
 
 import arrow.core.Ior
+import arrow.core.leftIor
+import arrow.core.rightIor
 import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
@@ -74,4 +77,22 @@ class IorMatchers : StringSpec({
       }
     }
   }
+
+   "shouldBeRight collects clues" {
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected Ior.Right, but found Left") {
+         withClue("a clue:") { 1.leftIor().shouldBeRight() }
+      }
+   }
+
+   "shouldBeLeft collects clues" {
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected Ior.Left, but found Right") {
+         withClue("a clue:") { 1.rightIor().shouldBeLeft() }
+      }
+   }
+
+   "shouldBeBoth collects clues" {
+      shouldThrowWithMessage<AssertionError>("a clue:\nExpected ior to be a Both, but was: Right") {
+         withClue("a clue:") { 1.rightIor().shouldBeBoth() }
+      }
+   }
 })
