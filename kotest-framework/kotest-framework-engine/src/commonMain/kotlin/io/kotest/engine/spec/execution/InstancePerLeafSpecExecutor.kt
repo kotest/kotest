@@ -188,21 +188,12 @@ internal class InstancePerLeafSpecExecutor(
          )
          results.completed(testCase, result)
 
-         if (testScope.discoveredTests.isEmpty()) {
-            // We can send test result notification immediately because the testCase doesn't have multiple children
-            listener.testListenerOperation?.let {
-               when (it) {
-                  is SendIgnoredNotification -> context.listener.testIgnored(it.testCase, it.reason)
-                  is SendFinishedNotification -> context.listener.testFinished(it.testCase, it.result)
-               }
-            }
-         } else {
-            // Child test cases are registered before test result notification.
-            discoveredOperations.addAll(testScope.discoveredTests)
-            // We should delay sending test result notification because the testCase has multiple children.
-            // The test results should be notified after completing all child test case executions.
-            listener.testListenerOperation?.let { discoveredOperations.add(it) }
-         }
+         // Add all discovered tests first if they exist
+         discoveredOperations.addAll(testScope.discoveredTests)
+
+         // Always add the test listener operation if it exists
+         // The order matters - discovered tests should be processed before the listener operation
+         listener.testListenerOperation?.let { discoveredOperations.add(it) }
 
          return result
       }
