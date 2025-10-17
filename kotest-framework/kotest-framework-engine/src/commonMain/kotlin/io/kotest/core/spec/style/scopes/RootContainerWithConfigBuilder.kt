@@ -10,6 +10,7 @@ import kotlin.time.Duration
 
 class RootContainerWithConfigBuilder<T>(
    private val name: TestName,
+   private val focused: Boolean,
    private val xdisabled: Boolean,
    private val context: RootScope,
    val contextFn: (TestScope) -> T

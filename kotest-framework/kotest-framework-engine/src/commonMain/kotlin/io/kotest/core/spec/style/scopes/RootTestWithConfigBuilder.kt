@@ -13,7 +13,8 @@ import kotlin.time.Duration
 class RootTestWithConfigBuilder(
   private val context: RootScope,
   private val name: TestName,
-  private val xdisabled: Boolean
+  private val focused: Boolean,
+  private val xdisabled: Boolean,
 ) {
 
    fun config(
