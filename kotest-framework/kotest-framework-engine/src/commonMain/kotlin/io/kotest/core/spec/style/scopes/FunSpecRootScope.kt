@@ -21,6 +21,14 @@ interface FunSpecRootScope : RootScope {
       ) { FunSpecContainerScope(this).test() }
    }
 
+   fun fcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) =
+      addContainer(
+         testName = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         focused = true,
+         disabled = false,
+         config = null
+      ) { FunSpecContainerScope(this).test() }
+
    /**
     * Adds a disabled container [RootTest] that uses a [FunSpecContainerScope] as the test context.
     */
@@ -40,12 +48,20 @@ interface FunSpecRootScope : RootScope {
          context = this
       ) { FunSpecContainerScope(it) }
 
+   fun fcontext(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         focused = true,
+         xdisabled = false,
+         context = this
+      ) { FunSpecContainerScope(it) }
+
    fun xcontext(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("context ").build(),
          focused = false,
          xdisabled = true,
-         context = this
+         context = this,
       ) { FunSpecContainerScope(it) }
 
    /**
@@ -56,21 +72,29 @@ interface FunSpecRootScope : RootScope {
          context = this,
          name = TestNameBuilder.builder(name).build(),
          focused = false,
-         xdisabled = false
+         xdisabled = false,
       )
 
    /**
-    * Adds a [RootTest], with the given name and default config.
+    * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
     */
-   fun test(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(name).build(),
-         focused = false,
-         disabled = false,
-         config = null,
-         test = test
+   fun ftest(name: String): RootTestWithConfigBuilder =
+      RootTestWithConfigBuilder(
+         context = this,
+         name = TestNameBuilder.builder(name).build(),
+         focused = true,
+         xdisabled = false,
       )
-   }
+   /**
+    * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
+    */
+   fun xtest(name: String): RootTestWithConfigBuilder =
+      RootTestWithConfigBuilder(
+         context = this,
+         name = TestNameBuilder.builder(name).build(),
+         focused = false,
+         xdisabled = true,
+      )
 
    /**
     * Adds a disabled [RootTest], with the given name and default config.
@@ -81,18 +105,30 @@ interface FunSpecRootScope : RootScope {
          focused = false,
          disabled = true,
          config = null,
-         test = test
+         test = test,
       )
    }
 
    /**
-    * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
+    * Adds a [RootTest], with the given name and default config.
     */
-   fun xtest(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(
-         context = this,
-         name = TestNameBuilder.builder(name).build(),
+   fun test(name: String, test: suspend TestScope.() -> Unit) {
+      addTest(
+         testName = TestNameBuilder.builder(name).build(),
          focused = false,
-         xdisabled = true
+         disabled = false,
+         config = null,
+         test = test,
       )
+   }
+
+   fun ftest(name: String, test: suspend TestScope.() -> Unit) {
+      addTest(
+         testName = TestNameBuilder.builder(name).build(),
+         focused = true,
+         disabled = false,
+         config = null,
+         test = test,
+      )
+   }
 }
