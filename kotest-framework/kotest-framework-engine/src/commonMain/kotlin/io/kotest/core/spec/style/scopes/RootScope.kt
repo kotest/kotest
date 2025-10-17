@@ -22,6 +22,7 @@ interface RootScope {
  */
 fun RootScope.addTest(
    testName: TestName,
+   focused: Boolean,
    disabled: Boolean,
    config: TestConfig?,
    test: suspend TestScope.() -> Unit
@@ -32,6 +33,7 @@ fun RootScope.addTest(
          test = test,
          type = TestType.Test,
          source = sourceRef(),
+         focused = focused,
          disabled = disabled,
          config = config,
          factoryId = null,
@@ -44,6 +46,7 @@ fun RootScope.addTest(
  */
 fun RootScope.addContainer(
    testName: TestName,
+   focused: Boolean,
    disabled: Boolean,
    config: TestConfig?,
    test: suspend TestScope.() -> Unit
@@ -54,6 +57,7 @@ fun RootScope.addContainer(
          test = test,
          type = TestType.Container,
          source = sourceRef(),
+         focused = focused,
          disabled = disabled,
          config = config,
          factoryId = null,

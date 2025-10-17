@@ -405,6 +405,7 @@ data class RootTest(
    val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
+   val focused: Boolean?, // if the test is explicitly focused, say through an annotation or method name
    val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
    val config: TestConfig?, // if specified by the test, may be null if no config is set using the spec DSL
    val factoryId: FactoryId?, // if this root test was added from a factory

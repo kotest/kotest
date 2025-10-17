@@ -65,7 +65,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 private class FreeSpecWithExtraRootTests : FreeSpec() {
    init {
       "foo" {
-         this@FreeSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, null) { }
+         this@FreeSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
       }
    }
 }
@@ -74,7 +74,7 @@ private class FreeSpecWithExtraRootTests : FreeSpec() {
 private class FunSpecWithExtraRootTests : FunSpec() {
    init {
       test("foo") {
-         this@FunSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, null) { }
+         this@FunSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
       }
    }
 }
@@ -82,7 +82,7 @@ private class FunSpecWithExtraRootTests : FunSpec() {
 private class ShouldSpecWithExtraRootTests : ShouldSpec() {
    init {
       should("foo") {
-         this@ShouldSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, null) { }
+         this@ShouldSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
       }
    }
 }
@@ -91,7 +91,7 @@ private class ShouldSpecWithExtraRootTests : ShouldSpec() {
 private class ExpectSpecWithExtraRootTests : ExpectSpec() {
    init {
       context("foo") {
-         this@ExpectSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, null) { }
+         this@ExpectSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
       }
    }
 }
@@ -99,7 +99,7 @@ private class ExpectSpecWithExtraRootTests : ExpectSpec() {
 private class FeatureSpecWithExtraRootTests : FeatureSpec() {
    init {
       feature("foo") {
-         this@FeatureSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, null) { }
+         this@FeatureSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
       }
    }
 }
