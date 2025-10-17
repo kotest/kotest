@@ -49,6 +49,14 @@ interface FeatureSpecRootScope : RootScope {
          context = this
       ) { FeatureSpecContainerScope(it) }
 
+   fun ffeature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
+         focused = true,
+         xdisabled = false,
+         context = this
+      ) { FeatureSpecContainerScope(it) }
+
    fun xfeature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
