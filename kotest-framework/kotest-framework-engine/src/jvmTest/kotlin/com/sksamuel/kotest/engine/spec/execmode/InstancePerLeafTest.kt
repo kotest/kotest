@@ -147,3 +147,34 @@ class InstancePerLeafTest4 : DescribeSpec({
       }
    }
 })
+
+class InstancePerLeafTest5 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   beforeSpec {
+      trace = ""
+   }
+
+   describe("d1") {
+      trace += "d1_"
+
+      context("c1") {
+         trace += "c1_"
+
+         it("i1") {
+            trace += "i1_"
+            trace shouldBe "d1_c1_i1_"
+         }
+
+         context("c2") {
+            trace += "c2_"
+
+            it("i2") {
+               trace += "i2_"
+               trace shouldBe "d1_c1_c2_i2_"
+            }
+         }
+      }
+   }
+})

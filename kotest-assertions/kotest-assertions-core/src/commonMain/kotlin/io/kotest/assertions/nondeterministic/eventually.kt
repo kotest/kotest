@@ -1,10 +1,11 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.matchers.ErrorCollectionMode
+import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -50,6 +51,20 @@ suspend fun <T> eventually(
 
    val start = nonDeterministicTestTimeSource().markNow()
    val control = EventuallyControl(config, start)
+   try {
+      return withTimeout(config.duration) {
+         runIterations(control, test, config)
+      }
+   } finally {
+      errorCollector.setCollectionMode(originalAssertionMode)
+   }
+}
+
+private suspend fun <T> runIterations(
+   control: EventuallyControl,
+   test: suspend () -> T,
+   config: EventuallyConfiguration
+): T {
 
    try {
       while (control.hasAttemptsRemaining()) {
@@ -68,19 +83,17 @@ suspend fun <T> eventually(
 
          control.step()
       }
-   } catch (e: ShortCircuitControlException) {
+   } catch (_: ShortCircuitControlException) {
       // Short-circuited out from retries, will throw below
 
       // If we terminated due to an exception, we are missing an iteration in the counter
       // since the step function is not invoked when terminating early
       control.iterations++
    } catch (e: Throwable) {
-      if(e is Error && e !is AssertionError) {
+      if (e is Error && e !is AssertionError) {
          throw e
       }
       control.iterations++
-   } finally {
-      errorCollector.setCollectionMode(originalAssertionMode)
    }
 
    throw AssertionErrorBuilder.create()
@@ -102,8 +115,10 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
       initialDelay = this.initialDelay,
       intervalFn = this.intervalFn ?: DurationFn { interval },
       retries = this.retries,
-      expectedExceptionsFn = { t -> this.expectedExceptions.any { it.isInstance(t) } ||
-         (this.expectedExceptions.isEmpty() && this.expectedExceptionsFn(t)) } ,
+      expectedExceptionsFn = { t ->
+         this.expectedExceptions.any { it.isInstance(t) } ||
+            (this.expectedExceptions.isEmpty() && this.expectedExceptionsFn(t))
+      },
       listener = this.listener ?: NoopEventuallyListener,
       shortCircuit = this.shortCircuit,
       includeFirst = this.includeFirst,
@@ -119,7 +134,7 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
-){
+) {
    init {
       require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
       require(retries >= 0) { "Retries must be greater than or equal to 0, but was $retries" }
