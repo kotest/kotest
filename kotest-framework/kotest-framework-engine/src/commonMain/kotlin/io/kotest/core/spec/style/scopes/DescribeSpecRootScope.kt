@@ -53,6 +53,14 @@ interface DescribeSpecRootScope : RootScope {
          this
       ) { DescribeSpecContainerScope(it) }
 
+   fun fcontext(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).build(),
+         focused = true,
+         xdisabled = false,
+         this
+      ) { DescribeSpecContainerScope(it) }
+
    fun xcontext(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
       RootContainerWithConfigBuilder(
          TestNameBuilder.builder(name).build(),
