@@ -1882,6 +1882,7 @@ public abstract class io/kotest/core/spec/style/DescribeSpec : io/kotest/core/sp
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -1904,6 +1905,7 @@ public final class io/kotest/core/spec/style/DescribeSpecTestFactoryConfiguratio
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -1924,6 +1926,10 @@ public abstract class io/kotest/core/spec/style/ExpectSpec : io/kotest/core/spec
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun expect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fexpect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -1940,6 +1946,10 @@ public final class io/kotest/core/spec/style/ExpectSpecTestFactoryConfiguration 
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun expect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fexpect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -1952,6 +1962,7 @@ public abstract class io/kotest/core/spec/style/FeatureSpec : io/kotest/core/spe
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun feature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun ffeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun ffeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xfeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -1965,6 +1976,7 @@ public final class io/kotest/core/spec/style/FeatureSpecTestFactoryConfiguration
 	public fun <init> ()V
 	public fun feature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun ffeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun ffeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xfeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2004,6 +2016,10 @@ public abstract class io/kotest/core/spec/style/FunSpec : io/kotest/core/spec/Ds
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun ftest (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun ftest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun test (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2020,6 +2036,10 @@ public final class io/kotest/core/spec/style/FunSpecTestFactoryConfiguration : i
 	public fun <init> ()V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun ftest (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun ftest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun test (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2034,6 +2054,10 @@ public abstract class io/kotest/core/spec/style/ShouldSpec : io/kotest/core/spec
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2050,6 +2074,10 @@ public final class io/kotest/core/spec/style/ShouldSpecTestFactoryConfiguration 
 	public fun <init> ()V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2242,6 +2270,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/DescribeSpecRoo
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2259,6 +2288,7 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecRootScope$Defaul
 	public static fun context (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun fcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun fdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun fdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2287,6 +2317,10 @@ public abstract interface class io/kotest/core/spec/style/scopes/ExpectSpecRootS
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun expect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun expect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fexpect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xexpect (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -2298,6 +2332,10 @@ public final class io/kotest/core/spec/style/scopes/ExpectSpecRootScope$DefaultI
 	public static fun context (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun expect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun expect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fexpect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public static fun fexpect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xexpect (Lio/kotest/core/spec/style/scopes/ExpectSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
@@ -2318,6 +2356,7 @@ public final class io/kotest/core/spec/style/scopes/FeatureSpecContainerScope : 
 public abstract interface class io/kotest/core/spec/style/scopes/FeatureSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public fun feature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun ffeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun ffeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xfeature (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2326,6 +2365,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/FeatureSpecRoot
 public final class io/kotest/core/spec/style/scopes/FeatureSpecRootScope$DefaultImpls {
 	public static fun feature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun feature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun ffeature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun ffeature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xfeature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xfeature (Lio/kotest/core/spec/style/scopes/FeatureSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2404,6 +2444,10 @@ public final class io/kotest/core/spec/style/scopes/FunSpecContainerScope : io/k
 public abstract interface class io/kotest/core/spec/style/scopes/FunSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun ftest (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun ftest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun test (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2415,6 +2459,10 @@ public abstract interface class io/kotest/core/spec/style/scopes/FunSpecRootScop
 public final class io/kotest/core/spec/style/scopes/FunSpecRootScope$DefaultImpls {
 	public static fun context (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun context (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun ftest (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public static fun ftest (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun test (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun test (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2462,6 +2510,10 @@ public final class io/kotest/core/spec/style/scopes/ShouldSpecContainerScope : i
 public abstract interface class io/kotest/core/spec/style/scopes/ShouldSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
@@ -2473,6 +2525,10 @@ public abstract interface class io/kotest/core/spec/style/scopes/ShouldSpecRootS
 public final class io/kotest/core/spec/style/scopes/ShouldSpecRootScope$DefaultImpls {
 	public static fun context (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun context (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
+	public static fun fcontext (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fshould (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public static fun fshould (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun should (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
 	public static fun should (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/ShouldSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
