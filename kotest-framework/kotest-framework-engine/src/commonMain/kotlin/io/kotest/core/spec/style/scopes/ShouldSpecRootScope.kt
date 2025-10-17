@@ -41,6 +41,7 @@ interface ShouldSpecRootScope : RootScope {
    private fun context(name: String, disabled: Boolean, test: suspend ShouldSpecContainerScope.() -> Unit) {
       addContainer(
          testName = contextName(name),
+         focused = false,
          disabled = disabled,
          config = null
       ) { ShouldSpecContainerScope(this).test() }
@@ -52,6 +53,7 @@ interface ShouldSpecRootScope : RootScope {
    fun context(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = contextName(name),
+         focused = false,
          xdisabled = false,
          context = this
       ) { ShouldSpecContainerScope(it) }
@@ -62,6 +64,7 @@ interface ShouldSpecRootScope : RootScope {
    fun xcontext(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = contextName(name),
+         focused = false,
          xdisabled = true,
          context = this
       ) { ShouldSpecContainerScope(it) }
@@ -71,10 +74,10 @@ interface ShouldSpecRootScope : RootScope {
     * by invoking [.config()][RootContainerWithConfigBuilder.config] on the return of this function.
     */
    fun should(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(context = this, name = shouldName(name), xdisabled = false)
+      RootTestWithConfigBuilder(context = this, name = shouldName(name), focused = false, xdisabled = false)
 
    fun xshould(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(context = this, name = shouldName(name), xdisabled = true)
+      RootTestWithConfigBuilder(context = this, name = shouldName(name), focused = false, xdisabled = true)
 
    /**
     * Adds a top level test, with the given name and test function, with default test config.
@@ -96,6 +99,7 @@ interface ShouldSpecRootScope : RootScope {
    private fun should(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
       addTest(
          testName = shouldName(name),
+         focused = false,
          disabled = xdisabled,
          config = null,
          test = test

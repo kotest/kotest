@@ -36,6 +36,7 @@ interface BehaviorSpecRootScope : RootScope {
    fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
+         focused = false,
          disabled = xdisabled,
          config = null
       ) { BehaviorSpecGivenContainerScope(this).test() }
@@ -69,6 +70,7 @@ interface BehaviorSpecRootScope : RootScope {
    fun addContext(name: String, xdisabled: Boolean, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
+         focused = false,
          disabled = xdisabled,
          config = null
       ) { BehaviorSpecContextContainerScope(this).test() }
