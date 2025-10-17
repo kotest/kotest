@@ -51,12 +51,32 @@ context("Pythag triples tests") {
 
 ### Test Name Function
 
-Or we can pass a function to `withData` which takes the _row_ as input and return the test name. Depending on how
-generous the Kotlin type inference is feeling, you may need to specify the type parameter to the _withData_ function.
+Or we can pass a function to `withData` which takes the _row_ as input and return the test name.
 
 ```kotlin
 context("Pythag triples tests") {
-  withData<PythagTriple>(
+  withData(
+    nameFn = { "${it.a}__${it.b}__${it.c}" },
+    PythagTriple(3, 4, 5),
+    PythagTriple(6, 8, 10),
+    PythagTriple(8, 15, 17),
+    PythagTriple(7, 24, 25)
+  ) { (a, b, c) ->
+    a * a + b * b shouldBe c * c
+  }
+}
+```
+
+We have made efforts to ensure that the compiler can infer the data type from the input rows, should you get an
+`Overload resolution ambiguity` error, normally using the named parameter `nameFn` is sufficient.
+
+Should the compiler still error with the `Overload resolution ambiguity` error, you may need to specify the
+type parameter to the _withData_ function and let the compiler infer the second parameter, by passing `_` as the second type parameter.
+Note that this is only necessary when the type cannot be inferred otherwise, and the same test as above would be written as:
+
+```kotlin
+context("Pythag triples tests") {
+  withData<PythagTriple, _>(
     nameFn = { "${it.a}__${it.b}__${it.c}" },
     PythagTriple(3, 4, 5),
     PythagTriple(6, 8, 10),

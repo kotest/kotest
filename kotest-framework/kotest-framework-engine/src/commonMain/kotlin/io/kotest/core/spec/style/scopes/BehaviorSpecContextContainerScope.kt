@@ -3,12 +3,13 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
+import io.kotest.datatest.WithDataContainerRegistrar
 
 @Suppress("FunctionName")
 @KotestTestScope
 class BehaviorSpecContextContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope(testScope), WithDataContainerRegistrar<BehaviorSpecContextContainerScope> {
 
    suspend fun Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       given(name, xdisabled = false, test)
@@ -48,5 +49,12 @@ class BehaviorSpecContextContainerScope(
       ) {
          BehaviorSpecContextContainerScope(this).test()
       }
+   }
+
+   override suspend fun registerWithDataTest(
+      name: String,
+      test: suspend BehaviorSpecContextContainerScope.() -> Unit
+   ) {
+      context(name, false) { test() }
    }
 }

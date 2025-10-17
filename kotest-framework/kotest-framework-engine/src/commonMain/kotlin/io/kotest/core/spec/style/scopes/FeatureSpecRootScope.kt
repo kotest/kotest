@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.datatest.WithDataRootRegistrar
 
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
@@ -13,7 +14,7 @@ import io.kotest.core.names.TestNameBuilder
  * xfeature("some test") { }
  * ```
  */
-interface FeatureSpecRootScope : RootScope {
+interface FeatureSpecRootScope : RootScope , WithDataRootRegistrar<FeatureSpecContainerScope> {
 
    fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       addContainer(
@@ -38,4 +39,11 @@ interface FeatureSpecRootScope : RootScope {
    @ExperimentalKotest
    fun xfeature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
       RootContainerWithConfigBuilder(TestNameBuilder.builder(name).withPrefix("Feature: ").build(), true, this) { FeatureSpecContainerScope(it) }
+
+   override fun registerWithDataTest(
+      name: String,
+      test: suspend FeatureSpecContainerScope.() -> Unit
+   ) {
+      feature(name) { test() }
+   }
 }

@@ -39,16 +39,16 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
    context("data test with name function and varargs") {
-      withData<SimpleClass>(
-         { "simple${it.a}${it.b}" },
+      withData(
+         nameFn = { "simple${it.a}${it.b}" },
          SimpleClass("a1", "b1"),
          SimpleClass("a2", "b2"),
       ) {}
    }
 
    context("data test with name function and sequence") {
-      withData<SimpleClass>(
-         { "simple${it.a}${it.b}" },
+      withData(
+         nameFn = { "simple${it.a}${it.b}" },
          sequenceOf(
             SimpleClass("a1", "b1"),
             SimpleClass("a2", "b2"),
@@ -57,8 +57,8 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
    context("data test with name function and collection") {
-      withData<SimpleClass>(
-         { "simple${it.a}${it.b}" },
+      withData(
+         nameFn = { "simple${it.a}${it.b}" },
          listOf(
             SimpleClass("a1", "b1"),
             SimpleClass("a2", "b2"),
@@ -67,8 +67,8 @@ class ContainerDataTestNameFunctionTest : FunSpec({
    }
 
    context("data test with name function and range") {
-      withData<Int>(
-         { i: Int -> "Test $i" },
+      withData(
+         nameFn = { i: Int -> "Test $i" },
          1..3
       ) {}
    }

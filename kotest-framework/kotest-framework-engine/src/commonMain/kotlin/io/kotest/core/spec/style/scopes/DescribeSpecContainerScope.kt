@@ -4,6 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.TestScope
+import io.kotest.datatest.WithDataContainerRegistrar
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -30,7 +31,7 @@ import io.kotest.core.test.TestScope
 @KotestTestScope
 class DescribeSpecContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope(testScope),WithDataContainerRegistrar<DescribeSpecContainerScope> {
 
    /**
     * Registers a container test.
@@ -147,5 +148,12 @@ class DescribeSpecContainerScope(
          disabled = true,
          config = null
       ) { DescribeSpecContainerScope(this).test() }
+   }
+
+   override suspend fun registerWithDataTest(
+      name: String,
+      test: suspend DescribeSpecContainerScope.() -> Unit
+   ) {
+      context(name){ test() }
    }
 }

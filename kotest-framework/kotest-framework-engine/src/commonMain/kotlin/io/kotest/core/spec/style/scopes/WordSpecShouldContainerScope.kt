@@ -7,6 +7,7 @@ import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.datatest.WithDataTerminalRegistrar
 import kotlin.time.Duration
 
 /**
@@ -26,7 +27,7 @@ import kotlin.time.Duration
 @KotestTestScope
 class WordSpecShouldContainerScope(
    val testScope: TestScope,
-) : AbstractContainerScope(testScope) {
+) : AbstractContainerScope(testScope), WithDataTerminalRegistrar<WordSpecTerminalScope> {
 
    suspend fun String.config(
       enabled: Boolean? = null,
