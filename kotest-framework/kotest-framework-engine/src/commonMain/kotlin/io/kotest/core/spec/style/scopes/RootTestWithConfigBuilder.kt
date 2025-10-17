@@ -11,10 +11,10 @@ import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 class RootTestWithConfigBuilder(
-  private val context: RootScope,
-  private val name: TestName,
-  private val focused: Boolean,
-  private val xdisabled: Boolean,
+   private val context: RootScope,
+   private val name: TestName,
+   private val focused: Boolean,
+   private val xdisabled: Boolean,
 ) {
 
    fun config(
@@ -50,6 +50,6 @@ class RootTestWithConfigBuilder(
          retries = retries,
          retryDelay = retryDelay,
       )
-      context.addTest(name, xdisabled, config, test)
+      context.addTest(testName = name, focused = focused, disabled = xdisabled, config = config, test = test)
    }
 }
