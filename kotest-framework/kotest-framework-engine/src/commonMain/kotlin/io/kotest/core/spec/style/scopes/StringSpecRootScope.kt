@@ -42,6 +42,7 @@ interface StringSpecRootScope : RootScope {
       RootTestWithConfigBuilder(
          context = this@StringSpecRootScope,
          name = TestNameBuilder.builder(this).build(),
+         focused = false,
          xdisabled = false
       ).config(
          enabled = enabled,
@@ -65,6 +66,7 @@ interface StringSpecRootScope : RootScope {
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
       addTest(
          testName = TestNameBuilder.builder(this).build(),
+         focused = false,
          disabled = false,
          config = null
       ) {
