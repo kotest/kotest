@@ -4,6 +4,7 @@ import arrow.core.Ior
 import arrow.core.Ior.Left
 import arrow.core.Ior.Right
 import arrow.core.Ior.Both
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
 import kotlin.contracts.ExperimentalContracts
@@ -25,7 +26,7 @@ public fun <A, B> Ior<A, B>.shouldBeRight(failureMessage: (Ior<A, B>) -> String 
 
    return when (this) {
       is Right -> value
-      else -> throw AssertionError(failureMessage(this))
+      else -> AssertionErrorBuilder.fail(failureMessage(this))
    }
 }
 
@@ -47,7 +48,7 @@ public fun <A, B> Ior<A, B>.shouldBeLeft(failureMessage: (Ior<A, B>) -> String =
 
    return when (this) {
       is Left -> value
-      else -> throw AssertionError(failureMessage(this))
+      else -> AssertionErrorBuilder.fail(failureMessage(this))
    }
 }
 
