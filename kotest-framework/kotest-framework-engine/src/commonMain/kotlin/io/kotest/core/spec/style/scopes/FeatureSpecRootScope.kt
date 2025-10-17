@@ -23,6 +23,15 @@ interface FeatureSpecRootScope : RootScope {
       ) { FeatureSpecContainerScope(this).test() }
    }
 
+   fun ffeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
+      addContainer(
+         testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
+         focused = true,
+         disabled = false,
+         config = null
+      ) { FeatureSpecContainerScope(this).test() }
+   }
+
    fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),

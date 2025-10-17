@@ -15,12 +15,22 @@ interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(TestNameBuilder.builder(this).build(), false, null) { FreeSpecContainerScope(this).test() }
+      addContainer(
+         testName = TestNameBuilder.builder(this).build(),
+         focused = false,
+         disabled = false,
+         config = null
+      ) { FreeSpecContainerScope(this).test() }
    }
 
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      addTest(TestNameBuilder.builder(this).build(), false, null) { FreeSpecTerminalScope(this).test() }
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         focused = false,
+         disabled = false,
+         config = null
+      ) { FreeSpecTerminalScope(this).test() }
    }
 
    /**
@@ -86,7 +96,12 @@ interface FreeSpecRootScope : RootScope {
     * ```
     */
    infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(TestNameBuilder.builder(name).build(), false, config) { FreeSpecContainerScope(this).test() }
+      addContainer(
+         testName = TestNameBuilder.builder(name).build(),
+         focused = false,
+         disabled = false,
+         config = config
+      ) { FreeSpecContainerScope(this).test() }
    }
 
    /**
@@ -124,7 +139,13 @@ interface FreeSpecRootScope : RootScope {
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
       )
-      addTest(TestNameBuilder.builder(this).build(), false, config, test)
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         focused = false,
+         disabled = false,
+         config = config,
+         test = test
+      )
    }
 
    fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit): FreeSpecContextConfigBuilder {

@@ -20,7 +20,12 @@ class RootContainerWithConfigBuilder<T>(
       config: TestConfig,
       test: suspend T.() -> Unit,
    ) {
-      context.addContainer(name, xdisabled, config) { contextFn(this).test() }
+      context.addContainer(
+         testName = name,
+         focused = focused,
+         disabled = xdisabled,
+         config = config
+      ) { contextFn(this).test() }
    }
 
    fun config(
