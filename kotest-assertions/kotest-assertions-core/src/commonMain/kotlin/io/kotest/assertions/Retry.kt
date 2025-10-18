@@ -3,7 +3,9 @@ package io.kotest.assertions
 import io.kotest.common.KotestInternal
 import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.common.reflection.bestName
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -48,10 +50,22 @@ suspend fun <T> retry(
    var lastError: Throwable? = null
 
    while (end.hasNotPassedNow() && attemptedRetries < config.maxRetry) {
+      val elapsed = mark.elapsedNow()
+      val remaining: Duration = config.timeout - elapsed
       try {
-         return test()
+         return withTimeout(remaining) {
+            test()
+         }
       } catch (e: Throwable) {
          when {
+            e is TimeoutCancellationException -> {
+               throw AssertionErrorBuilder.create()
+                  .withMessage(
+                     "Test timed out at ${mark.elapsedNow()} as max expected duration was ${config.timeout}; " +
+                        "attempted $attemptedRetries times",
+                  ).withCause(e)
+                  .build()
+            }
             // Not the kind of exceptions we were prepared to tolerate
             e::class.simpleName != "AssertionError" &&
                config.exceptionClass?.isInstance(e) == false &&

@@ -2,7 +2,9 @@ package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.nonDeterministicTestTimeSource
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withTimeout
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -37,13 +39,26 @@ suspend fun <T> continually(
    var result: Result<T> = Result.failure(IllegalStateException("No successful result"))
 
    while (end.hasNotPassedNow()) {
+      val elapsed = start.elapsedNow()
+      val remaining: Duration = config.duration - elapsed
+
       runCatching {
-         test()
+         withTimeout(remaining) {
+            test()
+         }
       }.onSuccess {
          result = Result.success(it)
          config.listener.invoke(iterations, it)
       }.onFailure { ex ->
          when (ex) {
+            is TimeoutCancellationException -> {
+               throw AssertionErrorBuilder.create()
+                  .withMessage(
+                     "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
+                        "attempted $iterations times",
+                  ).withCause(ex)
+                  .build()
+            }
             is AssertionError -> {
                if (iterations == 0) throw ex
                throw AssertionErrorBuilder.create()

@@ -11,12 +11,17 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.throwable.shouldHaveMessage
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.DurationUnit
 import kotlin.time.TimeMark
+import kotlin.time.toDuration
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class RetryTest : StringSpec() {
@@ -200,6 +205,38 @@ class RetryTest : StringSpec() {
          }
          retryException shouldHaveMessage "Test failed after 0s; attempted 0 times"
          retryTester.calledAtTimeInstance.shouldBeEmpty()
+      }
+
+      "retry should throw AssertionError if function suspends and does not pass after duration".config(
+            coroutineTestScope = false
+         ){
+         shouldThrow<AssertionError> {
+            retry(1,100.milliseconds) {
+               delay(10.milliseconds)
+               "error" shouldBe "ok"
+            }
+         }.also { error ->
+            error shouldHaveMessage "Test failed after 0s; attempted 1 times; underlying cause was expected:<ok> but was:<error>"
+         }
+      }
+
+      "retry should throw AssertionError if function does not return within specified duration - even if the assertion would have passed".config(
+         coroutineTestScope = false
+      ) {
+         shouldThrow<AssertionError> {
+            retry(1,10.milliseconds) {
+               delay(1.days)
+               "ok" shouldBe "ok"
+            }
+         }.also { error ->
+            val msg = requireNotNull(error.message)
+
+            val regex = Regex("""Test timed out at ([\d.]+)ms as max expected duration was 10ms; attempted 0 times""")
+            msg shouldMatch regex
+
+            val actualMs = regex.find(msg)!!.groupValues[1].toDouble().toDuration(DurationUnit.MILLISECONDS)
+            actualMs shouldBeGreaterThan 10.milliseconds
+         }
       }
    }
 
