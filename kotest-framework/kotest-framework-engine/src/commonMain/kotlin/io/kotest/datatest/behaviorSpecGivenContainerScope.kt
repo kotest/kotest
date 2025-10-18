@@ -10,7 +10,26 @@ import kotlin.jvm.JvmName
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
 @KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(first, second, *rest, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
+   first: T,
+   second: T, // we need second to help the compiler disambiguate between this and the sequence version
+   vararg rest: T,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds(listOf(first, second) + rest, test)
+}
+
+/**
+ * Registers tests inside the given test context for each element.
+ * The test name will be generated from the stable properties of the elements. See [StableIdents].
+ */
+@KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
    first: T,
    second: T, // we need second to help the compiler disambiguate between this and the sequence version
    vararg rest: T,
@@ -24,11 +43,16 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
 @KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(ts, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    ts: Sequence<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
-   withData(ts.toList(), test)
+   withAnds(ts.toList(), test)
 }
 
 /**
@@ -36,11 +60,40 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * The test names will be generated from the stable properties of the elements. See [StableIdents].
  */
 @KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
+   ts: Sequence<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds(ts.toList(), test)
+}
+
+/**
+ * Registers tests inside the given test context for each element of [ts].
+ * The test names will be generated from the stable properties of the elements. See [StableIdents].
+ */
+@KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(ts, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    ts: Iterable<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
-   withData({ StableIdents.getStableIdentifier(it) }, ts, test)
+   withAnds({ StableIdents.getStableIdentifier(it) }, ts, test)
+}
+
+/**
+ * Registers tests inside the given test context for each element of [ts].
+ * The test names will be generated from the stable properties of the elements. See [StableIdents].
+ */
+@KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
+   ts: Iterable<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds({ StableIdents.getStableIdentifier(it) }, ts, test)
 }
 
 /**
@@ -48,12 +101,30 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(nameFn, ts, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
-   withData(nameFn, ts.toList(), test)
+   withAnds(nameFn, ts.toList(), test)
+}
+
+/**
+ * Registers tests inside the given test context for each element of [ts].
+ * The test name will be generated from the given [nameFn] function.
+ */
+@KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
+   nameFn: (T) -> String,
+   ts: Sequence<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds(nameFn, ts.toList(), test)
 }
 
 /**
@@ -61,6 +132,11 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(nameFn, first, second, rest, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    nameFn: (T) -> String,
    first: T,
@@ -68,7 +144,22 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
    vararg rest: T,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
-   withData(nameFn, listOf(first, second) + rest, test)
+   withAnds(nameFn, listOf(first, second) + rest, test)
+}
+
+/**
+ * Registers tests inside the given test context for each element.
+ * The test name will be generated from the given [nameFn] function.
+ */
+@KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
+   nameFn: (T) -> String,
+   first: T,
+   second: T,
+   vararg rest: T,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds(nameFn, listOf(first, second) + rest, test)
 }
 
 /**
@@ -76,7 +167,25 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  * The test name will be generated from the given [nameFn] function.
  */
 @KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(nameFn, ts, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
+   nameFn: (T) -> String,
+   ts: Iterable<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds(nameFn, ts, test)
+}
+
+/**
+ * Registers tests inside the given [T] for each element of [ts].
+ * The test name will be generated from the given [nameFn] function.
+ */
+@KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
    nameFn: (T) -> String,
    ts: Iterable<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
@@ -90,7 +199,25 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withData(
  */
 @JvmName("withDataMap")
 @KotestTestScope
+@Deprecated(
+   message = "Use withAnds(...) instead.",
+   replaceWith = ReplaceWith("withAnds(data, test)"),
+   level = DeprecationLevel.WARNING
+)
 suspend fun <T> BehaviorSpecGivenContainerScope.withData(
+   data: Map<String, T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withAnds(data, test)
+}
+
+/**
+ * Registers tests inside the given test context for each tuple of [data], with the first value
+ * of the tuple used as the test name, and the second value passed to the test.
+ */
+@JvmName("withAndsMap")
+@KotestTestScope
+suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
    data: Map<String, T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
