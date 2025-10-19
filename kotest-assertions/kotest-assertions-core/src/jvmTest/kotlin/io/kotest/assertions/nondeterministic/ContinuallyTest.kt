@@ -1,19 +1,25 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.throwable.shouldHaveMessage
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.DurationUnit
+import kotlin.time.toDuration
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ContinuallyTest : FunSpec() {
@@ -100,6 +106,38 @@ class ContinuallyTest : FunSpec() {
          }
          n shouldBe 11
          failure shouldHaveMessage "Test failed after 360ms; expected to pass for 3s; attempted 10 times\nUnderlying failure was: expected:<true> but was:<false>"
+      }
+
+      test("continually should throw AssertionError if function suspends and does not pass after duration").config(
+         coroutineTestScope = false
+      ) {
+         shouldThrow<AssertionError> {
+            continually(100.milliseconds) {
+               delay(10.milliseconds)
+               "error" shouldBe "ok"
+            }
+         }.also { error ->
+            error shouldHaveMessage "expected:<ok> but was:<error>"
+         }
+      }
+
+      test("continually should throw AssertionError if function does not return within specified duration - even if the assertion would have passed").config(
+         coroutineTestScope = false
+      ) {
+         shouldThrow<AssertionError> {
+            continually(10.milliseconds) {
+               delay(1.days)
+               "ok" shouldBe "ok"
+            }
+         }.also { error ->
+            val msg = requireNotNull(error.message)
+
+            val regex = Regex("""Test timed out at ([\d.]+)ms as max expected duration was 10ms; attempted 0 times""")
+            msg shouldMatch regex
+
+            val actualMs = regex.find(msg)!!.groupValues[1].toDouble().toDuration(DurationUnit.MILLISECONDS)
+            actualMs shouldBeGreaterThan 10.milliseconds
+         }
       }
    }
 }

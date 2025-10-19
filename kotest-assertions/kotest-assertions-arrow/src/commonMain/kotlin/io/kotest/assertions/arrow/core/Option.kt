@@ -3,6 +3,7 @@ package io.kotest.assertions.arrow.core
 import arrow.core.None
 import arrow.core.Option
 import arrow.core.Some
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
 import io.kotest.matchers.assertionCounter
@@ -35,7 +36,7 @@ public fun <A> Option<A>.shouldBeSome(failureMessage: () -> String = { "Expected
    assertionCounter.inc()
 
    return when (this) {
-      None -> throw AssertionError(failureMessage())
+      None -> AssertionErrorBuilder.fail(failureMessage())
       is Some -> value
    }
 }
@@ -73,6 +74,6 @@ public fun <A> Option<A>.shouldBeNone(failureMessage: (Some<A>) -> String = { "E
 
    return when (this) {
       None -> None
-      is Some -> throw AssertionError(failureMessage(this))
+      is Some -> AssertionErrorBuilder.fail(failureMessage(this))
    }
 }
