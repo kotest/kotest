@@ -172,6 +172,15 @@ class ReflectionKtTest : FunSpec() {
          }
       }
 
+      test("shouldBeEqualToUsingFields should throw exception when other is of different type") {
+         val car1 = Car("Car", 12345, 23)
+         val car2 = AnotherCar("Car", 12345, 23)
+
+         assertThrows<IllegalArgumentException>("object is not an instance of declaring class") {
+            car1.shouldBeEqualToUsingFields(car2)
+         }
+      }
+
       test("shouldBeEqualToIgnoringFields should consider private in equality check when ignorePrivateField is false") {
          val car1 = Car("car", 10000, 707)
          val car2 = Car("car", 9000, 700)

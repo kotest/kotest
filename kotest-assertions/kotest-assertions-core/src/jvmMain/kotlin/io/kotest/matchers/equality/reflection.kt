@@ -6,6 +6,8 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
@@ -33,10 +35,12 @@ import kotlin.reflect.jvm.isAccessible
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
- * Note: Throws [IllegalArgumentException] if [properties] contains any non public property
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
+ * or if [other] is not an instance of the same class as receiver [T]
  *
  */
 fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
+   require(this::class.isInstance(other)){"object is not an instance of declaring class"}
    this should beEqualToUsingFields(other, *properties)
 }
 
