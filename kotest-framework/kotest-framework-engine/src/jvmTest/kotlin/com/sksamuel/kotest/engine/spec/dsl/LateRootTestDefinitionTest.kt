@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.spec.style.scopes.addTest
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -65,7 +66,7 @@ class LateRootTestDefinitionTest : FunSpec() {
 private class FreeSpecWithExtraRootTests : FreeSpec() {
    init {
       "foo" {
-         this@FreeSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
+         this@FreeSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), TestXMethod.NONE, null) { }
       }
    }
 }
@@ -74,7 +75,7 @@ private class FreeSpecWithExtraRootTests : FreeSpec() {
 private class FunSpecWithExtraRootTests : FunSpec() {
    init {
       test("foo") {
-         this@FunSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
+         this@FunSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), TestXMethod.NONE, null) { }
       }
    }
 }
@@ -82,7 +83,7 @@ private class FunSpecWithExtraRootTests : FunSpec() {
 private class ShouldSpecWithExtraRootTests : ShouldSpec() {
    init {
       should("foo") {
-         this@ShouldSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
+         this@ShouldSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), TestXMethod.NONE, null) { }
       }
    }
 }
@@ -91,7 +92,7 @@ private class ShouldSpecWithExtraRootTests : ShouldSpec() {
 private class ExpectSpecWithExtraRootTests : ExpectSpec() {
    init {
       context("foo") {
-         this@ExpectSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
+         this@ExpectSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), TestXMethod.NONE, null) { }
       }
    }
 }
@@ -99,7 +100,7 @@ private class ExpectSpecWithExtraRootTests : ExpectSpec() {
 private class FeatureSpecWithExtraRootTests : FeatureSpec() {
    init {
       feature("foo") {
-         this@FeatureSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), false, false, null) { }
+         this@FeatureSpecWithExtraRootTests.addTest(TestNameBuilder.builder("bar").build(), TestXMethod.NONE, null) { }
       }
    }
 }

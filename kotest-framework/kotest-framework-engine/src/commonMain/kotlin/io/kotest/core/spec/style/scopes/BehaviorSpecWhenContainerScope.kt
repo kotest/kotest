@@ -31,6 +31,12 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
    suspend fun and(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       and(name, xmethod = TestXMethod.NONE, test)
 
+   suspend fun fand(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      and(name, xmethod = TestXMethod.FOCUSED, test)
+
+   suspend fun fAnd(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      and(name, xmethod = TestXMethod.FOCUSED, test)
+
    suspend fun xand(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       and(name, xmethod = TestXMethod.DISABLED, test)
 
@@ -61,6 +67,18 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
       TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
       this@BehaviorSpecWhenContainerScope,
       xmethod = TestXMethod.NONE,
+   )
+
+   fun fthen(name: String) = TestWithConfigBuilder(
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+      this@BehaviorSpecWhenContainerScope,
+      xmethod = TestXMethod.FOCUSED,
+   )
+
+   fun fThen(name: String) = TestWithConfigBuilder(
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+      this@BehaviorSpecWhenContainerScope,
+      xmethod = TestXMethod.FOCUSED,
    )
 
    fun xthen(name: String) = TestWithConfigBuilder(

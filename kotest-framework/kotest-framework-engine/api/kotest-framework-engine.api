@@ -1652,31 +1652,6 @@ public abstract interface annotation class io/kotest/core/spec/Order : java/lang
 	public abstract fun value ()I
 }
 
-public final class io/kotest/core/spec/RootTest {
-	public fun <init> (Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Ljava/lang/Boolean;Ljava/lang/Boolean;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;)V
-	public final fun component1 ()Lio/kotest/core/names/TestName;
-	public final fun component2 ()Lkotlin/jvm/functions/Function2;
-	public final fun component3 ()Lio/kotest/core/test/TestType;
-	public final fun component4 ()Lio/kotest/core/source/SourceRef;
-	public final fun component5 ()Ljava/lang/Boolean;
-	public final fun component6 ()Ljava/lang/Boolean;
-	public final fun component7 ()Lio/kotest/core/test/config/TestConfig;
-	public final fun component8 ()Lio/kotest/core/factory/FactoryId;
-	public final fun copy (Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Ljava/lang/Boolean;Ljava/lang/Boolean;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;)Lio/kotest/core/spec/RootTest;
-	public static synthetic fun copy$default (Lio/kotest/core/spec/RootTest;Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Ljava/lang/Boolean;Ljava/lang/Boolean;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/factory/FactoryId;ILjava/lang/Object;)Lio/kotest/core/spec/RootTest;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getConfig ()Lio/kotest/core/test/config/TestConfig;
-	public final fun getDisabled ()Ljava/lang/Boolean;
-	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
-	public final fun getFocused ()Ljava/lang/Boolean;
-	public final fun getName ()Lio/kotest/core/names/TestName;
-	public final fun getSource ()Lio/kotest/core/source/SourceRef;
-	public final fun getTest ()Lkotlin/jvm/functions/Function2;
-	public final fun getType ()Lio/kotest/core/test/TestType;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguration {
 	public field scope Lkotlinx/coroutines/CoroutineScope;
 	public fun <init> ()V
@@ -1843,8 +1818,8 @@ public abstract class io/kotest/core/spec/style/BehaviorSpec : io/kotest/core/sp
 	public final fun Given (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun Given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public final fun When (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun addContext (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
-	public fun addGiven (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
+	public fun addContext (Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
+	public fun addGiven (Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
 	public final fun context (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public final fun given (Lio/kotest/core/spec/style/scopes/ContainerScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -1864,8 +1839,8 @@ public final class io/kotest/core/spec/style/BehaviorSpecTestFactoryConfiguratio
 	public fun <init> ()V
 	public fun Context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun Given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun addContext (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
-	public fun addGiven (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
+	public fun addContext (Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
+	public fun addGiven (Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xContext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2104,6 +2079,15 @@ public final class io/kotest/core/spec/style/StringSpecTestFactoryConfiguration 
 	public fun invoke (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
+public final class io/kotest/core/spec/style/TestXMethod : java/lang/Enum {
+	public static final field DISABLED Lio/kotest/core/spec/style/TestXMethod;
+	public static final field FOCUSED Lio/kotest/core/spec/style/TestXMethod;
+	public static final field NONE Lio/kotest/core/spec/style/TestXMethod;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/spec/style/TestXMethod;
+	public static fun values ()[Lio/kotest/core/spec/style/TestXMethod;
+}
+
 public final class io/kotest/core/spec/style/UnwrapIfReflectionCallKt {
 	public static final fun unwrapIfReflectionCall (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 }
@@ -2114,6 +2098,7 @@ public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/D
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2130,6 +2115,7 @@ public final class io/kotest/core/spec/style/WordSpecTestFactoryConfiguration : 
 	public fun <init> ()V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2171,8 +2157,8 @@ public final class io/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerSc
 public abstract interface class io/kotest/core/spec/style/scopes/BehaviorSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public fun Context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun Given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun addContext (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
-	public fun addGiven (Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
+	public fun addContext (Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
+	public fun addGiven (Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun given (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xContext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2184,8 +2170,8 @@ public abstract interface class io/kotest/core/spec/style/scopes/BehaviorSpecRoo
 public final class io/kotest/core/spec/style/scopes/BehaviorSpecRootScope$DefaultImpls {
 	public static fun Context (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun Given (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public static fun addContext (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
-	public static fun addGiven (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;ZLkotlin/jvm/functions/Function2;)V
+	public static fun addContext (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
+	public static fun addGiven (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function2;)V
 	public static fun context (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun given (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xContext (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2222,9 +2208,9 @@ public abstract interface class io/kotest/core/spec/style/scopes/ContainerScope 
 	public fun beforeEach (Lkotlin/jvm/functions/Function2;)V
 	public fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public abstract fun hasChildren ()Z
-	public fun registerContainer (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun registerTest (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun registerTest (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerContainer (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerTest (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerTest (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/spec/style/scopes/ContainerScope$DefaultImpls {
@@ -2237,13 +2223,13 @@ public final class io/kotest/core/spec/style/scopes/ContainerScope$DefaultImpls 
 	public static fun beforeContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeEach (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
 	public static fun beforeTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lkotlin/jvm/functions/Function2;)V
-	public static fun registerContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun registerTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static fun registerTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun registerContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun registerTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun registerTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/spec/style/scopes/ContainerWithConfigBuilder {
-	public fun <init> (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/scopes/ContainerScope;ZLkotlin/jvm/functions/Function1;)V
+	public fun <init> (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/spec/style/TestXMethod;Lkotlin/jvm/functions/Function1;)V
 	public final fun config-Q9yt8Vw (Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun config-Q9yt8Vw$default (Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
@@ -2254,6 +2240,12 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecContainerScope :
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
+	public final fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
+	public final fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fit (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun it (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2345,10 +2337,13 @@ public final class io/kotest/core/spec/style/scopes/ExpectSpecRootScope$DefaultI
 public final class io/kotest/core/spec/style/scopes/FeatureSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun feature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ffeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fscenario (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun scenario (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun scenario (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun xfscenario (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xscenario (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xscenario (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2433,6 +2428,10 @@ public final class io/kotest/core/spec/style/scopes/FunSpecContainerScope : io/k
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
+	public final fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ftest (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun ftest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun test (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
@@ -2471,25 +2470,17 @@ public final class io/kotest/core/spec/style/scopes/FunSpecRootScope$DefaultImpl
 	public static fun xtest (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public final class io/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder {
-	public fun <init> (Lio/kotest/core/names/TestName;ZZLio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;)V
-	public final fun config (Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
-	public final fun config-Q9yt8Vw (Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
-	public static synthetic fun config-Q9yt8Vw$default (Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
-	public final fun getContextFn ()Lkotlin/jvm/functions/Function1;
-}
-
 public abstract interface class io/kotest/core/spec/style/scopes/RootScope {
 	public abstract fun add (Lio/kotest/core/spec/RootTest;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/RootScopeKt {
-	public static final fun addContainer (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;ZZLio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
-	public static final fun addTest (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;ZZLio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
+	public static final fun addContainer (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
+	public static final fun addTest (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/RootTestWithConfigBuilder {
-	public fun <init> (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;ZZ)V
+	public fun <init> (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;)V
 	public final fun config-n4j-3yA (Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;)V
 	public static synthetic fun config-n4j-3yA$default (Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
@@ -2498,6 +2489,10 @@ public final class io/kotest/core/spec/style/scopes/ShouldSpecContainerScope : i
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
+	public final fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fshould (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun should (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2569,7 +2564,7 @@ public final class io/kotest/core/spec/style/scopes/TestDslState {
 }
 
 public final class io/kotest/core/spec/style/scopes/TestWithConfigBuilder {
-	public fun <init> (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/scopes/ContainerScope;Z)V
+	public fun <init> (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/spec/style/TestXMethod;)V
 	public final fun config (Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun config-ZKvTVp0 (Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun config-ZKvTVp0$default (Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -2578,6 +2573,7 @@ public final class io/kotest/core/spec/style/scopes/TestWithConfigBuilder {
 public abstract interface class io/kotest/core/spec/style/scopes/WordSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2589,6 +2585,7 @@ public abstract interface class io/kotest/core/spec/style/scopes/WordSpecRootSco
 public final class io/kotest/core/spec/style/scopes/WordSpecRootScope$DefaultImpls {
 	public static fun When (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun should (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun when (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
@@ -2617,6 +2614,9 @@ public final class io/kotest/core/spec/style/scopes/WordSpecWhenContainerScope :
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun Should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2676,27 +2676,6 @@ public final class io/kotest/core/test/Enabled$Companion {
 
 public final class io/kotest/core/test/ExpectFailureExceptionKt {
 	public static final fun runIf (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
-}
-
-public final class io/kotest/core/test/NestedTest {
-	public fun <init> (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lkotlin/jvm/functions/Function2;)V
-	public final fun component1 ()Lio/kotest/core/names/TestName;
-	public final fun component2 ()Z
-	public final fun component3 ()Lio/kotest/core/test/config/TestConfig;
-	public final fun component4 ()Lio/kotest/core/test/TestType;
-	public final fun component5 ()Lio/kotest/core/source/SourceRef;
-	public final fun component6 ()Lkotlin/jvm/functions/Function2;
-	public final fun copy (Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/test/NestedTest;
-	public static synthetic fun copy$default (Lio/kotest/core/test/NestedTest;Lio/kotest/core/names/TestName;ZLio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lio/kotest/core/test/NestedTest;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getConfig ()Lio/kotest/core/test/config/TestConfig;
-	public final fun getDisabled ()Z
-	public final fun getName ()Lio/kotest/core/names/TestName;
-	public final fun getSource ()Lio/kotest/core/source/SourceRef;
-	public final fun getTest ()Lkotlin/jvm/functions/Function2;
-	public final fun getType ()Lio/kotest/core/test/TestType;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/core/test/TestCase {

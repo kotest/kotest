@@ -17,6 +17,12 @@ class BehaviorSpecContextContainerScope(
    suspend fun given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       given(name, xmethod = TestXMethod.NONE, test)
 
+   suspend fun fgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      given(name, xmethod = TestXMethod.FOCUSED, test)
+
+   suspend fun fGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      given(name, xmethod = TestXMethod.FOCUSED, test)
+
    suspend fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       given(name, xmethod = TestXMethod.DISABLED, test)
 

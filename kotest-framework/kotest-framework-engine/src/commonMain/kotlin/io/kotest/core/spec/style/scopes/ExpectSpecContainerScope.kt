@@ -31,6 +31,10 @@ class ExpectSpecContainerScope(
       context(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
+   suspend fun fcontext(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
+      context(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+   }
+
    suspend fun xcontext(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
       context(name = name, xmethod = TestXMethod.DISABLED, test = test)
    }
@@ -51,6 +55,10 @@ class ExpectSpecContainerScope(
       registerExpect(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
+   suspend fun fexpect(name: String, test: suspend TestScope.() -> Unit) {
+      registerExpect(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+   }
+
    suspend fun xexpect(name: String, test: suspend TestScope.() -> Unit) {
       registerExpect(name = name, xmethod = TestXMethod.DISABLED, test = test)
    }
@@ -66,6 +74,16 @@ class ExpectSpecContainerScope(
          name = testName,
          context = this,
          xmethod = TestXMethod.NONE,
+      )
+   }
+
+   suspend fun fexpect(name: String): TestWithConfigBuilder {
+      val testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(
+         name = testName,
+         context = this,
+         xmethod = TestXMethod.FOCUSED,
       )
    }
 
