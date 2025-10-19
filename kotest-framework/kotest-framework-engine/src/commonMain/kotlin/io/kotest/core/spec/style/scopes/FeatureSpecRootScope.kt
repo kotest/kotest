@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.style.TestXMethod
 
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
@@ -17,8 +18,7 @@ interface FeatureSpecRootScope : RootScope {
    fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         focused = false,
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = null
       ) { FeatureSpecContainerScope(this).test() }
    }
@@ -26,8 +26,7 @@ interface FeatureSpecRootScope : RootScope {
    fun ffeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         focused = true,
-         disabled = false,
+         xmethod = TestXMethod.FOCUSED,
          config = null
       ) { FeatureSpecContainerScope(this).test() }
    }
@@ -35,8 +34,7 @@ interface FeatureSpecRootScope : RootScope {
    fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         focused = false,
-         disabled = true,
+         xmethod = TestXMethod.DISABLED,
          config = null
       ) { FeatureSpecContainerScope(this).test() }
    }
@@ -44,24 +42,21 @@ interface FeatureSpecRootScope : RootScope {
    fun feature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         focused = false,
-         xdisabled = false,
+         xmethod = TestXMethod.NONE,
          context = this
       ) { FeatureSpecContainerScope(it) }
 
    fun ffeature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         focused = true,
-         xdisabled = false,
+         xmethod = TestXMethod.FOCUSED,
          context = this
       ) { FeatureSpecContainerScope(it) }
 
    fun xfeature(name: String): RootContainerWithConfigBuilder<FeatureSpecContainerScope> =
       RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         focused = false,
-         xdisabled = true,
+         xmethod = TestXMethod.DISABLED,
          context = this
       ) { FeatureSpecContainerScope(it) }
 }

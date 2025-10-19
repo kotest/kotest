@@ -1,6 +1,7 @@
 package io.kotest.datatest
 
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.spec.style.scopes.BehaviorSpecContextContainerScope
 import io.kotest.engine.stable.StableIdents
 import kotlin.jvm.JvmName
@@ -82,7 +83,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withData(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t), false) { this.test(t) }
+      context(nameFn(t), xmethod = TestXMethod.NONE) { this.test(t) }
    }
 }
 
@@ -96,5 +97,5 @@ suspend fun <T> BehaviorSpecContextContainerScope.withData(
    data: Map<String, T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
-   data.forEach { (name, t) -> context(name, false) { this.test(t) } }
+   data.forEach { (name, t) -> context(name, xmethod = TestXMethod.NONE) { this.test(t) } }
 }

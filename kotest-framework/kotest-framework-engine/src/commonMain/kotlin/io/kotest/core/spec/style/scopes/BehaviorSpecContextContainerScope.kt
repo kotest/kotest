@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
 
 @Suppress("FunctionName")
@@ -11,25 +12,25 @@ class BehaviorSpecContextContainerScope(
 ) : AbstractContainerScope(testScope) {
 
    suspend fun Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      given(name, xdisabled = false, test)
+      given(name, xmethod = TestXMethod.NONE, test)
 
    suspend fun given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      given(name, xdisabled = false, test)
+      given(name, xmethod = TestXMethod.NONE, test)
 
    suspend fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      given(name, xdisabled = true, test)
+      given(name, xmethod = TestXMethod.DISABLED, test)
 
    suspend fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      given(name, xdisabled = true, test)
+      given(name, xmethod = TestXMethod.DISABLED, test)
 
    internal suspend fun given(
       name: String,
-      xdisabled: Boolean,
+      xmethod: TestXMethod,
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
    ) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("Given: ").build(),
-         disabled = xdisabled,
+         xmethod = xmethod,
          config = null
       ) {
          BehaviorSpecGivenContainerScope(this).test()
@@ -38,12 +39,12 @@ class BehaviorSpecContextContainerScope(
 
    internal suspend fun context(
       name: String,
-      xdisabled: Boolean,
+      xmethod: TestXMethod,
       test: suspend BehaviorSpecContextContainerScope.() -> Unit,
    ) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
-         disabled = xdisabled,
+         xmethod = xmethod,
          config = null
       ) {
          BehaviorSpecContextContainerScope(this).test()

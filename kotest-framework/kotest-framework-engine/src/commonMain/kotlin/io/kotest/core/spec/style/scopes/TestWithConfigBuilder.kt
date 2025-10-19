@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -13,12 +14,12 @@ import kotlin.time.Duration
 class TestWithConfigBuilder(
    private val name: TestName,
    private val context: ContainerScope,
-   private val xdisabled: Boolean,
+   private val xmethod: TestXMethod ,
 ) {
 
    suspend fun config(config: TestConfig, test: suspend TestScope.() -> Unit) {
       TestDslState.clear(name)
-      context.registerTest(name, xdisabled, config, test)
+      context.registerTest(name, xmethod, config, test)
    }
 
    suspend fun config(

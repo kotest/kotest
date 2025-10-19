@@ -4,6 +4,7 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
@@ -42,8 +43,7 @@ interface StringSpecRootScope : RootScope {
       RootTestWithConfigBuilder(
          context = this@StringSpecRootScope,
          name = TestNameBuilder.builder(this).build(),
-         focused = false,
-         xdisabled = false
+         xmethod = TestXMethod.NONE
       ).config(
          enabled = enabled,
          invocations = invocations,
@@ -66,8 +66,7 @@ interface StringSpecRootScope : RootScope {
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
       addTest(
          testName = TestNameBuilder.builder(this).build(),
-         focused = false,
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = null
       ) {
          StringSpecScope(this.coroutineContext, testCase).test()

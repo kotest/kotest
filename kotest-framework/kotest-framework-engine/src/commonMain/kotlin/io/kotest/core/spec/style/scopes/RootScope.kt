@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
@@ -22,8 +23,7 @@ interface RootScope {
  */
 fun RootScope.addTest(
    testName: TestName,
-   focused: Boolean,
-   disabled: Boolean,
+   xmethod: TestXMethod,
    config: TestConfig?,
    test: suspend TestScope.() -> Unit
 ) {
@@ -33,8 +33,7 @@ fun RootScope.addTest(
          test = test,
          type = TestType.Test,
          source = sourceRef(),
-         focused = focused,
-         disabled = disabled,
+         xmethod = xmethod,
          config = config,
          factoryId = null,
       )
@@ -42,12 +41,11 @@ fun RootScope.addTest(
 }
 
 /**
- * Convenience method to add a [TestType.Container] test to this [RootScope].
+ * Convenience method to add a root test of type [TestType.Container] test to this [RootScope].
  */
 fun RootScope.addContainer(
    testName: TestName,
-   focused: Boolean,
-   disabled: Boolean,
+   xmethod: TestXMethod,
    config: TestConfig?,
    test: suspend TestScope.() -> Unit
 ) {
@@ -57,8 +55,7 @@ fun RootScope.addContainer(
          test = test,
          type = TestType.Container,
          source = sourceRef(),
-         focused = focused,
-         disabled = disabled,
+         xmethod = xmethod,
          config = config,
          factoryId = null,
       )

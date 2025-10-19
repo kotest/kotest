@@ -14,17 +14,18 @@ import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.DefaultTestConfig
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.CoroutineScope
 import kotlin.js.JsName
 import kotlin.time.Duration
@@ -400,13 +401,13 @@ abstract class Spec : TestConfiguration() {
  * A [RootTest] is a defined test that has not yet been materialized at runtime.
  * The materialization process turns a root test into a test case.
  */
+@KotestInternal
 data class RootTest(
    val name: TestName,
    val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
-   val focused: Boolean?, // if the test is explicitly focused, say through an annotation or method name
-   val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
+   val xmethod: TestXMethod,
    val config: TestConfig?, // if specified by the test, may be null if no config is set using the spec DSL
    val factoryId: FactoryId?, // if this root test was added from a factory
 )

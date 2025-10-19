@@ -1,15 +1,16 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.SpecConfigResolver
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import io.kotest.engine.test.names.TeamCityTestNameEscaper
 
@@ -48,7 +49,7 @@ class Materializer(
          // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
          val resolvedName = resolvedName(rootTest.name.copy(name = unique), null)
 
-         val config = if (rootTest.disabled == true)
+         val config = if (rootTest.xmethod == TestXMethod.DISABLED)
             (rootTest.config ?: TestConfig()).withXDisabled()
          else rootTest.config
 
@@ -82,7 +83,7 @@ class Materializer(
       // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
       val resolvedName = resolvedName(nested.name, parent.name)
 
-      val config = if (nested.disabled)
+      val config = if (nested.xmethod == TestXMethod.DISABLED)
          (nested.config ?: TestConfig()).withXDisabled()
       else nested.config
 

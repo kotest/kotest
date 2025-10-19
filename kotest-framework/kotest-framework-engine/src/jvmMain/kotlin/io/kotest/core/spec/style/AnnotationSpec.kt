@@ -22,7 +22,7 @@ abstract class AnnotationSpec : Spec() {
    private val instances = mutableMapOf<KClass<*>, AnnotationSpec>()
 
    init {
-      instances.put(this::class, this)
+      instances[this::class] = this
    }
 
    override suspend fun beforeSpec(spec: Spec) {
@@ -78,8 +78,7 @@ abstract class AnnotationSpec : Spec() {
          source = sourceRef(),
          type = TestType.Test,
          config = null,
-         focused = false,
-         disabled = disabled,
+         xmethod = if (disabled) TestXMethod.DISABLED else TestXMethod.NONE,
          factoryId = null,
       )
    }

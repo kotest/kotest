@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.style.TestXMethod
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -16,28 +17,43 @@ interface BehaviorSpecRootScope : RootScope {
     * Adds a top level [BehaviorSpecGivenContainerScope] to this spec.
     */
    @Suppress("FunctionName")
-   fun Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(name, false, test)
+   fun Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.NONE,
+      test = test
+   )
 
    /**
     * Adds a top level [BehaviorSpecGivenContainerScope] to this spec.
     */
-   fun given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(name, false, test)
+   fun given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.NONE,
+      test = test
+   )
 
    /**
     * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
     */
-   fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(name, true, test)
+   fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.DISABLED,
+      test = test
+   )
 
    /**
     * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
     */
-   fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(name, true, test)
+   fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.DISABLED,
+      test = test
+   )
 
-   fun addGiven(name: String, xdisabled: Boolean, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
+   fun addGiven(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
-         focused = false,
-         disabled = xdisabled,
+         xmethod = xmethod,
          config = null
       ) { BehaviorSpecGivenContainerScope(this).test() }
    }
@@ -47,31 +63,30 @@ interface BehaviorSpecRootScope : RootScope {
     */
    @Suppress("FunctionName")
    fun Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
-      addContext(name = name, xdisabled = false, test = test)
+      addContext(name = name, xmethod = TestXMethod.NONE, test = test)
 
    /**
     * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
     */
    fun context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
-      addContext(name = name, xdisabled = false, test = test)
+      addContext(name = name, xmethod = TestXMethod.NONE, test = test)
 
    /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
    fun xcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
-      addContext(name = name, xdisabled = true, test = test)
+      addContext(name = name, xmethod = TestXMethod.DISABLED, test = test)
 
    /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
    fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
-      addContext(name = name, xdisabled = true, test = test)
+      addContext(name = name, xmethod = TestXMethod.DISABLED, test = test)
 
-   fun addContext(name: String, xdisabled: Boolean, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
+   fun addContext(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
-         focused = false,
-         disabled = xdisabled,
+         xmethod = xmethod,
          config = null
       ) { BehaviorSpecContextContainerScope(this).test() }
    }

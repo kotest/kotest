@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
@@ -17,8 +18,7 @@ interface FreeSpecRootScope : RootScope {
    infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(this).build(),
-         focused = false,
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = null
       ) { FreeSpecContainerScope(this).test() }
    }
@@ -27,8 +27,7 @@ interface FreeSpecRootScope : RootScope {
    infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
       addTest(
          testName = TestNameBuilder.builder(this).build(),
-         focused = false,
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = null
       ) { FreeSpecTerminalScope(this).test() }
    }
@@ -98,8 +97,7 @@ interface FreeSpecRootScope : RootScope {
    infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).build(),
-         focused = false,
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = config
       ) { FreeSpecContainerScope(this).test() }
    }
@@ -141,8 +139,7 @@ interface FreeSpecRootScope : RootScope {
       )
       addTest(
          testName = TestNameBuilder.builder(this).build(),
-         focused = false,
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = config,
          test = test
       )

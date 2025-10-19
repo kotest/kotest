@@ -35,22 +35,20 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
     * Adds a [BehaviorSpecContextContainerScope] to this container.
     */
    @Suppress("FunctionName")
-   @ExperimentalKotest
    suspend fun ContainerScope.Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       registerContainer(
          TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          null,
       ) { BehaviorSpecContextContainerScope(this).test() }
 
    /**
     * Adds a [BehaviorSpecContextContainerScope] to this container.
     */
-   @ExperimentalKotest
    suspend fun ContainerScope.context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       registerContainer(
          TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          null,
       ) { BehaviorSpecContextContainerScope(this).test() }
 
@@ -58,11 +56,10 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
     * Adds a [BehaviorSpecGivenContainerScope] to this container.
     */
    @Suppress("FunctionName")
-   @ExperimentalKotest
    suspend fun ContainerScope.Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       registerContainer(
          TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          null,
       ) { BehaviorSpecGivenContainerScope(this).test() }
 
@@ -73,7 +70,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    suspend fun ContainerScope.given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       registerContainer(
          TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          null,
       ) { BehaviorSpecGivenContainerScope(this).test() }
 
@@ -84,7 +81,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    suspend fun ContainerScope.When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       registerContainer(
          TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          null,
       ) { BehaviorSpecWhenContainerScope(this).test() }
 
@@ -94,7 +91,7 @@ abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(
    suspend fun ContainerScope.`when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       registerContainer(
          TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          null,
       ) { BehaviorSpecWhenContainerScope(this).test() }
 }
