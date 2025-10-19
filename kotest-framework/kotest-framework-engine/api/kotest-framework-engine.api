@@ -823,6 +823,10 @@ public abstract interface annotation class io/kotest/core/annotation/Ignored : j
 public abstract interface annotation class io/kotest/core/annotation/Isolate : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class io/kotest/core/annotation/Issue : java/lang/annotation/Annotation {
+	public abstract fun value ()Ljava/lang/String;
+}
+
 public final class io/kotest/core/annotation/LinuxCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
 	public fun evaluate (Lkotlin/reflect/KClass;)Z
@@ -3326,6 +3330,21 @@ public final class io/kotest/engine/coroutines/CoroutineDispatcherFactory$Defaul
 
 public final class io/kotest/engine/coroutines/CoroutineDispatcherFactoryKt {
 	public static final fun use (Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+}
+
+public final class io/kotest/engine/coroutines/TestSchedulerKt {
+	public static final fun getTestScheduler (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
+}
+
+public final class io/kotest/engine/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
+	public static final field Companion Lio/kotest/engine/coroutines/TestScopeElement$Companion;
+	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
+	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
+	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
+	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
+	public final fun getTestScope ()Lkotlinx/coroutines/test/TestScope;
+	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
+	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
 }
 
 public final class io/kotest/engine/coroutines/TestScopeElement$Companion : kotlin/coroutines/CoroutineContext$Key {
