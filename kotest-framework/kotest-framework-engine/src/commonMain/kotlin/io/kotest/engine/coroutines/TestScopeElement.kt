@@ -12,6 +12,11 @@ class TestScopeElement(val testScope: TestScope) : CoroutineContext.Element {
       get() = TestScopeElement
 }
 
+/**
+ * Returns the kotlin.test [TestScope] associated with this Kotest test.
+ *
+ * This element is available when coroutineTestScope is set to true.
+ */
 val io.kotest.core.test.TestScope.coroutineTestScope: TestScope
    get() = this.coroutineContext[TestScopeElement]?.testScope
       ?: error("kotlinx.coroutines.test.TestScope is not installed. Set coroutineTestScope = true to enable")
