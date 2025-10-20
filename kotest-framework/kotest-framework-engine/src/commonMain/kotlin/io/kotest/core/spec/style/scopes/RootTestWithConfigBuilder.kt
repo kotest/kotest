@@ -10,6 +10,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
+@Deprecated("Use parameterized RootContainerWithConfigBuilder. Deprecated since 6.0.5")
 class RootTestWithConfigBuilder(
   private val context: RootScope,
   private val name: TestName,
