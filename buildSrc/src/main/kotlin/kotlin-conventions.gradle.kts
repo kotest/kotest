@@ -7,14 +7,10 @@ plugins {
    id("com.adarshr.test-logger")
 }
 
-testlogger {
-   showPassed = false
-}
-
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
-   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   val kotestSystemProps: Provider<Map<String, String>> = providers.systemPropertiesPrefixedBy("kotest")
    jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
