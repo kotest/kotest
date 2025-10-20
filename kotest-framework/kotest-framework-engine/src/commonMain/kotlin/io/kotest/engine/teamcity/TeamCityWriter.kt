@@ -55,7 +55,7 @@ internal class TeamCityWriter(
    }
 
    /**
-    * For a [TestCase] will output the "test started" message.
+    * For a given name will output the "test started" message.
     */
    internal fun outputTestStarted(name: String, parent: String) {
       val msg = TeamCityMessageBuilder
@@ -71,14 +71,17 @@ internal class TeamCityWriter(
    }
 
    /**
-    * For a given [TestCase] will output the "test failed" message with the given error message.
+    * For a given name will output the "test failed" message with the given error message.
     */
-   internal fun outputTestFailed(testName: String, message: String) {
-      println(TeamCityMessageBuilder.testFailed(prefix, testName).message(message).build())
+   internal fun outputTestFailed(name: String, message: String) {
+      println(TeamCityMessageBuilder.testFailed(prefix, name).message(message).build())
    }
 
-   internal fun outputTestFinished(testName: String) {
-      println(TeamCityMessageBuilder.testFinished(prefix, testName).build())
+   /**
+    * For a given [TestCase] and exception will output the "test finished" message
+    */
+   internal fun outputTestFinished(name: String) {
+      println(TeamCityMessageBuilder.testFinished(prefix, name).build())
    }
 
    /**
@@ -165,21 +168,24 @@ internal class TeamCityWriter(
    }
 
    /**
+    * For a given [SpecRef] will output the "test suite started" message.
+    */
+   internal fun outputTestSuiteStarted(ref: SpecRef) {
+      val msg = TeamCityMessageBuilder
+         .testSuiteStarted(prefix, formatting.format(ref.kclass))
+         .id(ref.kclass.toDescriptor().path().value)
+         .locationHint(Locations.location(ref))
+         .build()
+      println(msg)
+   }
+
+   /**
     * For a given [KClass] spec will output the "test suite finished" message.
     */
    internal fun outputTestSuiteFinished(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatting.format(ref.kclass))
          .id(ref.kclass.toDescriptor().path().value)
-         .build()
-      println(msg)
-   }
-
-   internal fun outputTestSuiteStarted(ref: SpecRef) {
-      val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatting.format(ref.kclass))
-         .id(ref.kclass.toDescriptor().path().value)
-         .locationHint(Locations.location(ref))
          .build()
       println(msg)
    }
