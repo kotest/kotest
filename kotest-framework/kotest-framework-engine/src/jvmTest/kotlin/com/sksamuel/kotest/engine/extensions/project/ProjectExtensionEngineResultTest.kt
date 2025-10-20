@@ -45,7 +45,8 @@ class ProjectExtensionEngineResultTest : FunSpec({
          override val extensions = listOf(ext1, ext2)
       }
 
-      TestEngineLauncher(listener)
+      TestEngineLauncher()
+         .withListener(listener)
          .withClasses(PassingProjectTest::class)
          .withProjectConfig(c)
          .launch()

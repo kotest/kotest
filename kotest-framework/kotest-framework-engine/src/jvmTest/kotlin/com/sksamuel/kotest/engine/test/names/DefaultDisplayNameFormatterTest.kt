@@ -187,7 +187,8 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          val collector = TeamCityTestEngineListener()
 
          val report = captureStandardOut {
-            TestEngineLauncher(collector)
+            TestEngineLauncher()
+               .withListener(collector)
                .withProjectConfig(c)
                .withClasses(TaggedSpec::class)
                .withTagExpression(TagExpression.Empty)

@@ -4,6 +4,7 @@ import arrow.core.Either
 import arrow.core.Either.Left
 import arrow.core.Either.Right
 import arrow.core.identity
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
 import io.kotest.matchers.assertionCounter
@@ -38,7 +39,7 @@ public fun <A, B> Either<A, B>.shouldBeRight(failureMessage: (A) -> String = { "
 
    return when (this) {
       is Right -> value
-      is Left -> throw AssertionError(failureMessage(value))
+      is Left -> AssertionErrorBuilder.fail(failureMessage(value))
    }
 }
 
@@ -74,7 +75,7 @@ public fun <A, B> Either<A, B>.shouldBeLeft(failureMessage: (B) -> String = { "E
 
    return when (this) {
       is Left -> value
-      is Right -> throw AssertionError(failureMessage(value))
+      is Right -> AssertionErrorBuilder.fail(failureMessage(value))
    }
 }
 

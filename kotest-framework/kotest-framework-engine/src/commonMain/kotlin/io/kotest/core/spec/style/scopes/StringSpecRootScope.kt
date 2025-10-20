@@ -38,6 +38,7 @@ interface StringSpecRootScope : RootScope {
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
+      coroutineTestScope: Boolean? = null,
       test: suspend TestScope.() -> Unit,
    ) {
       RootTestWithConfigBuilder(
@@ -56,6 +57,7 @@ interface StringSpecRootScope : RootScope {
          enabledOrReasonIf = enabledOrReasonIf,
          coroutineDebugProbes = coroutineDebugProbes,
          blockingTest = blockingTest,
+         coroutineTestScope = coroutineTestScope,
          test = test
       )
    }

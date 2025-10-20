@@ -47,7 +47,8 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
                override val extensions = listOf(TestProjectListener, TestBeforeProjectListener)
             }
 
-            TestEngineLauncher(NoopTestEngineListener)
+            TestEngineLauncher()
+               .withListener(NoopTestEngineListener)
                .withClasses(MyTest1::class, MyTest2::class)
                .withProjectConfig(c)
                .launch()

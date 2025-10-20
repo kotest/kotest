@@ -92,14 +92,16 @@ internal class TestCaseExecutor(
          HandleSkippedExceptionsTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
          TestInvocationInterceptor(
-            timeMark,
-            listOfNotNull(
+            timeMark = timeMark,
+            invocationInterceptors = listOfNotNull(
                // Timeout is handled inside TestCoroutineInterceptor if it is enabled
-               if (!useCoroutineTestScope) InvocationTimeoutInterceptor(context.testConfigResolver) else null,
-               if (useCoroutineTestScope) TestCoroutineInterceptor(context.testConfigResolver) else null,
+               if (useCoroutineTestScope)
+                  TestCoroutineInterceptor(context.testConfigResolver)
+               else
+                  InvocationTimeoutInterceptor(context.testConfigResolver),
             ),
-            context.testConfigResolver,
-            context.testExtensions()
+            testConfigResolver = context.testConfigResolver,
+            testExtensions = context.testExtensions()
          ),
          CoroutineDebugProbeInterceptor(context.testConfigResolver),
       )
