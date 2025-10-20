@@ -4,6 +4,7 @@ import io.kotest.core.Logger
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
+import io.kotest.engine.teamcity.names.TeamCityTestNameSanitizer
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
@@ -30,7 +31,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestIgnored(testCase: TestCase, result: TestResult.Ignored) {
       val msg = TeamCityMessageBuilder
-         .testIgnored(prefix, formatting.format(testCase))
+         .testIgnored(prefix, formatting.format(santizeTestCaseName(testCase)))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -46,7 +47,7 @@ internal class TeamCityWriter(
    internal fun outputTestStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "startTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testStarted(prefix, formatting.format(testCase))
+         .testStarted(prefix, formatting.format(santizeTestCaseName(testCase)))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -90,7 +91,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestFailed(testCase: TestCase, result: TestResult, details: Boolean) {
       val msg = TeamCityMessageBuilder
-         .testFailed(prefix, formatting.format(testCase))
+         .testFailed(prefix, formatting.format(santizeTestCaseName(testCase)))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -120,7 +121,7 @@ internal class TeamCityWriter(
    internal fun outputTestFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "finishTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testFinished(prefix, formatting.format(testCase))
+         .testFinished(prefix, formatting.format(santizeTestCaseName(testCase)))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -144,7 +145,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "startTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatting.format(testCase))
+         .testSuiteStarted(prefix, formatting.format(santizeTestCaseName(testCase)))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -158,7 +159,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "finishTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatting.format(testCase))
+         .testSuiteFinished(prefix, formatting.format(santizeTestCaseName(testCase)))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -188,5 +189,10 @@ internal class TeamCityWriter(
          .id(ref.kclass.toDescriptor().path().value)
          .build()
       println(msg)
+   }
+
+   internal fun santizeTestCaseName(testCase: TestCase): TestCase {
+      val name = TeamCityTestNameSanitizer.sanitize(testCase.name, testCase.parent?.name)
+      return testCase.copy(name = name)
    }
 }
