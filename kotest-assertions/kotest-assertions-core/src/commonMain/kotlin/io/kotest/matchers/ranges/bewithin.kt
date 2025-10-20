@@ -35,7 +35,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldBeWithin(range: ClosedRange<T
  */
 inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: ClosedRange<T>): OpenEndRange<T> {
    when (T::class) {
-      Int::class -> shouldBeWithinRangeOfInt(
+      Int::class  -> shouldBeWithinRangeOfInt(
          @Suppress("UNCHECKED_CAST") (this as OpenEndRange<Int>),
          @Suppress("UNCHECKED_CAST") (range as ClosedRange<Int>),
       )
@@ -45,7 +45,7 @@ inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldBeWithin(rang
          @Suppress("UNCHECKED_CAST") (range as ClosedRange<Long>),
       )
 
-      else -> shouldBeWithinGeneric(this, range)
+      else        -> Range.ofOpenEndRange(this) should beWithin(Range.ofClosedRange(range))
    }
    return this
 }
@@ -122,7 +122,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: OpenEndRan
 inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(range: ClosedRange<T>): OpenEndRange<T> {
 
    when (T::class) {
-      Int::class -> shouldNotBeWithinRangeOfInt(
+      Int::class  -> shouldNotBeWithinRangeOfInt(
          @Suppress("UNCHECKED_CAST") (this as OpenEndRange<Int>),
          @Suppress("UNCHECKED_CAST") (range as ClosedRange<Int>),
       )
@@ -132,7 +132,7 @@ inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(r
          @Suppress("UNCHECKED_CAST") (range as ClosedRange<Long>),
       )
 
-      else -> shouldNotBeWithinGeneric(this, range)
+      else        -> Range.ofOpenEndRange(this) shouldNot beWithin(Range.ofClosedRange(range))
    }
    return this
 }
@@ -214,22 +214,6 @@ internal fun beWithinRangeOfLong(
    override fun test(value: OpenEndRange<Long>): MatcherResult {
       return resultForWithin(range, value, (range.endInclusive + 1L))
    }
-}
-
-@PublishedApi
-internal fun <T : Comparable<T>> shouldBeWithinGeneric(
-   value: OpenEndRange<T>,
-   range: ClosedRange<T>
-) {
-   Range.ofOpenEndRange(value) should beWithin(Range.ofClosedRange(range))
-}
-
-@PublishedApi
-internal fun <T : Comparable<T>> shouldNotBeWithinGeneric(
-   value: OpenEndRange<T>,
-   range: ClosedRange<T>
-) {
-   Range.ofOpenEndRange(value) shouldNot beWithin(Range.ofClosedRange(range))
 }
 
 @PublishedApi

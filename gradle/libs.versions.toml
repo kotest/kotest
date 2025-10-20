@@ -25,7 +25,7 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 byte-buddy = "1.17.6"
 allure-commons = "2.29.1"
-koin = "4.1.1"
+#koin = "4.1.1"
 wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
@@ -80,8 +80,8 @@ decoroutinator = { module = "dev.reformator.stacktracedecoroutinator:stacktrace-
 
 fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+#koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+#koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
