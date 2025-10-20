@@ -8,12 +8,17 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 
-The Kotest test framework is supported on JVM, Javascript and Native.
-To enable Kotest for multiple platforms, combine the steps for the individual platforms as detailed in the following tabs.
+The Kotest test framework is supported on JVM, Javascript, Native and Wasm.
+To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
 
 :::caution
 The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin but a simplified setup.
 Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
+:::
+
+:::tip
+When running the Gradle test task, Gradle will cache the output and report no tests executed if no source code has changed.
+See the section on rerunning tests for details on how to disable this behaviour.
 :::
 
 <Tabs
@@ -273,3 +278,21 @@ based configuration will not work as Kotlin does not expose annotations at runti
 </Tabs>
 
 
+## Re-running tests
+
+By default, Gradle's incremental build will skip running tests if no source code has changed, marking the task as UP-TO-DATE. This can be inconvenient during debugging.
+
+To force your tests to run every time, you can temporarily add the following configuration to your build.gradle.kts file:
+
+```kotlin
+tasks.withType<Test>().configureEach {
+   logger.lifecycle("UP-TO-DATE check for $name is disabled, forcing it to run.")
+   outputs.upToDateWhen { false }
+}
+```
+
+Quick Alternative: For a single re-run without modifying build files, you can use the --rerun flag from the command line:
+
+```
+./gradlew test --rerun
+```
