@@ -61,11 +61,8 @@ val promise = TestEngineLauncher()
             .addCode(""".withProjectConfig(${configs.first().qualifiedName?.asString()}())""")
             .addCode("\n")
       }
+      // for wasm, we detect which listeners to add at runtime
       function
-         .addCode(""".withConsoleListener()""")
-         .addCode("\n")
-         .addCode(""".withTeamCityListener()""")
-         .addCode("\n")
          .addCode(""".promise() as Promise<JsAny?>""")
          .addCode("\n")
 
