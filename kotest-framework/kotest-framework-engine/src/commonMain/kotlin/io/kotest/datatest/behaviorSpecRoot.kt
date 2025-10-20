@@ -1,7 +1,7 @@
 package io.kotest.datatest
 
-import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecContextContainerScope
+import io.kotest.core.spec.style.scopes.BehaviorSpecGivenContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecRootScope
 import io.kotest.engine.stable.StableIdents
 
@@ -10,11 +10,6 @@ import io.kotest.engine.stable.StableIdents
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(first, second, *rest, test)"),
-   level = DeprecationLevel.WARNING
-)
 fun <T> BehaviorSpecRootScope.withData(
    first: T,
    second: T, // we need two elements here so the compiler can disambiguate from the sequence version
@@ -38,11 +33,20 @@ fun <T> BehaviorSpecRootScope.withContexts(
    withContexts(listOf(first, second) + rest, test)
 }
 
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(nameFn, first, second, *rest, test)"),
-   level = DeprecationLevel.WARNING
-)
+/**
+ * Registers tests at the root level for each element.
+ *
+ * The test name will be generated from the stable properties of the elements. See [StableIdents].
+ */
+fun <T> BehaviorSpecRootScope.withGivens(
+   first: T,
+   second: T, // we need two elements here so the compiler can disambiguate from the sequence version
+   vararg rest: T,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withGivens(listOf(first, second) + rest, test)
+}
+
 fun <T> BehaviorSpecRootScope.withData(
    nameFn: (T) -> String,
    first: T,
@@ -63,17 +67,21 @@ fun <T> BehaviorSpecRootScope.withContexts(
    withContexts(nameFn, listOf(first, second) + rest, test)
 }
 
+fun <T> BehaviorSpecRootScope.withGivens(
+   nameFn: (T) -> String,
+   first: T,
+   second: T,  // we need two elements here so the compiler can disambiguate from the sequence version
+   vararg rest: T,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withGivens(nameFn, listOf(first, second) + rest, test)
+}
+
 /**
  * Registers tests at the root level for each element of [ts].
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@KotestTestScope
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(ts, test)"),
-   level = DeprecationLevel.WARNING
-)
 fun <T> BehaviorSpecRootScope.withData(
    ts: Sequence<T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
@@ -98,11 +106,17 @@ fun <T> BehaviorSpecRootScope.withContexts(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(nameFn, ts, test)"),
-   level = DeprecationLevel.WARNING
-)
+fun <T> BehaviorSpecRootScope.withGivens(
+   ts: Sequence<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withGivens(ts.toList(), test)
+}
+/**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the stable properties of the elements. See [StableIdents].
+ */
 fun <T> BehaviorSpecRootScope.withData(
    nameFn: (T) -> String,
    ts: Sequence<T>,
@@ -129,11 +143,19 @@ fun <T> BehaviorSpecRootScope.withContexts(
  *
  * The test name will be generated from the stable properties of the elements. See [StableIdents].
  */
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(ts, test)"),
-   level = DeprecationLevel.WARNING
-)
+fun <T> BehaviorSpecRootScope.withGivens(
+   nameFn: (T) -> String,
+   ts: Sequence<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withGivens(nameFn, ts.toList(), test)
+}
+
+/**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the stable properties of the elements. See [StableIdents].
+ */
 fun <T> BehaviorSpecRootScope.withData(
    ts: Iterable<T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
@@ -151,6 +173,18 @@ fun <T> BehaviorSpecRootScope.withContexts(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    withContexts({ StableIdents.getStableIdentifier(it) }, ts, test)
+}
+
+/**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the stable properties of the elements. See [StableIdents].
+ */
+fun <T> BehaviorSpecRootScope.withGivens(
+   ts: Iterable<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   withGivens({ StableIdents.getStableIdentifier(it) }, ts, test)
 }
 
 /**
@@ -158,11 +192,6 @@ fun <T> BehaviorSpecRootScope.withContexts(
  *
  * The test name will be generated from the given [nameFn] function.
  */
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(nameFn, ts, test)"),
-   level = DeprecationLevel.WARNING
-)
 fun <T> BehaviorSpecRootScope.withData(
    nameFn: (T) -> String,
    ts: Iterable<T>,
@@ -187,14 +216,24 @@ fun <T> BehaviorSpecRootScope.withContexts(
 }
 
 /**
+ * Registers tests at the root level for each element of [ts].
+ *
+ * The test name will be generated from the given [nameFn] function.
+ */
+fun <T> BehaviorSpecRootScope.withGivens(
+   nameFn: (T) -> String,
+   ts: Iterable<T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   ts.forEach { t ->
+      given(nameFn(t)) { this.test(t) }
+   }
+}
+
+/**
  * Registers tests at the root level for each tuple of [data], with the first value of the tuple
  * used as the test name, and the second value passed to the test.
  */
-@Deprecated(
-   message = "Use withContexts(...) instead.",
-   replaceWith = ReplaceWith("withContexts(data, test)"),
-   level = DeprecationLevel.WARNING
-)
 fun <T> BehaviorSpecRootScope.withData(
    data: Map<String, T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
@@ -212,5 +251,18 @@ fun <T> BehaviorSpecRootScope.withContexts(
 ) {
    data.forEach { (name, t) ->
       context(name) { this.test(t) }
+   }
+}
+
+/**
+ * Registers tests at the root level for each tuple of [data], with the first value of the tuple
+ * used as the test name, and the second value passed to the test.
+ */
+fun <T> BehaviorSpecRootScope.withGivens(
+   data: Map<String, T>,
+   test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
+) {
+   data.forEach { (name, t) ->
+      given(name) { this.test(t) }
    }
 }

@@ -8,6 +8,9 @@ import io.kotest.datatest.PythagTriple
 import io.kotest.datatest.withAnds
 import io.kotest.datatest.withContexts
 import io.kotest.datatest.withData
+import io.kotest.datatest.withGivens
+import io.kotest.datatest.withThens
+import io.kotest.datatest.withWhens
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -24,8 +27,9 @@ class BehaviorSpecDataTest : BehaviorSpec() {
     }
 
     afterSpec {
-      count shouldBe 89
+      count shouldBe 151
     }
+
 
     // test root level with varargs
      withContexts(
@@ -158,6 +162,19 @@ class BehaviorSpecDataTest : BehaviorSpec() {
                           testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecDataTest/inside a given -- $a -- given $a -- $b -- when $b -- $c -- then $c")
                        }
                     }
+                 }
+              }
+           }
+        }
+     }
+
+     // nesting all new WithXXX
+     withContexts("a", "b") { a ->
+        withGivens("a", "b") { b ->
+           withAnds("a", "b") { c ->
+              withWhens("a", "b") { d ->
+                 withThens("a", "b") { e ->
+                    a + b + c + d + e  shouldHaveLength 5
                  }
               }
            }
