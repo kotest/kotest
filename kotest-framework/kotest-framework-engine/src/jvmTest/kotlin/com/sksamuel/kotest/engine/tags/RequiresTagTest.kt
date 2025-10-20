@@ -22,7 +22,8 @@ class RequiresTagTest : FunSpec({
       withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
          val collector = CollectingTestEngineListener()
 
-         TestEngineLauncher().withListener(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withTagExpression(TagExpression("Foo"))
             .withClasses(TaggedSpec::class)
             .launch()
@@ -54,7 +55,8 @@ class RequiresTagTest : FunSpec({
       withSystemProperty("kotest.tags", null, mode = OverrideMode.SetOrOverride) {
          val collector = CollectingTestEngineListener()
 
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(TaggedSpec::class)
             .withTagExpression(TagExpression.Empty)
             .launch()
