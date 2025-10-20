@@ -117,13 +117,6 @@ kotlin {
             implementation(libs.mordant)
          }
       }
-
-      watchosMain {
-         dependencies {
-            // used to write to the console with fancy colours!
-            implementation(libs.mordant)
-         }
-      }
    }
 }
 
