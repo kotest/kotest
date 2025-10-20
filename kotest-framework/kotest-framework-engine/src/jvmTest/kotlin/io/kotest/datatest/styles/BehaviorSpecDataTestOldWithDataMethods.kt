@@ -10,7 +10,7 @@ import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 
-class BehaviorSpecDataTestDeprecatedMethods : BehaviorSpec() {
+class BehaviorSpecDataTestOldWithDataMethods : BehaviorSpec() {
   init {
 
     duplicateTestNameMode = DuplicateTestNameMode.Silent

@@ -2785,6 +2785,13 @@ public final class io/kotest/core/test/config/TestConfig {
 }
 
 public final class io/kotest/datatest/BehaviorSpecContextContainerScopeKt {
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withContextsMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2792,9 +2799,23 @@ public final class io/kotest/datatest/BehaviorSpecContextContainerScopeKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withGivensMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecContextContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/datatest/BehaviorSpecGivenContainerScopeKt {
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAndsMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2802,9 +2823,30 @@ public final class io/kotest/datatest/BehaviorSpecGivenContainerScopeKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThensMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhens (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withWhensMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecGivenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/datatest/BehaviorSpecRootKt {
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
@@ -2812,9 +2854,23 @@ public final class io/kotest/datatest/BehaviorSpecRootKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
+	public static final fun withGivens (Lio/kotest/core/spec/style/scopes/BehaviorSpecRootScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;)V
 }
 
 public final class io/kotest/datatest/BehaviorSpecWhenContainerScopeKt {
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAnds (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withAndsMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2822,6 +2878,13 @@ public final class io/kotest/datatest/BehaviorSpecWhenContainerScopeKt {
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withData (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withDataMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/jvm/functions/Function1;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThens (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Lkotlin/sequences/Sequence;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun withThenssMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/datatest/DescribeSpecContainerScopeKt {
