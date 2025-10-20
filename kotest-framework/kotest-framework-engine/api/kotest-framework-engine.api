@@ -3037,7 +3037,6 @@ public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
-	public fun <init> (Lio/kotest/engine/listener/TestEngineListener;)V
 	public final fun addExtension (Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
@@ -3055,6 +3054,7 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withJs ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withJvm ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun withListeners (Ljava/util/Collection;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withNative ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withNoOpListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withPlatform (Lio/kotest/common/Platform;)Lio/kotest/engine/TestEngineLauncher;
@@ -3334,17 +3334,6 @@ public final class io/kotest/engine/coroutines/CoroutineDispatcherFactoryKt {
 
 public final class io/kotest/engine/coroutines/TestSchedulerKt {
 	public static final fun getTestScheduler (Lio/kotest/core/test/TestScope;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
-}
-
-public final class io/kotest/engine/coroutines/TestScopeElement : kotlin/coroutines/CoroutineContext$Element {
-	public static final field Companion Lio/kotest/engine/coroutines/TestScopeElement$Companion;
-	public fun <init> (Lkotlinx/coroutines/test/TestScope;)V
-	public fun fold (Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)Ljava/lang/Object;
-	public fun get (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext$Element;
-	public fun getKey ()Lkotlin/coroutines/CoroutineContext$Key;
-	public final fun getTestScope ()Lkotlinx/coroutines/test/TestScope;
-	public fun minusKey (Lkotlin/coroutines/CoroutineContext$Key;)Lkotlin/coroutines/CoroutineContext;
-	public fun plus (Lkotlin/coroutines/CoroutineContext;)Lkotlin/coroutines/CoroutineContext;
 }
 
 public final class io/kotest/engine/coroutines/TestScopeElement$Companion : kotlin/coroutines/CoroutineContext$Key {
