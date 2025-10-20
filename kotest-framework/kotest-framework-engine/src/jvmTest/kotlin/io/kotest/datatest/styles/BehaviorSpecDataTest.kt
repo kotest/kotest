@@ -1,5 +1,6 @@
 package io.kotest.datatest.styles
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.BehaviorSpec
@@ -7,7 +8,6 @@ import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
 import io.kotest.datatest.withAnds
 import io.kotest.datatest.withContexts
-import io.kotest.datatest.withData
 import io.kotest.datatest.withGivens
 import io.kotest.datatest.withThens
 import io.kotest.datatest.withWhens
@@ -20,15 +20,29 @@ class BehaviorSpecDataTest : BehaviorSpec() {
 
     duplicateTestNameMode = DuplicateTestNameMode.Silent
 
-    var count = 0
+     var beforeAnyCounter = 0
+     var beforeEachCounter = 0
+     var beforeTestCounter = 0
+     var afterTestCounter = 0
+     beforeAny {
+        beforeAnyCounter++
+     }
+     beforeEach {
+        beforeEachCounter++
+     }
+     beforeTest {
+        beforeTestCounter++
+     }
+     afterTest {
+        afterTestCounter++
+     }
 
-    afterTest {
-      count++
-    }
-
-    afterSpec {
-      count shouldBe 151
-    }
+     afterSpec {
+        afterTestCounter shouldBe 151
+        beforeAnyCounter shouldBe 151
+        beforeEachCounter shouldBe 42
+        beforeTestCounter shouldBe 151
+     }
 
 
     // test root level with varargs
@@ -151,6 +165,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
               }
            }
         }
+
 
         // test we can define further tests at each level
         withAnds("foo", "bar") { a ->
