@@ -7,7 +7,7 @@ import io.kotest.core.names.TestName
 // start of the nested test to make the child nest have a different prefix.
 // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
 internal object ParentNameStripper {
-   fun stripe(name: TestName, parent: TestName?): String {
+   fun strip(name: TestName, parent: TestName?): String {
       return when {
          parent == null -> name.name
          name.name.startsWith(parent.name) -> "- " + name.name

@@ -9,7 +9,7 @@ import io.kotest.core.names.TestName
 internal object TeamCityTestNameSanitizer {
 
    fun sanitize(name: TestName, parent: TestName?): TestName {
-      val parentStripped = ParentNameStripper.stripe(name, parent)
+      val parentStripped = ParentNameStripper.strip(name, parent)
       return name.copy(name = TeamCityTestNameEscaper.escape(parentStripped))
    }
 }
