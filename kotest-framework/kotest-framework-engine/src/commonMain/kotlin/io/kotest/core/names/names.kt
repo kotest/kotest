@@ -50,6 +50,9 @@ data class TestNameBuilder(
       )
    }
 
+   /**
+    * Returns a new [TestNameBuilder] with the default test affixes applied.
+    */
    fun withDefaultAffixes(): TestNameBuilder {
       return copy(defaultAffixes = true)
    }
