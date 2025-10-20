@@ -74,7 +74,8 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
       when (val platform = environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
          is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         // todo we need some way of determining if WASI or Wasm JS, so we can use the WasmWasiGenerator
+         // todo we need some way of determining if the Wasi variant of Wasm, so we can use the WasmWasiGenerator
+         // see https://github.com/google/ksp/issues/2544
          else if platform.platformName.contains("wasm-js") ->
             WasmJsGenerator(environment).generate(files, visitor.specs, visitor.configs)
          else -> error("Unsupported platform: ${environment.platforms.first()}")
@@ -82,6 +83,7 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    }
 }
 
+@Suppress("unused") // is referenced in the service resource file
 class KotestSymbolProcessorProvider : SymbolProcessorProvider {
    override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor {
       return KotestSymbolProcessor(environment)

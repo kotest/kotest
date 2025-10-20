@@ -6,3 +6,10 @@ package io.kotest.core.annotation
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Description(val value: String)
+
+/**
+ * Attach this annotation to add a link to an external issue tracker.
+ */
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Issue(val value: String)

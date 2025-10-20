@@ -11,12 +11,12 @@ kotlin {
             implementation(libs.kotlin.reflect)
             implementation(libs.spring.context)
             implementation(libs.spring.test)
-            implementation(libs.spring.boot.starter.web)
             implementation(libs.byte.buddy)
          }
       }
       jvmTest {
          dependencies {
+            implementation(libs.spring.boot.starter.web)
             implementation(libs.spring.boot.starter.test)
          }
       }

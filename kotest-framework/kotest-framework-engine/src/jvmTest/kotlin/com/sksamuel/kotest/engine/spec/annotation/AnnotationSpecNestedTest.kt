@@ -11,7 +11,10 @@ class AnnotationSpecNestedTest : FunSpec() {
    init {
       test("should detect nested classes") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener).withClasses(AnnotationSpecWithNested::class).launch()
+         TestEngineLauncher()
+            .withListener(listener)
+            .withClasses(AnnotationSpecWithNested::class)
+            .launch()
          listener.tests.shouldHaveSize(2)
          listener.tests.keys.map { it.name.name }.toSet() shouldBe setOf("foo", "bar")
          listener.result("foo")!!.isSuccess shouldBe true

@@ -63,7 +63,8 @@ jobs:
             -P"kotest_enableKotlinNative=true"
             ${{ matrix.args }}
             --no-configuration-cache
-            check publishToAppropriateCentralRepository
+            check
+            publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
 
       # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
@@ -98,7 +99,8 @@ jobs:
             -P"kotest_enableKotlinNative=true"
             ${{ matrix.args }}
             --no-configuration-cache
-            check publishToAppropriateCentralRepository
+            check
+            publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
 
    build-gradle:
