@@ -102,14 +102,3 @@ jobs:
             check
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
-
-   build-gradle:
-      needs: build-primary
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         ref: ${{ inputs.ref }}
-         task: >
-            --no-configuration-cache
-            publishKotestGradlePluginPluginMarkerMavenPublicationToDevPublishMavenRepository
-         runs-on: ubuntu-latest
