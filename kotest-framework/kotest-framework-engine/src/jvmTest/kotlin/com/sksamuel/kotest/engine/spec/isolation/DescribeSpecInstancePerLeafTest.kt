@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.execmode
+package com.sksamuel.kotest.engine.spec.isolation
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
@@ -178,3 +178,19 @@ class InstancePerLeafTest5 : DescribeSpec({
       }
    }
 })
+
+class DescribeSpecInstancePerLeaf6 : DescribeSpec() {
+   init {
+      isolationMode = IsolationMode.InstancePerLeaf
+      describe("tests") {
+         describe("for") {
+            it("should pass") {
+               true shouldBe true
+            }
+            it("should pass too") {
+               true shouldBe true
+            }
+         }
+      }
+   }
+}
