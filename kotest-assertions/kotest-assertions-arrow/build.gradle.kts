@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinTest
-
 plugins {
    id("kotest-multiplatform-library-conventions")
    id("kotest-publishing-conventions")
@@ -35,8 +33,4 @@ kotlin {
          }
       }
    }
-}
-
-tasks.withType<KotlinTest>().configureEach {
-   failOnNoDiscoveredTests = false
 }

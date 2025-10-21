@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.tasks.KotlinTest
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
@@ -34,4 +35,8 @@ kotlin {
          optIn("kotlin.time.ExperimentalTime")
       }
    }
+}
+
+tasks.withType<KotlinTest>().configureEach {
+   failOnNoDiscoveredTests = false
 }
