@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinTest
+
 plugins {
    id("kotest-jvm-conventions")
    id("kotest-js-wasm-conventions")
@@ -46,4 +48,8 @@ kotlin {
          }
       }
    }
+}
+
+tasks.withType<KotlinTest>().configureEach {
+   failOnNoDiscoveredTests = false
 }
