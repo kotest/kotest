@@ -4,7 +4,6 @@ import utils.SystemPropertiesArgumentProvider
 plugins {
    id("kotest-base")
    kotlin("multiplatform")
-   id("com.adarshr.test-logger")
 }
 
 tasks.withType<Test>().configureEach {
