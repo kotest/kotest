@@ -65,6 +65,11 @@ abstract class KotestPlugin : Plugin<Project> {
          description = TASK_DESCRIPTION
       }
 
+      // Wire the kotest task to the check task so that 'gradle check' runs Kotest tests
+      project.tasks.named(JavaBasePlugin.CHECK_TASK_NAME).configure {
+         dependsOn(KOTEST_TASK_NAME)
+      }
+
       // configures standalone Kotlin JVM projects
       handleKotlinJvm(project)
 
