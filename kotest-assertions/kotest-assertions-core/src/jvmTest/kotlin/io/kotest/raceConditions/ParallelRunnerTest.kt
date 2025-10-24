@@ -1,6 +1,8 @@
 package io.kotest.raceConditions
 
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.raceConditions.ParallelRunner.Companion.runInParallel
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -8,6 +10,7 @@ import io.mockk.mockkStatic
 import java.time.Clock
 import java.time.LocalDateTime
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ParallelRunnerTest: StringSpec() {
    init {
       "two tasks wait on each other" {
