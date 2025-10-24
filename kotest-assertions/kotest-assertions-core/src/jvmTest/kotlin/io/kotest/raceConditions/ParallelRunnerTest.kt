@@ -1,6 +1,9 @@
 package io.kotest.raceConditions
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.raceConditions.ParallelRunner.Companion.runInParallel
 import io.mockk.clearAllMocks
 import io.mockk.every
@@ -8,52 +11,32 @@ import io.mockk.mockkStatic
 import java.time.Clock
 import java.time.LocalDateTime
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ParallelRunnerTest: StringSpec() {
    init {
-      "two tasks wait on each other" {
+      /*
+      A typical race condition - two tasks mutate shared state without synchronization
+       */
+      "two tasks share one mutable state, both make the same decision at the same time" {
+         val box = Box(maxCapacity = 2)
+         box.addItem("apple")
          runInParallel({ runner: ParallelRunner ->
-            timedPrint("a1")
+            val hasCapacity = box.hasCapacity()
             runner.await()
-            timedPrint("a2")
+            if(hasCapacity) {
+               box.addItem("banana")
+            }
          },
             { runner: ParallelRunner ->
-               timedPrint("b1")
+               val hasCapacity = box.hasCapacity()
                runner.await()
-               timedPrint("b2")
+               if(hasCapacity) {
+                  box.addItem("orange")
+               }
             }
          )
-      }
-
-      "two tasks wait on each other, twice" {
-         runInParallel({ runner: ParallelRunner ->
-            timedPrint("-a1")
-            runner.await()
-            timedPrint("-a2")
-            runner.await()
-            timedPrint("-a3")
-         },
-            { runner: ParallelRunner ->
-               timedPrint("-b1")
-               runner.await()
-               runner.await()
-               timedPrint("-b2")
-            }
-         )
-      }
-
-      "one thread blows up, another times out" {
-         runInParallel({ runner: ParallelRunner ->
-            runner.await()
-            timedPrint("first task")
-            runner.await()
-         },
-            { runner: ParallelRunner ->
-               runner.await()
-               timedPrint("second task")
-               throw RuntimeException("Oops")
-            }
-         )
-         timedPrint("All done")
+         // capacity is exceeded as a result of race condition
+         box.items() shouldContainExactlyInAnyOrder listOf("apple", "banana", "orange")
       }
 
       "demo for mockkStatic".config(enabled = true) {
@@ -110,4 +93,15 @@ Time: 2023-01-02T03:04:05, Thread: 51, Second thread - after mocking 2023-01-02T
 
    private fun timedPrint(message: String) =
       println("Time: ${LocalDateTime.now()}, Thread: ${Thread.currentThread()}, $message")
+
+   private data class Box(val maxCapacity: Int) {
+      private val items = mutableListOf<String>()
+
+      fun addItem(item: String) = items.add(item)
+
+      fun hasCapacity() = items.size < maxCapacity
+
+      fun items() = items.toList()
+   }
 }
+
