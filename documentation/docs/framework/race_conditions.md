@@ -3,7 +3,7 @@ title: Reproduce Race Conditions
 slug: race_conditions.html
 ---
 
-A simple tool to reproduce race conditions such as deadlocks in automated tests.
+A simple tool to reproduce some common race conditions such as deadlocks in automated tests.
 <br/>
 <br/>
 For example, suppose that we need to reproduce a deadlock between two threads that are trying to modify two Postgres tables in different order.
@@ -73,4 +73,3 @@ thrownExceptions shouldHaveSize 1
 isDeadlock(thrownExceptions[0]) shouldBe true
 
 ```
-

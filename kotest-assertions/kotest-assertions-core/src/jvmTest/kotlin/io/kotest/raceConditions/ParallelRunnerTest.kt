@@ -56,25 +56,6 @@ class ParallelRunnerTest: StringSpec() {
          timedPrint("All done")
       }
 
-
-      "demo for mockkStatic - mutual await forever because deadlock".config(enabled = false) {
-         runInParallel({ runner: ParallelRunner ->
-            mockkStatic(LocalDateTime::class)
-            val localTime = LocalDateTime.of(2022, 4, 27, 12, 34, 56)
-            every { LocalDateTime.now(any<Clock>()) } returns localTime
-            runner.await()
-            timedPrint(LocalDateTime.now().toString())
-         },
-            { runner: ParallelRunner ->
-               mockkStatic(LocalDateTime::class)
-               val localTime = LocalDateTime.of(2023, 1, 2, 3, 4, 5)
-               every { LocalDateTime.now(any<Clock>()) } returns localTime
-               runner.await()
-               timedPrint(LocalDateTime.now().toString())
-            }
-         )
-      }
-
       "demo for mockkStatic".config(enabled = true) {
          runInParallel({ runner: ParallelRunner ->
             timedPrint("Before mock on same thread: ${LocalDateTime.now().toString()}")
