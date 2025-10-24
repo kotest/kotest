@@ -6,7 +6,61 @@ slug: race_conditions.html
 A simple tool to reproduce some common race conditions such as deadlocks in automated tests.
 <br/>
 <br/>
-For example, suppose that we need to reproduce a deadlock between two threads that are trying to modify two Postgres tables in different order.
+
+Whenever multiple coroutines or threads mutate shared state, there is a possibility of race conditions.
+<br/>
+<br/>
+In many common cases this tool allows to reproduce them easily.
+<br/>
+<br/>
+Suppose, for instance, that the following code runs without any synchronization concurrently:
+
+```kotlin
+if(canRunTask()) {
+    runTask()
+}
+```
+
+Without concurrency, this code will always run correctly. Let us reproduce concurrency as follows:
+
+```kotlin
+   private data class Box(val maxCapacity: Int) {
+      private val items = mutableListOf<String>()
+
+      fun addItem(item: String) = items.add(item)
+
+      fun hasCapacity() = items.size < maxCapacity
+
+      fun items() = items.toList()
+   }
+
+(snip)
+
+"two tasks share one mutable state, both make the same decision at the same time" {
+  val box = Box(maxCapacity = 2)
+  box.addItem("apple")
+  runInParallel({ runner: ParallelRunner ->
+    val hasCapacity = box.hasCapacity()
+    runner.await()
+    if(hasCapacity) {
+      box.addItem("banana")
+    }
+  },
+    { runner: ParallelRunner ->
+      val hasCapacity = box.hasCapacity()
+      runner.await()
+      if(hasCapacity) {
+        box.addItem("orange")
+      }
+    }
+  )
+  // capacity is exceeded as a result of race condition
+  box.items() shouldContainExactlyInAnyOrder listOf("apple", "banana", "orange")
+}
+
+```
+
+For another example, suppose that we need to reproduce a deadlock between two threads that are trying to modify two Postgres tables in different order.
 
 | Orders       | Items        |
 |--------------|--------------|
