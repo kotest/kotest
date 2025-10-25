@@ -9,6 +9,7 @@ import com.intellij.openapi.fileEditor.FileEditorManagerEvent
 import com.intellij.openapi.fileEditor.FileEditorManagerListener
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
+import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.openapi.vfs.newvfs.BulkFileListener
 import com.intellij.openapi.vfs.newvfs.events.VFileEvent
@@ -104,6 +105,11 @@ class TestExplorerWindow(private val project: Project) : SimpleToolWindowPanel(t
       project.messageBus.connect().subscribe(
          FileEditorManagerListener.FILE_EDITOR_MANAGER,
          object : FileEditorManagerListener {
+            override fun fileClosed(source: FileEditorManager, file: VirtualFile) {
+               // when a file is closed, reset the one-time expanded state so reopening expands all again
+               tree.markFileClosed(file)
+            }
+
             override fun selectionChanged(event: FileEditorManagerEvent) {
                val file = fileEditorManager.selectedEditor?.file
                if (file != null) {
