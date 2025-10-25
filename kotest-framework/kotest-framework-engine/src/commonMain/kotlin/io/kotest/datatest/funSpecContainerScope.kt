@@ -242,7 +242,10 @@ suspend fun <T> FunSpecContainerScope.withData(data: Map<String, T>, test: suspe
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withContextsMap")
-suspend fun <T> FunSpecContainerScope.withContexts(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
+suspend fun <T> FunSpecContainerScope.withContexts(
+   data: Map<String, T>,
+   test: suspend FunSpecContainerScope.(T) -> Unit
+) {
    data.forEach { (name, t) ->
       context(name) { this.test(t) }
    }
