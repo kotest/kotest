@@ -6,10 +6,9 @@ import io.kotest.common.KotestInternal
  * Parses the gradle --tests option into Kotest compatible selectors when invoked by the intelli plugin.
  *
  * This parser expects a package name, a fully qualified test name, or a fully qualified test name with context.
- * Wildcards are not part of the specification.
  *
- * The plugin will prefix the package name with kotest_intellij_plugin. to indicate that it
- * is being invoked by the plugin.
+ * The plugin will prefix the package name with 'kotest.' to indicate that it
+ * is using our special format that supports nested tests.
  *
  * Examples:
  *
@@ -26,9 +25,11 @@ object TestArgParser {
    // so when we have nested tests we collapse into a fake test name with this delimiter in it.
    const val CONTEXT = "__context__"
 
-   const val MAGIC_MARKER = "kotest_intellij_plugin."
+   // this constant is used to indicate to kotest that the --tests parameter is the kotest variant
+   const val MAGIC_MARKER = "kotest."
 
-   const val PERIOD = "__period__"
+   // used to replace .* regexes with a value that doesn't contain a period so we can split on the period, then revert
+   const val WILDCARD = "__wildcard__"
 
    fun parse(arg: String): TestArg? {
       require(arg.isNotBlank())
@@ -38,9 +39,9 @@ object TestArgParser {
          .removePrefix("\\Q")
          .removePrefix(MAGIC_MARKER)
          .removeSuffix("\\E")
-         .replace("\\E.*\\Q", PERIOD) // we use a regex wildcard to support periods in names
+         .replace("\\E.*\\Q", WILDCARD) // we use a regex wildcard to support periods in names
          .split(".")
-         .map { it.replace(PERIOD, ".") }
+         .map { it.replace(WILDCARD, "*") }
 
       val packageParts = parts.takeWhile { it.first().isLowerCase() }
       val simpleName = parts.dropWhile { it.first().isLowerCase() }.firstOrNull()
