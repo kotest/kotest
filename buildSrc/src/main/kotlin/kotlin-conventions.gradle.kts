@@ -1,10 +1,10 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.tasks.KotlinTest
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
    id("kotest-base")
    kotlin("multiplatform")
-   id("com.adarshr.test-logger")
 }
 
 tasks.withType<Test>().configureEach {
@@ -35,4 +35,8 @@ kotlin {
          optIn("kotlin.time.ExperimentalTime")
       }
    }
+}
+
+tasks.withType<KotlinTest>().configureEach {
+   failOnNoDiscoveredTests = false
 }

@@ -69,7 +69,7 @@ class MaterializerTest : FunSpec({
          type = TestType.Container,
          source = SourceRef.None,
       )
-      Materializer().materialize(nested, parent).name.name shouldBe "- prefixes are swallowed"
+      Materializer().materialize(nested, parent).name.name shouldBe "prefixes are swallowed"
    }
 
 

@@ -525,24 +525,49 @@ class EventuallyTest : FunSpec() {
          count shouldBe 100
       }
 
-      test("eventually should throw AssertionError if function suspends and does not pass after duration").config(
-         coroutineTestScope = false
-      ) {
-         shouldThrow<AssertionError> {
-            eventually(100.milliseconds) {
-               delay(10)
-               "error" shouldBe "ok"
+      context("with real time") {
+         test("eventually should throw AssertionError if function suspends and does not pass after duration").config(
+            coroutineTestScope = false
+         ) {
+            shouldThrow<AssertionError> {
+               eventually(100.milliseconds) {
+                  delay(10)
+                  "error" shouldBe "ok"
+               }
+            }
+         }
+
+         test("eventually should throw AssertionError if function does not return within specified duration").config(
+            coroutineTestScope = false
+         ) {
+            shouldThrow<AssertionError> {
+               eventually(10.milliseconds) {
+                  delay(1.days)
+                  "error" shouldBe "ok"
+               }
             }
          }
       }
 
-      test("eventually should throw AssertionError if function does not return within specified duration").config(
-         coroutineTestScope = false
-      ) {
-         shouldThrow<AssertionError> {
-            eventually(10.milliseconds) {
-               delay(1.days)
-               "error" shouldBe "ok"
+      context("with virtual time") {
+         test("eventually should throw AssertionError if function suspends and does not pass after duration").config(
+            coroutineTestScope = true
+         ) {
+            shouldThrow<AssertionError> {
+               eventually(100.milliseconds) {
+                  delay(10)
+                  "error" shouldBe "ok"
+               }
+            }
+         }
+         test("eventually should throw AssertionError if function does not return within specified duration").config(
+            coroutineTestScope = true
+         ) {
+            shouldThrow<AssertionError> {
+               eventually(10.milliseconds) {
+                  delay(1.days)
+                  "error" shouldBe "ok"
+               }
             }
          }
       }
