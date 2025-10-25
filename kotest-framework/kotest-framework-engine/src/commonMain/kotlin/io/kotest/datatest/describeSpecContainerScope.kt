@@ -308,7 +308,10 @@ suspend fun <T> DescribeSpecContainerScope.withIts(
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withDataMap")
-suspend fun <T> DescribeSpecContainerScope.withData(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+suspend fun <T> DescribeSpecContainerScope.withData(
+   data: Map<String, T>,
+   test: suspend DescribeSpecContainerScope.(T) -> Unit
+) {
    withContexts(data, test)
 }
 
@@ -317,7 +320,10 @@ suspend fun <T> DescribeSpecContainerScope.withData(data: Map<String, T>, test: 
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withContextsMap")
-suspend fun <T> DescribeSpecContainerScope.withContexts(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+suspend fun <T> DescribeSpecContainerScope.withContexts(
+   data: Map<String, T>,
+   test: suspend DescribeSpecContainerScope.(T) -> Unit
+) {
    data.forEach { (name, t) ->
       context(name) { this.test(t) }
    }
@@ -328,7 +334,10 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(data: Map<String, T>, te
  * of the tuple used as the test name, and the second value passed to the test.
  */
 @JvmName("withDescribesMap")
-suspend fun <T> DescribeSpecContainerScope.withDescribes(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+suspend fun <T> DescribeSpecContainerScope.withDescribes(
+   data: Map<String, T>,
+   test: suspend DescribeSpecContainerScope.(T) -> Unit
+) {
    data.forEach { (name, t) ->
       describe(name) { this.test(t) }
    }

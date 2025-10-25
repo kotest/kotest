@@ -6,7 +6,6 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
 import io.kotest.datatest.withContexts
-import io.kotest.datatest.withData
 import io.kotest.datatest.withDescribes
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe

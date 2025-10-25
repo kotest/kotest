@@ -112,6 +112,7 @@ fun <T> BehaviorSpecRootScope.withGivens(
 ) {
    withGivens(ts.toList(), test)
 }
+
 /**
  * Registers tests at the root level for each element of [ts].
  *

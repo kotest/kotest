@@ -1,8 +1,8 @@
 package io.kotest.datatest.styles
 
-import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.datatest.FruitWithMemberNameCollision

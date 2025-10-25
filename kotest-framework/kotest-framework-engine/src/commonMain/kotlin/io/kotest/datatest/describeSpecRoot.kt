@@ -300,7 +300,7 @@ fun <T> DescribeSpecRootScope.withIts(
  * used as the test name, and the second value passed to the test.
  */
 fun <T> DescribeSpecRootScope.withData(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
-   withContexts(data,test)
+   withContexts(data, test)
 }
 
 /**
@@ -317,7 +317,10 @@ fun <T> DescribeSpecRootScope.withContexts(data: Map<String, T>, test: suspend D
  * Registers tests at the root level for each tuple of [data], with the first value of the tuple
  * used as the test name, and the second value passed to the test.
  */
-fun <T> DescribeSpecRootScope.withDescribes(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+fun <T> DescribeSpecRootScope.withDescribes(
+   data: Map<String, T>,
+   test: suspend DescribeSpecContainerScope.(T) -> Unit
+) {
    data.forEach { (name, t) ->
       describe(name) { this.test(t) }
    }
