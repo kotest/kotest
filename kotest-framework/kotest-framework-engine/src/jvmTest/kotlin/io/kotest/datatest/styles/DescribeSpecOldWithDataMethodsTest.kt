@@ -90,7 +90,7 @@ class DescribeSpecOldWithDataMethodsTest : DescribeSpec() {
       ) {
          context("describe $it") {
             it(it) {
-               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.DescribeSpecDataTest/$it -- describe $it -- $it")
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.DescribeSpecOldWithDataMethodsTest/$it -- describe $it -- $it")
             }
          }
       }
@@ -154,7 +154,7 @@ class DescribeSpecOldWithDataMethodsTest : DescribeSpec() {
          ) {
             describe("describe $it") {
                it(it) {
-                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.DescribeSpecDataTest/inside a context -- $it -- describe $it -- $it")
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.DescribeSpecOldWithDataMethodsTest/inside a context -- $it -- describe $it -- $it")
                }
             }
          }

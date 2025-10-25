@@ -1,10 +1,8 @@
 package io.kotest.datatest.styles
 
 import io.kotest.core.descriptors.DescriptorPath
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
 import io.kotest.datatest.withData
@@ -12,8 +10,7 @@ import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
-class FeatureSpecOldWithDataMethodsTest : FeatureSpec() {
+class FunSpecOldWithDataMethodsTest : FunSpec() {
    init {
 
       duplicateTestNameMode = DuplicateTestNameMode.Silent
@@ -25,7 +22,7 @@ class FeatureSpecOldWithDataMethodsTest : FeatureSpec() {
       }
 
       afterSpec {
-         count shouldBe 65
+         count shouldBe 68
       }
 
       // test root level with varargs
@@ -91,14 +88,14 @@ class FeatureSpecOldWithDataMethodsTest : FeatureSpec() {
          "foo",
          "bar"
       ) {
-         feature("feature $it") {
-            scenario("scenario $it") {
-               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FeatureSpecOldWithDataMethodsTest/$it -- feature $it -- scenario $it")
+         context("context $it") {
+            test("test $it") {
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FunSpecOldWithDataMethodsTest/$it -- context $it -- test $it")
             }
          }
       }
 
-      feature("inside a feature") {
+      context("inside a context") {
 
          // test nested level with varargs
          withData(
@@ -130,6 +127,15 @@ class FeatureSpecOldWithDataMethodsTest : FeatureSpec() {
             a * a + b * b shouldBe c * c
          }
 
+         withData(
+            mapOf(
+               "true" to true,
+               "false" to false,
+               "null" to null,
+            )
+         ) { _ ->
+         }
+
          // testing repeated names get mangled inside a context
          index = 0
          withData("a", "a", "a") {
@@ -155,9 +161,9 @@ class FeatureSpecOldWithDataMethodsTest : FeatureSpec() {
             "foo",
             "bar"
          ) {
-            feature("feature $it") {
-               scenario("scenario $it") {
-                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FeatureSpecOldWithDataMethodsTest/inside a feature -- $it -- feature $it -- scenario $it")
+            context("context $it") {
+               test("test $it") {
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FunSpecOldWithDataMethodsTest/inside a context -- $it -- context $it -- test $it")
                }
             }
          }

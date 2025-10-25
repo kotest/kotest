@@ -5,7 +5,10 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
-import io.kotest.datatest.withData
+import io.kotest.datatest.withContexts
+import io.kotest.datatest.withFeatures
+import io.kotest.datatest.withScenarios
+import io.kotest.datatest.withTests
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -22,11 +25,11 @@ class FunSpecDataTest : FunSpec() {
       }
 
       afterSpec {
-         count shouldBe 68
+         count shouldBe 114
       }
 
       // test root level with varargs
-      withData(
+      withContexts(
          PythagTriple(3, 4, 5),
          PythagTriple(6, 8, 10),
       ) { (a, b, c) ->
@@ -34,7 +37,7 @@ class FunSpecDataTest : FunSpec() {
       }
 
       // test root level with a sequence
-      withData(
+      withContexts(
          sequenceOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -45,7 +48,7 @@ class FunSpecDataTest : FunSpec() {
       }
 
       // test root level with an iterable
-      withData(
+      withContexts(
          listOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -57,7 +60,7 @@ class FunSpecDataTest : FunSpec() {
 
       // testing repeated names get mangled
       var index = 0
-      withData("a", "a", "a") {
+      withContexts("a", "a", "a") {
          when (index) {
             0 -> this.testCase.name.name shouldBe "a"
             1 -> this.testCase.name.name shouldBe "(1) a"
@@ -67,24 +70,24 @@ class FunSpecDataTest : FunSpec() {
       }
 
       // tests mixing sequences and iterables and varargs
-      withData("p", "q") { a ->
-         withData(listOf("r", "s")) { b ->
-            withData(sequenceOf("x", "y")) { c ->
+      withContexts("p", "q") { a ->
+         withContexts(listOf("r", "s")) { b ->
+            withContexts(sequenceOf("x", "y")) { c ->
                a + b + c shouldHaveLength 3
             }
          }
       }
 
       // handle collision between function name and property name
-      withData(
+      withContexts(
          FruitWithMemberNameCollision("apple", 11),
          FruitWithMemberNameCollision("orange", 12),
       ) { (_, weight) ->
          weight shouldBeGreaterThan 10
       }
 
-      // test we can define further context and tests inside a root level withData
-      withData(
+      // test we can define further context and tests inside a root level withContexts
+      withContexts(
          "foo",
          "bar"
       ) {
@@ -98,7 +101,7 @@ class FunSpecDataTest : FunSpec() {
       context("inside a context") {
 
          // test nested level with varargs
-         withData(
+         withContexts(
             PythagTriple(3, 4, 5),
             PythagTriple(6, 8, 10),
          ) { (a, b, c) ->
@@ -106,7 +109,7 @@ class FunSpecDataTest : FunSpec() {
          }
 
          // test nested level with a sequence
-         withData(
+         withContexts(
             sequenceOf(
                PythagTriple(8, 15, 17),
                PythagTriple(9, 12, 15),
@@ -117,7 +120,7 @@ class FunSpecDataTest : FunSpec() {
          }
 
          // test nested level with an iterable
-         withData(
+         withContexts(
             listOf(
                PythagTriple(8, 15, 17),
                PythagTriple(9, 12, 15),
@@ -127,7 +130,7 @@ class FunSpecDataTest : FunSpec() {
             a * a + b * b shouldBe c * c
          }
 
-         withData(
+         withContexts(
             mapOf(
                "true" to true,
                "false" to false,
@@ -138,7 +141,7 @@ class FunSpecDataTest : FunSpec() {
 
          // testing repeated names get mangled inside a context
          index = 0
-         withData("a", "a", "a") {
+         withContexts("a", "a", "a") {
             when (index) {
                0 -> this.testCase.name.name shouldBe "a"
                1 -> this.testCase.name.name shouldBe "(1) a"
@@ -148,22 +151,36 @@ class FunSpecDataTest : FunSpec() {
          }
 
          // tests mixing sequences and iterables and varargs inside a context
-         withData("p", "q") { a ->
-            withData(listOf("r", "s")) { b ->
-               withData(sequenceOf("x", "y")) { c ->
+         withContexts("p", "q") { a ->
+            withContexts(listOf("r", "s")) { b ->
+               withContexts(sequenceOf("x", "y")) { c ->
                   a + b + c shouldHaveLength 3
                }
             }
          }
 
-         // test we can define further context and tests inside a container level withData
-         withData(
+         // test we can define further context and tests inside a container level withContexts
+         withContexts(
             "foo",
             "bar"
          ) {
             context("context $it") {
                test("test $it") {
                   this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.FunSpecDataTest/inside a context -- $it -- context $it -- test $it")
+               }
+            }
+         }
+      }
+
+      // nesting all new WithXXX
+      withContexts("a", "b") { a ->
+         withContexts("a", "b") { b ->
+            withContexts("a", "b") { c ->
+               withTests("test1", "test2") { d ->
+                  a + b + c + d  shouldHaveLength 8
+               }
+               withTests("test3", "test4") { e ->
+                  a + b + c + e  shouldHaveLength 8
                }
             }
          }

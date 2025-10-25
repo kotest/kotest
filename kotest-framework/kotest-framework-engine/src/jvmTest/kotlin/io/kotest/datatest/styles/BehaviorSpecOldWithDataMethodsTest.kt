@@ -91,7 +91,7 @@ class BehaviorSpecOldWithDataMethodsTest : BehaviorSpec() {
          given("given $it") {
             `when`("when $it") {
                then("then $it") {
-                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecDataTestDeprecatedMethods/$it -- given $it -- when $it -- then $it")
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecOldWithDataMethodsTest/$it -- given $it -- when $it -- then $it")
                }
             }
          }
@@ -159,7 +159,7 @@ class BehaviorSpecOldWithDataMethodsTest : BehaviorSpec() {
                   `when`("when $b") {
                      withData("foo", "bar") { c ->
                         then("then $c") {
-                           this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecDataTestDeprecatedMethods/inside a given -- $a -- given $a -- $b -- when $b -- $c -- then $c")
+                           this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.BehaviorSpecOldWithDataMethodsTest/inside a given -- $a -- given $a -- $b -- when $b -- $c -- then $c")
                         }
                      }
                   }

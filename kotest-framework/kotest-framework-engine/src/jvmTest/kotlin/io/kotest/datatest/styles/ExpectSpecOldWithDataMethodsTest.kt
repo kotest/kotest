@@ -93,7 +93,7 @@ class ExpectSpecOldWithDataMethodsTest : ExpectSpec() {
       ) {
          context("context $it") {
             expect("test $it") {
-               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecDataTest/$it -- context $it -- test $it")
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecOldWithDataMethodsTest/$it -- context $it -- test $it")
             }
          }
       }
@@ -157,7 +157,7 @@ class ExpectSpecOldWithDataMethodsTest : ExpectSpec() {
          ) {
             context("context $it") {
                expect("test $it") {
-                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecDataTest/inside a context -- $it -- context $it -- test $it")
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecOldWithDataMethodsTest/inside a context -- $it -- context $it -- test $it")
                }
             }
          }
