@@ -6,8 +6,6 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
 import io.kotest.datatest.withContexts
-import io.kotest.datatest.withFeatures
-import io.kotest.datatest.withScenarios
 import io.kotest.datatest.withTests
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
@@ -177,10 +175,10 @@ class FunSpecDataTest : FunSpec() {
          withContexts("a", "b") { b ->
             withContexts("a", "b") { c ->
                withTests("test1", "test2") { d ->
-                  a + b + c + d  shouldHaveLength 8
+                  a + b + c + d shouldHaveLength 8
                }
                withTests("test3", "test4") { e ->
-                  a + b + c + e  shouldHaveLength 8
+                  a + b + c + e shouldHaveLength 8
                }
             }
          }
