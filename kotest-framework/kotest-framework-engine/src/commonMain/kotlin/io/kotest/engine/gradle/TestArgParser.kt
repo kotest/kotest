@@ -22,27 +22,32 @@ import io.kotest.common.KotestInternal
 @KotestInternal
 object TestArgParser {
 
-   // this special delimiter is used because gradle thinks of tests as methods, and methods cannot be nested
+   // this token is used because gradle thinks of tests as methods, and methods cannot be nested
    // so when we have nested tests we collapse into a fake test name with this delimiter in it.
-   const val DELIMITER = "__context__"
+   const val CONTEXT = "__context__"
+
+   const val MAGIC_MARKER = "kotest_intellij_plugin."
+
+   const val PERIOD = "__period__"
 
    fun parse(arg: String): TestArg? {
       require(arg.isNotBlank())
-      if (!arg.replace("\\Q", "").startsWith("kotest_intellij_plugin.")) return null
+      if (!arg.removePrefix("\\Q").startsWith(MAGIC_MARKER)) return null
 
-      val literal = arg
-         .replace("\\Q", "")
-         .replace("\\E", "")
-         .removePrefix("kotest_intellij_plugin.")
-
-      val parts = literal.split(".")
+      val parts = arg
+         .removePrefix("\\Q")
+         .removePrefix(MAGIC_MARKER)
+         .removeSuffix("\\E")
+         .replace("\\E.*\\Q", PERIOD) // we use a regex wildcard to support periods in names
+         .split(".")
+         .map { it.replace(PERIOD, ".") }
 
       val packageParts = parts.takeWhile { it.first().isLowerCase() }
       val simpleName = parts.dropWhile { it.first().isLowerCase() }.firstOrNull()
       val testContexts = parts.dropWhile { it.first().isLowerCase() }
          .drop(1)
          .joinToString(".")
-         .split(DELIMITER)
+         .split(CONTEXT)
          .filter { it.isNotBlank() }
 
       val fqn = (packageParts + listOfNotNull(simpleName)).joinToString(".")
