@@ -1017,9 +1017,9 @@ public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
-	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public fun testParts ()Ljava/util/List;
 }
 
 public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
@@ -1037,9 +1037,9 @@ public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
 	public static fun isSpec (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isTestCase (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun parents (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
-	public static fun parts (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 	public static fun path (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/DescriptorPath;
 	public static fun spec (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public static fun testParts (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 }
 
 public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kotest/core/descriptors/Descriptor {
@@ -1064,9 +1064,9 @@ public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kot
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
-	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public fun testParts ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1094,9 +1094,10 @@ public final class io/kotest/core/descriptors/Descriptor$TestDescriptor : io/kot
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
-	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
+	public final fun root ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public fun testParts ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -3767,6 +3768,44 @@ public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kote
 public final class io/kotest/engine/extensions/SystemPropertyTagExtension : io/kotest/core/extensions/TagExtension {
 	public static final field INSTANCE Lio/kotest/engine/extensions/SystemPropertyTagExtension;
 	public fun tags ()Lio/kotest/engine/tags/TagExpression;
+}
+
+public abstract interface class io/kotest/engine/gradle/TestArg {
+}
+
+public final class io/kotest/engine/gradle/TestArg$Class : io/kotest/engine/gradle/TestArg {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/gradle/TestArg$Class;
+	public static synthetic fun copy$default (Lio/kotest/engine/gradle/TestArg$Class;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/gradle/TestArg$Class;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getFqn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/gradle/TestArg$Package : io/kotest/engine/gradle/TestArg {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/gradle/TestArg$Package;
+	public static synthetic fun copy$default (Lio/kotest/engine/gradle/TestArg$Package;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/gradle/TestArg$Package;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getPackageName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/gradle/TestArg$Test : io/kotest/engine/gradle/TestArg {
+	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/String;Ljava/util/List;)Lio/kotest/engine/gradle/TestArg$Test;
+	public static synthetic fun copy$default (Lio/kotest/engine/gradle/TestArg$Test;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/engine/gradle/TestArg$Test;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getContexts ()Ljava/util/List;
+	public final fun getFqn ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/engine/interceptors/EmptyTestSuiteException : java/lang/Exception {

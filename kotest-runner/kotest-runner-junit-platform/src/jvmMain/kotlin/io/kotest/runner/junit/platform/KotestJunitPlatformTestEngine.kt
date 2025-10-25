@@ -6,7 +6,8 @@ import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
-import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.gradle.IntellijGradleTestsArgDescriptorFilter
+import io.kotest.engine.gradle.TestArgParser
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -122,7 +123,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val engine = EngineDescriptorBuilder.builder(uniqueId)
          .withSpecs(result.specs)
-         .withExtensions(configurationParameterExtensions(request) + listOfNotNull(gradleTestFilterExtension(request)))
+         .withExtensions(
+            configurationParameterExtensions(request) +
+               listOfNotNull(gradleClassMethodRegexTestFilter(request), intellijGradleTestsArgDescriptorFilter(request))
+         )
          .withFormatter(formatting)
          .build()
 
@@ -144,12 +148,36 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
-    * Returns a [DescriptorFilter] created from the --tests parameter in gradle, which it exposes
+    * Returns a [GradleClassMethodRegexTestFilter] created from the --tests parameter in gradle, which it exposes
     * as an instance of [org.junit.platform.launcher.PostDiscoveryFilter].
+    *
+    * If no --tests flag was provided, this will return null
     */
-   private fun gradleTestFilterExtension(request: EngineDiscoveryRequest): DescriptorFilter {
+   private fun gradleClassMethodRegexTestFilter(request: EngineDiscoveryRequest): GradleClassMethodRegexTestFilter? {
       val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
+      if (classMethodFilterRegexes.isEmpty()) return null
+
       return GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
+   }
+
+
+   /**
+    * Returns a [IntellijGradleTestsArgDescriptorFilter] created from the --tests parameter in gradle, which gradle exposes
+    * as an instance of [org.junit.platform.launcher.PostDiscoveryFilter].
+    *
+    * If no --tests flag was provided, this will return null
+    */
+   private fun intellijGradleTestsArgDescriptorFilter(request: EngineDiscoveryRequest): IntellijGradleTestsArgDescriptorFilter? {
+      val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
+      if (classMethodFilterRegexes.isEmpty()) return null
+
+      val testArgs = classMethodFilterRegexes.mapNotNull { string ->
+         TestArgParser.parse(string).also {
+            logger.log { "Created test arg [$it]" }
+         }
+      }
+
+      return IntellijGradleTestsArgDescriptorFilter(testArgs.toSet())
    }
 
    /**
