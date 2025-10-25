@@ -104,7 +104,7 @@ class BehaviorSpecDataTest : BehaviorSpec() {
         weight shouldBeGreaterThan 10
      }
 
-     // test we can define further given and whens inside a root level withData
+     // test we can define further given and whens inside a root level withContexts
      withContexts("foo", "bar") {
         given("given $it") {
            `when`("when $it") {
