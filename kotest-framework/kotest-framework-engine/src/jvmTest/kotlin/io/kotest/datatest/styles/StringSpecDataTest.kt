@@ -5,7 +5,6 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
 import io.kotest.datatest.withData
-import io.kotest.datatest.withTests
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -16,6 +15,7 @@ class StringSpecDataTest : StringSpec() {
       var beforeAnyCounter = 0
       var beforeEachCounter = 0
       var beforeTestCounter = 0
+      var afterTestCounter = 0
       beforeAny {
          beforeAnyCounter++
       }
@@ -25,10 +25,14 @@ class StringSpecDataTest : StringSpec() {
       beforeTest {
          beforeTestCounter++
       }
+      afterTest {
+         afterTestCounter++
+      }
       afterSpec {
          beforeAnyCounter shouldBe 19
          beforeEachCounter shouldBe 19
          beforeTestCounter shouldBe 19
+         afterTestCounter shouldBe 19
       }
       duplicateTestNameMode = DuplicateTestNameMode.Silent
 
@@ -43,7 +47,7 @@ class StringSpecDataTest : StringSpec() {
       }
 
       // test root level with varargs
-      withTests(
+      withData(
          PythagTriple(3, 4, 5),
          PythagTriple(6, 8, 10),
       ) { (a, b, c) ->
@@ -51,7 +55,7 @@ class StringSpecDataTest : StringSpec() {
       }
 
       // test root level with a sequence
-      withTests(
+      withData(
          sequenceOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -62,7 +66,7 @@ class StringSpecDataTest : StringSpec() {
       }
 
       // test root level with an iterable
-      withTests(
+      withData(
          listOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -74,7 +78,7 @@ class StringSpecDataTest : StringSpec() {
 
       // testing repeated names get mangled
       var index = 0
-      withTests("a", "a", "a") {
+      withData("a", "a", "a") {
          when (index) {
             0 -> this.testCase.name.name shouldBe "a"
             1 -> this.testCase.name.name shouldBe "(1) a"
@@ -84,23 +88,23 @@ class StringSpecDataTest : StringSpec() {
       }
 
       // tests with varargs
-      withTests("p", "q") { a ->
+      withData("p", "q") { a ->
          a shouldHaveLength 1
       }
 
       // tests with sequences
-      withTests(listOf("r", "s")) { a ->
+      withData(listOf("r", "s")) { a ->
          a shouldHaveLength 1
       }
 
       // tests with iterables
-      withTests(sequenceOf("x", "y")) { a ->
+      withData(sequenceOf("x", "y")) { a ->
          a shouldHaveLength 1
       }
 
 
       // handle collision between function name and property name
-      withTests(
+      withData(
          FruitWithMemberNameCollision("apple", 11),
          FruitWithMemberNameCollision("orange", 12),
       ) { (_, weight) ->
