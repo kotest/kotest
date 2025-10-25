@@ -1,17 +1,17 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ModuleBasedConfiguration
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.JavaDirectoryService
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
 import io.kotest.plugin.intellij.dependencies.ModuleDependencies
+import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {

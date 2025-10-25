@@ -36,7 +36,7 @@
    </actions>
 
    <extensions defaultExtensionNs="com.intellij">
-      <configurationType implementation="io.kotest.plugin.intellij.run.KotestConfigurationType"/>
+      <configurationType implementation="io.kotest.plugin.intellij.run.idea.KotestConfigurationType"/>
       <defaultLiveTemplates file="liveTemplates.xml"/>
 
       <notificationGroup id="kotest.notification.group"
@@ -70,11 +70,11 @@
       <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestStartupActivity"/>
 
       <runConfigurationProducer
-         implementation="io.kotest.plugin.intellij.run.TestOrSpecGradleRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.SpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.TestPathRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.PackageRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.GradleTestTaskRunConfigurationProducer"/>
+         implementation="io.kotest.plugin.intellij.run.gradle.TestOrSpecGradleRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestPathRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.PackageRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.GradleTestTaskRunConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ConfigClassesImplicitUsageProvider"/>
@@ -89,7 +89,7 @@
 
       <codeInsight.externalLibraryResolver implementation="io.kotest.plugin.intellij.KotestExternalLibraryResolver"/>
       <stacktrace.fold substring="at io.kotest."/>
-      <programRunner implementation="io.kotest.plugin.intellij.run.KotestDebuggerRunner"/>
+      <programRunner implementation="io.kotest.plugin.intellij.run.idea.KotestDebuggerRunner"/>
       <library.dependencyScopeSuggester implementation="io.kotest.plugin.intellij.KotestDependencyScopeSuggester"/>
 
       <breadcrumbProvider implementation="io.kotest.plugin.intellij.breadcrumbs.KotestBreadcrumbProvider"/>

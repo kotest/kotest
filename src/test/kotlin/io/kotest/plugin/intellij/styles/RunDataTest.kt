@@ -1,8 +1,8 @@
 package io.kotest.plugin.intellij.styles
 
 import io.kotest.matchers.shouldBe
-import io.kotest.plugin.intellij.run.RunData
-import io.kotest.plugin.intellij.run.suggestedName
+import io.kotest.plugin.intellij.run.idea.RunData
+import io.kotest.plugin.intellij.run.idea.suggestedName
 import junit.framework.TestCase
 
 class RunDataTest : TestCase() {

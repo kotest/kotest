@@ -2,7 +2,7 @@ package io.kotest.plugin.intellij.gradle
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
-import io.kotest.plugin.intellij.run.GradleTaskNamesBuilder
+import io.kotest.plugin.intellij.run.gradle.GradleTaskNamesBuilder
 import org.jetbrains.plugins.gradle.execution.GradleRunnerUtil
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.project.GradleTasksIndices

@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij
+package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.Executor
 import com.intellij.execution.actions.JavaRerunFailedTestsAction
@@ -8,8 +8,6 @@ import com.intellij.execution.testframework.SourceScope
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.module.Module
 import io.kotest.plugin.intellij.console.KotestTestConsoleProperties
-import io.kotest.plugin.intellij.run.KotestRunConfiguration
-import io.kotest.plugin.intellij.run.KotestRunnableState
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class RerunFailedTestsAction(

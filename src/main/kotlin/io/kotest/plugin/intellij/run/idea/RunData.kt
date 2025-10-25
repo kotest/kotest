@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.idea
 
 import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.name.FqName

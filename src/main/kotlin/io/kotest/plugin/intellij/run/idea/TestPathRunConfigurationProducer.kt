@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
@@ -90,7 +90,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    }
 
    private fun findTest(element: PsiElement): Test? {
-      return SpecStyle.styles.asSequence()
+      return SpecStyle.Companion.styles.asSequence()
          .filter { it.isContainedInSpec(element) }
          .mapNotNull { it.findAssociatedTest(element) }
          .firstOrNull()

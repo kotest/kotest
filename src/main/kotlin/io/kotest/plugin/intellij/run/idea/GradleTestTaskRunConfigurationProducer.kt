@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.Location
 import com.intellij.execution.actions.ConfigurationContext

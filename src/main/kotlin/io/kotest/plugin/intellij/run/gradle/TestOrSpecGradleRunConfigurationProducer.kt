@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.gradle
 
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.RunManager
@@ -116,7 +116,7 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
    }
 
    private fun configurationName(spec: KtClassOrObject, test: Test?): String {
-      return GradleTestRunNameBuilder.builder()
+      return GradleTestRunNameBuilder.Companion.builder()
          .withSpec(spec)
          .withTest(test)
          .build()

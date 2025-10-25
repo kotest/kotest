@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import io.kotest.plugin.intellij.psi.isRunnableSpec
+import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
 import org.jetbrains.kotlin.lexer.KtKeywordToken
 import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.psi.KtClassOrObject

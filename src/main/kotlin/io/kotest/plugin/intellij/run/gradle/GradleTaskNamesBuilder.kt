@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.gradle
 
 import com.intellij.openapi.module.Module
 import io.kotest.plugin.intellij.Test

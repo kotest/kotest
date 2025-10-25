@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.gradle
 
 import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.psi.KtClassOrObject

@@ -8,10 +8,10 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import io.kotest.plugin.intellij.run.KotestConfigurationFactory
-import io.kotest.plugin.intellij.run.KotestConfigurationType
-import io.kotest.plugin.intellij.run.KotestRunConfiguration
-import io.kotest.plugin.intellij.run.generateName
+import io.kotest.plugin.intellij.run.idea.KotestConfigurationFactory
+import io.kotest.plugin.intellij.run.idea.KotestConfigurationType
+import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
+import io.kotest.plugin.intellij.run.idea.generateName
 import io.kotest.plugin.intellij.toolwindow.ModuleNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.SpecNodeDescriptor
 import io.kotest.plugin.intellij.toolwindow.TestNodeDescriptor

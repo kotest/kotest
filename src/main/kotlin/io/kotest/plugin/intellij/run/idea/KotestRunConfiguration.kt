@@ -1,4 +1,4 @@
-package io.kotest.plugin.intellij.run
+package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.AlternativeJrePathConverter
 import com.intellij.execution.Executor
