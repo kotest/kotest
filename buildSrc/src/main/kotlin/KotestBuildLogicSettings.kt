@@ -30,7 +30,7 @@ abstract class KotestBuildLogicSettings @Inject constructor(
     * Windows and macOS, this results in any Kotlin/JVM publications only being published once.
     */
    val enabledPublicationNamePrefixes: Provider<Set<String>> =
-      kotestSetting("enabledPublicationNamePrefixes", "KotlinMultiplatform,Jvm,Js,iOS,macOS,watchOS,tvOS,mingw,wasm,android,linux,pluginMaven,KotestGradlePluginPluginMarkerMaven,KotestBom")
+      kotestSetting("enabledPublicationNamePrefixes", "KotlinMultiplatform,Jvm,Js,iOS,macOS,watchOS,tvOS,mingw,wasm,android,linux,pluginMaven,KotestBom")
          .map { enabledPlatforms ->
             enabledPlatforms
                .split(",")

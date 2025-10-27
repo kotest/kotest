@@ -2798,11 +2798,13 @@ public final class io/kotest/matchers/ranges/BewithinKt {
 	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldBeWithinGeneric (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldBeWithinRangeOfInt (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldBeWithinRangeOfLong (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/ClosedRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldNotBeWithin (Lkotlin/ranges/ClosedRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/ClosedRange;
 	public static final fun shouldNotBeWithin (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
+	public static final fun shouldNotBeWithinGeneric (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeWithinRangeOfInt (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeWithinRangeOfLong (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/ClosedRange;)V
 }

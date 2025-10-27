@@ -97,6 +97,13 @@ kotlin {
          }
       }
 
+      wasmJsMain {
+         dependencies {
+            // used to write to the console with fancy colours!
+            implementation(libs.mordant)
+         }
+      }
+
       macosMain {
          dependencies {
             // used to write to the console with fancy colours!

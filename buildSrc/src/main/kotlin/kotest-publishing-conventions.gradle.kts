@@ -6,7 +6,7 @@ plugins {
    id("kotest-base")
    signing
    `maven-publish`
-   id("dev.adamko.dev-publish")
+//   id("dev.adamko.dev-publish")
    id("com.gradleup.nmcp")
 }
 
@@ -189,11 +189,10 @@ tasks.withType<AbstractPublishToMaven>().configureEach {
 }
 
 private val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
-private fun isPublicationEnabled(publicationName: String): Provider<Boolean?> {
-   return publicationName.let { name ->
-      kotestSettings.enabledPublicationNamePrefixes.map { prefixes ->
-         prefixes.any { prefix -> name.startsWith(prefix, ignoreCase = true) }
-      }
+
+private fun isPublicationEnabled(publicationName: String): Provider<Boolean> {
+   return kotestSettings.enabledPublicationNamePrefixes.map { prefixes ->
+      prefixes.any { prefix -> publicationName.startsWith(prefix, ignoreCase = true) }
    }
 }
 //endregion

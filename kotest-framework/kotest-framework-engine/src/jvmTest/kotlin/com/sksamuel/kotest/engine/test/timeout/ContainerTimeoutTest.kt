@@ -27,7 +27,8 @@ class ContainerTimeoutTest : FunSpec() {
             val c = object : AbstractProjectConfig() {
                override val coroutineTestScope = enableCoroutineTestScope
             }
-            TestEngineLauncher(collector)
+            TestEngineLauncher()
+               .withListener(collector)
                .withProjectConfig(c)
                .withClasses(NestedTimeout::class)
                .launch()

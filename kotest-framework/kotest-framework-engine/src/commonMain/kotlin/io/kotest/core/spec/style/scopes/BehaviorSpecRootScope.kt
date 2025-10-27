@@ -42,6 +42,35 @@ interface BehaviorSpecRootScope : RootScope {
    }
 
    /**
+    * Adds a top level [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun given(name: String) = addGiven(name, false)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun xgiven(name: String) = addGiven(name, true)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun Given(name: String) = addGiven(name, false)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun xGiven(name: String) = addGiven(name, true)
+
+   fun addGiven(name: String, xdisabled: Boolean): RootContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
+      return RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+         context = this@BehaviorSpecRootScope,
+         xdisabled = false
+      ) { BehaviorSpecGivenContainerScope(it) }
+   }
+
+   /**
     * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
     */
    @Suppress("FunctionName")

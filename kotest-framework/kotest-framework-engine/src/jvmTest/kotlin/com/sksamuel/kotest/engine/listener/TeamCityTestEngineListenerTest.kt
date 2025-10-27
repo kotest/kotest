@@ -20,7 +20,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class    TeamCityTestEngineListenerTest : FunSpec() {
+class TeamCityTestEngineListenerTest : FunSpec() {
 
    init {
 
@@ -408,6 +408,34 @@ a[testSuiteFinished name='TeamCityTestEngineListenerTest' id='com.sksamuel.kotes
 a[testSuiteStarted name='TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://foo.bar.Test:12']
 a[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' duration='523' result_status='Success']
+a[testSuiteFinished name='TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("should remove periods from output") {
+         val aperiods = a.copy(
+            parent = null,
+            name = TestNameBuilder.builder("a.b.c").build(),
+            descriptor = a.descriptor.append("a.b.c"),
+            source = SourceRef.ClassLineSource("foo.bar.Test", 17),
+         )
+
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", details = false)
+            listener.engineStarted()
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testStarted(aperiods)
+            listener.testFinished(aperiods, TestResult.Success(124.milliseconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.engineFinished(emptyList())
+         }
+         output shouldBe """a[enteredTheMatrix durationStrategy='MANUAL']
+a[testSuiteStarted name='TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a b c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- a.b.c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' locationHint='kotest://foo.bar.Test:17']
+a[testSuiteFinished name='a b c' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- a.b.c' parent_id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a' duration='124' result_status='Success']
 a[testSuiteFinished name='TeamCityTestEngineListenerTest' id='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
       }

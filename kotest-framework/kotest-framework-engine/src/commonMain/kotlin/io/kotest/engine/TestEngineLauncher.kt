@@ -44,16 +44,6 @@ data class TestEngineLauncher(
    private val collecting = CollectingTestEngineListener()
    private val logger = Logger(TestEngineLauncher::class)
 
-   @Deprecated("Use no arg constructor. Deprecated in 6.0")
-   constructor(listener: TestEngineListener) : this(
-      Platform.JVM,
-      listOf(listener),
-      null,
-      emptyList(),
-      null,
-      DefaultExtensionRegistry(),
-   )
-
    constructor() : this(
       Platform.JVM,
       listOf(),
@@ -84,7 +74,11 @@ data class TestEngineLauncher(
     * Returns a copy of this launcher with the given [TestEngineListener] added.
     */
    fun withListener(listener: TestEngineListener?): TestEngineLauncher {
-      return if (listener == null) this else copy(listeners = listeners + listener)
+      return if (listener == null) this else copy(listeners = this.listeners + listener)
+   }
+
+   fun withListeners(listeners: Collection<TestEngineListener>): TestEngineLauncher {
+      return if (listeners.isEmpty()) this else copy(listeners = this.listeners + listeners)
    }
 
    fun withNoOpListener(): TestEngineLauncher {
@@ -164,11 +158,10 @@ data class TestEngineLauncher(
     * This will override the current platform.
     */
    fun withPlatform(platform: Platform): TestEngineLauncher {
-      return copy(platform = platform)
+      return copy(platform = platform).withListeners(platform.listeners())
    }
 
    private fun toConfig(): TestEngineConfig {
-      require(listeners.isNotEmpty()) { "At least one TestEngineListener must be registered" }
 
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
@@ -227,5 +220,6 @@ data class TestEngineLauncher(
          engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
       }
    }
-
 }
+
+internal expect fun Platform.listeners(): List<TestEngineListener>

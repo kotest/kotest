@@ -34,7 +34,8 @@ class TestFilterTest : FunSpec() {
             override val extensions = listOf(filter)
          }
 
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(SillySpec::class)
             .withProjectConfig(c)
             .launch()

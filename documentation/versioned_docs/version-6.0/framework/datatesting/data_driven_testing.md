@@ -14,6 +14,9 @@ This section covers the new and improved data driven testing support that was re
 To view the documentation for the previous data test support, [click here](data_driven_testing_4.2.0.md)
 :::
 
+:::caution
+If you are using data testing on kotlin-native platforms, and you only have data tests (ie, zero manual tests) then see the section on Native Support.
+:::
 
 When writing tests that are logic based, one or two specific code paths that work through particular scenarios make
 sense. Other times we have tests that are more example based, and it would be helpful to test many combinations of
@@ -105,6 +108,19 @@ class MyTests : FunSpec({
 :::caution
 Data tests can only be defined at the root or in container scopes. They cannot be defined inside leaf scopes.
 :::
+
+### Native Support
+
+If you are using data testing on kotlin-native platforms, and you only have data tests (ie, zero manual tests) then you must instruct
+the Kotlin gradle plugin to not fail the build because _no tests are discovered_. This happens because data tests are generated at runtime by Kotest,
+the kotlin-native test discovery mechanism does not see any tests at compile time. Again, this only matters if you are using data tests exclusively.
+
+```kotlin
+tasks.withType<KotlinTest>().configureEach {
+  failOnNoDiscoveredTests = false
+}
+```
+
 
 ### Callbacks
 
