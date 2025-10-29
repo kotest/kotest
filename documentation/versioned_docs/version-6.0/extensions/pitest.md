@@ -6,13 +6,15 @@ slug: pitest.html
 ---
 
 
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-pitest.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-pitest)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-pitest%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-pitest/maven-metadata.xml)
+
 The Mutation Testing tool [Pitest](https://pitest.org/) is integrated with Kotest via an extension module.
 
 ## Gradle configuration
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-pitest.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-pitest)
 
 After [configuring](https://gradle-pitest-plugin.solidsoft.info/) Pitest,
-add the `io.kotest.extensions:kotest-extensions-pitest` module to your dependencies as well:
+add the `io.kotest:kotest-extensions-pitest` module to your dependencies as well:
 
 ```kotlin
     testImplementation("io.kotest:kotest-extensions-pitest:<version>")
@@ -37,7 +39,6 @@ configure<PitestPluginExtension> {
 This should set everything up, and running `./gradlew pitest` will generate reports in the way you configured.
 
 ## Maven configuration
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-extensions-pitest.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-extensions-pitest)
 
 First of all, you need to configure the [Maven Pitest plugin](https://pitest.org/quickstart/maven/):
 
