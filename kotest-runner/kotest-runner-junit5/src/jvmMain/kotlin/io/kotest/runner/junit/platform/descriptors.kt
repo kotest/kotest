@@ -15,7 +15,7 @@ import kotlin.jvm.optionals.getOrNull
  */
 internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecDescriptor): TestDescriptor {
    val id = deriveSpecUniqueId(descriptor.id)
-   return findByUniqueId(id).getOrNull() ?: error("Could not find spec TestDescriptor for ${descriptor.id}")
+   return findByUniqueId(id).getOrNull() ?: error("Could not find TestDescriptor for $id in ${descriptor.id.value}")
 }
 
 /**
