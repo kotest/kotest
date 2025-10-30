@@ -1,9 +1,27 @@
 package io.kotest.matchers.booleans
 
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+
+private fun booleanMatcher(expected: Boolean) = object : Matcher<Boolean> {
+   override fun test(value: Boolean) = MatcherResult(
+      value == expected,
+      { "$value should be $expected" },
+      { "$value should not be ${!expected}" }
+   )
+}
+/**
+ * Match that verifies a given [Boolean] is `true`.
+ */
+fun beTrue() = booleanMatcher(true)
+/**
+ * Match that verifies a given [Boolean] is `false`.
+ */
+fun beFalse() = booleanMatcher(false)
 
 /**
  * Asserts that this [Boolean] is true
@@ -31,7 +49,6 @@ fun Boolean?.shouldBeTrue(): Boolean {
    this shouldBe true
    return this!!
 }
-
 /**
  * Asserts that this [Boolean] is not true
  *

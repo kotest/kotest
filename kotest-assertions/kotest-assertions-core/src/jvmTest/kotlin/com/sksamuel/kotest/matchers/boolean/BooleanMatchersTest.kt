@@ -2,11 +2,15 @@ package com.sksamuel.kotest.matchers.boolean
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.booleans.beFalse
+import io.kotest.matchers.booleans.beTrue
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.booleans.shouldNotBeFalse
 import io.kotest.matchers.booleans.shouldNotBeTrue
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNot
 
 @Suppress("KotlinConstantConditions")
 class BooleanMatchersTest : FreeSpec() {
@@ -74,6 +78,34 @@ class BooleanMatchersTest : FreeSpec() {
 
       "Boolean shouldNotBeTrue should not fail for null" {
          null.shouldNotBeTrue()
+      }
+
+      "beTrue matcher should match true and not match false" {
+         true should beTrue()
+         false shouldNot beTrue()
+      }
+
+      "beTrue matcher should throw" {
+         shouldThrow<AssertionError> {
+            false should beTrue()
+         }
+         shouldThrow<AssertionError> {
+            true shouldNot beTrue()
+         }
+      }
+
+      "beFalse matcher should match false and not match true" {
+         false should beFalse()
+         true shouldNot beFalse()
+      }
+
+      "beFalse matcher should throw" {
+         shouldThrow<AssertionError> {
+            true should beFalse()
+         }
+         shouldThrow<AssertionError> {
+            false shouldNot beFalse()
+         }
       }
    }
 }
