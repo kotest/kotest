@@ -4,7 +4,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class JsonSchemaNullTest: FunSpec(
+class JsonSchemaNullTest : FunSpec(
    {
       val jsonWithNulls =
          // language=JSON
@@ -18,7 +18,7 @@ class JsonSchemaNullTest: FunSpec(
                "prop6": "",
                "prop7": 0
             }
-            """
+         """
       context("Null matchers") {
          test("null value matches null matcher") {
             jsonWithNulls shouldMatchSchema jsonSchema {
