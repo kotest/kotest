@@ -13,6 +13,9 @@ import io.kotest.assertions.print.print
 internal object MapEq : Eq<Map<*, *>> {
 
    override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean): Throwable? {
+      // If both references point to the same object, they're equal (handles cyclic references)
+      if (actual === expected) return null
+
       val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, strictNumberEq)
 
       return if (haveUnequalKeys != null) generateError(actual, expected)
