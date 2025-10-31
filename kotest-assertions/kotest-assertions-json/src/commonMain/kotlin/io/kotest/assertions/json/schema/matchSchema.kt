@@ -146,7 +146,12 @@ private fun validate(
          } else violation("Expected ${expected.typeName()}, but was object")
       }
 
-      is JsonNode.NullNode -> TODO("Check how Json schema handles null")
+      is JsonNode.NullNode -> {
+         if (!isCompatible(tree, expected))
+            violation("Expected ${expected.typeName()}, but was ${tree.type()}")
+         else
+            emptyList()
+      }
 
       is JsonNode.NumberNode ->
          when (expected) {
@@ -183,4 +188,5 @@ private class SchemaViolation(
 private fun isCompatible(actual: JsonNode, schema: JsonSchemaElement) =
    (actual is JsonNode.BooleanNode && schema is JsonSchema.JsonBoolean) ||
       (actual is JsonNode.StringNode && schema is JsonSchema.JsonString) ||
-      (actual is JsonNode.NumberNode && schema is JsonSchema.JsonNumber)
+      (actual is JsonNode.NumberNode && schema is JsonSchema.JsonNumber) ||
+      (actual is JsonNode.NullNode && schema is JsonSchema.Null)
