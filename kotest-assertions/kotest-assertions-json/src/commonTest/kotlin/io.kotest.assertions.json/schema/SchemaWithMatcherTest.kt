@@ -35,7 +35,7 @@ class SchemaWithMatcherTest : FunSpec(
 
          test("Booleans with true matchers fails") {
             shouldFail { """ { "prop": false } """ shouldMatchSchema booleansWithTrue }
-               .message shouldBe "$.prop => false should be true"
+               .message shouldBe "$.prop => false should equal true"
             shouldFail { """ { "prop": "notABool" } """ shouldMatchSchema booleansWithTrue }
                .message shouldBe "$.prop => Expected boolean, but was string"
             shouldFail { """ { "prop": "true" } """ shouldMatchSchema booleansWithTrue }
@@ -48,7 +48,7 @@ class SchemaWithMatcherTest : FunSpec(
 
          test("Booleans with false matchers fails") {
             shouldFail { """ { "prop": true } """ shouldMatchSchema booleansWithFalse }
-               .message shouldBe "$.prop => true should be false"
+               .message shouldBe "$.prop => true should equal false"
             shouldFail { """ { "prop": "notABool" } """ shouldMatchSchema booleansWithFalse }
                .message shouldBe "$.prop => Expected boolean, but was string"
             shouldFail { """ { "prop": "false" } """ shouldMatchSchema booleansWithFalse }
