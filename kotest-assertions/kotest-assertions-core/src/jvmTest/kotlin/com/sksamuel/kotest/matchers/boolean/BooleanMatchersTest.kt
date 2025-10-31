@@ -92,6 +92,9 @@ class BooleanMatchersTest : FreeSpec() {
          shouldThrow<AssertionError> {
             true shouldNot beTrue()
          }
+         shouldThrow<AssertionError> {
+            null should beTrue()
+         }
       }
 
       "beFalse matcher should match false and not match true" {
@@ -105,6 +108,9 @@ class BooleanMatchersTest : FreeSpec() {
          }
          shouldThrow<AssertionError> {
             false shouldNot beFalse()
+         }
+         shouldThrow<AssertionError> {
+            null should beFalse()
          }
       }
    }

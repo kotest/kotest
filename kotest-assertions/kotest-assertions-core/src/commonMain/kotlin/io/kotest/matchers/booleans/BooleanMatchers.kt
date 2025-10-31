@@ -2,16 +2,16 @@ package io.kotest.matchers.booleans
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-private fun booleanMatcher(expected: Boolean) = object : Matcher<Boolean> {
-   override fun test(value: Boolean) = MatcherResult(
+private fun booleanMatcher(expected: Boolean) = object : Matcher<Boolean?> {
+   override fun test(value: Boolean?) = MatcherResult(
       value == expected,
-      { "$value should be $expected" },
-      { "$value should not be ${!expected}" }
+      { "$value should equal $expected" },
+      { "$value should not equal $expected" }
    )
 }
 /**
@@ -46,7 +46,7 @@ fun Boolean?.shouldBeTrue(): Boolean {
       returns() implies (this@shouldBeTrue != null)
    }
 
-   this shouldBe true
+   this should beTrue()
    return this!!
 }
 /**
@@ -67,7 +67,7 @@ fun Boolean?.shouldBeTrue(): Boolean {
  * @see [Boolean?.shouldNotBeFalse]
  */
 fun Boolean?.shouldNotBeTrue(): Boolean? {
-   this shouldNotBe true
+   this shouldNot beTrue()
    return this
 }
 
@@ -94,7 +94,7 @@ fun Boolean?.shouldBeFalse(): Boolean {
       returns() implies (this@shouldBeFalse != null)
    }
 
-   this shouldBe false
+   this should beFalse()
    return this!!
 }
 
@@ -116,6 +116,6 @@ fun Boolean?.shouldBeFalse(): Boolean {
  * @see [Boolean?.shouldNotBeTrue]
  */
 fun Boolean?.shouldNotBeFalse(): Boolean? {
-   this shouldNotBe false
+   this shouldNot beFalse()
    return this
 }
