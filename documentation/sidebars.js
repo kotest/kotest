@@ -206,6 +206,7 @@ module.exports = {
     },
     "framework/test_factories",
     "framework/fake_functions",
+    "framework/race_conditions",
     "framework/test_output",
     {
       "type": "category",
