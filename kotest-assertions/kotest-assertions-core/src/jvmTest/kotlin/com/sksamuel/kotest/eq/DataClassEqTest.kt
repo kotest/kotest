@@ -23,7 +23,23 @@ data class CircularDataClass(val num: Int, val nested: CircularDataClass?)
 
 class RegularClass(val a: Int, val b: Float)
 
+data class IntRatio(
+   val numerator: Int,
+   val denominator: Int
+) {
+   override fun equals(other: Any?): Boolean {
+      return when(other) {
+         is IntRatio -> this.numerator * other.denominator == this.denominator * other.numerator
+         else -> false
+      }
+   }
+}
+
 class DataClassEqTest : StringSpec({
+
+   "respects custom equals implementations in data classes" {
+      IntRatio(1, 2) shouldBe IntRatio(2, 4)
+   }
 
    "Data class instances are determined to be dataclasses" {
       isDataClassInstance(DataClass1(1, 3.4F)) shouldBe true
