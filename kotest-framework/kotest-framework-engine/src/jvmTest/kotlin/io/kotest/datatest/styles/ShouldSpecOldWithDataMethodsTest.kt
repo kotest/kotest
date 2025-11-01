@@ -1,50 +1,32 @@
 package io.kotest.datatest.styles
 
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
-import io.kotest.datatest.withContexts
-import io.kotest.datatest.withExpects
+import io.kotest.datatest.withData
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
-class ExpectSpecDataTest : ExpectSpec() {
+class ShouldSpecOldWithDataMethodsTest : ShouldSpec() {
    init {
 
       duplicateTestNameMode = DuplicateTestNameMode.Silent
 
-      var beforeAnyCounter = 0
-      var beforeEachCounter = 0
-      var beforeTestCounter = 0
-      var afterTestCounter = 0
-      beforeAny {
-         beforeAnyCounter++
-      }
-      beforeEach {
-         beforeEachCounter++
-      }
-      beforeTest {
-         beforeTestCounter++
-      }
+      var count = 0
+
       afterTest {
-         afterTestCounter++
+         count++
       }
 
       afterSpec {
-         afterTestCounter shouldBe 111
-         beforeAnyCounter shouldBe 111
-         beforeEachCounter shouldBe 36
-         beforeTestCounter shouldBe 111
+         count shouldBe 68
       }
 
       // test root level with varargs
-      withContexts(
+      withData(
          PythagTriple(3, 4, 5),
          PythagTriple(6, 8, 10),
       ) { (a, b, c) ->
@@ -52,7 +34,7 @@ class ExpectSpecDataTest : ExpectSpec() {
       }
 
       // test root level with a sequence
-      withContexts(
+      withData(
          sequenceOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -63,7 +45,7 @@ class ExpectSpecDataTest : ExpectSpec() {
       }
 
       // test root level with an iterable
-      withContexts(
+      withData(
          listOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -75,7 +57,7 @@ class ExpectSpecDataTest : ExpectSpec() {
 
       // testing repeated names get mangled
       var index = 0
-      withContexts("a", "a", "a") {
+      withData("a", "a", "a") {
          when (index) {
             0 -> this.testCase.name.name shouldBe "a"
             1 -> this.testCase.name.name shouldBe "(1) a"
@@ -85,30 +67,30 @@ class ExpectSpecDataTest : ExpectSpec() {
       }
 
       // tests mixing sequences and iterables and varargs
-      withContexts("p", "q") { a ->
-         withContexts(listOf("r", "s")) { b ->
-            withContexts(sequenceOf("x", "y")) { c ->
+      withData("p", "q") { a ->
+         withData(listOf("r", "s")) { b ->
+            withData(sequenceOf("x", "y")) { c ->
                a + b + c shouldHaveLength 3
             }
          }
       }
 
       // handle collision between function name and property name
-      withContexts(
+      withData(
          FruitWithMemberNameCollision("apple", 11),
          FruitWithMemberNameCollision("orange", 12),
       ) { (_, weight) ->
          weight shouldBeGreaterThan 10
       }
 
-      // test we can define further context and tests inside a root level withContexts
-      withContexts(
+      // test we can define further context and tests inside a root level withData
+      withData(
          "foo",
          "bar"
       ) {
          context("context $it") {
-            expect("test $it") {
-               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecDataTest/$it -- context $it -- test $it")
+            should("should $it") {
+               this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ShouldSpecOldWithDataMethodsTest/$it -- context $it -- should $it")
             }
          }
       }
@@ -116,7 +98,7 @@ class ExpectSpecDataTest : ExpectSpec() {
       context("inside a context") {
 
          // test nested level with varargs
-         withContexts(
+         withData(
             PythagTriple(3, 4, 5),
             PythagTriple(6, 8, 10),
          ) { (a, b, c) ->
@@ -124,7 +106,7 @@ class ExpectSpecDataTest : ExpectSpec() {
          }
 
          // test nested level with a sequence
-         withContexts(
+         withData(
             sequenceOf(
                PythagTriple(8, 15, 17),
                PythagTriple(9, 12, 15),
@@ -135,7 +117,7 @@ class ExpectSpecDataTest : ExpectSpec() {
          }
 
          // test nested level with an iterable
-         withContexts(
+         withData(
             listOf(
                PythagTriple(8, 15, 17),
                PythagTriple(9, 12, 15),
@@ -145,9 +127,18 @@ class ExpectSpecDataTest : ExpectSpec() {
             a * a + b * b shouldBe c * c
          }
 
+         withData(
+            mapOf(
+               "true" to true,
+               "false" to false,
+               "null" to null,
+            )
+         ) { _ ->
+         }
+
          // testing repeated names get mangled inside a context
          index = 0
-         withContexts("a", "a", "a") {
+         withData("a", "a", "a") {
             when (index) {
                0 -> this.testCase.name.name shouldBe "a"
                1 -> this.testCase.name.name shouldBe "(1) a"
@@ -157,36 +148,22 @@ class ExpectSpecDataTest : ExpectSpec() {
          }
 
          // tests mixing sequences and iterables and varargs inside a context
-         withContexts("p", "q") { a ->
-            withContexts(listOf("r", "s")) { b ->
-               withContexts(sequenceOf("x", "y")) { c ->
+         withData("p", "q") { a ->
+            withData(listOf("r", "s")) { b ->
+               withData(sequenceOf("x", "y")) { c ->
                   a + b + c shouldHaveLength 3
                }
             }
          }
 
          // test we can define further context and tests inside a container level withData
-         withContexts(
+         withData(
             "foo",
             "bar"
          ) {
             context("context $it") {
-               expect("test $it") {
-                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ExpectSpecDataTest/inside a context -- $it -- context $it -- test $it")
-               }
-            }
-         }
-      }
-
-      // nesting all new WithXXX
-      withContexts("a", "b") { a ->
-         withContexts("a", "b") { b ->
-            withContexts("a", "b") { c ->
-               withExpects("exp1", "exp2") { d ->
-                  a + b + c + d shouldHaveLength 7
-               }
-               withExpects("exp3", "exp4") { e ->
-                  a + b + c + e shouldHaveLength 7
+               should("should $it") {
+                  this.testCase.descriptor.path() shouldBe DescriptorPath("io.kotest.datatest.styles.ShouldSpecOldWithDataMethodsTest/inside a context -- $it -- context $it -- should $it")
                }
             }
          }
