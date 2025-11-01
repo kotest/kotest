@@ -6,7 +6,8 @@ slug: junit_xml.html
 ---
 
 
-[![Latest Release](https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-junitxml)](https://search.maven.org/artifact/io.kotest/kotest-extensions-junitxml)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-junitxml.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-junitxml)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-junitxml%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-junitxml/maven-metadata.xml)
 
 
 JUnit includes an XML report generator that it calls
@@ -19,7 +20,7 @@ To solve this, Kotest has it's own implementation of the same format, that is co
 tests and/or collapse the names.
 
 :::note
-The following module is needed: `io.kotest:kotest-extensions-junitxml` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-junitxml).
+The following module is needed: `io.kotest:kotest-extensions-junitxml` in your build. Search maven central for latest version [here](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-junitxml).
 :::
 
 To configure in your project, you need to add the `JunitXmlReporter` using [project config](../framework/project_config.md).

@@ -11,7 +11,7 @@ The Kotest Decoroutinator extension integrates [Stacktrace Decoroutinator](https
 To use this extension add the `io.kotest:kotest-extensions-decoroutinator` module to your test compile path.
 :::
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-decoroutinator.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-decoroutinator)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-decoroutinator.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-decoroutinator)
 [<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-decoroutinator%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-decoroutinator/maven-metadata.xml)
 
 ### Getting Started
