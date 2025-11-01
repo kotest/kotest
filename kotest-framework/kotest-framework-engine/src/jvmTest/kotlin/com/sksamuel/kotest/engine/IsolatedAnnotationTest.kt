@@ -16,7 +16,8 @@ class IsolatedAnnotationTest : FunSpec() {
       test("classes annotated with @Isolate should run") {
 
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(MyIsolatedSpec::class)
             .launch()
          collector.tests.shouldHaveSize(1)

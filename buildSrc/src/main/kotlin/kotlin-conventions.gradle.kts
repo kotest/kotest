@@ -1,20 +1,16 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.tasks.KotlinTest
 import utils.SystemPropertiesArgumentProvider
 
 plugins {
    id("kotest-base")
    kotlin("multiplatform")
-   id("com.adarshr.test-logger")
-}
-
-testlogger {
-   showPassed = false
 }
 
 tasks.withType<Test>().configureEach {
    useJUnitPlatform()
 
-   val kotestSystemProps = providers.systemPropertiesPrefixedBy("kotest")
+   val kotestSystemProps: Provider<Map<String, String>> = providers.systemPropertiesPrefixedBy("kotest")
    jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
@@ -39,4 +35,8 @@ kotlin {
          optIn("kotlin.time.ExperimentalTime")
       }
    }
+}
+
+tasks.withType<KotlinTest>().configureEach {
+   failOnNoDiscoveredTests = false
 }

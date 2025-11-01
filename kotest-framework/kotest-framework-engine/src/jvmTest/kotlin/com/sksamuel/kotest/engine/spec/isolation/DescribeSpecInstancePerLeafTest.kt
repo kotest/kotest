@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.spec.execmode
+package com.sksamuel.kotest.engine.spec.isolation
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
@@ -107,3 +107,90 @@ class InstancePerLeafTest3 : DescribeSpec({
       }
    }
 })
+
+private var counter = 0 // to confirm afterSpec hook in InstancePerLeafTest4
+
+class InstancePerLeafTest4 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   beforeSpec {
+      trace = ""
+      counter++
+   }
+
+   afterSpec {
+      when (counter) {
+         1 -> trace shouldBe "d1_c1_i1_"
+         2 -> trace shouldBe "d1_c2_i2_"
+         else -> error("Should have run 2 tests")
+      }
+   }
+
+   describe("d1") {
+      trace += "d1_"
+
+      context("c1") {
+         trace += "c1_"
+
+         it("i1") {
+            trace += "i1_"
+         }
+      }
+
+      context("c2") {
+         trace += "c2_"
+
+         it("i2") {
+            trace += "i2_"
+         }
+      }
+   }
+})
+
+class InstancePerLeafTest5 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   beforeSpec {
+      trace = ""
+   }
+
+   describe("d1") {
+      trace += "d1_"
+
+      context("c1") {
+         trace += "c1_"
+
+         it("i1") {
+            trace += "i1_"
+            trace shouldBe "d1_c1_i1_"
+         }
+
+         context("c2") {
+            trace += "c2_"
+
+            it("i2") {
+               trace += "i2_"
+               trace shouldBe "d1_c1_c2_i2_"
+            }
+         }
+      }
+   }
+})
+
+class DescribeSpecInstancePerLeaf6 : DescribeSpec() {
+   init {
+      isolationMode = IsolationMode.InstancePerLeaf
+      describe("tests") {
+         describe("for") {
+            it("should pass") {
+               true shouldBe true
+            }
+            it("should pass too") {
+               true shouldBe true
+            }
+         }
+      }
+   }
+}

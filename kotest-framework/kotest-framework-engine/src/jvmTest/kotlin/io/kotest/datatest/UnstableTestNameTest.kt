@@ -51,19 +51,19 @@ class UnstableTestNameTest : FunSpec() {
                .launch()
 
             results shouldBe listOf(
-               Pair("io kotest datatest NotADataClass", TestStatus.Success.name),
-               Pair("(1) io kotest datatest NotADataClass", TestStatus.Failure.name),
-               Pair("(2) io kotest datatest NotADataClass", TestStatus.Success.name),
-               Pair("io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
-               Pair("(1) io kotest datatest DataClassWithNonDataParameter", TestStatus.Failure.name),
-               Pair("(2) io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
-               Pair("io kotest datatest NotADataClass", TestStatus.Success.name),
-               Pair("(1) io kotest datatest NotADataClass", TestStatus.Failure.name),
-               Pair("(2) io kotest datatest NotADataClass", TestStatus.Success.name),
+               Pair("io.kotest.datatest.NotADataClass", TestStatus.Success.name),
+               Pair("(1) io.kotest.datatest.NotADataClass", TestStatus.Failure.name),
+               Pair("(2) io.kotest.datatest.NotADataClass", TestStatus.Success.name),
+               Pair("io.kotest.datatest.DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("(1) io.kotest.datatest.DataClassWithNonDataParameter", TestStatus.Failure.name),
+               Pair("(2) io.kotest.datatest.DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("io.kotest.datatest.NotADataClass", TestStatus.Success.name),
+               Pair("(1) io.kotest.datatest.NotADataClass", TestStatus.Failure.name),
+               Pair("(2) io.kotest.datatest.NotADataClass", TestStatus.Success.name),
                Pair("foo", TestStatus.Success.name), // this success is the foo context
-               Pair("io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
-               Pair("(1) io kotest datatest DataClassWithNonDataParameter", TestStatus.Failure.name),
-               Pair("(2) io kotest datatest DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("io.kotest.datatest.DataClassWithNonDataParameter", TestStatus.Success.name),
+               Pair("(1) io.kotest.datatest.DataClassWithNonDataParameter", TestStatus.Failure.name),
+               Pair("(2) io.kotest.datatest.DataClassWithNonDataParameter", TestStatus.Success.name),
                Pair("bar", TestStatus.Success.name), // this success is the bar context
             )
          }

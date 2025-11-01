@@ -16,7 +16,8 @@ kotlin {
       }
       jvmTest {
          dependencies {
-            implementation(libs.spring.boot.test)
+            implementation(libs.spring.boot.starter.web)
+            implementation(libs.spring.boot.starter.test)
          }
       }
    }

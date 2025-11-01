@@ -1,11 +1,11 @@
 package io.kotest.extensions.spring
 
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldStartWith
@@ -29,7 +29,7 @@ class SpringExtensionTest : WordSpec() {
             testContextManager().shouldNotBeNull()
          }
          "generate applicable method name for a root test" {
-            SpringExtension().methodName(
+            SpringJavaCompatibility.methodName(
                TestCase(
                   descriptor = SpringExtensionTest::class.toDescriptor()
                      .append("0foo__!!55@#woo"),
@@ -42,7 +42,7 @@ class SpringExtensionTest : WordSpec() {
             ) shouldStartWith "_0foo____55__woo"
          }
          "generate applicable method name for a nested test" {
-            SpringExtension().methodName(
+            SpringJavaCompatibility.methodName(
                TestCase(
                   descriptor = SpringExtensionTest::class.toDescriptor()
                      .append("0foo__!!55@#woo")

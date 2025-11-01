@@ -15,6 +15,7 @@ import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.ConsoleTestEngineListener
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -42,16 +43,6 @@ data class TestEngineLauncher(
    // we use this to capture any test failures so we know to exit appropriately
    private val collecting = CollectingTestEngineListener()
    private val logger = Logger(TestEngineLauncher::class)
-
-   @Deprecated("Use no arg constructor. Deprecated in 6.0")
-   constructor(listener: TestEngineListener) : this(
-      Platform.JVM,
-      listOf(listener),
-      null,
-      emptyList(),
-      null,
-      DefaultExtensionRegistry(),
-   )
 
    constructor() : this(
       Platform.JVM,
@@ -83,7 +74,15 @@ data class TestEngineLauncher(
     * Returns a copy of this launcher with the given [TestEngineListener] added.
     */
    fun withListener(listener: TestEngineListener?): TestEngineLauncher {
-      return if (listener == null) this else copy(listeners = listeners + listener)
+      return if (listener == null) this else copy(listeners = this.listeners + listener)
+   }
+
+   fun withListeners(listeners: Collection<TestEngineListener>): TestEngineLauncher {
+      return if (listeners.isEmpty()) this else copy(listeners = this.listeners + listeners)
+   }
+
+   fun withNoOpListener(): TestEngineLauncher {
+      return withListener(NoopTestEngineListener)
    }
 
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
@@ -92,7 +91,7 @@ data class TestEngineLauncher(
 
    fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
    fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {
-      return copy(refs = refs)
+      return copy(refs = this.refs + refs)
    }
 
    /**
@@ -159,18 +158,17 @@ data class TestEngineLauncher(
     * This will override the current platform.
     */
    fun withPlatform(platform: Platform): TestEngineLauncher {
-      return copy(platform = platform)
+      return copy(platform = platform).withListeners(platform.listeners())
    }
 
    private fun toConfig(): TestEngineConfig {
-      require(listeners.isNotEmpty()) { "At least one TestEngineListener must be registered" }
 
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
       val safeListener = ThreadSafeTestEngineListener( // to avoid race conditions with concurrent spec execution
          PinnedSpecTestEngineListener( // to ensure we don't interleave output in TCSM which requires sequential outputs
-            CompositeTestEngineListener(listeners + collecting)
+            CompositeTestEngineListener(listeners + collecting) // add in a collecting listener so we know to exit appropriately on errors
          )
       )
 
@@ -223,3 +221,5 @@ data class TestEngineLauncher(
       }
    }
 }
+
+internal expect fun Platform.listeners(): List<TestEngineListener>

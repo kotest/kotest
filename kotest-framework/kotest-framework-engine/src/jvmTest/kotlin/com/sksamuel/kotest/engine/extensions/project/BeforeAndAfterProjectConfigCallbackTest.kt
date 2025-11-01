@@ -29,7 +29,8 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
       "project config" should {
          "beforeProject / afterProject" {
             beforeAfterProject = ""
-            TestEngineLauncher(NoopTestEngineListener)
+            TestEngineLauncher()
+               .withListener(NoopTestEngineListener)
                // two classes so we know these callbacks are only invoked once
                .withClasses(A::class, B::class)
                .withProjectConfig(config)

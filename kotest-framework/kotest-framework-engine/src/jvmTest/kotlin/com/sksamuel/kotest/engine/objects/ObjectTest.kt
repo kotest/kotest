@@ -9,7 +9,8 @@ class ObjectSpecTest : FunSpec() {
    init {
       test("object specs should be supported") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher(collector)
+         TestEngineLauncher()
+            .withListener(collector)
             .withClasses(MyObjectSpec::class)
             .launch()
          collector.result("foo")!!.isSuccess shouldBe true

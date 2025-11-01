@@ -12,7 +12,8 @@ class AssertSoftlyTestLevelTest : FunSpec() {
 
       context("spec level assertSoftly should work for containers and tests") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher()
+            .withListener(listener)
             .withClasses(AssertSoftlyAtTestLevel::class)
             .launch()
          listener.tests.size shouldBe 2

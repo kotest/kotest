@@ -8,16 +8,18 @@ package io.kotest.engine.js
  * of this handles the nuances of the underlying platform.
  *
  * Nesting of test suites may not be supported by TeamCity reporters of kotlin-test-js-runner.
+ *
  * @see https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner
  */
 internal interface KotlinJsTestFramework {
 
    /**
-    * Declares a test suite. (Theoretically, suites may be nested and may contain tests at each level.)
+    * Declares a test suite.
     *
-    * [suiteFn] declares one or more tests (and/or sub-suites, theoretically).
-    * Due to [limitations of JS test frameworks](https://github.com/mochajs/mocha/issues/2975) supported by
-    * Kotlin's test infra, [suiteFn] cannot handle asynchronous invocations.
+    * Theoretically, suites may be nested and may contain tests at each level, however due to
+    * [limitations of JS test frameworks](https://github.com/mochajs/mocha/issues/2975) supported by
+    * Kotlin's test infra, we cannot handle asynchronous invocations, therefore we limit suite to
+    * just specs.
     */
    fun suite(name: String, ignored: Boolean, suiteFn: () -> Unit)
 

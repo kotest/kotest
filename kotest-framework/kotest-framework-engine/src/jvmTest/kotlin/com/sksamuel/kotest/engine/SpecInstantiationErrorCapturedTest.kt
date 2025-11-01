@@ -14,7 +14,8 @@ class SpecInstantiationErrorCapturedTest : FunSpec() {
    init {
       test("spec instantiation errors should be captured and reported") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher(listener)
+         TestEngineLauncher()
+            .withListener(listener)
             .withClasses(SpecInstantiationFailureSpec::class)
             .launch()
          listener.specs.shouldHaveSize(1)

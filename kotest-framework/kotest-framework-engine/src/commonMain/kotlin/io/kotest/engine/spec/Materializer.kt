@@ -1,7 +1,7 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.names.TestName
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.NestedTest
@@ -9,9 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.SpecConfigResolver
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.names.DuplicateTestNameHandler
-import io.kotest.engine.test.names.TeamCityTestNameEscaper
 
 /**
  * Materializes [TestCase]s at runtime from [RootTest] and [NestedTest] definitions.
@@ -41,12 +39,7 @@ class Materializer(
       val tests = spec.rootTests().map { rootTest ->
 
          val unique = handler.unique(mode, rootTest.name)
-
-         // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
-         // then it will remove the common prefix from the child, to workaround this, we will add a dash at the
-         // start of the nested test to make the child nest have a different prefix.
-         // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
-         val resolvedName = resolvedName(rootTest.name.copy(name = unique), null)
+         val resolvedName = rootTest.name.copy(name = unique)
 
          val config = if (rootTest.disabled == true)
             (rootTest.config ?: TestConfig()).withXDisabled()
@@ -76,19 +69,13 @@ class Materializer(
     */
    fun materialize(nested: NestedTest, parent: TestCase): TestCase {
 
-      // Note: intellij has a bug, where if a child test has a name that starts with the parent test name,
-      // then it will remove the common prefix from the child, to workaround this, we will add a dash at the
-      // start of the nested test to make the child nest have a different prefix.
-      // Also note: This only affects non-MPP tests, as MPP tests have the platform name added
-      val resolvedName = resolvedName(nested.name, parent.name)
-
       val config = if (nested.disabled)
          (nested.config ?: TestConfig()).withXDisabled()
       else nested.config
 
       return TestCase(
-         descriptor = parent.descriptor.append(resolvedName.name),
-         name = resolvedName,
+         descriptor = parent.descriptor.append(nested.name.name),
+         name = nested.name,
          spec = parent.spec,
          test = nested.test,
          source = nested.source,
@@ -99,12 +86,4 @@ class Materializer(
       )
    }
 
-   private fun resolvedName(name: TestName, parent: TestName?): TestName {
-      val resolvedName = when {
-         parent == null -> name.name
-         name.name.startsWith(parent.name) -> "- " + name.name
-         else -> name.name
-      }
-      return name.copy(name = TeamCityTestNameEscaper.escape(resolvedName))
-   }
 }

@@ -30,7 +30,8 @@ class CoroutineExceptionTest : FunSpec({
          }
       }
 
-      TestEngineLauncher(listener)
+      TestEngineLauncher()
+         .withListener(listener)
          .withClasses(FailingCoroutineTest::class)
          .launch()
 
