@@ -173,7 +173,10 @@ private fun validate(
          } else violation("Expected ${expected.typeName()}, but was ${tree.type()}")
 
       is JsonNode.BooleanNode ->
-         if (!isCompatible(tree, expected))
+         if (expected is JsonSchema.JsonBoolean) {
+            violation(expected.matcher, tree.value)
+         }
+         else if (!isCompatible(tree, expected))
             violation("Expected ${expected.typeName()}, but was ${tree.type()}")
          else emptyList()
    }
