@@ -44,7 +44,7 @@ kotlinx-io-core = "0.7.0"
 xmlutil = "0.91.1"
 agp = "8.10.0"
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.5.5"
+decoroutinator = "2.5.8"
 pitest = "1.20.1"
 
 ### Java compilation ###
