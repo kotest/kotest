@@ -159,6 +159,10 @@ class CompilationsMatcherTest : StringSpec() {
             "SourceFileA.kt" to fileASnippet,
             "SourceFileB.kt" to fileBSnippet
          ).shouldNotCompile()
+         codeSnippet(
+            SourceFile.kotlin("SourceFileA.kt", fileASnippet),
+            SourceFile.kotlin("SourceFileB.kt", fileBSnippet)
+         ).shouldNotCompile()
 
          fileA.writeText(fileASnippet)
          fileB.writeText(fileBSnippet)

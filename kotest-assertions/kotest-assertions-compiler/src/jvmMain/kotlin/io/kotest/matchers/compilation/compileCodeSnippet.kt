@@ -262,6 +262,15 @@ fun List<File>.shouldCompile() = codeSnippet(
 ).shouldCompile()
 
 /**
+ * Assert that given [SourceFile]s compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldNotCompile]
+ * */
+@JvmName("shouldCompileSourceFiles")
+fun List<SourceFile>.shouldCompile() = codeSnippet(this).shouldCompile()
+
+/**
  * Assert that given [File]s does not compile successfully.
  *
  * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
@@ -276,6 +285,20 @@ fun List<File>.shouldCompile() = codeSnippet(
 fun List<File>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
    this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
 ).shouldNotCompile(expectedMessage)
+
+/**
+ * Assert that given [SourceFile]s does not compile successfully.
+ *
+ * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
+ * with an error message containing the specified text. This helps ensure that the compilation
+ * fails for the expected reason, not due to an unrelated error.
+ *
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldCompile]
+ * */
+@JvmName("shouldNotCompileSourceFiles")
+fun List<SourceFile>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this).shouldNotCompile(expectedMessage)
 
 /**
  * Assert that given [Path] compiles successfully.
