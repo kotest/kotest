@@ -137,7 +137,7 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
-hikari = { module = "com.zaxxer:HikariCP", version = "6.3.0" }
+hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
