@@ -3485,3 +3485,15 @@ public final class io/kotest/matchers/url/MatchersKt {
 	public static final fun shouldNotHaveRef (Ljava/net/URL;Ljava/lang/String;)V
 }
 
+public final class io/kotest/raceConditions/ParallelRunner {
+	public static final field Companion Lio/kotest/raceConditions/ParallelRunner$Companion;
+	public fun <init> (J[Lkotlin/jvm/functions/Function1;)V
+	public fun <init> ([Lkotlin/jvm/functions/Function1;)V
+	public final fun await ()I
+	public final fun run ()V
+}
+
+public final class io/kotest/raceConditions/ParallelRunner$Companion {
+	public final fun runInParallel ([Lkotlin/jvm/functions/Function1;)V
+}
+

@@ -34,7 +34,7 @@ internal object DataClassEq : Eq<Any> {
    private const val MAX_NESTED_DEPTH = 10
 
    override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
-      if (test(actual, expected)) {
+      if (expected == actual || test(actual, expected)) {
          null
       } else {
 
