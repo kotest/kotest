@@ -91,6 +91,7 @@ jobs:
             -P"kotest_enableKotlinNative=true"
             ${{ matrix.args }}
             --no-configuration-cache
+            check
          runs-on: ${{ matrix.os }}
 
       # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
