@@ -123,6 +123,7 @@ jobs:
       with:
          ref: ${{ inputs.ref }}
          task: >
+            -P"kotest_enableKotlinJs=false"
             -P"kotest_enableKotlinNative=true"
             ${{ matrix.args }}
             --no-configuration-cache
