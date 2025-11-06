@@ -87,7 +87,7 @@ jobs:
 
       # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
       # run macos tests if we know the JVM/JS/linux tests pass.
-   gradle-check-secondary-native-targets:
+   gradle-check-secondary-targets:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       needs: gradle-check-primary-targets
       strategy:
@@ -129,7 +129,7 @@ jobs:
    finalize:
       # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
       name: Final PR results
-      needs: [ validate-api, gradle-check-primary-targets, gradle-check-secondary-native-targets, validate-docs ]
+      needs: [ validate-api, gradle-check-primary-targets, gradle-check-secondary-targets, validate-docs ]
       if: ${{ always() }}
       runs-on: ubuntu-latest
       steps:
