@@ -58,7 +58,7 @@ jobs:
          ref: ${{ inputs.ref }}
          task: apiCheck --continue
 
-   gradle-check-primary-targets:
+   gradle-check:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       needs: [ determine-workflows-to-run, validate-api ]
       strategy:
@@ -73,6 +73,12 @@ jobs:
                # Linux+Android
                -  os: ubuntu-latest
                   args: -P"kotest_enableKotlinNative=true"
+               # Windows: MinGW
+               -  os: windows-latest
+                  args: -P"kotest_enableKotlinNative=true"
+               # Apple: macOS/iOS/tvOS/watchOS
+               -  os: macos-latest
+                  args: -P"kotest_enableKotlinNative=true"
       uses: ./.github/workflows/run-gradle.yml
       secrets: inherit
       with:
@@ -82,31 +88,6 @@ jobs:
             -P"kotest_enableKotlinNative=false"
             ${{ matrix.args }}
             --no-configuration-cache
-            check
-         runs-on: ${{ matrix.os }}
-
-      # macos runners have a limited number of concurrent jobs, so we run linux tasks first to smoke test, and only
-      # run macos tests if we know the JVM/JS/linux tests pass.
-   gradle-check-secondary-targets:
-      if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
-      needs: gradle-check-primary-targets
-      strategy:
-         matrix:
-            include:
-               # Windows: MinGW
-               -  os: windows-latest
-               # Apple: macOS/iOS/tvOS/watchOS
-               -  os: macos-latest
-
-      uses: ./.github/workflows/run-gradle.yml
-      secrets: inherit
-      with:
-         ref: ${{ inputs.ref }}
-         task: >
-            -P"kotest_enableKotlinJs=false"
-            -P"kotest_enableKotlinNative=true"
-            --no-configuration-cache
-            --continue
             check
          runs-on: ${{ matrix.os }}
 
@@ -129,7 +110,7 @@ jobs:
    finalize:
       # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
       name: Final PR results
-      needs: [ validate-api, gradle-check-primary-targets, gradle-check-secondary-targets, validate-docs ]
+      needs: [ validate-api, gradle-check, validate-docs ]
       if: ${{ always() }}
       runs-on: ubuntu-latest
       steps:
