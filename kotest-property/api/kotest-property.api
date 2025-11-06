@@ -218,6 +218,7 @@ public final class io/kotest/property/PropertyContext {
 	public final fun collect (Ljava/lang/Object;)V
 	public final fun collect (Ljava/lang/String;Ljava/lang/Object;)V
 	public final fun discardPercentage ()I
+	public final fun drop (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
 	public final fun evals ()I
 	public final fun failures ()I
 	public final fun getConfig ()Lio/kotest/property/PropTestConfig;
@@ -225,9 +226,12 @@ public final class io/kotest/property/PropertyContext {
 	public final fun markEvaluation ()I
 	public final fun markFailure ()V
 	public final fun markSuccess ()V
+	public final fun next (Lio/kotest/property/Arb;)Ljava/lang/Object;
 	public final fun randomSource ()Lio/kotest/property/RandomSource;
+	public final fun single (Lio/kotest/property/Arb;)Ljava/lang/Object;
 	public final fun statistics ()Ljava/util/Map;
 	public final fun successes ()I
+	public final fun take (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
 }
 
 public final class io/kotest/property/PropertyResult {
@@ -693,6 +697,13 @@ public final class io/kotest/property/arbitrary/ArbitraryBuilder$Companion {
 public abstract interface class io/kotest/property/arbitrary/ArbitraryBuilderContext : io/kotest/property/arbitrary/BaseArbitraryBuilderSyntax {
 }
 
+public final class io/kotest/property/arbitrary/ArbitraryBuilderContext$DefaultImpls {
+	public static fun drop (Lio/kotest/property/arbitrary/ArbitraryBuilderContext;Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+	public static fun next (Lio/kotest/property/arbitrary/ArbitraryBuilderContext;Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public static fun single (Lio/kotest/property/arbitrary/ArbitraryBuilderContext;Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public static fun take (Lio/kotest/property/arbitrary/ArbitraryBuilderContext;Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+}
+
 public final class io/kotest/property/arbitrary/ArbsKt {
 	public static final fun drop (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;)Lkotlin/sequences/Sequence;
 	public static synthetic fun drop$default (Lio/kotest/property/Arb;ILio/kotest/property/RandomSource;ILjava/lang/Object;)Lkotlin/sequences/Sequence;
@@ -707,6 +718,17 @@ public final class io/kotest/property/arbitrary/ArbsKt {
 
 public abstract interface class io/kotest/property/arbitrary/BaseArbitraryBuilderSyntax {
 	public abstract fun bind (Lio/kotest/property/Arb;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun drop (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+	public fun next (Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public fun single (Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public fun take (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+}
+
+public final class io/kotest/property/arbitrary/BaseArbitraryBuilderSyntax$DefaultImpls {
+	public static fun drop (Lio/kotest/property/arbitrary/BaseArbitraryBuilderSyntax;Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+	public static fun next (Lio/kotest/property/arbitrary/BaseArbitraryBuilderSyntax;Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public static fun single (Lio/kotest/property/arbitrary/BaseArbitraryBuilderSyntax;Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public static fun take (Lio/kotest/property/arbitrary/BaseArbitraryBuilderSyntax;Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
 }
 
 public final class io/kotest/property/arbitrary/BigdecimalKt {
@@ -1000,6 +1022,13 @@ public final class io/kotest/property/arbitrary/FloatsKt {
 public abstract interface class io/kotest/property/arbitrary/GenerateArbitraryBuilderContext : io/kotest/property/arbitrary/BaseArbitraryBuilderSyntax {
 }
 
+public final class io/kotest/property/arbitrary/GenerateArbitraryBuilderContext$DefaultImpls {
+	public static fun drop (Lio/kotest/property/arbitrary/GenerateArbitraryBuilderContext;Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+	public static fun next (Lio/kotest/property/arbitrary/GenerateArbitraryBuilderContext;Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public static fun single (Lio/kotest/property/arbitrary/GenerateArbitraryBuilderContext;Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public static fun take (Lio/kotest/property/arbitrary/GenerateArbitraryBuilderContext;Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
+}
+
 public final class io/kotest/property/arbitrary/GeoKt {
 	public static final fun geoLocation (Lio/kotest/property/Arb$Companion;)Lio/kotest/property/Arb;
 }
@@ -1222,8 +1251,12 @@ public abstract class io/kotest/property/arbitrary/SingleShotArbContinuation : i
 	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lio/kotest/property/arbitrary/SingleShotGenerationMode;Lio/kotest/property/RandomSource;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun bind (Lio/kotest/property/Arb;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun createSingleShotArb (Lio/kotest/property/arbitrary/BaseArbitraryBuilderSyntax;)Lio/kotest/property/Arb;
+	public fun drop (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
 	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun next (Lio/kotest/property/Arb;)Ljava/lang/Object;
 	public fun resumeWith (Ljava/lang/Object;)V
+	public fun single (Lio/kotest/property/Arb;)Ljava/lang/Object;
+	public fun take (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
 }
 
 public final class io/kotest/property/arbitrary/SingleShotArbContinuation$Restricted : io/kotest/property/arbitrary/SingleShotArbContinuation, io/kotest/property/arbitrary/ArbitraryBuilderContext {
