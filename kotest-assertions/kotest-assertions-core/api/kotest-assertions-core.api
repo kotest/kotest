@@ -1057,6 +1057,8 @@ public final class io/kotest/matchers/bigdecimal/ToleranceMatcher : io/kotest/ma
 }
 
 public final class io/kotest/matchers/booleans/BooleanMatchersKt {
+	public static final fun beFalse ()Lio/kotest/matchers/Matcher;
+	public static final fun beTrue ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeFalse (Ljava/lang/Boolean;)Z
 	public static final fun shouldBeTrue (Ljava/lang/Boolean;)Z
 	public static final fun shouldNotBeFalse (Ljava/lang/Boolean;)Ljava/lang/Boolean;
@@ -2247,6 +2249,7 @@ public final class io/kotest/matchers/equality/ReflectionKt {
 	public static final fun shouldBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldBeEqualToComparingFields (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;)V
 	public static synthetic fun shouldBeEqualToComparingFields$default (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/matchers/equality/FieldsEqualityCheckConfig;ILjava/lang/Object;)V
+	public static final fun shouldBeEqualToDifferentTypeUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty1;)V
 	public static final fun shouldBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldBeEqualToIgnoringFields (Ljava/lang/Object;Ljava/lang/Object;ZLkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 	public static final fun shouldBeEqualToUsingFields (Ljava/lang/Object;Ljava/lang/Object;[Lkotlin/reflect/KProperty;)V
@@ -3480,5 +3483,17 @@ public final class io/kotest/matchers/url/MatchersKt {
 	public static final fun shouldNotHaveProtocol (Ljava/net/URL;Ljava/lang/String;)V
 	public static final fun shouldNotHaveQuery (Ljava/net/URL;Ljava/lang/String;)V
 	public static final fun shouldNotHaveRef (Ljava/net/URL;Ljava/lang/String;)V
+}
+
+public final class io/kotest/raceConditions/ParallelRunner {
+	public static final field Companion Lio/kotest/raceConditions/ParallelRunner$Companion;
+	public fun <init> (J[Lkotlin/jvm/functions/Function1;)V
+	public fun <init> ([Lkotlin/jvm/functions/Function1;)V
+	public final fun await ()I
+	public final fun run ()V
+}
+
+public final class io/kotest/raceConditions/ParallelRunner$Companion {
+	public final fun runInParallel ([Lkotlin/jvm/functions/Function1;)V
 }
 

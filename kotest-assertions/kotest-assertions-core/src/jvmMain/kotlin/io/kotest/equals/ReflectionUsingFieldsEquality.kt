@@ -14,7 +14,7 @@ class ReflectionUsingFieldsEquality<T : Any>(
    }
 
    override fun verify(actual: T, expected: T): EqualityResult {
-      val result = beEqualToUsingFields(expected, *fields).test(actual)
+      val result = beEqualToUsingFields<T, T>(expected, *fields).test(actual)
       if (result.passed()) return EqualityResult.equal(actual, expected, this)
       return EqualityResult.notEqual(actual, expected, this).withDetails { result.failureMessage() }
    }

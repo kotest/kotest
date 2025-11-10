@@ -4,6 +4,8 @@ import io.kotest.assertions.shouldFail
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.and
+import io.kotest.matchers.booleans.beFalse
+import io.kotest.matchers.booleans.beTrue
 import io.kotest.matchers.doubles.beGreaterThanOrEqualTo
 import io.kotest.matchers.doubles.beLessThanOrEqualTo
 import io.kotest.matchers.doubles.beMultipleOf
@@ -22,6 +24,38 @@ class SchemaWithMatcherTest : FunSpec(
          shouldFail { "3" shouldMatchSchema evenNumbers }
             .message shouldBe "$ => 3.0 should be multiple of 2.0"
       }
+
+      context("Boolean with matchers") {
+         val booleansWithTrue = jsonSchema { obj { boolean("prop") { beTrue() } } }
+         val booleansWithFalse = jsonSchema { obj { boolean("prop") { beFalse() } } }
+
+         test("Booleans with true matchers") {
+            """ { "prop": true } """ shouldMatchSchema booleansWithTrue
+         }
+
+         test("Booleans with true matchers fails") {
+            shouldFail { """ { "prop": false } """ shouldMatchSchema booleansWithTrue }
+               .message shouldBe "$.prop => false should equal true"
+            shouldFail { """ { "prop": "notABool" } """ shouldMatchSchema booleansWithTrue }
+               .message shouldBe "$.prop => Expected boolean, but was string"
+            shouldFail { """ { "prop": "true" } """ shouldMatchSchema booleansWithTrue }
+               .message shouldBe "$.prop => Expected boolean, but was string"
+         }
+
+         test("Booleans with false matchers") {
+            """ { "prop": false } """ shouldMatchSchema booleansWithFalse
+         }
+
+         test("Booleans with false matchers fails") {
+            shouldFail { """ { "prop": true } """ shouldMatchSchema booleansWithFalse }
+               .message shouldBe "$.prop => true should equal false"
+            shouldFail { """ { "prop": "notABool" } """ shouldMatchSchema booleansWithFalse }
+               .message shouldBe "$.prop => Expected boolean, but was string"
+            shouldFail { """ { "prop": "false" } """ shouldMatchSchema booleansWithFalse }
+               .message shouldBe "$.prop => Expected boolean, but was string"
+         }
+      }
+
 
       context("smoke") {
          val schema = jsonSchema {
