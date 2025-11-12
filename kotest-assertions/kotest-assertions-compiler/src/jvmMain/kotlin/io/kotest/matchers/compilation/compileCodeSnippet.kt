@@ -210,7 +210,7 @@ fun String.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this)
  * */
 fun Map<String, String>.shouldCompile() = codeSnippet(
    this.map { (k, v) -> SourceFile.kotlin(k, v) }
-)
+).shouldCompile()
 
 /**
  * Assert that given codeSnippets does not compile successfully.
