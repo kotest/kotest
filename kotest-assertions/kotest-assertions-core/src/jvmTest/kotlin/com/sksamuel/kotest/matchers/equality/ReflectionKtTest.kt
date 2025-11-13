@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.equality
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
@@ -21,7 +22,12 @@ class ReflectionKtTest : FunSpec() {
 
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
+   data class Fuu(val a: String, val b: Int, val c: Boolean, val d: Double = 0.0)
+   data class Faa(val a: String, val b: Int, val c: Boolean, val d: Double = 0.0, val e : Fuu)
+   data class Fee(val a: String, val b: Int, val c: Boolean, val d: Double = 0.0, val e : Foo)
+
    data class Car(val name: String, val price: Int, private val modelNumber: Int)
+   data class AnotherCar(val name: String, val price: Int, private val modelNumber: Int, val color: String = "green")
 
    class Society(val name: String, val headPerson: Person?, val hospital: Hospital)
 
@@ -63,6 +69,31 @@ class ReflectionKtTest : FunSpec() {
          Foo("sammy", 42, true).shouldBeEqualToUsingFields(Foo("sammy", 42, true))
       }
 
+      test("shouldBeEqualToDifferentTypeUsingFields") {
+         Foo("sammy", 1, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 1, false), Foo::a, Foo::b)
+         Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, false), Foo::a)
+         Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, true), Foo::a, Foo::c)
+         Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, true), Foo::c, Foo::a)
+         Foo("sammy", 42, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 42, true))
+         Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, false), Foo::a)
+         assertSoftly {
+            val faa = Faa("sammy", 13, true, 0.0, Fuu("sammy", 345435, true))
+            val fee = Fee("sammy", 345435, true, 0.0, Foo("sammy", 345435, false))
+            // top-level fields
+            faa.shouldBeEqualToDifferentTypeUsingFields(
+               fee,
+               Faa::a, Faa::c, Faa::d
+            )
+            // nested class fields
+            faa.e.shouldBeEqualToDifferentTypeUsingFields(
+               fee.e,
+               Fuu::a, Fuu::b
+            )
+         }
+
+      }
+
+
       test("shouldBeEqualToUsingFields failure message") {
 
          shouldThrow<AssertionError> {
@@ -74,10 +105,22 @@ class ReflectionKtTest : FunSpec() {
          }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: \"sammy\" != \"stef\", c: true != false]"
       }
 
+      test("shouldBeEqualToDifferentTypeUsingFields failure message") {
+         shouldThrow<AssertionError> {
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("alfonso", 13, false), Foo::a, Foo::c)
+         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Fuu(a=alfonso, b=13, c=false, d=0.0) using fields [a, c]; Failed for [a: \"sammy\" != \"alfonso\", c: true != false]"
+
+         shouldThrow<AssertionError> {
+            Fuu("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Foo("sammy", 345435, false), Fuu::a, Fuu::d)
+         }.message shouldBe "Fuu(a=sammy, b=13, c=true, d=0.0) should be equal to Foo(a=sammy, b=345435, c=false) using fields [a, d]; Failed for [d: property not found in Foo]"
+      }
+
       test("shouldBeEqualToIgnoringFields") {
          Foo("sammy", 1, true).shouldBeEqualToIgnoringFields(Foo("sammy", 1, false), Foo::c)
          Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, false), Foo::b, Foo::c)
          Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, true), Foo::b)
+         Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Fuu("alfonso", 13, true), Foo::a)
+         Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Fuu("alfonso", 13, true), Fuu::a)
       }
 
       test("shouldBeEqualToIgnoringFields failure message") {
@@ -89,6 +132,10 @@ class ReflectionKtTest : FunSpec() {
          shouldThrow<AssertionError> {
             Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("stef", 13, false), Foo::c)
          }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [c]; Failed for [a: \"sammy\" != \"stef\"]"
+
+         shouldThrow<AssertionError> {
+            Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Fuu("alfonso", 13, false), Foo::c)
+         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Fuu(a=alfonso, b=13, c=false, d=0.0) ignoring fields [c]; Failed for [a: \"sammy\" != \"alfonso\"]"
       }
 
       test("shouldBeEqualToIgnoringFields should compare equality for class having private fields") {
@@ -98,6 +145,13 @@ class ReflectionKtTest : FunSpec() {
          car2.shouldBeEqualToIgnoringFields(car1, Car::price)
       }
 
+      test("shouldBeEqualToIgnoringFields should compare equality for class having private fields, even when other class is different type") {
+         val car = Car("C1", 10000, 430)
+         val anotherCar = AnotherCar("C1", 123423, 123)
+
+         car.shouldBeEqualToIgnoringFields(anotherCar, Car::price)
+      }
+
       test("shouldBeEqualToUsingFields should throw exception when called with properties of visibility other than public") {
          val car1 = Car("Car", 12345, 23)
          val car2 = Car("Car", 12345, 23)
@@ -105,6 +159,25 @@ class ReflectionKtTest : FunSpec() {
 
          assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
             car1.shouldBeEqualToUsingFields(car2, aPrivateField)
+         }
+      }
+
+      test("shouldBeEqualToDifferentTypeUsingFields should throw exception when called with properties of visibility other than public, even when other class is different type") {
+         val car = Car("Car", 12345, 23)
+         val anotherCar = AnotherCar("Car", 12345, 23)
+         val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
+
+         assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+            car.shouldBeEqualToDifferentTypeUsingFields(anotherCar, aPrivateField)
+         }
+      }
+
+      test("shouldBeEqualToUsingFields should throw exception when other is of different type") {
+         val car1 = Car("Car", 12345, 23)
+         val car2 = AnotherCar("Car", 12345, 23)
+
+         assertThrows<IllegalArgumentException>("object is not an instance of declaring class") {
+            car1.shouldBeEqualToUsingFields(car2)
          }
       }
 
