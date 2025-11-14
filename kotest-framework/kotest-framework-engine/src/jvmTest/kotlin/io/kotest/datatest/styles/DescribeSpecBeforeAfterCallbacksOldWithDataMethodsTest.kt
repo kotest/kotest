@@ -1,13 +1,11 @@
 package io.kotest.datatest.styles
 
 import io.kotest.core.names.DuplicateTestNameMode
-import io.kotest.core.spec.style.FunSpec
-import io.kotest.datatest.withContexts
+import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.datatest.withData
-import io.kotest.datatest.withTests
 import io.kotest.matchers.shouldBe
 
-class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {
+class DescribeSpecBeforeAfterCallbacksOldWithDataMethodsTest : DescribeSpec() {
    init {
 
       duplicateTestNameMode = DuplicateTestNameMode.Silent
@@ -42,41 +40,30 @@ class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {
          afterTest++
       }
       afterSpec {
-         beforeTest shouldBe 57
-         beforeContainer shouldBe 15
-         beforeEach shouldBe 42
-         afterEach shouldBe 42
-         afterContainer shouldBe 15
-         afterTest shouldBe 57
+         beforeTest shouldBe 13
+         beforeAnyTest shouldBe 13
+         beforeContainer shouldBe 7
+         beforeEach shouldBe 6
+         afterEach shouldBe 6
+         afterContainer shouldBe 7
+         afterTest shouldBe 13
       }
 
-      withContexts(
+      withData(
          "foo",
          "bar",
          "baz"
       ) {
-         withTests("it1","it2") {}
+         it("test") {}
       }
 
-      context("inside a context") {
-         withContexts(
+      describe("inside a context") {
+         withData(
             "foo",
             "bar",
             "baz"
          ) {
-            withTests("it1","it2") {}
-            withTests("it3","it4") {}
-         }
-      }
-
-      withContexts("inside a context 1", "inside a context 2") {
-         withContexts(
-            "foo",
-            "bar",
-            "baz"
-         ) {
-            withTests("it1","it2") {}
-            withTests("it3","it4") {}
+            it("test") {}
          }
       }
    }

@@ -45,7 +45,7 @@ row_ of values (in our case, the two inputs, and the expected result).
 data class PythagTriple(val a: Int, val b: Int, val c: Int)
 ```
 
-We will create tests by using instances of this data class, passing them into the `withData` function, which also
+We will create tests by using instances of this data class, passing them into the `withXXX` function, which also
 accepts a lambda that performs the test logic for that given _row_.
 
 For example:
@@ -53,7 +53,7 @@ For example:
 ```kotlin
 class MyTests : FunSpec({
   context("Pythag triples tests") {
-    withData(
+    withContexts(
       PythagTriple(3, 4, 5),
       PythagTriple(6, 8, 10),
       PythagTriple(8, 15, 17),
@@ -85,7 +85,7 @@ The error message will contain the error and the input row details:
 
 `Test failed for (a, 5), (b, 4), (c, 3) expected:<9> but was:<41>`
 
-In that previous example, we wrapped the `withData` call in a parent test, so we have more context when the test results appear.
+In that previous example, we wrapped the `withContexts` call in a parent test, so we have more context when the test results appear.
 The syntax varies depending on the [spec style](../styles.md) used - here we used _fun spec_ which uses context blocks for containers.
 In fact, data tests can be nested inside any number of containers.
 
@@ -95,7 +95,7 @@ For example:
 
 ```kotlin
 class MyTests : FunSpec({
-  withData(
+  withContexts(
     PythagTriple(3, 4, 5),
     PythagTriple(6, 8, 10),
     PythagTriple(8, 15, 17),
@@ -136,8 +136,32 @@ beforeTest {
 }
 
 context("...") {
-  withData(X, Y, Z) { x,y,z ->
+  withContexts(X, Y, Z) { x,y,z ->
     // test code
   }
 }
 ```
+
+### WithXXX Variants
+
+Kotest provides a variety of `withXXX` functions to support different input types, and they change
+per [spec style](../styles.md).
+
+Each spec style has its own set of `withXXX` functions, and the standard `withData` which points to an appropriate
+variant for that spec style.
+
+Combinations per spec style are listed below:
+
+| Test Style       | Available `withXXX` Functions                                                                                                                                                                                                      | Legacy `withData` Maps To |
+|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
+| **FunSpec**      | `withContexts` (creates container contexts)<br/>`withTests` (creates leaf tests)                                                                                                                                                   | `withContexts`            |
+| **StringSpec**   | `withData` (creates leaf tests)                                                                                                                                                                                                    | `withData` (native)       |
+| **DescribeSpec** | `withContexts` (creates container contexts)<br/>`withDescribes` (creates container describes)<br/>`withIts` (creates leaf tests)                                                                                                   | `withContexts`            |
+| **ShouldSpec**   | `withWhens` (creates container contexts)<br/>`withShoulds` (creates leaf tests)                                                                                                                                                    | `withContexts`            |
+| **WordSpec**     | `withWhens` (creates when containers)<br/>`withShoulds` (creates should containers)                                                                                                                                                | `withWhens`               |
+| **BehaviorSpec** | `withContexts` (creates container contexts)<br/>`withGivens` (creates given containers)<br/>`withWhens` (creates when containers)<br/>`withThens` (creates then leaf tests)<br/>`withAnds` (creates and containers in given scope) | `withContexts`            |
+| **FreeSpec**     | `withData` (creates containers)                                                                                                                                                                                                    | `withData` (native)       |
+| **ExpectSpec**   | `withContexts` (creates container contexts)<br/>`withExpects` (creates leaf expect tests)                                                                                                                                          | `withContexts`            |
+| **FeatureSpec**  | `withFeatures` (creates feature containers)<br/>`withScenarios` (creates leaf scenario tests)                                                                                                                                      | `withFeatures`            |
+
+Examples of how these are used can be found in these kotest [tests](https://github.com/kotest/kotest/tree/master/kotest-framework/kotest-framework-engine/src/jvmTest/kotlin/io/kotest/datatest/styles)
