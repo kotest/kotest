@@ -9,7 +9,6 @@ import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
-import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
@@ -79,7 +78,6 @@ internal class TestCaseExecutor(
             context.testConfigResolver
          ),
          // should run after TestEnabledCheckInterceptor so that it is skipped if the test is disabled
-         BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
          TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.testExtensions()),
          AssertionModeInterceptor(context.testConfigResolver),
