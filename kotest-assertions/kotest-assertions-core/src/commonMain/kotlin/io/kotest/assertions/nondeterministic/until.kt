@@ -39,6 +39,7 @@ suspend fun until(
       },
       shortCircuit = config.shortCircuit,
       includeFirst = config.includeFirst,
+      virtualTime = true,
    )
    eventually(eventuallyConfiguration) { test() shouldBe true }
 }
