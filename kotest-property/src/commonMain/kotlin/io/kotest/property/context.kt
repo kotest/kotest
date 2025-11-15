@@ -1,7 +1,12 @@
 package io.kotest.property
 
+import io.kotest.common.DelicateKotest
 import io.kotest.property.statistics.Label
 import kotlin.math.roundToInt
+import io.kotest.property.arbitrary.drop as unboundDrop
+import io.kotest.property.arbitrary.next as unboundNext
+import io.kotest.property.arbitrary.single as unboundSingle
+import io.kotest.property.arbitrary.take as unboundTake
 
 /**
  * A [PropertyContext] is used when executing a property test.
@@ -52,6 +57,22 @@ class PropertyContext(val config: PropTestConfig = PropTestConfig()) {
       generatedSamples.add(sample)
       return sample.value
    }
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary value from PropertyContext. Use .bind() instead", ReplaceWith("bind()"))
+   fun <T> Arb<T>.next(): T = unboundNext()
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary value from PropertyContext. Use .bind() instead", ReplaceWith("bind()"))
+   fun <T> Arb<T>.single(): T = unboundSingle()
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary value from PropertyContext. Use .take(count, randomSource()) instead", ReplaceWith("take(count, randomSource())"))
+   fun <A> Arb<A>.take(count: Int): Sequence<A> = unboundTake(count)
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary value from PropertyContext. Use .drop(count, randomSource()) instead", ReplaceWith("drop(count, randomSource())"))
+   fun <A> Arb<A>.drop(count: Int): Sequence<A> = unboundDrop(count)
 
    fun markEvaluation(): Int = evals++
 
