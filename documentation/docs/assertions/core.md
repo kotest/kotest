@@ -31,14 +31,16 @@ Matchers provided by the `kotest-assertions-core` module.
 | `obj shouldNotBeNull { block }`             | Asserts that a given reference is not null. |
 
 
-| Comparables                                        ||
-|----------------------------------------------------| ---- |
-| `comp.shouldBeLessThan(other)`                     | Uses `compareTo` to verify that `comp` is less than `other` |
-| `comp.shouldBeLessThanOrEqualTo(other)`            | Uses `compareTo` to verify that `comp` is less than or equal to `other` |
-| `comp.shouldBeEqualComparingTo(other)`             | Uses `compareTo` to verify that `comp` is equal to `other` |
-| `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other` |
-| `comp.shouldBeGreaterThan(other)`                  | Uses `compareTo` to verify that `comp` is greater than `other` |
-| `comp.shouldBeGreaterThanOrEqualTo(other)`         | Uses `compareTo` to verify that `comp` is greater than or equal to `other` |
+| Comparables                                        |                                                                                          |
+|----------------------------------------------------|------------------------------------------------------------------------------------------|
+| `comp.shouldBeLessThan(other)`                     | Uses `compareTo` to verify that `comp` is less than `other`                              |
+| `comp.shouldBeLessThanOrEqualTo(other)`            | Uses `compareTo` to verify that `comp` is less than or equal to `other`                  |
+| `comp.shouldBeAtMost(other)`                       | Uses `compareTo` to verify that `comp` is less than or equal to `other` (only `Double`)  |
+| `comp.shouldBeEqualComparingTo(other)`             | Uses `compareTo` to verify that `comp` is equal to `other`                               |
+| `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other`                      |
+| `comp.shouldBeGreaterThan(other)`                  | Uses `compareTo` to verify that `comp` is greater than `other`                           |
+| `comp.shouldBeGreaterThanOrEqualTo(other)`         | Uses `compareTo` to verify that `comp` is greater than or equal to `other`               |
+| `comp.shouldBeAtLeast(other)`                      | Uses `compareTo` to verify that `comp` is greater than or equal to `other`(only `Double`)|
 | `comp.shouldBeBetween(lower, upper)`               | Uses `compareTo` to verify that `comp` is in range `lower..upper` (inclusive, inclusive) |
 
 

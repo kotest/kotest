@@ -2038,9 +2038,12 @@ public final class io/kotest/matchers/doubles/GreaterThanKt {
 }
 
 public final class io/kotest/matchers/doubles/GreaterThanOrEqualKt {
+	public static final fun beAtLeast (D)Lio/kotest/matchers/Matcher;
 	public static final fun beGreaterThanOrEqualTo (D)Lio/kotest/matchers/Matcher;
 	public static final fun gte (D)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (DD)D
 	public static final fun shouldBeGreaterThanOrEqual (DD)D
+	public static final fun shouldNotBeAtLeast (DD)D
 	public static final fun shouldNotBeGreaterThanOrEqual (DD)D
 }
 
