@@ -1,10 +1,18 @@
 package com.sksamuel.kotest.matchers.equality
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.equality.*
+import io.kotest.matchers.equality.FieldsEqualityCheckConfig
+import io.kotest.matchers.equality.shouldBeEqualToComparingFields
+import io.kotest.matchers.equality.shouldBeEqualToDifferentTypeIgnoringFields
+import io.kotest.matchers.equality.shouldBeEqualToDifferentTypeUsingFields
+import io.kotest.matchers.equality.shouldBeEqualToIgnoringFields
+import io.kotest.matchers.equality.shouldBeEqualToUsingFields
+import io.kotest.matchers.equality.shouldNotBeEqualToComparingFields
+import io.kotest.matchers.equality.shouldNotBeEqualToIgnoringFields
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -21,7 +29,12 @@ class ReflectionKtTest : FunSpec() {
 
    data class Foo(val a: String, val b: Int, val c: Boolean)
 
+   data class Fuu(val a: String, val b: Int, val c: Boolean, val d: Double = 0.0)
+   data class Faa(val a: String, val b: Int, val c: Boolean, val d: Double = 0.0, val e: Fuu)
+   data class Fee(val a: String, val b: Int, val c: Boolean, val d: Double = 0.0, val e: Foo)
+
    data class Car(val name: String, val price: Int, private val modelNumber: Int)
+   data class AnotherCar(val name: String, val price: Int, private val modelNumber: Int, val color: String = "green")
 
    class Society(val name: String, val headPerson: Person?, val hospital: Hospital)
 
@@ -54,347 +67,418 @@ class ReflectionKtTest : FunSpec() {
    data class EnumWrapper<E : Enum<E>>(val enum: E)
 
    init {
+      context("shouldBeEqualToUsingFields") {
+         test("should match other using specified fields") {
+            Foo("sammy", 1, true).shouldBeEqualToUsingFields(Foo("sammy", 1, false), Foo::a, Foo::b)
+            Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, false), Foo::a)
+            Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::a, Foo::c)
+            Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::c, Foo::a)
+            Foo("sammy", 42, true).shouldBeEqualToUsingFields(Foo("sammy", 42, true))
+         }
+         test("failure message") {
 
-      test("shouldBeEqualToUsingFields") {
-         Foo("sammy", 1, true).shouldBeEqualToUsingFields(Foo("sammy", 1, false), Foo::a, Foo::b)
-         Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, false), Foo::a)
-         Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::a, Foo::c)
-         Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, true), Foo::c, Foo::a)
-         Foo("sammy", 42, true).shouldBeEqualToUsingFields(Foo("sammy", 42, true))
-      }
+            shouldThrow<AssertionError> {
+               Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, false), Foo::a, Foo::c)
+            }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=sammy, b=345435, c=false) using fields [a, c]; Failed for [c: true != false]"
 
-      test("shouldBeEqualToUsingFields failure message") {
+            shouldThrow<AssertionError> {
+               Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("stef", 13, false), Foo::a, Foo::c)
+            }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: \"sammy\" != \"stef\", c: true != false]"
+         }
+         test("should throw exception when called with properties of visibility other than public") {
+            val car1 = Car("Car", 12345, 23)
+            val car2 = Car("Car", 12345, 23)
+            val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
 
-         shouldThrow<AssertionError> {
-            Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("sammy", 345435, false), Foo::a, Foo::c)
-         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=sammy, b=345435, c=false) using fields [a, c]; Failed for [c: true != false]"
+            assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+               car1.shouldBeEqualToUsingFields(car2, aPrivateField)
+            }
+         }
+         test("should throw exception when other is of different type") {
+            val car1 = Car("Car", 12345, 23)
+            val car2 = AnotherCar("Car", 12345, 23)
 
-         shouldThrow<AssertionError> {
-            Foo("sammy", 13, true).shouldBeEqualToUsingFields(Foo("stef", 13, false), Foo::a, Foo::c)
-         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) using fields [a, c]; Failed for [a: \"sammy\" != \"stef\", c: true != false]"
-      }
-
-      test("shouldBeEqualToIgnoringFields") {
-         Foo("sammy", 1, true).shouldBeEqualToIgnoringFields(Foo("sammy", 1, false), Foo::c)
-         Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, false), Foo::b, Foo::c)
-         Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, true), Foo::b)
-      }
-
-      test("shouldBeEqualToIgnoringFields failure message") {
-
-         shouldThrow<AssertionError> {
-            Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, false), Foo::a, Foo::b)
-         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=sammy, b=345435, c=false) ignoring fields [a, b]; Failed for [c: true != false]"
-
-         shouldThrow<AssertionError> {
-            Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("stef", 13, false), Foo::c)
-         }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [c]; Failed for [a: \"sammy\" != \"stef\"]"
-      }
-
-      test("shouldBeEqualToIgnoringFields should compare equality for class having private fields") {
-         val car1 = Car("C1", 10000, 430)
-         val car2 = Car("C1", 123423, 123)
-
-         car2.shouldBeEqualToIgnoringFields(car1, Car::price)
-      }
-
-      test("shouldBeEqualToUsingFields should throw exception when called with properties of visibility other than public") {
-         val car1 = Car("Car", 12345, 23)
-         val car2 = Car("Car", 12345, 23)
-         val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
-
-         assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
-            car1.shouldBeEqualToUsingFields(car2, aPrivateField)
+            assertThrows<IllegalArgumentException>("other is not an instance of declaring class") {
+               car1.shouldBeEqualToUsingFields(car2)
+            }
          }
       }
 
-      test("shouldBeEqualToIgnoringFields should consider private in equality check when ignorePrivateField is false") {
-         val car1 = Car("car", 10000, 707)
-         val car2 = Car("car", 9000, 700)
-         val car3 = Car("car", 7000, 707)
+      context("shouldBeEqualToDifferentTypeUsingFields") {
+         test("should match other of different type using specified fields") {
+            Foo("sammy", 1, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 1, false), Foo::a, Foo::b)
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, false), Foo::a)
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, true), Foo::a, Foo::c)
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, true), Foo::c, Foo::a)
+            Foo("sammy", 42, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 42, true))
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("sammy", 345435, false), Foo::a)
+            assertSoftly {
+               val faa = Faa("sammy", 13, true, 0.0, Fuu("sammy", 345435, true))
+               val fee = Fee("sammy", 345435, true, 0.0, Foo("sammy", 345435, false))
+               // top-level fields
+               faa.shouldBeEqualToDifferentTypeUsingFields(
+                  fee,
+                  Faa::a, Faa::c, Faa::d
+               )
+               // nested class fields
+               faa.e.shouldBeEqualToDifferentTypeUsingFields(
+                  fee.e,
+                  Fuu::a, Fuu::b
+               )
+            }
+         }
+         test("failure message") {
+            shouldThrow<AssertionError> {
+               Foo("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(Fuu("alfonso", 13, false), Foo::a, Foo::c)
+            }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Fuu(a=alfonso, b=13, c=false, d=0.0) using fields [a, c]; Failed for [a: \"sammy\" != \"alfonso\", c: true != false]"
 
-         car1.shouldBeEqualToIgnoringFields(car3, false, Car::price)
-         shouldThrow<AssertionError> {
-            car1.shouldBeEqualToIgnoringFields(car2, false, Car::price)
+            shouldThrow<AssertionError> {
+               Fuu("sammy", 13, true).shouldBeEqualToDifferentTypeUsingFields(
+                  Foo("sammy", 345435, false),
+                  Fuu::a,
+                  Fuu::d
+               )
+            }.message shouldBe "Fuu(a=sammy, b=13, c=true, d=0.0) should be equal to Foo(a=sammy, b=345435, c=false) using fields [a, d]; Failed for [d: property not found in Foo]"
+         }
+         test("should throw exception when called with properties of visibility other than public") {
+            val car = Car("Car", 12345, 23)
+            val anotherCar = AnotherCar("Car", 12345, 23)
+            val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
+
+            assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+               car.shouldBeEqualToDifferentTypeUsingFields(anotherCar, aPrivateField)
+            }
          }
       }
 
-      test("shouldNotBeEqualToIgnoringFields should consider private in equality check when ignorePrivateField is false") {
-         val car1 = Car("car", 10000, 707)
-         val car2 = Car("car", 9000, 700)
-         val car3 = Car("car", 7000, 707)
+      context("shouldBeEqualToIgnoringFields") {
+         test("should match other ignoring specified fields") {
+            Foo("sammy", 1, true).shouldBeEqualToIgnoringFields(Foo("sammy", 1, false), Foo::c)
+            Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, false), Foo::b, Foo::c)
+            Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, true), Foo::b)
+         }
+         test("failure message") {
+            shouldThrow<AssertionError> {
+               Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("sammy", 345435, false), Foo::a, Foo::b)
+            }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=sammy, b=345435, c=false) ignoring fields [a, b]; Failed for [c: true != false]"
 
-         car1.shouldNotBeEqualToIgnoringFields(car2, false, Car::price)
-         shouldThrow<AssertionError> {
-            car1.shouldNotBeEqualToIgnoringFields(car3, false, Car::price)
+            shouldThrow<AssertionError> {
+               Foo("sammy", 13, true).shouldBeEqualToIgnoringFields(Foo("stef", 13, false), Foo::c)
+            }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Foo(a=stef, b=13, c=false) ignoring fields [c]; Failed for [a: \"sammy\" != \"stef\"]"
+         }
+         test("should compare equality for class having private fields") {
+            val car1 = Car("C1", 10000, 430)
+            val car2 = Car("C1", 123423, 123)
+
+            car2.shouldBeEqualToIgnoringFields(car1, Car::price)
+         }
+         test("should throw exception when other is of different type") {
+            val car1 = Car("Car", 12345, 23)
+            val car2 = AnotherCar("Car", 12345, 23)
+
+            assertThrows<IllegalArgumentException>("other is not an instance of declaring class") {
+               car1.shouldBeEqualToUsingFields(car2)
+            }
+         }
+         test("should consider private in equality check when ignorePrivateField is false") {
+            val car1 = Car("car", 10000, 707)
+            val car2 = Car("car", 9000, 700)
+            val car3 = Car("car", 7000, 707)
+
+            car1.shouldBeEqualToIgnoringFields(car3, false, Car::price)
+            shouldThrow<AssertionError> {
+               car1.shouldBeEqualToIgnoringFields(car2, false, Car::price)
+            }
+         }
+         test("should not consider private in equality check when ignorePrivateField is true") {
+            val car1 = Car("car", 10000, 707)
+            val car2 = Car("car", 9000, 700)
+
+            car1.shouldBeEqualToIgnoringFields(car2, true, Car::price)
          }
       }
 
-      test("shouldBeEqualToIgnoringFields should not consider private in equality check when ignorePrivateField is true") {
-         val car1 = Car("car", 10000, 707)
-         val car2 = Car("car", 9000, 700)
+      context("shouldBeEqualToDifferentTypeIgnoringFields") {
+         test("should match other of different type ignoring specified fields"){
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeIgnoringFields(Fuu("alfonso", 13, true), Foo::a)
+            Foo("sammy", 13, true).shouldBeEqualToDifferentTypeIgnoringFields(Fuu("alfonso", 13, false), Foo::a, Foo::c)
+            assertSoftly {
+               val faa = Faa("sammy", 13, true, 0.0, Fuu("sammy", 345435, true))
+               val fee = Fee("sammy", 345435, true, 0.0, Foo("sammy", 345435, false))
+               // top-level fields
+               faa.shouldBeEqualToDifferentTypeIgnoringFields(
+                  fee,
+                  Faa::b, Faa::e,
+               )
+               // nested class fields
+               faa.e.shouldBeEqualToDifferentTypeIgnoringFields(
+                  fee.e,
+                  Fuu::c, Fuu::d
+               )
+            }
+         }
+         test("should compare equality for class having private fields, when other class is different type") {
+            val car = Car("C1", 10000, 430)
+            val anotherCar = AnotherCar("C1", 123423, 123)
 
-         car1.shouldBeEqualToIgnoringFields(car2, true, Car::price)
+            car.shouldBeEqualToDifferentTypeIgnoringFields(anotherCar, Car::price)
+         }
+         test("failure message") {
+            shouldThrow<AssertionError> {
+               Foo("sammy", 13, true).shouldBeEqualToDifferentTypeIgnoringFields(Fuu("alfonso", 13, false), Foo::c)
+            }.message shouldBe "Foo(a=sammy, b=13, c=true) should be equal to Fuu(a=alfonso, b=13, c=false, d=0.0) ignoring fields [c]; Failed for [a: \"sammy\" != \"alfonso\"]"
+         }
+      }
+      context("shouldNotBeEqualToIgnoringFields") {
+         test("should consider private in equality check when ignorePrivateField is false") {
+            val car1 = Car("car", 10000, 707)
+            val car2 = Car("car", 9000, 700)
+            val car3 = Car("car", 7000, 707)
+
+            car1.shouldNotBeEqualToIgnoringFields(car2, false, Car::price)
+            shouldThrow<AssertionError> {
+               car1.shouldNotBeEqualToIgnoringFields(car3, false, Car::price)
+            }
+         }
       }
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field") {
-         Person("foo") shouldBeEqualToComparingFields Person("foo")
-      }
+      context("shouldBeEqualToComparingFields") {
+         test("check equality comparing field by field") {
+            Person("foo") shouldBeEqualToComparingFields Person("foo")
+         }
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively") {
-         val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
-         val city2 = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
+         test("should check equality comparing field by field recursively") {
+            val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
+            val city2 = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf())))
 
-         city.shouldBeEqualToComparingFields(city2)
-      }
+            city.shouldBeEqualToComparingFields(city2)
+         }
+         test("should check equality comparing field by field recursively using default shouldBe for given types") {
+            val doctor = mockk<Doctor>()
+            val city = City("test", Hospital("test-hospital", doctor))
+            val city2 = City("test", Hospital("test-hospital", doctor))
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively using default shouldBe for given types") {
-         val doctor = mockk<Doctor>()
-         val city = City("test", Hospital("test-hospital", doctor))
-         val city2 = City("test", Hospital("test-hospital", doctor))
-
-         city.shouldBeEqualToComparingFields(
-            city2,
-            FieldsEqualityCheckConfig(
-               useDefaultShouldBeForFields = listOf("com.sksamuel.kotest.matchers.equality.ReflectionKtTest.Doctor")
+            city.shouldBeEqualToComparingFields(
+               city2,
+               FieldsEqualityCheckConfig(
+                  useDefaultShouldBeForFields = listOf("com.sksamuel.kotest.matchers.equality.ReflectionKtTest.Doctor")
+               )
             )
-         )
-      }
+         }
+         test("should check equality comparing field by field including private fields") {
+            val person = Person("foo")
+            person.setAddress("new address")
 
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively handling nullable fields") {
-         val jasmineSociety = Society("Jasmine", Person("Andrew"), Hospital("Wellness", null))
-         val roseSociety = Society("Rose", null, Hospital("Wellness", Doctor("Marco", 45, emptyList())))
+            val errorMessage = shouldThrow<AssertionError> {
+               person.shouldBeEqualToComparingFields(
+                  Person("foo"),
+                  FieldsEqualityCheckConfig(ignorePrivateFields = false)
+               )
+            }.message
 
-         jasmineSociety.shouldNotBeEqualToComparingFields(roseSociety)
-      }
-
-      test("shouldBeEqualToComparingFieldByField check equality comparing field by field recursively ignoring java or kotlin builtin types") {
-         val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf(DocMetadata("f1")))))
-         val city2 = City("test", Hospital("test-hospital", Doctor("doc", 51, listOf(DocMetadata("f1")))))
-
-         city.shouldNotBeEqualToComparingFields(city2)
-      }
-
-      test("shouldBeEqualToComparingFields check equality comparing field by field including private fields") {
-         val person = Person("foo")
-         person.setAddress("new address")
-
-         val errorMessage = shouldThrow<AssertionError> {
-            person.shouldBeEqualToComparingFields(Person("foo"), FieldsEqualityCheckConfig(ignorePrivateFields = false))
-         }.message
-
-         errorMessage shouldContain "Using fields: address, isExhausted, name"
-         errorMessage shouldContain "Value differ at:"
-         errorMessage shouldContain "1) address"
-         errorMessage shouldContain "expected:<<empty string>> but was:<new address>"
-      }
-
-      test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and private fields") {
-         val person = Person("foo")
-         person.isExhausted = true
-         person.setAddress("new address")
-
-         person.shouldBeEqualToComparingFields(
-            Person("foo"),
-            FieldsEqualityCheckConfig(propertiesToExclude = listOf(Person::isExhausted))
-         )
-         person.shouldBeEqualToComparingFields(
-            Person("foo"),
-            FieldsEqualityCheckConfig(
-               ignorePrivateFields = true,
-               propertiesToExclude = listOf(Person::isExhausted)
+            errorMessage shouldContain "Using fields: address, isExhausted, name"
+            errorMessage shouldContain "Value differ at:"
+            errorMessage shouldContain "1) address"
+            errorMessage shouldContain "expected:<<empty string>> but was:<new address>"
+         }
+         test("should check equality comparing field by field excluding given fields and private fields") {
+            val person = Person("foo")
+            person.isExhausted = true
+            person.setAddress("new address")
+            person.shouldBeEqualToComparingFields(
+               Person("foo"),
+               FieldsEqualityCheckConfig(propertiesToExclude = listOf(Person::isExhausted))
             )
-         )
-      }
-
-      test("shouldBeEqualToComparingFieldsExcept check equality comparing field by field excluding given fields and without ignoring private fields") {
-         val person = Person("foo")
-         person.isExhausted = true
-         person.setAddress("new address")
-
-         val message = shouldThrow<AssertionError> {
             person.shouldBeEqualToComparingFields(
                Person("foo"),
                FieldsEqualityCheckConfig(
-                  ignorePrivateFields = false,
+                  ignorePrivateFields = true,
                   propertiesToExclude = listOf(Person::isExhausted)
                )
             )
-         }.message
-         message shouldContain "Using fields: address, name"
-         message shouldContain "Value differ at"
-         message shouldContain "1) address"
-         message shouldContain "expected:<<empty string>> but was:<new address>"
+         }
+         test("should check equality comparing field by field excluding given fields and without ignoring private fields") {
+            val person = Person("foo")
+            person.isExhausted = true
+            person.setAddress("new address")
 
-      }
-
-      test("shouldNotBeEqualToComparingFields check all fields of expected and actual are not equal") {
-         val person = Person("foo")
-         person.isExhausted = true
-
-         person shouldNotBeEqualToComparingFields Person("foo")
-      }
-
-      test("shouldNotBeEqualToComparingFields fails when expected and actual have equal fields") {
-         shouldThrow<AssertionError> {
-            Person("foo") shouldNotBeEqualToComparingFields Person("foo")
-         }.message shouldContain "Using fields: isExhausted, name"
-      }
-
-      test("shouldNotBeEqualToComparingFields should consider private fields") {
-         shouldThrow<AssertionError> {
-            Person("foo").shouldNotBeEqualToComparingFields(
-               Person("foo"),
-               FieldsEqualityCheckConfig(ignorePrivateFields = false)
+            val message = shouldThrow<AssertionError> {
+               person.shouldBeEqualToComparingFields(
+                  Person("foo"),
+                  FieldsEqualityCheckConfig(
+                     ignorePrivateFields = false,
+                     propertiesToExclude = listOf(Person::isExhausted)
+                  )
+               )
+            }.message
+            message shouldContain "Using fields: address, name"
+            message shouldContain "Value differ at"
+            message shouldContain "1) address"
+            message shouldContain "expected:<<empty string>> but was:<new address>"
+         }
+         test("handles arrays") {
+            val students = arrayOf(Person("foo"), Person("bar"))
+            Teacher("bar", students) shouldBeEqualToComparingFields Teacher("bar", students)
+         }
+         test("can include computed field") {
+            shouldFail {
+               HasComputedField("foo").shouldBeEqualToComparingFields(
+                  HasComputedField("foo"),
+                  FieldsEqualityCheckConfig(ignoreComputedFields = false)
+               )
+            }.message shouldContain "Using fields: name, random"
+         }
+         test("includes internal fields") {
+            shouldFail {
+               Teacher("foo", age = 100) shouldBeEqualToComparingFields Teacher("foo", age = 200)
+            }.message shouldContain "Using fields: age, isExhausted, name, students"
+         }
+         test("includes fields from superclasses") {
+            shouldFail {
+               Teacher("foo") shouldBeEqualToComparingFields Teacher("bar")
+            }.message shouldContain "Using fields: age, isExhausted, name, students"
+         }
+         test("ignores synthetic fields") {
+            shouldFail {
+               HasComputedField("foo") shouldBeEqualToComparingFields HasComputedField("bar")
+            }.message shouldNotContain "random"
+         }
+         test("fails if generic fields are different") {
+            shouldFail {
+               KeyValuePair("color", "green").shouldBeEqualToComparingFields(KeyValuePair("color", "amber"))
+            }.message shouldNotContain "random"
+         }
+         test("shouldBeEqualToComparingFields passes if generic fields are same") {
+            shouldNotThrowAny {
+               KeyValuePair("color", "green").shouldBeEqualToComparingFields(KeyValuePair("color", "green"))
+            }
+         }
+         test("shouldBeEqualToWithEnums") {
+            shouldFail {
+               EnumWrapper(SimpleEnum.ONE).shouldBeEqualToComparingFields(EnumWrapper(SimpleEnum.TWO))
+            }.message.shouldContain("expected:<TWO> but was:<ONE>")
+         }
+         test("shouldBeEqualToWithEnums message contains enum names") {
+            shouldFail {
+               EnumWrapper(EnumWithProperties.ONE).shouldBeEqualToComparingFields(EnumWrapper(EnumWithProperties.TWO))
+            }.message.shouldContain("expected:<TWO> but was:<ONE>")
+         }
+         test("shouldBeEqualToComparingFields handles ByteArray") {
+            class Test(
+               val test: kotlin.ByteArray
             )
-         }.message shouldContain "Using fields: address, isExhausted, name"
-      }
-
-      test("shouldBeEqualToComparingFields handles arrays") {
-         val students = arrayOf(Person("foo"), Person("bar"))
-         Teacher("bar", students) shouldBeEqualToComparingFields Teacher("bar", students)
-      }
-
-      test("shouldBeEqualToComparingFields can include computed field") {
-         shouldFail {
-            HasComputedField("foo").shouldBeEqualToComparingFields(
-               HasComputedField("foo"),
-               FieldsEqualityCheckConfig(ignoreComputedFields = false)
+            Test(ByteArray(1)) shouldBeEqualToComparingFields Test(ByteArray(1))
+            val actual = ByteArray(1)
+            actual[0] = 1
+            shouldFail {
+               Test(ByteArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<[1]> but was:<[0]>"
+         }
+         test("shouldBeEqualToComparingFields handles CharArray") {
+            class Test(
+               val test: kotlin.CharArray
             )
-         }.message shouldContain "Using fields: name, random"
-      }
-
-      test("shouldBeEqualToComparingFields includes internal fields") {
-         shouldFail {
-            Teacher("foo", age = 100) shouldBeEqualToComparingFields Teacher("foo", age = 200)
-         }.message shouldContain "Using fields: age, isExhausted, name, students"
-      }
-
-      test("shouldBeEqualToComparingFields includes fields from superclasses") {
-         shouldFail {
-            Teacher("foo") shouldBeEqualToComparingFields Teacher("bar")
-         }.message shouldContain "Using fields: age, isExhausted, name, students"
-      }
-
-      test("shouldBeEqualToComparingFields ignores synthetic fields") {
-         shouldFail {
-            HasComputedField("foo") shouldBeEqualToComparingFields HasComputedField("bar")
-         }.message shouldNotContain "random"
-      }
-
-      test("shouldBeEqualToComparingFields fails if generic fields are different") {
-         shouldFail {
-            KeyValuePair("color", "green").shouldBeEqualToComparingFields(KeyValuePair("color", "amber"))
-         }.message shouldNotContain "random"
-      }
-
-      test("shouldBeEqualToComparingFields passes if generic fields are same") {
-         shouldNotThrowAny {
-            KeyValuePair("color", "green").shouldBeEqualToComparingFields(KeyValuePair("color", "green"))
+            Test(CharArray(1)) shouldBeEqualToComparingFields Test(CharArray(1))
+            val actual = CharArray(1)
+            actual[0] = '1'
+            shouldFail {
+               Test(CharArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<['1']> but was:<['\u0000']>"
+         }
+         test("shouldBeEqualToComparingFields handles ShortArray") {
+            class Test(
+               val test: kotlin.ShortArray
+            )
+            Test(ShortArray(1)) shouldBeEqualToComparingFields Test(ShortArray(1))
+            val actual = ShortArray(1)
+            actual[0] = 1
+            shouldFail {
+               Test(ShortArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<[1]> but was:<[0]>"
+         }
+         test("shouldBeEqualToComparingFields handles IntArray") {
+            class Test(
+               val test: kotlin.IntArray
+            )
+            Test(IntArray(1)) shouldBeEqualToComparingFields Test(IntArray(1))
+            val actual = IntArray(1)
+            actual[0] = 1
+            shouldFail {
+               Test(IntArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<[1]> but was:<[0]>"
+         }
+         test("shouldBeEqualToComparingFields handles LongArray") {
+            class Test(
+               val test: kotlin.LongArray
+            )
+            Test(LongArray(1)) shouldBeEqualToComparingFields Test(LongArray(1))
+            val actual = LongArray(1)
+            actual[0] = 1L
+            shouldFail {
+               Test(LongArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<[1L]> but was:<[0L]>"
+         }
+         test("shouldBeEqualToComparingFields handles FloatArray") {
+            class Test(
+               val test: kotlin.FloatArray
+            )
+            Test(FloatArray(1)) shouldBeEqualToComparingFields Test(FloatArray(1))
+            val actual = FloatArray(1)
+            actual[0] = 1.0F
+            shouldFail {
+               Test(FloatArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<[1.0f]> but was:<[0.0f]>"
+         }
+         test("shouldBeEqualToComparingFields handles DoubleArray") {
+            class Test(
+               val test: kotlin.DoubleArray
+            )
+            Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(DoubleArray(1))
+            val actual = DoubleArray(1)
+            actual[0] = 1.0
+            shouldFail {
+               Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(actual)
+            }.message shouldContain "expected:<[1.0]> but was:<[0.0]>"
+         }
+         test("should work for nested classes") {
+            X.Y("a", "b") shouldBeEqualToComparingFields X.Y("a", "b")
          }
       }
 
-      test("shouldBeEqualToWithEnums") {
-         shouldFail {
-            EnumWrapper(SimpleEnum.ONE).shouldBeEqualToComparingFields(EnumWrapper(SimpleEnum.TWO))
-         }.message.shouldContain("expected:<TWO> but was:<ONE>")
-      }
+      context("shouldNotBeEqualToComparingFields") {
+         test("should check equality comparing field by field recursively handling nullable fields") {
+            val jasmineSociety = Society("Jasmine", Person("Andrew"), Hospital("Wellness", null))
+            val roseSociety = Society("Rose", null, Hospital("Wellness", Doctor("Marco", 45, emptyList())))
 
-      test("shouldBeEqualToWithEnums message contains enum names") {
-         shouldFail {
-            EnumWrapper(EnumWithProperties.ONE).shouldBeEqualToComparingFields(EnumWrapper(EnumWithProperties.TWO))
-         }.message.shouldContain("expected:<TWO> but was:<ONE>")
-      }
+            jasmineSociety.shouldNotBeEqualToComparingFields(roseSociety)
+         }
+         test("should check equality comparing field by field recursively ignoring java or kotlin builtin types") {
+            val city = City("test", Hospital("test-hospital", Doctor("doc", 50, listOf(DocMetadata("f1")))))
+            val city2 = City("test", Hospital("test-hospital", Doctor("doc", 51, listOf(DocMetadata("f1")))))
 
-      test("shouldBeEqualToComparingFields handles ByteArray") {
-         class Test(
-            val test: kotlin.ByteArray
-         )
-         Test(ByteArray(1)) shouldBeEqualToComparingFields Test(ByteArray(1))
-         val actual = ByteArray(1)
-         actual[0] = 1
-         shouldFail {
-            Test(ByteArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<[1]> but was:<[0]>"
-      }
+            city.shouldNotBeEqualToComparingFields(city2)
+         }
+         test("should check all fields of expected and actual are not equal") {
+            val person = Person("foo")
+            person.isExhausted = true
 
-      test("shouldBeEqualToComparingFields handles CharArray") {
-         class Test(
-            val test: kotlin.CharArray
-         )
-         Test(CharArray(1)) shouldBeEqualToComparingFields Test(CharArray(1))
-         val actual = CharArray(1)
-         actual[0] = '1'
-         shouldFail {
-            Test(CharArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<['1']> but was:<['\u0000']>"
-      }
-
-      test("shouldBeEqualToComparingFields handles ShortArray") {
-         class Test(
-            val test: kotlin.ShortArray
-         )
-         Test(ShortArray(1)) shouldBeEqualToComparingFields Test(ShortArray(1))
-         val actual = ShortArray(1)
-         actual[0] = 1
-         shouldFail {
-            Test(ShortArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<[1]> but was:<[0]>"
-      }
-
-      test("shouldBeEqualToComparingFields handles IntArray") {
-         class Test(
-            val test: kotlin.IntArray
-         )
-         Test(IntArray(1)) shouldBeEqualToComparingFields Test(IntArray(1))
-         val actual = IntArray(1)
-         actual[0] = 1
-         shouldFail {
-            Test(IntArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<[1]> but was:<[0]>"
-      }
-
-      test("shouldBeEqualToComparingFields handles LongArray") {
-         class Test(
-            val test: kotlin.LongArray
-         )
-         Test(LongArray(1)) shouldBeEqualToComparingFields Test(LongArray(1))
-         val actual = LongArray(1)
-         actual[0] = 1L
-         shouldFail {
-            Test(LongArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<[1L]> but was:<[0L]>"
-      }
-
-      test("shouldBeEqualToComparingFields handles FloatArray") {
-         class Test(
-            val test: kotlin.FloatArray
-         )
-         Test(FloatArray(1)) shouldBeEqualToComparingFields Test(FloatArray(1))
-         val actual = FloatArray(1)
-         actual[0] = 1.0F
-         shouldFail {
-            Test(FloatArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<[1.0f]> but was:<[0.0f]>"
-      }
-
-      test("shouldBeEqualToComparingFields handles DoubleArray") {
-         class Test(
-            val test: kotlin.DoubleArray
-         )
-         Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(DoubleArray(1))
-         val actual = DoubleArray(1)
-         actual[0] = 1.0
-         shouldFail {
-            Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(actual)
-         }.message shouldContain "expected:<[1.0]> but was:<[0.0]>"
-      }
-
-      test("should work for nested classes") {
-         X.Y("a", "b") shouldBeEqualToComparingFields X.Y("a", "b")
+            person shouldNotBeEqualToComparingFields Person("foo")
+         }
+         test("should fail when expected and actual have equal fields") {
+            shouldThrow<AssertionError> {
+               Person("foo") shouldNotBeEqualToComparingFields Person("foo")
+            }.message shouldContain "Using fields: isExhausted, name"
+         }
+         test("should consider private fields") {
+            shouldThrow<AssertionError> {
+               Person("foo").shouldNotBeEqualToComparingFields(
+                  Person("foo"),
+                  FieldsEqualityCheckConfig(ignorePrivateFields = false)
+               )
+            }.message shouldContain "Using fields: address, isExhausted, name"
+         }
       }
    }
-
    data class KeyValuePair<T : Any>(
       val key: String,
       val value: T

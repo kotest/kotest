@@ -6,7 +6,7 @@ slug: mockserver.html
 ---
 
 
-Kotest provides an [extension](https://github.com/kotest/kotest-extensions-mockserver) for integration with the [MockServer](https://www.mock-server.com) library.
+Kotest provides an [extension](https://github.com/kotest/kotest/tree/master/kotest-extensions/kotest-extensions-mockserver) for integration with the [MockServer](https://www.mock-server.com) library.
 
 :::note
 Requires the `io.kotest:kotest-extensions-mockserver` module to be added to your build.
@@ -18,7 +18,7 @@ main Kotest releases.
 :::
 
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-mockserver.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest.extensions/kotest-extensions-mockserver)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-mockserver.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-mockserver)
 [<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-mockserver%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-mockserver/maven-metadata.xml)
 
 
