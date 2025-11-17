@@ -45,7 +45,6 @@ dependencies {
    // Assertions
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrow)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
-   nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsJson)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKonform)
@@ -62,19 +61,11 @@ dependencies {
 
    // Extensions
    nmcpAggregation(projects.kotestExtensions)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
+
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunitxml)
 //   nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
+
 
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
@@ -89,9 +80,27 @@ dependencies {
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
    nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
 
-   // Runner
-   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
-   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+
+   if (System.getenv("CI") != "true" || System.getenv("RUNNER_OS") == "Linux") {
+      nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
+
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
+      nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
+
+      // Runners
+      nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
+      nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+
+
+   }
 }
 
 configureGradleDaemonJvm(

@@ -136,12 +136,6 @@ if (System.getenv("CI") != "true" || System.getenv("RUNNER_OS") == "Linux") {
       // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
       ":kotest-extensions:kotest-extensions-decoroutinator",
 
-      // support for executing tests via junit platform through gradle
-      // this will also bring in the required libs for the intellij plugin
-      ":kotest-runner:kotest-runner-junit5",
-
-      ":kotest-runner:kotest-runner-junit4",
-
       // adds support for mockserver - see more https://www.mock-server.com/
       ":kotest-extensions:kotest-extensions-mockserver",
 
@@ -160,6 +154,11 @@ if (System.getenv("CI") != "true" || System.getenv("RUNNER_OS") == "Linux") {
 
       // adds support for the wiremock framework - see more https://www.wiremock.io/
       ":kotest-extensions:kotest-extensions-wiremock",
+
+      // support for executing tests via junit platform through gradle
+      // this will also bring in the required libs for the intellij plugin
+      ":kotest-runner:kotest-runner-junit5",
+      ":kotest-runner:kotest-runner-junit4",
 
       ":kotest-tests:kotest-tests-core",
 
