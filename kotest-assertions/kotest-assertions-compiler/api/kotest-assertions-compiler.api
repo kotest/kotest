@@ -14,7 +14,7 @@ public final class io/kotest/matchers/compilation/CompileCodeSnippetKt {
 	public static final fun shouldCompile (Ljava/io/File;)V
 	public static final fun shouldCompile (Ljava/lang/String;)V
 	public static final fun shouldCompile (Ljava/nio/file/Path;)V
-	public static final fun shouldCompile (Ljava/util/Map;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun shouldCompile (Ljava/util/Map;)V
 	public static final fun shouldCompileFiles (Ljava/util/List;)V
 	public static final fun shouldCompilePaths (Ljava/util/List;)V
 	public static final fun shouldCompileSourceFiles (Ljava/util/List;)V
