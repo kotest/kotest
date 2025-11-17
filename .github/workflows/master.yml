@@ -41,22 +41,22 @@ jobs:
                   args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm"
                # JS+Wasm
                -  os: ubuntu-latest
-                  args: >
+                  args: >-
                      -P"kotest_enableKotlinJs=true"
                      -P"kotest_enabledPublicationNamePrefixes=js,wasm"
                # Linux+Android
                -  os: ubuntu-latest
-                  args: >
+                  args: >-
                      -P"kotest_enableKotlinNative=true"
                      -P"kotest_enabledPublicationNamePrefixes=linux,android"
                # Windows: MinGW
                -  os: windows-latest
-                  args: >
+                  args: >-
                      -P"kotest_enableKotlinNative=true"
                      -P"kotest_enabledPublicationNamePrefixes=mingw"
                # Apple: macOS,iOS,tvOS,watchOS
                -  os: macos-latest
-                  args:  >
+                  args: >-
                      -P"kotest_enableKotlinNative=true"
                      -P"kotest_enabledPublicationNamePrefixes=macOS,iOS,tvOS,watchOS"
       uses: ./.github/workflows/run-gradle.yml
