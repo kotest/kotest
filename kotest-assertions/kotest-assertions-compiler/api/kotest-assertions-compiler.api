@@ -4,17 +4,36 @@ public abstract interface class io/kotest/matchers/compilation/CodeSnippet {
 
 public final class io/kotest/matchers/compilation/CompileCodeSnippetKt {
 	public static final fun codeSnippet (Lio/kotest/matchers/compilation/CompileConfig;Ljava/lang/String;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun codeSnippet (Lio/kotest/matchers/compilation/CompileConfig;Ljava/util/List;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun codeSnippet (Lio/kotest/matchers/compilation/CompileConfig;[Lcom/tschuchort/compiletesting/SourceFile;)Lio/kotest/matchers/compilation/CodeSnippet;
 	public static final fun codeSnippet (Ljava/lang/String;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun codeSnippet (Ljava/util/List;)Lio/kotest/matchers/compilation/CodeSnippet;
+	public static final fun codeSnippet ([Lcom/tschuchort/compiletesting/SourceFile;)Lio/kotest/matchers/compilation/CodeSnippet;
 	public static final fun compile (Lio/kotest/matchers/compilation/CodeSnippet;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun shouldCompile (Lio/kotest/matchers/compilation/CodeSnippet;)V
 	public static final fun shouldCompile (Ljava/io/File;)V
 	public static final fun shouldCompile (Ljava/lang/String;)V
+	public static final fun shouldCompile (Ljava/nio/file/Path;)V
+	public static final fun shouldCompile (Ljava/util/Map;)V
+	public static final fun shouldCompileFiles (Ljava/util/List;)V
+	public static final fun shouldCompilePaths (Ljava/util/List;)V
+	public static final fun shouldCompileSourceFiles (Ljava/util/List;)V
 	public static final fun shouldNotCompile (Lio/kotest/matchers/compilation/CodeSnippet;Ljava/lang/String;)V
 	public static final fun shouldNotCompile (Ljava/io/File;Ljava/lang/String;)V
 	public static final fun shouldNotCompile (Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun shouldNotCompile (Ljava/nio/file/Path;Ljava/lang/String;)V
+	public static final fun shouldNotCompile (Ljava/util/Map;Ljava/lang/String;)V
 	public static synthetic fun shouldNotCompile$default (Lio/kotest/matchers/compilation/CodeSnippet;Ljava/lang/String;ILjava/lang/Object;)V
 	public static synthetic fun shouldNotCompile$default (Ljava/io/File;Ljava/lang/String;ILjava/lang/Object;)V
 	public static synthetic fun shouldNotCompile$default (Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)V
+	public static synthetic fun shouldNotCompile$default (Ljava/nio/file/Path;Ljava/lang/String;ILjava/lang/Object;)V
+	public static synthetic fun shouldNotCompile$default (Ljava/util/Map;Ljava/lang/String;ILjava/lang/Object;)V
+	public static final fun shouldNotCompileFiles (Ljava/util/List;Ljava/lang/String;)V
+	public static synthetic fun shouldNotCompileFiles$default (Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)V
+	public static final fun shouldNotCompilePaths (Ljava/util/List;Ljava/lang/String;)V
+	public static synthetic fun shouldNotCompilePaths$default (Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)V
+	public static final fun shouldNotCompileSourceFiles (Ljava/util/List;Ljava/lang/String;)V
+	public static synthetic fun shouldNotCompileSourceFiles$default (Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)V
 }
 
 public final class io/kotest/matchers/compilation/CompileConfig {
