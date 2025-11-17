@@ -20,6 +20,9 @@ import org.springframework.test.context.TestContextManager
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
+class SpringRootTestExtension : SpringExtension(SpringTestLifecycleMode.Root)
+class SpringLeafTestExtension : SpringExtension(SpringTestLifecycleMode.Test)
+
 /**
  * An [Extension] which adds support for testing spring components.
  *
@@ -30,7 +33,7 @@ import kotlin.reflect.KClass
  *
  * 2. Adds support for spring lifecycle methods to be called before and after tests.
  */
-class SpringExtension(
+open class SpringExtension(
    private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
 ) : ConstructorExtension, SpecExtension, TestCaseExtension, BeforeTestListener, AfterTestListener {
 
