@@ -82,24 +82,21 @@ dependencies {
 
 
    if (System.getenv("CI") != "true" || System.getenv("RUNNER_OS") == "Linux") {
-      nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
+      nmcpAggregation(project(":kotest-assertions:kotest-assertions-compiler"))
 
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
-      nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-allure"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-blockhound"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-decoroutinator"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-junit5"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-mockserver"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-now"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-spring"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-pitest"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-testcontainers"))
+      nmcpAggregation(project(":kotest-extensions:kotest-extensions-wiremock"))
 
-      // Runners
-      nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
-      nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
-
-
+      nmcpAggregation(project(":kotest-runner:kotest-runner-junit5"))
+      nmcpAggregation(project(":kotest-runner:kotest-runner-junit4"))
    }
 }
 
