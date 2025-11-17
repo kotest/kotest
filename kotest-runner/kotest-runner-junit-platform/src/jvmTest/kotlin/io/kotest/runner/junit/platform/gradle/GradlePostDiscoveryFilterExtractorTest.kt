@@ -44,7 +44,7 @@ class GradlePostDiscoveryFilterExtractorTest : FunSpec({
                it.isAccessible = true
                it.newInstance(matcher)
             }
-      GradlePostDiscoveryFilterExtractor.extract(listOf(filter)) shouldBe listOf(
+      GradlePostDiscoveryFilterUtils.extract(listOf(filter)) shouldBe listOf(
          "\\QClassA\\E",
          "\\QClassB.test name\\E"
       )

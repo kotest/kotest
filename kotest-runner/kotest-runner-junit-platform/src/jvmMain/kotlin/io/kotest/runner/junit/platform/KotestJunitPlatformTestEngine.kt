@@ -6,15 +6,16 @@ import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
+import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.gradle.IntellijGradleTestsArgDescriptorFilter
-import io.kotest.engine.gradle.TestArgParser
+import io.kotest.engine.gradle.TestFilterParser
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
-import io.kotest.runner.junit.platform.gradleinternals.GradleClassMethodRegexTestFilter
-import io.kotest.runner.junit.platform.gradleinternals.GradlePostDiscoveryFilterExtractor
+import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
+import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterUtils
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -22,6 +23,7 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
+import org.junit.platform.launcher.PostDiscoveryFilter
 import java.util.Optional
 import kotlin.reflect.KClass
 
@@ -123,10 +125,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val engine = EngineDescriptorBuilder.builder(uniqueId)
          .withSpecs(result.specs)
-         .withExtensions(
-            configurationParameterExtensions(request) +
-               listOfNotNull(gradleClassMethodRegexTestFilter(request), intellijGradleTestsArgDescriptorFilter(request))
-         )
+         .withExtensions(configurationParameterExtensions(request) + createDescriptorFilters(request))
          .withFormatter(formatting)
          .build()
 
@@ -148,36 +147,24 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
-    * Returns a [GradleClassMethodRegexTestFilter] created from the --tests parameter in gradle, which it exposes
-    * as an instance of [org.junit.platform.launcher.PostDiscoveryFilter].
+    * Returns a [DescriptorFilter] for each [PostDiscoveryFilter].
     *
-    * If no --tests flag was provided, this will return null
-    */
-   private fun gradleClassMethodRegexTestFilter(request: EngineDiscoveryRequest): GradleClassMethodRegexTestFilter? {
-      val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
-      if (classMethodFilterRegexes.isEmpty()) return null
-
-      return GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
-   }
-
-
-   /**
-    * Returns a [IntellijGradleTestsArgDescriptorFilter] created from the --tests parameter in gradle, which gradle exposes
-    * as an instance of [org.junit.platform.launcher.PostDiscoveryFilter].
+    * If the format is a package name or class name, then we use a wrapper around the gradle filter.
+    * If the format contains a test name, then we use a special kotest parsed version.
     *
-    * If no --tests flag was provided, this will return null
+    * If no post filters are present, this will return null
     */
-   private fun intellijGradleTestsArgDescriptorFilter(request: EngineDiscoveryRequest): IntellijGradleTestsArgDescriptorFilter? {
-      val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
-      if (classMethodFilterRegexes.isEmpty()) return null
-
-      val testArgs = classMethodFilterRegexes.mapNotNull { string ->
-         TestArgParser.parse(string).also {
-            logger.log { "Created test arg [$it]" }
+   private fun createDescriptorFilters(request: EngineDiscoveryRequest): List<DescriptorFilter> {
+      return GradlePostDiscoveryFilterUtils.extract(request.postFilters())
+         .map { filter ->
+            if (TestFilterParser.isTestFilter(filter)) {
+               // HACK since we have a test filter with test name, we will clear the list of post filters so gradle
+               // doesn't do any filtering - as we'll take care of that
+               GradlePostDiscoveryFilterUtils.reset(request.postFilters())
+               IntellijGradleTestsArgDescriptorFilter(setOf(TestFilterParser.parse(filter)))
+            } else
+               GradleClassMethodRegexTestFilter(setOf(filter))
          }
-      }
-
-      return IntellijGradleTestsArgDescriptorFilter(testArgs.toSet())
    }
 
    /**

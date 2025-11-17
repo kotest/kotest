@@ -12,7 +12,7 @@ import io.kotest.engine.extensions.DescriptorFilterResult
  * for use when being invoked from inside the kotest intellij plugin.
  */
 @KotestInternal
-class IntellijGradleTestsArgDescriptorFilter(private val args: Set<TestArg>) : DescriptorFilter {
+class IntellijGradleTestsArgDescriptorFilter(private val args: Set<TestFilter>) : DescriptorFilter {
 
    private val logger = Logger(IntellijGradleTestsArgDescriptorFilter::class)
 
@@ -25,16 +25,10 @@ class IntellijGradleTestsArgDescriptorFilter(private val args: Set<TestArg>) : D
       }
    }
 
-   private fun match(arg: TestArg, descriptor: Descriptor): Boolean {
+   private fun match(arg: TestFilter, descriptor: Descriptor): Boolean {
       logger.log { Pair(descriptor.toString(), "Testing $arg against $descriptor") }
-      return when (arg) {
-         is TestArg.Package -> descriptor.spec().id.value.startsWith(arg.packageName)
-         is TestArg.Class -> descriptor.spec().id.value == arg.fqn
-         is TestArg.Test -> {
-            val spec: Descriptor = Descriptor.SpecDescriptor(DescriptorId(arg.fqn))
-            val tests = arg.contexts.fold(spec) { acc, op -> acc.append(op) }
-            descriptor.hasSharedPath(tests)
-         }
-      }
+      val spec: Descriptor = Descriptor.SpecDescriptor(DescriptorId(arg.fqn))
+      val tests = arg.contexts.fold(spec) { acc, op -> acc.append(op) }
+      return descriptor.hasSharedPath(tests)
    }
 }

@@ -13,9 +13,9 @@ import kotlin.jvm.optionals.getOrNull
  * Returns the [org.junit.platform.engine.TestDescriptor] corresponding to the given spec.
  * Specs are always registered when the test suite is created, so this is expected to never fail.
  */
-internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecDescriptor): TestDescriptor {
+internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecDescriptor): TestDescriptor? {
    val id = deriveSpecUniqueId(descriptor.id)
-   return findByUniqueId(id).getOrNull() ?: error("Could not find TestDescriptor for $id in ${descriptor.id.value}")
+   return findByUniqueId(id).getOrNull()
 }
 
 /**
