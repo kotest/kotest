@@ -116,6 +116,11 @@ include(
    // adds support for the koin DI framework - see more https://insert-koin.io/
 //   ":kotest-extensions:kotest-extensions-koin",
 
+   // support for executing tests via junit platform through gradle
+   // this will also bring in the required libs for the intellij plugin
+   ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit4",
+
    // BOM for whole kotest project
    ":kotest-bom",
 )
@@ -154,11 +159,6 @@ if (System.getenv("CI") != "true" || System.getenv("RUNNER_OS") == "Linux") {
 
       // adds support for the wiremock framework - see more https://www.wiremock.io/
       ":kotest-extensions:kotest-extensions-wiremock",
-
-      // support for executing tests via junit platform through gradle
-      // this will also bring in the required libs for the intellij plugin
-      ":kotest-runner:kotest-runner-junit5",
-      ":kotest-runner:kotest-runner-junit4",
 
       ":kotest-tests:kotest-tests-core",
 

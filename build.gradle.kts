@@ -80,6 +80,9 @@ dependencies {
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
    nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
 
+   // Runners
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
 
    if (System.getenv("CI") != "true" || System.getenv("RUNNER_OS") == "Linux") {
       nmcpAggregation(project(":kotest-assertions:kotest-assertions-compiler"))
@@ -94,9 +97,6 @@ dependencies {
       nmcpAggregation(project(":kotest-extensions:kotest-extensions-pitest"))
       nmcpAggregation(project(":kotest-extensions:kotest-extensions-testcontainers"))
       nmcpAggregation(project(":kotest-extensions:kotest-extensions-wiremock"))
-
-      nmcpAggregation(project(":kotest-runner:kotest-runner-junit5"))
-      nmcpAggregation(project(":kotest-runner:kotest-runner-junit4"))
    }
 }
 
