@@ -17,9 +17,9 @@ import java.util.regex.Pattern
  * thus allowing kotest to properly support the --tests options.
  *
  */
-internal object GradlePostDiscoveryFilterExtractor {
+internal object GradlePostDiscoveryFilterUtils {
 
-   private val logger = Logger(GradlePostDiscoveryFilterExtractor::class)
+   private val logger = Logger(GradlePostDiscoveryFilterUtils::class)
 
    fun extract(filters: List<Any>): List<String> {
       val classMethodFilters = filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }
@@ -45,6 +45,14 @@ internal object GradlePostDiscoveryFilterExtractor {
       logger.log { Pair(null, "ClassMethodNameFilter regexes [$regexes]") }
       regexes
    }.getOrElse { emptyList() }
+
+   fun reset(filters: List<Any>) {
+      filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }.forEach {
+         val matcher = testMatcher(it)
+         val commandLineIncludePatterns = commandLineIncludePatterns(matcher) as MutableList<*>
+         commandLineIncludePatterns.clear()
+      }
+   }
 
    private fun testMatcher(obj: Any): Any {
       val field = obj::class.java.getDeclaredField("matcher")
