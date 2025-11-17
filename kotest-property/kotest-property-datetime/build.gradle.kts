@@ -2,7 +2,7 @@ plugins {
    id("kotest-multiplatform-library-conventions")
    id("kotest-android-native-conventions")
    id("kotest-publishing-conventions")
-   id("jvm-only-tests-conventions")
+   id("linux-only-tests-conventions")
 }
 
 kotlin {

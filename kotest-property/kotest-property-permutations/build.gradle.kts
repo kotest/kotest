@@ -5,7 +5,7 @@ plugins {
    id("kotest-watchos-device-conventions")
    id("kotest-native-conventions")
    id("kotest-publishing-conventions")
-   id("jvm-only-tests-conventions")
+   id("linux-only-tests-conventions")
 }
 
 kotlin {
