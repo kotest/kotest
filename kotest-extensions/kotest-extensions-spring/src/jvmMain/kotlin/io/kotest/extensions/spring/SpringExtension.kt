@@ -32,6 +32,12 @@ class SpringLeafTestExtension : SpringExtension(SpringTestLifecycleMode.Test)
  * to autowire the constructors
  *
  * 2. Adds support for spring lifecycle methods to be called before and after tests.
+ *
+ * To configure this extension, you must annotate specs with @ApplyExension(SpringExtension::class)
+ * or register the extension via project config.
+ *
+ * If you wish to have root test cases trigger spring lifecycle methods, you can set [SpringTestLifecycleMode]
+ * to [SpringTestLifecycleMode.Root] or use the SpringRootTestExtension, eg @ApplyExension(SpringRootTestExtension::class)
  */
 open class SpringExtension(
    private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
