@@ -89,18 +89,26 @@ interface ShouldSpecRootScope : RootScope {
     * Adds a top level test, with the given name and test function, with test config supplied
     * by invoking [.config()][RootContainerWithConfigBuilder.config] on the return of this function.
     */
-   fun should(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(context = this, name = shouldName(name), xmethod = TestXMethod.NONE)
+   fun should(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         context = this,
+         name = shouldName(name),
+         xmethod = TestXMethod.NONE
+      ) { ShouldSpecContainerScope(it) }
 
-   fun fshould(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(context = this, name = shouldName(name), xmethod = TestXMethod.FOCUSED)
+   fun fshould(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         context = this,
+         name = shouldName(name),
+         xmethod = TestXMethod.FOCUSED
+      ) { ShouldSpecContainerScope(it) }
 
-   fun xshould(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(
+   fun xshould(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
+      RootContainerWithConfigBuilder(
          context = this,
          name = shouldName(name),
          xmethod = TestXMethod.DISABLED
-      )
+      ) { ShouldSpecContainerScope(it) }
 
    /**
     * Adds a top level test, with the given name and test function, with default test config.

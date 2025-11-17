@@ -61,29 +61,45 @@ interface BehaviorSpecRootScope : RootScope {
    /**
     * Adds a top level [BehaviorSpecGivenContainerScope] to this spec.
     */
-   fun given(name: String) = addGiven(name, false)
-
-   /**
-    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
-    */
-   fun xgiven(name: String) = addGiven(name, true)
+   fun given(name: String) =
+      addGiven(name, TestXMethod.NONE)
 
    /**
     * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
     */
    @Suppress("FunctionName")
-   fun Given(name: String) = addGiven(name, false)
+   fun Given(name: String) =
+      addGiven(name, TestXMethod.NONE)
 
    /**
     * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
     */
-   fun xGiven(name: String) = addGiven(name, true)
+   fun xgiven(name: String) =
+      addGiven(name, TestXMethod.DISABLED)
 
-   fun addGiven(name: String, xdisabled: Boolean): RootContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
+   /**
+    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun xGiven(name: String) =
+      addGiven(name, TestXMethod.DISABLED)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun fgiven(name: String) =
+      addGiven(name, TestXMethod.FOCUSED)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun fGiven(name: String) =
+      addGiven(name, TestXMethod.FOCUSED)
+
+   fun addGiven(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
       return RootContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
          context = this@BehaviorSpecRootScope,
-         xdisabled = false
+         xmethod = xmethod,
       ) { BehaviorSpecGivenContainerScope(it) }
    }
 

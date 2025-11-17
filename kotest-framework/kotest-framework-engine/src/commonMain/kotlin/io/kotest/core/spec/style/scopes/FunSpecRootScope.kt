@@ -62,32 +62,32 @@ interface FunSpecRootScope : RootScope {
    /**
     * Adds a [RootTest], with the given name and config taken from the config builder.
     */
-   fun test(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(
+   fun test(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
+      RootContainerWithConfigBuilder(
          context = this,
          name = TestNameBuilder.builder(name).build(),
          xmethod = TestXMethod.NONE,
-      )
+      ) { FunSpecContainerScope(it) }
 
    /**
     * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
     */
-   fun ftest(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(
+   fun ftest(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
+      RootContainerWithConfigBuilder(
          context = this,
          name = TestNameBuilder.builder(name).build(),
          xmethod = TestXMethod.FOCUSED,
-      )
+      ) { FunSpecContainerScope(it) }
 
    /**
     * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
     */
-   fun xtest(name: String): RootTestWithConfigBuilder =
-      RootTestWithConfigBuilder(
+   fun xtest(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
+      RootContainerWithConfigBuilder(
          context = this,
          name = TestNameBuilder.builder(name).build(),
          xmethod = TestXMethod.DISABLED,
-      )
+      ) { FunSpecContainerScope(it) }
 
    /**
     * Adds a disabled [RootTest], with the given name and default config.

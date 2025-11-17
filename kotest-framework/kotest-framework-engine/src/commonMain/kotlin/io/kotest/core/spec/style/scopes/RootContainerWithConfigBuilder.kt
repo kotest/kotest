@@ -11,7 +11,7 @@ import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 @KotestInternal
-class RootContainerWithConfigBuilder<T>(
+class RootContainerWithConfigBuilder<T : TestScope>(
    private val name: TestName,
    private val xmethod: TestXMethod,
    private val context: RootScope,
