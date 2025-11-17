@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
@@ -10,6 +11,7 @@ import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -39,26 +41,33 @@ interface StringSpecRootScope : RootScope {
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
-      test: suspend TestScope.() -> Unit,
+      test: suspend TerminalScope.() -> Unit,
    ) {
-      RootTestWithConfigBuilder(
+      RootContainerWithConfigBuilder(
          context = this@StringSpecRootScope,
          name = TestNameBuilder.builder(this).build(),
          xmethod = TestXMethod.NONE
-      ).config(
-         enabled = enabled,
-         invocations = invocations,
-         tags = tags,
-         timeout = timeout,
-         extensions = extensions,
-         enabledIf = enabledIf,
-         invocationTimeout = invocationTimeout,
-         severity = severity,
-         enabledOrReasonIf = enabledOrReasonIf,
-         coroutineDebugProbes = coroutineDebugProbes,
-         blockingTest = blockingTest,
-         coroutineTestScope = coroutineTestScope,
-         test = test
+      ) { StringSpecScope(it) }.config(
+         TestConfig(
+            enabled = enabled,
+            enabledIf = enabledIf,
+            enabledOrReasonIf = enabledOrReasonIf,
+            invocations = invocations,
+            timeout = timeout,
+            invocationTimeout = invocationTimeout,
+            tags = tags ?: emptySet(),
+            extensions = extensions,
+            severity = severity,
+            failfast = null,
+            assertionMode = null,
+            assertSoftly = null,
+            coroutineDebugProbes = coroutineDebugProbes,
+            coroutineTestScope = coroutineTestScope,
+            blockingTest = blockingTest,
+            retries = null,
+            retryDelay = null,
+         ),
+         test,
       )
    }
 
@@ -71,7 +80,7 @@ interface StringSpecRootScope : RootScope {
          xmethod = TestXMethod.NONE,
          config = null
       ) {
-         StringSpecScope(this.coroutineContext, testCase).test()
+         StringSpecScope(this).test()
       }
    }
 }
@@ -79,8 +88,13 @@ interface StringSpecRootScope : RootScope {
 /**
  * This scope exists purely to stop nested string scopes.
  */
+
+
 @KotestTestScope
+@KotestInternal
 class StringSpecScope(
-   override val coroutineContext: CoroutineContext,
-   override val testCase: TestCase,
-) : TerminalScope()
+   testScope: TestScope
+) : TerminalScope() {
+   override val testCase: TestCase = testScope.testCase
+   override val coroutineContext: CoroutineContext = testScope.coroutineContext
+}
