@@ -40,7 +40,7 @@ import kotlin.reflect.jvm.isAccessible
  *
  */
 fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
-   require(this::class.isInstance(other)){"object is not an instance of declaring class"}
+   require(this::class.isInstance(other)){"other is not an instance of declaring class"}
    this should beEqualToUsingFields(other, *properties)
 }
 
@@ -50,8 +50,6 @@ fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KPropert
  * Verifies that [this] instance is equal to [other] using only some specific fields. This is useful in scenarios where
  * you want to compare objects that share common properties but are not of the same class,
  * such as comparing a domain model with a DTO.
- *
- * Opposite of [shouldNotBeEqualToUsingFields]
  *
  * Example:
  * ```
@@ -150,7 +148,7 @@ fun <T : Any, V: Any> beEqualToUsingFields(other: V, vararg fields: KProperty<*>
 }
 
 /**
- * Asserts that this is equal to [other] without using specific fields
+ * Asserts that this [T] is equal to [other] : [T] without using specific fields
  *
  * Verifies that [this] instance is equal to [other] without using some specific fields. This is useful for matching
  * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
@@ -172,6 +170,34 @@ fun <T : Any, V: Any> beEqualToUsingFields(other: V, vararg fields: KProperty<*>
  *
  */
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, property: KProperty<*>, vararg others: KProperty<*>) {
+   require(this::class.isInstance(other)){"other is not an instance of declaring class"}
+   this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
+}
+
+/**
+ * Asserts that this [T] is equal to [other] : [V] without using specific fields
+ *
+ * Verifies that [this] instance is equal to [other] without using some specific fields. This is useful in scenarios where
+ * you want to compare objects that share common properties but are not of the same class,
+ * such as comparing a domain model with a DTO however some fields are to be ignored, for example timestamps.
+ *
+ * Example:
+ * ```
+ * data class Foo(val id: Int, val description: String)
+ * data class Fuu(val id: Int, val description: String, val isActive: Boolean)
+ *
+ * val foo = Foo(1, "Bar!")
+ * val fuu = Fuu(2, "Bar!", false)
+ *
+ * foo.shouldBeEqualToDifferentTypeIgnoringFields(fuu, Foo::id) // Assertion passes
+ *
+ * foo shouldBe fuu // Assertion fails, `equals` is false!
+ * ```
+ *
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
+ *
+ */
+fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeIgnoringFields(other: V, property: KProperty1<T, *>, vararg others: KProperty1<T, *>) {
    this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
 }
 
@@ -308,7 +334,6 @@ fun <T : Any> beEqualToIgnoringFields(
    property: KProperty<*>,
    vararg others: KProperty<*>
 ): Matcher<T> = object : Matcher<T> {
-
    override fun test(value: T): MatcherResult {
       val fields = listOf(property) + others
       val fieldNames = fields.map { it.name }
