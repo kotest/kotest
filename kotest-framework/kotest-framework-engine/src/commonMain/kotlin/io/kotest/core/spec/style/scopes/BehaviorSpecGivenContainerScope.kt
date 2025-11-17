@@ -78,6 +78,29 @@ class BehaviorSpecGivenContainerScope(
       }
    }
 
+   suspend fun When(name: String) =
+      addWhen(name, xdisabled = false)
+
+   suspend fun `when`(name: String) =
+      addWhen(name, xdisabled = false)
+
+   suspend fun xwhen(name: String) =
+      addWhen(name, xdisabled = true)
+
+   suspend fun xWhen(name: String) =
+      addWhen(name, xdisabled = true)
+
+   private suspend fun addWhen(
+      name: String,
+      xdisabled: Boolean
+   ): ContainerWithConfigBuilder<BehaviorSpecWhenContainerScope> {
+      return ContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(),
+         context = this,
+         xdisabled = xdisabled
+      ) { BehaviorSpecWhenContainerScope(it) }
+   }
+
    fun Then(name: String) = TestWithConfigBuilder(
       TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
       this@BehaviorSpecGivenContainerScope,

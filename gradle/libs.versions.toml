@@ -20,12 +20,17 @@ plugin-publish = "1.3.1"
 rgxgen = "2.0"
 ksp = "2.2.0-2.0.2"
 shadowjar = "8.1.1"
-devPublishPlugin = "0.4.2"
 spring-boot = "2.7.18"
 spring = "5.3.39"
+
+allure-commons = "2.30.0"
+allure-plugin = "3.0.0"
+
 byte-buddy = "1.17.6"
-allure-commons = "2.29.1"
-koin = "4.0.0"
+
+dev-publish-plugin = "0.4.2"
+
+#koin = "4.0.0"
 wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
@@ -39,7 +44,7 @@ kotlinx-io-core = "0.7.0"
 xmlutil = "0.91.1"
 agp = "8.10.0"
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.5.5"
+decoroutinator = "2.5.8"
 pitest = "1.20.1"
 
 ### Java compilation ###
@@ -80,8 +85,8 @@ decoroutinator = { module = "dev.reformator.stacktracedecoroutinator:stacktrace-
 
 fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 
-koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
-koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
+#koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+#koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
 junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
 junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
@@ -132,7 +137,7 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
-hikari = { module = "com.zaxxer:HikariCP", version = "6.3.0" }
+hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
@@ -149,7 +154,7 @@ xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
-devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "devPublishPlugin" }
+devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "dev-publish-plugin" }
 nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }
 
 [plugins]
@@ -157,7 +162,7 @@ gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugi
 shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
-allure = { id = "io.qameta.allure", version = "2.12.0" }
+allure = { id = "io.qameta.allure", version.ref = "allure.plugin" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
 power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }

@@ -35,7 +35,7 @@ module.exports = {
      "extensions/decoroutinator",
      "extensions/instant",
      "extensions/junit_xml",
-     "extensions/koin",
+     // "extensions/koin",
      "extensions/ktor",
      "extensions/html_reporter",
      "extensions/mockserver",
@@ -206,6 +206,7 @@ module.exports = {
     },
     "framework/test_factories",
     "framework/fake_functions",
+    "framework/race_conditions",
     "framework/test_output",
     {
       "type": "category",

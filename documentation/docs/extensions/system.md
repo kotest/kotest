@@ -15,7 +15,7 @@ This extension is only available on the JVM.
 
 To use this extension, add the dependency to your project:
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-jvm.svg?label=latest%20release"/>](https://search.maven.org/artifact/io.kotest/kotest-extensions-jvm)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-jvm.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-jvm)
 [<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-jvm%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-jvm/maven-metadata.xml)
 
 

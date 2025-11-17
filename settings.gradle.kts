@@ -46,7 +46,7 @@ dependencyResolutionManagement {
 
 plugins {
    id("com.gradle.develocity") version "3.17.5"
-   id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
+   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 include(
@@ -132,7 +132,7 @@ include(
    ":kotest-extensions:kotest-extensions-mockserver",
 
    // adds support for the koin DI framework - see more https://insert-koin.io/
-   ":kotest-extensions:kotest-extensions-koin",
+//   ":kotest-extensions:kotest-extensions-koin",
 
    ":kotest-extensions:kotest-extensions-pitest",
 
@@ -194,14 +194,14 @@ develocity {
 buildCache {
    val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
    val kotestPass = providers.gradleProperty("Kotest_GradleBuildCache_pass").orNull
-   remote<HttpBuildCache> {
-      url = uri("https://kotest-gradle.duckdns.org/cache")
-      credentials {
-         username = kotestUser
-         password = kotestPass
-      }
-      isPush = kotestUser != null && kotestPass != null
-   }
+//   remote<HttpBuildCache> {
+//      url = uri("https://kotest-gradle.duckdns.org/cache")
+//      credentials {
+//         username = kotestUser
+//         password = kotestPass
+//      }
+//      isPush = kotestUser != null && kotestPass != null
+//   }
    local {
       // Disable local cache when running on GitHub Actions to reduce the size of GitHub Actions cache,
       // and to ensure that CI builds updates the remote cache.

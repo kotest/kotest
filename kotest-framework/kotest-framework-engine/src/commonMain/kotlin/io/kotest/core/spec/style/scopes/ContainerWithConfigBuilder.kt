@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.TestXMethod
@@ -10,7 +9,6 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
-@ExperimentalKotest
 class ContainerWithConfigBuilder<T>(
    private val name: TestName,
    private val context: ContainerScope,
