@@ -9,7 +9,7 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
 
-class KotestEngineDescriptor(
+class KotestEngineDescriptor internal constructor(
    id: UniqueId,
    val classes: List<KClass<out Spec>>,
    val extensions: List<Extension>,
