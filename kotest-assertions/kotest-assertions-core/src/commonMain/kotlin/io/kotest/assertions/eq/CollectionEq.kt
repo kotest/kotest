@@ -8,6 +8,9 @@ import io.kotest.assertions.print.print
 object CollectionEq : Eq<Collection<*>> {
 
    override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean): Throwable? {
+      // If both references point to the same object, they're equal (handles cyclic references)
+      if (actual === expected) return null
+
       return when {
          actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq)
          isOrderedSet(actual) || isOrderedSet(expected) -> {

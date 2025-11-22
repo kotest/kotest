@@ -1,5 +1,6 @@
 package io.kotest.property.arbitrary
 
+import io.kotest.common.DelicateKotest
 import io.kotest.property.Arb
 import io.kotest.property.Classifier
 import io.kotest.property.RandomSource
@@ -14,6 +15,10 @@ import kotlin.coroutines.RestrictsSuspension
 import kotlin.coroutines.intrinsics.startCoroutineUninterceptedOrReturn
 import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
 import kotlin.coroutines.resume
+import io.kotest.property.arbitrary.drop as unboundDrop
+import io.kotest.property.arbitrary.next as unboundNext
+import io.kotest.property.arbitrary.single as unboundSingle
+import io.kotest.property.arbitrary.take as unboundTake
 
 /**
  * Creates a new [Arb] that performs no shrinking, has no edge cases and
@@ -338,6 +343,22 @@ interface BaseArbitraryBuilderSyntax {
     * [bind] returns the generated value of an arb. This can either be a sample or an edgecase.
     */
    suspend fun <T> Arb<T>.bind(): T
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary usage in arbitrary builder. Use .bind() instead", ReplaceWith("bind()"))
+   fun <T> Arb<T>.next(): T = unboundNext()
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary usage in arbitrary builder. Use .bind() instead", ReplaceWith("bind()"))
+   fun <T> Arb<T>.single(): T = unboundSingle()
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary usage in arbitrary builder. Use .take(count, rs) instead", ReplaceWith("take(count, rs)"))
+   fun <A> Arb<A>.take(count: Int): Sequence<A> = unboundTake(count)
+
+   @DelicateKotest
+   @Deprecated("Non-deterministic arbitrary usage in arbitrary builder. Use .drop(count, rs) instead", ReplaceWith("drop(count, rs)"))
+   fun <A> Arb<A>.drop(count: Int): Sequence<A> = unboundDrop(count)
 }
 
 @RestrictsSuspension

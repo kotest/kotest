@@ -20,7 +20,9 @@ kotlin {
       macosX64()
       macosArm64()
 
-      mingwX64()
+      if (System.getProperty("os.name").startsWith("Windows")) {
+         mingwX64()
+      }
 
       tvosX64()
       tvosArm64()

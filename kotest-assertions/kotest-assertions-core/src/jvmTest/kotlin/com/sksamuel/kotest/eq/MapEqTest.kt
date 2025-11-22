@@ -170,4 +170,26 @@ class MapEqTest : FunSpec({
       complexStructure shouldBe complexStructureCopy
    }
 
+   test("should handle cyclic maps without StackOverflowError") {
+      // Create a self-referential map
+      val cyclicMap = mutableMapOf<String, Any?>()
+      cyclicMap["self"] = cyclicMap
+
+      // Comparing a cyclic map with itself should work (same instance)
+      MapEq.equals(cyclicMap, cyclicMap, false).shouldBeNull()
+   }
+
+   test("should handle cyclic maps in nested structures") {
+      // Create a self-referential map
+      val cyclicMap = mutableMapOf<String, Any?>()
+      cyclicMap["b"] = cyclicMap
+
+      // Put it inside a container map
+      val container = mapOf("foo" to mapOf("bar" to "baz", "baz" to cyclicMap))
+
+      // This should not overflow when comparing the cyclic map with itself
+      val extracted = (container["foo"] as Map<*, *>)["baz"]
+      MapEq.equals(extracted as Map<*, *>, cyclicMap, false).shouldBeNull()
+   }
+
 })
