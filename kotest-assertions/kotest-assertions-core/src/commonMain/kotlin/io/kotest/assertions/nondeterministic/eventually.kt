@@ -4,7 +4,9 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.errorCollector
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
 import kotlin.time.Duration
@@ -37,6 +39,25 @@ suspend fun <T> eventually(
 }
 
 /**
+ * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
+ *
+ * @param virtualTime When false, switches to Dispatchers.Default to use real time instead of
+ * virtual time from kotlinx.coroutines.test. This is useful when integrating with blocking
+ * libraries or when you need actual time to pass.
+ */
+suspend fun <T> eventually(
+   duration: Duration,
+   virtualTime: Boolean,
+   test: suspend () -> T,
+): T {
+   val config = eventuallyConfig {
+      this.duration = duration
+      this.virtualTime = virtualTime
+   }
+   return eventually(config, test)
+}
+
+/**
  * Runs a function [test] until it doesn't throw, using the supplied [config].
  */
 suspend fun <T> eventually(
@@ -52,8 +73,16 @@ suspend fun <T> eventually(
    val start = nonDeterministicTestTimeSource().markNow()
    val control = EventuallyControl(config, start)
    try {
-      return withTimeout(config.duration) {
-         runIterations(control, test, config)
+      return if (config.virtualTime) {
+         withTimeout(config.duration) {
+            runIterations(control, test, config)
+         }
+      } else {
+         withContext(Dispatchers.Default.limitedParallelism(1)) {
+            withTimeout(config.duration) {
+               runIterations(control, test, config)
+            }
+         }
       }
    } finally {
       errorCollector.setCollectionMode(originalAssertionMode)
@@ -122,6 +151,7 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
       listener = this.listener ?: NoopEventuallyListener,
       shortCircuit = this.shortCircuit,
       includeFirst = this.includeFirst,
+      virtualTime = this.virtualTime,
    )
 }
 
@@ -134,6 +164,7 @@ data class EventuallyConfiguration(
    val listener: EventuallyListener,
    val shortCircuit: (Throwable) -> Boolean,
    val includeFirst: Boolean,
+   val virtualTime: Boolean,
 ) {
    init {
       require(duration >= Duration.ZERO) { "Duration must be greater than or equal to 0, but was $duration" }
@@ -152,6 +183,7 @@ internal object EventuallyConfigurationDefaults {
    val listener: EventuallyListener? = null
    val shortCircuit: (Throwable) -> Boolean = { false }
    val includeFirst: Boolean = true
+   val virtualTime: Boolean = true
 }
 
 class EventuallyConfigurationBuilder {
@@ -221,6 +253,18 @@ class EventuallyConfigurationBuilder {
     * This is useful for those who don't want to see the first error.
     */
    var includeFirst: Boolean = EventuallyConfigurationDefaults.includeFirst
+
+   /**
+    * Controls whether eventually respects virtual time from kotlinx.coroutines.test.
+    *
+    * When true (default), eventually will use virtual time if available, which allows
+    * withTimeout to work correctly in test environments using runTest.
+    *
+    * When false, eventually will switch to Dispatchers.Default to use real time,
+    * which is useful when integrating with blocking libraries or when you need to
+    * wait for actual time to pass rather than virtual time.
+    */
+   var virtualTime: Boolean = EventuallyConfigurationDefaults.virtualTime
 }
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
