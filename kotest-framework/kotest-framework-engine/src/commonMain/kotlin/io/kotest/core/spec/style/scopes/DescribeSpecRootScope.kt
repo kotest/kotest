@@ -1,8 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.ExperimentalKotest
-import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
 
 /**
@@ -21,25 +20,62 @@ import io.kotest.core.test.TestScope
 interface DescribeSpecRootScope : RootScope {
 
    fun context(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      addContainer(TestNameBuilder.builder(name).withPrefix("Context: ").build(), false, null) { DescribeSpecContainerScope(this).test() }
+      addContainer(
+         testName = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         xmethod = TestXMethod.NONE,
+         config = null,
+      ) { DescribeSpecContainerScope(this).test() }
+   }
+
+   fun fcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      addContainer(
+         TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         xmethod = TestXMethod.FOCUSED,
+         config = null,
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
    fun xcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      addContainer(TestNameBuilder.builder(name).withPrefix("Context: ").build(), true, null) { DescribeSpecContainerScope(this).test() }
+      addContainer(
+         TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         xmethod = TestXMethod.DISABLED,
+         config = null,
+      ) { DescribeSpecContainerScope(this).test() }
    }
 
-   @ExperimentalKotest
    fun context(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      RootContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), xdisabled = false, this) { DescribeSpecContainerScope(it) }
+      RootContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.NONE,
+         this
+      ) { DescribeSpecContainerScope(it) }
 
-   @ExperimentalKotest
+   fun fcontext(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.FOCUSED,
+         this
+      ) { DescribeSpecContainerScope(it) }
+
    fun xcontext(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      RootContainerWithConfigBuilder(TestNameBuilder.builder(name).build(), xdisabled = true, this) { DescribeSpecContainerScope(it) }
+      RootContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.DISABLED,
+         this
+      ) { DescribeSpecContainerScope(it) }
 
    fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
+         null
+      ) { DescribeSpecContainerScope(this).test() }
+   }
+
+   fun fdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      addContainer(
+         TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
+         xmethod = TestXMethod.FOCUSED,
          null
       ) { DescribeSpecContainerScope(this).test() }
    }
@@ -47,32 +83,56 @@ interface DescribeSpecRootScope : RootScope {
    fun xdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       addContainer(
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
-         disabled = true,
+         xmethod = TestXMethod.DISABLED,
          null
       ) { DescribeSpecContainerScope(this).test() }
    }
 
-   @ExperimentalKotest
    fun describe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
       RootContainerWithConfigBuilder(
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
-         xdisabled = false,
+         xmethod = TestXMethod.NONE,
          this
       ) { DescribeSpecContainerScope(it) }
 
-   @ExperimentalKotest
+   fun fdescribe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      RootContainerWithConfigBuilder(
+         TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
+         xmethod = TestXMethod.FOCUSED,
+         this
+      ) { DescribeSpecContainerScope(it) }
+
    fun xdescribe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
       RootContainerWithConfigBuilder(
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
-         xdisabled = true,
+         xmethod = TestXMethod.DISABLED,
          this
       ) { DescribeSpecContainerScope(it) }
 
    fun it(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(TestNameBuilder.builder(name).build(), false, null, test)
+      addTest(
+         testName = TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.NONE,
+         config = null,
+         test = test
+      )
+   }
+
+   fun fit(name: String, test: suspend TestScope.() -> Unit) {
+      addTest(
+         testName = TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.FOCUSED,
+         config = null,
+         test = test
+      )
    }
 
    fun xit(name: String, test: suspend TestScope.() -> Unit) {
-      addTest(TestNameBuilder.builder(name).build(), true, null, test)
+      addTest(
+         testName = TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.DISABLED,
+         config = null,
+         test = test
+      )
    }
 }
