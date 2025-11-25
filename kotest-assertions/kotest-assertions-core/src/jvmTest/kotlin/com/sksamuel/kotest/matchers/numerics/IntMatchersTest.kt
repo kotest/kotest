@@ -27,6 +27,10 @@ import io.kotest.matchers.ints.beGreaterThan
 import io.kotest.matchers.ints.beGreaterThanOrEqualTo
 import io.kotest.matchers.ints.lt
 import io.kotest.matchers.ints.lte
+import io.kotest.matchers.ints.shouldBeAtLeast
+import io.kotest.matchers.ints.shouldBeAtMost
+import io.kotest.matchers.ints.shouldNotBeAtLeast
+import io.kotest.matchers.ints.shouldNotBeAtMost
 
 class IntMatchersTest : StringSpec() {
    init {
@@ -108,6 +112,36 @@ class IntMatchersTest : StringSpec() {
 
          shouldThrow<AssertionError> {
             2 shouldBe lte(1)
+         }
+      }
+
+      "shouldBeAtMost" {
+         2.shouldBeAtMost(3)
+         2.shouldBeAtMost(2)
+         shouldThrow<AssertionError> {
+            3.shouldBeAtMost(2)
+         }
+      }
+
+      "shouldNotBeAtMost" {
+         3.shouldNotBeAtMost(2)
+         shouldThrow<AssertionError> {
+            3.shouldNotBeAtMost(3)
+         }
+      }
+
+      "shouldBeAtLeast" {
+         3.shouldBeAtLeast(2)
+         2.shouldBeAtLeast(2)
+         shouldThrow<AssertionError> {
+            2.shouldBeAtLeast(3)
+         }
+      }
+
+      "shouldNotBeAtLeast" {
+         2.shouldNotBeAtLeast(3)
+         shouldThrow<AssertionError> {
+            3.shouldNotBeAtLeast(2)
          }
       }
 
