@@ -140,8 +140,10 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `int.shouldBeBetween(x, y)`         | Asserts that the integer is between x and y, inclusive on both x and y |
 | `int.shouldBeLessThan(n)`           | Asserts that the integer is less than the given value n |
 | `int.shouldBeLessThanOrEqual(n)`    | Asserts that the integer is less or equal to than the given value n |
+| `int.shouldBeAtMost(n)`             | Asserts that the integer is less or equal to than the given value n |
 | `int.shouldBeGreaterThan(n)`        | Asserts that the integer is greater than the given value n |
 | `int.shouldBeGreaterThanOrEqual(n)` | Asserts that the integer is greater than or equal to the given value n |
+| `int.shouldBeAtLeast(n)`            | Asserts that the integer is greater than or equal to the given value n |
 | `int.shouldBeEven()`                | Asserts that the integer is even. |
 | `int.shouldBeOdd()`                 | Asserts that the integer is odd. |
 | `int.shouldBeInRange(range)`        | Asserts that the integer is included in the given range. |
