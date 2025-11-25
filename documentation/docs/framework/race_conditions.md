@@ -127,3 +127,31 @@ thrownExceptions shouldHaveSize 1
 isDeadlock(thrownExceptions[0]) shouldBe true
 
 ```
+<br/>
+Finally, let's use `parallelRunner` to demostrate that mocking a static function such as `LocalDateTime.now()` in one test can affect completely different tests running in parallel:
+```
+runInParallel(
+{ runner: ParallelRunner ->
+    timedPrint("Before mock on same thread: ${LocalDateTime.now().toString()}")
+    runner.await()
+    mockkStatic(LocalDateTime::class)
+    val localTime = LocalDateTime.of(2022, 4, 27, 12, 34, 56)
+    every { LocalDateTime.now(any<Clock>()) } returns localTime
+    runner.await()
+    timedPrint("After mock on same thread: ${LocalDateTime.now().toString()}")
+},
+{ runner: ParallelRunner ->
+        timedPrint("Before mock on other thread: ${LocalDateTime.now().toString()}")
+        runner.await()
+        runner.await()
+        timedPrint("After mock on other thread: ${LocalDateTime.now().toString()}")
+    }
+)
+
+// the output from both threads shows the same mocked output:
+
+Time: 2023-05-12T13:14:07.815923, Thread: 51, Before mock on other thread: 2023-05-12T13:14:07.737748
+Time: 2023-05-12T13:14:07.816011, Thread: 50, Before mock on same thread: 2023-05-12T13:14:07.737736
+Time: 2022-04-27T12:34:56, Thread: 51, After mock on other thread: 2022-04-27T12:34:56
+Time: 2022-04-27T12:34:56, Thread: 50, After mock on same thread: 2022-04-27T12:34:56
+```
