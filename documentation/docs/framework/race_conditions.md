@@ -129,7 +129,8 @@ isDeadlock(thrownExceptions[0]) shouldBe true
 ```
 <br/>
 Finally, let's use `parallelRunner` to demostrate that mocking a static function such as `LocalDateTime.now()` in one test can affect completely different tests running in parallel:
-```
+
+```kotlin
 runInParallel(
 { runner: ParallelRunner ->
     timedPrint("Before mock on same thread: ${LocalDateTime.now().toString()}")
