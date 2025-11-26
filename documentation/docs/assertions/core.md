@@ -83,7 +83,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `iterable.shouldMatchEach(assertions)`          | Iterates over this list and the assertions and asserts that each element of this list passes the associated assertion. Fails if size of the collections mismatch. |
 | `iterable.shouldMatchInOrder(assertions)`       | Asserts that there is a subsequence of this iterator that matches the assertions in order, with no gaps allowed.                                                  |
 | `iterable.shouldMatchInOrderSubset(assertions)` | Asserts that there is a subsequence (possibly with gaps) that matches the assertions in order.                                                                    |
-| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection.                                                                                                    |
+| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection, checking by reference, not by value.                                                                                                    |
 | `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                      |
 | `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                        |
 
