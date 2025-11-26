@@ -157,7 +157,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `long.shouldBeAtMost(n)`             | Asserts that the long is less or equal to than the given value n |
 | `long.shouldBeGreaterThan(n)`        | Asserts that the long is greater than the given value n |
 | `long.shouldBeGreaterThanOrEqual(n)` | Asserts that the long is greater than or equal to the given value n |
-| `long.shouldBeAtMost(n)`             | Asserts that the long is greater than or equal to the given value n |
+| `long.shouldBeAtLeast(n)`             | Asserts that the long is greater than or equal to the given value n |
 | `long.shouldBeInRange(range)`        | Asserts that the long is included in the given range. |
 | `long.shouldBeEven()`                | Asserts that the long is even. |
 | `long.shouldBeOdd()`                 | Asserts that the long is odd. |
