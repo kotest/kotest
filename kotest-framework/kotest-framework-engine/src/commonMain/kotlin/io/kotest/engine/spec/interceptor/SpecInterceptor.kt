@@ -3,8 +3,6 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import kotlin.concurrent.atomics.AtomicBoolean
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Interceptors that are executed after a spec is instantiated.
@@ -23,14 +21,11 @@ internal interface SpecInterceptor {
  * A fresh context is created for each spec instance.
  * It contains mutable state that can be modified by the interceptors.
  */
-@OptIn(ExperimentalAtomicApi::class)
 internal data class SpecContext(
-   val beforeSpecInvoked: AtomicBoolean,
-   var beforeSpecError: Throwable? = null,
    var testFailed: Boolean = false,
 ) {
    companion object {
-      fun create() = SpecContext(AtomicBoolean(false), null)
+      fun create() = SpecContext()
    }
 }
 
