@@ -170,7 +170,7 @@ object CollectionEq : Eq<Collection<*>> {
             .withMessage(detailErrorMessage)
             .withValues(Expected(expected.print()), Actual(actual.print()))
             .build()
-      } else null
+      } else DefaultEq.equals(expected, actual, strictNumberEq = true)
    }
 
    private fun generateError(actual: Any, expected: Any): Throwable = AssertionErrorBuilder.create()
