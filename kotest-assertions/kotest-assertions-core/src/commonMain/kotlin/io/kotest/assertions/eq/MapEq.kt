@@ -24,7 +24,7 @@ internal object MapEq : Eq<Map<*, *>> {
             EqCompare.compare(actual[key], expected[key], strictNumberEq) != null
          }
          if (hasDifferentValue) generateError(actual, expected)
-         else null
+         else DefaultEq.equals(expected, actual, strictNumberEq = true)
       }
    }
 }
