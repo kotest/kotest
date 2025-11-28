@@ -10,7 +10,7 @@ fun arrayElementType(type: KType) : KClass<*>? {
       if (componentType.isPrimitive) {
          return componentType.kotlin
       } else {
-         val elementType = type.arguments.first().type ?: return null
+         val elementType = type.arguments.firstOrNull()?.type ?: return null
          return elementType.classifier as? KClass<*>
       }
    }

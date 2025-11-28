@@ -10,9 +10,18 @@ class SampleTest: StringSpec() {
        "asd" {
           val arb = Arb.bind<Foo>()
 
-          println(arb.sample(RandomSource.default()))
+          val rs = RandomSource.default()
+          val message = arb.sample(rs)
+          println(message)
        }
+      "wertw" {
+         val arb = Arb.bind<T>()
+
+         println(arb.sample(RandomSource.default()))
+      }
    }
+
+   data class T(val s: Array<String>)
 
    data class Foo(var bb:ByteArray)
 }

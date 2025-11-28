@@ -18,6 +18,7 @@ import java.util.Date
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
@@ -49,9 +50,9 @@ fun targetDefaultForType(
          Arb.list(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>)
       }
       clazz.java.isArray -> {
-         val upperBound = type.arguments.first().type ?: error("No bound for Array")
-         Arb.array(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>) {
-            val upperBoundKClass = (upperBound.classifier as? KClass<*>) ?: error("No classifier for $upperBound")
+         val elementType: KType = arrayElementType(type)?.createType() ?: error("No bound for Array")
+         Arb.array(Arb.forType(providedArbs, arbsForProps, elementType) as Arb<*>) {
+            val upperBoundKClass = (elementType.classifier as? KClass<*>) ?: error("No classifier for $elementType")
             @Suppress("UNCHECKED_CAST")
             val array = java.lang.reflect.Array.newInstance(upperBoundKClass.javaObjectType, this.size) as Array<Any?>
             for ((i, item) in this.withIndex()) {
