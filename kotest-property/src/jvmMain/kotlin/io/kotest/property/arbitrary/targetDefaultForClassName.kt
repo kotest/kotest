@@ -40,6 +40,14 @@ fun targetDefaultForType(
       typeOf<OffsetDateTime>(), typeOf<OffsetDateTime?>() -> Arb.offsetDateTime()
       typeOf<BigDecimal>(), typeOf<BigDecimal?>() -> Arb.bigDecimal()
       typeOf<BigInteger>(), typeOf<BigInteger?>() -> Arb.bigInt(maxNumBits = 256)
+      typeOf<ByteArray>() -> Arb.byteArray(Arb.int(10..15), Arb.byte())
+      typeOf<ShortArray>() -> Arb.shortArray(Arb.int(10..15), Arb.short())
+      typeOf<IntArray>() -> Arb.intArray(Arb.int(10..15), Arb.int())
+      typeOf<LongArray>() -> Arb.longArray(Arb.int(10..15), Arb.long())
+      typeOf<FloatArray>() -> Arb.floatArray(Arb.int(10..15), Arb.float())
+      typeOf<DoubleArray>() -> Arb.doubleArray(Arb.int(10..15), Arb.double())
+      typeOf<BooleanArray>() -> Arb.booleanArray(Arb.int(10..15), Arb.boolean())
+      typeOf<CharArray>() -> Arb.charArray(Arb.int(10..15), Arb.char())
       else -> null
    }?.let { return it }
 
