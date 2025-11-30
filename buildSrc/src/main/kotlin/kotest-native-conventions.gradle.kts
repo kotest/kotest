@@ -16,9 +16,7 @@ kotlin {
       macosX64()
       macosArm64()
 
-      if (System.getProperty("os.name").startsWith("Windows")) {
-         mingwX64()
-      }
+      mingwX64()
 
       /**
        * Macos runners have limited CPU resources as they are expensive, so github (very reasonably) limits
