@@ -43,6 +43,7 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.apache.commons.lang)
             implementation(libs.mockk)
+            implementation(libs.jimfs)
          }
       }
    }
