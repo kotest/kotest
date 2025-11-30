@@ -350,14 +350,10 @@ class JUnitTestEngineListener(
       return testDescriptor
    }
 
-   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource {
-//      val methodName = id.segments.filter { it.type == Segment.Test.value }.joinToString("__context__") { it.value }
-//      println(methodName)
-      return MethodSource.from(
-         /* className = */ "kclass.qualifiedName",
-         /* methodName = */"methodName",
-      )
-   }
+   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
+      /* className = */ kclass.qualifiedName,
+      /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
+   )
 
    /**
     * Registers placeholder specs and marks them as failed for each throwable.
