@@ -1155,6 +1155,15 @@ public final class io/kotest/matchers/collections/ContainAllIgnoringFieldsKt {
 	public static final fun shouldContainAllIgnoringFields ([Ljava/lang/Object;Ljava/util/Collection;Lkotlin/reflect/KProperty;[Lkotlin/reflect/KProperty;)V
 }
 
+public final class io/kotest/matchers/collections/ContainAllInAnyOrderKt {
+	public static final fun containAllInAnyOrder (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun containAllInAnyOrder ([Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainAllInAnyOrder (Ljava/util/Collection;Ljava/util/Collection;)V
+	public static final fun shouldContainAllInAnyOrder (Ljava/util/Collection;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainAllInAnyOrder (Ljava/util/Collection;Ljava/util/Collection;)V
+	public static final fun shouldNotContainAllInAnyOrder (Ljava/util/Collection;[Ljava/lang/Object;)V
+}
+
 public final class io/kotest/matchers/collections/ContainAllKt {
 	public static final fun containAll (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
 	public static final fun containAll (Ljava/util/Collection;Lio/kotest/assertions/equals/Equality;)Lio/kotest/matchers/Matcher;
