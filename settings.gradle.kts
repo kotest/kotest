@@ -8,6 +8,11 @@ pluginManagement {
    }
 }
 
+plugins {
+   id("com.gradle.develocity") version "3.17.5"
+   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
@@ -42,11 +47,6 @@ dependencyResolutionManagement {
 
       mavenLocal()
    }
-}
-
-plugins {
-   id("com.gradle.develocity") version "3.17.5"
-   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
 include(
