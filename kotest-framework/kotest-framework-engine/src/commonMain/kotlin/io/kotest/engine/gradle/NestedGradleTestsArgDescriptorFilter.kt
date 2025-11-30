@@ -9,12 +9,12 @@ import io.kotest.engine.extensions.DescriptorFilterResult
 
 /**
  * An implementation of [io.kotest.engine.extensions.DescriptorFilter] that adapts the gradle --tests option
- * for use when being invoked from inside the kotest intellij plugin.
+ * when being invoked with the special Kotest format that supports nested tests.
  */
 @KotestInternal
-class IntellijGradleTestsArgDescriptorFilter(private val args: Set<TestFilter>) : DescriptorFilter {
+class NestedGradleTestsArgDescriptorFilter(private val args: Set<NestedTestArg>) : DescriptorFilter {
 
-   private val logger = Logger(IntellijGradleTestsArgDescriptorFilter::class)
+   private val logger = Logger(NestedGradleTestsArgDescriptorFilter::class)
 
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
       logger.log { Pair(descriptor.toString(), "Testing against $args") }
@@ -25,9 +25,9 @@ class IntellijGradleTestsArgDescriptorFilter(private val args: Set<TestFilter>) 
       }
    }
 
-   private fun match(arg: TestFilter, descriptor: Descriptor): Boolean {
+   private fun match(arg: NestedTestArg, descriptor: Descriptor): Boolean {
       logger.log { Pair(descriptor.toString(), "Testing $arg against $descriptor") }
-      val spec: Descriptor = Descriptor.SpecDescriptor(DescriptorId(arg.fqn))
+      val spec: Descriptor = Descriptor.SpecDescriptor(DescriptorId(arg.packageName + "." + arg.className))
       val tests = arg.contexts.fold(spec) { acc, op -> acc.append(op) }
       return descriptor.hasSharedPath(tests)
    }
