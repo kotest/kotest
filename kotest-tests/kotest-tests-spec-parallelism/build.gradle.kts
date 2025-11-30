@@ -1,6 +1,6 @@
 plugins {
    id("kotlin-conventions")
-   id("linux-only-tests-conventions")
+
 }
 
 kotlin {
