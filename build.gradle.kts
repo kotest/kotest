@@ -66,7 +66,7 @@ dependencies {
 
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunitxml)
-//   nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
 
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)

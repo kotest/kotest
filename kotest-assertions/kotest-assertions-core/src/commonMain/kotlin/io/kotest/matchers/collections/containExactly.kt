@@ -6,7 +6,7 @@ import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.equals.Equality
 import io.kotest.assertions.print.print
 import io.kotest.assertions.similarity.possibleMatchesDescription
-import io.kotest.matchers.ComparableMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -134,12 +134,12 @@ fun <T, C : Collection<T>> containExactly(
          },
       )
    } else {
-      ComparableMatcherResult(
+      ComparisonMatcherResult(
          passed,
+         actual.print(),
+         expected.print(),
          failureMessage,
          negatedFailureMessage,
-         actual.print().value,
-         expected.print().value,
       )
    }
 }

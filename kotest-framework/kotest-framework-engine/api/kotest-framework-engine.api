@@ -920,6 +920,7 @@ public abstract class io/kotest/core/config/AbstractProjectConfig {
 	public fun beforeProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun getAllowOutOfOrderCallbacks ()Ljava/lang/Boolean;
 	public fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
+	public fun getConcurrencyOrder ()Lio/kotest/engine/concurrency/ConcurrencyOrder;
 	public fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
 	public fun getCoroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun getCoroutineTestScope ()Ljava/lang/Boolean;
@@ -3329,6 +3330,14 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withWasmWasi ()Lio/kotest/engine/TestEngineLauncher;
 }
 
+public final class io/kotest/engine/concurrency/ConcurrencyOrder : java/lang/Enum {
+	public static final field IsolateFirst Lio/kotest/engine/concurrency/ConcurrencyOrder;
+	public static final field IsolateLast Lio/kotest/engine/concurrency/ConcurrencyOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/engine/concurrency/ConcurrencyOrder;
+	public static fun values ()[Lio/kotest/engine/concurrency/ConcurrencyOrder;
+}
+
 public abstract class io/kotest/engine/concurrency/SpecExecutionMode {
 	public synthetic fun <init> (ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getConcurrency ()I
@@ -3409,6 +3418,7 @@ public final class io/kotest/engine/config/Defaults {
 	public static final field TEST_NAME_APPEND_TAGS Z
 	public static final field WRITE_SPEC_FAILURE_FILE Z
 	public final fun getASSERTION_MODE ()Lio/kotest/core/test/AssertionMode;
+	public final fun getCONCURRENCY_MODE_ORDER ()Lio/kotest/engine/concurrency/ConcurrencyOrder;
 	public final fun getDEFAULT_INCLUDE_TEST_SCOPE_AFFIXES ()Lio/kotest/engine/config/IncludeTestScopeAffixes;
 	public final fun getDEFAULT_INVOCATION_TIMEOUT_MILLIS-UwyO8pc ()J
 	public final fun getDEFAULT_RETRIES ()Ljava/lang/Integer;
@@ -3445,6 +3455,7 @@ public final class io/kotest/engine/config/ProjectConfigResolver {
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;)V
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun allowOutOfOrderCallbacks ()Z
+	public final fun concurrencyOrder ()Lio/kotest/engine/concurrency/ConcurrencyOrder;
 	public final fun displayFullTestPath ()Z
 	public final fun dumpConfig ()Z
 	public final fun extensions ()Ljava/util/List;
@@ -3501,6 +3512,7 @@ public final class io/kotest/engine/config/SpecConfigResolver {
 public abstract interface class io/kotest/engine/config/SystemPropertyConfiguration {
 	public abstract fun allowMultilineTestName ()Ljava/lang/Boolean;
 	public abstract fun assertionMode ()Lio/kotest/core/test/AssertionMode;
+	public abstract fun concurrencyOrder ()Lio/kotest/engine/concurrency/ConcurrencyOrder;
 	public abstract fun coroutineDebugProbes ()Ljava/lang/Boolean;
 	public abstract fun displayFullTestPath ()Ljava/lang/Boolean;
 	public abstract fun dumpConfig ()Ljava/lang/Boolean;
@@ -3512,6 +3524,7 @@ public abstract interface class io/kotest/engine/config/SystemPropertyConfigurat
 	public abstract fun logLevel ()Lio/kotest/core/config/LogLevel;
 	public abstract fun minimumRuntimeTestCaseSeverityLevel ()Lio/kotest/core/test/TestCaseSeverityLevel;
 	public abstract fun projectTimeout-FghU774 ()Lkotlin/time/Duration;
+	public abstract fun specExecutionOrder ()Lio/kotest/core/spec/SpecExecutionOrder;
 	public abstract fun tagInheritance ()Ljava/lang/Boolean;
 	public abstract fun testNameAppendTags ()Ljava/lang/Boolean;
 	public abstract fun timeout-FghU774 ()Lkotlin/time/Duration;

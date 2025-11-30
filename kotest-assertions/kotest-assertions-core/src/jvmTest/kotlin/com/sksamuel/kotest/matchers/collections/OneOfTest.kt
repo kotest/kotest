@@ -58,7 +58,7 @@ class OneOfTest : DescribeSpec() {
 
             shouldThrow<AssertionError> {
                fooz shouldNotBeOneOf list
-            }.shouldHaveMessage("Collection should not contain the instance Fooz(bar=Bar) with hashcode 12345.")
+            }.shouldHaveMessage("Collection should not contain the instance Fooz(bar=Bar) with hashcode 12345, but did at index(es): [0].")
          }
 
          it("Pass when the element instance is not in the list") {

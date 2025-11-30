@@ -125,30 +125,6 @@ data class ComparisonMatcherResult(
 }
 
 @Deprecated("Use ComparisonMatcherResult")
-interface ComparableMatcherResult : MatcherResult {
-
-   fun actual(): String
-
-   fun expected(): String
-
-   companion object {
-      operator fun invoke(
-         passed: Boolean,
-         failureMessageFn: () -> String,
-         negatedFailureMessageFn: () -> String,
-         actual: String,
-         expected: String,
-      ): ComparableMatcherResult = object : ComparableMatcherResult {
-         override fun passed(): Boolean = passed
-         override fun failureMessage(): String = failureMessageFn()
-         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
-         override fun actual(): String = actual
-         override fun expected(): String = expected
-      }
-   }
-}
-
-@Deprecated("Use ComparisonMatcherResult")
 interface EqualityMatcherResult : MatcherResult {
 
    fun actual(): Any?
