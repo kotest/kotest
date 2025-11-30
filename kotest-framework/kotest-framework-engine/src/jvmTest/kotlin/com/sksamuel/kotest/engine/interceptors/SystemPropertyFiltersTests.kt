@@ -34,8 +34,8 @@ private val testSuite = listOf<KClass<out Spec>>(
 )
 
 /**
- * Test that the filter expressions in [KotestEngineProperties.filterTests] and
- * [KotestEngineProperties.filterSpecs] work similarly to how gradle filters in --tests described in
+ * Test that the filter expressions in [KotestEngineProperties.FILTER_TESTS] and
+ * [KotestEngineProperties.FILTER_SPECS] work similarly to how gradle filters in --tests described in
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
  */
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -49,8 +49,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
    xtest("include all classes when filter specs is blank") {
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "",
-            KotestEngineProperties.filterTests to ""
+            KotestEngineProperties.FILTER_SPECS to "",
+            KotestEngineProperties.FILTER_TESTS to ""
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
       numberOfTestsRunShouldBe(13)
@@ -59,8 +59,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
    xtest("filters a specific class") {
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "*DistantFutureSciFiTests",
-            KotestEngineProperties.filterTests to ""
+            KotestEngineProperties.FILTER_SPECS to "*DistantFutureSciFiTests",
+            KotestEngineProperties.FILTER_TESTS to ""
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
       numberOfTestsRunShouldBe(7)
@@ -69,8 +69,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
    xtest("filters a class prefix") {
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "*FutureSciFiTests",
-            KotestEngineProperties.filterTests to ""
+            KotestEngineProperties.FILTER_SPECS to "*FutureSciFiTests",
+            KotestEngineProperties.FILTER_TESTS to ""
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
       numberOfTestsRunShouldBe(9)
@@ -80,8 +80,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "*NearFutureSciFiTests",
-            KotestEngineProperties.filterTests to "Daedalus*"
+            KotestEngineProperties.FILTER_SPECS to "*NearFutureSciFiTests",
+            KotestEngineProperties.FILTER_TESTS to "Daedalus*"
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
@@ -92,8 +92,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "",
-            KotestEngineProperties.filterTests to "trek tests*"
+            KotestEngineProperties.FILTER_SPECS to "",
+            KotestEngineProperties.FILTER_TESTS to "trek tests*"
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
@@ -104,8 +104,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "com.sksamuel.kotest.engine.interceptors.filters1.*",
-            KotestEngineProperties.filterTests to ""
+            KotestEngineProperties.FILTER_SPECS to "com.sksamuel.kotest.engine.interceptors.filters1.*",
+            KotestEngineProperties.FILTER_TESTS to ""
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
@@ -116,8 +116,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "",
-            KotestEngineProperties.filterTests to "expanse tests*"
+            KotestEngineProperties.FILTER_SPECS to "",
+            KotestEngineProperties.FILTER_TESTS to "expanse tests*"
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
@@ -128,8 +128,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "",
-            KotestEngineProperties.filterTests to "*anse tes*"
+            KotestEngineProperties.FILTER_SPECS to "",
+            KotestEngineProperties.FILTER_TESTS to "*anse tes*"
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
 
@@ -140,8 +140,8 @@ class SystemPropertyTestFiltersTests : FunSpec({
 
       withSystemProperties(
          mapOf(
-            KotestEngineProperties.filterSpecs to "",
-            KotestEngineProperties.filterTests to "*BC-304"
+            KotestEngineProperties.FILTER_SPECS to "",
+            KotestEngineProperties.FILTER_TESTS to "*BC-304"
          )
       ) { TestEngineLauncher().withClasses(testSuite).launch() }
 

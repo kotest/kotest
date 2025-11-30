@@ -8,6 +8,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.engine.concurrency.ConcurrencyOrder
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
 import kotlin.time.Duration.Companion.minutes
@@ -74,6 +75,8 @@ object Defaults {
    val TEST_NAME_CASE = TestNameCase.AsIs
 
    val SPEC_EXECUTION_ORDER = SpecExecutionOrder.Lexicographic
+
+   val CONCURRENCY_MODE_ORDER = ConcurrencyOrder.IsolateFirst
 
    const val ALLOW_OUT_OF_ORDER_CALLBACKS = false
 }
