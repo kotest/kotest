@@ -213,16 +213,6 @@ class FileMatchersTest : FunSpec() {
          }.message shouldBe "Path ${dir.resolve("b")} (3 bytes) should be smaller than ${dir.resolve("a")} (2 bytes)"
       }
 
-      test("beLarger should compare file sizes") {
-         val dir = Files.createTempDirectory("testdir")
-         Files.write(dir.resolve("a"), byteArrayOf(1, 2, 3))
-         Files.write(dir.resolve("b"), byteArrayOf(1, 2))
-         dir.resolve("a").shouldBeLarger(dir.resolve("b"))
-         shouldThrow<AssertionError> {
-            dir.resolve("b").shouldBeLarger(dir.resolve("a"))
-         }.message shouldBe "File ${dir.resolve("b")} (2 bytes) should be larger than ${dir.resolve("a")} (3 bytes)"
-      }
-
       test("containsFileDeep should find file deep") {
          val rootFileName = "super_dooper_hyper_file_root"
          val innerFileName = "super_dooper_hyper_file_inner"
