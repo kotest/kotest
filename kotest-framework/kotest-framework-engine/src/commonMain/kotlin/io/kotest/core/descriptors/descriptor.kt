@@ -162,12 +162,13 @@ sealed interface Descriptor {
     * Returns true if this [descriptor] could be a parent or a child of the given [descriptor].
     *
     * For example, if this descriptor was MySpec/some context, then the following would be true:
-    * - MySpec/some context hasSharedPath MySpec
-    * - MySpec/some context hasSharedPath MySpec/some context
-    * - MySpec/some context hasSharedPath MySpec/some context -- child test
+    * - MySpec/some context hasSharedPath MySpec (because the LHS is a child of the RHS)
+    * - MySpec/some context hasSharedPath MySpec/some context (because the LHS is equal to the RHS)
+    * - MySpec/some context hasSharedPath MySpec/some context -- child test (because the LHS is a parent of the RHS)
     *
     * These would be false:
-    * - MySpec/some context hasSharedPath MySpec/another context
+    * - MySpec/some context hasSharedPath MySpec/another context (because the LHS and the RHS are siblings tests)
+    * - MySpec1/some context hasSharedPath MySpe2c/some context (because the LHS and the RHS have same test name but are in different specs)
     *
     */
    fun hasSharedPath(descriptor: Descriptor): Boolean {

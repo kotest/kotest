@@ -3770,44 +3770,6 @@ public final class io/kotest/engine/extensions/SystemPropertyTagExtension : io/k
 	public fun tags ()Lio/kotest/engine/tags/TagExpression;
 }
 
-public abstract interface class io/kotest/engine/gradle/TestArg {
-}
-
-public final class io/kotest/engine/gradle/TestArg$Class : io/kotest/engine/gradle/TestArg {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/gradle/TestArg$Class;
-	public static synthetic fun copy$default (Lio/kotest/engine/gradle/TestArg$Class;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/gradle/TestArg$Class;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getFqn ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/gradle/TestArg$Package : io/kotest/engine/gradle/TestArg {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/gradle/TestArg$Package;
-	public static synthetic fun copy$default (Lio/kotest/engine/gradle/TestArg$Package;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/gradle/TestArg$Package;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getPackageName ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/gradle/TestArg$Test : io/kotest/engine/gradle/TestArg {
-	public fun <init> (Ljava/lang/String;Ljava/util/List;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun component2 ()Ljava/util/List;
-	public final fun copy (Ljava/lang/String;Ljava/util/List;)Lio/kotest/engine/gradle/TestArg$Test;
-	public static synthetic fun copy$default (Lio/kotest/engine/gradle/TestArg$Test;Ljava/lang/String;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/engine/gradle/TestArg$Test;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getContexts ()Ljava/util/List;
-	public final fun getFqn ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class io/kotest/engine/interceptors/EmptyTestSuiteException : java/lang/Exception {
 	public static final field INSTANCE Lio/kotest/engine/interceptors/EmptyTestSuiteException;
 }

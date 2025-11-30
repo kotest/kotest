@@ -7,8 +7,8 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.gradle.IntellijGradleTestsArgDescriptorFilter
-import io.kotest.engine.gradle.TestFilterParser
+import io.kotest.engine.gradle.NestedGradleTestsArgDescriptorFilter
+import io.kotest.engine.gradle.NestedGradleTestsArgParser
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -150,18 +150,19 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * Returns a [DescriptorFilter] for each [PostDiscoveryFilter].
     *
     * If the format is a package name or class name, then we use a wrapper around the gradle filter.
-    * If the format contains a test name, then we use a special kotest parsed version.
+    * If the format contains a nested test name, then we use a special kotest parsed version.
     *
     * If no post filters are present, this will return null
     */
    private fun createDescriptorFilters(request: EngineDiscoveryRequest): List<DescriptorFilter> {
       return GradlePostDiscoveryFilterUtils.extract(request.postFilters())
          .map { filter ->
-            if (TestFilterParser.isTestFilter(filter)) {
-               // HACK since we have a test filter with test name, we will clear the list of post filters so gradle
+            val nestedTestArg = NestedGradleTestsArgParser.parse(filter)
+            if (nestedTestArg != null) {
+               // HACK since we have a test filter with nested test name, we will clear the list of post filters so gradle
                // doesn't do any filtering - as we'll take care of that
                GradlePostDiscoveryFilterUtils.reset(request.postFilters())
-               IntellijGradleTestsArgDescriptorFilter(setOf(TestFilterParser.parse(filter)))
+               NestedGradleTestsArgDescriptorFilter(setOf(nestedTestArg))
             } else
                GradleClassMethodRegexTestFilter(setOf(filter))
          }
