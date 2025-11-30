@@ -38,8 +38,8 @@ fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
 
       return EqualityMatcherResult(
          passed = EqCompare.compare(actual, expected, false) == null,
-         actual = actual,
-         expected = expected,
+         actual = actual.print(),
+         expected = expected.print(),
          failureMessageFn = prependMessage,
          negatedFailureMessageFn = { prependMessage() + "\n${expected.print().value} should not equal ${actual.print().value}" },
       )

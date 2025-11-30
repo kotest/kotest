@@ -1,7 +1,7 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -184,7 +184,7 @@ infix fun <T, U, C : Collection<T>> C.shouldBeSameSizeAs(other: Collection<U>): 
 }
 
 fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>) = ComparisonMatcherResult(
+   override fun test(value: Collection<T>) = EqualityMatcherResult(
       passed = value.size == other.size,
       expected = other.size.print(),
       actual = value.size.print(),
@@ -249,7 +249,7 @@ infix fun <T, C : Collection<T>> C.shouldHaveAtLeastSize(n: Int): C {
 }
 
 fun <T> atLeastSize(expected: Int) = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>) = ComparisonMatcherResult(
+   override fun test(value: Collection<T>) = EqualityMatcherResult(
       passed = value.size >= expected,
       expected = expected.print(),
       actual = value.size.print(),
@@ -314,7 +314,7 @@ infix fun <T, C : Collection<T>> C.shouldHaveAtMostSize(n: Int): C {
 }
 
 fun <T> atMostSize(expected: Int) = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>): MatcherResult = ComparisonMatcherResult(
+   override fun test(value: Collection<T>): MatcherResult = EqualityMatcherResult(
       passed = value.size <= expected,
       expected = expected.print(),
       actual = value.size.print(),
@@ -325,7 +325,7 @@ fun <T> atMostSize(expected: Int) = object : Matcher<Collection<T>> {
 
 
 fun <T> haveSizeMatcher(expected: Int) = object : Matcher<Collection<T>> {
-   override fun test(value: Collection<T>): MatcherResult = ComparisonMatcherResult(
+   override fun test(value: Collection<T>): MatcherResult = EqualityMatcherResult(
       passed = value.size == expected,
       expected = expected.print(),
       actual = value.size.print(),

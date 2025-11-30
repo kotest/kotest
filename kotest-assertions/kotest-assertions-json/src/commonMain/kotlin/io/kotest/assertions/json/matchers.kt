@@ -2,7 +2,7 @@ package io.kotest.assertions.json
 
 import io.kotest.assertions.json.comparisons.compare
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -54,7 +54,7 @@ private fun equalJsonTree(
          options,
       )?.asString()
 
-      ComparisonMatcherResult(
+      EqualityMatcherResult(
          passed = error == null,
          actual = StringPrint.printUnquoted(value.raw),
          expected = StringPrint.printUnquoted(expected.raw),

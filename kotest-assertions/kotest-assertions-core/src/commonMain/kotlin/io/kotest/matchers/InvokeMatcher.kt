@@ -13,21 +13,12 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    if (!result.passed()) {
       when (result) {
 
-         is ComparisonMatcherResult -> errorCollector.collectOrThrow(
-            AssertionErrorBuilder.create()
-               .withMessage(result.failureMessage() + "\n")
-               .withValues(
-                  expected = Expected(result.expected),
-                  actual = Actual(result.actual)
-               ).build()
-         )
-
          is EqualityMatcherResult -> errorCollector.collectOrThrow(
             AssertionErrorBuilder.create()
                .withMessage(result.failureMessage() + "\n")
                .withValues(
-                  expected = Expected(result.expected().print()),
-                  actual = Actual(result.actual().print())
+                  expected = Expected(result.expected()),
+                  actual = Actual(result.actual())
                ).build()
          )
 

@@ -1,7 +1,7 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -32,7 +32,7 @@ infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot si
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       return if (value.size == 1) {
-         ComparisonMatcherResult(
+         EqualityMatcherResult(
             passed = value.single() == t,
             actual = value.single().print(),
             expected = t.print(),

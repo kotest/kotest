@@ -1,7 +1,7 @@
 package io.kotest.matchers.resource
 
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.EqualityMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.be
@@ -94,7 +94,7 @@ fun matchResource(
       val trimmedExpected = if (trim) normalizedExpected.trim() else normalizedExpected
 
       return matcherProvider(trimmedExpected).test(trimmedActual).let {
-         ComparisonMatcherResult(
+         EqualityMatcherResult(
             passed = it.passed(),
             actual = StringPrint.printUnquoted(trimmedActual),
             expected = StringPrint.printUnquoted(trimmedExpected),
