@@ -42,10 +42,7 @@ infix fun Double.shouldBeGreaterThanOrEqual(x: Double): Double {
  * @see [Double.shouldBeGreaterThan]
  * @see [Double.shouldNotBeLessThanOrEqual]
  */
-infix fun Double.shouldBeAtLeast(x: Double): Double {
-   this shouldBe gte(x)
-   return this
-}
+infix fun Double.shouldBeAtLeast(x: Double): Double = shouldBeGreaterThanOrEqual(x)
 
 /**
  * Asserts that this [Double] is not greater than [x] nor equal to [x]
