@@ -100,35 +100,6 @@ class TargetDefaultForTypeTest : StringSpec() {
             it.size.shouldBePositive()
          }
       }
-      "fun with types" {
-         val primitiveArray = IntArray(10)
-         val boxedArray = Array<Int>(10) { 0 }
-         val primitiveArrayClass = primitiveArray::class
-         val boxedArrayClass = boxedArray::class
-         if (boxedArrayClass == primitiveArrayClass) {
-            throw Exception("no")
-         } else {
-            println("different classes as expected")
-         }
-//         val primitiveArrayType: KType = ::primitiveArray.returnType
-//         val boxedArrayType: KType = ::boxedArray.returnType
-         val type: KType = typeOf<Array<Int>>()
-         val type1: KType = typeOf<IntArray>()
-         println(type.classifier)
-         println(type1.classifier)
-         val clazz = type.classifier as? KClass<*> ?: throw Exception("no")
-         println(clazz.java.isArray)
-         println(clazz.java.canonicalName)
-         val clazz1 = type1.classifier as? KClass<*> ?: throw Exception("no")
-         println(clazz1.java.isArray)
-         println(clazz1.java.canonicalName)
-      }
-      "arrays" {
-         val withPrimitiveArray = WithPrimitiveArray(IntArray(10))
-         browseParameters(withPrimitiveArray)
-         val withBoxedArray = WithBoxedArray(Array<Int>(10) { 0 })
-         browseParameters(withBoxedArray)
-      }
    }
 }
 
