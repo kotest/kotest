@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 plugins {
    id("kotlin-conventions")
    id("kotest-jvm-conventions")
-   id("linux-only-tests-conventions")
+
    alias(libs.plugins.power.assert)
 }
 
