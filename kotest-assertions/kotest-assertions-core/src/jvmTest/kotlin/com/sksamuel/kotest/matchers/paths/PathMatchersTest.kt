@@ -6,21 +6,21 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldBeAFile
 import io.kotest.matchers.paths.shouldBeEmptyDirectory
+import io.kotest.matchers.paths.shouldBeLarger
 import io.kotest.matchers.paths.shouldContainNFiles
 import io.kotest.matchers.paths.shouldNotBeEmptyDirectory
 import io.kotest.matchers.paths.shouldNotContainNFiles
+import io.kotest.matchers.shouldBe
 import java.nio.file.Files
 import kotlin.io.path.Path
 
 class PathMatchersTest : FunSpec({
-
 
    context("Be a file") {
       test("Should fail for files that don't exist") {
          shouldThrow<AssertionError> { Path("abc").shouldBeAFile() }
       }
    }
-
 
    test("directory should be empty (deprecated)") {
       val path = Files.createTempDirectory("testdir")
@@ -34,6 +34,16 @@ class PathMatchersTest : FunSpec({
       path.shouldBeEmptyDirectory()
       Files.write(path.resolve("testfile.txt"), byteArrayOf(1, 2, 3))
       path.shouldNotBeEmptyDirectory()
+   }
+
+   test("beLarger should compare file sizes") {
+      val dir = Files.createTempDirectory("testdir")
+      Files.write(dir.resolve("a"), byteArrayOf(1, 2, 3))
+      Files.write(dir.resolve("b"), byteArrayOf(1, 2))
+      dir.resolve("a").shouldBeLarger(dir.resolve("b"))
+      shouldThrow<AssertionError> {
+         dir.resolve("b").shouldBeLarger(dir.resolve("a"))
+      }.message shouldBe "Path ${dir.resolve("b")} (2 bytes) should be larger than ${dir.resolve("a")} (3 bytes)"
    }
 
    context("containNFiles with non-standard filesystem") {
