@@ -21,6 +21,9 @@ internal object GradlePostDiscoveryFilterUtils {
 
    private val logger = Logger(GradlePostDiscoveryFilterUtils::class)
 
+   /**
+    * Returns the include patterns enclosed in any [ClassMethodNameFilter]s added by Gradle from the --tests command line arg.
+    */
    fun extract(filters: List<Any>): List<String> {
       val classMethodFilters = filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }
       return classMethodFilters.flatMap { extract(it) }
@@ -46,6 +49,9 @@ internal object GradlePostDiscoveryFilterUtils {
       regexes
    }.getOrElse { emptyList() }
 
+   /**
+    * Removes any [ClassMethodNameFilter]s added by Gradle from the --tests command line arg.
+    */
    fun reset(filters: List<Any>) {
       filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }.forEach {
          val matcher = testMatcher(it)
