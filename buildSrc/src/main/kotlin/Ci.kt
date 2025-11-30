@@ -28,6 +28,18 @@ object Ci {
    /** The published version of Kotest dependencies. */
    val publishVersion = releaseVersion ?: snapshotVersion
 
+   /** Is the build currently running on CI. */
+   private val isCI = System.getenv("CI").toBoolean()
+
+   /** Is the git branch master */
+   private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
+
+   /**
+    * We only include watchos, tvsos and ios builds if it's a non-CI build or if it's master build
+    * due to the slowness of the github action macos runners
+    */
+   val shouldRunWatchTvIosModules = !isCI || isMaster
+
    /**
     * Property to flag the build as JVM only, can be used to run checks on local machine much faster.
     */
