@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.expect
 
 import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.datatest.withData
 
 class ExpectSpecExample : ExpectSpec() {
   init {
@@ -19,6 +20,10 @@ class ExpectSpecExample : ExpectSpec() {
           // test here
         }
       }
+    }
+
+    withData(1, 2, 3, 4, 5) { value ->
+      // test here
     }
   }
 }

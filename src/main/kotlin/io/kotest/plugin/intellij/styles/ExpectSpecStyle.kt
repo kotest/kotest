@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsF
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.isDataTestMethodCall
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -24,6 +25,13 @@ object ExpectSpecStyle : SpecStyle {
    override fun generateTest(specName: String, name: String): String {
       return "expect(\"$name\") { }"
    }
+
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+         "withContexts",
+         "withExpects"
+      )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
@@ -60,7 +68,7 @@ object ExpectSpecStyle : SpecStyle {
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
-         is KtCallExpression -> element.tryExpect() ?: element.tryContext()
+         is KtCallExpression -> element.tryExpect() ?: element.tryContext() ?: element.tryDataTest()
          is KtDotQualifiedExpression -> element.tryExpectWithConfig()
          else -> null
       }
@@ -70,12 +78,29 @@ object ExpectSpecStyle : SpecStyle {
       return setOf("OPEN_QUOTE")
    }
 
+   /**
+    * For a ExpectSpec we consider the following scenarios:
+    *
+    * expect("test name") { }
+    * expect("test name").config(...) {}
+    * context("test name") {}
+    * context("test name").config(...) {}
+    * withData(...) { }
+    * withContexts(...) { }
+    * withExpects(...) { }
+    */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLambdaOpenBrace()
       if (ktcall != null) return test(ktcall)
 
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)
+
+      // try to find Data Test Method by finding lambda openings
+      val dataMethodCall = element.isDataTestMethodCall(getDataTestMethodNames())
+      if (dataMethodCall != null) {
+         return test(dataMethodCall)
+      }
 
       return null
    }

@@ -41,7 +41,7 @@ class ClassTests : LightJavaCodeInsightFixtureTestCase() {
          "/io/kotest/core/spec/style/specs.kt"
       )
 
-      val element = psiFile[0].elementAtLine(21)
+      val element = psiFile[0].elementAtLine(22)
       element.shouldNotBeNull()
       val ktclass = element.enclosingKtClass()
       ktclass.shouldNotBeNull()

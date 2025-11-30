@@ -1,6 +1,7 @@
 package io.kotest.samples.gradle
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withData
 
 class FunSpecExampleTest : FunSpec({
 
@@ -78,5 +79,9 @@ class FunSpecExampleTest : FunSpec({
    }
 
    test("name containing \"escaped quotes\"") {
+   }
+
+   withData(1, 2, 3, 4, 5) { value ->
+      // test here
    }
 })

@@ -39,7 +39,11 @@ data class GradleTaskNamesBuilder(
    private fun includeArg(): String? {
       return when (test) {
          null -> "$PROPERTY_INCLUDE='${spec.fqName?.asString()}'"
-         else -> "$PROPERTY_INCLUDE='${test.descriptorPath()}'"
+         else ->
+            when(test.isDataTest){
+               false -> "$PROPERTY_INCLUDE='${test.descriptorPath()}'"
+               true -> "$PROPERTY_INCLUDE='${spec.fqName?.asString()}'"
+            }
       }
    }
 }

@@ -127,3 +127,8 @@ fun KtValueArgumentList.isSingleStringTemplateArg(): Boolean =
       && children[0] is KtValueArgument
       && children[0].children.size == 1
       && children[0].children[0] is KtStringTemplateExpression
+
+fun LeafPsiElement.isDataTestMethodCall(dataTestMethodNames:Set<String>): KtCallExpression? {
+   val lambdaCall = ifCallExpressionLambdaOpenBrace()
+   return lambdaCall.takeIf {lambdaCall?.functionName() in dataTestMethodNames}
+}

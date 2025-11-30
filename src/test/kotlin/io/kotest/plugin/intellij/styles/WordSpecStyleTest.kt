@@ -24,19 +24,20 @@ class WordSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       )
 
       val gutters = myFixture.findAllGutters()
-      gutters.size shouldBe 10
+      gutters.size shouldBe 11
 
       val expected = listOf(
-         Gutter("Run WordSpecExample", 87, AllIcons.RunConfigurations.TestState.Run_run),
-         Gutter("Run some should context", 137),
-         Gutter("Run some should context test something", 174),
-         Gutter("Run some should context test something with config", 256),
-         Gutter("Run with capital When", 302),
-         Gutter("Run with capital When and capital Should", 335),
-         Gutter("Run with capital When test something", 373),
-         Gutter("Run with capital When test something with config", 428),
-         Gutter("Disabled - with capital When disabled should", 480, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - disabled when", 529, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run WordSpecExample", 122, AllIcons.RunConfigurations.TestState.Run_run),
+         Gutter("Run some should context", 172),
+         Gutter("Run some should context test something", 209),
+         Gutter("Run some should context test something with config", 291),
+         Gutter("Run with capital When", 337),
+         Gutter("Run with capital When and capital Should", 370),
+         Gutter("Run with capital When test something", 408),
+         Gutter("Run with capital When test something with config", 463),
+         Gutter("Disabled - with capital When disabled should", 515, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - disabled when", 564, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run All Spec Tests, including data tests", 625),
       )
 
       gutters.size shouldBe expected.size

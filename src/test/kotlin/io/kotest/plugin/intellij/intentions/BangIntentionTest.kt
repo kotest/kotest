@@ -20,19 +20,19 @@ class BangIntentionTest : LightJavaCodeInsightFixtureTestCase() {
          "/behaviorspec.kt",
          "/io/kotest/core/spec/style/specs.kt"
       )
-      editor.moveCaret(265)
+      editor.moveCaret(300)
 
       val intention = myFixture.findSingleIntention("Add/Remove bang to test name")
       intention.familyName shouldBe "Add/Remove bang to test name"
       WriteCommandAction.runWriteCommandAction(project) {
          intention.invoke(project, editor, file)
       }
-      file.findElementAt(265)?.text shouldBe "!another test"
+      file.findElementAt(300)?.text shouldBe "!another test"
 
       WriteCommandAction.runWriteCommandAction(project) {
          intention.invoke(project, editor, file)
       }
-      file.findElementAt(265)?.text shouldBe "another test"
+      file.findElementAt(300)?.text shouldBe "another test"
    }
 
    fun testIntentionShouldOnlyBeAvailableOnStrings() {

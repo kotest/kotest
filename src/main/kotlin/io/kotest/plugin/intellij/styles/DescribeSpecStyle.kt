@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsF
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
+import io.kotest.plugin.intellij.psi.isDataTestMethodCall
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -24,6 +25,14 @@ object DescribeSpecStyle : SpecStyle {
    override fun generateTest(specName: String, name: String): String {
       return "describe(\"$name\") { }"
    }
+
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+         "withContexts",
+         "withDescribes",
+         "withIts"
+      )
 
    private val fnNames = setOf("describe", "xdescribe", "context", "xcontext", "it", "xit")
 
@@ -246,6 +255,7 @@ object DescribeSpecStyle : SpecStyle {
             ?: element.tryXDescribe()
             ?: element.tryContext()
             ?: element.tryXContent()
+            ?: element.tryDataTest()
          is KtDotQualifiedExpression ->
             element.tryDescribeWithConfig()
                ?: element.tryXDescribeWithConfig()
@@ -261,6 +271,26 @@ object DescribeSpecStyle : SpecStyle {
       return setOf("OPEN_QUOTE", "DOT")
    }
 
+   /**
+    * For a DescribeSpec we consider the following scenarios:
+    *
+    * describe("test name") { }
+    * xdescribe("test name") { }
+    * context("test name") { }
+    * xcontext("test name") { }
+    * it("test name") { }
+    * xit("test name") { }
+    * describe("test name").config(...) {}
+    * xdescribe("test name").config(...) {}
+    * context("test name").config(...) {}
+    * xcontext("test name").config(...) {}
+    * it("test name").config(...) {}
+    * xit("test name").config(...) {}
+    * withData(...) { }
+    * withContexts(...) { }
+    * withDescribes(...) { }
+    * withIts(...) { }
+    */
    override fun test(element: LeafPsiElement): Test? {
       val call = element.ifOpenQuoteOfFunctionName(fnNames)
       if (call != null) return test(call)
@@ -268,6 +298,11 @@ object DescribeSpecStyle : SpecStyle {
       val dot = element.ifDotExpressionSeparator()
       if (dot != null) return test(dot)
 
+      // try to find Data Test Method by finding lambda openings
+      val dataMethodCall = element.isDataTestMethodCall(getDataTestMethodNames())
+      if (dataMethodCall != null) {
+         return test(dataMethodCall)
+      }
       return null
    }
 }

@@ -33,82 +33,83 @@ class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       val gutters = myFixture.findAllGutters()
 
       val expected = listOf(
-         Gutter("Run DescribeSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
-         Gutter("Run describe block", 161),
-         Gutter("Run describe block it block", 193),
-         Gutter("Disabled - describe block xit block", 256, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Run describe block it with config", 336),
-         Gutter("Disabled - describe block xit block with config", 436, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Run describe block nested describe block", 517),
-         Gutter("Run describe block nested describe block it block", 559),
-         Gutter("Disabled - describe block nested xdescribe block", 645, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run DescribeSpecExample", 126, AllIcons.RunConfigurations.TestState.Run_run),
+         Gutter("Run describe block", 196),
+         Gutter("Run describe block it block", 228),
+         Gutter("Disabled - describe block xit block", 291, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run describe block it with config", 371),
+         Gutter("Disabled - describe block xit block with config", 471, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run describe block nested describe block", 552),
+         Gutter("Run describe block nested describe block it block", 594),
+         Gutter("Disabled - describe block nested xdescribe block", 680, AllIcons.RunConfigurations.TestIgnored),
          Gutter(
             "Disabled - describe block nested xdescribe block it block",
-            688,
+            723,
             AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Disabled - xdescribe block", 779, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdescribe block it block", 812, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdescribe block xit block", 875, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdescribe block it with config", 955, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdescribe block xit block with config", 1055, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdescribe block nested describe block", 1136, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block", 814, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block it block", 847, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block xit block", 910, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block it with config", 990, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block xit block with config", 1090, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block nested describe block", 1171, AllIcons.RunConfigurations.TestIgnored),
          Gutter(
             "Disabled - xdescribe block nested describe block it block",
-            1178,
+            1213,
             AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Disabled - xdescribe block nested xdescribe block", 1264, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe block nested xdescribe block", 1299, AllIcons.RunConfigurations.TestIgnored),
          Gutter(
             "Disabled - xdescribe block nested xdescribe block it block",
-            1307,
+            1342,
             AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Run context block", 1396),
-         Gutter("Run context block nested context block", 1432),
-         Gutter("Run context block nested context block nested describe block", 1479),
-         Gutter("Run context block nested context block nested describe block it block", 1524),
+         Gutter("Run context block", 1431),
+         Gutter("Run context block nested context block", 1467),
+         Gutter("Run context block nested context block nested describe block", 1514),
+         Gutter("Run context block nested context block nested describe block it block", 1559),
          Gutter(
             "Disabled - context block nested context block nested xdescribe block",
-            1622,
+            1657,
             AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - context block nested context block nested xdescribe block it block",
-            1668,
+            1703,
             AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Disabled - context block nested xcontext block", 1773, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - context block nested xcontext block", 1808, AllIcons.RunConfigurations.TestIgnored),
          Gutter(
             "Disabled - context block nested xcontext block nested describe block",
-            1821,
+            1856,
             AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - context block nested xcontext block nested describe block it block",
-            1866,
+            1901,
             AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - context block nested xcontext block nested xdescribe block",
-            1964,
+            1999,
             AllIcons.RunConfigurations.TestIgnored
          ),
          Gutter(
             "Disabled - context block nested xcontext block nested xdescribe block it block",
-            2010,
+            2045,
             AllIcons.RunConfigurations.TestIgnored
          ),
-         Gutter("Run context block nested describe block", 2115),
-         Gutter("Run context block nested describe block it block", 2157),
-         Gutter("Run describe with config", 2270),
-         Gutter("Run describe with config it block", 2308),
-         Gutter("Disabled - xdescribe with config", 2406, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdescribe with config it block", 2444, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Run context with config", 2538),
-         Gutter("Run context with config nested describe with config", 2612),
-         Gutter("Run context with config nested describe with config it block", 2653),
-         Gutter("Disabled - xcontext with config", 2766, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run context block nested describe block", 2150),
+         Gutter("Run context block nested describe block it block", 2192),
+         Gutter("Run describe with config", 2305),
+         Gutter("Run describe with config it block", 2343),
+         Gutter("Disabled - xdescribe with config", 2441, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdescribe with config it block", 2479, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run context with config", 2573),
+         Gutter("Run context with config nested describe with config", 2647),
+         Gutter("Run context with config nested describe with config it block", 2688),
+         Gutter("Disabled - xcontext with config", 2801, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run All Spec Tests, including data tests", 2866),
       )
 
       expected.size shouldBe gutters.size

@@ -2,6 +2,7 @@ package com.sksamuel.kotest.specs.feature
 
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.matchers.comparables.shouldBeLessThan
+import io.kotest.datatest.withData
 
 class FeatureSpecExample : FeatureSpec() {
    init {
@@ -35,6 +36,9 @@ class FeatureSpecExample : FeatureSpec() {
                1.shouldBeLessThan(4)
             }
          }
+      }
+      withData(1, 2, 3, 4, 5) { value ->
+         // test here
       }
    }
 }

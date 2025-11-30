@@ -12,6 +12,7 @@ import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
 import io.kotest.plugin.intellij.psi.ifMinusOperator
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.isDataTestMethodCall
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -27,6 +28,11 @@ object FreeSpecStyle : SpecStyle {
    override fun generateTest(specName: String, name: String): String {
       return "\"$name\" { }"
    }
+
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData"
+      )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
@@ -79,7 +85,7 @@ object FreeSpecStyle : SpecStyle {
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
-         is KtCallExpression -> element.tryTest()
+         is KtCallExpression -> element.tryTest() ?: element.tryDataTest()
          is KtDotQualifiedExpression -> element.tryTestWithConfig()
          is KtBinaryExpression -> element.tryContainer()
          else -> null
@@ -95,6 +101,7 @@ object FreeSpecStyle : SpecStyle {
     *
     * "test name" {} // a test
     * "test name" - {} // a container
+    * withData(...) { }
     */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
@@ -105,6 +112,12 @@ object FreeSpecStyle : SpecStyle {
 
       val ktbinary = element.ifMinusOperator()
       if (ktbinary != null) return test(ktbinary)
+
+      // try to find Data Test Method by finding lambda openings
+      val dataMethodCall = element.isDataTestMethodCall(getDataTestMethodNames())
+      if (dataMethodCall != null) {
+         return test(dataMethodCall)
+      }
 
       return null
    }

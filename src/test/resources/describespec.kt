@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.describe
 
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.datatest.withData
 
 class DescribeSpecExample : DescribeSpec() {
    init {
@@ -101,6 +102,10 @@ class DescribeSpecExample : DescribeSpec() {
          }
       }
       xcontext("xcontext with config").config(enabled = true) {
+      }
+
+      withData(1, 2, 3, 4, 5) { value ->
+         // test here
       }
    }
 }

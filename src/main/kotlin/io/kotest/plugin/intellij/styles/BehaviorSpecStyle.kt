@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.psi.extractLhsStringArgForDotExpressionWithRhsF
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
+import io.kotest.plugin.intellij.psi.isDataTestMethodCall
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -22,6 +23,16 @@ object BehaviorSpecStyle : SpecStyle {
 
    override fun fqn() = FqName("io.kotest.core.spec.style.BehaviorSpec")
    override fun specStyleName(): String = "Behavior Spec"
+
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+         "withContexts",
+         "withGivens",
+         "withWhens",
+         "withThens",
+         "withAnds"
+      )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
@@ -173,6 +184,7 @@ object BehaviorSpecStyle : SpecStyle {
                ?: element.tryXWhen()
                ?: element.tryThen()
                ?: element.tryXThen()
+               ?: element.tryDataTest()
          is KtDotQualifiedExpression -> element.tryThenWithConfig()
          else -> null
       }
@@ -191,12 +203,48 @@ object BehaviorSpecStyle : SpecStyle {
       return setOf("OPEN_QUOTE", "DOT")
    }
 
+   /**
+    * For a BehaviorSpec we consider the following scenarios:
+    *
+    * context("test name") {}
+    * xcontext("test name") {}
+    * context("test name").config(...) {}
+    * xcontext("test name").config(...) {}
+    * given("test name") {}
+    * xgiven("test name") {}
+    * given("test name").config(...) {}
+    * xgiven("test name").config(...) {}
+    * when("test name") {}
+    * xwhen("test name") {}
+    * when("test name").config(...) {}
+    * xwhen("test name").config(...) {}
+    * then("test name") {}
+    * xthen("test name") {}
+    * then("test name").config(...) {}
+    * xthen("test name").config(...) {}
+    * and("test name") {}
+    * xand("test name") {}
+    * and("test name").config(...) {}
+    * xand("test name").config(...) {}
+    * withData(...) { }
+    * withContexts(...) { }
+    * withGivens(...) { }
+    * withWhens(...) { }
+    * withThens(...) { }
+    * withAnds(...) { }
+    */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall1 = element.ifOpenQuoteOfFunctionName(fnNames)
       if (ktcall1 != null) return test(ktcall1)
 
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)
+
+      // try to find Data Test Method by finding lambda openings
+      val dataMethodCall = element.isDataTestMethodCall(getDataTestMethodNames())
+      if (dataMethodCall != null) {
+         return test(dataMethodCall)
+      }
 
       return null
    }

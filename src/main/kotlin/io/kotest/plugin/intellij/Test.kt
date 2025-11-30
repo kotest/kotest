@@ -56,7 +56,8 @@ data class Test(
    val specClassName: KtClassOrObject, // the containing class name, which all tests must have
    val testType: TestType,
    val xdisabled: Boolean, // if true then this test was defined using one of the x methods
-   val psi: PsiElement // the canonical element that identifies this test
+   val psi: PsiElement, // the canonical element that identifies this test
+   val isDataTest: Boolean = false
 ) {
 
    // true if this test is not xdisabled and not disabled by a bang and not nested inside another disabled test

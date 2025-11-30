@@ -24,39 +24,43 @@ class FreeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))
-      gutters.size shouldBe 8
+      gutters.size shouldBe 9
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Run_run
       gutters[0].tooltipText shouldBe "Run FreeSpecExample"
-      (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 87
+      (gutters[0] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 122
 
       gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[1].tooltipText shouldBe "Run some context"
-      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 152
+      (gutters[1] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 187
 
       gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[2].tooltipText shouldBe "Run some context more context"
-      (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 177
+      (gutters[2] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 212
 
       gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[3].tooltipText shouldBe "Run some context more context as many as you want"
-      (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 211
+      (gutters[3] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 246
 
       gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[4].tooltipText shouldBe "Run some context more context as many as you want then a test"
-      (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 225
+      (gutters[4] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 260
 
       gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[5].tooltipText shouldBe "Run another context"
-      (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 324
+      (gutters[5] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 359
 
       gutters[6].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[6].tooltipText shouldBe "Run another context a test with config"
-      (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 354
+      (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 389
 
       gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
       gutters[7].tooltipText shouldBe "Run a test without a context block"
-      (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 399
+      (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 434
+
+      gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
+      gutters[8].tooltipText shouldBe "Run All Spec Tests, including data tests"
+      (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 505
    }
 
    fun testMethodGeneration() {

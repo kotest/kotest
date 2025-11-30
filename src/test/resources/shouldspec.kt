@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.shouldspec
 
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.datatest.withData
 
 class ShouldSpecExample : ShouldSpec() {
    init {
@@ -36,6 +37,10 @@ class ShouldSpecExample : ShouldSpec() {
       }
       xshould("xdisabled should"){
 
+      }
+
+      withData(1, 2, 3, 4, 5) { value ->
+         // test here
       }
    }
 }

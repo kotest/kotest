@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.wordspec
 
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.datatest.withData
 
 class WordSpecExample : WordSpec() {
   init {
@@ -27,5 +28,8 @@ class WordSpecExample : WordSpec() {
 
     }
 
+     withData(1, 2, 3, 4, 5) { value ->
+        // test here
+     }
   }
 }

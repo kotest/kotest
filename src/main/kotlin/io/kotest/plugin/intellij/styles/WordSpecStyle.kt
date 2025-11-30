@@ -14,6 +14,7 @@ import io.kotest.plugin.intellij.psi.ifMinusOperator
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfLhsArgOfIndexFunction
+import io.kotest.plugin.intellij.psi.isDataTestMethodCall
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -31,6 +32,13 @@ object WordSpecStyle : SpecStyle {
    override fun generateTest(specName: String, name: String): String {
       return "\"$name\" should { }"
    }
+
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+         "withWhens",
+         "withShoulds"
+      )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
@@ -123,7 +131,7 @@ object WordSpecStyle : SpecStyle {
 
    override fun test(element: PsiElement): Test? {
       return when (element) {
-         is KtCallExpression -> element.trySubject()
+         is KtCallExpression -> element.trySubject() ?: element.tryDataTest()
          is KtBinaryExpression -> (element.tryShould() ?: element.tryWhen())
          is KtDotQualifiedExpression -> element.trySubjectWithConfig()
          else -> null
@@ -134,6 +142,21 @@ object WordSpecStyle : SpecStyle {
       return setOf("OPEN_QUOTE")
    }
 
+   /**
+    * For a WordSpec we consider the following scenarios:
+    *
+    * should("test name") { }
+    * xshould("test name") { }
+    * should("test name").config(...) {}
+    * xshould("test name").config(...) {}
+    * when("test name") {}
+    * xwhen("test name") {}
+    * when("test name").config(...) {}
+    * xwhen("test name").config(...) {}
+    * withData(...) { }
+    * withWhens(...) { }
+    * withShoulds(...) { }
+    */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
       if (ktcall != null) return test(ktcall)
@@ -146,6 +169,12 @@ object WordSpecStyle : SpecStyle {
 
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)
+
+      // try to find Data Test Method by finding lambda openings
+      val dataMethodCall = element.isDataTestMethodCall(getDataTestMethodNames())
+      if (dataMethodCall != null) {
+         return test(dataMethodCall)
+      }
 
       return null
    }

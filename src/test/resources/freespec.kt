@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.specs.freespec
 
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.datatest.withData
 
 class FreeSpecExample : FreeSpec() {
   init {
@@ -20,5 +21,9 @@ class FreeSpecExample : FreeSpec() {
     }
     "a test without a context block" {
     }
+
+     withData(1, 2, 3, 4, 5) { value ->
+        // test here
+     }
   }
 }

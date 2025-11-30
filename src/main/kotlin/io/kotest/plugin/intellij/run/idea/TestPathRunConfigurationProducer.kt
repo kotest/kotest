@@ -51,7 +51,10 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
 
             val ktclass = element.enclosingKtClass()
             if (ktclass != null) {
-               configuration.setTestPath(test.testPath())
+               if (test.isDataTest)
+                  configuration.setTestPath(null)
+               else
+                  configuration.setTestPath(test.testPath())
                configuration.setSpec(ktclass)
                configuration.setModule(context.module)
                configuration.name = generateName(ktclass, test)

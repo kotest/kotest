@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.psi.extractStringForStringExtensionFunctonWithR
 import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
+import io.kotest.plugin.intellij.psi.isDataTestMethodCall
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -27,6 +28,11 @@ object StringSpecStyle : SpecStyle {
    override fun generateTest(specName: String, name: String): String {
       return "\"$name\" { }"
    }
+
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+      )
 
    /**
     * A test of the form:
@@ -58,10 +64,11 @@ object StringSpecStyle : SpecStyle {
     *
     * "test name" { }
     * "test name".config(...) {}
+    * withData(...) { }
     */
    override fun test(element: PsiElement): Test? {
       return when (element) {
-         is KtCallExpression -> element.tryTest()
+         is KtCallExpression -> element.tryTest() ?: element.tryDataTest()
          is KtDotQualifiedExpression -> element.tryTestWithConfig()
          else -> null
       }
@@ -76,6 +83,7 @@ object StringSpecStyle : SpecStyle {
     *
     * "test name" { }
     * "test name".config(...) {}
+    * withData(...) { }
     */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
@@ -83,6 +91,12 @@ object StringSpecStyle : SpecStyle {
 
       val ktdot = element.ifDotExpressionSeparator()
       if (ktdot != null) return test(ktdot)
+
+      // try to find Data Test Method by finding lambda openings
+      val dataMethodCall = element.isDataTestMethodCall(getDataTestMethodNames())
+      if (dataMethodCall != null) {
+            return test(dataMethodCall)
+      }
 
       return null
    }

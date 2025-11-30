@@ -24,12 +24,13 @@ class StringSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       )
 
       val gutters = myFixture.findAllGutters()
-      gutters.size shouldBe 3
+      gutters.size shouldBe 4
 
       val expected = listOf(
-         Gutter("Run StringSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
-         Gutter("Run test", 145),
-         Gutter("Run test with config", 201),
+         Gutter("Run StringSpecExample", 126, AllIcons.RunConfigurations.TestState.Run_run),
+         Gutter("Run test", 180),
+         Gutter("Run test with config", 236),
+         Gutter("Run All Spec Tests, including data tests", 299),
       )
 
       expected.size shouldBe gutters.size

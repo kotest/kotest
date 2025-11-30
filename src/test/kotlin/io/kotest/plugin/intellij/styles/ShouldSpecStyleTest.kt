@@ -25,24 +25,25 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
 
       val gutters = myFixture.findAllGutters()
       println(gutters.map { it.tooltipText }.joinToString("\n"))
-      gutters.size shouldBe 15
+      gutters.size shouldBe 16
 
       val expected = listOf(
-         Gutter("Run ShouldSpecExample", 91, AllIcons.RunConfigurations.TestState.Run_run),
-         Gutter("Run top level test", 155),
-         Gutter("Run top level test with config", 247),
-         Gutter("Run some context", 317),
-         Gutter("Run some context top level test", 351),
-         Gutter("Run some context top level test with config", 452),
-         Gutter("Run some context 2", 536),
-         Gutter("Run some context 2 some nested context", 573),
-         Gutter("Run some context 2 some nested context top level test", 617),
-         Gutter("Run some context 2 some nested context top level test with config", 727),
-         Gutter("Run a context with config", 852),
-         Gutter("Run a context with config a should", 894),
-         Gutter("Disabled - an xcontext with config", 958, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - an xcontext with config a should", 1000, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - xdisabled should", 1037, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run ShouldSpecExample", 126, AllIcons.RunConfigurations.TestState.Run_run),
+         Gutter("Run top level test", 190),
+         Gutter("Run top level test with config", 282),
+         Gutter("Run some context", 352),
+         Gutter("Run some context top level test", 386),
+         Gutter("Run some context top level test with config", 487),
+         Gutter("Run some context 2", 571),
+         Gutter("Run some context 2 some nested context", 608),
+         Gutter("Run some context 2 some nested context top level test", 652),
+         Gutter("Run some context 2 some nested context top level test with config", 762),
+         Gutter("Run a context with config", 887),
+         Gutter("Run a context with config a should", 929),
+         Gutter("Disabled - an xcontext with config", 993, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext with config a should", 1035, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdisabled should", 1072, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Run All Spec Tests, including data tests", 1133),
       )
 
       gutters.size shouldBe expected.size

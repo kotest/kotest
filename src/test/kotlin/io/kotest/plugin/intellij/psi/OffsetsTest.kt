@@ -19,18 +19,18 @@ class OffsetsTest : LightJavaCodeInsightFixtureTestCase() {
 
    fun testLineOffsets() {
       val psiFile = myFixture.configureByFile("/funspec.kt")
-      val offsets = psiFile.offsetForLine(21)
+      val offsets = psiFile.offsetForLine(22)
       offsets.shouldNotBeNull()
-      offsets.first shouldBe 324
-      offsets.last shouldBe 353
+      offsets.first shouldBe 359
+      offsets.last shouldBe 388
    }
 
    fun testFindElementForAGivenLine() {
       val psiFile = myFixture.configureByFile("/funspec.kt")
-      val element: PsiElement? = psiFile.elementAtLine(24)
+      val element: PsiElement? = psiFile.elementAtLine(25)
       element.shouldNotBeNull()
       element.node.shouldBeInstanceOf<PsiElement>()
-      element.startOffset shouldBe 369
-      element.endOffset shouldBe 373
+      element.startOffset shouldBe 404
+      element.endOffset shouldBe 408
    }
 }
