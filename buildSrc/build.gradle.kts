@@ -32,7 +32,6 @@ val kotlinDslPluginSources: Configuration by configurations.creating {
    isCanBeConsumed = false
    isCanBeResolved = false
    isCanBeDeclared = true
-   isVisible = false
    defaultDependencies {
       add(project.dependencies.create("org.gradle.kotlin:gradle-kotlin-dsl-plugins:$expectedKotlinDslPluginsVersion"))
    }
@@ -43,7 +42,6 @@ val kotlinDslPluginSourcesResolver: Configuration by configurations.creating {
    isCanBeConsumed = false
    isCanBeResolved = true
    isCanBeDeclared = false
-   isVisible = false
    extendsFrom(kotlinDslPluginSources)
    attributes {
       attribute(DOCS_TYPE_ATTRIBUTE, objects.named(SOURCES))

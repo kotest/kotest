@@ -11,7 +11,7 @@ kotlin {
             implementation(projects.kotestCommon)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.junit.jupiter.api)
+            implementation(libs.junit.jupiter5.api)
          }
       }
    }

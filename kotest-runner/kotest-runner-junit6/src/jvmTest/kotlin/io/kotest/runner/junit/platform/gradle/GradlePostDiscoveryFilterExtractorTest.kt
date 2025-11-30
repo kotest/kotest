@@ -4,7 +4,6 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.gradleinternals.GradlePostDiscoveryFilterExtractor
 import org.gradle.api.internal.tasks.testing.filter.TestFilterSpec
 import org.gradle.api.internal.tasks.testing.filter.TestSelectionMatcher
 

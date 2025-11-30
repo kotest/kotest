@@ -145,10 +145,12 @@ include(
    // adds support for the koin DI framework - see more https://insert-koin.io/
 //   ":kotest-extensions:kotest-extensions-koin",
 
-   // support for executing tests via junit platform through gradle
-   // this will also bring in the required libs for the intellij plugin
-   ":kotest-runner:kotest-runner-junit5",
    ":kotest-runner:kotest-runner-junit4",
+   ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit6",
+
+   // shared support executing tests via junit platform
+   ":kotest-runner:kotest-runner-junit-platform",
 
    // BOM for whole kotest project
    ":kotest-bom",

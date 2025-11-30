@@ -7,7 +7,6 @@ import io.kotest.datatest.withData
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.gradleinternals.GradleClassMethodRegexTestFilter
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class GradleClassMethodRegexTestFilterTest : FunSpec({
