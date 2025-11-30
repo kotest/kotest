@@ -17,7 +17,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
 import io.mockk.mockk
-import org.junit.jupiter.api.assertThrows
 import kotlin.random.Random
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
@@ -90,7 +89,7 @@ class ReflectionKtTest : FunSpec() {
             val car2 = Car("Car", 12345, 23)
             val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
 
-            assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+            shouldThrow<IllegalArgumentException> {
                car1.shouldBeEqualToUsingFields(car2, aPrivateField)
             }
          }
@@ -98,7 +97,7 @@ class ReflectionKtTest : FunSpec() {
             val car1 = Car("Car", 12345, 23)
             val car2 = AnotherCar("Car", 12345, 23)
 
-            assertThrows<IllegalArgumentException>("other is not an instance of declaring class") {
+            shouldThrow<IllegalArgumentException> {
                car1.shouldBeEqualToUsingFields(car2)
             }
          }
@@ -145,7 +144,7 @@ class ReflectionKtTest : FunSpec() {
             val anotherCar = AnotherCar("Car", 12345, 23)
             val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
 
-            assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+            shouldThrow<IllegalArgumentException> {
                car.shouldBeEqualToDifferentTypeUsingFields(anotherCar, aPrivateField)
             }
          }
@@ -176,7 +175,7 @@ class ReflectionKtTest : FunSpec() {
             val car1 = Car("Car", 12345, 23)
             val car2 = AnotherCar("Car", 12345, 23)
 
-            assertThrows<IllegalArgumentException>("other is not an instance of declaring class") {
+            shouldThrow<IllegalArgumentException> {
                car1.shouldBeEqualToUsingFields(car2)
             }
          }
@@ -365,7 +364,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles ByteArray") {
             class Test(
-               val test: kotlin.ByteArray
+               val test: ByteArray
             )
             Test(ByteArray(1)) shouldBeEqualToComparingFields Test(ByteArray(1))
             val actual = ByteArray(1)
@@ -376,7 +375,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles CharArray") {
             class Test(
-               val test: kotlin.CharArray
+               val test: CharArray
             )
             Test(CharArray(1)) shouldBeEqualToComparingFields Test(CharArray(1))
             val actual = CharArray(1)
@@ -387,7 +386,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles ShortArray") {
             class Test(
-               val test: kotlin.ShortArray
+               val test: ShortArray
             )
             Test(ShortArray(1)) shouldBeEqualToComparingFields Test(ShortArray(1))
             val actual = ShortArray(1)
@@ -398,7 +397,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles IntArray") {
             class Test(
-               val test: kotlin.IntArray
+               val test: IntArray
             )
             Test(IntArray(1)) shouldBeEqualToComparingFields Test(IntArray(1))
             val actual = IntArray(1)
@@ -409,7 +408,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles LongArray") {
             class Test(
-               val test: kotlin.LongArray
+               val test: LongArray
             )
             Test(LongArray(1)) shouldBeEqualToComparingFields Test(LongArray(1))
             val actual = LongArray(1)
@@ -420,7 +419,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles FloatArray") {
             class Test(
-               val test: kotlin.FloatArray
+               val test: FloatArray
             )
             Test(FloatArray(1)) shouldBeEqualToComparingFields Test(FloatArray(1))
             val actual = FloatArray(1)
@@ -431,7 +430,7 @@ class ReflectionKtTest : FunSpec() {
          }
          test("shouldBeEqualToComparingFields handles DoubleArray") {
             class Test(
-               val test: kotlin.DoubleArray
+               val test: DoubleArray
             )
             Test(DoubleArray(1)) shouldBeEqualToComparingFields Test(DoubleArray(1))
             val actual = DoubleArray(1)

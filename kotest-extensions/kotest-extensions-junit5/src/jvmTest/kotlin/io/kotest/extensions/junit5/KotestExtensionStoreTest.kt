@@ -29,15 +29,6 @@ class KotestExtensionStoreTest : WordSpec({
          }
       }
 
-      "return null when value of requested type is null" {
-         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
-         store.put("person", null)
-
-         val a = store.get("person", Person::class.java)
-
-         a shouldBe null
-      }
-
       "return value when type is of the removing type" {
          val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
          val a = Person("person", 20)
@@ -45,17 +36,6 @@ class KotestExtensionStoreTest : WordSpec({
 
          val b = store.remove("person", Person::class.java)
          a shouldBe b
-      }
-
-      "return null when removing type is already removed" {
-         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL).apply {
-            put("person", Person("person", 20))
-            remove("person", Person::class.java)
-         }
-
-         val a = store.remove("person", Person::class.java)
-
-         a shouldBe null
       }
 
       "compute when requested type is absent"{

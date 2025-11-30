@@ -9,7 +9,7 @@ sealed interface TestResult {
     */
    data class Ignored(val reason: String?) : TestResult {
       constructor() : this(null)
-      override val duration: kotlin.time.Duration = _root_ide_package_.kotlin.time.Duration.Companion.ZERO
+      override val duration: kotlin.time.Duration = kotlin.time.Duration.ZERO
    }
 
    data class Success(override val duration: kotlin.time.Duration) : TestResult
