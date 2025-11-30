@@ -18,6 +18,7 @@ import java.util.Date
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KType
+import kotlin.reflect.full.createType
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.typeOf
 
@@ -39,6 +40,14 @@ fun targetDefaultForType(
       typeOf<OffsetDateTime>(), typeOf<OffsetDateTime?>() -> Arb.offsetDateTime()
       typeOf<BigDecimal>(), typeOf<BigDecimal?>() -> Arb.bigDecimal()
       typeOf<BigInteger>(), typeOf<BigInteger?>() -> Arb.bigInt(maxNumBits = 256)
+      typeOf<ByteArray>() -> Arb.byteArray(Arb.int(10..15), Arb.byte())
+      typeOf<ShortArray>() -> Arb.shortArray(Arb.int(10..15), Arb.short())
+      typeOf<IntArray>() -> Arb.intArray(Arb.int(10..15), Arb.int())
+      typeOf<LongArray>() -> Arb.longArray(Arb.int(10..15), Arb.long())
+      typeOf<FloatArray>() -> Arb.floatArray(Arb.int(10..15), Arb.float())
+      typeOf<DoubleArray>() -> Arb.doubleArray(Arb.int(10..15), Arb.double())
+      typeOf<BooleanArray>() -> Arb.booleanArray(Arb.int(10..15), Arb.boolean())
+      typeOf<CharArray>() -> Arb.charArray(Arb.int(10..15), Arb.char())
       else -> null
    }?.let { return it }
 
@@ -49,9 +58,9 @@ fun targetDefaultForType(
          Arb.list(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>)
       }
       clazz.java.isArray -> {
-         val upperBound = type.arguments.first().type ?: error("No bound for Array")
-         Arb.array(Arb.forType(providedArbs, arbsForProps, upperBound) as Arb<*>) {
-            val upperBoundKClass = (upperBound.classifier as? KClass<*>) ?: error("No classifier for $upperBound")
+         val elementType: KType = arrayElementType(type)?.createType() ?: error("No bound for Array")
+         Arb.array(Arb.forType(providedArbs, arbsForProps, elementType) as Arb<*>) {
+            val upperBoundKClass = (elementType.classifier as? KClass<*>) ?: error("No classifier for $elementType")
             @Suppress("UNCHECKED_CAST")
             val array = java.lang.reflect.Array.newInstance(upperBoundKClass.javaObjectType, this.size) as Array<Any?>
             for ((i, item) in this.withIndex()) {
