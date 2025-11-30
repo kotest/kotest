@@ -2,7 +2,7 @@ plugins {
    id("kotest-jvm-conventions")
    id("kotest-js-conventions")
    id("kotest-publishing-conventions")
-   id("linux-only-tests-conventions")
+
 }
 
 kotlin {
