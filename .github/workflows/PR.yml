@@ -20,7 +20,7 @@ jobs:
          run_tests: ${{ steps.check_files.outputs.run_tests }}
       steps:
          -  name: Checkout code
-            uses: actions/checkout@v4
+            uses: actions/checkout@v5
             with:
                fetch-depth: 2
 
@@ -96,10 +96,10 @@ jobs:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_docs == 'true' }}
       runs-on: ubuntu-latest
       steps:
-         -  uses: actions/checkout@v4
+         -  uses: actions/checkout@v5
             with:
                ref: ${{ inputs.ref }}
-         -  uses: actions/setup-node@v4
+         -  uses: actions/setup-node@v6
             with:
                node-version: '18.4.0'
          -  name: Build static docusaurus pages
