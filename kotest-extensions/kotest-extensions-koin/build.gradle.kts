@@ -9,7 +9,7 @@ kotlin {
 
    sourceSets {
 
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(libs.koin.core)
@@ -20,7 +20,15 @@ kotlin {
          }
       }
 
-      val jvmMain by getting {
+      // koin is exposing kotlin-test as a dependency, and if the versions don't align, the compiler complains,
+      // so we need to force it to be same as our version
+      commonMain {
+         dependencies {
+            api("org.jetbrains.kotlin:kotlin-test:${libs.versions.kotlin.asProvider().get()}")
+         }
+      }
+
+      jvmMain {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(libs.mockk)
