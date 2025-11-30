@@ -1,10 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
-import org.gradle.api.attributes.DocsType.DOCS_TYPE_ATTRIBUTE
-import org.gradle.api.attributes.DocsType.SOURCES
-import org.gradle.kotlin.dsl.support.expectedKotlinDslPluginsVersion
-import org.gradle.kotlin.dsl.support.serviceOf
-
 plugins {
    `kotlin-dsl`
 }
