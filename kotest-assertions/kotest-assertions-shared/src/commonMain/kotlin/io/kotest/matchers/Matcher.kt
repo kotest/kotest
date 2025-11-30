@@ -104,25 +104,46 @@ interface MatcherResult {
    }
 }
 
+/**
+ * An instance of [MatcherResult] that contains the actual and expected values
+ * as [Printed] values, along with the failure and negated failure messages.
+ *
+ * By returning this [MatcherResult], Kotest will automatically generate the appropriate
+ * assertion error message that contains the actual and expected values in a way
+ * that allows intellij to create a <Click to see difference> link in the IDE output window.
+ */
+data class ComparisonMatcherResult(
+   @JsName("passed_val") val passed: Boolean,
+   val actual: Printed,
+   val expected: Printed,
+   val failureMessageFn: () -> String,
+   val negatedFailureMessageFn: () -> String,
+) : MatcherResult {
+   override fun passed(): Boolean = passed
+   override fun failureMessage(): String = failureMessageFn()
+   override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+}
+
+@Deprecated("Use ComparisonMatcherResult")
 interface EqualityMatcherResult : MatcherResult {
 
-   fun actual(): Printed
+   fun actual(): Any?
 
-   fun expected(): Printed
+   fun expected(): Any?
 
    companion object {
       operator fun invoke(
          passed: Boolean,
-         actual: Printed,
-         expected: Printed,
+         actual: Any?,
+         expected: Any?,
          failureMessageFn: () -> String,
          negatedFailureMessageFn: () -> String,
       ): EqualityMatcherResult = object : EqualityMatcherResult {
          override fun passed(): Boolean = passed
          override fun failureMessage(): String = failureMessageFn()
          override fun negatedFailureMessage(): String = negatedFailureMessageFn()
-         override fun actual(): Printed = actual
-         override fun expected(): Printed = expected
+         override fun actual(): Any? = actual
+         override fun expected(): Any? = expected
       }
    }
 }

@@ -4,7 +4,7 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.EqualityMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.file.shouldExist
@@ -133,7 +133,7 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
 private fun lastBytesMatch(bytes: ByteArray) = object : Matcher<ByteArray> {
    override fun test(value: ByteArray): MatcherResult {
       val last = value.last()
-      return EqualityMatcherResult(
+      return ComparisonMatcherResult(
          passed = last == bytes.last(),
          actual = StringPrint.printUnquoted(last.toString()),
          expected = StringPrint.printUnquoted(bytes.last().toString()),

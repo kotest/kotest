@@ -1,7 +1,7 @@
 package io.kotest.assertions.json
 
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.EqualityMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -39,7 +39,7 @@ fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
          )
       }
 
-      return EqualityMatcherResult(
+      return ComparisonMatcherResult(
          passed = actualJson == expectedJson,
          actual = StringPrint.printUnquoted(actualJson.toString()),
          expected = StringPrint.printUnquoted(expectedJson.toString()),

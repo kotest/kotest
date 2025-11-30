@@ -2,7 +2,7 @@ package io.kotest.matchers.throwable
 
 import io.kotest.assertions.print.print
 import io.kotest.common.reflection.bestName
-import io.kotest.matchers.EqualityMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -19,7 +19,7 @@ infix fun Throwable.shouldNotHaveMessage(message: String): Throwable {
 }
 
 fun haveMessage(message: String) = object : Matcher<Throwable> {
-   override fun test(value: Throwable) = EqualityMatcherResult(
+   override fun test(value: Throwable) = ComparisonMatcherResult(
       value.message?.trim() == message.trim(),
       actual = value.message?.trim().print(),
       expected = message.trim().print(),

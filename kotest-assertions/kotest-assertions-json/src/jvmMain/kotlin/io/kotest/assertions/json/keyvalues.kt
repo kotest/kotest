@@ -9,7 +9,7 @@ import io.kotest.assertions.print.print
 import io.kotest.common.KotestInternal
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.EqualityMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
@@ -61,7 +61,7 @@ fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = ob
           is ExtractedValue<*> -> {
              val actualValue = actualKeyValue.value
              val passed = t == actualValue
-             return EqualityMatcherResult(
+             return ComparisonMatcherResult(
                 passed = passed,
                 expected = t.print(),
                 actual = actualValue.print(),
