@@ -11,9 +11,6 @@ object Ci {
    // The build number from GitHub Actions, if available, which is used to create a unique snapshot version.
    private val githubBuildNumber = System.getenv("GITHUB_RUN_NUMBER")
 
-   /** Is the build currently running on CI. */
-   private val isCI = System.getenv("CI").toBoolean()
-
    private val snapshotVersion = when (githubBuildNumber) {
       null -> "$SNAPSHOT_BASE-LOCAL"
       else -> "$SNAPSHOT_BASE.${githubBuildNumber}-SNAPSHOT"

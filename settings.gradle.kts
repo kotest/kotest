@@ -152,33 +152,58 @@ include(
 
    // BOM for whole kotest project
    ":kotest-bom",
-
-   ":kotest-tests:kotest-tests-core",
-
-   // defines the order of callbacks
-   ":kotest-tests:kotest-tests-callback-order",
-
-   ":kotest-tests:kotest-tests-concurrency-tests",
-   ":kotest-tests:kotest-tests-concurrency-specs",
-   ":kotest-tests:kotest-tests-config-project",
-   ":kotest-tests:kotest-tests-config-classname",
-   ":kotest-tests:kotest-tests-config-packages",
-
-   // tests that kotest.properties on the classpath are picked up
-   ":kotest-tests:kotest-tests-config-properties",
-
-   ":kotest-tests:kotest-tests-htmlreporter",
-   ":kotest-tests:kotest-tests-junitxml",
-   ":kotest-tests:kotest-tests-junit-displaynameformatter",
-   ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-power-assert",
-   ":kotest-tests:kotest-tests-spec-parallelism",
-   ":kotest-tests:kotest-tests-tagextension",
-   ":kotest-tests:kotest-tests-timeout-project",
-   ":kotest-tests:kotest-tests-timeout-sysprop",
-   ":kotest-tests:kotest-tests-test-parallelism",
-//   ":kotest-tests:kotest-tests-js",
 )
+
+/** Is the build currently running on CI. */
+private val isCI = System.getenv("CI").toBoolean()
+
+/** Is the build currently running on a github actions Linux runner. */
+private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
+
+private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
+
+/** we only include JVM-only modules if it's a non-CI build, or if it's master build, or if it's using a linux runner */
+private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+
+/**
+ * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
+ * assume that if it works on one JVM, then it will work on all JVMs. Worst case, is there's a bug on
+ * a specific OS JVM that causes a test to fail on macos when it works on linux for example, then our
+ * PR would be green, but go red on master. This is acceptable trade off given the limited availability
+ * of Macos runners on github.
+ */
+if (shouldRunJvmOnlyModules) {
+   include(
+
+      ":kotest-tests:kotest-tests-core",
+
+      // defines the order of callbacks
+      ":kotest-tests:kotest-tests-callback-order",
+
+      ":kotest-tests:kotest-tests-concurrency-tests",
+      ":kotest-tests:kotest-tests-concurrency-specs",
+
+      ":kotest-tests:kotest-tests-config-project",
+      ":kotest-tests:kotest-tests-config-classname",
+      ":kotest-tests:kotest-tests-config-packages",
+
+      // tests that kotest.properties on the classpath are picked up
+      ":kotest-tests:kotest-tests-config-properties",
+
+      ":kotest-tests:kotest-tests-htmlreporter",
+      ":kotest-tests:kotest-tests-junitxml",
+      ":kotest-tests:kotest-tests-junit-displaynameformatter",
+
+      ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
+      ":kotest-tests:kotest-tests-power-assert",
+      ":kotest-tests:kotest-tests-spec-parallelism",
+      ":kotest-tests:kotest-tests-tagextension",
+      ":kotest-tests:kotest-tests-timeout-project",
+      ":kotest-tests:kotest-tests-timeout-sysprop",
+      ":kotest-tests:kotest-tests-test-parallelism",
+//   ":kotest-tests:kotest-tests-js",
+   )
+}
 
 develocity {
    buildScan {

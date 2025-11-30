@@ -94,6 +94,7 @@ dependencies {
    // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+
 }
 
 configureGradleDaemonJvm(
