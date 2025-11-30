@@ -2468,6 +2468,8 @@ public final class io/kotest/matchers/ints/IntKt {
 	public static final fun nonNegative ()Lio/kotest/matchers/Matcher;
 	public static final fun nonPositive ()Lio/kotest/matchers/Matcher;
 	public static final fun positive ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (II)I
+	public static final fun shouldBeAtMost (II)I
 	public static final fun shouldBeEven (I)I
 	public static final fun shouldBeExactly (II)I
 	public static final fun shouldBeGreaterThan (II)I
@@ -2480,6 +2482,8 @@ public final class io/kotest/matchers/ints/IntKt {
 	public static final fun shouldBeOdd (I)I
 	public static final fun shouldBePositive (I)I
 	public static final fun shouldBeZero (I)I
+	public static final fun shouldNotBeAtLeast (II)I
+	public static final fun shouldNotBeAtMost (II)I
 	public static final fun shouldNotBeEven (I)I
 	public static final fun shouldNotBeExactly (II)I
 	public static final fun shouldNotBeGreaterThan (II)I
@@ -2538,6 +2542,8 @@ public final class io/kotest/matchers/longs/LongKt {
 	public static final fun nonNegativeL ()Lio/kotest/matchers/Matcher;
 	public static final fun nonPositiveL ()Lio/kotest/matchers/Matcher;
 	public static final fun positiveL ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (JJ)J
+	public static final fun shouldBeAtMost (JJ)J
 	public static final fun shouldBeEven (J)J
 	public static final fun shouldBeExactly (JJ)J
 	public static final fun shouldBeGreaterThan (JJ)J
@@ -2550,6 +2556,8 @@ public final class io/kotest/matchers/longs/LongKt {
 	public static final fun shouldBeOdd (J)J
 	public static final fun shouldBePositive (J)J
 	public static final fun shouldBeZero (J)J
+	public static final fun shouldNotBeAtLeast (JJ)J
+	public static final fun shouldNotBeAtMost (JJ)J
 	public static final fun shouldNotBeEven (J)J
 	public static final fun shouldNotBeExactly (JJ)J
 	public static final fun shouldNotBeGreaterThan (JJ)J
