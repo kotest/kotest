@@ -10,10 +10,6 @@ val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinNative.get()) {
 
-      iosX64()
-      iosArm64()
-      iosSimulatorArm64()
-
       linuxX64()
       linuxArm64()
 
@@ -24,14 +20,27 @@ kotlin {
          mingwX64()
       }
 
-      tvosX64()
-      tvosArm64()
-      tvosSimulatorArm64()
+      /**
+       * Macos runners have limited CPU resources as they are expensive, so github (very reasonably) limits
+       * concurrency on them for open source projects. We therefore only run these targets on master builds,
+       * or on non-CI builds. Since the chances of a PR breaking watch/tv/ios but working on macos is pretty low,
+       * we get to speed up the builds considerably, and worst case is we'll have a green PR build but a red
+       * master build after merge. I think this trade off is acceptable.
+       */
+      if (Ci.shouldRunWatchTvIosModules) {
+         iosX64()
+         iosArm64()
+         iosSimulatorArm64()
 
-      watchosArm32()
-      watchosArm64()
-      watchosX64()
-      watchosSimulatorArm64()
+         tvosX64()
+         tvosArm64()
+         tvosSimulatorArm64()
+
+         watchosArm32()
+         watchosArm64()
+         watchosX64()
+         watchosSimulatorArm64()
+      }
 
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
