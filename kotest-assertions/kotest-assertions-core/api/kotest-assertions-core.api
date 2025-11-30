@@ -1025,22 +1025,30 @@ public final class io/kotest/matchers/bigdecimal/BigDecimalToleranceKt {
 public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun beEqualIgnoringScale (Ljava/math/BigDecimal;)Lio/kotest/matchers/Matcher;
 	public static final fun beInClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeAtMost (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
 	public static final fun shouldBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeGreaterThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeLessThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeNegative (Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBePositive (Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeZero (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldHavePrecision (Ljava/math/BigDecimal;I)I
 	public static final fun shouldHaveScale (Ljava/math/BigDecimal;I)I
+	public static final fun shouldNotBeAtLeast (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeAtMost (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
 	public static final fun shouldNotBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeGreaterThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeLessThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;

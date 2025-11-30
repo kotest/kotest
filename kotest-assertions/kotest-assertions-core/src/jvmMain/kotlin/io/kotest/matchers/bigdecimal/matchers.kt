@@ -24,14 +24,38 @@ infix fun BigDecimal.shouldHaveScale(scale: Int) = this.scale() shouldBe scale
 infix fun BigDecimal.shouldNotHaveScale(scale: Int) = this.scale() shouldNotBe scale
 
 infix fun BigDecimal.shouldBeLessThan(other: BigDecimal) = this shouldBe lt(other)
-infix fun BigDecimal.shouldBeLessThanOrEquals(other: BigDecimal) = this shouldBe lte(other)
+@Deprecated(
+   "use Kotest's shouldBeLessThanOrEqual",
+   ReplaceWith("shouldBeLessThanOrEqual", "io.kotest.matchers.bigdecimal")
+)
+infix fun BigDecimal.shouldBeLessThanOrEquals(other: BigDecimal) = this.shouldBeLessThanOrEqual(other)
+infix fun BigDecimal.shouldBeAtMost(other: BigDecimal) = this.shouldBeLessThanOrEqual(other)
+infix fun BigDecimal.shouldBeLessThanOrEqual(other: BigDecimal) = this shouldBe lte(other)
 infix fun BigDecimal.shouldNotBeLessThan(other: BigDecimal) = this shouldNotBe lt(other)
-infix fun BigDecimal.shouldNotBeLessThanOrEquals(other: BigDecimal) = this shouldNotBe lte(other)
+@Deprecated(
+   "use Kotest's shouldNotBeLessThanOrEqual",
+   ReplaceWith("shouldNotBeLessThanOrEqual", "io.kotest.matchers.bigdecimal")
+)
+infix fun BigDecimal.shouldNotBeLessThanOrEquals(other: BigDecimal) = this.shouldNotBeLessThanOrEqual(other)
+infix fun BigDecimal.shouldNotBeAtMost(other: BigDecimal) = this.shouldNotBeLessThanOrEqual(other)
+infix fun BigDecimal.shouldNotBeLessThanOrEqual(other: BigDecimal) = this shouldNotBe lte(other)
 
 infix fun BigDecimal.shouldBeGreaterThan(other: BigDecimal) = this shouldBe gt(other)
-infix fun BigDecimal.shouldBeGreaterThanOrEquals(other: BigDecimal) = this shouldBe gte(other)
+@Deprecated(
+   "use Kotest's shouldBeGreaterThanOrEqual",
+   ReplaceWith("shouldBeGreaterThanOrEqual", "io.kotest.matchers.bigdecimal")
+)
+infix fun BigDecimal.shouldBeGreaterThanOrEquals(other: BigDecimal) = this.shouldBeGreaterThanOrEqual(other)
+infix fun BigDecimal.shouldBeAtLeast(other: BigDecimal) = this.shouldBeGreaterThanOrEqual(other)
+infix fun BigDecimal.shouldBeGreaterThanOrEqual(other: BigDecimal) = this shouldBe gte(other)
 infix fun BigDecimal.shouldNotBeGreaterThan(other: BigDecimal) = this shouldNotBe gt(other)
-infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this shouldNotBe gte(other)
+@Deprecated(
+   "use Kotest's shouldNotBeGreaterThanOrEqual",
+   ReplaceWith("shouldNotBeGreaterThanOrEqual", "io.kotest.matchers.bigdecimal")
+)
+infix fun BigDecimal.shouldNotBeGreaterThanOrEquals(other: BigDecimal) = this.shouldNotBeGreaterThanOrEqual(other)
+infix fun BigDecimal.shouldNotBeAtLeast(other: BigDecimal) = this.shouldNotBeGreaterThanOrEqual(other)
+infix fun BigDecimal.shouldNotBeGreaterThanOrEqual(other: BigDecimal) = this shouldNotBe gte(other)
 
 @Deprecated("use <T: Comparable<T>> shouldBeIn",
    ReplaceWith("this shouldBeIn (range)", "io.kotest.matchers.ranges.shouldBeIn")
