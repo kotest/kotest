@@ -30,7 +30,7 @@ byte-buddy = "1.17.6"
 
 dev-publish-plugin = "0.4.2"
 
-#koin = "4.0.0"
+koin = "4.1.1"
 wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
