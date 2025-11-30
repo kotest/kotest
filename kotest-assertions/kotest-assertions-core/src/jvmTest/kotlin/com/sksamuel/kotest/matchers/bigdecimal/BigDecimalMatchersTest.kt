@@ -2,18 +2,22 @@ package com.sksamuel.kotest.matchers.bigdecimal
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.bigdecimal.shouldBeAtLeast
+import io.kotest.matchers.bigdecimal.shouldBeAtMost
 import io.kotest.matchers.bigdecimal.shouldBeGreaterThan
-import io.kotest.matchers.bigdecimal.shouldBeGreaterThanOrEquals
+import io.kotest.matchers.bigdecimal.shouldBeGreaterThanOrEqual
 import io.kotest.matchers.bigdecimal.shouldBeLessThan
-import io.kotest.matchers.bigdecimal.shouldBeLessThanOrEquals
+import io.kotest.matchers.bigdecimal.shouldBeLessThanOrEqual
 import io.kotest.matchers.bigdecimal.shouldBeNegative
 import io.kotest.matchers.bigdecimal.shouldBePositive
 import io.kotest.matchers.bigdecimal.shouldBeZero
 import io.kotest.matchers.bigdecimal.shouldHavePrecision
+import io.kotest.matchers.bigdecimal.shouldNotBeAtLeast
+import io.kotest.matchers.bigdecimal.shouldNotBeAtMost
 import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThan
-import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThanOrEquals
+import io.kotest.matchers.bigdecimal.shouldNotBeGreaterThanOrEqual
 import io.kotest.matchers.bigdecimal.shouldNotBeLessThan
-import io.kotest.matchers.bigdecimal.shouldNotBeLessThanOrEquals
+import io.kotest.matchers.bigdecimal.shouldNotBeLessThanOrEqual
 import io.kotest.matchers.bigdecimal.shouldNotBeNegative
 import io.kotest.matchers.bigdecimal.shouldNotBePositive
 import io.kotest.matchers.ranges.shouldBeIn
@@ -70,13 +74,21 @@ class BigDecimalMatchersTest : StringSpec() {
          BigDecimal.ONE shouldNotBeGreaterThan BigDecimal.TEN
          BigDecimal.TEN shouldNotBeGreaterThan BigDecimal.TEN
       }
-      "shouldBeGreaterThanOrEquals" {
-         BigDecimal.ONE shouldBeGreaterThanOrEquals BigDecimal.ZERO
-         BigDecimal.ONE shouldBeGreaterThanOrEquals BigDecimal.ONE
-         BigDecimal.TEN shouldBeGreaterThanOrEquals BigDecimal.ONE
-         BigDecimal.TEN shouldBeGreaterThanOrEquals BigDecimal.TEN
-         BigDecimal.ONE shouldNotBeGreaterThanOrEquals BigDecimal.TEN
-         BigDecimal.ZERO shouldNotBeGreaterThanOrEquals BigDecimal.ONE
+      "shouldBeGreaterThanOrEqual" {
+         BigDecimal.ONE shouldBeGreaterThanOrEqual BigDecimal.ZERO
+         BigDecimal.ONE shouldBeGreaterThanOrEqual BigDecimal.ONE
+         BigDecimal.TEN shouldBeGreaterThanOrEqual BigDecimal.ONE
+         BigDecimal.TEN shouldBeGreaterThanOrEqual BigDecimal.TEN
+         BigDecimal.ONE shouldNotBeGreaterThanOrEqual BigDecimal.TEN
+         BigDecimal.ZERO shouldNotBeGreaterThanOrEqual BigDecimal.ONE
+      }
+      "shouldBeAtLeast" {
+         BigDecimal.ONE shouldBeAtLeast BigDecimal.ZERO
+         BigDecimal.ONE shouldBeAtLeast BigDecimal.ONE
+         BigDecimal.TEN shouldBeAtLeast BigDecimal.ONE
+         BigDecimal.TEN shouldBeAtLeast BigDecimal.TEN
+         BigDecimal.ONE shouldNotBeAtLeast BigDecimal.TEN
+         BigDecimal.ZERO shouldNotBeAtLeast BigDecimal.ONE
       }
       "shouldBeLessThan" {
          BigDecimal.ZERO shouldBeLessThan BigDecimal.ONE
@@ -85,13 +97,21 @@ class BigDecimalMatchersTest : StringSpec() {
          BigDecimal.TEN shouldNotBeLessThan BigDecimal.ONE
          BigDecimal.TEN shouldNotBeLessThan BigDecimal.TEN
       }
-      "shouldBeLessThanOrEquals" {
-         BigDecimal.ZERO shouldBeLessThanOrEquals BigDecimal.ONE
-         BigDecimal.ONE shouldBeLessThanOrEquals BigDecimal.ONE
-         BigDecimal.ONE shouldBeLessThanOrEquals BigDecimal.TEN
-         BigDecimal.TEN shouldBeLessThanOrEquals BigDecimal.TEN
-         BigDecimal.TEN shouldNotBeLessThanOrEquals BigDecimal.ONE
-         BigDecimal.ONE shouldNotBeLessThanOrEquals BigDecimal.ZERO
+      "shouldBeLessThanOrEqual" {
+         BigDecimal.ZERO shouldBeLessThanOrEqual BigDecimal.ONE
+         BigDecimal.ONE shouldBeLessThanOrEqual BigDecimal.ONE
+         BigDecimal.ONE shouldBeLessThanOrEqual BigDecimal.TEN
+         BigDecimal.TEN shouldBeLessThanOrEqual BigDecimal.TEN
+         BigDecimal.TEN shouldNotBeLessThanOrEqual BigDecimal.ONE
+         BigDecimal.ONE shouldNotBeLessThanOrEqual BigDecimal.ZERO
+      }
+      "shouldBeAtMost" {
+         BigDecimal.ZERO shouldBeAtMost BigDecimal.ONE
+         BigDecimal.ONE shouldBeAtMost BigDecimal.ONE
+         BigDecimal.ONE shouldBeAtMost BigDecimal.TEN
+         BigDecimal.TEN shouldBeAtMost BigDecimal.TEN
+         BigDecimal.TEN shouldNotBeAtMost BigDecimal.ONE
+         BigDecimal.ONE shouldNotBeAtMost BigDecimal.ZERO
       }
       "shouldBeInRange" {
          BigDecimal.ZERO shouldBeIn BigDecimal(-1)..BigDecimal(1)
