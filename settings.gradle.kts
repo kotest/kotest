@@ -70,6 +70,9 @@ include(
    // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
    ":kotest-assertions:kotest-assertions-shared",
 
+   // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
+   ":kotest-assertions:kotest-assertions-compiler",
+
    // the core assertions that cover the basic types such as String, Int, Boolean, etc.
    // it also defines the assertion error builders that create the intellij formatted assertion errors
    // users should depend on this if they want to use kotest assertions in tests
@@ -83,8 +86,6 @@ include(
 
    ":kotest-assertions:kotest-assertions-yaml",
 
-   // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
-   ":kotest-assertions:kotest-assertions-compiler",
    ":kotest-assertions:kotest-assertions-kotlinx-datetime",
 
    ":kotest-assertions:kotest-assertions-arrow",
@@ -109,14 +110,11 @@ include(
    ":kotest-property:kotest-property-arrow",
 //   ":kotest-property:kotest-property-arrow-optics",
 
-   // support for executing tests via junit platform through gradle
-   // this will also bring in the required libs for the intellij plugin
-   ":kotest-runner:kotest-runner-junit5",
-
-   ":kotest-runner:kotest-runner-junit4",
-
    // contains some common extensions not worth making a module for
    ":kotest-extensions",
+
+   ":kotest-extensions:kotest-extensions-htmlreporter",
+   ":kotest-extensions:kotest-extensions-junitxml",
 
    // adds support for the allure reporting framework - see more https://allurereport.org/
    ":kotest-extensions:kotest-extensions-allure",
@@ -125,14 +123,8 @@ include(
    // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
    ":kotest-extensions:kotest-extensions-decoroutinator",
 
-   ":kotest-extensions:kotest-extensions-htmlreporter",
-   ":kotest-extensions:kotest-extensions-junitxml",
-
    // adds support for mockserver - see more https://www.mock-server.com/
    ":kotest-extensions:kotest-extensions-mockserver",
-
-   // adds support for the koin DI framework - see more https://insert-koin.io/
-//   ":kotest-extensions:kotest-extensions-koin",
 
    ":kotest-extensions:kotest-extensions-pitest",
 
@@ -150,10 +142,17 @@ include(
    // adds support for the wiremock framework - see more https://www.wiremock.io/
    ":kotest-extensions:kotest-extensions-wiremock",
 
+   // adds support for the koin DI framework - see more https://insert-koin.io/
+//   ":kotest-extensions:kotest-extensions-koin",
 
-   // the tests modules each test a piece of functionality
-   // it is useful to have separate modules so each can set their own project config that
-   // may be required as part of the tests
+   // support for executing tests via junit platform through gradle
+   // this will also bring in the required libs for the intellij plugin
+   ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit4",
+
+   // BOM for whole kotest project
+   ":kotest-bom",
+
    ":kotest-tests:kotest-tests-core",
 
    // defines the order of callbacks
@@ -167,6 +166,7 @@ include(
 
    // tests that kotest.properties on the classpath are picked up
    ":kotest-tests:kotest-tests-config-properties",
+
    ":kotest-tests:kotest-tests-htmlreporter",
    ":kotest-tests:kotest-tests-junitxml",
    ":kotest-tests:kotest-tests-junit-displaynameformatter",
@@ -178,9 +178,6 @@ include(
    ":kotest-tests:kotest-tests-timeout-sysprop",
    ":kotest-tests:kotest-tests-test-parallelism",
 //   ":kotest-tests:kotest-tests-js",
-
-   // BOM for whole kotest project
-   ":kotest-bom",
 )
 
 develocity {

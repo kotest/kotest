@@ -3,6 +3,7 @@ package com.sksamuel.kotest.matchers.doubles
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.doubles.beAtLeast
 import io.kotest.matchers.doubles.beGreaterThan
 import io.kotest.matchers.doubles.beGreaterThanOrEqualTo
 import io.kotest.matchers.doubles.beLessThan
@@ -17,6 +18,7 @@ import io.kotest.matchers.doubles.lt
 import io.kotest.matchers.doubles.lte
 import io.kotest.matchers.doubles.negative
 import io.kotest.matchers.doubles.positive
+import io.kotest.matchers.doubles.shouldBeAtLeast
 import io.kotest.matchers.doubles.shouldBeBetween
 import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
@@ -29,6 +31,7 @@ import io.kotest.matchers.doubles.shouldBeNegativeInfinity
 import io.kotest.matchers.doubles.shouldBePositive
 import io.kotest.matchers.doubles.shouldBePositiveInfinity
 import io.kotest.matchers.doubles.shouldBeZero
+import io.kotest.matchers.doubles.shouldNotBeAtLeast
 import io.kotest.matchers.doubles.shouldNotBeBetween
 import io.kotest.matchers.doubles.shouldNotBeGreaterThan
 import io.kotest.matchers.doubles.shouldNotBeGreaterThanOrEqual
@@ -998,6 +1001,8 @@ class DoubleMatchersTest : FreeSpec() {
     this should beGreaterThanOrEqualTo(x)
     this shouldBe gte(x)
     this shouldBeGreaterThanOrEqual x
+    this should beAtLeast(x)
+    this shouldBeAtLeast(x)
 
     this shouldThrowExceptionOnNotGreaterThanOrEqual (x)
   }
@@ -1013,6 +1018,8 @@ class DoubleMatchersTest : FreeSpec() {
     this shouldNot beGreaterThanOrEqualTo(x)
     this shouldNotBe gte(x)
     this shouldNotBeGreaterThanOrEqual x
+    this shouldNot beAtLeast(x)
+    this shouldNotBeAtLeast(x)
 
     this shouldThrowExceptionOnGreaterThanOrEqual (x)
   }
@@ -1021,7 +1028,9 @@ class DoubleMatchersTest : FreeSpec() {
     shouldThrowAssertionError("$this should be >= $x",
                               { this should beGreaterThanOrEqualTo(x) },
                               { this shouldBe gte(x) },
-                              { this shouldBeGreaterThanOrEqual x })
+                              { this shouldBeGreaterThanOrEqual x },
+                              { this shouldBeAtLeast x }
+       )
   }
 
   private fun Double.shouldMatchNaN() {

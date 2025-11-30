@@ -112,6 +112,11 @@ infix fun Int.shouldBeLessThanOrEqual(x: Int): Int {
    return this
 }
 
+infix fun Int.shouldBeAtMost(x: Int): Int = this.shouldBeLessThanOrEqual(x)
+infix fun Int.shouldNotBeAtMost(x: Int): Int = this.shouldBeGreaterThan(x)
+infix fun Int.shouldBeAtLeast(x: Int): Int = this.shouldBeGreaterThanOrEqual(x)
+infix fun Int.shouldNotBeAtLeast(x: Int): Int = this.shouldBeLessThan(x)
+
 infix fun Int.shouldNotBeLessThanOrEqual(x: Int): Int {
    this shouldNotBe lte(x)
    return this

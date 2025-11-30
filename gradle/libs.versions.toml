@@ -44,7 +44,7 @@ kotlinx-io-core = "0.7.0"
 xmlutil = "0.91.1"
 agp = "8.10.0"
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.5.5"
+decoroutinator = "2.5.8"
 pitest = "1.20.1"
 
 ### Java compilation ###
@@ -137,7 +137,7 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
-hikari = { module = "com.zaxxer:HikariCP", version = "6.3.0" }
+hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }

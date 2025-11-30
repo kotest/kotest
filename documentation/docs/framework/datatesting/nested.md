@@ -6,7 +6,7 @@ slug: nested-tests.html
 
 Kotest's data testing is extremely flexible and allows to unlimited nesting of data test constructs.
 Each extra nest will create another layer of nesting in the test output providing the cartesian join of all inputs.
-Please note that while `StringSpec` supports `withData`, this spec does not support `Nested Data Tests`.
+Please note that while `StringSpec` supports `withXXX`, this spec does not support `Nested Data Tests`.
 
 For example, in the following code snippet, we have two layers of nesting.
 
@@ -21,8 +21,8 @@ context("each service should support all http methods") {
 
   val methods = listOf("GET", "POST", "PUT")
 
-   withData(services) { service ->
-     withData(methods) { method ->
+   withContexts(services) { service ->
+     withTests(methods) { method ->
        // test service against method
      }
    }
@@ -47,8 +47,8 @@ context("each service should support all http methods") {
 
     val methods = listOf("GET", "POST", "PUT")
 
-    withData(services) { service ->
-       withData<String>({ "should support HTTP $it" }, methods) { method ->
+  withContexts(services) { service ->
+    withTests<String>({ "should support HTTP $it" }, methods) { method ->
           // test service against method
        }
     }

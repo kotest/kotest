@@ -139,6 +139,11 @@ infix fun Long.shouldNotBeGreaterThanOrEqual(x: Long): Long {
    return this
 }
 
+infix fun Long.shouldBeAtMost(x: Long): Long = this.shouldBeLessThanOrEqual(x)
+infix fun Long.shouldNotBeAtMost(x: Long): Long = this.shouldBeGreaterThan(x)
+infix fun Long.shouldBeAtLeast(x: Long): Long = this.shouldBeGreaterThanOrEqual(x)
+infix fun Long.shouldNotBeAtLeast(x: Long): Long = this.shouldBeLessThan(x)
+
 infix fun Long.shouldBeExactly(x: Long): Long {
    this shouldBe exactly(x)
    return this

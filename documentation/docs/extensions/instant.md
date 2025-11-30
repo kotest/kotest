@@ -5,6 +5,9 @@ sidebar_label: Current Instant Listeners
 slug: instant.html
 ---
 
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-now.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-now)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-now%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-now/maven-metadata.xml)
+
 :::tip
 Since Kotest 5.6.0, Current instant listeners are located in the artifact `io.kotest:kotest-extensions-now:${kotest-version}`.
 

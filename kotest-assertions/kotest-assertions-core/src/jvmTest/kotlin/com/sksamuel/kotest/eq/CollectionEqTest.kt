@@ -123,4 +123,13 @@ class CollectionEqTest : FunSpec({
       listOf("hello") shouldNotBe emptyList<String>()
       emptyList<String>() shouldNotBe listOf("hello")
    }
+
+   test("should handle cyclic collections without StackOverflowError") {
+      // Create a self-referential list
+      val cyclicList = mutableListOf<Any?>()
+      cyclicList.add(cyclicList)
+
+      // Comparing a cyclic list with itself should work (same instance)
+      CollectionEq.equals(cyclicList, cyclicList, false).shouldBeNull()
+   }
 })

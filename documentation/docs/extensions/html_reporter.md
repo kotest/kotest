@@ -5,7 +5,8 @@ sidebar_label: HTML Reporter
 slug: html_reporter.html
 ---
 
-[![Latest Release](https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-htmlreporter)](https://search.maven.org/artifact/io.kotest/kotest-extensions-htmlreporter)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-htmlreporter.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-htmlreporter)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-htmlreporter%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-htmlreporter/maven-metadata.xml)
 
 When using [JUnit XML](./junit_xml.md), we can generate XML results from tests that are able to produce output with nested
 tests. Unfortunately, Gradle generates its HTML reports with the results it has in-memory, which doesn't support nested
@@ -15,7 +16,7 @@ To solve this, Kotest has a listener that is able to generate HTML reports based
 by [JUnit XML](./junit_xml.md).
 
 :::note
-The following module is needed: `io.kotest:kotest-extensions-htmlreporter` in your build. Search maven central for latest version [here](https://search.maven.org/search?q=kotest-extensions-htmlreporter).
+The following module is needed: `io.kotest:kotest-extensions-htmlreporter` in your build. Search maven central for latest version [here](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-htmlreporter).
 :::
 
 In order to use it, we simply need to add it as a listener through [project config](../framework/project_config.md).

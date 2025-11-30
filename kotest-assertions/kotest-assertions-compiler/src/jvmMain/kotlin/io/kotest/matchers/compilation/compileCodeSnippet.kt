@@ -12,6 +12,9 @@ import org.intellij.lang.annotations.Language
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.nio.file.Path
+import kotlin.io.path.name
+import kotlin.io.path.readText
 
 /**
  * Represents a configuration wrapper for Kotlin compilation used in testing,
@@ -74,11 +77,11 @@ fun <T> CodeSnippet.compile(block: JvmCompilationResult.() -> T): T {
    return compile().block()
 }
 
-private class CodeSnippetImpl(val sourceFile: SourceFile, val compileConfig: CompileConfig): CodeSnippet {
+private class CodeSnippetImpl(val sourceFiles: List<SourceFile>, val compileConfig: CompileConfig): CodeSnippet {
    @OptIn(ExperimentalCompilerApi::class)
    override fun compile(): JvmCompilationResult {
       val kotlinCompilation = compileConfig.compilationFactory()
-      kotlinCompilation.sources = listOf(sourceFile)
+      kotlinCompilation.sources = sourceFiles
       val compilationResult = kotlinCompilation.compile()
       kotlinCompilation.workingDir.deleteRecursively()
       return compilationResult
@@ -140,7 +143,21 @@ private val defaultCompileConfig = CompileConfig {}
  */
 @OptIn(ExperimentalCompilerApi::class)
 fun CompileConfig.codeSnippet(@Language("kotlin") sourceCode: String): CodeSnippet {
-   return CodeSnippetImpl(SourceFile.kotlin("KClass.kt", sourceCode), this)
+   return CodeSnippetImpl(listOf(SourceFile.kotlin("KClass.kt", sourceCode)), this)
+}
+
+/**
+ * Creates a [CodeSnippet] from [SourceFile]s.
+ */
+fun CompileConfig.codeSnippet(vararg sourceFiles: SourceFile): CodeSnippet {
+   return CodeSnippetImpl(sourceFiles.toList(), this)
+}
+
+/**
+ * Creates a [CodeSnippet] from [SourceFile]s.
+ */
+fun CompileConfig.codeSnippet(sourceFiles: List<SourceFile>): CodeSnippet {
+   return CodeSnippetImpl(sourceFiles, this)
 }
 
 /**
@@ -148,6 +165,20 @@ fun CompileConfig.codeSnippet(@Language("kotlin") sourceCode: String): CodeSnipp
  */
 fun codeSnippet(@Language("kotlin") sourceCode: String): CodeSnippet {
    return defaultCompileConfig.codeSnippet(sourceCode)
+}
+
+/**
+ * Creates a [CodeSnippet] from [SourceFile]s.
+ */
+fun codeSnippet(vararg sourceFiles: SourceFile): CodeSnippet {
+   return defaultCompileConfig.codeSnippet(*sourceFiles)
+}
+
+/**
+ * Creates a [CodeSnippet] from [SourceFile]s.
+ */
+fun codeSnippet(sourceFiles: List<SourceFile>): CodeSnippet {
+   return defaultCompileConfig.codeSnippet(sourceFiles)
 }
 
 /**
@@ -172,6 +203,33 @@ fun String.shouldCompile() = codeSnippet(this).shouldCompile()
 fun String.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this).shouldNotCompile(expectedMessage)
 
 /**
+ * Assert that given codeSnippet [String] compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [Map.shouldNotCompile]
+ * */
+fun Map<String, String>.shouldCompile() = codeSnippet(
+   this.map { (k, v) -> SourceFile.kotlin(k, v) }
+).shouldCompile()
+
+/**
+ * Assert that given codeSnippets does not compile successfully.
+ *
+ * The key of the map is the filename, and the value is the file content.
+ *
+ * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
+ * with an error message containing the specified text. This helps ensure that the compilation
+ * fails for the expected reason, not due to an unrelated error.
+ *
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [Map.shouldCompile]
+ * */
+fun Map<String, String>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
+   this.map { (k, v) -> SourceFile.kotlin(k, v) }
+).shouldNotCompile(expectedMessage)
+
+/**
  * Assert that given [File] compiles successfully.
  * It includes the classpath of the calling process,
  * so that dependencies available to the calling process are also available to the code snippet.
@@ -191,6 +249,104 @@ fun File.shouldCompile() = codeSnippet(readText()).shouldCompile()
  * @see [File.shouldCompile]
  * */
 fun File.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readText()).shouldNotCompile(expectedMessage)
+
+/**
+ * Assert that given [File]s compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldNotCompile]
+ * */
+@JvmName("shouldCompileFiles")
+fun List<File>.shouldCompile() = codeSnippet(
+   this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
+).shouldCompile()
+
+/**
+ * Assert that given [SourceFile]s compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldNotCompile]
+ * */
+@JvmName("shouldCompileSourceFiles")
+fun List<SourceFile>.shouldCompile() = codeSnippet(this).shouldCompile()
+
+/**
+ * Assert that given [File]s does not compile successfully.
+ *
+ * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
+ * with an error message containing the specified text. This helps ensure that the compilation
+ * fails for the expected reason, not due to an unrelated error.
+ *
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldCompile]
+ * */
+@JvmName("shouldNotCompileFiles")
+fun List<File>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
+   this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
+).shouldNotCompile(expectedMessage)
+
+/**
+ * Assert that given [SourceFile]s does not compile successfully.
+ *
+ * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
+ * with an error message containing the specified text. This helps ensure that the compilation
+ * fails for the expected reason, not due to an unrelated error.
+ *
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldCompile]
+ * */
+@JvmName("shouldNotCompileSourceFiles")
+fun List<SourceFile>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this).shouldNotCompile(expectedMessage)
+
+/**
+ * Assert that given [Path] compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [Path.shouldNotCompile]
+ * */
+fun Path.shouldCompile() = codeSnippet(readText()).shouldCompile()
+
+/**
+ * Assert that given [Path] does not compile successfully.
+ *
+ * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
+ * with an error message containing the specified text. This helps ensure that the compilation
+ * fails for the expected reason, not due to an unrelated error.
+ *
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [Path.shouldCompile]
+ * */
+fun Path.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readText()).shouldNotCompile(expectedMessage)
+
+/**
+ * Assert that given [Path]s compiles successfully.
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldNotCompile]
+ * */
+@JvmName("shouldCompilePaths")
+fun List<Path>.shouldCompile() = codeSnippet(
+   this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
+).shouldCompile()
+
+/**
+ * Assert that given [Path]s does not compile successfully.
+ *
+ * If [expectedMessage] is provided, the test additionally verifies that the compilation fails
+ * with an error message containing the specified text. This helps ensure that the compilation
+ * fails for the expected reason, not due to an unrelated error.
+ *
+ * It includes the classpath of the calling process,
+ * so that dependencies available to the calling process are also available to the code snippet.
+ * @see [List.shouldCompile]
+ * */
+@JvmName("shouldNotCompilePaths")
+fun List<Path>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
+   this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
+).shouldNotCompile(expectedMessage)
 
 /**
  * Assert that given [CodeSnippet] compiles successfully.

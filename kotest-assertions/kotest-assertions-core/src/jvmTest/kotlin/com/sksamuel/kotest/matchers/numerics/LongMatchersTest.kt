@@ -19,6 +19,10 @@ import io.kotest.data.row
 import io.kotest.data.table
 import io.kotest.matchers.comparables.between
 import io.kotest.matchers.comparables.shouldBeBetween
+import io.kotest.matchers.longs.shouldBeAtLeast
+import io.kotest.matchers.longs.shouldBeAtMost
+import io.kotest.matchers.longs.shouldNotBeAtLeast
+import io.kotest.matchers.longs.shouldNotBeAtMost
 
 class LongMatchersTest : StringSpec() {
   init {
@@ -75,6 +79,36 @@ class LongMatchersTest : StringSpec() {
         2L should beLessThanOrEqualTo(1L)
       }
     }
+
+    "shouldBeAtMost" {
+       1L shouldBeAtMost 1L
+       1L shouldBeAtMost 2L
+       shouldThrow<AssertionError> {
+          2L shouldBeAtMost 1L
+       }
+    }
+
+     "shouldNotBeAtMost" {
+        1L shouldNotBeAtMost 0L
+        shouldThrow<AssertionError> {
+           2L shouldNotBeAtMost 3L
+        }
+     }
+
+     "shouldBeAtLeast" {
+        1L shouldBeAtLeast 0L
+        1L shouldBeAtLeast 1L
+        shouldThrow<AssertionError> {
+           2L shouldBeAtLeast 3L
+        }
+     }
+
+     "shouldNotBeAtLeast" {
+        1L shouldBeAtLeast 0L
+        shouldThrow<AssertionError> {
+           2L shouldNotBeAtLeast 1L
+        }
+     }
 
     "greaterThan" {
       1L should beGreaterThanOrEqualTo(0L)

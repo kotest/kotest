@@ -2,7 +2,9 @@ package io.kotest.datatest.styles
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withContexts
 import io.kotest.datatest.withData
+import io.kotest.datatest.withTests
 import io.kotest.matchers.shouldBe
 
 class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {
@@ -10,6 +12,7 @@ class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {
 
       duplicateTestNameMode = DuplicateTestNameMode.Silent
 
+      var beforeAnyTest = 0
       var beforeTest = 0
       var beforeContainer = 0
       var afterContainer = 0
@@ -17,6 +20,9 @@ class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {
       var beforeEach = 0
       var afterEach = 0
 
+      beforeAny {
+         beforeAnyTest++
+      }
       beforeTest {
          beforeTest++
       }
@@ -36,29 +42,41 @@ class FunSpecBeforeAfterCallbacksDataTest : FunSpec() {
          afterTest++
       }
       afterSpec {
-         beforeTest shouldBe 13
-         beforeContainer shouldBe 7
-         beforeEach shouldBe 6
-         afterEach shouldBe 6
-         afterContainer shouldBe 7
-         afterTest shouldBe 13
+         beforeTest shouldBe 57
+         beforeContainer shouldBe 15
+         beforeEach shouldBe 42
+         afterEach shouldBe 42
+         afterContainer shouldBe 15
+         afterTest shouldBe 57
       }
 
-      withData(
+      withContexts(
          "foo",
          "bar",
          "baz"
       ) {
-         test("it") {}
+         withTests("it1","it2") {}
       }
 
       context("inside a context") {
-         withData(
+         withContexts(
             "foo",
             "bar",
             "baz"
          ) {
-            test("it") {}
+            withTests("it1","it2") {}
+            withTests("it3","it4") {}
+         }
+      }
+
+      withContexts("inside a context 1", "inside a context 2") {
+         withContexts(
+            "foo",
+            "bar",
+            "baz"
+         ) {
+            withTests("it1","it2") {}
+            withTests("it3","it4") {}
          }
       }
    }

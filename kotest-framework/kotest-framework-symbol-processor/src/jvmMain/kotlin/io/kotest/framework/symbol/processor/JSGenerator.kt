@@ -27,7 +27,7 @@ class JSGenerator(private val environment: SymbolProcessorEnvironment) {
       }
    }
 
-   private fun createFileSpec(specs: List<KSClassDeclaration>, configs: List<KSClassDeclaration>): FileSpec {
+   internal fun createFileSpec(specs: List<KSClassDeclaration>, configs: List<KSClassDeclaration>): FileSpec {
       val function = FunSpec.builder("main")
          .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
          .returns(UNIT)
@@ -48,9 +48,9 @@ val promise = TestEngineLauncher()
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
-      specs.forEach {
-         val sn = it.simpleName.asString()
-         val fqn = it.qualifiedName?.asString() ?: it.simpleName.asString()
+      specs.forEachIndexed { index, spec ->
+         val sn = spec.simpleName.asString() + index
+         val fqn = spec.qualifiedName?.asString() ?: spec.simpleName.asString()
          function.addCode("""SpecRef.Function ({ `${sn}`() }, `${sn}`::class, "$fqn"), """)
          function.addCode("\n")
       }
@@ -87,8 +87,11 @@ handleEngineResult(result)
          .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("kotlinx.coroutines", "await")
          .addImport("kotlin.js", "Promise")
-      specs.forEach {
-         file.addImport(it.packageName.asString(), it.simpleName.asString())
+      specs.forEachIndexed { index, spec ->
+         file.addAliasedImport(
+            ClassName(spec.packageName.asString(), spec.simpleName.asString()),
+            `as` = spec.simpleName.asString() + index.toString()
+         )
       }
       return file.build()
    }

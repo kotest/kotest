@@ -28,8 +28,10 @@ register the `SpringExtension` in [project config](../framework/project_config.m
 
 ```kotlin
 package io.kotest.provided
+
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.extensions.spring.SpringExtension
+
 class ProjectConfig : AbstractProjectConfig() {
    override val extensions = listOf(SpringExtension())
 }
@@ -40,6 +42,7 @@ To activate it per test class:
 ```kotlin
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.extensions.spring.SpringExtension
+
 @ApplyExtension(SpringExtension::class)
 class MyTestSpec : FunSpec() {}
 ```

@@ -24,22 +24,25 @@ main Kotest releases.
 
 
 The Spring extension requires you to activate it for all test classes, or per test class. To activate it globally,
-register the `SpringExtension` in [project config](../framework/project_config.md):
+you can register the `SpringExtension` in [project config](../framework/project_config.md):
 
 ```kotlin
 package io.kotest.provided
+
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.extensions.spring.SpringExtension
+
 class ProjectConfig : AbstractProjectConfig() {
    override val extensions = listOf(SpringExtension())
 }
 ```
 
-To activate it per test class:
+Alternatively, you can register the extension per spec class via the `@ApplyExtension` annotation.
 
 ```kotlin
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.extensions.spring.SpringExtension
+
 @ApplyExtension(SpringExtension::class)
 class MyTestSpec : FunSpec() {}
 ```
@@ -113,7 +116,9 @@ class ProjectConfig : AbstractProjectConfig() {
 }
 ```
 
-
+:::tip
+If you want to use root mode with @ApplyExtension, you must use the `SpringRootTestExtension` subclass, eg `@ApplyExtension(SpringRootTestExtension::class)`.
+::
 
 ### Final Classes
 
