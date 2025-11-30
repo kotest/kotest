@@ -145,16 +145,6 @@ public class io/kotest/matchers/BasicErrorCollector : io/kotest/matchers/ErrorCo
 	public fun setSubject (Lio/kotest/assertions/print/Printed;)V
 }
 
-public abstract interface class io/kotest/matchers/ComparableMatcherResult : io/kotest/matchers/MatcherResult {
-	public static final field Companion Lio/kotest/matchers/ComparableMatcherResult$Companion;
-	public abstract fun actual ()Ljava/lang/String;
-	public abstract fun expected ()Ljava/lang/String;
-}
-
-public final class io/kotest/matchers/ComparableMatcherResult$Companion {
-	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/String;Ljava/lang/String;)Lio/kotest/matchers/ComparableMatcherResult;
-}
-
 public final class io/kotest/matchers/ComparisonMatcherResult : io/kotest/matchers/MatcherResult {
 	public fun <init> (ZLio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
 	public final fun component1 ()Z
