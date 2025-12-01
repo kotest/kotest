@@ -15,16 +15,31 @@ infix fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
 fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
    this shouldNot containAllInAnyOrder(*expected)
 
+/**
+ * Verifies that the given [Collection] contains all the specified elements in any order.
+ * The collection may additionally contain other elements.
+ */
 infix fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(expected: C) =
    this should containAllInAnyOrder(expected)
 
+/**
+ * Verifies that the given [Collection] contains all the specified elements in any order.
+ * The collection may additionally contain other elements.
+ */
 fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
    this should containAllInAnyOrder(*expected)
 
+/**
+ * Verifies that the given [Collection] contains all the specified elements in any order.
+ * The collection may additionally contain other elements.
+ */
 fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
    containAllInAnyOrder(expected.asList())
 
-/** Assert that a collection contains all the given values and nothing else, in any order. */
+/**
+ * Verifies that the given [Collection] contains all the specified elements in any order.
+ * The collection may additionally contain other elements.
+ */
 fun <T, C : Collection<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
    val valueAsList = value.toList()
    val expectedAsList = expected.toList()
