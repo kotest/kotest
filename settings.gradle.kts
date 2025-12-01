@@ -8,6 +8,11 @@ pluginManagement {
    }
 }
 
+plugins {
+   id("com.gradle.develocity") version "3.17.5"
+   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
    repositoriesMode = RepositoriesMode.PREFER_SETTINGS
@@ -44,11 +49,6 @@ dependencyResolutionManagement {
    }
 }
 
-plugins {
-   id("com.gradle.develocity") version "3.17.5"
-   id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
-}
-
 include(
    ":kotest-common",
 
@@ -70,6 +70,9 @@ include(
    // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
    ":kotest-assertions:kotest-assertions-shared",
 
+   // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
+   ":kotest-assertions:kotest-assertions-compiler",
+
    // the core assertions that cover the basic types such as String, Int, Boolean, etc.
    // it also defines the assertion error builders that create the intellij formatted assertion errors
    // users should depend on this if they want to use kotest assertions in tests
@@ -83,8 +86,6 @@ include(
 
    ":kotest-assertions:kotest-assertions-yaml",
 
-   // assertions used to validate code does not compile - see more https://github.com/tschuchortdev/kotlin-compile-testing
-   ":kotest-assertions:kotest-assertions-compiler",
    ":kotest-assertions:kotest-assertions-kotlinx-datetime",
 
    ":kotest-assertions:kotest-assertions-arrow",
@@ -109,14 +110,11 @@ include(
    ":kotest-property:kotest-property-arrow",
 //   ":kotest-property:kotest-property-arrow-optics",
 
-   // support for executing tests via junit platform through gradle
-   // this will also bring in the required libs for the intellij plugin
-   ":kotest-runner:kotest-runner-junit5",
-
-   ":kotest-runner:kotest-runner-junit4",
-
    // contains some common extensions not worth making a module for
    ":kotest-extensions",
+
+   ":kotest-extensions:kotest-extensions-htmlreporter",
+   ":kotest-extensions:kotest-extensions-junitxml",
 
    // adds support for the allure reporting framework - see more https://allurereport.org/
    ":kotest-extensions:kotest-extensions-allure",
@@ -125,14 +123,8 @@ include(
    // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
    ":kotest-extensions:kotest-extensions-decoroutinator",
 
-   ":kotest-extensions:kotest-extensions-htmlreporter",
-   ":kotest-extensions:kotest-extensions-junitxml",
-
    // adds support for mockserver - see more https://www.mock-server.com/
    ":kotest-extensions:kotest-extensions-mockserver",
-
-   // adds support for the koin DI framework - see more https://insert-koin.io/
-//   ":kotest-extensions:kotest-extensions-koin",
 
    ":kotest-extensions:kotest-extensions-pitest",
 
@@ -150,38 +142,68 @@ include(
    // adds support for the wiremock framework - see more https://www.wiremock.io/
    ":kotest-extensions:kotest-extensions-wiremock",
 
+   // adds support for the koin DI framework - see more https://insert-koin.io/
+   ":kotest-extensions:kotest-extensions-koin",
 
-   // the tests modules each test a piece of functionality
-   // it is useful to have separate modules so each can set their own project config that
-   // may be required as part of the tests
-   ":kotest-tests:kotest-tests-core",
-
-   // defines the order of callbacks
-   ":kotest-tests:kotest-tests-callback-order",
-
-   ":kotest-tests:kotest-tests-concurrency-tests",
-   ":kotest-tests:kotest-tests-concurrency-specs",
-   ":kotest-tests:kotest-tests-config-project",
-   ":kotest-tests:kotest-tests-config-classname",
-   ":kotest-tests:kotest-tests-config-packages",
-
-   // tests that kotest.properties on the classpath are picked up
-   ":kotest-tests:kotest-tests-config-properties",
-   ":kotest-tests:kotest-tests-htmlreporter",
-   ":kotest-tests:kotest-tests-junitxml",
-   ":kotest-tests:kotest-tests-junit-displaynameformatter",
-   ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
-   ":kotest-tests:kotest-tests-power-assert",
-   ":kotest-tests:kotest-tests-spec-parallelism",
-   ":kotest-tests:kotest-tests-tagextension",
-   ":kotest-tests:kotest-tests-timeout-project",
-   ":kotest-tests:kotest-tests-timeout-sysprop",
-   ":kotest-tests:kotest-tests-test-parallelism",
-//   ":kotest-tests:kotest-tests-js",
+   // support for executing tests via junit platform through gradle
+   // this will also bring in the required libs for the intellij plugin
+   ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit4",
 
    // BOM for whole kotest project
    ":kotest-bom",
 )
+
+/** Is the build currently running on CI. */
+private val isCI = System.getenv("CI").toBoolean()
+
+/** Is the build currently running on a github actions Linux runner. */
+private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
+
+private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
+
+/** we only include JVM-only modules if it's a non-CI build, or if it's master build, or if it's using a linux runner */
+private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+
+/**
+ * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
+ * assume that if it works on one JVM, then it will work on all JVMs. Worst case, is there's a bug on
+ * a specific OS JVM that causes a test to fail on macos when it works on linux for example, then our
+ * PR would be green, but go red on master. This is acceptable trade off given the limited availability
+ * of Macos runners on github.
+ */
+if (shouldRunJvmOnlyModules) {
+   include(
+
+      ":kotest-tests:kotest-tests-core",
+
+      // defines the order of callbacks
+      ":kotest-tests:kotest-tests-callback-order",
+
+      ":kotest-tests:kotest-tests-concurrency-tests",
+      ":kotest-tests:kotest-tests-concurrency-specs",
+
+      ":kotest-tests:kotest-tests-config-project",
+      ":kotest-tests:kotest-tests-config-classname",
+      ":kotest-tests:kotest-tests-config-packages",
+
+      // tests that kotest.properties on the classpath are picked up
+      ":kotest-tests:kotest-tests-config-properties",
+
+      ":kotest-tests:kotest-tests-htmlreporter",
+      ":kotest-tests:kotest-tests-junitxml",
+      ":kotest-tests:kotest-tests-junit-displaynameformatter",
+
+      ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
+      ":kotest-tests:kotest-tests-power-assert",
+      ":kotest-tests:kotest-tests-spec-parallelism",
+      ":kotest-tests:kotest-tests-tagextension",
+      ":kotest-tests:kotest-tests-timeout-project",
+      ":kotest-tests:kotest-tests-timeout-sysprop",
+      ":kotest-tests:kotest-tests-test-parallelism",
+//   ":kotest-tests:kotest-tests-js",
+   )
+}
 
 develocity {
    buildScan {

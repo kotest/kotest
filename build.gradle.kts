@@ -42,6 +42,7 @@ val publishToAppropriateCentralRepository by tasks.registering {
 
 // List all projects which should be included in publishing
 dependencies {
+
    // Assertions
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrow)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsArrowFxCoroutines)
@@ -62,19 +63,10 @@ dependencies {
 
    // Extensions
    nmcpAggregation(projects.kotestExtensions)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
+
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsHtmlreporter)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunitxml)
-//   nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
 
    // Framework
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
@@ -88,10 +80,21 @@ dependencies {
    nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
    nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
+   nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
 
-   // Runner
+   // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+
 }
 
 configureGradleDaemonJvm(

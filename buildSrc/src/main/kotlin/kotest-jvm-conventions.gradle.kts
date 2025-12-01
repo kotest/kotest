@@ -77,8 +77,6 @@ tasks.withType<JavaCompile>().configureEach {
 }
 //endregion
 
-
-//region JVM Test config
 tasks.withType<Test>().configureEach {
    jvmArgumentProviders.add(
       SystemPropertiesArgumentProvider.SystemPropertiesArgumentProvider(

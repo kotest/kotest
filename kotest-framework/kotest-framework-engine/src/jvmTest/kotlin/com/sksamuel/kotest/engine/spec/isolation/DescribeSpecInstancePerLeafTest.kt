@@ -194,3 +194,26 @@ class DescribeSpecInstancePerLeaf6 : DescribeSpec() {
       }
    }
 }
+
+private var counterForTest7 = 0
+
+class InstancePerLeafTest7 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   counterForTest7++
+
+   describe("d1") {
+      context("c1") {
+         it("i1") {
+            counterForTest7 shouldBe 1
+         }
+      }
+
+      context("c2") {
+         it("i2") {
+            counterForTest7 shouldBe 2
+         }
+      }
+   }
+})

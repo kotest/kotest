@@ -12,6 +12,28 @@ import io.kotest.matchers.string.shouldHaveLength
 class StringSpecDataTest : StringSpec() {
    init {
 
+      var beforeAnyCounter = 0
+      var beforeEachCounter = 0
+      var beforeTestCounter = 0
+      var afterTestCounter = 0
+      beforeAny {
+         beforeAnyCounter++
+      }
+      beforeEach {
+         beforeEachCounter++
+      }
+      beforeTest {
+         beforeTestCounter++
+      }
+      afterTest {
+         afterTestCounter++
+      }
+      afterSpec {
+         beforeAnyCounter shouldBe 19
+         beforeEachCounter shouldBe 19
+         beforeTestCounter shouldBe 19
+         afterTestCounter shouldBe 19
+      }
       duplicateTestNameMode = DuplicateTestNameMode.Silent
 
       var count = 0

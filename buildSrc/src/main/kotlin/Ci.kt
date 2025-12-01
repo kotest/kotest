@@ -6,13 +6,10 @@ object Ci {
     * The base version used for the release version.
     * For non release builds, `-SNAPSHOT` or `-LOCAL` will be appended.
     */
-   private const val SNAPSHOT_BASE = "6.0.0"
+   private const val SNAPSHOT_BASE = "6.1.0"
 
    // The build number from GitHub Actions, if available, which is used to create a unique snapshot version.
    private val githubBuildNumber = System.getenv("GITHUB_RUN_NUMBER")
-
-   /** Is the build currently running on CI. */
-   private val isCI = System.getenv("CI").toBoolean()
 
    private val snapshotVersion = when (githubBuildNumber) {
       null -> "$SNAPSHOT_BASE-LOCAL"
@@ -30,6 +27,18 @@ object Ci {
 
    /** The published version of Kotest dependencies. */
    val publishVersion = releaseVersion ?: snapshotVersion
+
+   /** Is the build currently running on CI. */
+   private val isCI = System.getenv("CI").toBoolean()
+
+   /** Is the git branch master */
+   private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
+
+   /**
+    * We only include watchos, tvsos and ios builds if it's a non-CI build or if it's master build
+    * due to the slowness of the github action macos runners
+    */
+   val shouldRunWatchTvIosModules = !isCI || isMaster
 
    /**
     * Property to flag the build as JVM only, can be used to run checks on local machine much faster.

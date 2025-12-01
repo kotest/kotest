@@ -20,6 +20,9 @@ import org.springframework.test.context.TestContextManager
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
+class SpringRootTestExtension : SpringExtension(SpringTestLifecycleMode.Root)
+class SpringLeafTestExtension : SpringExtension(SpringTestLifecycleMode.Test)
+
 /**
  * An [Extension] which adds support for testing spring components.
  *
@@ -29,8 +32,14 @@ import kotlin.reflect.KClass
  * to autowire the constructors
  *
  * 2. Adds support for spring lifecycle methods to be called before and after tests.
+ *
+ * To configure this extension, you must annotate specs with @ApplyExension(SpringExtension::class)
+ * or register the extension via project config.
+ *
+ * If you wish to have root test cases trigger spring lifecycle methods, you can set [SpringTestLifecycleMode]
+ * to [SpringTestLifecycleMode.Root] or use the SpringRootTestExtension, eg @ApplyExension(SpringRootTestExtension::class)
  */
-class SpringExtension(
+open class SpringExtension(
    private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
 ) : ConstructorExtension, SpecExtension, TestCaseExtension, BeforeTestListener, AfterTestListener {
 

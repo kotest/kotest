@@ -14,6 +14,7 @@ import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.engine.concurrency.ConcurrencyOrder
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.config.Defaults
@@ -58,6 +59,8 @@ abstract class AbstractProjectConfig {
     * Note: JVM ONLY
     */
    open val specExecutionOrder: SpecExecutionOrder? = null
+
+   open val concurrencyOrder: ConcurrencyOrder? = null
 
    /**
     * The [IsolationMode] set here will be applied if the isolation mode in a spec is null.

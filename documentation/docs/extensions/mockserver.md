@@ -37,7 +37,7 @@ class MyMockServerTest : FunSpec() {
   init {
 
       // this attaches the server to the lifeycle of the spec
-      listener(MockServerListener(1080))
+      extension(MockServerListener(1080))
 
       // we can use the client to create routes. Here we are setting them up
       // before each test by using the beforeTest callback.
