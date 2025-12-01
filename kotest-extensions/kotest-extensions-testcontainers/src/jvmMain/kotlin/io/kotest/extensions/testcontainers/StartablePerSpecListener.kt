@@ -22,7 +22,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
  * @see
  * [StartablePerTestListener]
  * */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
 class StartablePerSpecListener<T : Startable>(private val startable: T) : TestListener {
    private val testLifecycleAwareListener = TestLifecycleAwareListener(startable)
 
