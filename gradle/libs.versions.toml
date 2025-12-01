@@ -73,7 +73,6 @@ jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
 
 jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }
-junit4 = { module = "junit:junit", version.ref = "junit4" }
 
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
