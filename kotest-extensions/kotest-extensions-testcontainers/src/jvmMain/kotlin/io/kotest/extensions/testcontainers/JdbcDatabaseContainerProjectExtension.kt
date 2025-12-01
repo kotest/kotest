@@ -4,7 +4,6 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.TestListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
@@ -28,7 +27,7 @@ import javax.sql.DataSource
  */
 class JdbcDatabaseContainerProjectExtension(
    private val container: JdbcDatabaseContainer<*>,
-) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener, TestListener {
+) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener {
 
    private val ref = AtomicReference<HikariDataSource>(null)
    private val lock = ReentrantLock()
