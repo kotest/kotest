@@ -6,6 +6,8 @@ import io.kotest.core.listeners.TestListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.testcontainers.containers.GenericContainer
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * A Kotest [MountableExtension] for [GenericContainer]s that will launch the container
@@ -20,9 +22,18 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
    private val container: T,
 ) : MountableExtension<T, T>, AfterProjectListener, TestListener {
 
+   private val ref = AtomicReference<T>(null)
+   private val lock = ReentrantLock()
+
    override fun mount(configure: T.() -> Unit): T {
-      configure(container)
-      container.start()
+      lock.lockInterruptibly()
+      val t = ref.get()
+      if (t == null) {
+         configure(container)
+         container.start()
+         ref.set(container)
+      }
+      lock.unlock()
       return container
    }
 
