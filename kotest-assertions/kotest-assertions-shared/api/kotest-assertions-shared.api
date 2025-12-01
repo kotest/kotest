@@ -167,16 +167,6 @@ public final class io/kotest/matchers/ComparisonMatcherResult : io/kotest/matche
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/matchers/EqualityMatcherResult : io/kotest/matchers/MatcherResult {
-	public static final field Companion Lio/kotest/matchers/EqualityMatcherResult$Companion;
-	public abstract fun actual ()Ljava/lang/Object;
-	public abstract fun expected ()Ljava/lang/Object;
-}
-
-public final class io/kotest/matchers/EqualityMatcherResult$Companion {
-	public final fun invoke (ZLjava/lang/Object;Ljava/lang/Object;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/EqualityMatcherResult;
-}
-
 public final class io/kotest/matchers/ErrorCollectionMode : java/lang/Enum {
 	public static final field Hard Lio/kotest/matchers/ErrorCollectionMode;
 	public static final field Soft Lio/kotest/matchers/ErrorCollectionMode;

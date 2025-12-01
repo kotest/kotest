@@ -6,7 +6,7 @@ object Ci {
     * The base version used for the release version.
     * For non release builds, `-SNAPSHOT` or `-LOCAL` will be appended.
     */
-   private const val SNAPSHOT_BASE = "6.0.0"
+   private const val SNAPSHOT_BASE = "6.1.0"
 
    // The build number from GitHub Actions, if available, which is used to create a unique snapshot version.
    private val githubBuildNumber = System.getenv("GITHUB_RUN_NUMBER")
