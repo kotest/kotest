@@ -2,13 +2,8 @@ package io.kotest.matchers.paths
 
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.file.beEmptyDirectory
-import io.kotest.matchers.file.beLarger
-import io.kotest.matchers.file.containNFiles
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.shouldNotBe
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
@@ -125,12 +120,6 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
    )
 }
 
-infix fun Path.shouldContainNFiles(n: Int) = this.toFile() shouldBe containNFiles(n)
-infix fun Path.shouldNotContainNFiles(n: Int) = this.toFile() shouldNotBe containNFiles(n)
-
-fun Path.shouldBeEmptyDirectory() = this.toFile() should beEmptyDirectory()
-fun Path.shouldNotBeEmptyDirectory() = this.toFile() shouldNot beEmptyDirectory()
-
 fun Path.shouldBeHidden() = this should beHidden()
 fun Path.shouldNotBeHidden() = this shouldNot beHidden()
 fun beHidden(): Matcher<Path> = object : Matcher<Path> {
@@ -139,58 +128,6 @@ fun beHidden(): Matcher<Path> = object : Matcher<Path> {
          Files.isHidden(value),
          { "Path $value should be hidden" },
          { "Path $value should not be hidden" })
-}
-
-fun Path.shouldBeCanonical() = this should beCanonicalPath()
-fun Path.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
-fun beCanonicalPath(): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult = MatcherResult(
-      value.toFile().canonicalPath == value.toFile().path,
-      { "File $value should be canonical" },
-      { "File $value should not be canonical" })
-}
-
-infix fun Path.shouldContainFile(name: String) = this should containFile(name)
-infix fun Path.shouldNotContainFile(name: String) = this shouldNot containFile(name)
-fun containFile(name: String) = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult {
-      val contents = value.toFile().list()
-      val passed = Files.isDirectory(value) && contents.contains(name)
-      return MatcherResult(
-         passed,
-         { "Directory $value should contain a file with filename $name (detected ${contents.size} other files)" },
-         { "Directory $value should not contain a file with filename $name" })
-   }
-}
-
-infix fun Path.shouldBeLarger(other: Path) = this.toFile() should beLarger(other.toFile())
-infix fun Path.shouldBeLarger(other: File) = this.toFile() should beLarger(other)
-infix fun Path.shouldNotBeLarger(other: Path) = this.toFile() shouldNot beLarger(other.toFile())
-infix fun Path.shouldNotBeLarger(other: File) = this.toFile() shouldNot beLarger(other)
-fun beLarger(other: Path): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult {
-      val sizea = Files.size(value)
-      val sizeb = Files.size(other)
-      return MatcherResult(
-         sizea > sizeb,
-         { "Path $value ($sizea bytes) should be larger than $other ($sizeb bytes)" },
-         { "Path $value ($sizea bytes) should not be larger than $other ($sizeb bytes)" })
-   }
-}
-
-infix fun Path.shouldBeSmaller(other: Path) = this should beSmaller(other)
-infix fun Path.shouldBeSmaller(other: File) = this should beSmaller(other.toPath())
-infix fun Path.shouldNotBeSmaller(other: Path) = this shouldNot beSmaller(other)
-infix fun Path.shouldNotBeSmaller(other: File) = this shouldNot beSmaller(other.toPath())
-fun beSmaller(other: Path): Matcher<Path> = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult {
-      val sizea = Files.size(value)
-      val sizeb = Files.size(other)
-      return MatcherResult(
-         sizea < sizeb,
-         { "Path $value ($sizea bytes) should be smaller than $other ($sizeb bytes)" },
-         { "Path $value ($sizea bytes) should not be smaller than $other ($sizeb bytes)" })
-   }
 }
 
 infix fun Path.shouldContainFileDeep(name: String) = this should containFileDeep(name)
@@ -207,40 +144,6 @@ fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
       fileExists(value),
       { "Path $name should exist in $value" },
       { "Path $name should not exist in $value" }
-   )
-}
-
-fun Path.shouldContainFiles(vararg files: String) = this should containFiles(files.asList())
-fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containFiles(files.asList())
-fun containFiles(names: List<String>) = object : Matcher<Path> {
-   override fun test(value: Path): MatcherResult {
-
-      val files = value.toFile().list()
-      val existingFiles = names.intersect(files.toSet())
-      val nonExistingFiles = names.subtract(existingFiles)
-
-      return MatcherResult(
-         nonExistingFiles.isEmpty(),
-         { buildMessage(value, nonExistingFiles, false) },
-         { buildMessage(value, existingFiles, true) }
-      )
-   }
-
-   private fun buildMessage(path: Path, fileList: Set<String>, isNegative: Boolean): String {
-      val fileString = if (fileList.size > 1) "Files" else "File"
-      val negativeWord = if (isNegative) " not" else ""
-      val filesString = fileList.sorted().joinToString(", ")
-      return "$fileString $filesString should$negativeWord exist in $path"
-   }
-}
-
-fun Path.shouldBeSymbolicLink() = this should beSymbolicLink()
-fun Path.shouldNotBeSymbolicLink() = this shouldNot beSymbolicLink()
-fun beSymbolicLink() = object : Matcher<Path> {
-   override fun test(value: Path) = MatcherResult(
-      Files.isSymbolicLink(value),
-      { "Path $value should be a symbolic link" },
-      { "Path $value should not be a symbolic link" }
    )
 }
 

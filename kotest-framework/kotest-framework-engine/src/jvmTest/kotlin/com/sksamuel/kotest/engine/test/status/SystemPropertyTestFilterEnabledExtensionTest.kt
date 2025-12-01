@@ -40,15 +40,15 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
             TestType.Test
          )
 
-         withSystemProperty(KotestEngineProperties.filterTests, "foo") {
+         withSystemProperty(KotestEngineProperties.FILTER_TESTS, "foo") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
          }
 
-         withSystemProperty(KotestEngineProperties.filterTests, "f*") {
+         withSystemProperty(KotestEngineProperties.FILTER_TESTS, "f*") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
          }
 
-         withSystemProperty(KotestEngineProperties.filterTests, "*o") {
+         withSystemProperty(KotestEngineProperties.FILTER_TESTS, "*o") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc).shouldBe(Enabled.enabled)
          }
       }
@@ -63,17 +63,17 @@ class SystemPropertyTestFilterEnabledExtensionTest : FunSpec() {
             TestType.Test
          )
 
-         withSystemProperty(KotestEngineProperties.filterTests, "goo") {
+         withSystemProperty(KotestEngineProperties.FILTER_TESTS, "goo") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
                .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': goo"))
          }
 
-         withSystemProperty(KotestEngineProperties.filterTests, "g*") {
+         withSystemProperty(KotestEngineProperties.FILTER_TESTS, "g*") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
                .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': g.*?"))
          }
 
-         withSystemProperty(KotestEngineProperties.filterTests, "*p") {
+         withSystemProperty(KotestEngineProperties.FILTER_TESTS, "*p") {
             SystemPropertyTestFilterEnabledExtension.isEnabled(tc)
                .shouldBe(Enabled.disabled("Excluded by 'kotest.filter.tests': .*?p"))
          }
