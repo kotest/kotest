@@ -52,7 +52,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `collection.shouldBeUnique()`                   | Asserts that all the elements of the collection are distinct using the natural equals of the elements.                                                            |
 | `collection.shouldBeUnique(comparator)`         | Asserts that all the elements of the collection are distinct by comparing elements using the given `comparator`.                                                  |
 | `collection.shouldContain(element)`             | Asserts that the collection contains the given element.                                                                                                           |
-| `collection.shouldContainAll(e1, e2, ..., en)`  | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1.              |
+| `collection.shouldContainAll(e1, e2, ..., en)`  | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1. The collection can contain other elements as well.             |
 | `collection.shouldContainDuplicates()`          | Asserts that the collection contains at least one duplicate element.                                                                                              |
 | `collection.shouldContainExactly()`             | Assert that a collection contains exactly the given values and nothing else, in order.                                                                            |
 | `collection.shouldContainExactlyInAnyOrder()`   | Assert that a collection contains exactly the given values and nothing else, in _any_ order.                                                                      |
@@ -83,7 +83,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `iterable.shouldMatchEach(assertions)`          | Iterates over this list and the assertions and asserts that each element of this list passes the associated assertion. Fails if size of the collections mismatch. |
 | `iterable.shouldMatchInOrder(assertions)`       | Asserts that there is a subsequence of this iterator that matches the assertions in order, with no gaps allowed.                                                  |
 | `iterable.shouldMatchInOrderSubset(assertions)` | Asserts that there is a subsequence (possibly with gaps) that matches the assertions in order.                                                                    |
-| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection.                                                                                                    |
+| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection, checking by reference, not by value.                                                                                                    |
 | `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                      |
 | `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                        |
 
@@ -140,8 +140,10 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `int.shouldBeBetween(x, y)`         | Asserts that the integer is between x and y, inclusive on both x and y |
 | `int.shouldBeLessThan(n)`           | Asserts that the integer is less than the given value n |
 | `int.shouldBeLessThanOrEqual(n)`    | Asserts that the integer is less or equal to than the given value n |
+| `int.shouldBeAtMost(n)`             | Asserts that the integer is less or equal to than the given value n |
 | `int.shouldBeGreaterThan(n)`        | Asserts that the integer is greater than the given value n |
 | `int.shouldBeGreaterThanOrEqual(n)` | Asserts that the integer is greater than or equal to the given value n |
+| `int.shouldBeAtLeast(n)`            | Asserts that the integer is greater than or equal to the given value n |
 | `int.shouldBeEven()`                | Asserts that the integer is even. |
 | `int.shouldBeOdd()`                 | Asserts that the integer is odd. |
 | `int.shouldBeInRange(range)`        | Asserts that the integer is included in the given range. |
@@ -152,8 +154,10 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `long.shouldBeBetween(x, y)`         | Asserts that the long is between x and y, inclusive on both x and y |
 | `long.shouldBeLessThan(n)`           | Asserts that the long is less than the given value n |
 | `long.shouldBeLessThanOrEqual(n)`    | Asserts that the long is less or equal to than the given value n |
+| `long.shouldBeAtMost(n)`             | Asserts that the long is less or equal to than the given value n |
 | `long.shouldBeGreaterThan(n)`        | Asserts that the long is greater than the given value n |
 | `long.shouldBeGreaterThanOrEqual(n)` | Asserts that the long is greater than or equal to the given value n |
+| `long.shouldBeAtLeast(n)`             | Asserts that the long is greater than or equal to the given value n |
 | `long.shouldBeInRange(range)`        | Asserts that the long is included in the given range. |
 | `long.shouldBeEven()`                | Asserts that the long is even. |
 | `long.shouldBeOdd()`                 | Asserts that the long is odd. |
@@ -174,21 +178,23 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
 | `double.shouldBeZero()`                         | Asserts that the double is zero |
 
-| BigDecimal                                  |                                                                            |
-|---------------------------------------------|----------------------------------------------------------------------------|
-| `bigDecimal.shouldHavePrecision(n)`         | Asserts that the bigDecimal precision is equals than the given value n     |
-| `bigDecimal.shouldHaveScale(n)`             | Asserts that the bigDecimal scale is equals than the given value n         |
-| `bigDecimal.shouldBePositive()`             | Asserts that the bigDecimal is positive                                    |
-| `bigDecimal.shouldBeNegative()`             | Asserts that the bigDecimal is negative                                    |
-| `bigDecimal.shouldNotBePositive()`          | Asserts that the bigDecimal is not positive                                |
-| `bigDecimal.shouldNotBeNegative()`          | Asserts that the bigDecimal is not negative                                |
-| `bigDecimal.shouldBeZero()`                 | Asserts that the bigDecimal is zero                                        |
-| `bigDecimal.shouldBeLessThan(n)`            | Asserts that the bigDecimal is less than the given value n                 |
-| `bigDecimal.shouldBeLessThanOrEquals(n)`    | Asserts that the bigDecimal is less than or equal to n                     |
-| `bigDecimal.shouldBeGreaterThan(n)`         | Asserts that the bigDecimal is greater than the given value n              |
-| `bigDecimal.shouldBeGreaterThanOrEquals(n)` | Asserts that the bigDecimal is greater than or equals to the given value n |
-| `bigDecimal.shouldBeInRange(r)`             | Asserts that the bigDecimal is in the given range                          |
-| `bigDecimal.shouldBeEqualIgnoringScale(r)`  | Asserts that the bigDecimal is equal to the given value n ignoring scale   |
+| BigDecimal                                          |                                                                            |
+|-----------------------------------------------------|----------------------------------------------------------------------------|
+| `bigDecimal.shouldHavePrecision(n)`                 | Asserts that the bigDecimal precision is equals than the given value n     |
+| `bigDecimal.shouldHaveScale(n)`                     | Asserts that the bigDecimal scale is equals than the given value n         |
+| `bigDecimal.shouldBePositive()`                     | Asserts that the bigDecimal is positive                                    |
+| `bigDecimal.shouldBeNegative()`                     | Asserts that the bigDecimal is negative                                    |
+| `bigDecimal.shouldNotBePositive()`                  | Asserts that the bigDecimal is not positive                                |
+| `bigDecimal.shouldNotBeNegative()`                  | Asserts that the bigDecimal is not negative                                |
+| `bigDecimal.shouldBeZero()`                         | Asserts that the bigDecimal is zero                                        |
+| `bigDecimal.shouldBeLessThan(n)`                    | Asserts that the bigDecimal is less than the given value n                 |
+| `bigDecimal.shouldBeLessThanOrEqual(n)`             | Asserts that the bigDecimal is less than or equal to n                     |
+| `bigDecimal.shouldBeAtMost(n)`                      | Asserts that the bigDecimal is less than or equal to n                     |
+| `bigDecimal.shouldBeGreaterThan(n)`                 | Asserts that the bigDecimal is greater than the given value n              |
+| `bigDecimal.shouldBeGreaterThanOrEqual(n)`          | Asserts that the bigDecimal is greater than or equals to the given value n |
+| `bigDecimal.shouldBeAtLeast(n)`                     | Asserts that the bigDecimal is greater than or equals to the given value n |
+| `bigDecimal.shouldBeInRange(r)`                     | Asserts that the bigDecimal is in the given range                          |
+| `bigDecimal.shouldBeEqualIgnoringScale(r)`          | Asserts that the bigDecimal is equal to the given value n ignoring scale   |
 | `bigDecimal.shouldBe(value plusOrMinus(tolerance))` | Asserts that the bigDecimal is equal to the given value within a tolerance range. |
 
 | Channels                                          ||

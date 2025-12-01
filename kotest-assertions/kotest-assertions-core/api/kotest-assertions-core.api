@@ -1025,22 +1025,30 @@ public final class io/kotest/matchers/bigdecimal/BigDecimalToleranceKt {
 public final class io/kotest/matchers/bigdecimal/MatchersKt {
 	public static final fun beEqualIgnoringScale (Ljava/math/BigDecimal;)Lio/kotest/matchers/Matcher;
 	public static final fun beInClosedRange (Lkotlin/ranges/ClosedRange;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeAtMost (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
 	public static final fun shouldBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeGreaterThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
+	public static final fun shouldBeLessThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeNegative (Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBePositive (Ljava/math/BigDecimal;)Ljava/lang/Object;
 	public static final fun shouldBeZero (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldHavePrecision (Ljava/math/BigDecimal;I)I
 	public static final fun shouldHaveScale (Ljava/math/BigDecimal;I)I
+	public static final fun shouldNotBeAtLeast (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeAtMost (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeEqualIgnoringScale (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)V
 	public static final fun shouldNotBeGreaterThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeGreaterThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeGreaterThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeInRange (Ljava/math/BigDecimal;Lkotlin/ranges/ClosedRange;)V
 	public static final fun shouldNotBeLessThan (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
+	public static final fun shouldNotBeLessThanOrEqual (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeLessThanOrEquals (Ljava/math/BigDecimal;Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBeNegative (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
 	public static final fun shouldNotBePositive (Ljava/math/BigDecimal;)Ljava/math/BigDecimal;
@@ -2477,6 +2485,8 @@ public final class io/kotest/matchers/ints/IntKt {
 	public static final fun nonNegative ()Lio/kotest/matchers/Matcher;
 	public static final fun nonPositive ()Lio/kotest/matchers/Matcher;
 	public static final fun positive ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (II)I
+	public static final fun shouldBeAtMost (II)I
 	public static final fun shouldBeEven (I)I
 	public static final fun shouldBeExactly (II)I
 	public static final fun shouldBeGreaterThan (II)I
@@ -2489,6 +2499,8 @@ public final class io/kotest/matchers/ints/IntKt {
 	public static final fun shouldBeOdd (I)I
 	public static final fun shouldBePositive (I)I
 	public static final fun shouldBeZero (I)I
+	public static final fun shouldNotBeAtLeast (II)I
+	public static final fun shouldNotBeAtMost (II)I
 	public static final fun shouldNotBeEven (I)I
 	public static final fun shouldNotBeExactly (II)I
 	public static final fun shouldNotBeGreaterThan (II)I
@@ -2547,6 +2559,8 @@ public final class io/kotest/matchers/longs/LongKt {
 	public static final fun nonNegativeL ()Lio/kotest/matchers/Matcher;
 	public static final fun nonPositiveL ()Lio/kotest/matchers/Matcher;
 	public static final fun positiveL ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (JJ)J
+	public static final fun shouldBeAtMost (JJ)J
 	public static final fun shouldBeEven (J)J
 	public static final fun shouldBeExactly (JJ)J
 	public static final fun shouldBeGreaterThan (JJ)J
@@ -2559,6 +2573,8 @@ public final class io/kotest/matchers/longs/LongKt {
 	public static final fun shouldBeOdd (J)J
 	public static final fun shouldBePositive (J)J
 	public static final fun shouldBeZero (J)J
+	public static final fun shouldNotBeAtLeast (JJ)J
+	public static final fun shouldNotBeAtMost (JJ)J
 	public static final fun shouldNotBeEven (J)J
 	public static final fun shouldNotBeExactly (JJ)J
 	public static final fun shouldNotBeGreaterThan (JJ)J
@@ -2693,6 +2709,27 @@ public final class io/kotest/matchers/optional/MatchersKt {
 	public static final fun shouldNotBePresent (Ljava/util/Optional;)V
 }
 
+public final class io/kotest/matchers/paths/CanonicalKt {
+	public static final fun beCanonicalPath ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeCanonical (Ljava/nio/file/Path;)V
+	public static final fun shouldNotBeCanonical (Ljava/nio/file/Path;)V
+}
+
+public final class io/kotest/matchers/paths/ContentsKt {
+	public static final fun containFile (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun containFiles (Ljava/util/List;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainFile (Ljava/nio/file/Path;Ljava/lang/String;)V
+	public static final fun shouldContainFiles (Ljava/nio/file/Path;[Ljava/lang/String;)V
+	public static final fun shouldNotContainFile (Ljava/nio/file/Path;Ljava/lang/String;)V
+	public static final fun shouldNotContainFiles (Ljava/nio/file/Path;[Ljava/lang/String;)V
+}
+
+public final class io/kotest/matchers/paths/EmptyKt {
+	public static final fun beEmptyDirectory ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeEmptyDirectory (Ljava/nio/file/Path;)V
+	public static final fun shouldNotBeEmptyDirectory (Ljava/nio/file/Path;)V
+}
+
 public final class io/kotest/matchers/paths/NamesKt {
 	public static final fun haveExtension ([Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun haveNameWithoutExtension (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
@@ -2702,66 +2739,46 @@ public final class io/kotest/matchers/paths/NamesKt {
 	public static final fun shouldNotHaveNameWithoutExtension (Ljava/nio/file/Path;Ljava/lang/String;)V
 }
 
+public final class io/kotest/matchers/paths/NfilesKt {
+	public static final fun containNFiles (I)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainNFiles (Ljava/nio/file/Path;I)V
+	public static final fun shouldNotContainNFiles (Ljava/nio/file/Path;I)V
+}
+
 public final class io/kotest/matchers/paths/PathsKt {
 	public static final fun aDirectory ()Lio/kotest/matchers/Matcher;
 	public static final fun aFile ()Lio/kotest/matchers/Matcher;
 	public static final fun beAbsolute ()Lio/kotest/matchers/Matcher;
-	public static final fun beCanonicalPath ()Lio/kotest/matchers/Matcher;
 	public static final fun beExecutable ()Lio/kotest/matchers/Matcher;
 	public static final fun beHidden ()Lio/kotest/matchers/Matcher;
-	public static final fun beLarger (Ljava/nio/file/Path;)Lio/kotest/matchers/Matcher;
 	public static final fun beReadable ()Lio/kotest/matchers/Matcher;
 	public static final fun beRelative ()Lio/kotest/matchers/Matcher;
-	public static final fun beSmaller (Ljava/nio/file/Path;)Lio/kotest/matchers/Matcher;
-	public static final fun beSymbolicLink ()Lio/kotest/matchers/Matcher;
 	public static final fun beWriteable ()Lio/kotest/matchers/Matcher;
-	public static final fun containFile (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun containFileDeep (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
-	public static final fun containFiles (Ljava/util/List;)Lio/kotest/matchers/Matcher;
 	public static final fun exist ()Lio/kotest/matchers/Matcher;
 	public static final fun haveFileSize (J)Lio/kotest/matchers/Matcher;
 	public static final fun haveParent (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeADirectory (Ljava/nio/file/Path;)V
 	public static final fun shouldBeAFile (Ljava/nio/file/Path;)V
 	public static final fun shouldBeAbsolute (Ljava/nio/file/Path;)V
-	public static final fun shouldBeCanonical (Ljava/nio/file/Path;)V
-	public static final fun shouldBeEmptyDirectory (Ljava/nio/file/Path;)V
 	public static final fun shouldBeExecutable (Ljava/nio/file/Path;)V
 	public static final fun shouldBeHidden (Ljava/nio/file/Path;)V
-	public static final fun shouldBeLarger (Ljava/nio/file/Path;Ljava/io/File;)V
-	public static final fun shouldBeLarger (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
 	public static final fun shouldBeReadable (Ljava/nio/file/Path;)V
 	public static final fun shouldBeRelative (Ljava/nio/file/Path;)V
-	public static final fun shouldBeSmaller (Ljava/nio/file/Path;Ljava/io/File;)V
-	public static final fun shouldBeSmaller (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
-	public static final fun shouldBeSymbolicLink (Ljava/nio/file/Path;)V
 	public static final fun shouldBeWriteable (Ljava/nio/file/Path;)V
-	public static final fun shouldContainFile (Ljava/nio/file/Path;Ljava/lang/String;)V
 	public static final fun shouldContainFileDeep (Ljava/nio/file/Path;Ljava/lang/String;)V
-	public static final fun shouldContainFiles (Ljava/nio/file/Path;[Ljava/lang/String;)V
-	public static final fun shouldContainNFiles (Ljava/nio/file/Path;I)Ljava/lang/Object;
 	public static final fun shouldExist (Ljava/nio/file/Path;)V
 	public static final fun shouldHaveFileSize (Ljava/nio/file/Path;J)V
 	public static final fun shouldHaveParent (Ljava/nio/file/Path;Ljava/lang/String;)V
 	public static final fun shouldNotBeADirectory (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeAFile (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeAbsolute (Ljava/nio/file/Path;)V
-	public static final fun shouldNotBeCanonical (Ljava/nio/file/Path;)V
-	public static final fun shouldNotBeEmptyDirectory (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeExecutable (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeHidden (Ljava/nio/file/Path;)V
-	public static final fun shouldNotBeLarger (Ljava/nio/file/Path;Ljava/io/File;)V
-	public static final fun shouldNotBeLarger (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeReadable (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeRelative (Ljava/nio/file/Path;)V
-	public static final fun shouldNotBeSmaller (Ljava/nio/file/Path;Ljava/io/File;)V
-	public static final fun shouldNotBeSmaller (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
-	public static final fun shouldNotBeSymbolicLink (Ljava/nio/file/Path;)V
 	public static final fun shouldNotBeWriteable (Ljava/nio/file/Path;)V
-	public static final fun shouldNotContainFile (Ljava/nio/file/Path;Ljava/lang/String;)V
 	public static final fun shouldNotContainFileDeep (Ljava/nio/file/Path;Ljava/lang/String;)V
-	public static final fun shouldNotContainFiles (Ljava/nio/file/Path;[Ljava/lang/String;)V
-	public static final fun shouldNotContainNFiles (Ljava/nio/file/Path;I)Ljava/io/File;
 	public static final fun shouldNotExist (Ljava/nio/file/Path;)V
 	public static final fun shouldNotHaveFileSize (Ljava/nio/file/Path;J)V
 	public static final fun shouldNotHaveParent (Ljava/nio/file/Path;Ljava/lang/String;)V
@@ -2774,6 +2791,25 @@ public final class io/kotest/matchers/paths/PathsKt {
 	public static final fun startWithPath (Ljava/io/File;)Lio/kotest/matchers/Matcher;
 	public static final fun startWithPath (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun startWithPath (Ljava/nio/file/Path;)Lio/kotest/matchers/Matcher;
+}
+
+public final class io/kotest/matchers/paths/SizesKt {
+	public static final fun beLarger (Ljava/nio/file/Path;)Lio/kotest/matchers/Matcher;
+	public static final fun beSmaller (Ljava/nio/file/Path;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeLarger (Ljava/nio/file/Path;Ljava/io/File;)V
+	public static final fun shouldBeLarger (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
+	public static final fun shouldBeSmaller (Ljava/nio/file/Path;Ljava/io/File;)V
+	public static final fun shouldBeSmaller (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
+	public static final fun shouldNotBeLarger (Ljava/nio/file/Path;Ljava/io/File;)V
+	public static final fun shouldNotBeLarger (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
+	public static final fun shouldNotBeSmaller (Ljava/nio/file/Path;Ljava/io/File;)V
+	public static final fun shouldNotBeSmaller (Ljava/nio/file/Path;Ljava/nio/file/Path;)V
+}
+
+public final class io/kotest/matchers/paths/SymbolicKt {
+	public static final fun beSymbolicLink ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeSymbolicLink (Ljava/nio/file/Path;)V
+	public static final fun shouldNotBeSymbolicLink (Ljava/nio/file/Path;)V
 }
 
 public final class io/kotest/matchers/properties/PropertiesKt {

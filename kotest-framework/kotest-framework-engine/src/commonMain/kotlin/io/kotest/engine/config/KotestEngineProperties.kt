@@ -1,5 +1,8 @@
 package io.kotest.engine.config
 
+import io.kotest.core.spec.SpecExecutionOrder
+import io.kotest.engine.config.KotestEngineProperties.TAG_EXPRESSION
+
 object KotestEngineProperties {
 
    internal const val DUMP_CONFIG = "kotest.framework.dump.config"
@@ -25,13 +28,13 @@ object KotestEngineProperties {
     * A regex expression that is used to match the test [io.kotest.core.descriptors.Descriptor]'s path
     * to determine if a test should be included in the test plan or not.
     */
-   internal const val filterTests = "kotest.filter.tests"
+   internal const val FILTER_TESTS = "kotest.filter.tests"
 
    /**
     * A regex expression that is used to match the [io.kotest.common.reflection.bestName] of a class
     * to determine if a spec should be included in the test plan or not.
     */
-   internal const val filterSpecs = "kotest.filter.specs"
+   internal const val FILTER_SPECS = "kotest.filter.specs"
 
    /**
     * Specifies the name of a system property that is used to define a properties file to load, and
@@ -72,7 +75,7 @@ object KotestEngineProperties {
     */
    internal const val PROJECT_TIMEOUT = "kotest.framework.projecttimeout"
 
-   internal const val logLevel = "kotest.framework.loglevel"
+   internal const val LOG_LEVEL = "kotest.framework.loglevel"
 
    /**
     * The default timeout for each invocation of a test case.
@@ -115,6 +118,16 @@ object KotestEngineProperties {
     * Controls the [io.kotest.core.names.DuplicateTestNameMode] mode.
     */
    internal const val DUPLICATE_TEST_NAME_MODE = "kotest.framework.testname.duplicate.mode"
+
+   /**
+    * Controls the [SpecExecutionOrder] mode.
+    */
+   internal const val SPEC_EXECUTION_ORDER = "kotest.framework.spec.execution.order"
+
+   /**
+    * Controls the [io.kotest.engine.concurrency.ConcurrencyOrder] mode.
+    */
+   internal const val CONCURRENCY_ORDER = "kotest.framework.concurrency.order"
 
    /**
     * If set to true, then private classes will not be included in the test plan.

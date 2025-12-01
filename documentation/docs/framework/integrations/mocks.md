@@ -7,7 +7,7 @@ slug: mocking.html
 
 
 
-Kotest itself has no mock features. However, you can plug-in your favourite mocking library with ease!
+Kotest itself has no mock features, except for [fakery](https://github.com/kotest/kotest/blob/master/documentation/docs/framework/fake_functions.md) which allows to build test doubles. However, you can plug-in your favourite mocking library with ease!
 
 Let's take for example [mockk](https://mockk.io):
 
