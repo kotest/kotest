@@ -3,7 +3,7 @@ package io.kotest.matchers.properties
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.print.print
 import io.kotest.assertions.withClue
-import io.kotest.matchers.EqualityMatcherResult
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -36,10 +36,10 @@ fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
       val prependMessage = { "Assertion failed for property '${value.name}'" }
       val actual = value.get()
 
-      return EqualityMatcherResult(
+      return ComparisonMatcherResult(
          passed = EqCompare.compare(actual, expected, false) == null,
-         actual = actual,
-         expected = expected,
+         actual = actual.print(),
+         expected = expected.print(),
          failureMessageFn = prependMessage,
          negatedFailureMessageFn = { prependMessage() + "\n${expected.print().value} should not equal ${actual.print().value}" },
       )
