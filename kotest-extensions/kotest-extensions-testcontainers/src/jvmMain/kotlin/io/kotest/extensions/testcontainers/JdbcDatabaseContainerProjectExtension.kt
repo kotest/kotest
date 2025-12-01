@@ -36,12 +36,12 @@ class JdbcDatabaseContainerProjectExtension(
       lock.lockInterruptibly()
       val t = ref.get()
       if (t == null) {
+         container.start()
          val config = HikariConfig()
          config.jdbcUrl = container.jdbcUrl
          config.username = container.username
          config.password = container.password
          config.configure()
-         container.start()
          val ds = HikariDataSource(config)
          ref.set(ds)
       }
