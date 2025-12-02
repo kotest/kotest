@@ -74,12 +74,6 @@ kotlin {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
-            implementation(libs.junit.platform.engine)
-            implementation(libs.junit.platform.api)
-            implementation(libs.junit.platform.launcher)
-            implementation(libs.junit.jupiter.api)
-            // this is here to test that the intellij marker 'dummy' test doesn't appear in intellij
-            implementation(libs.junit.jupiter.engine)
          }
       }
 

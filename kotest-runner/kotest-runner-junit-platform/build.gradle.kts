@@ -17,11 +17,12 @@ kotlin {
          dependencies {
             api(projects.kotestCommon)
             api(projects.kotestFramework.kotestFrameworkEngine)
-            api(projects.kotestRunner.kotestRunnerJunitPlatform)
+            api(projects.kotestAssertions.kotestAssertionsCore)
+            api(projects.kotestExtensions)
             api(libs.kotlinx.coroutines.core)
-            api(libs.junit.platform5.engine)
             api(libs.junit.platform5.api)
             api(libs.junit.platform5.launcher)
+            api(libs.junit.platform5.engine)
          }
       }
 

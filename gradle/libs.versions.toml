@@ -6,9 +6,14 @@ java-diff-utils = "4.16"
 jdom2 = "2.0.6.1"
 json-path = "2.9.0"
 junit4 = "4.13.2"
-junit-platform = "1.11.4"
-junit-jupiter = "5.13.4"
+
+junit-platform5 = "1.13.4"
+junit-platform6 = "6.0.1"
+junit-jupiter5 = "5.13.4"
+junit-jupiter6 = "6.0.1"
+
 jimfs = "1.3.1"
+
 kaml = "0.85.0"
 kotlin = "2.2.21"
 kotlinx-coroutines = "1.10.2"
@@ -66,8 +71,9 @@ diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref 
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
 jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
+
 jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }
-junit4 = { module = "junit:junit", version.ref = "junit4" }
+
 kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
@@ -90,13 +96,20 @@ fuel = { module = "com.github.kittinunf.fuel:fuel", version.ref = "fuel" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin" }
 
-junit-platform-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform" }
-junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
-junit-platform-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "junit-platform" }
+junit-platform5-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform5" }
+junit-platform5-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform5" }
+junit-platform5-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform5" }
+junit-platform5-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "junit-platform5" }
 
-junit-jupiter-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter" }
-junit-jupiter-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit-jupiter" }
+junit-platform6-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform6" }
+junit-platform6-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform6" }
+junit-platform6-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform6" }
+junit-platform6-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "junit-platform6" }
+
+junit-jupiter5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter5" }
+junit-jupiter6-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter6" }
+
+junit4 = { module = "junit:junit", version.ref = "junit4" }
 
 mockserver-client-java = { module = "org.mock-server:mockserver-client-java", version.ref = "mockserver" }
 mockserver-netty = { module = "org.mock-server:mockserver-netty", version.ref = "mockserver" }
