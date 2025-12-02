@@ -17,10 +17,13 @@ import java.util.regex.Pattern
  * thus allowing kotest to properly support the --tests options.
  *
  */
-internal object GradlePostDiscoveryFilterExtractor {
+internal object GradlePostDiscoveryFilterUtils {
 
-   private val logger = Logger(GradlePostDiscoveryFilterExtractor::class)
+   private val logger = Logger(GradlePostDiscoveryFilterUtils::class)
 
+   /**
+    * Returns the include patterns enclosed in any [ClassMethodNameFilter]s added by Gradle from the --tests command line arg.
+    */
    fun extract(filters: List<Any>): List<String> {
       val classMethodFilters = filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }
       return classMethodFilters.flatMap { extract(it) }
@@ -45,6 +48,17 @@ internal object GradlePostDiscoveryFilterExtractor {
       logger.log { Pair(null, "ClassMethodNameFilter regexes [$regexes]") }
       regexes
    }.getOrElse { emptyList() }
+
+   /**
+    * Removes any [ClassMethodNameFilter]s added by Gradle from the --tests command line arg.
+    */
+   fun reset(filters: List<Any>) {
+      filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }.forEach {
+         val matcher = testMatcher(it)
+         val commandLineIncludePatterns = commandLineIncludePatterns(matcher) as MutableList<*>
+         commandLineIncludePatterns.clear()
+      }
+   }
 
    private fun testMatcher(obj: Any): Any {
       val field = obj::class.java.getDeclaredField("matcher")
