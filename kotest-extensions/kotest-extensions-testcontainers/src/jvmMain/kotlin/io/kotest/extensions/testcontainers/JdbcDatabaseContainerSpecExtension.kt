@@ -6,7 +6,7 @@ import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Spec
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
 import javax.sql.DataSource
 
@@ -41,7 +41,7 @@ class JdbcDatabaseContainerSpecExtension(
    }
 
    override suspend fun afterSpec(spec: Spec) {
-      withContext(Dispatchers.IO) {
+      runInterruptible(Dispatchers.IO) {
          container.stop()
       }
    }
