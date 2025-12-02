@@ -37,7 +37,7 @@ mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
 arrow = "2.1.2"
-testcontainers = "1.21.3"
+testcontainers = "2.0.2"
 asm = "9.8"
 nmcp = "1.0.2"
 kotlin-poet = "2.2.0"
@@ -143,9 +143,9 @@ hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
-testcontainers-jdbc = { module = "org.testcontainers:jdbc", version.ref = "testcontainers" }
-testcontainers-kafka = { module = "org.testcontainers:kafka", version.ref = "testcontainers" }
-testcontainers-mysql = { module = "org.testcontainers:mysql", version.ref = "testcontainers" }
+testcontainers-jdbc = { module = "org.testcontainers:testcontainers-jdbc", version.ref = "testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:testcontainers-kafka", version.ref = "testcontainers" }
+testcontainers-mysql = { module = "org.testcontainers:testcontainers-mysql", version.ref = "testcontainers" }
 
 mysql-driver = { module = "mysql:mysql-connector-java", version = "8.0.33" }
 

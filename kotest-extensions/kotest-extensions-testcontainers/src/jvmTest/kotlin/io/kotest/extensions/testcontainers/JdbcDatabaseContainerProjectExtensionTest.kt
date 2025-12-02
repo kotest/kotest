@@ -7,7 +7,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.install
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import org.testcontainers.containers.MySQLContainer
+import org.testcontainers.mysql.MySQLContainer
 
 private val mysql = MySQLContainer("mysql:8.0.26").apply {
    withInitScript("init.sql")

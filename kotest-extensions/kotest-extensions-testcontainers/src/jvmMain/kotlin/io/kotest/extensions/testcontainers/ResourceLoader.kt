@@ -11,25 +11,25 @@ import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 import kotlin.io.path.name
 
-@Deprecated("use Flyway or another db migration tool")
+@Deprecated("use Flyway or another db migration tool. Will be removed in 6.2")
 sealed interface Resource {
    data class Classpath(val resource: String) : Resource
    data class File(val path: Path) : Resource
 }
 
-@Deprecated("use Flyway or another db migration tool")
+@Deprecated("use Flyway or another db migration tool. Will be removed in 6.2")
 fun Resource.endsWith(name: String): Boolean = when (this) {
    is Resource.Classpath -> this.resource.endsWith(name)
    is Resource.File -> this.path.name.endsWith(name)
 }
 
-@Deprecated("use Flyway or another db migration tool")
+@Deprecated("use Flyway or another db migration tool. Will be removed in 6.2")
 fun Resource.loadToReader(): BufferedReader = when (this) {
    is Resource.Classpath -> javaClass.getResourceAsStream(this.resource)?.bufferedReader() ?: error("$this was not found on classpath")
    is Resource.File -> Files.newBufferedReader(this.path)
 }
 
-@Deprecated("use Flyway or another db migration tool")
+@Deprecated("use Flyway or another db migration tool. Will be removed in 6.2")
 class ResourceLoader {
 
    private fun Path.getDirContentsOrItself(): List<Path> {
