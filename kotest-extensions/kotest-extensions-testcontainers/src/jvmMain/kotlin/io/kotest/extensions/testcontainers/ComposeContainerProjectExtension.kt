@@ -3,28 +3,27 @@ package io.kotest.extensions.testcontainers
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.testcontainers.containers.GenericContainer
+import kotlinx.coroutines.runInterruptible
+import org.testcontainers.containers.ComposeContainer
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 
 /**
- * A Kotest [MountableExtension] for [GenericContainer]s that will launch the container
- * upon first install, and close after the test suite has completed. This extension will only
- * launch the container once per project, and will not reset it between specs.
+ * A Kotest [MountableExtension] for [ComposeContainer]s that will launch the container
+ * upon first install, and close after the spec has completed.
  *
  * Note: This extension requires Kotest 6.0+
  *
  * @param container the specific test container type
  */
-class TestContainerProjectExtension<T : GenericContainer<*>>(
-   private val container: T,
-) : MountableExtension<T, T>, AfterProjectListener {
+class ComposeContainerProjectExtension(
+   private val container: ComposeContainer,
+) : MountableExtension<ComposeContainer, ComposeContainer>, AfterProjectListener {
 
-   private val ref = AtomicReference<T>(null)
+   private val ref = AtomicReference<ComposeContainer>(null)
    private val lock = ReentrantLock()
 
-   override fun mount(configure: T.() -> Unit): T {
+   override fun mount(configure: ComposeContainer.() -> Unit): ComposeContainer {
       lock.lockInterruptibly()
       val t = ref.get()
       if (t == null) {
@@ -37,7 +36,7 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
    }
 
    override suspend fun afterProject() {
-      withContext(Dispatchers.IO) {
+      runInterruptible(Dispatchers.IO) {
          container.stop()
       }
    }

@@ -4,10 +4,11 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.TestListener
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
+import java.util.concurrent.atomic.AtomicReference
+import java.util.concurrent.locks.ReentrantLock
 import javax.sql.DataSource
 
 /**
@@ -26,21 +27,30 @@ import javax.sql.DataSource
  */
 class JdbcDatabaseContainerProjectExtension(
    private val container: JdbcDatabaseContainer<*>,
-) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener, TestListener {
+) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener {
 
-   override fun mount(configure: HikariConfig.() -> Unit): DataSource {
-      container.start()
-      val config = HikariConfig()
-      config.jdbcUrl = container.jdbcUrl
-      config.username = container.username
-      config.password = container.password
-      config.configure()
-      val ds = HikariDataSource(config)
-      return ds
+   private val ref = AtomicReference<HikariDataSource>(null)
+   private val lock = ReentrantLock()
+
+   override fun mount(configure: HikariConfig.() -> Unit): HikariDataSource {
+      lock.lockInterruptibly()
+      val t = ref.get()
+      if (t == null) {
+         container.start()
+         val config = HikariConfig()
+         config.jdbcUrl = container.jdbcUrl
+         config.username = container.username
+         config.password = container.password
+         config.configure()
+         val ds = HikariDataSource(config)
+         ref.set(ds)
+      }
+      lock.unlock()
+      return ref.get()
    }
 
    override suspend fun afterProject() {
-      withContext(Dispatchers.IO) {
+      runInterruptible(Dispatchers.IO) {
          container.stop()
       }
    }
