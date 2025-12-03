@@ -130,7 +130,8 @@ module.exports = {
         "framework/extensions/extensions_introduction",
         "framework/extensions/simple_extensions",
         "framework/extensions/advanced_extensions",
-        "framework/extensions/extension_examples"
+        "framework/extensions/extension_examples",
+        "framework/extensions/mountables"
       ]
     },
     {
