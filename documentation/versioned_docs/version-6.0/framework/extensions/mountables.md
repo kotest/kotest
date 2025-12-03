@@ -49,3 +49,39 @@ to be able to assign or invoke.
 One drawback is that the configuration block is not suspendable, due to the fact that the init block is not itself
 suspendable. To work around this, you can use runBlocking { } inside your implementation.
 :::
+
+## Example
+
+Lets create a mountable that installs a H2 embedded database. The materialized value will be a connection to the
+database instance. We will allow the user to configure some details of the database in a configuration
+block. We will also implement `AfterSpec` so that the database is closed after the spec has finished running.
+
+First we create the configuration class that contains our customization options.
+
+```kotlin
+class H2Config {
+   var databaseName = "test"
+}
+```
+
+Now we make the mountable extension, also implementing `AfterSpec` so we can close the connection after the spec has
+finished running. Notice that we use the `mount` function to perform the installation logic, and this function
+returns the materialized value - in this case, a JDBC connection to the database.
+
+```kotlin
+class H2DatabaseMountableExtension() : MountableExtension<H2Config, Connection>, AfterSpecListener {
+
+   var conn: Connection? = null
+
+   override fun mount(configure: H2Config.() -> Unit): Connection {
+      val config = H2Config()
+      config.configure()
+      conn = DriverManager.getConnection("jdbc:h2:~/${config.databaseName}")
+      return conn!!
+   }
+
+   override suspend fun afterSpec(spec: Spec) {
+      conn?.close()
+   }
+}
+```
