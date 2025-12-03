@@ -36,5 +36,8 @@ fun <A, B : A> Arb<A>.merge(other: Gen<B>): Arb<A> = trampoline { sampleA ->
                is Exhaustive -> other.toArb().sample(rs)
             }
          }
+
+      //TODO: improve this to combine both sets of edge cases
+      override fun allEdgeCases(): List<A> = this.allEdgeCases()
    }
 }

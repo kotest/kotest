@@ -18,6 +18,7 @@ fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<Str
 
    override fun edgecase(rs: RandomSource): Sample<String>? = null
    override fun sample(rs: RandomSource): Sample<String> = sampleStringPattern(rs)
+   override fun allEdgeCases(): List<String> = emptyList()
 
    private fun sampleStringPattern(rs: RandomSource): Sample<String> = synchronized(this) {
       val value = rgxgen.generate(Random(rs.random.nextLong()))

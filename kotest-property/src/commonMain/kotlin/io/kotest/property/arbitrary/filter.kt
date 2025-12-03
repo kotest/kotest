@@ -25,6 +25,8 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = trampoline { sampleA 
          val sample = sequenceOf(sampleA).plus(this@filter.samples(rs)).filter { predicate(it.value) }.first()
          return Sample(sample.value, sample.shrinks.filter(predicate) ?: RTree({ sample.value }))
       }
+
+      override fun allEdgeCases(): List<A> = this.allEdgeCases().filter(predicate)
    }
 }
 

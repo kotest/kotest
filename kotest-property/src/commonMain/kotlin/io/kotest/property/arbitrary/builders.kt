@@ -61,6 +61,7 @@ fun <A> arbitrary(edgecases: List<A>, fn: suspend ArbitraryBuilderContext.(Rando
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = if (edgecases.isEmpty()) null else edgecases.random(rs.random).asSample()
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      override fun allEdgeCases() = edgecases
 
       private val delegate = arbitraryBuilder { rs -> fn(rs) }
    }
@@ -76,6 +77,7 @@ fun <A> arbitrary(
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): Sample<A>? = if (edgecases.isEmpty()) null else edgecases.random(rs.random).asSample()
    override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+   override fun allEdgeCases() = edgecases
 
    private val delegate = arbitraryBuilder(shrinker) { rs -> fn(rs) }
 }
@@ -91,6 +93,7 @@ fun <A> arbitrary(
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      override fun allEdgeCases() = listOf<A>()
 
       private val delegate: Arb<A> = arbitraryBuilder { rs -> sampleFn(rs) }
    }
@@ -107,6 +110,7 @@ fun <A> arbitrary(
    object : Arb<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      override fun allEdgeCases() = listOf<A>()
 
       private val delegate: Arb<A> = arbitraryBuilder(shrinker) { rs -> sampleFn(rs) }
    }
@@ -186,6 +190,7 @@ suspend inline fun <A> generateArbitrary(
    return object : Arb<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      override fun allEdgeCases() = listOf<A>()
    }
 }
 
@@ -203,6 +208,7 @@ suspend inline fun <A> generateArbitrary(
    return object : Arb<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = edgecaseFn(rs)
       override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
+      override fun allEdgeCases() = listOf<A>()
    }
 }
 
@@ -220,6 +226,7 @@ fun <A> arbitraryBuilder(
 ): Arb<A> = object : Arb<A>() {
    override fun edgecase(rs: RandomSource): Sample<A>? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
    override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
+   override fun allEdgeCases() = listOf<A>()
    override val classifier: Classifier<out A>? = classifier
 
    /**
@@ -270,6 +277,7 @@ suspend fun <A> suspendArbitraryBuilder(
    val arb = object : Arb<A>() {
       override fun edgecase(rs: RandomSource): Sample<A>? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
       override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
+      override fun allEdgeCases() = listOf<A>()
       override val classifier: Classifier<out A>? = classifier
 
       /**
@@ -335,6 +343,7 @@ class ArbitraryBuilder<A>(
          val sample = sampleFn(rs)
          return if (shrinker == null) Sample(sample) else sampleOf(sample, shrinker)
       }
+      override fun allEdgeCases() = listOf<A>()
    }
 }
 

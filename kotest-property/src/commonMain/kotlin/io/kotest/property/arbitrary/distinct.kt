@@ -27,4 +27,5 @@ fun <A> Arb<A>.distinct(attempts: Int = 100) = object : Arb<A>() {
       }.filter { seen.add(it.value) }.first()
    }
 
+   override fun allEdgeCases() = listOf<A>()
 }

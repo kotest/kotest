@@ -475,6 +475,9 @@ internal fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
          ).asSample()
       }
 
+      // TODO: all permutations
+      override fun allEdgeCases() = listOf<T>()
+
       override fun sample(rs: RandomSource): Sample<T> {
          val (av, ar) = arbA.sample(rs)
          val (bv, br) = arbB.sample(rs)

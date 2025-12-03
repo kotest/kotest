@@ -45,4 +45,6 @@ fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBo
                kotlin.lazy { listOf(RTree({ null })) + baseSample.shrinks.children.value })
          )
       }
+
+      override fun allEdgeCases(): List<A?> = this.allEdgeCases()
    }

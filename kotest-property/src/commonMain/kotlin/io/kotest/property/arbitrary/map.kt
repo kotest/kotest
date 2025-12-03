@@ -17,6 +17,9 @@ fun <A, B> Arb<A>.map(fn: (A) -> B): Arb<B> = trampoline { sampleA ->
          val shrinks = sampleA.shrinks.map(fn)
          return Sample(value, shrinks)
       }
+
+      // TODO: implement
+      override fun allEdgeCases(): List<B> = listOf()
    }
 }
 
@@ -72,4 +75,7 @@ internal class TrampolineArb<A> private constructor(
             next(currentArb.sample(rs))
          }
          .sample(rs) as Sample<A>
+
+   // TODO: implement
+   override fun allEdgeCases(): List<A> = listOf()
 }

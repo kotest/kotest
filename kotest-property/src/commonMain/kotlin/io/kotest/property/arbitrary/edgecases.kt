@@ -40,6 +40,7 @@ fun <A> Arb<A>.withEdgecases(edgecases: List<A>): Arb<A> = object : Arb<A>() {
       if (edgecases.isEmpty()) null else edgecases.random(rs.random).asSample()
 
    override fun sample(rs: RandomSource): Sample<A> = this@withEdgecases.sample(rs)
+   override fun allEdgeCases() = edgecases
    override val classifier: Classifier<out A>? = this@withEdgecases.classifier
 }
 
@@ -62,6 +63,7 @@ fun <A> Arb<A>.removeEdgecases(): Arb<A> = this.withEdgecases(emptyList())
  * Returns a new [Arb] with the edge cases from this arb transformed by the given function [f].
  */
 fun <A> Arb<A>.modifyEdgecases(f: (Sample<A>) -> Sample<A>?): Arb<A> = object : Arb<A>() {
+   override fun allEdgeCases() : List<A> = this.allEdgeCases().mapNotNull { f(it.asSample())?.value }
    override fun edgecase(rs: RandomSource): Sample<A>? = this@modifyEdgecases.edgecase(rs)?.let(f)
    override fun sample(rs: RandomSource): Sample<A> = this@modifyEdgecases.sample(rs)
 }

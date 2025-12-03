@@ -103,6 +103,13 @@ abstract class Arb<out A> : Gen<A>() {
    abstract fun edgecase(rs: RandomSource): Sample<A>?
 
    /**
+    * Returns all edge cases as [Sample] from this [Arb], if they are all known and static.
+    *
+    * Can return an empty list if this arb does not have edge cases known up front.
+    */
+   abstract fun allEdgeCases(): List<A>
+
+   /**
     * Returns a single random [Sample] from this [Arb] using the supplied random source.
     */
    abstract fun sample(rs: RandomSource): Sample<A>
