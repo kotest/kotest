@@ -24,6 +24,17 @@ class TargetDefaultForTypeTest : StringSpec() {
          }
       }
 
+      "works for ByteArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<ByteArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<ByteArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
       "works for ShortArray" {
          val arb = targetDefaultForType(
             providedArbs = mapOf(),
@@ -31,6 +42,17 @@ class TargetDefaultForTypeTest : StringSpec() {
             type = typeOf<ShortArray>()
          )
          arb.shouldNotBeNull().sample(RandomSource.default()).value.shouldBeInstanceOf<ShortArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
+      "works for ShortArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<ShortArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<ShortArray> {
             it.size.shouldBePositive()
          }
       }
@@ -46,6 +68,17 @@ class TargetDefaultForTypeTest : StringSpec() {
          }
       }
 
+      "works for IntArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<IntArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<IntArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
       "works for LongArray" {
          val arb = targetDefaultForType(
             providedArbs = mapOf(),
@@ -53,6 +86,17 @@ class TargetDefaultForTypeTest : StringSpec() {
             type = typeOf<LongArray>()
          )
          arb.shouldNotBeNull().sample(RandomSource.default()).value.shouldBeInstanceOf<LongArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
+      "works for LongArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<LongArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<LongArray> {
             it.size.shouldBePositive()
          }
       }
@@ -68,6 +112,17 @@ class TargetDefaultForTypeTest : StringSpec() {
          }
       }
 
+      "works for FloatArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<FloatArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<FloatArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
       "works for DoubleArray" {
          val arb = targetDefaultForType(
             providedArbs = mapOf(),
@@ -75,6 +130,17 @@ class TargetDefaultForTypeTest : StringSpec() {
             type = typeOf<DoubleArray>()
          )
          arb.shouldNotBeNull().sample(RandomSource.default()).value.shouldBeInstanceOf<DoubleArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
+      "works for DoubleArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<DoubleArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<DoubleArray> {
             it.size.shouldBePositive()
          }
       }
@@ -90,6 +156,17 @@ class TargetDefaultForTypeTest : StringSpec() {
          }
       }
 
+      "works for BooleanArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<BooleanArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<BooleanArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
       "works for CharArray" {
          val arb = targetDefaultForType(
             providedArbs = mapOf(),
@@ -97,6 +174,17 @@ class TargetDefaultForTypeTest : StringSpec() {
             type = typeOf<CharArray>()
          )
          arb.shouldNotBeNull().sample(RandomSource.default()).value.shouldBeInstanceOf<CharArray> {
+            it.size.shouldBePositive()
+         }
+      }
+
+      "works for CharArray?" {
+         val arb = targetDefaultForType(
+            providedArbs = mapOf(),
+            arbsForProps = mapOf(),
+            type = typeOf<CharArray?>()
+         )
+         arb.shouldNotBeNull().sample(RandomSource.default()).value?.shouldBeInstanceOf<CharArray> {
             it.size.shouldBePositive()
          }
       }
