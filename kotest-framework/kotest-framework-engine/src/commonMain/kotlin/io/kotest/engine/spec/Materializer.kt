@@ -4,6 +4,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
@@ -41,7 +42,7 @@ class Materializer(
          val unique = handler.unique(mode, rootTest.name)
          val resolvedName = rootTest.name.copy(name = unique)
 
-         val config = if (rootTest.disabled == true)
+         val config = if (rootTest.xmethod == TestXMethod.DISABLED)
             (rootTest.config ?: TestConfig()).withXDisabled()
          else rootTest.config
 
@@ -69,7 +70,7 @@ class Materializer(
     */
    fun materialize(nested: NestedTest, parent: TestCase): TestCase {
 
-      val config = if (nested.disabled)
+      val config = if (nested.xmethod == TestXMethod.DISABLED)
          (nested.config ?: TestConfig()).withXDisabled()
       else nested.config
 

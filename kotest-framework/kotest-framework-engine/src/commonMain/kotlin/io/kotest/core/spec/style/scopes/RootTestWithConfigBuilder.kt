@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -12,9 +13,9 @@ import kotlin.time.Duration
 
 @Deprecated("Use parameterized RootContainerWithConfigBuilder. Deprecated since 6.0.5")
 class RootTestWithConfigBuilder(
-  private val context: RootScope,
-  private val name: TestName,
-  private val xdisabled: Boolean
+   private val context: RootScope,
+   private val name: TestName,
+   private val xmethod: TestXMethod,
 ) {
 
    fun config(
@@ -50,6 +51,6 @@ class RootTestWithConfigBuilder(
          retries = retries,
          retryDelay = retryDelay,
       )
-      context.addTest(name, xdisabled, config, test)
+      context.addTest(testName = name, xmethod = xmethod, config = config, test = test)
    }
 }
