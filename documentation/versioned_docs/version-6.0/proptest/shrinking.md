@@ -12,7 +12,7 @@ Built-in generators generally have a default Shrinker defined by the framework, 
 
 ## Shrinking for built-in generators
 Built-in generators (see [Generators List](genslist.md)) have a default Shrinker defined by the framework.
-A shrink function takes as input the value that failed the test and returns a list of new values on which Kotest can appy the test.
+A shrink function takes as input the value that failed the test and returns a list of new values on which Kotest can apply the test.
 The exact behaviour depends on the data type.
 For instance, a string could be shrunk by dropping the first or last character while for integers we could decrement or halve the value.
 In addition, shrink behaviour is defined for edge cases such as an empty string or the integer 0.
