@@ -12,7 +12,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 
 /**
- * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
+ * Runs a function [test] until it doesn't throw as long as the default duration hasn't passed.
  *
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
  */
@@ -24,7 +24,7 @@ suspend fun <T> eventually(
 }
 
 /**
- * Runs a function [test] until it doesn't throw as long as the specified duration hasn't passed.
+ * Runs a function [test] until it doesn't throw as long as the specified [duration] hasn't passed.
  *
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
  */
@@ -33,6 +33,19 @@ suspend fun <T> eventually(
    test: suspend () -> T,
 ): T {
    val config = eventuallyConfig { this.duration = duration }
+   return eventually(config, test)
+}
+
+/**
+ * Runs a function [test] until it doesn't throw as long as the specified [durationMs] in milliseconds hasn't passed.
+ *
+ * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
+ */
+suspend fun <T> eventually(
+   durationMs: Long,
+   test: suspend () -> T,
+): T {
+   val config = eventuallyConfig { this.duration = durationMs.milliseconds }
    return eventually(config, test)
 }
 

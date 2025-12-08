@@ -7,7 +7,7 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 /**
- * Runs a function [test] until it returns true, as long as the specified duration hasn't passed.
+ * Runs a function [test] until it returns true, as long as the specified [duration] hasn't passed.
  *
  * To supply more options to until, use the overload that accepts an [UntilConfiguration].
  */
@@ -16,6 +16,19 @@ suspend fun until(
    test: suspend () -> Boolean,
 ) {
    val config = untilConfig { this.duration = duration }
+   until(config, test)
+}
+
+/**
+ * Runs a function [test] until it returns true, as long as the specified [durationMs] hasn't passed.
+ *
+ * To supply more options to until, use the overload that accepts an [UntilConfiguration].
+ */
+suspend fun until(
+   durationMs: Long,
+   test: suspend () -> Boolean,
+) {
+   val config = untilConfig { this.duration = durationMs.milliseconds }
    until(config, test)
 }
 

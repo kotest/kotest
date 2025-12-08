@@ -24,6 +24,20 @@ suspend fun <T> continually(
 }
 
 /**
+ * Runs the [test] function continually for the given [durationMs] in milliseconds, failing if an exception is
+ * thrown during any invocation.
+ *
+ * To supply more options to continually, use the overload that accepts a [ContinuallyConfiguration].
+ */
+suspend fun <T> continually(
+   durationMs: Long,
+   test: suspend () -> T,
+): T {
+   val config = continuallyConfig<T> { this.duration = durationMs.milliseconds }
+   return continually(config, test)
+}
+
+/**
  * Runs the [test] function continually using the given [config], failing if an exception is
  * thrown during any invocation.
  */
