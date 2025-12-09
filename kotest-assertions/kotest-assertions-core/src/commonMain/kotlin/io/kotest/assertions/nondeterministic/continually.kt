@@ -33,8 +33,7 @@ suspend fun <T> continually(
    durationMs: Long,
    test: suspend () -> T,
 ): T {
-   val config = continuallyConfig<T> { this.duration = durationMs.milliseconds }
-   return continually(config, test)
+   return continually(durationMs.milliseconds, test)
 }
 
 /**

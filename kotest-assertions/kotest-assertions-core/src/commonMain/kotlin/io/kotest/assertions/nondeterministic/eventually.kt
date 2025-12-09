@@ -45,8 +45,7 @@ suspend fun <T> eventually(
    durationMs: Long,
    test: suspend () -> T,
 ): T {
-   val config = eventuallyConfig { this.duration = durationMs.milliseconds }
-   return eventually(config, test)
+   return eventually(durationMs.milliseconds, test)
 }
 
 /**

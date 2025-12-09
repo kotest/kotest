@@ -28,8 +28,7 @@ suspend fun until(
    durationMs: Long,
    test: suspend () -> Boolean,
 ) {
-   val config = untilConfig { this.duration = durationMs.milliseconds }
-   until(config, test)
+   until(durationMs.milliseconds, test)
 }
 
 /**
