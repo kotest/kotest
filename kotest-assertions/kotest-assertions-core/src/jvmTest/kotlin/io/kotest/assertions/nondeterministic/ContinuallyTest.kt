@@ -38,6 +38,16 @@ class ContinuallyTest : FunSpec() {
          result.invocationTimes.shouldForAll { it <= 500.milliseconds }
       }
 
+      test("pass tests that succeed for the entire duration for millis") {
+         val result = testContinually(500) {
+            1 shouldBe 1
+         }
+
+         result.value shouldBe 1
+         result.invocationTimes shouldHaveSize (500 / 25)
+         result.invocationTimes.shouldForAll { it <= 500.milliseconds }
+      }
+
       test("pass tests with null values") {
          val result = testContinually(500.milliseconds) {
             null shouldBe null
@@ -160,6 +170,25 @@ private suspend fun <T> testContinually(
       value = value,
    )
 }
+
+private suspend fun <T> testContinually(
+   durationMs: Long,
+   test: suspend () -> T,
+): TestContinuallyResult<T> {
+   val start = nonDeterministicTestTimeSource().markNow()
+   val invocationTimes = mutableListOf<Duration>()
+
+   val value: T = continually(durationMs) {
+      invocationTimes += start.elapsedNow()
+      test()
+   }
+
+   return TestContinuallyResult(
+      invocationTimes = invocationTimes,
+      value = value,
+   )
+}
+
 
 private suspend fun <T> testContinually(
    config: ContinuallyConfiguration<T>,

@@ -43,6 +43,14 @@ class EventuallyTest : FunSpec() {
          result.invocationTimes.shouldContainExactly(0.milliseconds)
       }
 
+      test("pass working tests for millis") {
+         val result = testEventually(50000) {
+            1 shouldBe 1
+         }
+         result.value shouldBe 1
+         result.invocationTimes.shouldContainExactly(0.milliseconds)
+      }
+
       test("should return final state") {
          var k = 0
          val result = testEventually(5.days) {
@@ -133,6 +141,17 @@ class EventuallyTest : FunSpec() {
       test("fail tests that do not complete within the time allowed") {
          val failure = shouldFail {
             testEventually(150.milliseconds) {
+               throw RuntimeException("foo")
+            }
+         }
+         failure.message shouldContain "Block failed after 150ms; attempted 7 time(s)"
+         failure.message shouldContain "The first error was caused by: foo"
+         failure.message shouldContain "The last error was caused by: foo"
+      }
+
+      test("fail tests that do not complete within the time allowed for millis") {
+         val failure = shouldFail {
+            testEventually(150) {
                throw RuntimeException("foo")
             }
          }
@@ -574,7 +593,6 @@ class EventuallyTest : FunSpec() {
    }
 }
 
-
 private suspend fun <T> testEventually(
    duration: Duration,
    test: suspend () -> T,
@@ -583,6 +601,25 @@ private suspend fun <T> testEventually(
    val invocationTimes = mutableListOf<Duration>()
 
    val value: T = eventually(duration) {
+      invocationTimes += start.elapsedNow()
+      test()
+   }
+
+   return TestEventuallyResult(
+      invocationTimes = invocationTimes,
+      value = value,
+   )
+
+}
+
+private suspend fun <T> testEventually(
+   durationMs: Long,
+   test: suspend () -> T,
+): TestEventuallyResult<T> {
+   val start = nonDeterministicTestTimeSource().markNow()
+   val invocationTimes = mutableListOf<Duration>()
+
+   val value: T = eventually(durationMs) {
       invocationTimes += start.elapsedNow()
       test()
    }
