@@ -26,6 +26,9 @@ class DuplicatedTestNameAnnotator : Annotator {
       // if the name is interpolated we can't run checks as we don't know the runtime name
       if (test.name.interpolated) return
 
+      // if the test is a data test we skip as data test names are all the same
+      if(test.isDataTest) return
+
       // locate all tests for this style
       val tests = style.tests(ktclass, false)
 
