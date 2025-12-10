@@ -159,9 +159,17 @@ infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
 fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
    this shouldNot containAllInAnyOrder(*expected)
 
+/**
+ * Verifies that the given [Sequence] contains all the specified elements in any order.
+ * The sequence may additionally contain other elements.
+ */
 infix fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(expected: C) =
    this should containAllInAnyOrder(expected)
 
+/**
+ * Verifies that the given [Sequence] contains all the specified elements in any order.
+ * The sequence may additionally contain other elements.
+ */
 fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
    this should containAllInAnyOrder(*expected)
 
