@@ -1,6 +1,7 @@
 package io.kotest.datatest
 
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.spec.style.scopes.BehaviorSpecContextContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecGivenContainerScope
 import io.kotest.engine.stable.StableIdents
@@ -228,7 +229,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withContexts(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t), false) { this.test(t) }
+      context(nameFn(t), xmethod = TestXMethod.NONE) { this.test(t) }
    }
 }
 

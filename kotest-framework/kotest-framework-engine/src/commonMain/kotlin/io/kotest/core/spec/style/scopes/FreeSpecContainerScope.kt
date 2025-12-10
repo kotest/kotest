@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
@@ -17,7 +18,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    suspend infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
       registerContainer(
          name = TestNameBuilder.builder(this).build(),
-         disabled = false,
+         xmethod = TestXMethod.NONE,
          config = null
       ) { FreeSpecContainerScope(this).test() }
    }
@@ -26,7 +27,11 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
     * Creates a new terminal test scope inside this spec.
     */
    suspend infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      registerTest(TestNameBuilder.builder(this).build(), false, null) { FreeSpecTerminalScope(this).test() }
+      registerTest(
+         name = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = null
+      ) { FreeSpecTerminalScope(this).test() }
    }
 
    /**
@@ -53,7 +58,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
       TestWithConfigBuilder(
          TestNameBuilder.builder(this).build(),
          this@FreeSpecContainerScope,
-         xdisabled = false,
+         xmethod = TestXMethod.NONE,
       ).config(
          enabled = enabled,
          invocations = invocations,
@@ -76,7 +81,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
       TestWithConfigBuilder(
          name = TestNameBuilder.builder(this).build(),
          context = this@FreeSpecContainerScope,
-         xdisabled = false,
+         xmethod = TestXMethod.NONE,
       ).config(
          config = config,
          test = test,
@@ -93,7 +98,11 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
     * ```
     */
    suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      registerContainer(TestNameBuilder.builder(name).build(), false, config) { FreeSpecContainerScope(this).test() }
+      registerContainer(
+         name = TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.NONE,
+         config = config
+      ) { FreeSpecContainerScope(this).test() }
    }
 
    /**

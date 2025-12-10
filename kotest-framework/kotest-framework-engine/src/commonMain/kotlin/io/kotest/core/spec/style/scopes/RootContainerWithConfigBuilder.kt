@@ -1,16 +1,19 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
-class RootContainerWithConfigBuilder<T>(
+@KotestInternal
+class RootContainerWithConfigBuilder<T : TestScope>(
    private val name: TestName,
-   private val xdisabled: Boolean,
+   private val xmethod: TestXMethod,
    private val context: RootScope,
    val contextFn: (TestScope) -> T
 ) {
@@ -19,7 +22,11 @@ class RootContainerWithConfigBuilder<T>(
       config: TestConfig,
       test: suspend T.() -> Unit,
    ) {
-      context.addContainer(name, xdisabled, config) { contextFn(this).test() }
+      context.addContainer(
+         testName = name,
+         xmethod = xmethod,
+         config = config
+      ) { contextFn(this).test() }
    }
 
    fun config(

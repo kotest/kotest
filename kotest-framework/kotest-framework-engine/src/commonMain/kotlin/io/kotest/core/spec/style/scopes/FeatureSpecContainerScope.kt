@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
 
 /**
@@ -27,27 +28,35 @@ class FeatureSpecContainerScope(
 ) : AbstractContainerScope(testScope) {
 
    suspend fun feature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      feature(name = name, disabled = false, test = test)
+      feature(name = name, xmethod = TestXMethod.NONE, test = test)
+   }
+
+   suspend fun ffeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
+      feature(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
 
    suspend fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      feature(name = name, disabled = true, test = test)
+      feature(name = name, xmethod = TestXMethod.DISABLED, test = test)
    }
 
-   private suspend fun feature(name: String, disabled: Boolean, test: suspend FeatureSpecContainerScope.() -> Unit) {
+   private suspend fun feature(name: String, xmethod: TestXMethod, test: suspend FeatureSpecContainerScope.() -> Unit) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         disabled = disabled,
+         xmethod = xmethod,
          config = null
       ) { FeatureSpecContainerScope(this).test() }
    }
 
    suspend fun scenario(name: String, test: suspend TestScope.() -> Unit) {
-      scenario(name = name, xdisabled = false, test = test)
+      scenario(name = name, xmethod = TestXMethod.NONE, test = test)
+   }
+
+   suspend fun fscenario(name: String, test: suspend TestScope.() -> Unit) {
+      scenario(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
 
    suspend fun xscenario(name: String, test: suspend TestScope.() -> Unit) {
-      scenario(name = name, xdisabled = true, test = test)
+      scenario(name = name, xmethod = TestXMethod.DISABLED, test = test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
@@ -56,7 +65,17 @@ class FeatureSpecContainerScope(
       return TestWithConfigBuilder(
          name = testName,
          context = this,
-         xdisabled = false,
+         xmethod = TestXMethod.NONE,
+      )
+   }
+
+   suspend fun xfscenario(name: String): TestWithConfigBuilder {
+      val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(
+         name = testName,
+         context = this,
+         xmethod = TestXMethod.FOCUSED,
       )
    }
 
@@ -66,14 +85,14 @@ class FeatureSpecContainerScope(
       return TestWithConfigBuilder(
          name = testName,
          context = this,
-         xdisabled = true,
+         xmethod = TestXMethod.DISABLED,
       )
    }
 
-   private suspend fun scenario(name: String, xdisabled: Boolean, test: suspend TestScope.() -> Unit) {
+   private suspend fun scenario(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
       registerTest(
          name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
-         disabled = xdisabled,
+         xmethod = xmethod,
          config = null,
          test = test
       )
