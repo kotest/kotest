@@ -4,6 +4,7 @@ import io.kotest.common.reflection.instantiations
 import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
@@ -52,6 +53,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
+      // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
+      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
+      // so we'll force the loading here as well. Ideally, this would all be taken care of in in the engine and junit shouldn't need to know
+      // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
+      // this initialize code out of engine interceptors and into the engine constructor itself
+      KotestPropertiesLoader.loadAndApplySystemPropsFile()
+
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
       val config = ProjectConfigLoader.load()
@@ -98,6 +106,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
          return EngineDescriptorBuilder.builder(uniqueId).build()
 
       val result = Discovery.discover(uniqueId, request)
+
+      // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
+      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
+      // so we'll force the loading here as well. Ideally, this would all be taken care of in in the engine and junit shouldn't need to know
+      // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
+      // this initialize code out of engine interceptors and into the engine constructor itself
+      KotestPropertiesLoader.loadAndApplySystemPropsFile()
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
