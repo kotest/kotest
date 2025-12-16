@@ -50,6 +50,22 @@ internal data class UnorderedCollectionsDifference<T>(
              }
          )
       }
+
+      fun<T> matchIgnoringMissingElements(expected: List<T>, value: List<T>): UnorderedCollectionsDifference<T> {
+         val expectedCounts = expected.counted()
+         val valueCounts = value.counted()
+         return UnorderedCollectionsDifference(
+            missingElements = setOf(),
+            extraElements = valueCounts.keys - expectedCounts.keys,
+            countMismatches = expectedCounts.mapNotNull { ex ->
+               val valueCount = valueCounts[ex.key]
+               valueCount?.let {
+                  if (ex.value >= valueCount) null else
+                     CountMismatch(ex.key, ex.value, valueCount)
+               }
+            }
+         )
+      }
    }
 
    internal data class CountMismatch<T>(
