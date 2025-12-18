@@ -14,8 +14,8 @@ class UnorderedCollectionsDifferenceIgnoringMissingElementsTest: StringSpec() {
       }
       "ignore missing elements" {
          (UnorderedCollectionsDifference.matchIgnoringMissingElements(
-            expected = listOf("apple", "orange", "apple", "banana"),
-            value = listOf("apple", "apple", "orange"),
+            value = listOf("apple", "orange", "apple", "banana"),
+            expected = listOf("apple", "apple", "orange"),
          ) shouldBe UnorderedCollectionsDifference(
             missingElements = setOf(),
             extraElements = setOf(),
@@ -25,34 +25,34 @@ class UnorderedCollectionsDifferenceIgnoringMissingElementsTest: StringSpec() {
       }
       "detect extra elements" {
          UnorderedCollectionsDifference.matchIgnoringMissingElements(
-            expected = listOf("apple", "orange", "apple"),
-            value = listOf("apple", "apple", "orange", "banana"),
+            value = listOf("apple", "orange", "apple"),
+            expected = listOf("apple", "apple", "orange", "banana"),
          ) shouldBe UnorderedCollectionsDifference(
-            missingElements = setOf(),
-            extraElements = setOf("banana"),
+            missingElements = setOf("banana"),
+            extraElements = setOf(),
             countMismatches = listOf()
          )
       }
       "detect count mismatch if actual has extra values" {
          UnorderedCollectionsDifference.matchIgnoringMissingElements(
-            expected = listOf("apple", "orange", "apple"),
-            value = listOf("apple", "apple", "orange", "orange"),
+            value = listOf("apple", "orange", "apple"),
+            expected = listOf("apple", "apple", "orange", "orange"),
          ) shouldBe UnorderedCollectionsDifference(
             missingElements = setOf(),
             extraElements = setOf(),
             countMismatches = listOf(
                UnorderedCollectionsDifference.CountMismatch(
                   value = "orange",
-                  expectedCount = 1,
-                  actualCount = 2
+                  expectedCount = 2,
+                  actualCount = 1
                )
             )
          )
       }
       "ignore count mismatch if actual has missing values" {
          UnorderedCollectionsDifference.matchIgnoringMissingElements(
-            expected = listOf("apple", "orange", "orange", "apple"),
-            value = listOf("apple", "apple", "orange"),
+            value = listOf("apple", "orange", "orange", "apple"),
+            expected = listOf("apple", "apple", "orange"),
          ) shouldBe UnorderedCollectionsDifference(
             missingElements = setOf(),
             extraElements = setOf(),

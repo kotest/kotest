@@ -55,12 +55,12 @@ internal data class UnorderedCollectionsDifference<T>(
          val expectedCounts = expected.counted()
          val valueCounts = value.counted()
          return UnorderedCollectionsDifference(
-            missingElements = setOf(),
-            extraElements = valueCounts.keys - expectedCounts.keys,
+            missingElements = expectedCounts.keys - valueCounts.keys,
+            extraElements = setOf(),
             countMismatches = expectedCounts.mapNotNull { ex ->
                val valueCount = valueCounts[ex.key]
                valueCount?.let {
-                  if (ex.value >= valueCount) null else
+                  if (ex.value <= valueCount) null else
                      CountMismatch(ex.key, ex.value, valueCount)
                }
             }

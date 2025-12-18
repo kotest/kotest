@@ -61,29 +61,32 @@ class ShouldContainAllInAnyOrderTest : FunSpec({
          repeating.shouldContainAllInAnyOrder(1, 1, 2, 2, 3, 3)
       }
 
-      test("should fail for subset, different count with nulls") {
+      test("should not fail for subset, different count with nulls") {
          val sparse = listOf(null, null, null, 3)
-         shouldThrow<AssertionError> {
-            sparse.shouldContainAllInAnyOrder(sparse.toSet().toList())
-         }
+         sparse.shouldContainAllInAnyOrder(sparse.toSet().toList())
       }
 
-      test("should fail for same, different count") {
+      test("should not fail for same elements, smaller count") {
+         val repeating = listOf(1, 2, 3, 1, 2, 3)
+         val unique = listOf(3, 2, 1)
+         repeating.shouldContainAllInAnyOrder(unique)
+      }
+
+      test("should fail for same elements, bigger count") {
          val repeating = listOf(1, 2, 3, 1, 2, 3)
          val unique = listOf(3, 2, 1)
          shouldThrow<AssertionError> {
-            repeating.shouldContainAllInAnyOrder(unique)
+            unique.shouldContainAllInAnyOrder(repeating)
          }
       }
 
-      test("should detect different count of individual elements in collections of same length") {
+      test("should detect only bigger count of individual elements in collections of same length") {
          shouldThrowAny {
             listOf(1, 2, 2).shouldContainAllInAnyOrder(listOf(1, 1, 2))
          }.shouldHaveMessage("""
             |Collection should contain the values of [1, 1, 2] in any order, but was [1, 2, 2].
             |Count Mismatches:
             |  For 1: expected count: <2>, but was: <1>
-            |  For 2: expected count: <1>, but was: <2>
             """.trimMargin())
       }
    }
@@ -116,10 +119,12 @@ class ShouldContainAllInAnyOrderTest : FunSpec({
          countup.shouldNotContainAllInAnyOrder((5..15).toList())
       }
 
-      test("should succeed for subset, same count with nulls") {
+      test("should fail for subset, same count with nulls") {
          val sparse = listOf(null, null, null, 3)
-         val nulls = listOf<Int?>(null, null, null, null)
-         sparse.shouldNotContainAllInAnyOrder(nulls)
+         val nulls = listOf<Int?>(null, null, null)
+         shouldThrow<AssertionError> {
+            sparse.shouldNotContainAllInAnyOrder(nulls)
+         }
       }
 
       test("should fail for subset, same count") {
@@ -137,15 +142,17 @@ class ShouldContainAllInAnyOrderTest : FunSpec({
          }
       }
 
-      test("should succeed for subset, different count with nulls") {
+      test("should fail for subset, different count with nulls") {
          val sparse = listOf(null, null, null, 3)
-         sparse.shouldNotContainAllInAnyOrder(sparse.toSet().toList())
+         shouldThrow<AssertionError> {
+            sparse.shouldNotContainAllInAnyOrder(sparse.toSet().toList())
+         }
       }
 
-      test("should succeed for same, different count") {
-         val repeating = listOf(1, 2, 3, 1, 2, 3)
+      test("should succeed for same, bigger count for some elements") {
+         val repeating = listOf(1, 2, 3, 1)
          val unique = listOf(3, 2, 1)
-         repeating.shouldNotContainAllInAnyOrder(unique)
+         unique.shouldNotContainAllInAnyOrder(repeating)
       }
 
       test("should succeed detect different count of individual elements in collections of same length") {
