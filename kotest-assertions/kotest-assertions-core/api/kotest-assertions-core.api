@@ -302,6 +302,7 @@ public final class io/kotest/assertions/nondeterministic/ContinuallyConfiguratio
 }
 
 public final class io/kotest/assertions/nondeterministic/ContinuallyKt {
+	public static final fun continually (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun continually (Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun continually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun continuallyConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/ContinuallyConfiguration;
@@ -361,6 +362,7 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 }
 
 public final class io/kotest/assertions/nondeterministic/EventuallyKt {
+	public static final fun eventually (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -449,6 +451,7 @@ public final class io/kotest/assertions/nondeterministic/UntilConfigurationBuild
 }
 
 public final class io/kotest/assertions/nondeterministic/UntilKt {
+	public static final fun until (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun until (Lio/kotest/assertions/nondeterministic/UntilConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun until-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun untilConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/UntilConfiguration;
@@ -1065,6 +1068,7 @@ public final class io/kotest/matchers/bigdecimal/ToleranceMatcher : io/kotest/ma
 }
 
 public final class io/kotest/matchers/booleans/BooleanMatchersKt {
+	public static final fun beBoolean (Z)Lio/kotest/matchers/Matcher;
 	public static final fun beFalse ()Lio/kotest/matchers/Matcher;
 	public static final fun beTrue ()Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeFalse (Ljava/lang/Boolean;)Z

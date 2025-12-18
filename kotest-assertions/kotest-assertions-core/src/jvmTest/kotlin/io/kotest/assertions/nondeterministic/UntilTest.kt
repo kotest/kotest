@@ -23,6 +23,15 @@ class UntilTest : FunSpec({
       attempts shouldBe 1
    }
 
+   test("until with immediate pass for millis") {
+      var attempts = 0
+      until(1000) {
+         attempts++
+         nonConstantTrue() shouldBe true
+      }
+      attempts shouldBe 1
+   }
+
    test("until should exit as soon as predicate passes") {
       until(1.days) {
          nonConstantTrue() shouldBe true

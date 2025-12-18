@@ -93,10 +93,11 @@ assertSoftly {
 * `shouldThrow`
 * `shouldThrowExactly`
 * `shouldThrowExactlyUnit`
+* `shouldNotThrowExactlyUnit`
 * `shouldThrowMessage`
 * `shouldThrowUnit`
 * `shouldThrowUnitWithMessage`
 * `shouldThrowWithMessage`
 * `shouldTimeout`
 
-But `shouldThrowSoftly` and `shouldNotThrowExactlyUnit` are compatible with `assertSoftly`.
+But `shouldThrowSoftly` is compatible with `assertSoftly`.

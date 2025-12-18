@@ -6,7 +6,7 @@ sidebar_label: Introduction
 ---
 
 Extensions are reusable [lifecycle hooks](../lifecycle_hooks.md). In fact, lifecycle hooks are themselves represented internally as instances
-of extensions. In the past, Kotest used the term _listeners_ for simple interfaces and _extension_ for more advanced interfaces, however
+of extensions. In the past, Kotest used the term _listener_ for simple interfaces and _extension_ for more advanced interfaces, however
 there is no distinction between the two and the terms can be used interchangeably.
 
 ### How to use

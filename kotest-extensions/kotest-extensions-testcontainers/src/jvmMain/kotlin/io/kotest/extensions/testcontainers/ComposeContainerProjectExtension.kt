@@ -10,7 +10,8 @@ import java.util.concurrent.locks.ReentrantLock
 
 /**
  * A Kotest [MountableExtension] for [ComposeContainer]s that will launch the container
- * upon first install, and close after the spec has completed.
+ * upon first install, and close after the test suite has completed. This extension will only
+ * launch the container once per project, and will not reset it between specs.
  *
  * Note: This extension requires Kotest 6.0+
  *

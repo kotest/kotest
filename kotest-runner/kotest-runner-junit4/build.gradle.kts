@@ -16,7 +16,7 @@ kotlin {
       jvmTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(libs.junit.platform.testkit)
+            implementation(libs.junit.platform5.testkit)
          }
       }
    }
