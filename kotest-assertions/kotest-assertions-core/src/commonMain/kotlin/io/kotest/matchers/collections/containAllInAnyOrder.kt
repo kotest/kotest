@@ -41,12 +41,12 @@ fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
  * The collection may additionally contain other elements.
  */
 fun <T, C : Collection<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
-   val valueAsList = value.toList()
    val expectedAsList = expected.toList()
-   val comparison = UnorderedCollectionsDifference.of(expectedAsList, valueAsList)
+   val actualAsList = value.toList()
+   val comparison = UnorderedCollectionsDifference.matchIgnoringMissingElements(expectedAsList, actualAsList)
    MatcherResult(
       comparison.isMatch(),
-      { "Collection should contain the values of $expectedAsList in any order, but was $valueAsList.${comparison}" },
+      { "Collection should contain the values of $expectedAsList in any order, but was $actualAsList.${comparison}" },
       { "Collection should not contain the values of $expectedAsList in any order" }
    )
 }
