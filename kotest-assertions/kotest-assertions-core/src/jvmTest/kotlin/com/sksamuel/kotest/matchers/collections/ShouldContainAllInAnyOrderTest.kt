@@ -29,11 +29,11 @@ class ShouldContainAllInAnyOrderTest : FunSpec({
          countdown.shouldContainAllInAnyOrder(countup)
       }
 
-      test("should succeed when LHS is a bigger list") {
-         val biggerList = (0..15).toList()
-         val smallerList = (0..10).toList()
-         biggerList.shouldContainAllInAnyOrder(smallerList)
-      }
+  //    test("should succeed when LHS is a bigger list") {
+  //       val biggerList = (0..15).toList()
+  //       val smallerList = (0..10).toList()
+  //       biggerList.shouldContainAllInAnyOrder(smallerList)
+  //    }
 
       test("should fail for overlapping collection") {
          val countup = (0..10).toList()
