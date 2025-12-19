@@ -38,11 +38,11 @@ suspend fun <T> continually(
 
 /**
  * Runs the [test] function continually using the given [config], failing if an exception is
- * thrown during any invocation.
+ * thrown during any invocation, or if it failed to complete at least once for the duration.
  * If the function completes successfully at least once, the last result is returned.
- * If the function fails to complete once for the duration, it times out.
- * If the function throws on the first invocation, that exception is thrown immediately.
- * If the function succeeds at least once but then fails later, an AssertionError is thrown
+ * If the function fails to complete even once for the duration, an AssertionError is thrown.
+ * If the function throws an Exception on the first invocation, that exception bubbles up immediately.
+ * If the function succeeds at least once but throws an Exception later, an AssertionError is thrown
  * with details of the total duration and number of attempts,
  * with the caught exception as its cause.
  */
