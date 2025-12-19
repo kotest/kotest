@@ -41,10 +41,7 @@ suspend fun <T> continually(
  * thrown during any invocation, or if it failed to complete at least once for the duration.
  * If the function completes successfully at least once, the last result is returned.
  * If the function fails to complete even once for the duration, an AssertionError is thrown.
- * If the function throws an Exception on the first invocation, that exception bubbles up immediately.
- * If the function succeeds at least once but throws an Exception later, an AssertionError is thrown
- * with details of the total duration and number of attempts,
- * with the caught exception as its cause.
+ * If the function throws an Exception, that exception bubbles up immediately.
  */
 suspend fun <T> continually(
    config: ContinuallyConfiguration<T>,
