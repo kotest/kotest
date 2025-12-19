@@ -39,6 +39,12 @@ suspend fun <T> continually(
 /**
  * Runs the [test] function continually using the given [config], failing if an exception is
  * thrown during any invocation.
+ * If the function completes successfully at least once, the last result is returned.
+ * If the function fails to complete once for the duration, it times out.
+ * If the function throws on the first invocation, that exception is thrown immediately.
+ * If the function succeeds at least once but then fails later, an AssertionError is thrown
+ * with details of the total duration and number of attempts,
+ * with the caught exception as its cause.
  */
 suspend fun <T> continually(
    config: ContinuallyConfiguration<T>,
@@ -52,11 +58,8 @@ suspend fun <T> continually(
    var result: Result<T> = Result.failure(IllegalStateException("No successful result"))
 
    while (end.hasNotPassedNow()) {
-      val elapsed = start.elapsedNow()
-      val remaining: Duration = config.duration - elapsed
-
       runCatching {
-         withTimeout(remaining) {
+         withTimeout(config.duration) {
             test()
          }
       }.onSuccess {
@@ -65,12 +68,15 @@ suspend fun <T> continually(
       }.onFailure { ex ->
          when (ex) {
             is TimeoutCancellationException -> {
-               throw AssertionErrorBuilder.create()
-                  .withMessage(
-                     "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
-                        "attempted $iterations times",
-                  ).withCause(ex)
-                  .build()
+               when {
+                  result.isSuccess -> {}
+                  else -> throw AssertionErrorBuilder.create()
+                     .withMessage(
+                        "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
+                           "attempted $iterations times",
+                     ).withCause(ex)
+                     .build()
+               }
             }
             is AssertionError -> {
                if (iterations == 0) throw ex

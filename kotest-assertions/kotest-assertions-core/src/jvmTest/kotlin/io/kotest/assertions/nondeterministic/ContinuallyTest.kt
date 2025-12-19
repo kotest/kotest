@@ -1,6 +1,7 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.annotation.EnabledIf
@@ -147,6 +148,17 @@ class ContinuallyTest : FunSpec() {
 
             val actualMs = regex.find(msg)!!.groupValues[1].toDouble().toDuration(DurationUnit.MILLISECONDS)
             actualMs shouldBeGreaterThan 10.milliseconds
+         }
+      }
+
+      test("continually should succeed if function successfully completes on the first run and times out on the second").config(
+         coroutineTestScope = false
+      ) {
+         shouldNotThrowAny {
+            continually(5.milliseconds) {
+               delay(3.milliseconds)
+               "ok" shouldBe "ok"
+            }
          }
       }
    }
