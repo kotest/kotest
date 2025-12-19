@@ -132,4 +132,15 @@ class CollectionEqTest : FunSpec({
       // Comparing a cyclic list with itself should work (same instance)
       CollectionEq.equals(cyclicList, cyclicList, false).shouldBeNull()
    }
+
+   test("should handle mutually recursive collections") {
+      // Create two lists that reference each other
+      val cyclicList1 = mutableListOf<Any?>()
+      val cyclicList2 = mutableListOf<Any?>()
+      cyclicList1.add(cyclicList2)
+      cyclicList2.add(cyclicList1)
+
+      // These two lists have the same structure, so they should be equal
+      CollectionEq.equals(cyclicList1, cyclicList2, false).shouldBeNull()
+   }
 })

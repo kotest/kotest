@@ -9,7 +9,7 @@ import io.kotest.assertions.print.print
  * An [Eq] for comparing a [Throwable] to another [Throwable].
  */
 object ThrowableEq : Eq<Throwable> {
-   override fun equals(actual: Throwable, expected: Throwable, strictNumberEq: Boolean): Throwable? {
+   override fun equals(actual: Throwable, expected: Throwable, strictNumberEq: Boolean, context: EqContext): Throwable? {
       return if (actual.message == expected.message && expected::class == actual::class)
          null
       else

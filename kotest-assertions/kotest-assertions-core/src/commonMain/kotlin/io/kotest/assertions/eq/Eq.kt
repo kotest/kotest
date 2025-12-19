@@ -10,6 +10,7 @@ package io.kotest.assertions.eq
 interface Eq<T> {
    /**
     * @param strictNumberEq used by number types to determine if they should be compared using == or by converting to the larger type.
+    * @param context tracks visited object pairs to prevent infinite recursion on cyclic references
     */
-   fun equals(actual: T, expected: T, strictNumberEq: Boolean): Throwable?
+   fun equals(actual: T, expected: T, strictNumberEq: Boolean, context: EqContext = EqContext()): Throwable?
 }

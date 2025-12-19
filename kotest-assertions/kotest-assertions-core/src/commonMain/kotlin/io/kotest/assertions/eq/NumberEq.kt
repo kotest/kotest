@@ -11,7 +11,7 @@ import io.kotest.assertions.print.print
  */
 object NumberEq : Eq<Number> {
 
-   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? {
+   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean, context: EqContext): Throwable? {
       return if (compare(actual, expected, strictNumberEq)) null
       else AssertionErrorBuilder.create()
          .withValues(Expected(expected.print()), Actual(actual.print()))

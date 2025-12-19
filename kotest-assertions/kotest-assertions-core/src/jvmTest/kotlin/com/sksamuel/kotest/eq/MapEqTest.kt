@@ -192,4 +192,15 @@ class MapEqTest : FunSpec({
       MapEq.equals(extracted as Map<*, *>, cyclicMap, false).shouldBeNull()
    }
 
+   test("should handle mutually recursive maps without StackOverflowError") {
+      // Create two maps that reference each other
+      val map1 = mutableMapOf<String, Any?>()
+      val map2 = mutableMapOf<String, Any?>()
+      map1["ref"] = map2
+      map2["ref"] = map1
+
+      // These two maps have the same structure, so they should be equal
+      MapEq.equals(map1, map2, false).shouldBeNull()
+   }
+
 })
