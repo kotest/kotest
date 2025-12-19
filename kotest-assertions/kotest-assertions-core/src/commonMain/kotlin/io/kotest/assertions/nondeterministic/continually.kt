@@ -66,7 +66,7 @@ suspend fun <T> continually(
          when (ex) {
             is TimeoutCancellationException -> {
                when {
-                  result.isSuccess -> {}
+                  result.isSuccess -> return result.getOrThrow()
                   else -> throw AssertionErrorBuilder.create()
                      .withMessage(
                         "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
