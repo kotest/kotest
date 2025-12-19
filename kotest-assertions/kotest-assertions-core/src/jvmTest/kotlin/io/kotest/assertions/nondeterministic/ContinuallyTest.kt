@@ -155,8 +155,8 @@ class ContinuallyTest : FunSpec() {
          coroutineTestScope = false
       ) {
          shouldNotThrowAny {
-            continually(5.milliseconds) {
-               delay(3.milliseconds)
+            continually(100.milliseconds) {
+               delay(2.milliseconds)
                "ok" shouldBe "ok"
             }
          }
