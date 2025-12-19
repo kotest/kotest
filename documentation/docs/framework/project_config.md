@@ -26,7 +26,8 @@ ignored tests, global `AssertSoftly`, and reusable listeners or extensions and s
 ## Setup
 
 On the JVM, Kotest will inspect the classpath for a class with a specified name and package that extends `AbstractProjectConfig`.
-By default, this class should be named `io.kotest.provided.ProjectConfig`. If you don't want to place your class in that
+By default, this class should be named `io.kotest.provided.ProjectConfig` and stored in the file
+`src/test/kotlin/io/kotest/provided/ProjectConfig.kt`. If you don't want to place your class in that
 particular package, you can specify a different name using the system property `kotest.framework.config.fqn`.
 
 For example, in gradle, you would configure something like this:
