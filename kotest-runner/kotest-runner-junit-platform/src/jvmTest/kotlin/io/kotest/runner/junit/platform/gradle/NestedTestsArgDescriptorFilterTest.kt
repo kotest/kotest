@@ -10,21 +10,21 @@ import io.kotest.matchers.shouldBe
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class NestedTestsArgDescriptorFilterTest : FunSpec({
 
-   test("include packages") {
+   test("include matching packages") {
       val spec = NestedTestsArgDescriptorFilterTest::class.toDescriptor()
-      val args1 = NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.NestedGradleTestsArgDescriptorFilterTest.a -- b\\E")!!
+      val args1 = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.gradle.NestedTestsArgDescriptorFilterTest.a -- b\\E")!!
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(spec) shouldBe DescriptorFilterResult.Include
 
-      val args2 = NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.xxxxxx.NestedGradleTestsArgDescriptorFilterTest.a -- b\\E")!!
+      val args2 = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.xxx.NestedTestsArgDescriptorFilterTest.a -- b\\E")!!
       NestedTestsArgDescriptorFilter(setOf(args2)).filter(spec) shouldBe DescriptorFilterResult.Exclude(null)
    }
 
-   test("include classes") {
+   test("include matching classes") {
       val spec = NestedTestsArgDescriptorFilterTest::class.toDescriptor()
-      val args1 = NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.NestedGradleTestsArgDescriptorFilterTest.a -- b\\E")!!
+      val args1 = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.gradle.NestedTestsArgDescriptorFilterTest.a -- b\\E")!!
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(spec) shouldBe DescriptorFilterResult.Include
 
-      val args2 = NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.xxxxxx.Y.a -- b\\E")!!
+      val args2 = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.gradle.NotThisClass.a -- b\\E")!!
       NestedTestsArgDescriptorFilter(setOf(args2)).filter(spec) shouldBe DescriptorFilterResult.Exclude(null)
    }
 
@@ -34,7 +34,7 @@ class NestedTestsArgDescriptorFilterTest : FunSpec({
       val test2 = test1.append("b")
       val test3 = spec.append("c")
       val test4 = test1.append("d")
-      val args1 = NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.NestedGradleTestsArgDescriptorFilterTest.a -- b\\E")!!
+      val args1 = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.gradle.NestedTestsArgDescriptorFilterTest.a -- b\\E")!!
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(test1) shouldBe DescriptorFilterResult.Include
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(test2) shouldBe DescriptorFilterResult.Include
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(test3) shouldBe DescriptorFilterResult.Exclude(null)

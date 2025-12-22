@@ -28,7 +28,7 @@ class ClassMethodNameFilterUtilsTest : FunSpec({
       matcher.mayIncludeClass("ExcludedClassA") shouldBe false
    }
 
-   test("extract regexes from build script") {
+   test("extract regexes from internal gradle class") {
 
       val spec = TestFilterSpec(
          setOf("ClassA", "ClassB.test name"),
@@ -38,11 +38,11 @@ class ClassMethodNameFilterUtilsTest : FunSpec({
 
       val matcher = TestSelectionMatcher(spec)
 
-      val filter: PostDiscoveryFilter =
+      val filter =
          Class.forName($$"org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$ClassMethodNameFilter")
             .declaredConstructors.first { it.parameterCount == 1 }.let {
                it.isAccessible = true
-               it.newInstance(matcher) as PostDiscoveryFilter
+               it.newInstance(matcher)
             }
       ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)) shouldBe listOf(
          "\\QClassA\\E",
