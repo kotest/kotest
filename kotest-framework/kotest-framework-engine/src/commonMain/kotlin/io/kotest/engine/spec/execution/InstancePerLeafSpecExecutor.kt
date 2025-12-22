@@ -23,6 +23,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -216,11 +217,16 @@ internal class InstancePerLeafSpecExecutor(
 
          private val logger = Logger(LeafLaunchingScope::class)
 
+         private val duplicateTestNameHandler = DuplicateTestNameHandler()
+         private val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
+
          val discoveredTests = mutableListOf<TestExecutionInFreshSpec>()
 
          override suspend fun registerTestCase(nested: NestedTest) {
             logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
-            val nestedTestCase = materializer.materialize(nested, testCase)
+            val unique = duplicateTestNameHandler.unique(duplicateTestNameMode, nested.name)
+            val uniqueName = nested.name.copy(name = unique)
+            val nestedTestCase = materializer.materialize(nested.copy(name = uniqueName), testCase)
 
             if (target != null && !nestedTestCase.descriptor.isPrefixOf(target)) {
                // Should execute the given test case described by target but traversing an irrelevant test case now
