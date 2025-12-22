@@ -23,7 +23,7 @@ object NestedGradleTestsArgParser {
    // this token is used because gradle thinks of tests as methods, and methods cannot be nested
    // so when we have nested tests we collapse into a fake test name with this delimiter in it.
    // obviously this will break if you have this in a test name, but then if you do... what are you thinking :)
-   const val CONTEXT = "__--__"
+   const val CONTEXT = " -- "
 
    // used to replace .* regexes with a value that doesn't contain a period so we can split on the period, then revert
    const val WILDCARD = "__wildcard__"

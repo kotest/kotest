@@ -22,20 +22,20 @@ import java.util.regex.Pattern
  * thus allowing kotest to properly support the --tests options for nested tests.
  *
  */
-internal object GradlePostDiscoveryFilterUtils {
+internal object ClassMethodNameFilterUtils {
 
-   private val logger = Logger(GradlePostDiscoveryFilterUtils::class)
+   private val logger = Logger(ClassMethodNameFilterUtils::class)
 
    /**
     * Returns the include patterns enclosed in any [ClassMethodNameFilter]s added by Gradle
     * from the --tests command line arg.
     */
-   fun extractIncludePatterns(filters: List<Any>): List<String> {
+   fun extractIncludePatterns(filters: List<PostDiscoveryFilter>): List<String> {
       val classMethodFilters = filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }
       return classMethodFilters.flatMap { extract(it) }
    }
 
-   private fun extract(filter: Any): List<String> = runCatching {
+   private fun extract(filter: PostDiscoveryFilter): List<String> = runCatching {
 
       val matcher = testMatcher(filter)
       logger.log { Pair(null, "TestMatcher [$matcher]") }

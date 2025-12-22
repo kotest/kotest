@@ -6,16 +6,12 @@ import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.gradle.NestedGradleTestsArgDescriptorFilter
-import io.kotest.engine.gradle.NestedGradleTestsArgParser
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
-import io.kotest.runner.junit.platform.gradleinternals.GradleClassMethodRegexTestFilter
-import io.kotest.runner.junit.platform.gradleinternals.GradlePostDiscoveryFilterUtils
+import io.kotest.runner.junit.platform.gradleinternals.ClassMethodNameFilterAdapter
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -23,7 +19,6 @@ import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
-import org.junit.platform.launcher.PostDiscoveryFilter
 import java.util.Optional
 import kotlin.reflect.KClass
 
@@ -125,7 +120,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val engine = EngineDescriptorBuilder.builder(uniqueId)
          .withSpecs(result.specs)
-         .withExtensions(configurationParameterExtensions(request) + createDescriptorFilters(request))
+         .withExtensions(configurationParameterExtensions(request) + ClassMethodNameFilterAdapter.adapt(request))
          .withFormatter(formatting)
          .build()
 
@@ -144,28 +139,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .map { it.trim() }
          .filter { it.isNotBlank() }
          .map { instantiations.newInstanceNoArgConstructorOrObjectInstance(Class.forName(it).kotlin as KClass<Extension>) }
-   }
-
-   /**
-    * Returns a [DescriptorFilter] for each [PostDiscoveryFilter].
-    *
-    * If the format is a package name or class name, then we use a wrapper around the gradle filter.
-    * If the format contains a nested test name, then we use a special kotest parsed version.
-    *
-    * If no post filters are present, this will return null
-    */
-   private fun createDescriptorFilters(request: EngineDiscoveryRequest): List<DescriptorFilter> {
-      return GradlePostDiscoveryFilterUtils.extractIncludePatterns(request.postFilters())
-         .map { filter ->
-            val nestedTestArg = NestedGradleTestsArgParser.parse(filter)
-            if (nestedTestArg != null) {
-               // HACK since we have a test filter with nested test name, we will clear the list of post filters so gradle
-               // doesn't do any filtering - as we'll take care of that
-               GradlePostDiscoveryFilterUtils.reset(request.postFilters())
-               NestedGradleTestsArgDescriptorFilter(setOf(nestedTestArg))
-            } else
-               GradleClassMethodRegexTestFilter(setOf(filter))
-         }
    }
 
    /**
