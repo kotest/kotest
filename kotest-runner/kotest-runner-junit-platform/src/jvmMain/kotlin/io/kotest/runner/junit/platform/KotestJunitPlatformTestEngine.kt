@@ -155,7 +155,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * If no post filters are present, this will return null
     */
    private fun createDescriptorFilters(request: EngineDiscoveryRequest): List<DescriptorFilter> {
-      return GradlePostDiscoveryFilterUtils.extract(request.postFilters())
+      return GradlePostDiscoveryFilterUtils.extractIncludePatterns(request.postFilters())
          .map { filter ->
             val nestedTestArg = NestedGradleTestsArgParser.parse(filter)
             if (nestedTestArg != null) {

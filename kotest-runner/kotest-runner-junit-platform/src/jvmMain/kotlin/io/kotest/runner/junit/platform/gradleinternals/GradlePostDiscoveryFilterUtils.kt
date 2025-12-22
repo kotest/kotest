@@ -1,20 +1,25 @@
+@file:Suppress("KDocUnresolvedReference")
+
 package io.kotest.runner.junit.platform.gradleinternals
 
 import io.kotest.core.Logger
+import org.junit.platform.launcher.PostDiscoveryFilter
 import java.util.regex.Pattern
 
 /**
  * JUnit has this concept of 'PostDiscoveryFilter's which can be applied after test discovery.
- * Gradle implements --tests Foo.mytest by passing a ClassMethodNameFilter which is an implementation
- * of PostDiscoveryFilter. It is also used by the test retry plugin.
+ *
+ * Gradle implements the cli parameter "--tests Foo.mytest" by passing an instance of
+ * [org.gradle.api.internal.tasks.testing.junitplatform.ClassMethodNameFilter] which is an
+ * implementation of PostDiscoveryFilter. It is also used by the test retry plugin.
  *
  * But ClassMethodNameFilter, as the name implies, only handles clases and methods.
  * Kotest is more advanced, and JUnit5 Platform allows for hierarchical tests, so this is a limitation
  * of Gradle not implementing the spec fully. See https://github.com/gradle/gradle/issues/4912
  *
  * Since ClassMethodNameFilter is private, we can't get access to the underlying patterns, so we resort
- * to this reflection bullshit to get the raw strings out, so we can parse and apply the patterns ourselves,
- * thus allowing kotest to properly support the --tests options.
+ * to this reflection hackery to get the raw strings out, so we can parse and apply the patterns ourselves,
+ * thus allowing kotest to properly support the --tests options for nested tests.
  *
  */
 internal object GradlePostDiscoveryFilterUtils {
@@ -22,9 +27,10 @@ internal object GradlePostDiscoveryFilterUtils {
    private val logger = Logger(GradlePostDiscoveryFilterUtils::class)
 
    /**
-    * Returns the include patterns enclosed in any [ClassMethodNameFilter]s added by Gradle from the --tests command line arg.
+    * Returns the include patterns enclosed in any [ClassMethodNameFilter]s added by Gradle
+    * from the --tests command line arg.
     */
-   fun extract(filters: List<Any>): List<String> {
+   fun extractIncludePatterns(filters: List<Any>): List<String> {
       val classMethodFilters = filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }
       return classMethodFilters.flatMap { extract(it) }
    }
@@ -50,9 +56,9 @@ internal object GradlePostDiscoveryFilterUtils {
    }.getOrElse { emptyList() }
 
    /**
-    * Removes any [ClassMethodNameFilter]s added by Gradle from the --tests command line arg.
+    * Removes any include patterns on any [ClassMethodNameFilter]s added by Gradle.
     */
-   fun reset(filters: List<Any>) {
+   fun reset(filters: List<PostDiscoveryFilter>) {
       filters.filter { it.javaClass.simpleName == "ClassMethodNameFilter" }.forEach {
          val matcher = testMatcher(it)
          val commandLineIncludePatterns = commandLineIncludePatterns(matcher) as MutableList<*>
