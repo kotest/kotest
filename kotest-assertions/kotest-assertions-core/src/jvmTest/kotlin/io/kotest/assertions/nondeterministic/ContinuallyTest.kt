@@ -100,7 +100,7 @@ class ContinuallyTest : FunSpec() {
             listener = { _, _ -> listened++ }
          }
          val result = testContinually(config) {
-            delay(53)
+            delay(53.milliseconds)
             1 shouldBe 1
             invoked++
          }
