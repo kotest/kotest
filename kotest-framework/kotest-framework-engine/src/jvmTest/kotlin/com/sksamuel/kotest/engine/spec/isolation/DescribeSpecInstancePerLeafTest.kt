@@ -217,3 +217,20 @@ class InstancePerLeafTest7 : DescribeSpec({
       }
    }
 })
+
+/**
+ * A test to demonstrate that in InstancePerLeaf mode, tests with the same name do not clash.
+ */
+class InstancePerLeafTest8 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   describe("describe") {
+      it("tests with the same name") {
+         1 + 1 shouldBe 2
+      }
+      it("tests with the same name") {
+         1 + 1 shouldBe 2
+      }
+   }
+})
