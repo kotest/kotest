@@ -33,7 +33,7 @@ class MyTests: ShouldSpec() {
 
      val config = continuallyConfig<Unit> {
         duration = 60.seconds
-        intervalFn = DurationFn { 50.milliseconds }
+        interval = 50.milliseconds
      }
 
       continually(config) {
