@@ -1,11 +1,9 @@
-package com.sksamuel.kotest.engine.gradle
+package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.runner.junit.platform.gradle.NestedTestsArgParser
-import io.kotest.runner.junit.platform.gradle.NestedTestArg
 import io.kotest.matchers.shouldBe
 
-class NestedGradleTestsArgParserTest : FunSpec() {
+class NestedTestsArgParserTest : FunSpec() {
    init {
 
       test("if only a package is specified should return null") {
@@ -42,7 +40,7 @@ class NestedGradleTestsArgParserTest : FunSpec() {
 
       test("support wildcards in test names") {
          NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.Test.some method name__--__with a \\E.*\\Q wildcard\\E") shouldBe
-            NestedTestArg("com.sksamuel.kotest.engine.gradle", "Test", listOf("some method name","with a * wildcard"))
+            NestedTestArg("com.sksamuel.kotest.engine.gradle", "Test", listOf("some method name", "with a * wildcard"))
       }
    }
 }
