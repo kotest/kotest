@@ -18,7 +18,6 @@ public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/
 }
 
 public final class io/kotest/runner/junit/platform/KotestEngineDescriptor : org/junit/platform/engine/support/descriptor/EngineDescriptor {
-	public fun <init> (Lorg/junit/platform/engine/UniqueId;Ljava/util/List;Ljava/util/List;)V
 	public final fun getClasses ()Ljava/util/List;
 	public final fun getExtensions ()Ljava/util/List;
 	public fun mayRegisterTests ()Z

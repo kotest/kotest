@@ -14,8 +14,8 @@ import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
-import io.kotest.runner.junit.platform.gradle.GradleClassMethodRegexTestFilter
-import io.kotest.runner.junit.platform.gradle.GradlePostDiscoveryFilterUtils
+import io.kotest.runner.junit.platform.gradleinternals.GradleClassMethodRegexTestFilter
+import io.kotest.runner.junit.platform.gradleinternals.GradlePostDiscoveryFilterUtils
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
