@@ -19,27 +19,27 @@ class NestedTestsArgParserTest : FunSpec() {
       }
 
       test("support nested tests") {
-         NestedTestsArgParser.parse("\\Qio.kotest.SomeTest.test__--__nested\\E") shouldBe
+         NestedTestsArgParser.parse("\\Qio.kotest.SomeTest.test -- nested\\E") shouldBe
             NestedTestArg("io.kotest", "SomeTest", listOf("test", "nested"))
       }
 
       test("should support not starting with \\Q") {
-         NestedTestsArgParser.parse("io.kotest.SomeTest.test__--__nested\\E") shouldBe
+         NestedTestsArgParser.parse("io.kotest.SomeTest.test -- nested\\E") shouldBe
             NestedTestArg("io.kotest", "SomeTest", listOf("test", "nested"))
       }
 
       test("should support not ending with \\E") {
-         NestedTestsArgParser.parse("\\Qio.kotest.SomeTest.test__--__nested") shouldBe
+         NestedTestsArgParser.parse("\\Qio.kotest.SomeTest.test -- nested") shouldBe
             NestedTestArg("io.kotest", "SomeTest", listOf("test", "nested"))
       }
 
       test("support spaces in test names") {
-         NestedTestsArgParser.parse("\\Qio.kotest.SomeTest.some method name__--__more names\\E") shouldBe
+         NestedTestsArgParser.parse("\\Qio.kotest.SomeTest.some method name -- more names\\E") shouldBe
             NestedTestArg("io.kotest", "SomeTest", listOf("some method name", "more names"))
       }
 
       test("support wildcards in test names") {
-         NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.Test.some method name__--__with a \\E.*\\Q wildcard\\E") shouldBe
+         NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.Test.some method name -- with a \\E.*\\Q wildcard\\E") shouldBe
             NestedTestArg("com.sksamuel.kotest.engine.gradle", "Test", listOf("some method name", "with a * wildcard"))
       }
    }
