@@ -6,9 +6,10 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.gradle.api.internal.tasks.testing.filter.TestFilterSpec
 import org.gradle.api.internal.tasks.testing.filter.TestSelectionMatcher
+import org.junit.platform.launcher.PostDiscoveryFilter
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class GradlePostDiscoveryFilterExtractorTest : FunSpec({
+class ClassMethodNameFilterUtilsTest : FunSpec({
 
    test("matcher logic") {
 
@@ -37,13 +38,13 @@ class GradlePostDiscoveryFilterExtractorTest : FunSpec({
 
       val matcher = TestSelectionMatcher(spec)
 
-      val filter =
-         Class.forName("org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor\$ClassMethodNameFilter")
+      val filter: PostDiscoveryFilter =
+         Class.forName($$"org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$ClassMethodNameFilter")
             .declaredConstructors.first { it.parameterCount == 1 }.let {
                it.isAccessible = true
-               it.newInstance(matcher)
+               it.newInstance(matcher) as PostDiscoveryFilter
             }
-      GradlePostDiscoveryFilterUtils.extract(listOf(filter)) shouldBe listOf(
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)) shouldBe listOf(
          "\\QClassA\\E",
          "\\QClassB.test name\\E"
       )
