@@ -27,7 +27,8 @@ import kotlin.reflect.KClass
 /**
  * A Kotest [TestEngineListener] that forwards notifications to a JUnit Platform [EngineExecutionListener].
  *
- * This is not thread safe and should only be invoked by one spec at a time.
+ * This is not thread safe and should only be invoked by one spec at a time or
+ * wrapped in a [SynchronizedEngineExecutionListener].
  *
  * JUnit platform supports out of order notification of tests, in that sibling
  * tests can be executing in parallel and updating JUnit out of order. However the gradle test
