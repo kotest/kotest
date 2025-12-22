@@ -16,14 +16,14 @@ import kotlin.reflect.KClass
  *
  * @param specs these are classes which extend one of the spec classes
  */
-data class DiscoveryResult(
+internal data class DiscoveryResult(
    val specs: List<KClass<out Spec>>,
 )
 
 /**
  * Converts JUnit selectors into Kotest specs.
  */
-object Discovery {
+internal object Discovery {
 
    // filter functions
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }

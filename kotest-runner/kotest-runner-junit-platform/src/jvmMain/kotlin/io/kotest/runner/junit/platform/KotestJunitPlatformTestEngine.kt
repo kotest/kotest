@@ -6,14 +6,12 @@ import io.kotest.core.extensions.Extension
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
-import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
-import io.kotest.runner.junit.platform.gradleinternals.GradleClassMethodRegexTestFilter
-import io.kotest.runner.junit.platform.gradleinternals.GradlePostDiscoveryFilterExtractor
+import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -122,7 +120,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       val engine = EngineDescriptorBuilder.builder(uniqueId)
          .withSpecs(result.specs)
-         .withExtensions(configurationParameterExtensions(request) + listOfNotNull(gradleTestFilterExtension(request)))
+         .withExtensions(configurationParameterExtensions(request) + ClassMethodNameFilterAdapter.adapt(request))
          .withFormatter(formatting)
          .build()
 
@@ -141,15 +139,6 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .map { it.trim() }
          .filter { it.isNotBlank() }
          .map { instantiations.newInstanceNoArgConstructorOrObjectInstance(Class.forName(it).kotlin as KClass<Extension>) }
-   }
-
-   /**
-    * Returns a [DescriptorFilter] created from the --tests parameter in gradle, which it exposes
-    * as an instance of [org.junit.platform.launcher.PostDiscoveryFilter].
-    */
-   private fun gradleTestFilterExtension(request: EngineDiscoveryRequest): DescriptorFilter {
-      val classMethodFilterRegexes = GradlePostDiscoveryFilterExtractor.extract(request.postFilters())
-      return GradleClassMethodRegexTestFilter(classMethodFilterRegexes)
    }
 
    /**

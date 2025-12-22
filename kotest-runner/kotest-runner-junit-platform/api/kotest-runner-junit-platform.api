@@ -1,8 +1,3 @@
-public final class io/kotest/runner/junit/platform/FiltersKt {
-	public static final fun engineFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
-	public static final fun postFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
-}
-
 public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/engine/test/names/DisplayNameFormatting;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -18,7 +13,6 @@ public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/
 }
 
 public final class io/kotest/runner/junit/platform/KotestEngineDescriptor : org/junit/platform/engine/support/descriptor/EngineDescriptor {
-	public fun <init> (Lorg/junit/platform/engine/UniqueId;Ljava/util/List;Ljava/util/List;)V
 	public final fun getClasses ()Ljava/util/List;
 	public final fun getExtensions ()Ljava/util/List;
 	public fun mayRegisterTests ()Z
@@ -38,17 +32,6 @@ public final class io/kotest/runner/junit/platform/KotestJunitPlatformTestEngine
 }
 
 public final class io/kotest/runner/junit/platform/KotestJunitPlatformTestEngine$Companion {
-}
-
-public final class io/kotest/runner/junit/platform/debug/TostringKt {
-	public static final fun string (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/lang/String;
-	public static final fun string (Lorg/junit/platform/launcher/LauncherDiscoveryRequest;)Ljava/lang/String;
-}
-
-public final class io/kotest/runner/junit/platform/discovery/Discovery {
-	public static final field INSTANCE Lio/kotest/runner/junit/platform/discovery/Discovery;
-	public final fun convertUniqueIdsToClassSelectors (Lorg/junit/platform/engine/UniqueId;Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
-	public final fun discover (Lorg/junit/platform/engine/UniqueId;Lorg/junit/platform/engine/EngineDiscoveryRequest;)Lio/kotest/runner/junit/platform/discovery/DiscoveryResult;
 }
 
 public abstract class io/kotest/runner/junit/platform/discovery/DiscoveryFilter {
@@ -88,17 +71,6 @@ public final class io/kotest/runner/junit/platform/discovery/DiscoveryFilter$Pac
 	public final fun getF ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
 	public fun test (Lkotlin/reflect/KClass;)Z
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/runner/junit/platform/discovery/DiscoveryResult {
-	public fun <init> (Ljava/util/List;)V
-	public final fun component1 ()Ljava/util/List;
-	public final fun copy (Ljava/util/List;)Lio/kotest/runner/junit/platform/discovery/DiscoveryResult;
-	public static synthetic fun copy$default (Lio/kotest/runner/junit/platform/discovery/DiscoveryResult;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/runner/junit/platform/discovery/DiscoveryResult;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getSpecs ()Ljava/util/List;
-	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 

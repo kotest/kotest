@@ -8,7 +8,7 @@ import org.junit.platform.launcher.PostDiscoveryFilter
 /**
  * If this [EngineDiscoveryRequest] is a [LauncherDiscoveryRequest] then returns any [EngineFilter]s.
  */
-fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
+internal fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
    is LauncherDiscoveryRequest -> engineFilters
    else -> emptyList()
 }
@@ -16,7 +16,7 @@ fun EngineDiscoveryRequest.engineFilters(): List<EngineFilter> = when (this) {
 /**
  * If this [EngineDiscoveryRequest] is a [LauncherDiscoveryRequest] then returns any [PostDiscoveryFilter]s.
  */
-fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
+internal fun EngineDiscoveryRequest.postFilters(): List<PostDiscoveryFilter> = when (this) {
    is LauncherDiscoveryRequest -> postDiscoveryFilters
    else -> emptyList()
 }
