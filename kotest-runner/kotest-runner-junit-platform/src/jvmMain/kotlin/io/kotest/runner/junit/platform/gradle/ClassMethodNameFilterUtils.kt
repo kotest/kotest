@@ -1,6 +1,6 @@
 @file:Suppress("KDocUnresolvedReference")
 
-package io.kotest.runner.junit.platform.gradleinternals
+package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.Logger
 import org.junit.platform.launcher.PostDiscoveryFilter

@@ -1,6 +1,4 @@
-package io.kotest.engine.gradle
-
-import io.kotest.common.KotestInternal
+package io.kotest.runner.junit.platform.gradle
 
 /**
  * Parses the gradle --tests option when using a nested test.
@@ -17,8 +15,7 @@ import io.kotest.common.KotestInternal
  * This parser only handles for nested tests. If the test is not nested, then we can let gradle
  * handle it as normal.
  */
-@KotestInternal
-object NestedGradleTestsArgParser {
+internal object NestedTestsArgParser {
 
    // this token is used because gradle thinks of tests as methods, and methods cannot be nested
    // so when we have nested tests we collapse into a fake test name with this delimiter in it.
@@ -60,5 +57,4 @@ object NestedGradleTestsArgParser {
    }
 }
 
-@KotestInternal
-data class NestedTestArg(val packageName: String, val className: String, val contexts: List<String>)
+internal data class NestedTestArg(val packageName: String, val className: String, val contexts: List<String>)

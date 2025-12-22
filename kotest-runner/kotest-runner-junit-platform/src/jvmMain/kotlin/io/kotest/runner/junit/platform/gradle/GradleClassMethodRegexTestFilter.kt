@@ -1,4 +1,4 @@
-package io.kotest.runner.junit.platform.gradleinternals
+package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
@@ -52,7 +52,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
    private fun match(pattern: String, descriptor: Descriptor): Boolean {
       val path = descriptor.dotSeparatedFullPath().value
       val regexPattern = "^(.*)$pattern".toRegex() // matches pattern exactly
-      val laxRegexPattern = "^(.*)$pattern(.*)\$".toRegex() // matches pattern that can be followed by others
+      val laxRegexPattern = "^(.*)$pattern(.*)$".toRegex() // matches pattern that can be followed by others
       val packagePath = descriptor.spec().id.value.split(".").dropLast(1).joinToString(".") // io.kotest
 
       val isSimpleClassMatch by lazy {

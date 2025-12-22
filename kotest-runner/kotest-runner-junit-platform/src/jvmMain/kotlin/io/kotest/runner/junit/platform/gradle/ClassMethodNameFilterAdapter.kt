@@ -1,10 +1,8 @@
 @file:Suppress("KDocUnresolvedReference")
 
-package io.kotest.runner.junit.platform.gradleinternals
+package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.gradle.NestedGradleTestsArgParser
-import io.kotest.engine.gradle.NestedTestsArgDescriptorFilter
 import io.kotest.runner.junit.platform.postFilters
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.launcher.PostDiscoveryFilter
@@ -27,16 +25,16 @@ internal object ClassMethodNameFilterAdapter {
     * If the format is a package name or class name, then we use a wrapper around the gradle filter.
     * If the format contains a nested test name, then we use a special Kotest parsed version.
     *
-    * If no post filters are present, this will return null
+    * If no post filters are present, this will return an empty list.
     */
-   fun adapt(request: EngineDiscoveryRequest): List<DescriptorFilter> {
+   internal fun adapt(request: EngineDiscoveryRequest): List<DescriptorFilter> {
       return ClassMethodNameFilterUtils.extractIncludePatterns(request.postFilters())
          .map { filter ->
-            val nestedTestArg = NestedGradleTestsArgParser.parse(filter)
+            val nestedTestArg = NestedTestsArgParser.parse(filter)
             if (nestedTestArg != null) {
                // HACK since we have a tests filter with nested test name, we will clear the list of post filters
-               // so gradle doesn't do any filtering - otherwise, gradle will filter out the nested test as it doesn't
-               // understand the kotest format
+               // so gradle doesn't do any filtering - otherwise, gradle will incorrectly filter out the nested
+               // test as it doesn't understand the kotest format
                ClassMethodNameFilterUtils.reset(request.postFilters())
                NestedTestsArgDescriptorFilter(setOf(nestedTestArg))
             } else

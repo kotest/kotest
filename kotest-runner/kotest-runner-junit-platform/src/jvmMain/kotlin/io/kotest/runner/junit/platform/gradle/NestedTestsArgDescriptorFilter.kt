@@ -1,6 +1,5 @@
-package io.kotest.engine.gradle
+package io.kotest.runner.junit.platform.gradle
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
@@ -8,11 +7,10 @@ import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult
 
 /**
- * An implementation of [io.kotest.engine.extensions.DescriptorFilter] that adapts the gradle --tests arg
+ * An implementation of [DescriptorFilter] that adapts the gradle --tests arg
  * when the value contains a nested test.
  */
-@KotestInternal
-class NestedTestsArgDescriptorFilter(private val args: Set<NestedTestArg>) : DescriptorFilter {
+internal class NestedTestsArgDescriptorFilter(private val args: Set<NestedTestArg>) : DescriptorFilter {
 
    private val logger = Logger(NestedTestsArgDescriptorFilter::class)
 
