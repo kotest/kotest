@@ -7,15 +7,14 @@ import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult
 
 /**
- * An implementation of [DescriptorFilter] that adapts the gradle --tests arg
- * when the value contains a nested test.
+ * An implementation of [DescriptorFilter] that supports nested test names.
  */
 internal class NestedTestsArgDescriptorFilter(private val args: Set<NestedTestArg>) : DescriptorFilter {
 
    private val logger = Logger(NestedTestsArgDescriptorFilter::class)
 
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
-      logger.log { Pair(descriptor.toString(), "Testing against $args") }
+      logger.log { Pair(descriptor.toString(), "Testing against nested test args $args") }
       return when {
          args.isEmpty() -> DescriptorFilterResult.Include
          args.any { match(it, descriptor) } -> DescriptorFilterResult.Include
