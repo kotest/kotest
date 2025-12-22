@@ -1,7 +1,5 @@
 package io.kotest.core.descriptors
 
-import io.kotest.core.descriptors.DescriptorPath
-
 /**
  * A stable, consistent identifier for a test element.
  *
@@ -37,7 +35,16 @@ sealed interface Descriptor {
    data class TestDescriptor(
       val parent: Descriptor,
       override val id: DescriptorId,
-   ) : Descriptor
+   ) : Descriptor {
+
+      /**
+       * Returns the root test for this [TestDescriptor]. If this descriptor is already a root test, then returns this.
+       */
+      fun root(): TestDescriptor = when (parent) {
+         is SpecDescriptor -> this
+         is TestDescriptor -> parent.root()
+      }
+   }
 
    fun ids(): List<DescriptorId> = when (this) {
       is SpecDescriptor -> listOf(this.id)
@@ -68,20 +75,6 @@ sealed interface Descriptor {
       }
    }
 
-//   /**
-//    * Returns a parseable path to the test.
-//    *
-//    * @param includeSpec if true then the spec name is included in the path.
-//    */
-//   @Deprecated(
-//      "Use path() without the argument. Deprecated since 6.0",
-//      ReplaceWith("path()")
-//   )
-//   fun path(includeSpec: Boolean = true): DescriptorPath {
-//      require(includeSpec) { "Paths must always include the spec descriptor since 6.0" }
-//      return path()
-//   }
-
    /**
     * Returns a parseable path to the test.
     *
@@ -90,9 +83,15 @@ sealed interface Descriptor {
     */
    fun path(): DescriptorPath = DescriptorPaths.render(this)
 
-   fun parts(): List<String> = when (this) {
+   /**
+    * Returns the test parts as a list of strings, excluding the spec.
+    *
+    * For example, a test with name "my test" inside a context "my context" in a spec called "my spec"
+    * would have the parts ["my context", "my test"].
+    */
+   fun testParts(): List<String> = when (this) {
       is SpecDescriptor -> emptyList()
-      is TestDescriptor -> parent.parts() + listOf(this.id.value)
+      is TestDescriptor -> parent.testParts() + listOf(this.id.value)
    }
 
    /**
@@ -153,15 +152,6 @@ sealed interface Descriptor {
     */
    fun isDescendentOf(descriptor: Descriptor): Boolean = descriptor.isAncestorOf(this)
 
-//   /**
-//    * Returns `true` if this [descriptor] is an ancestor of, or the same as, the given [descriptor].
-//    */
-//   @Deprecated(
-//      "Confusing nomenclature. Use isPrefixOf instead. Deprecated since 6.0.",
-//      ReplaceWith("isPrefixOf(descriptor)")
-//   )
-//   fun isOnPath(descriptor: Descriptor): Boolean = isPrefixOf(descriptor)
-
    /**
     * Returns `true` if this [descriptor] is an ancestor of, or the same as, the given [descriptor].
     */
@@ -172,12 +162,13 @@ sealed interface Descriptor {
     * Returns true if this [descriptor] could be a parent or a child of the given [descriptor].
     *
     * For example, if this descriptor was MySpec/some context, then the following would be true:
-    * - MySpec/some context hasSharedPath MySpec
-    * - MySpec/some context hasSharedPath MySpec/some context
-    * - MySpec/some context hasSharedPath MySpec/some context -- child test
+    * - MySpec/some context hasSharedPath MySpec (because the LHS is a child of the RHS)
+    * - MySpec/some context hasSharedPath MySpec/some context (because the LHS is equal to the RHS)
+    * - MySpec/some context hasSharedPath MySpec/some context -- child test (because the LHS is a parent of the RHS)
     *
     * These would be false:
-    * - MySpec/some context hasSharedPath MySpec/another context
+    * - MySpec/some context hasSharedPath MySpec/another context (because the LHS and the RHS are siblings tests)
+    * - MySpec1/some context hasSharedPath MySpe2c/some context (because the LHS and the RHS have same test name but are in different specs)
     *
     */
    fun hasSharedPath(descriptor: Descriptor): Boolean {

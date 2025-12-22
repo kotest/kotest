@@ -4,12 +4,12 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.gradleinternals.GradlePostDiscoveryFilterExtractor
 import org.gradle.api.internal.tasks.testing.filter.TestFilterSpec
 import org.gradle.api.internal.tasks.testing.filter.TestSelectionMatcher
+import org.junit.platform.launcher.PostDiscoveryFilter
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class GradlePostDiscoveryFilterExtractorTest : FunSpec({
+class ClassMethodNameFilterUtilsTest : FunSpec({
 
    test("matcher logic") {
 
@@ -28,7 +28,7 @@ class GradlePostDiscoveryFilterExtractorTest : FunSpec({
       matcher.mayIncludeClass("ExcludedClassA") shouldBe false
    }
 
-   test("extract regexes from build script") {
+   test("extract regexes from internal gradle class") {
 
       val spec = TestFilterSpec(
          setOf("ClassA", "ClassB.test name"),
@@ -39,12 +39,12 @@ class GradlePostDiscoveryFilterExtractorTest : FunSpec({
       val matcher = TestSelectionMatcher(spec)
 
       val filter =
-         Class.forName("org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor\$ClassMethodNameFilter")
+         Class.forName($$"org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$ClassMethodNameFilter")
             .declaredConstructors.first { it.parameterCount == 1 }.let {
                it.isAccessible = true
                it.newInstance(matcher)
             }
-      GradlePostDiscoveryFilterExtractor.extract(listOf(filter)) shouldBe listOf(
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)) shouldBe listOf(
          "\\QClassA\\E",
          "\\QClassB.test name\\E"
       )

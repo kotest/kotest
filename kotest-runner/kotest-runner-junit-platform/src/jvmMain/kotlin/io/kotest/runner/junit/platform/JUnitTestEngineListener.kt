@@ -27,7 +27,8 @@ import kotlin.reflect.KClass
 /**
  * A Kotest [TestEngineListener] that forwards notifications to a JUnit Platform [EngineExecutionListener].
  *
- * This is not thread safe and should only be invoked by one spec at a time.
+ * This is not thread safe and should only be invoked by one spec at a time or
+ * wrapped in a [SynchronizedEngineExecutionListener].
  *
  * JUnit platform supports out of order notification of tests, in that sibling
  * tests can be executing in parallel and updating JUnit out of order. However the gradle test
@@ -120,8 +121,9 @@ class JUnitTestEngineListener(
       logger.log { "specStarted ${ref.kclass}" }
       try {
 
+         // descriptor must definitely exist for a started spec
          val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
-         descriptors[ref.kclass.toDescriptor()] = descriptor
+         descriptors[ref.kclass.toDescriptor()] = descriptor ?: error("Could not find TestDescriptor for ${ref.kclass}")
 
          logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
          listener.executionStarted(descriptor)
@@ -142,6 +144,7 @@ class JUnitTestEngineListener(
          // and mark that as failed
          t != null -> {
             val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+               ?: error("Could not find TestDescriptor for ${ref.kclass}")
             addPlaceholderTest(descriptor, t, ref.kclass)
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
@@ -159,11 +162,13 @@ class JUnitTestEngineListener(
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
 
       // an ignored spec will not have been started
-      // it will however have been registered when the test suite was created,
-      // so we know the test descriptor should exist
+      // also, if using --tests then the spec would not have been registered, in that case
+      // instead of showing all tests minus the one we are running as ignored, we'll just skip
 
       logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
-      listener.executionSkipped(root.getSpecTestDescriptor(kclass.toDescriptor()), reason)
+      val testDescriptor = root.getSpecTestDescriptor(kclass.toDescriptor())
+      if (testDescriptor != null)
+         listener.executionSkipped(testDescriptor, reason)
    }
 
 //   private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
