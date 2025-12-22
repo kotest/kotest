@@ -30,7 +30,7 @@ Some common approaches to these problems are:
   iterations, handle certain exceptions and fail on others, ensure the total time taken has not exceeded the max and so
   on.
 
-* Use countdown latches and block threads until the latches are released by the non-determistic operation. This can
+* Use countdown latches and block threads until the latches are released by the non-deterministic operation. This can
   work well if you are able to inject the latches in the appropriate places, but just like callbacks, it isn't always
   possible to have the code to be tested integrate with a latch.
 
