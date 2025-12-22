@@ -1,8 +1,3 @@
-public final class io/kotest/runner/junit/platform/FiltersKt {
-	public static final fun engineFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
-	public static final fun postFilters (Lorg/junit/platform/engine/EngineDiscoveryRequest;)Ljava/util/List;
-}
-
 public final class io/kotest/runner/junit/platform/JUnitTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public fun <init> (Lorg/junit/platform/engine/EngineExecutionListener;Lorg/junit/platform/engine/support/descriptor/EngineDescriptor;Lio/kotest/engine/test/names/DisplayNameFormatting;)V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
