@@ -4,6 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.CollectionEq
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -142,5 +143,23 @@ class CollectionEqTest : FunSpec({
 
       // These two lists have the same structure, so they should be equal
       CollectionEq.equals(cyclicList1, cyclicList2, false).shouldBeNull()
+   }
+
+   test("should throw error when exceeding max recursion depth") {
+      fun createDeeplyNestedList(depth: Int): List<Any> {
+         return if (depth <= 0) {
+            listOf("bottom")
+         } else {
+            listOf(createDeeplyNestedList(depth - 1))
+         }
+      }
+
+      val deepList1 = createDeeplyNestedList(65)
+      val deepList2 = createDeeplyNestedList(65)
+
+      val exception = shouldThrow<AssertionError> {
+         CollectionEq.equals(deepList1, deepList2, false)
+      }
+      exception.message shouldBe "Max recursion depth (64) reached during equality check"
    }
 })
