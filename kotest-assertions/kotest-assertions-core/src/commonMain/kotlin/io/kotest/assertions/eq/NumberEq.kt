@@ -11,6 +11,10 @@ import io.kotest.assertions.print.print
  */
 object NumberEq : Eq<Number> {
 
+   @Deprecated("Use the version with EqContext.")
+   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
    override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean, context: EqContext): Throwable? {
       return if (compare(actual, expected, strictNumberEq)) null
       else AssertionErrorBuilder.create()

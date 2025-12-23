@@ -7,6 +7,10 @@ import io.kotest.assertions.AssertionErrorBuilder
  */
 object SequenceEq : Eq<Sequence<*>> {
 
+   @Deprecated("Use the version with EqContext.")
+   override fun equals(actual: Sequence<*>, expected: Sequence<*>, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
    /**
     * [Sequence] is not a supported type.  Sequences can be infinite, and should be
     * compared only with custom code.

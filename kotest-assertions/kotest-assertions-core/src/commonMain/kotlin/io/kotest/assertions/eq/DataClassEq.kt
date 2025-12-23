@@ -34,6 +34,10 @@ internal object DataClassEq : Eq<Any> {
     */
    private const val MAX_NESTED_DEPTH = 10
 
+   @Deprecated("Use the version with EqContext.")
+   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
    override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean, context: EqContext): Throwable? {
       // Reference identity check
       if (actual === expected) return null

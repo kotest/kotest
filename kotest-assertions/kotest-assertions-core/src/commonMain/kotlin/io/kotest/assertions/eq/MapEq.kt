@@ -12,6 +12,10 @@ import io.kotest.assertions.print.print
  */
 internal object MapEq : Eq<Map<*, *>> {
 
+   @Deprecated("Use the version with EqContext.")
+   override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
    override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean, context: EqContext): Throwable? {
       // If both references point to the same object, they're equal (handles cyclic references)
       if (actual === expected) return null

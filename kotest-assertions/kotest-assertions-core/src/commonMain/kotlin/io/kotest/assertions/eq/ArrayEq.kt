@@ -7,6 +7,10 @@ import io.kotest.assertions.print.print
 
 object ArrayEq : Eq<Array<*>> {
 
+   @Deprecated("Use the version with EqContext.")
+   override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
    override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()

@@ -7,6 +7,10 @@ import io.kotest.assertions.print.print
 
 object CollectionEq : Eq<Collection<*>> {
 
+   @Deprecated("Use the version with EqContext.")
+   override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
    override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
       // If both references point to the same object, they're equal (handles cyclic references)
       if (actual === expected) return null
