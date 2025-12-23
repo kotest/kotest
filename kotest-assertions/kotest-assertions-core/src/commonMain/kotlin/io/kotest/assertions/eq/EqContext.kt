@@ -9,7 +9,7 @@ class EqContext {
 
    fun push(actual: Any?, expected: Any?) {
       if (visited.size >= MAX_DEPTH) {
-         throw AssertionError("Max recursion depth ($MAX_DEPTH) reached during equality check")
+         throw AssertionError("Cannot recursively match structures more than $MAX_DEPTH levels deep")
       }
       visited.add(actual to expected)
    }
