@@ -10,7 +10,7 @@ import io.kotest.core.descriptors.DescriptorId
  */
 internal object IncludeTestPatternDescriptorFilter : DescriptorFilter {
 
-   const val ENV_NAME = "KOTEST_INCUDE_PATTERN"
+   const val ENV_NAME = "KOTEST_INCLUDE_PATTERN"
 
    private val logger = Logger(IncludeTestPatternDescriptorFilter::class)
 
