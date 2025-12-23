@@ -22,7 +22,7 @@ package io.kotest.engine.extensions
 internal object TestPatternParser {
 
    // this token is used to delimit nested tests
-   const val CONTEXT = " -- "
+   const val DELIMITER = " -- "
 
    fun parse(arg: String): TestPattern {
       require(arg.isNotBlank())
@@ -39,7 +39,7 @@ internal object TestPatternParser {
 
       if (test == null) return TestPattern(packageParts.joinToString("."), false, simpleName, emptyList())
 
-      val contexts = test.split(CONTEXT).filter { it.isNotBlank() }
+      val contexts = test.split(DELIMITER).filter { it.isNotBlank() }
       return TestPattern(packageParts.joinToString("."), false, simpleName, contexts)
    }
 }
