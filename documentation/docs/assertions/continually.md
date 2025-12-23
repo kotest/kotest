@@ -43,3 +43,26 @@ class MyTests: ShouldSpec() {
   }
 }
 ```
+
+## Listeners
+
+If we need to record successful executions of the `block()`, we can use a listener, as shown in the following example:
+
+```kotlin
+var invoked = 0
+val executed = mutableMapOf<Int, Int>()
+val config = continuallyConfig<Int> {
+  duration = 500.milliseconds
+  listener = { index, value -> executed[index] = value }
+}
+val result = testContinually(config) {
+  invoked*2 shouldBe 2*invoked
+  invoked++ + 42
+}
+assertSoftly {
+  executed.keys.shouldHaveSize(20)
+  executed.forEach { (k, v) ->
+     v shouldBe k + 42
+  }
+}
+```
