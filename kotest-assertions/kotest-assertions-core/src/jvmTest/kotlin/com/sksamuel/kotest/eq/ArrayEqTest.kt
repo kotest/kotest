@@ -2,7 +2,6 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.ArrayEq
-import io.kotest.assertions.eq.CollectionEq
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull

@@ -7,5 +7,7 @@ class EqContext {
 
    fun pop() = visited.removeLastOrNull()
 
-   fun isVisited(actual: Any?, expected: Any?) = visited.any { it.first === actual && it.second === expected }
+   fun isVisited(actual: Any?, expected: Any?) = visited.any { (a, e) ->
+      (a === actual && e === expected) || (a === expected && e === actual)
+   }
 }
