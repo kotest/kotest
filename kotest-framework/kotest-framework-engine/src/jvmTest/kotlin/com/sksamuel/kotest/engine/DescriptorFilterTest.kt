@@ -15,7 +15,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class TestFilterTest : FunSpec() {
+class DescriptorFilterTest : FunSpec() {
    init {
 
       test("a filtered test should be ignored with reason") {

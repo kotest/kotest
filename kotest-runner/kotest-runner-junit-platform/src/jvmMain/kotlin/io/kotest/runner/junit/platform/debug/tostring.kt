@@ -14,18 +14,16 @@ import org.junit.platform.engine.discovery.PackageSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import org.junit.platform.engine.discovery.UriSelector
 import org.junit.platform.launcher.LauncherDiscoveryRequest
-import kotlin.jvm.javaClass
 
 /**
  * Utils for debugging launcher requests
  */
-
-fun EngineDiscoveryRequest.string() = when (this) {
+internal fun EngineDiscoveryRequest.string() = when (this) {
    is LauncherDiscoveryRequest -> this.string()
    else -> "EngineDiscoveryRequest [${this.javaClass.name}]"
 }
 
-fun LauncherDiscoveryRequest.string() =
+internal fun LauncherDiscoveryRequest.string() =
    "LauncherDiscoveryRequest [\n" +
       "configurationParameters=${this.configurationParameters}\n" +
       "classpathRootSelectors=${this.getSelectorsByType(ClasspathRootSelector::class.java)}\n" +

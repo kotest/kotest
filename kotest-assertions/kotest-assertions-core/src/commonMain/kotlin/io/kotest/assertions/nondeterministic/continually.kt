@@ -65,12 +65,14 @@ suspend fun <T> continually(
       }.onFailure { ex ->
          when (ex) {
             is TimeoutCancellationException -> {
-               throw AssertionErrorBuilder.create()
-                  .withMessage(
-                     "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
-                        "attempted $iterations times",
-                  ).withCause(ex)
-                  .build()
+               if(iterations == 0) {
+                  throw AssertionErrorBuilder.create()
+                     .withMessage(
+                        "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
+                           "attempted $iterations times",
+                     ).withCause(ex)
+                     .build()
+               }
             }
             is AssertionError -> {
                if (iterations == 0) throw ex

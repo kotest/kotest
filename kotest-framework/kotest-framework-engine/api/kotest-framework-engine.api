@@ -1017,9 +1017,9 @@ public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
-	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public fun testParts ()Ljava/util/List;
 }
 
 public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
@@ -1037,9 +1037,9 @@ public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
 	public static fun isSpec (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isTestCase (Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun parents (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
-	public static fun parts (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 	public static fun path (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/DescriptorPath;
 	public static fun spec (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public static fun testParts (Lio/kotest/core/descriptors/Descriptor;)Ljava/util/List;
 }
 
 public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kotest/core/descriptors/Descriptor {
@@ -1064,9 +1064,9 @@ public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kot
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
-	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public fun testParts ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -1094,9 +1094,10 @@ public final class io/kotest/core/descriptors/Descriptor$TestDescriptor : io/kot
 	public fun isSpec ()Z
 	public fun isTestCase ()Z
 	public fun parents ()Ljava/util/List;
-	public fun parts ()Ljava/util/List;
 	public fun path ()Lio/kotest/core/descriptors/DescriptorPath;
+	public final fun root ()Lio/kotest/core/descriptors/Descriptor$TestDescriptor;
 	public fun spec ()Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+	public fun testParts ()Ljava/util/List;
 	public fun toString ()Ljava/lang/String;
 }
 

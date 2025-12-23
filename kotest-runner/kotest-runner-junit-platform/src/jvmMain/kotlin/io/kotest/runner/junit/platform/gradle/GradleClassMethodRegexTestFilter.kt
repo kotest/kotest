@@ -1,12 +1,12 @@
-package io.kotest.runner.junit.platform.gradleinternals
+package io.kotest.runner.junit.platform.gradle
 
-import io.kotest.core.descriptors.DescriptorPath
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.engine.extensions.DescriptorFilter
 import io.kotest.engine.extensions.DescriptorFilterResult
-import io.kotest.core.Logger
 
-internal class GradleClassMethodRegexTestFilter(private val patterns: List<String>) : DescriptorFilter {
+internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String>) : DescriptorFilter {
 
    private val logger = Logger(GradleClassMethodRegexTestFilter::class)
 
@@ -52,13 +52,20 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: List<Strin
    private fun match(pattern: String, descriptor: Descriptor): Boolean {
       val path = descriptor.dotSeparatedFullPath().value
       val regexPattern = "^(.*)$pattern".toRegex() // matches pattern exactly
-      val laxRegexPattern = "^(.*)$pattern(.*)\$".toRegex() // matches pattern that can be followed by others
+      val laxRegexPattern = "^(.*)$pattern(.*)$".toRegex() // matches pattern that can be followed by others
       val packagePath = descriptor.spec().id.value.split(".").dropLast(1).joinToString(".") // io.kotest
 
       val isSimpleClassMatch by lazy {
          // SomeTest or *Test
          descriptor.spec().id.value.split(".").lastOrNull()?.matches(pattern.toRegex()) == true
       }
+
+      // matches a spec descriptor when we have a spec + method pattern
+      val isSpecPrefix by lazy {
+         if (descriptor !is Descriptor.SpecDescriptor) false
+         else pattern.removePrefix("\\Q").removeSuffix("\\E").startsWith(descriptor.id.value)
+      }
+
       val isSpecMatched by lazy { descriptor.spec().id.value.matches(regexPattern) } // *.SomeTest
       val isFullPathMatched by lazy { path.matches(regexPattern) } // io.*.SomeTest
       val isFullPathDotMatched by lazy { "$path.".matches(regexPattern) } // io.*. or io.*.SomeTest.*
@@ -73,6 +80,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: List<Strin
          isFullPathMatched ||
          isFullPathDotMatched ||
          isSpecMatched ||
+         isSpecPrefix ||
          isPackageMatched ||
          isPackageWithDotMatched
    }

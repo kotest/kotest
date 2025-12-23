@@ -1,14 +1,20 @@
 package io.kotest.assertions.nondeterministic
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.shouldFail
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.withClue
 import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.shouldForAll
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.equals.shouldBeEqual
+import io.kotest.matchers.ints.shouldBeAtLeast
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -85,6 +91,24 @@ class ContinuallyTest : FunSpec() {
          result.invocationTimes shouldHaveSize listened
       }
 
+      test("do not invoke the listener for timed out invocation") {
+         var listened = 0
+         var invoked = 0
+         val config = continuallyConfig<Unit> {
+            duration = 100.milliseconds
+            interval = 1.milliseconds
+            listener = { _, _ -> listened++ }
+         }
+         val result = testContinually(config) {
+            delay(53.milliseconds)
+            1 shouldBe 1
+            invoked++
+         }
+         withClue("last invocation should time out and not call listener") {
+            result.invocationTimes.size shouldBe listened + 1
+         }
+      }
+
       test("fail broken tests immediately") {
          val start = nonDeterministicTestTimeSource().markNow()
          val failure = shouldFail {
@@ -131,7 +155,26 @@ class ContinuallyTest : FunSpec() {
          }
       }
 
-      test("continually should throw AssertionError if function does not return within specified duration - even if the assertion would have passed").config(
+      test("continually should pass if function completes at least once and then possibly times out").config(
+         coroutineTestScope = false
+      ) {
+         val config = continuallyConfig<Int> {
+            duration = 100.milliseconds
+            intervalFn = DurationFn { 0.milliseconds }
+         }
+         var iteration = 0
+         val result = testContinually(config) {
+            delay(59.milliseconds)
+            iteration++
+            iteration shouldBeEqual iteration
+         }
+         assertSoftly {
+            result.invocationTimes.size shouldBeAtLeast 2
+            result.invocationTimes.shouldForAll { it <= 100.milliseconds }
+         }
+      }
+
+      test("continually should throw AssertionError if function does not return even once within specified duration - even if the assertion would have passed").config(
          coroutineTestScope = false
       ) {
          shouldThrow<AssertionError> {

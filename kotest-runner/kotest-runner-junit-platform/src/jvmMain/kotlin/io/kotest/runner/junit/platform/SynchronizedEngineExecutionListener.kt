@@ -6,6 +6,10 @@ import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.reporting.FileEntry
 import org.junit.platform.engine.reporting.ReportEntry
 
+/**
+ * An implementation of [EngineExecutionListener] that synchronizes all calls to the underlying listener
+ * so we can run tests concurrently and avoid out of order notifications to the junit platform.
+ */
 internal class SynchronizedEngineExecutionListener(val listener: EngineExecutionListener) : EngineExecutionListener {
 
    override fun executionFinished(testDescriptor: TestDescriptor, testExecutionResult: TestExecutionResult?) {
