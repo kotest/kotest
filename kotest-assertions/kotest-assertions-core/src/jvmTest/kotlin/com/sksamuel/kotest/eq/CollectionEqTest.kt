@@ -2,6 +2,7 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.CollectionEq
+import io.kotest.assertions.eq.EqContext.Companion.MAX_DEPTH
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
@@ -160,6 +161,6 @@ class CollectionEqTest : FunSpec({
       val exception = shouldThrow<AssertionError> {
          CollectionEq.equals(deepList1, deepList2, false)
       }
-      exception.message shouldBe "Max recursion depth (64) reached during equality check"
+      exception.message shouldBe "Cannot recursively match structures more than 64 levels deep"
    }
 })
