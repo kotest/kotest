@@ -34,7 +34,7 @@ internal object DataClassEq : Eq<Any> {
     */
    private const val MAX_NESTED_DEPTH = 10
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

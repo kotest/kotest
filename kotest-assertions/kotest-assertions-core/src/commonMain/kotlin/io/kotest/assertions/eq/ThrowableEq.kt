@@ -9,7 +9,7 @@ import io.kotest.assertions.print.print
  * An [Eq] for comparing a [Throwable] to another [Throwable].
  */
 object ThrowableEq : Eq<Throwable> {
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Throwable, expected: Throwable, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

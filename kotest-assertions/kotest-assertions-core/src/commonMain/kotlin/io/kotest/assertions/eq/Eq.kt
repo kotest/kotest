@@ -9,7 +9,7 @@ package io.kotest.assertions.eq
  */
 interface Eq<T> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    fun equals(actual: T, expected: T, strictNumberEq: Boolean): Throwable?
 
    /**

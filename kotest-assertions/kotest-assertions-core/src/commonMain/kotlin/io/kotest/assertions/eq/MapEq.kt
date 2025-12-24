@@ -12,7 +12,7 @@ import io.kotest.assertions.print.print
  */
 internal object MapEq : Eq<Map<*, *>> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

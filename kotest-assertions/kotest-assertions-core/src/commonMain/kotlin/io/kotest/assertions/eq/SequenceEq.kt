@@ -7,7 +7,7 @@ import io.kotest.assertions.AssertionErrorBuilder
  */
 object SequenceEq : Eq<Sequence<*>> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Sequence<*>, expected: Sequence<*>, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

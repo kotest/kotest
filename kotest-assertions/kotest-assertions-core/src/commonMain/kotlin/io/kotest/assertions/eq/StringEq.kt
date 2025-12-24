@@ -24,7 +24,7 @@ import io.kotest.common.sysprop
  */
 object StringEq : Eq<String> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

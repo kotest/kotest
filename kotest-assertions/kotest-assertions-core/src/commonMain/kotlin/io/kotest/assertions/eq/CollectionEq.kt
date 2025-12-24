@@ -7,7 +7,7 @@ import io.kotest.assertions.print.print
 
 object CollectionEq : Eq<Collection<*>> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

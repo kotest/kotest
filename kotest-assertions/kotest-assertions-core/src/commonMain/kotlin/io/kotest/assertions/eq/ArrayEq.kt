@@ -7,7 +7,7 @@ import io.kotest.assertions.print.print
 
 object ArrayEq : Eq<Array<*>> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

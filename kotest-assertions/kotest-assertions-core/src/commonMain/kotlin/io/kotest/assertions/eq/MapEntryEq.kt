@@ -10,7 +10,7 @@ import io.kotest.assertions.print.print
  * It uses an [EqCompare] function to compare the keys and values of the entries.
  */
 internal object MapEntryEq : Eq<Map.Entry<*, *>> {
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 

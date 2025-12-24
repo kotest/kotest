@@ -11,7 +11,7 @@ import io.kotest.assertions.print.print
  */
 object NumberEq : Eq<Number> {
 
-   @Deprecated("Use the version with EqContext.")
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? =
       equals(actual, expected, strictNumberEq, EqContext())
 
