@@ -42,6 +42,8 @@ class RootContainerWithConfigBuilder<T : TestScope>(
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
       extensions: List<Extension>? = null,
+      retries: Int? = null,
+      retryDelay: Duration? = null,
       test: suspend T.() -> Unit
    ) {
       val config = TestConfig(
@@ -55,6 +57,8 @@ class RootContainerWithConfigBuilder<T : TestScope>(
          failfast = failfast,
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
+         retries = retries,
+         retryDelay = retryDelay,
          extensions = extensions,
       )
       config(config, test)
