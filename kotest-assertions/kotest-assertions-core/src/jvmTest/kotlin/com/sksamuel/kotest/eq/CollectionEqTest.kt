@@ -2,7 +2,6 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.CollectionEq
-import io.kotest.assertions.eq.EqContext.Companion.MAX_DEPTH
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
@@ -13,6 +12,7 @@ import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import java.util.TreeSet
 import kotlin.time.Duration.Companion.seconds
 
@@ -146,7 +146,16 @@ class CollectionEqTest : FunSpec({
       CollectionEq.equals(cyclicList1, cyclicList2, false).shouldBeNull()
    }
 
-   test("should throw error when exceeding max recursion depth") {
+   test("should return null (equal) for different instances with same content") {
+      val expected = listOf(1, 2, 3)
+      val actual = listOf(3, 2, 1).reversed()
+
+      actual shouldNotBeSameInstanceAs expected
+
+      CollectionEq.equals(actual, expected, false).shouldBeNull()
+   }
+
+   test("should verify recursion depth limit boundary") {
       fun createDeeplyNestedList(depth: Int): List<Any> {
          return if (depth <= 0) {
             listOf("bottom")
@@ -154,12 +163,18 @@ class CollectionEqTest : FunSpec({
             listOf(createDeeplyNestedList(depth - 1))
          }
       }
+      val limitList1 = createDeeplyNestedList(63)
+      val limitList2 = createDeeplyNestedList(63)
 
-      val deepList1 = createDeeplyNestedList(65)
-      val deepList2 = createDeeplyNestedList(65)
+      shouldNotThrowAny {
+         CollectionEq.equals(limitList1, limitList2, false).shouldBeNull()
+      }
+
+      val exceededList1 = createDeeplyNestedList(64)
+      val exceededList2 = createDeeplyNestedList(64)
 
       val exception = shouldThrow<AssertionError> {
-         CollectionEq.equals(deepList1, deepList2, false)
+         CollectionEq.equals(exceededList1, exceededList2, false)
       }
       exception.message shouldBe "Cannot recursively match structures more than 64 levels deep"
    }
