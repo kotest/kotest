@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
+import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
@@ -38,6 +39,8 @@ class RootContainerWithConfigBuilder<T : TestScope>(
       failfast: Boolean? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
+      extensions: List<Extension>? = null,
+      invocations: Int? = null,
       test: suspend T.() -> Unit
    ) {
       val config = TestConfig(
@@ -46,9 +49,11 @@ class RootContainerWithConfigBuilder<T : TestScope>(
          enabledOrReasonIf = enabledOrReasonIf,
          tags = tags ?: emptySet(),
          timeout = timeout,
+         invocations = invocations,
          failfast = failfast,
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
+         extensions = extensions,
       )
       config(config, test)
    }
