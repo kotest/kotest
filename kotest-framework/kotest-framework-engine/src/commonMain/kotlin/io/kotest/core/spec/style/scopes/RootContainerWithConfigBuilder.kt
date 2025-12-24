@@ -35,12 +35,13 @@ class RootContainerWithConfigBuilder<T : TestScope>(
       enabledIf: EnabledIf? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       tags: Set<Tag>? = null,
+      invocations: Int? = null,
       timeout: Duration? = null,
+      invocationTimeout: Duration? = null,
       failfast: Boolean? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
       extensions: List<Extension>? = null,
-      invocations: Int? = null,
       test: suspend T.() -> Unit
    ) {
       val config = TestConfig(
@@ -49,6 +50,7 @@ class RootContainerWithConfigBuilder<T : TestScope>(
          enabledOrReasonIf = enabledOrReasonIf,
          tags = tags ?: emptySet(),
          timeout = timeout,
+         invocationTimeout = invocationTimeout,
          invocations = invocations,
          failfast = failfast,
          blockingTest = blockingTest,
