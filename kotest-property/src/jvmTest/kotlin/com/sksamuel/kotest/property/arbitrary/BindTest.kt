@@ -6,10 +6,12 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.inspectors.forAll
+import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.comparables.beGreaterThan
 import io.kotest.matchers.comparables.beLessThan
+import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.should
@@ -687,6 +689,14 @@ class BindTest : StringSpec({
       checkAll(arbFooWithBar) { foo ->
          foo.bar != null
       }
+   }
+
+   "Can bind to a data class with a field that is a nullable array of primitives" {
+      data class WithNullableArray(val arrayOfBoolean: ByteArray?)
+
+      val arb = Arb.bind<WithNullableArray>()
+
+      arb.sample(RandomSource.default()).value.arrayOfBoolean?.size?.shouldBeBetween(10,15)
    }
 
 })

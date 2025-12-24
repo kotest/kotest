@@ -11,6 +11,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
+import io.kotest.engine.extensions.IncludeTestPatternDescriptorFilter
 import io.kotest.engine.extensions.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
@@ -110,14 +111,12 @@ data class TestEngineLauncher(
    /**
     * Returns a copy of this launcher with the given [extension] added to the configuration.
     */
-   fun addExtension(extension: Extension): TestEngineLauncher =
-      addExtensions(listOf(extension))
+   fun addExtension(extension: Extension): TestEngineLauncher = addExtensions(listOf(extension))
 
    /**
     * Returns a copy of this launcher with the given [extensions] added to the configuration.
     */
-   fun addExtensions(vararg extensions: Extension): TestEngineLauncher =
-      addExtensions(extensions.toList())
+   fun addExtensions(vararg extensions: Extension): TestEngineLauncher = addExtensions(extensions.toList())
 
    /**
     * Returns a copy of this launcher with the given [extensions] added to the configuration.
@@ -172,8 +171,11 @@ data class TestEngineLauncher(
          )
       )
 
+      // add in extensions that are enabled by default
+      registry.add(IncludeTestPatternDescriptorFilter)
+
       return TestEngineConfig(
-         listener = (safeListener),
+         listener = safeListener,
          interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,

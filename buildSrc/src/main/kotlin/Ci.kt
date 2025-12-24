@@ -36,7 +36,7 @@ object Ci {
 
    /**
     * We only include watchos, tvsos and ios builds if it's a non-CI build or if it's master build
-    * due to the slowness of the github action macos runners
+    * due to the limited availability of the github macos runners
     */
    val shouldRunWatchTvIosModules = !isCI || isMaster
 

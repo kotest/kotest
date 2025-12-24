@@ -20,14 +20,6 @@ dependencyResolutionManagement {
    repositories {
       google()
       mavenCentral()
-      maven("https://oss.sonatype.org/content/repositories/snapshots/") {
-         name = "SonatypeSnapshots"
-         mavenContent { snapshotsOnly() }
-      }
-      maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-         name = "SonatypeSnapshots2"
-         mavenContent { snapshotsOnly() }
-      }
 
       //region Declare the Node.js & Yarn download repositories
       // Workaround https://youtrack.jetbrains.com/issue/KT-68533/
@@ -145,10 +137,12 @@ include(
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
 
-   // support for executing tests via junit platform through gradle
-   // this will also bring in the required libs for the intellij plugin
-   ":kotest-runner:kotest-runner-junit5",
    ":kotest-runner:kotest-runner-junit4",
+   ":kotest-runner:kotest-runner-junit5",
+//   ":kotest-runner:kotest-runner-junit6",
+
+   // shared support executing tests via junit platform
+   ":kotest-runner:kotest-runner-junit-platform",
 
    // BOM for whole kotest project
    ":kotest-bom",

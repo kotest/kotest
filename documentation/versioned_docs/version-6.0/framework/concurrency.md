@@ -4,10 +4,10 @@ title: Concurrency
 slug: concurrency.html
 ---
 
-!!! note "Kotest 5.0"
-  This document describes the concurrency features introduced in Kotest 5.0 that were marked experimental and have been changed for Kotest 6.0.
-  If you are using Kotest 6.0, please see [new concurrency documentation](https://kotest.io/docs/framework/concurrency6.html).
-
+:::note
+This document describes the concurrency features introduced in Kotest 5.0 that were marked experimental and have been changed for Kotest 6.0.
+If you are using Kotest 6.0, please see [new concurrency documentation](https://kotest.io/docs/framework/concurrency6.html).
+:::
 
 Concurrency is at the heart of Kotlin, with compiler support for continuations (suspend functions), enabling
 the powerful coroutines library, in addition to the standard Java concurrency tools.

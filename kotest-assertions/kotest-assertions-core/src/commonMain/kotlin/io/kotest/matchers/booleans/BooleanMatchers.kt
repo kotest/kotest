@@ -7,22 +7,6 @@ import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-private fun booleanMatcher(expected: Boolean) = object : Matcher<Boolean?> {
-   override fun test(value: Boolean?) = MatcherResult(
-      value == expected,
-      { "$value should equal $expected" },
-      { "$value should not equal $expected" }
-   )
-}
-/**
- * Match that verifies a given [Boolean] is `true`.
- */
-fun beTrue() = booleanMatcher(true)
-/**
- * Match that verifies a given [Boolean] is `false`.
- */
-fun beFalse() = booleanMatcher(false)
-
 /**
  * Asserts that this [Boolean] is true
  *
@@ -118,4 +102,22 @@ fun Boolean?.shouldBeFalse(): Boolean {
 fun Boolean?.shouldNotBeFalse(): Boolean? {
    this shouldNot beFalse()
    return this
+}
+
+/**
+ * Match that verifies a given [Boolean] is `true`.
+ */
+fun beTrue() = beBoolean(true)
+
+/**
+ * Match that verifies a given [Boolean] is `false`.
+ */
+fun beFalse() = beBoolean(false)
+
+fun beBoolean(expected: Boolean) = object : Matcher<Boolean?> {
+   override fun test(value: Boolean?) = MatcherResult(
+      value == expected,
+      { "$value should equal $expected" },
+      { "$value should not equal $expected" }
+   )
 }

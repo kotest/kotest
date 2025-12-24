@@ -14,7 +14,7 @@ import org.testcontainers.containers.GenericContainer
 import org.testcontainers.lifecycle.TestLifecycleAware
 import java.util.Optional
 
-@Deprecated("use ContainerExtension")
+@Deprecated("use ContainerExtension. Will be removed in 6.2")
 class TestContainerExtension<T : GenericContainer<*>>(
    private val container: T,
    private val lifecycleMode: LifecycleMode = LifecycleMode.Spec,
@@ -29,7 +29,7 @@ class TestContainerExtension<T : GenericContainer<*>>(
    }
 
    override fun mount(configure: T.() -> Unit): T {
-      (container as T).configure()
+      container.configure()
       if (lifecycleMode == LifecycleMode.Spec) {
          container.start()
       }

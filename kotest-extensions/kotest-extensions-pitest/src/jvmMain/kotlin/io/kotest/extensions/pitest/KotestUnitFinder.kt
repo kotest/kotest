@@ -8,6 +8,7 @@ import kotlin.reflect.KClass
 
 class KotestUnitFinder : TestUnitFinder {
 
+   @Suppress("UNCHECKED_CAST")
    override fun findTestUnits(clazz: Class<*>, listener: TestUnitExecutionListener?): MutableList<TestUnit> {
       return when {
          Spec::class.java.isAssignableFrom(clazz) -> mutableListOf(KotestUnit(clazz.kotlin as KClass<out Spec>))

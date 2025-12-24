@@ -1,19 +1,23 @@
 package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
-import io.kotest.core.log
+import io.kotest.common.KotestInternal
 import io.kotest.common.syspropOrEnv
+import io.kotest.core.log
 import java.util.Properties
 
 /**
- * When you have system properties you want to use for tests launched by both gradle and
- * the intellij plugin, you can place them into a file `kotest.properties` that is located
- * on the classpath (say src/test/resources) and kotest will load those properties and apply them.
+ * When you have system properties you want to use for tests, you can place them into a file `kotest.properties`
+ * that is located on the classpath (eg src/test/resources) and kotest will load those properties and apply them.
+ *
+ * This is an alternative to using the system properties command line argument or by specifying them in the
+ * gradle test task.
  *
  * This is a JVM only feature.
  */
 @JVMOnly
-internal object KotestPropertiesLoader {
+@KotestInternal
+object KotestPropertiesLoader {
 
    private const val DEFAULT_KOTEST_PROPERTIES_FILENAME = "/kotest.properties"
 

@@ -18,6 +18,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -212,10 +213,15 @@ internal class InstancePerTestSpecExecutor(
 
       private val logger = Logger(LaunchingTestScope::class)
 
+      private val duplicateTestNameHandler = DuplicateTestNameHandler()
+      private val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
+
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested}'") }
 
-         val nestedTestCase = materializer.materialize(nested, testCase)
+         val unique = duplicateTestNameHandler.unique(duplicateTestNameMode, nested.name)
+         val uniqueName = nested.name.copy(name = unique)
+         val nestedTestCase = materializer.materialize(nested.copy(name = uniqueName), testCase)
 
          // we only care about nested tests in two scenarios:
          // - if the current test is the target, then any nested tests are new and should be executed

@@ -1,11 +1,11 @@
 package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.eq.isDataClassInstance
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
-import org.junit.jupiter.api.assertThrows
 
 data class DataClass1(val a: Int, val b: Float)
 data class DataClass2(val x: Int, val y: Float, val z: DataClass1)
@@ -28,7 +28,7 @@ data class IntRatio(
    val denominator: Int
 ) {
    override fun equals(other: Any?): Boolean {
-      return when(other) {
+      return when (other) {
          is IntRatio -> this.numerator * other.denominator == this.denominator * other.numerator
          else -> false
       }
@@ -50,7 +50,7 @@ class DataClassEqTest : StringSpec({
    }
 
    "Simple detailed diffs are shown" {
-      val throwable = assertThrows<Throwable> { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
+      val throwable = shouldThrowAny { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
 
       throwable.message shouldStartWith """
          data class diff for com.sksamuel.kotest.eq.DataClass1
@@ -60,7 +60,7 @@ class DataClassEqTest : StringSpec({
    }
 
    "Only differing fields are shown in the diff" {
-      val throwable = assertThrows<Throwable> {
+      val throwable = shouldThrowAny {
          DataClass1(1, 3.14F) shouldBe DataClass1(2, 3.14F)
       }
 
@@ -74,7 +74,7 @@ class DataClassEqTest : StringSpec({
       val actual = DataClass2(1, 3.4F, DataClass1(2, 4.6F))
       val expected = DataClass2(2, 4.4F, DataClass1(99, 7.6F))
 
-      val throwable = assertThrows<Throwable> {
+      val throwable = shouldThrowAny {
          actual shouldBe expected
       }
       throwable.message shouldStartWith """
@@ -91,7 +91,7 @@ class DataClassEqTest : StringSpec({
       val actual = DataClass3(88, DataClass2(1, 3.4F, DataClass1(2, 4.6F)), 44.4)
       val expected = DataClass3(99, DataClass2(2, 4.4F, DataClass1(99, 7.6F)), 44.6)
 
-      val throwable = assertThrows<Throwable> {
+      val throwable = shouldThrowAny {
          actual shouldBe expected
       }
       throwable.message shouldStartWith """
@@ -116,7 +116,7 @@ class DataClassEqTest : StringSpec({
       val actual = DataClassWithMultipleConstructors(1, 2.2F, "hello")
       val expected = DataClassWithMultipleConstructors(2, 2.2F, "goodbye")
 
-      val throwable = assertThrows<Throwable> { actual shouldBe expected }
+      val throwable = shouldThrowAny { actual shouldBe expected }
 
       throwable.message shouldStartWith """
          data class diff for com.sksamuel.kotest.eq.DataClassWithMultipleConstructors
@@ -132,7 +132,7 @@ class DataClassEqTest : StringSpec({
          CircularDataClass(i, acc)
       }
 
-      val throwable = assertThrows<Throwable> { actual shouldBe expected }
+      val throwable = shouldThrowAny { actual shouldBe expected }
 
       throwable.message shouldNotStartWith "data class diff"
    }
@@ -147,7 +147,7 @@ class `DataClassEq AssertionConfig Tests` : StringSpec({
    "Data class diffs can be disabled with a system property" {
       System.setProperty("kotest.assertions.show-data-class-diffs", "false")
 
-      val throwable = assertThrows<Throwable> { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
+      val throwable = shouldThrowAny { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
 
       throwable.message shouldBe "expected:<DataClass1(a=2, b=3.5)> but was:<DataClass1(a=1, b=3.4)>"
    }

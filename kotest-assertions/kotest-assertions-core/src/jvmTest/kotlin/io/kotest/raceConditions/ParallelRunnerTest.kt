@@ -41,19 +41,19 @@ class ParallelRunnerTest: StringSpec() {
 
       "demo for mockkStatic".config(enabled = true) {
          runInParallel({ runner: ParallelRunner ->
-            timedPrint("Before mock on same thread: ${LocalDateTime.now().toString()}")
+            timedPrint("Before mock on same thread: ${LocalDateTime.now()}")
             runner.await()
             mockkStatic(LocalDateTime::class)
             val localTime = LocalDateTime.of(2022, 4, 27, 12, 34, 56)
             every { LocalDateTime.now(any<Clock>()) } returns localTime
             runner.await()
-            timedPrint("After mock on same thread: ${LocalDateTime.now().toString()}")
+            timedPrint("After mock on same thread: ${LocalDateTime.now()}")
          },
             { runner: ParallelRunner ->
-               timedPrint("Before mock on other thread: ${LocalDateTime.now().toString()}")
+               timedPrint("Before mock on other thread: ${LocalDateTime.now()}")
                runner.await()
                runner.await()
-               timedPrint("After mock on other thread: ${LocalDateTime.now().toString()}")
+               timedPrint("After mock on other thread: ${LocalDateTime.now()}")
             }
          )
          /*
@@ -69,17 +69,17 @@ Time: 2022-04-27T12:34:56, Thread: 50, After mock on same thread: 2022-04-27T12:
             mockkStatic(LocalDateTime::class)
             val localTime = LocalDateTime.of(2022, 4, 27, 12, 34, 56)
             every { LocalDateTime.now(any<Clock>()) } returns localTime
-            timedPrint("First thread - after mocking ${LocalDateTime.now().toString()}")
+            timedPrint("First thread - after mocking ${LocalDateTime.now()}")
             clearAllMocks()
             runner.await()
-            timedPrint("First thread - after clearing mock ${LocalDateTime.now().toString()}")
+            timedPrint("First thread - after clearing mock ${LocalDateTime.now()}")
          },
             { runner: ParallelRunner ->
                runner.await()
                mockkStatic(LocalDateTime::class)
                val localTime = LocalDateTime.of(2023, 1, 2, 3, 4, 5)
                every { LocalDateTime.now(any<Clock>()) } returns localTime
-               timedPrint("Second thread - after mocking ${LocalDateTime.now().toString()}")
+               timedPrint("Second thread - after mocking ${LocalDateTime.now()}")
             }
          )
          /*

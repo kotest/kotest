@@ -17,11 +17,17 @@ object ProjectConfigLoader {
 
    const val DEFAULT_CONFIG_FQN = "io.kotest.provided.ProjectConfig"
 
+   private val instance by lazy { initialize() }
+
    /**
     * Returns an [AbstractProjectConfig] instance if one is found on the classpath and loaded by reflection.
     */
-   @Suppress("UNCHECKED_CAST")
    fun load(): AbstractProjectConfig? {
+      return instance
+   }
+
+   @Suppress("UNCHECKED_CAST")
+   private fun initialize(): AbstractProjectConfig? {
       val fqn = fqn()
       log { "Loading project configs from fqn: $fqn" }
       val kclass = runCatching { Class.forName(fqn).kotlin }.getOrNull() ?: return null
