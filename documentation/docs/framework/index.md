@@ -15,12 +15,12 @@ Test with Style
 Write [simple and beautiful tests](writing_tests.md) using one of the available styles:
 
 ```kotlin
-class MyTests : StringSpec({
-   "length should return size of string" {
+class MyTests : FunSpec({
+   test("length should return size of string") {
       "hello".length shouldBe 5
    }
-   "startsWith should test for a prefix" {
-      "world" should startWith("wor")
+   test("startsWith should test for a prefix") {
+      "hello world" should startWith("hello")
    }
 })
 ```
