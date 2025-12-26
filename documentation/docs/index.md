@@ -79,7 +79,7 @@ Let the Computer Generate Your Test Data
 Use [property based testing](framework/index.md) to test your code with automatically generated test data:
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
   "String size" {
     checkAll<String, String> { a, b ->
       (a + b) shouldHaveLength a.length + b.length
@@ -94,15 +94,15 @@ Check all the Tricky Cases With Data Driven Testing
 Handle even an enormous amount of input parameter combinations easily with [data driven tests](framework/data_driven_testing.md):
 
 ```kotlin
-class StringSpecExample : StringSpec({
+class DataTestExample : FreeSpec({
   "maximum of two numbers" {
-    forAll(
-        row(1, 5, 5),
-        row(1, 0, 1),
-        row(0, 0, 0)
-    ) { a, b, max ->
-      Math.max(a, b) shouldBe max
-    }
+     withData(
+        Triple(1, 5, 5),
+        Triple(1, 0, 1),
+        Triple(0, 0, 0)
+     ) { (a, b, max) ->
+        Math.max(a, b) shouldBe max
+     }
   }
 })
 ```
@@ -127,8 +127,8 @@ And you can group tests by tags or disable them conditionally.
 All you need is [`config`](framework/project_config.md):
 
 ```kotlin
-class MySpec : StringSpec({
-  "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
+class MySpec : DescribeSpec({
+  describe("should use config").config(timeout = 2.seconds, invocations = 10, tags = setOf(Database, Linux)) {
     // test here
   }
 })

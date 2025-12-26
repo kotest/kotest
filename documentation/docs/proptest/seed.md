@@ -22,7 +22,7 @@ test.
 For example:
 
 ```kotlin
-class PropertyExample : StringSpec({
+class PropertyExample : FreeSpec({
   "String size" {
     forAll<String, String>(PropTestConfig(seed = 127305235)) { a, b ->
       (a + b).length == a.length + b.length

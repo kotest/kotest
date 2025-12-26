@@ -29,7 +29,7 @@ Root tests are dispatched in the order they are defined in the spec file.
 
 
 ```kotlin
-class SequentialSpec : StringSpec() {
+class SequentialSpec : FreeSpec() {
 
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Sequential
 
@@ -53,7 +53,7 @@ Root tests are dispatched in a random order.
 
 
 ```kotlin
-class RandomSpec : StringSpec() {
+class RandomSpec : FreeSpec() {
 
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Random
 
@@ -76,7 +76,7 @@ Root tests are dispatched in a lexicographic order.
 
 
 ```kotlin
-class LexicographicSpec : StringSpec() {
+class LexicographicSpec : FreeSpec() {
 
     override fun testCaseOrder(): TestCaseOrder? = TestCaseOrder.Lexicographic
 

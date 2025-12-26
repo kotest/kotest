@@ -39,9 +39,7 @@ val tag = NamedTag("Linux")
 Test cases can then be marked with tags using the `config` function:
 
 ```kotlin
-import io.kotest.specs.StringSpec
-
-class MyTest : StringSpec() {
+class MyTest : FreeSpec() {
   init {
     "should run on Windows".config(tags = setOf(Windows)) {
       // ...
