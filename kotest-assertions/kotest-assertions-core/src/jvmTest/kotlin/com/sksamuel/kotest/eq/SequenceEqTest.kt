@@ -2,6 +2,7 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.SequenceEq
+import io.kotest.assertions.eq.EqContext
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -32,7 +33,7 @@ class SequenceEqTest : FunSpec({
    // therefore...
 
    test("Sequence type is not supported") {
-      val error = SequenceEq.equals(sequenceOf(1, 2, 3), sequenceOf(2, 3), false)
+      val error = SequenceEq.equals(sequenceOf(1, 2, 3), sequenceOf(2, 3), false, EqContext())
 
       assertSoftly {
          error.shouldNotBeNull()

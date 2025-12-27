@@ -24,7 +24,11 @@ import io.kotest.common.sysprop
  */
 object StringEq : Eq<String> {
 
-   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? {
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
+   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
+   override fun equals(actual: String, expected: String, strictNumberEq: Boolean, context: EqContext): Throwable? {
       val t = StringPartialMatch(expected, actual)
       return when {
          actual == expected -> null
