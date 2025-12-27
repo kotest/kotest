@@ -50,7 +50,7 @@ val singleDigitPrimes = listOf(2,3,5,7).exhaustive()
 ```
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
     "testing single digit primes" {
         checkAll(singleDigitPrimes) { prime ->
            isPrime(prime) shouldBe true

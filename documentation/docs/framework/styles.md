@@ -5,8 +5,8 @@ slug: testing-styles.html
 ---
 
 
-Kotest offers 10 different styles of test layout. Some are inspired from other popular test frameworks to make you feel right at home.
-Others were created just for Kotest.
+Kotest offers 8 different styles for test definitions. Some are inspired from other popular
+test frameworks to make you feel right at home. Others were created just for Kotest.
 
 To use Kotest, create a class file that extends one of the test styles. Then inside an `init { }` block,
 create your test cases. The following table contains the test styles you can pick from along with examples.
@@ -16,25 +16,21 @@ All allow the same types of configuration &mdash; threads, tags, etc &mdash;
 it is simply a matter of preference how you structure your tests.
 
 
-| Test Style | Inspired By |
-| --- | --- |
-| [Fun Spec](#fun-spec) | ScalaTest |
-| [Describe Spec](#describe-spec) | Javascript frameworks and RSpec |
-| [Should Spec](#should-spec) | A Kotest original |
-| [String Spec](#string-spec) | A Kotest original |
-| [Behavior Spec](#behavior-spec) | BDD frameworks |
-| [Free Spec](#free-spec) | ScalaTest |
-| [Word Spec](#word-spec) | ScalaTest |
-| [Feature Spec](#feature-spec) | Cucumber |
-| [Expect Spec](#expect-spec) | A Kotest original |
-| [Annotation Spec (JVM only)](#annotation-spec) | JUnit |
-
-
+| Test Style                                     | Inspired By                     |
+|------------------------------------------------|---------------------------------|
+| [Fun Spec](#fun-spec)                          | ScalaTest                       |
+| [Describe Spec](#describe-spec)                | Javascript frameworks and RSpec |
+| [Should Spec](#should-spec)                    | A Kotest original               |
+| [Behavior Spec](#behavior-spec)                | BDD frameworks                  |
+| [Free Spec](#free-spec)                        | ScalaTest                       |
+| [Word Spec](#word-spec)                        | ScalaTest                       |
+| [Feature Spec](#feature-spec)                  | Cucumber                        |
+| [Expect Spec](#expect-spec)                    | A Kotest original               |
 
 :::tip
-Some teams prefer to mandate usage of a single style, others mix and match. There is no right or wrong - do whatever feels right for your team.
+Some teams prefer to mandate usage of a single style, others mix and match. There is no right or wrong - do whatever
+feels right for your team.
 :::
-
 
 ## Fun Spec
 
@@ -64,30 +60,6 @@ class MyTests : FunSpec({
         test("disabled by inheritance from the parent") {
             // test here
         }
-    }
-})
-```
-
-
-## String Spec
-
-`StringSpec` reduces the syntax to the absolute minimum.
- Just write a string followed by a lambda expression with your test code.
-
-```kotlin
-class MyTests : StringSpec({
-    "strings.length should return size of string" {
-        "hello".length shouldBe 5
-    }
-})
-```
-
-Adding config to the test.
-
-```kotlin
-class MyTests : StringSpec({
-    "strings.length should return size of string".config(enabled = false, invocations = 3) {
-        "hello".length shouldBe 5
     }
 })
 ```
@@ -426,48 +398,3 @@ class MyTests : ExpectSpec({
 ```
 
 
-
-
-## Annotation Spec
-
-If you are migrating from JUnit then `AnnotationSpec` is a spec that uses annotations like JUnit 4/5.
-Just add the `@Test` annotation to any function defined in the spec class. Unlike other styles, `AnnotationSpec` only works on JVM.
-
-You can also add annotations to execute something before tests/specs and after tests/specs, similarly to JUnit's
-
-```kotlin
-@BeforeAll / @BeforeClass
-@BeforeEach / @Before
-@AfterAll / @AfterClass
-@AfterEach / @After
-```
-
-If you want to ignore a test, use `@Ignore`.
-
-
-:::note
-Although this spec doesn't offer much advantage over using JUnit, it allows you to migrate existing tests relatively easily, as you typically just need to adjust imports.
-:::
-
-
-
-
-```kotlin
-class AnnotationSpecExample : AnnotationSpec() {
-
-    @BeforeEach
-    fun beforeTest() {
-        println("Before each test")
-    }
-
-    @Test
-    fun test1() {
-        1 shouldBe 1
-    }
-
-    @Test
-    fun test2() {
-        3 shouldBe 3
-    }
-}
-```

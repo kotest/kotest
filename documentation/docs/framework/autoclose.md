@@ -8,7 +8,7 @@ slug: autoclose.html
 You can let Kotest close resources automatically after all tests have been run:
 
 ```kotlin
-class StringSpecExample : StringSpec() {
+class AutoCloseExample : FreeSpec() {
 
   val reader = autoClose(StringReader("xyz"))
 

@@ -15,7 +15,7 @@ Then only that test (and any subtests defined inside that scope) will be execute
 For example, in the following snippet only the middle test will be executed.
 
 ```kotlin
-class FocusExample : StringSpec({
+class FocusExample : FreeSpec({
     "test 1" {
      // this will be skipped
     }
@@ -68,7 +68,7 @@ The opposite of focus is to prefix a test with an exclamation mark `!` and then 
 In the next example we’ve disabled only the first test by adding the “!” prefix.
 
 ```kotlin
-class BangExample : StringSpec({
+class BangExample : FreeSpec({
 
   "!test 1" {
     // this will be ignored

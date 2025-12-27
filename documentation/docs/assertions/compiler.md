@@ -24,7 +24,7 @@ testImplementation("io.kotest.extensions:kotest-assertions-compiler:$version")
 
 Usage:
 ```kotlin
-class CompilationTest : StringSpec({
+class CompilationTest : FreeSpec({
     "shouldCompile test" {
         val rawStringCodeSnippet = """
             val aString: String = "A valid assignment"
