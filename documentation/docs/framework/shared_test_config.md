@@ -98,7 +98,7 @@ class RetrySpec : DescribeSpec() {
 ### Example: Setting Timeouts and Invocations
 
 ```kotlin
-class PerformanceSpec : StringSpec() {
+class PerformanceSpec : FreeSpec() {
   init {
 
     defaultTestConfig = DefaultTestConfig(

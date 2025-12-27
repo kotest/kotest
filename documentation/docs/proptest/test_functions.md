@@ -14,7 +14,7 @@ The first, `forAll`, accepts an n-arity function `(a, ..., n) -> Boolean` that t
 The test will pass if, for all input values, the function returns true.
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "String size" {
       forAll<String, String> { a, b ->
          (a + b).length == a.length + b.length
@@ -39,7 +39,7 @@ This approach will consider a test valid if no exceptions are thrown.
 Here is the same example again written in the equivalent way using checkAll.
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "String size" {
       checkAll<String, String> { a, b ->
          a + b shouldHaveLength a.length + b.length
@@ -61,7 +61,7 @@ when invoking the test method.
 Let's say we want to run a test 10,000 times.
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "a many iterations test" {
       checkAll<Double, Double>(10_000) { a, b ->
          // test here
@@ -87,7 +87,7 @@ For example, we may want to test a function for numbers in a certain range only.
 Then you would need to specify the generator(s) manually.
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "is allowed to drink in Chicago" {
       forAll(Arb.int(21..150)) { a ->
          isDrinkingAge(a) // assuming some function that calculates if we're old enough to drink

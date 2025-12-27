@@ -29,7 +29,7 @@ This option only works on the JVM. Any ties will be broken arbitrarily.
 
 ### Annotated Example
 
-Given the following specs annoated with @Order.
+Given the following specs annotated with @Order.
 
 ```kotlin
 @Order(1)
