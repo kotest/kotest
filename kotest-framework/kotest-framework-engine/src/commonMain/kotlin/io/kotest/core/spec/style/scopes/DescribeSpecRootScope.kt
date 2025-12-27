@@ -88,26 +88,26 @@ interface DescribeSpecRootScope : RootScope {
       ) { DescribeSpecContainerScope(this).test() }
    }
 
-   fun describe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      RootContainerWithConfigBuilder(
+   fun describe(name: String): RootTestWithConfigBuilder =
+      RootTestWithConfigBuilder(
+         this,
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          xmethod = TestXMethod.NONE,
-         this
-      ) { DescribeSpecContainerScope(it) }
+      )
 
-   fun fdescribe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      RootContainerWithConfigBuilder(
+   fun fdescribe(name: String): RootTestWithConfigBuilder =
+      RootTestWithConfigBuilder(
+         this,
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          xmethod = TestXMethod.FOCUSED,
-         this
-      ) { DescribeSpecContainerScope(it) }
+      )
 
-   fun xdescribe(name: String): RootContainerWithConfigBuilder<DescribeSpecContainerScope> =
-      RootContainerWithConfigBuilder(
+   fun xdescribe(name: String): RootTestWithConfigBuilder =
+      RootTestWithConfigBuilder(
+         this,
          TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          xmethod = TestXMethod.DISABLED,
-         this
-      ) { DescribeSpecContainerScope(it) }
+      )
 
    fun it(name: String, test: suspend TestScope.() -> Unit) {
       addTest(

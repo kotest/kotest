@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
@@ -11,7 +12,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
-@Deprecated("Use parameterized RootContainerWithConfigBuilder. Deprecated since 6.0.5")
+@KotestInternal
 class RootTestWithConfigBuilder(
    private val context: RootScope,
    private val name: TestName,

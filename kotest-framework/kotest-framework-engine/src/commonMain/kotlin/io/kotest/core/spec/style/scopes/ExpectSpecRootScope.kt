@@ -63,29 +63,9 @@ interface ExpectSpecRootScope : RootScope {
       addExpect(name = name, test = test, xmethod = TestXMethod.DISABLED)
    }
 
-   fun expect(name: String): RootContainerWithConfigBuilder<ExpectSpecContainerScope> {
-      return RootContainerWithConfigBuilder(
-         context = this,
-         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
-         xmethod = TestXMethod.NONE
-      ) { ExpectSpecContainerScope(it) }
-   }
-
-   fun fexpect(name: String): RootContainerWithConfigBuilder<ExpectSpecContainerScope> {
-      return RootContainerWithConfigBuilder(
-         context = this,
-         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
-         xmethod = TestXMethod.FOCUSED
-      ) { ExpectSpecContainerScope(it) }
-   }
-
-   fun xexpect(name: String): RootContainerWithConfigBuilder<ExpectSpecContainerScope> {
-      return RootContainerWithConfigBuilder(
-         context = this,
-         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
-         xmethod = TestXMethod.DISABLED
-      ) { ExpectSpecContainerScope(it) }
-   }
+   fun expect(name: String): RootTestWithConfigBuilder = addExpect(name, TestXMethod.NONE)
+   fun fexpect(name: String): RootTestWithConfigBuilder = addExpect(name, TestXMethod.FOCUSED)
+   fun xexpect(name: String): RootTestWithConfigBuilder = addExpect(name, TestXMethod.DISABLED)
 
    private fun addContext(
       name: String,
@@ -109,5 +89,16 @@ interface ExpectSpecRootScope : RootScope {
          xmethod = xmethod,
          config = null,
       ) { ExpectSpecContainerScope(this).test() }
+   }
+
+   private fun addExpect(
+      name: String,
+      xmethod: TestXMethod,
+   ): RootTestWithConfigBuilder {
+      return RootTestWithConfigBuilder(
+         context = this,
+         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
+         xmethod = xmethod,
+      )
    }
 }
