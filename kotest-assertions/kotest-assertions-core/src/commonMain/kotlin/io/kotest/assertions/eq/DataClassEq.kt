@@ -39,10 +39,8 @@ internal object DataClassEq : Eq<Any> {
       equals(actual, expected, strictNumberEq, EqContext())
 
    override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      // Reference identity check
       if (actual === expected) return null
 
-      // Cycle detection - if we've already visited this pair, consider them equal to break the cycle
       if (context.isVisited(actual, expected)) return null
 
       context.push(actual, expected)

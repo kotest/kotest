@@ -12,10 +12,8 @@ object CollectionEq : Eq<Collection<*>> {
       equals(actual, expected, strictNumberEq, EqContext())
 
    override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      // If both references point to the same object, they're equal (handles cyclic references)
       if (actual === expected) return null
 
-      // Check for cycles - if we've already visited this pair, consider them equal to break the cycle
       if (context.isVisited(actual, expected)) return null
 
       context.push(actual, expected)
