@@ -9,7 +9,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
-import com.squareup.kotlinpoet.ParameterSpec
 import kotlin.js.ExperimentalJsExport
 
 class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
@@ -33,7 +32,6 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ExperimentalJsExport::class)
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
-         .addParameter(ParameterSpec.builder("listenerType", Int::class).build())
          .addCode("\n")
          .addCode(
             """
@@ -61,9 +59,6 @@ val launcher = TestEngineLauncher()
 
       val file = FileSpec.builder("io.kotest.framework.runtime", "kotest.kt")
          .addFunction(function.build())
-         .addImport("kotlinx.coroutines", "GlobalScope")
-         .addImport("kotlinx.coroutines", "launch")
-         .addImport("kotlinx.coroutines", "delay")
          .addImport("io.kotest.common", "KotestInternal")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
