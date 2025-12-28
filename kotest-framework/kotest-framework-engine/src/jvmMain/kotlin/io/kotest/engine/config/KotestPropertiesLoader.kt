@@ -10,8 +10,8 @@ import java.util.Properties
  * When you have system properties you want to use for tests, you can place them into a file `kotest.properties`
  * that is located on the classpath (eg src/test/resources) and kotest will load those properties and apply them.
  *
- * This is an alternative to using the system properties command line argument or by specifying them in the
- * gradle test task.
+ * This is an alternative to using the system properties command line argument (Eg -dx=y) or by specifying
+ * them in the Gradle test task.
  *
  * This is a JVM only feature.
  */
@@ -32,7 +32,7 @@ object KotestPropertiesLoader {
 
    /**
     * Returns the filename to use for kotest system properties. Allows the filename
-    * to be overriden, for example, for different envs.
+    * to be overridden, for example, for different envs.
     */
    private fun systemPropsFilename(): String =
       syspropOrEnv(KotestEngineProperties.PROPERTIES_FILENAME) ?: DEFAULT_KOTEST_PROPERTIES_FILENAME

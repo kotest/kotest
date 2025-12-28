@@ -172,9 +172,7 @@ inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
 
    assertionCounter.inc()
    val expectedExceptionClass = T::class
-   val thrownThrowable = tryRunning(block)
-
-   when (thrownThrowable) {
+   when (val thrownThrowable = tryRunning(block)) {
       null -> errorCollector.collectOrThrow(
          AssertionErrorBuilder.create()
             .withMessage("Expected exception ${expectedExceptionClass.bestName()} but no exception was thrown.")

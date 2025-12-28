@@ -9,10 +9,10 @@ import kotlin.reflect.KClass
 
 /**
  * Asserts that this result is not a Failure
- *
+ * ~~~
  * success("abc").shouldNotBeFailure()       // Assertion passes
  * failure(MyException).shouldNotBeFailure() // Assertion fails
- *
+ * ~~~
  * @see shouldBeSuccess
  */
 @Deprecated("Use shouldBeSuccess instead. Deprecated since 6.0", ReplaceWith("shouldBeSuccess()"))
@@ -20,10 +20,10 @@ fun <T> Result<T>.shouldNotBeFailure(): T = shouldBeSuccess()
 
 /**
  * Asserts that this result is any Failure
- *
+ * ~~~
  * failure(MyException).shouldBeFailure()  // Assertion passes
  * success("abc").shouldBeFailure()        // Assertion fails
- *
+ * ~~~
  * @see shouldNotBeSuccess
  */
 fun Result<*>.shouldBeFailure(): Throwable {
@@ -33,11 +33,11 @@ fun Result<*>.shouldBeFailure(): Throwable {
 
 /**
  * Asserts that this result fails with exactly [expected]
- *
+ * ~~~
  * failure(MyException) shouldBeFailure MyException     // Assertion passes
  * failure(OtherException) shouldBeFailure MyException  // Assertion fails
  * success("abc") shouldBeFailure MyException           // Assertion fails
- *
+ * ~~~
  */
 infix fun Result<*>.shouldBeFailure(expected: Throwable): Throwable {
    this should FailureMatcher(expected)
@@ -46,10 +46,11 @@ infix fun Result<*>.shouldBeFailure(expected: Throwable): Throwable {
 
 /**
  * Asserts that this result is a failure, and lets you use its error in [block]
- *
+ * ~~~
  * failure(MyException) shouldBeFailure {
  *   it shouldHaveMessage "MyException"
  * }
+ * ~~~
  */
 infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
    this should FailureMatcher()
@@ -58,11 +59,11 @@ infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
 
 /**
  * Asserts that this result is a failure of type [T]
- *
+ * ~~~
  * failure(MyException).shouldBeFailure<MyException>()      // Assertion passes
  * failure(MyException).shouldBeFailure<MyOtherException>() // Assertion fails
  * success("abc").shouldBeFailure<MyException>()            // Assertion fails
- *
+ * ~~~
  */
 @JvmName("shouldBeFailureT")
 inline fun <reified T : Throwable> Result<*>.shouldBeFailure(): T {

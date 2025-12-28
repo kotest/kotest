@@ -110,7 +110,7 @@ interface MatcherResult {
  *
  * By returning this [MatcherResult], Kotest will automatically generate the appropriate
  * assertion error message that contains the actual and expected values in a way
- * that allows intellij to create a <Click to see difference> link in the IDE output window.
+ * that allows intellij to create a 'Click to see difference' link in the IDE output window.
  */
 data class ComparisonMatcherResult(
    @JsName("passed_val") val passed: Boolean,

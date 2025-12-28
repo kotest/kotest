@@ -9,11 +9,11 @@ import io.kotest.property.arbitrary.of
  * Gens can be created in two ways: with arbitrary (random) values from instances of [Arb] and
  * exhaustive values over a closed space from instances of [Exhaustive].
  *
- * Arbs generate random values across a given space. The values may be repeated, and some
+ * Arb's generate random values across a given space. The values may be repeated, and some
  * values may never be generated at all. For example generating 1000 random integers between 0 and Int.MAX
  * will clearly not return all possible values, and some values may happen to be generated more than once.
  *
- * Exhaustives generate all values from a given space. This is useful when you want to ensure every
+ * Exhaustive's generate all values from a given space. This is useful when you want to ensure every
  * value in that space is used. For instance for enum values, it is usually more helpful to ensure each
  * enum is used, rather than picking randomly from the enums values.
  *
