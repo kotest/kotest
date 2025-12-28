@@ -92,6 +92,7 @@ dependencies {
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
 
    // Runners
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
 
