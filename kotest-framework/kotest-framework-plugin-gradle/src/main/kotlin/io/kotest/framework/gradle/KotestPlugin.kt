@@ -30,7 +30,6 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinWasmTargetType
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
-import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinNodeJsIr
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -50,6 +49,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val KSP_PLUGIN_ID = "com.google.devtools.ksp"
       internal const val KSP_JS_SOURCESET = "kspJsTest"
       internal const val KSP_WASM_JS_SOURCESET = "kspWasmJsTest"
+      internal const val KSP_WASM_WASI_SOURCESET = "kspWasmWasiTest"
       internal const val TEST_TASK_NAME = "test"
       internal const val ANDROID_UNIT_TEST_SUFFIX = "UnitTest"
       internal const val KOTEST_INCLUDE_PROPERTY = "kotest.include"
@@ -231,6 +231,7 @@ abstract class KotestPlugin : Plugin<Project> {
                // the ksp plugin will create a configuration named kspWasmJsTest that contains
                // the symbol processors used by the test configuration. We want to wire in
                // the kotest symbol processor to this configuration so the user doesn't have to manually
+               target.project.logger.info("> Configuring kotest KSP processor for $KSP_WASM_JS_SOURCESET")
                wireKsp(target.project, KSP_WASM_JS_SOURCESET)
                target.project.tasks.getByName(KOTEST_TASK_NAME) {
                   target.project.logger.info("> Configuring kotest task for $KSP_WASM_JS_SOURCESET")
@@ -241,17 +242,11 @@ abstract class KotestPlugin : Plugin<Project> {
             KotlinWasmTargetType.WASI -> {
                target.subTargets.configureEach {
                   val subtarget = this
-                  if (subtarget is KotlinNodeJsIr) { // we only support node based wasm targets
-                     target.compilations.matching { it.name == KotlinCompilation.TEST_COMPILATION_NAME }.configureEach {
-                        // todo this is disabled until we can find a way to disambiguate the wasi and non-wasi
-                        // inside the KSP symbol processor because we need to generate different code
-//
-//                        // the ksp plugin will create a configuration named kspJsTest that contains
-//                        // the symbol processors used by the test configuration. We want to wire in
-//                        // the kotest symbol processor to this configuration so the user doesn't have to manually
-//                        wireKsp(target.project, "kspWasmWasiTest")
-                     }
-                  }
+                  target.project.logger.info("> Configuring kotest KSP processor for ${subtarget.name}")
+                  // the ksp plugin will create a configuration named kspWasmWasiTest that contains
+                  // the symbol processors used by the test configuration. We want to wire in
+                  // the kotest symbol processor to this configuration so the user doesn't have to manually
+                  wireKsp(target.project, KSP_WASM_WASI_SOURCESET)
                }
             }
 

@@ -68,17 +68,25 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    }
 
    override fun finish() {
-      if (visitor.configs.size > 1)
-         error("Only one ProjectConfig is allowed, found ${visitor.configs.size}:\n${visitor.configs.joinToString("\n") { it.qualifiedName?.asString() ?: it.simpleName.asString() }}")
+      validateProjectConfigs()
       val files = visitor.specs.mapNotNull { it.containingFile }
+      println("Generating for platform " + environment.platforms.first() + " " + environment.platforms.first().platformName)
+      environment.logger.info("Generating xxx platform " + environment.platforms.first() + " " + environment.platforms.first().platformName)
       when (val platform = environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
          is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         // todo we need some way of determining if the Wasi variant of Wasm, so we can use the WasmWasiGenerator
          // see https://github.com/google/ksp/issues/2544
-         else if platform.platformName.contains("wasm-js") ->
+         else if platform.platformName.contains("wasm") ->
             WasmJsGenerator(environment).generate(files, visitor.specs, visitor.configs)
+
          else -> error("Unsupported platform: ${environment.platforms.first()}")
+      }
+   }
+
+   private fun validateProjectConfigs() {
+      if (visitor.configs.size > 1) {
+         val configs = visitor.configs.joinToString(";") { it.qualifiedName?.asString() ?: it.simpleName.asString() }
+         error("Only one ProjectConfig is allowed, found $configs")
       }
    }
 }
