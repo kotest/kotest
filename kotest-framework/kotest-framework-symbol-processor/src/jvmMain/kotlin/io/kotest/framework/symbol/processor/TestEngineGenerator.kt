@@ -18,7 +18,7 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
 
       val outputStream = environment.codeGenerator.createNewFile(
          dependencies = Dependencies(true, *files.toTypedArray()),
-         packageName = "io.kotest.framework.runtime",
+         packageName = "io.kotest.framework.runtime", // the package for the generated entry point
          fileName = "kotest",
          extensionName = "kt"
       )
@@ -32,14 +32,12 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
       val function = FunSpec.builder("runKotest")
          .addModifiers(KModifier.PUBLIC)
          .addAnnotation(ExperimentalJsExport::class)
-         .addAnnotation(ClassName("kotlin.wasm", "WasmExport"))
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("KotestInternal::class").build())
          .addParameter(ParameterSpec.builder("listenerType", Int::class).build())
          .addCode("\n")
          .addCode(
             """
 val launcher = TestEngineLauncher()
- .withWasmWasi()
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
@@ -58,15 +56,10 @@ val launcher = TestEngineLauncher()
             .addCode("\n")
       }
       function.addCode(
-         """
-when (listenerType) {
-   1 -> GlobalScope.launch { launcher.withTeamCityListener().async() }
-   else -> GlobalScope.launch { launcher.withConsoleListener().async() }
-}
-""".trim()
+         """invokeTestEngineLauncher(launcher)""".trim()
       ).addCode("\n")
 
-      val file = FileSpec.builder("io.kotest.framework.runtime.wasi", "kotest.kt")
+      val file = FileSpec.builder("io.kotest.framework.runtime", "kotest.kt")
          .addFunction(function.build())
          .addImport("kotlinx.coroutines", "GlobalScope")
          .addImport("kotlinx.coroutines", "launch")

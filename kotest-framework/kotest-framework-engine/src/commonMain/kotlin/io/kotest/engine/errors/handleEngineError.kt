@@ -1,5 +1,5 @@
 package io.kotest.engine.errors
 
-import io.kotest.engine.EngineResult
+import io.kotest.engine.TestEngineLauncher
 
-expect fun handleEngineResult(result: EngineResult)
+expect suspend fun invokeTestEngineLauncher(launcher: TestEngineLauncher)

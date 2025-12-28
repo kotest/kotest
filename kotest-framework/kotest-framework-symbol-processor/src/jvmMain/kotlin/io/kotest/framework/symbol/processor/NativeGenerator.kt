@@ -94,7 +94,6 @@ handleEngineResult(result)
          .addImport("io.kotest.core.descriptors", "DescriptorPaths")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
-         .addImport("io.kotest.engine.errors", "handleEngineResult")
          .addImport("io.kotest.engine.extensions", "IncludeDescriptorFilter")
          .addImport("io.kotest.engine.reports", "JunitXmlReportTestEngineListener")
       specs.forEach {
