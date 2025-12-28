@@ -5,7 +5,6 @@ import io.kotest.common.KotestInternal
 import io.kotest.common.syspropOrEnv
 import io.kotest.core.log
 import java.util.Properties
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * When you have system properties you want to use for tests, you can place them into a file `kotest.properties`
@@ -22,16 +21,12 @@ object KotestPropertiesLoader {
 
    private const val DEFAULT_KOTEST_PROPERTIES_FILENAME = "/kotest.properties"
 
-   private val loaded = AtomicBoolean(false)
-
    fun loadAndApplySystemPropsFile() {
-      if (loaded.compareAndSet(false, true)) {
-         val filename = systemPropsFilename()
-         log { "Loading kotest properties from $filename" }
-         loadSystemProps(filename).forEach { (key, value) ->
-            if (key != null && value != null)
-               System.setProperty(key.toString(), value.toString())
-         }
+      val filename = systemPropsFilename()
+      log { "Loading kotest properties from $filename" }
+      loadSystemProps(filename).forEach { (key, value) ->
+         if (key != null && value != null)
+            System.setProperty(key.toString(), value.toString())
       }
    }
 
