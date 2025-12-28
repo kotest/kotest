@@ -12,10 +12,10 @@ import kotlin.reflect.KClass
  *
  * This is a reified shortcut to [instanceOf], allowing type-safe matching without needing a KClass reference.
  *
- * ```
+ * ~~~
  * "kotest" shouldBe instanceOf<String>()   // Assertion passes
  * 123 shouldBe instanceOf<String>()        // Assertion fails
- * ```
+ * ~~~
  *
  * @see beInstanceOf
  */
@@ -26,11 +26,11 @@ inline fun <reified T : Any> instanceOf(): Matcher<Any?> = instanceOf(T::class)
  *
  * Uses a reified type parameter to infer the class to check against.
  *
- * ```
+ * ~~~
  * val obj: Any = 42
  * obj should beInstanceOf<Int>()      // Assertion passes
  * obj shouldNot beInstanceOf<String>() // Assertion passes
- * ```
+ * ~~~
  *
  * @see beInstanceOf
  */
@@ -44,10 +44,10 @@ inline fun <reified T : Any> beInstanceOf(): Matcher<Any?> = instanceOf<T>()
  * Verifies that the subject is an instance of the given [expected] class.
  * This matcher will fail if the value is null or is not an instance of [expected].
  *
- * ```
+ * ~~~
  * "hello" shouldBe instanceOf(String::class) // Assertion passes
  * 123 shouldBe instanceOf(String::class)     // Assertion fails
- * ```
+ * ~~~
  *
  * @see beInstanceOf
  */
@@ -58,11 +58,11 @@ fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
  *
  * Validates that the subject is non-null and is an instance of the given [expected] class.
  *
- * ```
+ * ~~~
  * val obj: Any = "sample"
  * obj should beInstanceOf(String::class)    // Assertion passes
  * obj shouldNot beInstanceOf(Int::class)    // Assertion passes
- * ```
+ * ~~~
  *
  * @see instanceOf
  */
@@ -78,14 +78,14 @@ fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value 
  *
  * Verifies that the subject and [ref] are the exact same object in memory.
  *
- * ```
+ * ~~~
  * val a = "hello"
  * val b = a
  * val c = "hello"
  *
  * a should beTheSameInstanceAs(b)    // Assertion passes
  * a shouldNot beTheSameInstanceAs(c) // Assertion passes
- * ```
+ * ~~~
  */
 fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
    override fun test(value: T) = MatcherResult(

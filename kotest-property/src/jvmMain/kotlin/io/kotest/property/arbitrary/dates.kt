@@ -18,7 +18,6 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalQueries.localDate
 import java.time.temporal.TemporalQueries.localTime
-import java.time.zone.ZoneOffsetTransition
 import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
@@ -56,7 +55,7 @@ fun Arb.Companion.localDate() = Arb.Companion.localDate(LocalDate.of(1970, 1, 1)
  *
  * @param minDate The minimum (earliest) date to generate (inclusive). Default is January 1st, 1970.
  * @param maxDate The maximum (latest) date to generate (inclusive). Default is December 31st, 2030.
- * @return An [Arb]<[LocalDate]> that generates dates within the specified range, including edge cases.
+ * @return An `[Arb]<[LocalDate]>` that generates dates within the specified range, including edge cases.
  *
  * @see localDateTime
  * @see localTime
@@ -93,7 +92,7 @@ fun Arb.Companion.localDate(
 }
 
 /**
- * Arberates a stream of random LocalTimes
+ * Arbitrates a stream of random LocalTimes
  *
  * This generator creates randomly generated LocalTimes.
  *
@@ -105,7 +104,7 @@ fun Arb.Companion.localTime(): Arb<LocalTime> =
       LocalTime.of(it.random.nextInt(24), it.random.nextInt(60), it.random.nextInt(60))
    }
 
-private val nanoSecondsInOneDay = 24*60*60*1_000_000_000L
+private const val nanoSecondsInOneDay = 24*60*60*1_000_000_000L
 
 /**
  * Arberates a stream of random LocalTimes
@@ -285,11 +284,11 @@ fun InstantRange.random(random: Random): Instant {
    try {
       val seconds = (start.epochSecond..endInclusive.epochSecond).random(random)
 
-      val nanos = when {
-         seconds == start.epochSecond && seconds == endInclusive.epochSecond -> start.nano..endInclusive.nano
-         seconds == start.epochSecond -> start.nano..999_999_999
-         seconds == endInclusive.epochSecond -> 0..endInclusive.nano
-         else -> 0..999_999_999
+      val nanos = when (seconds) {
+        start.epochSecond if seconds == endInclusive.epochSecond -> start.nano..endInclusive.nano
+        start.epochSecond -> start.nano..999_999_999
+        endInclusive.epochSecond -> 0..endInclusive.nano
+        else -> 0..999_999_999
       }.random(random)
 
       return Instant.ofEpochSecond(seconds, nanos.toLong())
@@ -406,13 +405,13 @@ fun ZoneId.localDateTimeChanges(start: LocalDateTime): Sequence<LocalDateTimeCha
    return sequence {
       var transition = rules.nextTransition(time)
       while(transition != null) {
-         transition?.let {
+         transition.let {
             time = transition.instant.plusSeconds(1)
             yield(LocalDateTimeChange(
-                  dateTimeBefore = transition.dateTimeBefore,
-                  dateTimeAfter = transition.dateTimeAfter,
-                  type = if (transition.isGap) LocalDateTimeChange.LocalDateTimeChangeType.GAP else LocalDateTimeChange.LocalDateTimeChangeType.OVERLAP,
-               )
+               dateTimeBefore = transition.dateTimeBefore,
+               dateTimeAfter = transition.dateTimeAfter,
+               type = if (transition.isGap) LocalDateTimeChange.LocalDateTimeChangeType.GAP else LocalDateTimeChange.LocalDateTimeChangeType.OVERLAP,
+            )
             )
          }
          transition = rules.nextTransition(time)
