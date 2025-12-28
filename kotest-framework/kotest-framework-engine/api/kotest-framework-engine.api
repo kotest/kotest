@@ -3697,7 +3697,7 @@ public final class io/kotest/engine/coroutines/ThreadPerSpecCoroutineContextFact
 }
 
 public final class io/kotest/engine/errors/HandleEngineError_jvmKt {
-	public static final fun handleEngineResult (Lio/kotest/engine/EngineResult;)V
+	public static final fun invokeTestEngineLauncher (Lio/kotest/engine/TestEngineLauncher;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/extensions/DefaultExtensionRegistry : io/kotest/engine/extensions/ExtensionRegistry {
