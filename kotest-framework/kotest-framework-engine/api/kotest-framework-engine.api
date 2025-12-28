@@ -3522,6 +3522,10 @@ public final class io/kotest/engine/config/IncludeTestScopeAffixes : java/lang/E
 	public static fun values ()[Lio/kotest/engine/config/IncludeTestScopeAffixes;
 }
 
+public final class io/kotest/engine/config/KotestEngineEnvVars {
+	public static final field INSTANCE Lio/kotest/engine/config/KotestEngineEnvVars;
+}
+
 public final class io/kotest/engine/config/KotestEngineProperties {
 	public static final field INSTANCE Lio/kotest/engine/config/KotestEngineProperties;
 	public static final field INVOCATION_TIMEOUT Ljava/lang/String;
@@ -3843,8 +3847,8 @@ public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kote
 	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
 }
 
-public final class io/kotest/engine/extensions/SystemPropertyTagExtension : io/kotest/core/extensions/TagExtension {
-	public static final field INSTANCE Lio/kotest/engine/extensions/SystemPropertyTagExtension;
+public final class io/kotest/engine/extensions/SystemPropertyOrEnvTagExtension : io/kotest/core/extensions/TagExtension {
+	public static final field INSTANCE Lio/kotest/engine/extensions/SystemPropertyOrEnvTagExtension;
 	public fun tags ()Lio/kotest/engine/tags/TagExpression;
 }
 
