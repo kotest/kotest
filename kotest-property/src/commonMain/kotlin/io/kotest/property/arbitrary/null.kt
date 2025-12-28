@@ -8,7 +8,7 @@ import io.kotest.property.Sample
 /**
  * Creates an [Arb] which will produce null values.
  *
- * The probability of the arb producing an null is based on the nullProbability parameter, which
+ * The probability of the arb producing a null is based on the nullProbability parameter, which
  * should be between 0.0 and 1.0 (values outside this range will throw an IllegalArgumentException).
  * Higher values increase the chance of a null being generated.
  *
@@ -27,8 +27,8 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
 /**
  * Creates an [Arb] which will produce null values.
  *
- * The probability of the arb producing an null is based on the isNextNull function.
- * By default this uses a random boolean so should result in roughly half nulls,
+ * The probability of the arb producing a null is based on the isNextNull function.
+ * By default, this uses a random boolean so should result in roughly half nulls,
  * half values from the source arb.
  *
  * @returns an Arb<A?> that can produce null values.
@@ -39,6 +39,7 @@ fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBo
 
       override fun sample(rs: RandomSource): Sample<A?> {
          val baseSample = if (isNextNull(rs)) Sample(null) else this@orNull.sample(rs)
+         @Suppress("RemoveRedundantQualifierName")
          return baseSample.copy(
             shrinks = RTree(
                baseSample.shrinks.value,

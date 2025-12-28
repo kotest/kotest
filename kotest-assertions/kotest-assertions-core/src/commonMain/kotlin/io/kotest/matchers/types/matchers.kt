@@ -16,23 +16,20 @@ import kotlin.contracts.contract
  *
  * For an exact type, use [shouldBeTypeOf]
  *
- * ```
- *
+ * ~~~
  * val list: List<Int> = arraylistOf(1, 2, 3)
  *
  * list.shouldBeInstanceOf<ArrayList<Int>> { it: ArrayList<Int> // Typecasted for you if not explicit
  *  // Use it.
  * }
+ * ~~~
  *
- * ```
- * ```
- *
+ * ~~~
  * val list: List<Int> = arraylistOf(1, 2, 3)
  *
  * // arrayList is typecasted to ArrayList<Int>
  * val arrayList = list.shouldBeInstanceOf<ArrayList<Int>>()
- *
- * ```
+ * ~~~
  * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
@@ -54,21 +51,19 @@ inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): 
  * For an exact type, use [shouldBeTypeOf]
  *
  * ```
- *
  * val list: List<Int> = arraylistOf(1, 2, 3)
  *
  * // list will be smart casted to ArrayList
  * list.shouldBeInstanceOf<ArrayList<Int>>()
- *
- * ```
  * ```
  *
+ * ```
  * val list: List<Int> = arraylistOf(1, 2, 3)
  *
  * // arrayList is typecasted to ArrayList<Int>
  * val arrayList = list.shouldBeInstanceOf<ArrayList<Int>>()
- *
  * ```
+ *
  * @return The typecasted instance
  */
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
