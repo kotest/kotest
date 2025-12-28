@@ -189,6 +189,10 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-junit-displaynameformatter",
 
       ":kotest-tests:kotest-tests-multiname-test-name-sysprop",
+
+      // Tests that the KOTEST_TAGS env var is correctly applied to tags at runtime
+      ":kotest-tests:kotest-tests-tags-envvar",
+
       ":kotest-tests:kotest-tests-power-assert",
       ":kotest-tests:kotest-tests-spec-parallelism",
       ":kotest-tests:kotest-tests-tagextension",
