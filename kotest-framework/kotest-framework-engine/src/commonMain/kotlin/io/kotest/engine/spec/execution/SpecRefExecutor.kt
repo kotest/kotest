@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.execution
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.platform
+import io.kotest.common.platformExecution
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
@@ -61,7 +61,7 @@ internal class SpecRefExecutor(
       return inflator.inflate(ref).flatMap { spec ->
          try {
             val executor = specExecutor(context, spec)
-            logger.log { Pair(ref.kclass.bestName(), "Found executor $executor for platform $platform") }
+            logger.log { Pair(ref.kclass.bestName(), "Found executor $executor for platform ${platformExecution.platform}") }
             executor.execute(ref, spec)
          } catch (t: Throwable) {
             logger.log { Pair(spec::class.bestName(), "Error executing SpecRef $t") }

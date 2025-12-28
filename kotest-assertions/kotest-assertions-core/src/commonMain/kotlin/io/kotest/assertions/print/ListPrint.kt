@@ -4,7 +4,7 @@ import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.AssertionsConfigSystemProperties
 import io.kotest.assertions.EnvironmentConfigValue
 import io.kotest.common.Platform
-import io.kotest.common.platform
+import io.kotest.common.platformExecution
 
 class ListPrint<T>(
    private val limitConfigValue: EnvironmentConfigValue<Int> = AssertionsConfig.maxCollectionPrintSize,
@@ -16,7 +16,7 @@ class ListPrint<T>(
          val limit = limitConfigValue.value
          val remainingItems = a.size - limit
 
-         val limitHint = when (platform) {
+         val limitHint = when (platformExecution.platform) {
             Platform.JVM, Platform.Native -> " (set '${AssertionsConfigSystemProperties.COLLECTIONS_PRINT_SIZE}' to see more / less items)"
             else -> null
          }

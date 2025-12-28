@@ -1,26 +1,26 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.Logger
 import io.kotest.common.Platform
-import io.kotest.common.platform
+import io.kotest.common.platformExecution
+import io.kotest.common.reflection.bestName
+import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ref.DescriptorFilterSpecRefInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.FinalizeSpecInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.PrepareSpecInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.RequiresPlatformInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.RequiresTagInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.SpecStartedInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.DisabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.EnabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.IgnoredSpecInterceptor
-import io.kotest.common.reflection.bestName
+import io.kotest.engine.spec.interceptor.ref.enabled.RequiresPlatformInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.RequiresTagInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
+import io.kotest.engine.test.TestResult
 
 internal class SpecRefInterceptorPipeline(
    private val context: EngineContext,
@@ -55,14 +55,14 @@ internal class SpecRefInterceptorPipeline(
    private fun createCommonInterceptors(): List<SpecRefInterceptor> {
       return listOfNotNull(
          RequiresPlatformInterceptor(listener, context),
-         if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
-         if (platform == Platform.JVM) DisabledIfInterceptor(listener, context.specExtensions()) else null,
+         if (platformExecution.platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
+         if (platformExecution.platform == Platform.JVM) DisabledIfInterceptor(listener, context.specExtensions()) else null,
          IgnoredSpecInterceptor(listener, context.specExtensions()),
-         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.listener, context.registry) else null,
+         if (platformExecution.platform == Platform.JVM) ApplyExtensionsInterceptor(context.listener, context.registry) else null,
          DescriptorFilterSpecRefInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
 //         SystemPropertyDescriptorFilterInterceptor(listener, context.specExtensions()),
          TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
-         if (platform == Platform.JVM)
+         if (platformExecution.platform == Platform.JVM)
             RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())
          else
             null,

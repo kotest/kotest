@@ -1,7 +1,7 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
-import io.kotest.common.platform
+import io.kotest.common.platformExecution
 import io.kotest.engine.config.TestConfigResolver
 import kotlin.time.TimeMark
 
@@ -9,8 +9,8 @@ import kotlin.time.TimeMark
 internal actual fun blockedThreadTimeoutInterceptor(
    start: TimeMark,
    testConfigResolver: TestConfigResolver,
-): TestExecutionInterceptor = error("Unsupported on $platform")
+): TestExecutionInterceptor = error("Unsupported on ${platformExecution.platform}")
 
 @JVMOnly
 internal actual fun coroutineErrorCollectorInterceptor(): TestExecutionInterceptor =
-   error("Unsupported on $platform")
+   error("Unsupported on ${platformExecution.platform}")

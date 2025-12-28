@@ -1,7 +1,7 @@
 package io.kotest.engine
 
 import io.kotest.common.Platform
-import io.kotest.common.platform
+import io.kotest.common.platformExecution
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.annotation.Isolate
@@ -120,11 +120,12 @@ internal class TestSuiteScheduler(
 
    /**
     * Returns the max concurrent specs to execute.
+    *
     * On non-JVM platforms, this will always be 1, otherwise the value
     * of [io.kotest.engine.concurrency.SpecExecutionMode] from project configuration is used.
     */
    private fun concurrency(): Int {
-      return when (platform) {
+      return when (platformExecution.platform) {
          Platform.JVM -> context.projectConfigResolver.specExecutionMode().concurrency
          Platform.JS, Platform.Native, Platform.WasmWasi, Platform.WasmJs -> 1
       }

@@ -3372,13 +3372,13 @@ public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
 
 public final class io/kotest/engine/TestEngineLauncher {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
+	public fun <init> (Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun addExtension (Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun async (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun copy (Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/TestEngineLauncher;
-	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineLauncher;Lio/kotest/common/Platform;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;ILjava/lang/Object;)Lio/kotest/engine/TestEngineLauncher;
+	public final fun copy (Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/TestEngineLauncher;
+	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineLauncher;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;ILjava/lang/Object;)Lio/kotest/engine/TestEngineLauncher;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public final fun launch ()Lio/kotest/engine/EngineResult;
@@ -3387,20 +3387,14 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withConsoleListener ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withJs ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withJvm ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListeners (Ljava/util/Collection;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun withNative ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withNoOpListener ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withPlatform (Lio/kotest/common/Platform;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withProjectConfig (Lio/kotest/core/config/AbstractProjectConfig;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withSpecRefs (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withSpecRefs ([Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTagExpression (Lio/kotest/engine/tags/TagExpression;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withTeamCityListener ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withWasmJs ()Lio/kotest/engine/TestEngineLauncher;
-	public final fun withWasmWasi ()Lio/kotest/engine/TestEngineLauncher;
 }
 
 public final class io/kotest/engine/concurrency/ConcurrencyOrder : java/lang/Enum {
@@ -3853,7 +3847,7 @@ public final class io/kotest/engine/interceptors/EmptyTestSuiteException : java/
 public final class io/kotest/engine/interceptors/EngineContext$Companion {
 	public final fun getEmpty ()Lio/kotest/engine/interceptors/EngineContext;
 	public final fun invoke (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/common/Platform;)Lio/kotest/engine/interceptors/EngineContext;
-	public final fun invoke (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/engine/tags/TagExpression;Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/common/Platform;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/interceptors/EngineContext;
+	public final fun invoke (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/engine/tags/TagExpression;Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/interceptors/EngineContext;
 }
 
 public final class io/kotest/engine/interceptors/ProjectTimeoutException : java/lang/Exception {

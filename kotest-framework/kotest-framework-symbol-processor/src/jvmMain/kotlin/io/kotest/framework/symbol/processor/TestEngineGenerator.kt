@@ -18,7 +18,7 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
 
       val outputStream = environment.codeGenerator.createNewFile(
          dependencies = Dependencies(true, *files.toTypedArray()),
-         packageName = "io.kotest.framework.runtime.wasi",
+         packageName = "io.kotest.framework.runtime",
          fileName = "kotest",
          extensionName = "kt"
       )

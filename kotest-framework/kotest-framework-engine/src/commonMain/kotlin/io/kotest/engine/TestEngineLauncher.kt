@@ -29,11 +29,8 @@ import kotlin.reflect.KClass
  *
  * Entry point for tests generated through the compiler plugins, and so the
  * public api cannot have breaking changes.
- *
- * @param platform specifies the platform which the tests will be running on.
  */
 data class TestEngineLauncher(
-   private val platform: Platform,
    private val listeners: List<TestEngineListener>,
    private val config: AbstractProjectConfig?,
    private val refs: List<SpecRef>,
@@ -46,7 +43,6 @@ data class TestEngineLauncher(
    private val logger = Logger(TestEngineLauncher::class)
 
    constructor() : this(
-      Platform.JVM,
       listOf(),
       null,
       emptyList(),
@@ -126,40 +122,6 @@ data class TestEngineLauncher(
       return this
    }
 
-   /**
-    * Convenience function to be called by the compiler plugin to set up the JS platform.
-    */
-   fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the WASM platform.
-    */
-   fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the WASM platform.
-    */
-   fun withWasmWasi(): TestEngineLauncher = withPlatform(Platform.WasmWasi)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the Native platform.
-    */
-   fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the JVM platform.
-    */
-   fun withJvm(): TestEngineLauncher = withPlatform(Platform.JVM)
-
-   /**
-    * Returns a copy of this launcher with the given [platform] set.
-    *
-    * This will override the current platform.
-    */
-   fun withPlatform(platform: Platform): TestEngineLauncher {
-      return copy(platform = platform).withListeners(platform.listeners())
-   }
-
    private fun toConfig(): TestEngineConfig {
 
       // if the engine was configured with explicit tags, we register those via a tag extension
@@ -179,7 +141,6 @@ data class TestEngineLauncher(
          interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,
-         platform,
          registry,
       )
    }

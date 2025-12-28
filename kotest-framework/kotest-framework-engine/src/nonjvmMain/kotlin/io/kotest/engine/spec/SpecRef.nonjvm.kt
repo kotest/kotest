@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.platform
+import io.kotest.common.platformExecution
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.extensions.ExtensionRegistry
@@ -11,5 +11,5 @@ actual suspend fun instantiate(
    registry: ExtensionRegistry,
    projectConfigRegistry: ProjectConfigResolver
 ): Result<Spec> {
-   return Result.failure(RuntimeException("Reflective instantiation is not supported on ${platform.name}"))
+   return Result.failure(RuntimeException("Reflective instantiation is not supported on ${platformExecution.platform.name}"))
 }

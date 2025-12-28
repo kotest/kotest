@@ -30,8 +30,16 @@ public final class io/kotest/common/Platform : java/lang/Enum {
 	public static fun values ()[Lio/kotest/common/Platform;
 }
 
-public final class io/kotest/common/Platform_jvmKt {
+public abstract interface class io/kotest/common/PlatformEnvironment {
+	public abstract fun getPlatform ()Lio/kotest/common/Platform;
+}
+
+public final class io/kotest/common/PlatformKt {
 	public static final fun getPlatform ()Lio/kotest/common/Platform;
+}
+
+public final class io/kotest/common/Platform_jvmKt {
+	public static final fun getPlatformExecution ()Lio/kotest/common/PlatformEnvironment;
 }
 
 public abstract interface annotation class io/kotest/common/SoftDeprecated : java/lang/annotation/Annotation {
