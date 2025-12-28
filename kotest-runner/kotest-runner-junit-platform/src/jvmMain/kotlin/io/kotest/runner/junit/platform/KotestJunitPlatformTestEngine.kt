@@ -53,7 +53,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
       // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
-      // so we'll force the loading here as well. Ideally, this would all be taken care of in in the engine and junit shouldn't need to know
+      // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
       KotestPropertiesLoader.loadAndApplySystemPropsFile()

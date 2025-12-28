@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 /**
  * A [ProjectConfigLoader] is responsible for locating concrete implementations of [io.kotest.core.config.AbstractProjectConfig]
- * at runtime based on a well defined fully qualified class name using reflection lookups.
+ * at runtime based on a well-defined fully qualified class name using reflection lookups.
  */
 @KotestInternal
 @JVMOnly
