@@ -41,9 +41,9 @@ val launcher = TestEngineLauncher()
  .withSpecRefs(
     """.trim()
          ).addCode("\n")
-      specs.forEach {
-         val sn = it.simpleName.asString()
-         val fqn = it.qualifiedName?.asString() ?: it.simpleName.asString()
+      specs.forEachIndexed { index, spec ->
+         val sn = spec.simpleName.asString() + index
+         val fqn = spec.qualifiedName?.asString() ?: spec.simpleName.asString()
          function.addCode("""SpecRef.Function ({ `${sn}`() }, `${sn}`::class, "$fqn"), """)
          function.addCode("\n")
       }
@@ -67,8 +67,11 @@ val launcher = TestEngineLauncher()
          .addImport("io.kotest.common", "KotestInternal")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine", "TestEngineLauncher")
-      specs.forEach {
-         file.addImport(it.packageName.asString(), it.simpleName.asString())
+      specs.forEachIndexed { index, spec ->
+         file.addAliasedImport(
+            ClassName(spec.packageName.asString(), spec.simpleName.asString()),
+            `as` = spec.simpleName.asString() + index.toString()
+         )
       }
       return file.build()
    }
