@@ -2,7 +2,7 @@ package io.kotest.assertions.eq
 
 /**
  * An [EqCompare] is used to compare two values of the same type by looking up an [Eq] instance.
- * The appropriate [Eq] is resolved using the [EqResolver] class.
+ * The appropriate [Eq] is resolved using the [DefaultEqResolver] class.
  */
 object EqCompare {
    @Suppress("UNCHECKED_CAST")
@@ -13,7 +13,7 @@ object EqCompare {
 
    @Suppress("UNCHECKED_CAST")
    internal fun <T> compare(actual: T, expected: T, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      val eq = EqResolver.resolve(actual, expected) as Eq<T>
+      val eq = DefaultEqResolver.resolve(actual, expected) as Eq<T>
       return eq.equals(actual, expected, strictNumberEq, context)
    }
 }
