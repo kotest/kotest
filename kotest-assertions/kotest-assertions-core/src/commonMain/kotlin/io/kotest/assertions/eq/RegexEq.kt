@@ -11,7 +11,11 @@ import io.kotest.assertions.print.print
  */
 internal object RegexEq : Eq<Regex> {
 
-   override fun equals(actual: Regex, expected: Regex, strictNumberEq: Boolean): Throwable? {
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
+   override fun equals(actual: Regex, expected: Regex, strictNumberEq: Boolean): Throwable? =
+      equals(actual, expected, strictNumberEq, EqContext())
+
+   override fun equals(actual: Regex, expected: Regex, strictNumberEq: Boolean, context: EqContext): Throwable? {
       return patternsAreNotEqual(actual, expected) ?: optionsAreNotEqual(actual, expected)
    }
 

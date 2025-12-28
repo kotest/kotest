@@ -7,7 +7,13 @@ package io.kotest.assertions.eq
 object EqCompare {
    @Suppress("UNCHECKED_CAST")
    fun <T> compare(actual: T, expected: T, strictNumberEq: Boolean): Throwable? {
+      val context = EqContext()
+      return compare(actual, expected, strictNumberEq, context)
+   }
+
+   @Suppress("UNCHECKED_CAST")
+   internal fun <T> compare(actual: T, expected: T, strictNumberEq: Boolean, context: EqContext): Throwable? {
       val eq = EqResolver.resolve(actual, expected) as Eq<T>
-      return eq.equals(actual, expected, strictNumberEq)
+      return eq.equals(actual, expected, strictNumberEq, context)
    }
 }
