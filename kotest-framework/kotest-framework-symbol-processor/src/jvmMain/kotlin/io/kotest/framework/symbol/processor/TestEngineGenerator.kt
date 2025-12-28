@@ -12,7 +12,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterSpec
 import kotlin.js.ExperimentalJsExport
 
-class WasmWasiGenerator(private val environment: SymbolProcessorEnvironment) {
+class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
 
    fun generate(files: List<KSFile>, specs: List<KSClassDeclaration>, configs: List<KSClassDeclaration>) {
 

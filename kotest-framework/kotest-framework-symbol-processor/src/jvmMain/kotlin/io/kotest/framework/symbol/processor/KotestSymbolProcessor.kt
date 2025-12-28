@@ -70,16 +70,11 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    override fun finish() {
       validateProjectConfigs()
       val files = visitor.specs.mapNotNull { it.containingFile }
-      println("Generating for platform " + environment.platforms.first() + " " + environment.platforms.first().platformName)
-      environment.logger.info("Generating xxx platform " + environment.platforms.first() + " " + environment.platforms.first().platformName)
-      when (val platform = environment.platforms.first()) {
+      // see https://github.com/google/ksp/issues/2544
+      when (environment.platforms.first()) {
          is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
          is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         // see https://github.com/google/ksp/issues/2544
-         else if platform.platformName.contains("wasm") ->
-            WasmJsGenerator(environment).generate(files, visitor.specs, visitor.configs)
-
-         else -> error("Unsupported platform: ${environment.platforms.first()}")
+         else -> TestEngineGenerator(environment).generate(files, visitor.specs, visitor.configs)
       }
    }
 
