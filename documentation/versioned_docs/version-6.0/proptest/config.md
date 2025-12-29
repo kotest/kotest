@@ -12,7 +12,7 @@ in an instance of `PropTestConfig` to the test methods.
 For example:
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "String size" {
       forAll<String, String>(PropTestConfig(options here...)) { a,b ->
          (a + b).length == a.length + b.length
@@ -36,7 +36,7 @@ By default, Kotest tolerates no failure. Perhaps you want to run some non-determ
 to accept some small number of failures. You can specify that in config.
 
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "some flakey test" {
       forAll<String, String>(PropTestConfig(maxFailure = 3)) { a,b ->
          // max of 3 inputs can fail
@@ -50,7 +50,7 @@ class PropertyExample: StringSpec({
 Sometimes in property test it is required to perform some setup and tear down in each iteration of test.
 For this purpose you can register a ```PropTestListener``` with ```PropTestConfig```.
 ```kotlin
-class PropertyExample: StringSpec({
+class PropertyExample: FreeSpec({
    "some property test which require setup and tear down in each iteration" {
       forAll<String, String>(PropTestConfig(listeners = listOf(MyPropTestListener))) { a,b ->
          // some assertion
@@ -66,7 +66,7 @@ By setting `outputHexForUnprintableChars` to true in `PropTestConfig`,
 unprintable characters in failure messages are displayed as their Unicode code points in the format `U+XXXX`.
 
 ```kotlin
-class PropertyExample : StringSpec({
+class PropertyExample : FreeSpec({
     "handle unprintable characters in failure messages" {
         forAll<String>(
             PropTestConfig(outputHexForUnprintableChars = true)

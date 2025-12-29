@@ -1,19 +1,20 @@
 package io.kotest.engine
 
-import io.kotest.core.Logger
 import io.kotest.common.Platform
+import io.kotest.common.platform
+import io.kotest.common.reflection.bestName
+import io.kotest.core.Logger
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
-import io.kotest.common.platform
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.name
+import io.kotest.engine.concurrency.ConcurrencyOrder
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.concurrency.isParallel
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.execution.SpecRefExecutor
-import io.kotest.common.reflection.bestName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
@@ -35,23 +36,38 @@ internal class TestSuiteScheduler(
    suspend fun schedule(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
 
-      // first we run the specs that have been marked as always isolated
       val isolated = suite.specs.filter { it.kclass.isIsolate() }
       logger.log { Pair(null, "Isolated spec count: ${isolated.size}") }
-      schedule(isolated, 1)
-      logger.log { Pair(null, "Isolated specs have completed") }
 
-      // next we run the specs that have been marked as always parallel regardless of concurrency mode
       val parallel = suite.specs.filter { it.kclass.isParallel() }
       logger.log { Pair(null, "Parallelized spec count: ${parallel.size}") }
-      schedule(parallel, Int.MAX_VALUE)
-      logger.log { Pair(null, "Parallelized specs have completed") }
 
-      // the rest of the specs use the concurrency mode
+      // the rest of the specs use the default concurrency mode
       val default = suite.specs.filter { !it.kclass.isIsolate() && !it.kclass.isParallel() }
       logger.log { Pair(null, "Remaining spec count: ${default.size}") }
-      schedule(default, concurrency())
-      logger.log { Pair(null, "Remaining specs have completed") }
+
+      when (context.projectConfigResolver.concurrencyOrder()) {
+         ConcurrencyOrder.IsolateFirst -> {
+            schedule(isolated, 1)
+            logger.log { Pair(null, "Isolated specs have completed") }
+
+            schedule(parallel, Int.MAX_VALUE)
+            logger.log { Pair(null, "Parallelized specs have completed") }
+
+            schedule(default, concurrency())
+            logger.log { Pair(null, "Remaining specs have completed") }
+         }
+         ConcurrencyOrder.IsolateLast -> {
+            schedule(default, concurrency())
+            logger.log { Pair(null, "Remaining specs have completed") }
+
+            schedule(parallel, Int.MAX_VALUE)
+            logger.log { Pair(null, "Parallelized specs have completed") }
+
+            schedule(isolated, 1)
+            logger.log { Pair(null, "Isolated specs have completed") }
+         }
+      }
 
       return EngineResult(emptyList(), false)
    }

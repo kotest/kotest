@@ -15,12 +15,12 @@ Test with Style
 Write [simple and beautiful tests](writing_tests.md) using one of the available styles:
 
 ```kotlin
-class MyTests : StringSpec({
-   "length should return size of string" {
+class MyTests : FunSpec({
+   test("length should return size of string") {
       "hello".length shouldBe 5
    }
-   "startsWith should test for a prefix" {
-      "world" should startWith("wor")
+   test("startsWith should test for a prefix") {
+      "hello world" should startWith("hello")
    }
 })
 ```
@@ -33,13 +33,13 @@ Check all the Tricky Cases With Data Driven Testing
 Handle even an enormous amount of input parameter combinations easily with [data driven tests](datatesting/data_driven_testing.md):
 
 ```kotlin
-class StringSpecExample : StringSpec({
+class DataTestExample : FreeSpec({
    "maximum of two numbers" {
-      forAll(
-         row(1, 5, 5),
-         row(1, 0, 1),
-         row(0, 0, 0)
-      ) { a, b, max ->
+      withData(
+         Triple(1, 5, 5),
+         Triple(1, 0, 1),
+         Triple(0, 0, 0)
+      ) { (a, b, max) ->
          Math.max(a, b) shouldBe max
       }
    }
@@ -51,12 +51,12 @@ class StringSpecExample : StringSpec({
 Fine Tune Test Execution
 ------------------------
 
-You can specify the number of invocations, parallelism, and a timeout for each test or for all tests. And you can group
+You can specify the number of invocations, parallelism, test timeouts, and a host of other options. And you can group
 tests by tags or disable them conditionally. All you need is [`config`](project_config.md):
 
 ```kotlin
-class MySpec : StringSpec({
-   "should use config".config(timeout = 2.seconds, invocations = 10, threads = 2, tags = setOf(Database, Linux)) {
+class MySpec : DescribeSpec({
+   describe("should use config").config(timeout = 2.seconds, invocations = 10, tags = setOf(Database, Linux)) {
       // test here
    }
 })

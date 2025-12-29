@@ -6,7 +6,7 @@ import java.sql.Connection
 import java.util.logging.Logger
 import javax.sql.DataSource
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
 class SettableDataSource(private var ds: HikariDataSource?) : DataSource {
 
    private fun getDs(): DataSource = ds ?: error("DataSource is not ready")

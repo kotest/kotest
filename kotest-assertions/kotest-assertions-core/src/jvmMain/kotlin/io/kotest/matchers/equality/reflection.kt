@@ -6,6 +6,8 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
@@ -13,7 +15,7 @@ import kotlin.reflect.full.memberProperties
 import kotlin.reflect.jvm.isAccessible
 
 /**
- * Asserts that this is equal to [other] using specific fields
+ * Asserts that this [T] is equal to [other] : [T] using specific fields
  *
  * Verifies that [this] instance is equal to [other] using only some specific fields. This is useful for matching
  * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
@@ -33,10 +35,39 @@ import kotlin.reflect.jvm.isAccessible
  * firstFoo shouldBe secondFoo // Assertion fails, `equals` is false!
  * ```
  *
- * Note: Throws [IllegalArgumentException] if [properties] contains any non public property
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
+ * or if [other] is not an instance of the same class as receiver [T]
  *
  */
 fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
+   require(this::class.isInstance(other)){"other is not an instance of declaring class"}
+   this should beEqualToUsingFields(other, *properties)
+}
+
+/**
+ * Asserts that this [T] is equal to [other] : [V] using specific fields
+ *
+ * Verifies that [this] instance is equal to [other] using only some specific fields. This is useful in scenarios where
+ * you want to compare objects that share common properties but are not of the same class,
+ * such as comparing a domain model with a DTO.
+ *
+ * Example:
+ * ```
+ * data class Foo(val id: Int, val description: String)
+ * data class Fuu(val id: Int, val description: String, val isActive: Boolean)
+ *
+ * val foo = Foo(1, "Bar!")
+ * val fuu = Fuu(2, "Bar!", false)
+ *
+ * foo.shouldBeEqualToUsingFields(fuu, Foo::description) // Assertion passes
+ *
+ * foo shouldBe fuu // Assertion fails, `equals` is false!
+ * ```
+ *
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
+ *
+ */
+fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeUsingFields(other: V, vararg properties: KProperty1<T, *>) {
    this should beEqualToUsingFields(other, *properties)
 }
 
@@ -96,7 +127,7 @@ fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProp
  * @see [beEqualToIgnoringFields]
  *
  */
-fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
+fun <T : Any, V: Any> beEqualToUsingFields(other: V, vararg fields: KProperty<*>): Matcher<T> = object : Matcher<T> {
    override fun test(value: T): MatcherResult {
       val hasNonPublicFields = fields.any { it.visibility != KVisibility.PUBLIC }
       if (hasNonPublicFields) {
@@ -117,7 +148,7 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
 }
 
 /**
- * Asserts that this is equal to [other] without using specific fields
+ * Asserts that this [T] is equal to [other] : [T] without using specific fields
  *
  * Verifies that [this] instance is equal to [other] without using some specific fields. This is useful for matching
  * on objects that contain unknown values, such as a database Entity that contains an ID (you don't know this ID, and it
@@ -139,6 +170,34 @@ fun <T : Any> beEqualToUsingFields(other: T, vararg fields: KProperty<*>): Match
  *
  */
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, property: KProperty<*>, vararg others: KProperty<*>) {
+   require(this::class.isInstance(other)){"other is not an instance of declaring class"}
+   this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
+}
+
+/**
+ * Asserts that this [T] is equal to [other] : [V] without using specific fields
+ *
+ * Verifies that [this] instance is equal to [other] without using some specific fields. This is useful in scenarios where
+ * you want to compare objects that share common properties but are not of the same class,
+ * such as comparing a domain model with a DTO however some fields are to be ignored, for example timestamps.
+ *
+ * Example:
+ * ```
+ * data class Foo(val id: Int, val description: String)
+ * data class Fuu(val id: Int, val description: String, val isActive: Boolean)
+ *
+ * val foo = Foo(1, "Bar!")
+ * val fuu = Fuu(2, "Bar!", false)
+ *
+ * foo.shouldBeEqualToDifferentTypeIgnoringFields(fuu, Foo::id) // Assertion passes
+ *
+ * foo shouldBe fuu // Assertion fails, `equals` is false!
+ * ```
+ *
+ * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
+ *
+ */
+fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeIgnoringFields(other: V, property: KProperty1<T, *>, vararg others: KProperty1<T, *>) {
    this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
 }
 
@@ -275,7 +334,6 @@ fun <T : Any> beEqualToIgnoringFields(
    property: KProperty<*>,
    vararg others: KProperty<*>
 ): Matcher<T> = object : Matcher<T> {
-
    override fun test(value: T): MatcherResult {
       val fields = listOf(property) + others
       val fieldNames = fields.map { it.name }
@@ -389,13 +447,35 @@ fun <T : Any> beEqualComparingFields(
    }
 }
 
-private fun <T> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: T): List<String> {
-   return fields.mapNotNull {
-      val actual = it.getter.call(value)
-      val expected = it.getter.call(other)
+private fun <T, V> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, other: V): List<String> {
+   requireNotNull(value)
+   requireNotNull(other)
+   val equalityChecker: (actual: Any?, expected: Any?, propertyName: String) -> String? =
+      { actual, expected, propertyName ->
+         val isEqual = EqCompare.compare(actual, expected, false) == null
+         if (isEqual) null else "$propertyName: ${actual.print().value} != ${expected.print().value}"
+      }
+   return when (value::class == other::class) {
+      true -> fields.mapNotNull {
+         val actual = it.getter.call(value)
+         val expected = it.getter.call(other)
+         equalityChecker(actual, expected, it.name)
+      }
 
-      val isEqual = EqCompare.compare(actual, expected, false) == null
-      if (isEqual) null else "${it.name}: ${actual.print().value} != ${expected.print().value}"
+      false -> {
+         val otherPropertiesByName = other::class.memberProperties.associateBy { it.name }
+         return fields.mapNotNull { tProperty ->
+            val actual = tProperty.getter.call(value)
+            val propOfV = otherPropertiesByName[tProperty.name]
+
+            if (propOfV == null) {
+               "${tProperty.name}: property not found in ${other::class.simpleName}"
+            } else {
+               val expected = propOfV.getter.call(other)
+               equalityChecker(actual, expected, tProperty.name)
+            }
+         }
+      }
    }
 }
 

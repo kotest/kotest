@@ -12,7 +12,7 @@ public final class io/kotest/extensions/spring/SpringAutowireConstructorExtensio
 	public fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
 }
 
-public final class io/kotest/extensions/spring/SpringExtension : io/kotest/core/extensions/ConstructorExtension, io/kotest/core/extensions/SpecExtension, io/kotest/core/extensions/TestCaseExtension, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeTestListener {
+public class io/kotest/extensions/spring/SpringExtension : io/kotest/core/extensions/ConstructorExtension, io/kotest/core/extensions/SpecExtension, io/kotest/core/extensions/TestCaseExtension, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeTestListener {
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;)V
 	public synthetic fun <init> (Lio/kotest/extensions/spring/SpringTestLifecycleMode;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -23,6 +23,14 @@ public final class io/kotest/extensions/spring/SpringExtension : io/kotest/core/
 	public fun instantiate (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/Spec;
 	public fun intercept (Lio/kotest/core/spec/Spec;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun intercept (Lio/kotest/core/test/TestCase;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/spring/SpringLeafTestExtension : io/kotest/extensions/spring/SpringExtension {
+	public fun <init> ()V
+}
+
+public final class io/kotest/extensions/spring/SpringRootTestExtension : io/kotest/extensions/spring/SpringExtension {
+	public fun <init> ()V
 }
 
 public final class io/kotest/extensions/spring/SpringTestContextCoroutineContextElement : kotlin/coroutines/AbstractCoroutineContextElement {

@@ -26,16 +26,32 @@ class KotestExtensionContext(
 
    override fun getExecutionMode(): ExecutionMode = ExecutionMode.CONCURRENT
 
-   override fun getExecutableInvoker(): ExecutableInvoker? = null
+   override fun getExecutableInvoker(): ExecutableInvoker = throw UnsupportedOperationException()
+
+   override fun <T : Any> getConfigurationParameter(key: String, transformer: Function<String, T>): Optional<T> {
+      return Optional.empty<T>()
+   }
+
+   override fun publishReportEntry(map: Map<String, String>) {
+   }
+
+   override fun publishFile(
+      name: String,
+      mediaType: MediaType,
+      action: ThrowingConsumer<Path>
+   ) {
+   }
+
+   override fun publishDirectory(
+      name: String,
+      action: ThrowingConsumer<Path>
+   ) {
+   }
 
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
 
    override fun getUniqueId(): String = spec::class.toDescriptor().id.value
-
-   override fun <T : Any> getConfigurationParameter(key: String?, transformer: Function<String, T>): Optional<T> {
-      return Optional.empty<T>()
-   }
 
    override fun getDisplayName(): String = when (testCase) {
       null -> formatter.format(spec::class)
@@ -47,7 +63,7 @@ class KotestExtensionContext(
    override fun getElement(): Optional<AnnotatedElement> = Optional.empty()
 
    override fun getTestClass(): Optional<Class<*>> = Optional.of(spec::class.java)
-   override fun getEnclosingTestClasses(): List<Class<*>?> = emptyList()
+   override fun getEnclosingTestClasses(): List<Class<*>> = emptyList()
 
    override fun getTestMethod(): Optional<Method> = Optional.empty()
 
@@ -62,30 +78,18 @@ class KotestExtensionContext(
    override fun getTestInstances(): Optional<TestInstances> = Optional.of(KotestTestInstances(spec))
 
    override fun getExecutionException(): Optional<Throwable> = Optional.empty()
-   override fun getConfigurationParameter(key: String?): Optional<String> = Optional.empty()
-
-   override fun publishReportEntry(map: MutableMap<String, String>?) {}
-   override fun publishFile(
-      name: String?,
-      mediaType: MediaType?,
-      action: ThrowingConsumer<Path?>?
-   ) {
-   }
-
-   override fun publishDirectory(
-      name: String?,
-      action: ThrowingConsumer<Path?>?
-   ) {
-   }
+   override fun getConfigurationParameter(key: String): Optional<String> = Optional.empty()
 
    override fun getStore(namespace: ExtensionContext.Namespace): ExtensionContext.Store {
       return ExtensionStore(namespace)
    }
 
    override fun getStore(
-      scope: ExtensionContext.StoreScope?,
-      namespace: ExtensionContext.Namespace?
-   ): ExtensionContext.Store? = null
+      scope: ExtensionContext.StoreScope,
+      namespace: ExtensionContext.Namespace
+   ): ExtensionContext.Store {
+      throw UnsupportedOperationException()
+   }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -105,18 +109,20 @@ class ExtensionStore(private val namespace: ExtensionContext.Namespace) : Extens
 
    private val map = mutableMapOf<Pair<ExtensionContext.Namespace, Any>, Any?>()
 
-   override fun get(key: Any): Any? = map[key]
+   override fun get(key: Any): Any {
+      return map[key] ?: error("Was not present")
+   }
 
-   override fun <V : Any> get(key: Any, requiredType: Class<V>): V? {
+   override fun <V : Any> get(key: Any, requiredType: Class<V>): V {
       val value = map[namespace to key]
       return when {
-         value == null -> null
+         value == null -> error("Was not present")
          value::class.java.name == requiredType.name -> value as V
          else -> error("Value is not of required type $requiredType")
       }
    }
 
-   override fun <K : Any, V : Any> getOrComputeIfAbsent(key: K, defaultCreator: Function<K, V>): Any? {
+   override fun <K : Any, V : Any> getOrComputeIfAbsent(key: K, defaultCreator: Function<K, V>): Any {
       return when (val value = map[namespace to key]) {
          null -> defaultCreator.apply(key)
          else -> value
@@ -136,18 +142,18 @@ class ExtensionStore(private val namespace: ExtensionContext.Namespace) : Extens
       }
    }
 
-   override fun put(key: Any, value: Any?) {
+   override fun put(key: Any, value: Any) {
       map[namespace to key] = value
    }
 
-   override fun remove(key: Any): Any? {
-      return map.remove(key)
+   override fun remove(key: Any): Any {
+      return map.remove(key) ?: error("Was not present")
    }
 
-   override fun <V : Any> remove(key: Any, requiredType: Class<V>): V? {
+   override fun <V : Any> remove(key: Any, requiredType: Class<V>): V {
       val value = map[namespace to key]
       return when {
-         value == null -> null
+         value == null -> error("Was not present")
          value::class.java.name == requiredType.name -> map.remove(namespace to key) as V
          else -> error("Value is not of required type $requiredType")
       }

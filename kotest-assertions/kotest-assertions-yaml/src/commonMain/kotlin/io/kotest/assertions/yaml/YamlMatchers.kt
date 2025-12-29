@@ -2,7 +2,8 @@ package io.kotest.assertions.yaml
 
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlNode
-import io.kotest.matchers.ComparableMatcherResult
+import io.kotest.assertions.print.print
+import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -88,11 +89,11 @@ private fun equalYamlNode(
    Matcher { value ->
       val error = expected.equivalentContentTo( value)
 
-      ComparableMatcherResult(
+      ComparisonMatcherResult(
          error,
+         value.contentToString().print(),
+         expected.contentToString().print(),
          { "$error\n" },
          { "Expected values to not match" },
-         value.contentToString(),
-         expected.contentToString(),
       )
    }

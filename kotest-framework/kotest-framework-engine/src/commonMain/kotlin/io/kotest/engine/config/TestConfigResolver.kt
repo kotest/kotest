@@ -152,6 +152,7 @@ class TestConfigResolver(
    fun invocations(testCase: TestCase): Int {
       return testConfigs(testCase).firstNotNullOfOrNull { it.invocations }
          ?: testCase.spec.defaultTestConfig?.invocations
+         ?: projectConfig?.invocations
          ?: Defaults.INVOCATIONS
    }
 

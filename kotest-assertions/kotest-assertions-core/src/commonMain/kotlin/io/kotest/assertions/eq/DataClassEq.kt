@@ -30,46 +30,60 @@ internal object DataClassEq : Eq<Any> {
    /**
     * Used to determine at what level of nesting we abort processing the diff.
     * To prevent stack overflows/cyclic dependencies.
+    * Note: With cycle detection via EqContext, this provides defense in depth.
     */
    private const val MAX_NESTED_DEPTH = 10
 
+   @Deprecated("Use the overload with one more parameter of type EqContext.")
    override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
-      if (test(actual, expected)) {
-         null
-      } else {
+      equals(actual, expected, strictNumberEq, EqContext())
 
-         val detailedDiffMsg = runCatching {
-            dataClassDiff(actual, expected, strictNumberEq = strictNumberEq)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
-         }.getOrElse { "" }
+   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean, context: EqContext): Throwable? {
+      if (actual === expected) return null
 
-         AssertionErrorBuilder.create()
-            .withMessage(detailedDiffMsg)
-            .withValues(Expected(expected.print()), Actual(actual.print()))
-            .build()
+      if (context.isVisited(actual, expected)) return null
+
+      context.push(actual, expected)
+      try {
+         return if (test(actual, expected)) {
+            null
+         } else {
+            val detailedDiffMsg = runCatching {
+               dataClassDiff(actual, expected, strictNumberEq = strictNumberEq, context = context)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
+            }.getOrElse { "" }
+
+            AssertionErrorBuilder.create()
+               .withMessage(detailedDiffMsg)
+               .withValues(Expected(expected.print()), Actual(actual.print()))
+               .build()
+         }
+      } finally {
+         context.pop()
       }
+   }
 
    private fun test(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)
 
-   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0, strictNumberEq: Boolean): DataClassDifference? {
+   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0, strictNumberEq: Boolean, context: EqContext): DataClassDifference? {
       require(actual != null && expected != null) { "Actual and expected values cannot be null in a data class comparison" }
       require(depth < MAX_NESTED_DEPTH) { "Max depth reached" }
-      val differences = computeMemberDifferences(expected, actual, depth, strictNumberEq)
+      val differences = computeMemberDifferences(expected, actual, depth, strictNumberEq, context)
       return when {
          differences.isEmpty() -> null
          else -> DataClassDifference(expected::class.bestName(), differences)
       }
    }
 
-   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int, strictNumberEq: Boolean) =
+   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int, strictNumberEq: Boolean, context: EqContext) =
       reflection.primaryConstructorMembers(expected::class).mapNotNull { prop ->
          val actualPropertyValue = prop.call(actual)
          val expectedPropertyValue = prop.call(expected)
          if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue))
-            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, strictNumberEq)?.let { diff ->
+            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, strictNumberEq, context)?.let { diff ->
                Pair(prop, diff)
             }
          else {
-            EqCompare.compare(actualPropertyValue, expectedPropertyValue, strictNumberEq)
+            EqCompare.compare(actualPropertyValue, expectedPropertyValue, strictNumberEq, context)
                ?.let { Pair(prop, StandardDifference(it)) }
          }
       }

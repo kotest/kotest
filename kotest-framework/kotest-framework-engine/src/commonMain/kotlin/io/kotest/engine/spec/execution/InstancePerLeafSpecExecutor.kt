@@ -23,7 +23,7 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
-import kotlin.coroutines.CoroutineContext
+import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
@@ -31,6 +31,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.CoroutineContext
 
 @Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
@@ -75,10 +76,10 @@ internal class InstancePerLeafSpecExecutor(
       // All root test coroutines are launched immediately.
       // The semaphore will control how many can actually run concurrently.
       coroutineScope { // will wait for all tests to complete
-         roots.forEach { root ->
+         roots.forEachIndexed { index, root ->
             launch {
                semaphore.withPermit {
-                  RootTestExecutor().launchRootTest(root, ref)
+                  RootTestExecutor().launchRootTest(root, ref, seed, index)
                }
             }
          }
@@ -93,18 +94,22 @@ internal class InstancePerLeafSpecExecutor(
    inner class RootTestExecutor {
       private val discoveredOperations = ArrayDeque<InstancePerLeafOperation>()
 
-      suspend fun launchRootTest(root: TestCase, ref: SpecRef) {
-         val spec = inflator.inflate(ref).getOrThrow()
-         val freshRoot = materializer.materialize(spec)
-            .first { it.descriptor == root.descriptor }
-
+      suspend fun launchRootTest(root: TestCase, ref: SpecRef, seed: Spec, index: Int) {
          val operationQueue = ArrayDeque<InstancePerLeafOperation>()
 
+         val (root, spec) = if (index == 0) {
+            root to seed
+         } else {
+            val spec = inflator.inflate(ref).getOrThrow()
+            val freshRoot = materializer.materialize(spec).first { it.descriptor == root.descriptor }
+            freshRoot to spec
+         }
+
          executeInNewSpec(newSpec = spec) {
-            val result = executeTest(freshRoot, null, it, ref)
+            val result = executeTest(root, null, it, ref)
             operationQueue.addAll(discoveredOperations)
             discoveredOperations.clear()
-            Result.success(mapOf(freshRoot to result))
+            Result.success(mapOf(root to result))
          }
 
          while (operationQueue.isNotEmpty()) {
@@ -212,11 +217,16 @@ internal class InstancePerLeafSpecExecutor(
 
          private val logger = Logger(LeafLaunchingScope::class)
 
+         private val duplicateTestNameHandler = DuplicateTestNameHandler()
+         private val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
+
          val discoveredTests = mutableListOf<TestExecutionInFreshSpec>()
 
          override suspend fun registerTestCase(nested: NestedTest) {
             logger.log { Pair(testCase.name.name, "Discovered nested test '${nested.name.name}'") }
-            val nestedTestCase = materializer.materialize(nested, testCase)
+            val unique = duplicateTestNameHandler.unique(duplicateTestNameMode, nested.name)
+            val uniqueName = nested.name.copy(name = unique)
+            val nestedTestCase = materializer.materialize(nested.copy(name = uniqueName), testCase)
 
             if (target != null && !nestedTestCase.descriptor.isPrefixOf(target)) {
                // Should execute the given test case described by target but traversing an irrelevant test case now

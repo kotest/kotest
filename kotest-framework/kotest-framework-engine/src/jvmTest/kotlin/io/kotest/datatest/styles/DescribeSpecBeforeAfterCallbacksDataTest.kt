@@ -2,7 +2,9 @@ package io.kotest.datatest.styles
 
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.datatest.withData
+import io.kotest.datatest.withContexts
+import io.kotest.datatest.withDescribes
+import io.kotest.datatest.withIts
 import io.kotest.matchers.shouldBe
 
 class DescribeSpecBeforeAfterCallbacksDataTest : DescribeSpec() {
@@ -10,6 +12,7 @@ class DescribeSpecBeforeAfterCallbacksDataTest : DescribeSpec() {
 
       duplicateTestNameMode = DuplicateTestNameMode.Silent
 
+      var beforeAnyTest = 0
       var beforeTest = 0
       var beforeContainer = 0
       var afterContainer = 0
@@ -17,6 +20,9 @@ class DescribeSpecBeforeAfterCallbacksDataTest : DescribeSpec() {
       var beforeEach = 0
       var afterEach = 0
 
+      beforeAny {
+         beforeAnyTest++
+      }
       beforeTest {
          beforeTest++
       }
@@ -36,29 +42,46 @@ class DescribeSpecBeforeAfterCallbacksDataTest : DescribeSpec() {
          afterTest++
       }
       afterSpec {
-         beforeTest shouldBe 13
-         beforeContainer shouldBe 7
-         beforeEach shouldBe 6
-         afterEach shouldBe 6
-         afterContainer shouldBe 7
-         afterTest shouldBe 13
+         beforeTest shouldBe 32
+         beforeAnyTest shouldBe 32
+         beforeContainer shouldBe 12
+         beforeEach shouldBe 20
+         afterEach shouldBe 20
+         afterContainer shouldBe 12
+         afterTest shouldBe 32
       }
 
-      withData(
+      withContexts(
          "foo",
          "bar",
          "baz"
       ) {
-         it("test") {}
+         withIts("test 1", "test 2") {
+         }
       }
 
-      describe("inside a context") {
-         withData(
-            "foo",
-            "bar",
-            "baz"
+      withDescribes(
+         "foo",
+         "bar",
+         "baz"
+      ) {
+         withIts("test 1", "test 2") {
+         }
+      }
+
+
+      withDescribes(
+         "inside describe context 1",
+         "inside describe context 1"
+      ) {
+         withContexts(
+            "inside context within describe context 1",
+            "inside context within describe context 2"
          ) {
-            it("test") {}
+            withIts(
+               "final test within each describe and context declared above - 1",
+               "final test within each describe and context declared above - 1"
+            ) { }
          }
       }
    }

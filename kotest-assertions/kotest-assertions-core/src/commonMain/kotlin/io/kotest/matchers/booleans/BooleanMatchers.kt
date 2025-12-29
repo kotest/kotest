@@ -1,7 +1,9 @@
 package io.kotest.matchers.booleans
 
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -28,10 +30,9 @@ fun Boolean?.shouldBeTrue(): Boolean {
       returns() implies (this@shouldBeTrue != null)
    }
 
-   this shouldBe true
+   this should beTrue()
    return this!!
 }
-
 /**
  * Asserts that this [Boolean] is not true
  *
@@ -50,7 +51,7 @@ fun Boolean?.shouldBeTrue(): Boolean {
  * @see [Boolean?.shouldNotBeFalse]
  */
 fun Boolean?.shouldNotBeTrue(): Boolean? {
-   this shouldNotBe true
+   this shouldNot beTrue()
    return this
 }
 
@@ -77,7 +78,7 @@ fun Boolean?.shouldBeFalse(): Boolean {
       returns() implies (this@shouldBeFalse != null)
    }
 
-   this shouldBe false
+   this should beFalse()
    return this!!
 }
 
@@ -99,6 +100,24 @@ fun Boolean?.shouldBeFalse(): Boolean {
  * @see [Boolean?.shouldNotBeTrue]
  */
 fun Boolean?.shouldNotBeFalse(): Boolean? {
-   this shouldNotBe false
+   this shouldNot beFalse()
    return this
+}
+
+/**
+ * Match that verifies a given [Boolean] is `true`.
+ */
+fun beTrue() = beBoolean(true)
+
+/**
+ * Match that verifies a given [Boolean] is `false`.
+ */
+fun beFalse() = beBoolean(false)
+
+fun beBoolean(expected: Boolean) = object : Matcher<Boolean?> {
+   override fun test(value: Boolean?) = MatcherResult(
+      value == expected,
+      { "$value should equal $expected" },
+      { "$value should not equal $expected" }
+   )
 }

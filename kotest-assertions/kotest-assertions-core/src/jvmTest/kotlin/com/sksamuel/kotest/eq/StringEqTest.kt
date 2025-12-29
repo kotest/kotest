@@ -2,6 +2,7 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.assertions.eq.StringEq
+import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
@@ -9,7 +10,7 @@ import io.kotest.matchers.string.shouldContainInOrder
 
 class StringEqTest : FunSpec({
    test("string eq should highlight line break diffs") {
-      StringEq.equals("foo\nbar\r", "\r\nfoo\nbar\r\n", false)?.message shouldBe """
+      StringEq.equals("foo\nbar\r", "\r\nfoo\nbar\r\n", false, EqContext())?.message shouldBe """
          |(contents match, but line-breaks differ; output has been escaped to show line-breaks)
          |expected:<\r\nfoo\nbar\r\n> but was:<foo\nbar\r>
          """.trimMargin()

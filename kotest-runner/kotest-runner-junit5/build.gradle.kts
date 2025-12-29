@@ -17,21 +17,18 @@ kotlin {
          dependencies {
             api(projects.kotestCommon)
             api(projects.kotestFramework.kotestFrameworkEngine)
-            api(projects.kotestAssertions.kotestAssertionsCore)
-            api(projects.kotestExtensions)
+            api(projects.kotestRunner.kotestRunnerJunitPlatform)
             api(libs.kotlinx.coroutines.core)
-            api(libs.junit.platform.engine)
-            api(libs.junit.platform.api)
-            api(libs.junit.platform.launcher)
-            api(libs.junit.jupiter.api)
+            api(libs.junit.platform5.engine)
+            api(libs.junit.platform5.api)
+            api(libs.junit.platform5.launcher)
          }
       }
 
       jvmTest {
          dependencies {
-            implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(libs.junit.platform.testkit)
+            implementation(libs.junit.platform5.testkit)
             implementation(libs.mockk)
             implementation("dev.gradleplugins:gradle-api:8.4")
          }

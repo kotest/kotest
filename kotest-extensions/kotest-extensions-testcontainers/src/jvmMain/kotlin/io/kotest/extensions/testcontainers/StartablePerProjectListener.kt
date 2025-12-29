@@ -19,7 +19,7 @@ import org.testcontainers.lifecycle.Startable
  * @see
  * [StartablePerTestListener]
  * */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
 class StartablePerProjectListener<T : Startable>(private val startable: T) : TestListener, ProjectListener {
 
    @Deprecated("The containerName arg is no longer used")

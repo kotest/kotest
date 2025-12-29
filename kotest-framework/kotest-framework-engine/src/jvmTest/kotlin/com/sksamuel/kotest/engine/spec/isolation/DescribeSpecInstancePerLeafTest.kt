@@ -194,3 +194,43 @@ class DescribeSpecInstancePerLeaf6 : DescribeSpec() {
       }
    }
 }
+
+private var counterForTest7 = 0
+
+class InstancePerLeafTest7 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   counterForTest7++
+
+   describe("d1") {
+      context("c1") {
+         it("i1") {
+            counterForTest7 shouldBe 1
+         }
+      }
+
+      context("c2") {
+         it("i2") {
+            counterForTest7 shouldBe 2
+         }
+      }
+   }
+})
+
+/**
+ * A test to demonstrate that in InstancePerLeaf mode, tests with the same name do not clash.
+ */
+class InstancePerLeafTest8 : DescribeSpec({
+
+   isolationMode = IsolationMode.InstancePerLeaf
+
+   describe("describe") {
+      it("tests with the same name") {
+         1 + 1 shouldBe 2
+      }
+      it("tests with the same name") {
+         1 + 1 shouldBe 2
+      }
+   }
+})

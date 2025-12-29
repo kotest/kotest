@@ -10,8 +10,8 @@ import io.kotest.engine.extensions.DescriptorFilterResult
 import io.kotest.common.syspropOrEnv
 
 /**
- * Applies test and spec filters using sysprop or env vars from [KotestEngineProperties.filterTests]
- * and [KotestEngineProperties.filterSpecs].
+ * Applies test and spec filters using sysprop or env vars from [KotestEngineProperties.FILTER_TESTS]
+ * and [KotestEngineProperties.FILTER_SPECS].
  *
  * These work similarly to gradle filters in --tests described at:
  * https://docs.gradle.org/current/userguide/java_testing.html#full_qualified_name_pattern
@@ -22,7 +22,7 @@ internal object SystemPropertyTestFilterEnabledExtension : TestEnabledExtension 
 
    override fun isEnabled(testCase: TestCase): Enabled {
 
-      val filter = syspropOrEnv(KotestEngineProperties.filterTests)
+      val filter = syspropOrEnv(KotestEngineProperties.FILTER_TESTS)
       logger.log { Pair(testCase.name.name, "Filter tests syspropOrEnv=$filter") }
 
       if (filter == null || filter.isBlank()) return Enabled.enabled

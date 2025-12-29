@@ -24,16 +24,45 @@ class MyTests : ShouldSpec() {
 }
 ```
 
-The function passed to the `continually` block is executed every 10 milliseconds. We can specify the poll interval if we prefer:
+By default, the function passed to the `continually` block is executed every 25 milliseconds. We can explicitly set the poll interval. In the following example we set it to 50 milliseconds:
 
 ```kotlin
 class MyTests: ShouldSpec() {
   init {
     should("pass for 60 seconds") {
-      continually(60.seconds, 5.seconds) {
+
+     val config = continuallyConfig<Unit> {
+        duration = 60.seconds
+        interval = 50.milliseconds
+     }
+
+      continually(config) {
         // code here that should succeed and continue to succeed for 60 seconds
       }
     }
+  }
+}
+```
+
+## Listeners
+
+If we need to record successful executions of the `block()`, we can use a listener, as shown in the following example:
+
+```kotlin
+var invoked = 0
+val executed = mutableMapOf<Int, Int>()
+val config = continuallyConfig<Int> {
+  duration = 500.milliseconds
+  listener = { index, value -> executed[index] = value }
+}
+val result = testContinually(config) {
+  invoked*2 shouldBe 2*invoked
+  invoked++ + 42
+}
+assertSoftly {
+  executed.keys.shouldHaveSize(20)
+  executed.forEach { (k, v) ->
+     v shouldBe k + 42
   }
 }
 ```

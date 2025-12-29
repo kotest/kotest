@@ -29,12 +29,12 @@ Alternatively, you can completely customize the display name of the test.
 
 ### Using a map
 
-Kotest allows specifying test names by passing a map into the `withData` function,
+Kotest allows specifying test names by passing a map into the `withXXX` function,
 where the key is the test name, and the value is the input value for that row.
 
 ```kotlin
 context("Pythag triples tests") {
-  withData(
+  withContexts(
     mapOf(
       "3, 4, 5" to PythagTriple(3, 4, 5),
       "6, 8, 10" to PythagTriple(6, 8, 10),
@@ -51,12 +51,12 @@ context("Pythag triples tests") {
 
 ### Test Name Function
 
-Or we can pass a function to `withData` which takes the _row_ as input and return the test name. Depending on how
-generous the Kotlin type inference is feeling, you may need to specify the type parameter to the _withData_ function.
+Or we can pass a function to `withXXX` which takes the _row_ as input and return the test name. Depending on how
+generous the Kotlin type inference is feeling, you may need to specify the type parameter to the _withXXX_ function.
 
 ```kotlin
 context("Pythag triples tests") {
-  withData<PythagTriple>(
+  withContexts<PythagTriple>(
     nameFn = { "${it.a}__${it.b}__${it.c}" },
     PythagTriple(3, 4, 5),
     PythagTriple(6, 8, 10),

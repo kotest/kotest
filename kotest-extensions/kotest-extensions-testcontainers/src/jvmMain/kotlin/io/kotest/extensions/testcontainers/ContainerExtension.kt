@@ -53,7 +53,7 @@ import org.testcontainers.containers.GenericContainer
  * @param afterShutdown a callback that is invoked only once, just after the container is stopped.
  * If the container is never started, this callback will not be invoked.
  */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
 class ContainerExtension<T : GenericContainer<*>>(
    private val container: T,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,

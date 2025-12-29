@@ -1,13 +1,13 @@
 package io.kotest.equals
 
 import io.kotest.assertions.equals.Equality
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.Tuple4
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
-import org.junit.jupiter.api.assertThrows
 import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
@@ -92,7 +92,7 @@ class ReflectionUsingFieldsEqualityTest : FunSpec({
       val car2 = Car("Car", 12345, 23)
       val aPrivateField = Car::class.memberProperties.find { it.visibility == KVisibility.PRIVATE }!!
 
-      assertThrows<IllegalArgumentException>("Fields of only public visibility are allowed to be use for used for checking equality") {
+      shouldThrow<IllegalArgumentException> {
          Equality
             .byReflectionUsingFields<Car>(aPrivateField)
             .verify(car1, car2)

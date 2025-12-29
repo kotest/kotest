@@ -9,6 +9,7 @@ import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.engine.concurrency.ConcurrencyOrder
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
@@ -126,10 +127,21 @@ class ProjectConfigResolver(
    }
 
    /**
-    * Returns the spec execution order to use, unless overridden by registered [SpecExecutionOrderExtension]s.
+    * Returns the [SpecExecutionOrder] to use, unless overridden by registered [SpecExecutionOrderExtension]s.
     */
    fun specExecutionOrder(): SpecExecutionOrder {
-      return config?.specExecutionOrder ?: Defaults.SPEC_EXECUTION_ORDER
+      return config?.specExecutionOrder ?:
+      systemPropertyConfiguration?.specExecutionOrder() ?:
+      Defaults.SPEC_EXECUTION_ORDER
+   }
+
+   /**
+    * Returns the [ConcurrencyOrder] to use.
+    */
+   fun concurrencyOrder(): ConcurrencyOrder {
+      return config?.concurrencyOrder ?:
+      systemPropertyConfiguration?.concurrencyOrder() ?:
+      Defaults.CONCURRENCY_MODE_ORDER
    }
 
    fun specFailureFilePath(): String {

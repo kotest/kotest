@@ -1,12 +1,14 @@
 package io.kotest.engine.config
 
+import io.kotest.common.sysprop
+import io.kotest.common.syspropOrEnv
 import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.common.sysprop
-import io.kotest.common.syspropOrEnv
+import io.kotest.engine.concurrency.ConcurrencyOrder
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -53,13 +55,19 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun duplicateTestNameMode(): DuplicateTestNameMode? =
       sysprop(KotestEngineProperties.DUPLICATE_TEST_NAME_MODE)?.let { DuplicateTestNameMode.valueOf(it) }
 
+   override fun concurrencyOrder(): ConcurrencyOrder? =
+      sysprop(KotestEngineProperties.CONCURRENCY_ORDER)?.let { ConcurrencyOrder.valueOf(it) }
+
+   override fun specExecutionOrder(): SpecExecutionOrder? =
+      sysprop(KotestEngineProperties.SPEC_EXECUTION_ORDER)?.let { SpecExecutionOrder.valueOf(it) }
+
    override fun projectTimeout(): Duration? {
       val d = sysprop(KotestEngineProperties.PROJECT_TIMEOUT)?.toLong() ?: return null
       return d.milliseconds
    }
 
    override fun logLevel(): LogLevel? {
-      return syspropOrEnv(KotestEngineProperties.logLevel)?.let { LogLevel.from(it) }
+      return syspropOrEnv(KotestEngineProperties.LOG_LEVEL)?.let { LogLevel.from(it) }
    }
 
    override fun minimumRuntimeTestCaseSeverityLevel(): TestCaseSeverityLevel? {

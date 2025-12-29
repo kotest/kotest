@@ -24,6 +24,19 @@ suspend fun <T> continually(
 }
 
 /**
+ * Runs the [test] function continually for the given [durationMs] in milliseconds, failing if an exception is
+ * thrown during any invocation.
+ *
+ * To supply more options to continually, use the overload that accepts a [ContinuallyConfiguration].
+ */
+suspend fun <T> continually(
+   durationMs: Long,
+   test: suspend () -> T,
+): T {
+   return continually(durationMs.milliseconds, test)
+}
+
+/**
  * Runs the [test] function continually using the given [config], failing if an exception is
  * thrown during any invocation.
  */
@@ -52,12 +65,14 @@ suspend fun <T> continually(
       }.onFailure { ex ->
          when (ex) {
             is TimeoutCancellationException -> {
-               throw AssertionErrorBuilder.create()
-                  .withMessage(
-                     "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
-                        "attempted $iterations times",
-                  ).withCause(ex)
-                  .build()
+               if(iterations == 0) {
+                  throw AssertionErrorBuilder.create()
+                     .withMessage(
+                        "Test timed out at ${start.elapsedNow()} as max expected duration was ${config.duration}; " +
+                           "attempted $iterations times",
+                     ).withCause(ex)
+                     .build()
+               }
             }
             is AssertionError -> {
                if (iterations == 0) throw ex

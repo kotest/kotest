@@ -3,7 +3,7 @@ package io.kotest.extensions.testcontainers
 /**
  * Determines the lifetime of a test container installed in a Kotest extension.
  */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
 enum class ContainerLifecycleMode {
 
    /**

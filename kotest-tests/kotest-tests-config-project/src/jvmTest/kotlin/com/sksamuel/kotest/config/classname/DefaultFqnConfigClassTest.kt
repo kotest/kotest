@@ -3,26 +3,28 @@ package com.sksamuel.kotest.config.classname
 import io.kotest.core.annotation.Description
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
-import kotlinx.coroutines.delay
+import java.util.concurrent.atomic.AtomicInteger
 
-@Description("Tests that the default FQN is used and if it wasn't applied the test would not timeout")
+@Description("Tests that the default FQN is picked up - if it wasn't, the invocation count would be the default of 0")
 class DefaultFqnConfigClassTest : FunSpec() {
    init {
       test("default FQN should be used for config class when no sys property override exists") {
-         val collector = CollectingTestEngineListener()
+         invocations.set(0)
          TestEngineLauncher()
-            .withListener(collector)
+            .withListener(NoopTestEngineListener)
             .withClasses(BarTest::class)
             .launch()
-         collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 25ms"
+         invocations.get() shouldBe 5
       }
    }
 }
 
+private val invocations = AtomicInteger(0)
+
 private class BarTest : FunSpec({
    test("bar") {
-      delay(10000000)
+      invocations.incrementAndGet()
    }
 })

@@ -110,7 +110,7 @@ interface MatcherResult {
  *
  * By returning this [MatcherResult], Kotest will automatically generate the appropriate
  * assertion error message that contains the actual and expected values in a way
- * that allows intellij to create a <Click to see difference> link in the IDE output window.
+ * that allows intellij to create a 'Click to see difference' link in the IDE output window.
  */
 data class ComparisonMatcherResult(
    @JsName("passed_val") val passed: Boolean,
@@ -122,52 +122,4 @@ data class ComparisonMatcherResult(
    override fun passed(): Boolean = passed
    override fun failureMessage(): String = failureMessageFn()
    override fun negatedFailureMessage(): String = negatedFailureMessageFn()
-}
-
-@Deprecated("Use ComparisonMatcherResult")
-interface ComparableMatcherResult : MatcherResult {
-
-   fun actual(): String
-
-   fun expected(): String
-
-   companion object {
-      operator fun invoke(
-         passed: Boolean,
-         failureMessageFn: () -> String,
-         negatedFailureMessageFn: () -> String,
-         actual: String,
-         expected: String,
-      ): ComparableMatcherResult = object : ComparableMatcherResult {
-         override fun passed(): Boolean = passed
-         override fun failureMessage(): String = failureMessageFn()
-         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
-         override fun actual(): String = actual
-         override fun expected(): String = expected
-      }
-   }
-}
-
-@Deprecated("Use ComparisonMatcherResult")
-interface EqualityMatcherResult : MatcherResult {
-
-   fun actual(): Any?
-
-   fun expected(): Any?
-
-   companion object {
-      operator fun invoke(
-         passed: Boolean,
-         actual: Any?,
-         expected: Any?,
-         failureMessageFn: () -> String,
-         negatedFailureMessageFn: () -> String,
-      ): EqualityMatcherResult = object : EqualityMatcherResult {
-         override fun passed(): Boolean = passed
-         override fun failureMessage(): String = failureMessageFn()
-         override fun negatedFailureMessage(): String = negatedFailureMessageFn()
-         override fun actual(): Any? = actual
-         override fun expected(): Any? = expected
-      }
-   }
 }

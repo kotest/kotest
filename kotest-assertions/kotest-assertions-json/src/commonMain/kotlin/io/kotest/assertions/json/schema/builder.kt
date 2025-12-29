@@ -126,7 +126,8 @@ data class JsonSchema(
       fun boolean(
          name: String,
          optional: Boolean = false,
-      ) = withProperty(name, optional) { boolean() }
+         matcherBuilder: () -> Matcher<Boolean>? = { null }
+      ) = withProperty(name, optional) { boolean(matcherBuilder) }
 
       fun `null`(
          name: String,
@@ -181,7 +182,9 @@ data class JsonSchema(
    }
 
    @Serializable
-   object JsonBoolean : JsonSchemaElement, ValueNode<Boolean> {
+   data class JsonBoolean(
+      override val matcher: Matcher<Boolean>? = null
+   ) : JsonSchemaElement, ValueNode<Boolean> {
       override fun typeName() = "boolean"
    }
 
@@ -231,7 +234,7 @@ fun JsonSchema.Builder.decimal(matcherBuilder: () -> Matcher<Double>? = { null }
  * It supports no further configuration. The actual value must always be either true or false.
  */
 @ExperimentalKotest
-fun JsonSchema.Builder.boolean() = JsonSchema.JsonBoolean
+fun JsonSchema.Builder.boolean(matcherBuilder: () -> Matcher<Boolean>? = { null })  = JsonSchema.JsonBoolean(matcherBuilder())
 
 /**
  * Creates a [JsonSchema.Null] node, which is a leaf node that must always be null, if present.

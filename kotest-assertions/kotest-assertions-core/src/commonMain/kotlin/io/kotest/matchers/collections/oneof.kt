@@ -98,6 +98,9 @@ fun <T> beOneOf(collection: Collection<T>) = object : Matcher<T> {
       return MatcherResult(
          match,
          { "Collection should contain the instance ${value.print().value} with hashcode ${value.hashCode()}.${indexesOfEqualElementsDescription()}" },
-         { "Collection should not contain the instance ${value.print().value} with hashcode ${value.hashCode()}." })
+         {
+            val indexes = collection.mapIndexedNotNull { index, it -> if (it === value) index else null }
+            "Collection should not contain the instance ${value.print().value} with hashcode ${value.hashCode()}, but did at index(es): [${indexes.joinToString(", ")}]."
+         })
    }
 }

@@ -113,7 +113,7 @@ You can configure test concurrency mode for a specific spec in two ways:
 1. By overriding the `testExecutionMode()` function:
 
 ```kotlin
-class MySpec : StringSpec() {
+class MySpec : FreeSpec() {
     override fun testExecutionMode() = TestExecutionMode.Concurrent
 
     // tests...
@@ -123,7 +123,7 @@ class MySpec : StringSpec() {
 2. By setting the `testExecutionMode` property:
 
 ```kotlin
-class MySpec : StringSpec() {
+class MySpec : FreeSpec() {
     init {
         testExecutionMode = TestExecutionMode.Concurrent
 
@@ -137,7 +137,7 @@ class MySpec : StringSpec() {
 ### Example: Running tests within a spec concurrently
 
 ```kotlin
-class ConcurrentTestsSpec : StringSpec({
+class ConcurrentTestsSpec : FreeSpec({
 
     // Configure this spec to run tests concurrently
     testExecutionMode = TestExecutionMode.Concurrent
@@ -165,7 +165,7 @@ class ConcurrentTestsSpec : StringSpec({
 ### Example: Limited concurrency for tests
 
 ```kotlin
-class LimitedConcurrencySpec : StringSpec({
+class LimitedConcurrencySpec : FreeSpec({
     // Configure this spec to run up to 2 tests concurrently
     testExecutionMode = TestExecutionMode.LimitedConcurrency(2)
 
@@ -185,7 +185,7 @@ class MyProjectConfig : AbstractProjectConfig() {
 }
 
 // Override the test execution mode for a specific spec
-class ConcurrentTestsSpec : StringSpec({
+class ConcurrentTestsSpec : FreeSpec({
     // This spec will run its tests concurrently
     testExecutionMode = TestExecutionMode.Concurrent
 
@@ -238,7 +238,7 @@ class MyProjectConfig : AbstractProjectConfig() {
 #### Spec-level configuration
 
 ```kotlin
-class MySpec : StringSpec() {
+class MySpec : FreeSpec() {
     // Option 1: Using property
     init {
         coroutineDispatcherFactory = ThreadPerSpecCoroutineContextFactory
@@ -324,7 +324,7 @@ When `blockingTest` is set to true:
 ### Example: Using blockingTest mode with timeouts
 
 ```kotlin
-class BlockingTestSpec : StringSpec({
+class BlockingTestSpec : FreeSpec({
     "test with timeout and blocking code".config(blockingTest = true, timeout = 500.milliseconds) {
         // This blocking call would normally prevent the timeout from working
         // With blockingTest = true, the test will be interrupted after 500ms

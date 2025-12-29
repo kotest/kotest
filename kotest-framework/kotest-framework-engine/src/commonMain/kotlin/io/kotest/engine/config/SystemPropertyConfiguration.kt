@@ -3,8 +3,10 @@ package io.kotest.engine.config
 import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.engine.concurrency.ConcurrencyOrder
 import kotlin.time.Duration
 
 /**
@@ -31,4 +33,6 @@ interface SystemPropertyConfiguration {
    fun displayFullTestPath(): Boolean?
    fun logLevel(): LogLevel?
    fun dumpConfig(): Boolean?
+   fun concurrencyOrder(): ConcurrencyOrder?
+   fun specExecutionOrder(): SpecExecutionOrder?
 }
