@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
@@ -15,12 +16,20 @@ interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(TestNameBuilder.builder(this).build(), false, null) { FreeSpecContainerScope(this).test() }
+      addContainer(
+         testName = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = null
+      ) { FreeSpecContainerScope(this).test() }
    }
 
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      addTest(TestNameBuilder.builder(this).build(), false, null) { FreeSpecTerminalScope(this).test() }
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = null
+      ) { FreeSpecTerminalScope(this).test() }
    }
 
    /**
@@ -86,7 +95,11 @@ interface FreeSpecRootScope : RootScope {
     * ```
     */
    infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(TestNameBuilder.builder(name).build(), false, config) { FreeSpecContainerScope(this).test() }
+      addContainer(
+         testName = TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.NONE,
+         config = config
+      ) { FreeSpecContainerScope(this).test() }
    }
 
    /**
@@ -124,7 +137,12 @@ interface FreeSpecRootScope : RootScope {
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
       )
-      addTest(TestNameBuilder.builder(this).build(), false, config, test)
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = config,
+         test = test
+      )
    }
 
    fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit): FreeSpecContextConfigBuilder {
