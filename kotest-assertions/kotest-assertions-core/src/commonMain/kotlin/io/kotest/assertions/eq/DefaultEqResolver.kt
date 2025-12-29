@@ -1,12 +1,10 @@
 package io.kotest.assertions.eq
 
 import io.kotest.assertions.AssertionsConfig
+import kotlin.reflect.KClass
 
 /**
  * An [EqResolver] is used to resolve the appropriate [Eq] instance for two values being compared.
- *
- * Users can register their own implementations of Eq with the [DefaultEqResolver].
- * Alternatively, the [EqResolver] can be switched to an entire custom implementation.
  *
  * See [EqCompare].
  */
@@ -19,10 +17,21 @@ interface EqResolver {
 }
 
 /**
- * An [DefaultEqResolver] is used by default in Kotest unless a user specifies a custom implementation.
+ * The [DefaultEqResolver] is the standard implementation of [EqResolver].
+ * In the future we may support users registering their own custom implementation.
+ *
+ * This resolver allows registration of custom [Eq] implementations for specific types, which
+ * this resolver will then delegate to if both the LHS and RHS have the same type, and there is a custom
+ * [Eq] instance available for that type.
  */
 @Suppress("DEPRECATION")
 object DefaultEqResolver {
+
+   private val customEqInstances = mutableMapOf<KClass<*>, Eq<*>>()
+
+   fun <T : Any> register(type: KClass<T>, eq: Eq<T>) {
+      customEqInstances[type] = eq
+   }
 
    /**
     * Returns the [Eq] to use for comparison for the given values.
@@ -32,6 +41,7 @@ object DefaultEqResolver {
       // if we have null and non-null, usually that's a failure, but people can override equals to allow it
       return when {
          actual == null || expected == null -> NullEq
+         actual::class == expected::class && customEqInstances.contains(actual::class) -> customEqInstances[actual::class]!!
          actual is Map<*, *> && expected is Map<*, *> -> MapEq
          actual is Map.Entry<*, *> && expected is Map.Entry<*, *> -> MapEntryEq
          actual is Regex && expected is Regex -> RegexEq
