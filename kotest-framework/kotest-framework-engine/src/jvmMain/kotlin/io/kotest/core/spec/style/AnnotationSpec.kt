@@ -5,9 +5,9 @@ import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.callSuspend
@@ -22,7 +22,7 @@ abstract class AnnotationSpec : Spec() {
    private val instances = mutableMapOf<KClass<*>, AnnotationSpec>()
 
    init {
-      instances.put(this::class, this)
+      instances[this::class] = this
    }
 
    override suspend fun beforeSpec(spec: Spec) {
@@ -78,7 +78,7 @@ abstract class AnnotationSpec : Spec() {
          source = sourceRef(),
          type = TestType.Test,
          config = null,
-         disabled = disabled,
+         xmethod = if (disabled) TestXMethod.DISABLED else TestXMethod.NONE,
          factoryId = null,
       )
    }
