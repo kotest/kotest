@@ -80,6 +80,10 @@ class EnvironmentConfigValue<T>(
       }
    }
 
+   /**
+    * Executes the given [thunk] with the value of this [io.kotest.assertions.EnvironmentConfigValue] set
+    * to the [newValue] and then resets afterward. Not concurrent safe. Designed for testing.
+    */
    fun withValue(newValue: T, thunk: () -> Unit) {
       val oldValue = value
       value = newValue

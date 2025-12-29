@@ -42,11 +42,10 @@ class StringEqTest : FunSpec({
    }
 
    test("should map windows when mapFileEndingsToUnix is set to true ") {
-      val old = AssertionsConfig.mapFileEndingsToUnix.value
-      AssertionsConfig.mapFileEndingsToUnix.value = true
-      val mixedString = "Windows\r\nUnix\nOldMac\r"
-      val unixString = "Windows\nUnix\nOldMac\n"
-      mixedString shouldBe unixString
-      AssertionsConfig.mapFileEndingsToUnix.value = old
+      AssertionsConfig.mapFileEndingsToUnix.withValue(true) {
+         val mixedString = "Windows\r\nUnix\nOldMac\r"
+         val unixString = "Windows\nUnix\nOldMac\n"
+         mixedString shouldBe unixString
+      }
    }
 })

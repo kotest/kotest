@@ -6,10 +6,10 @@ interface StringPreprocessor {
    fun map(input: String): String
 
    companion object {
-      fun process(input: CharSequence) = default.fold(input) { acc, op -> op.map(acc.toString()) }
-      fun process(input: String) = default.fold(input) { acc, op -> op.map(acc) }
+      fun process(input: CharSequence) = process(input.toString())
+      fun process(input: String) = processors().fold(input) { acc, op -> op.map(acc) }
 
-      val default: List<StringPreprocessor> =
+      private fun processors(): List<StringPreprocessor> =
          if (mapFileEndingsToUnix.value) listOf(MapFileEndingsToUnixStringPreprocessor) else emptyList()
    }
 }

@@ -3435,7 +3435,6 @@ public abstract interface class io/kotest/matchers/string/StringPreprocessor {
 }
 
 public final class io/kotest/matchers/string/StringPreprocessor$Companion {
-	public final fun getDefault ()Ljava/util/List;
 	public final fun process (Ljava/lang/CharSequence;)Ljava/lang/CharSequence;
 	public final fun process (Ljava/lang/String;)Ljava/lang/String;
 }
