@@ -4,19 +4,6 @@ import io.kotest.assertions.AssertionsConfig
 import kotlin.reflect.KClass
 
 /**
- * An [EqResolver] is used to resolve the appropriate [Eq] instance for two values being compared.
- *
- * See [EqCompare].
- */
-interface EqResolver {
-
-   /**
-    * Returns the [Eq] to use for comparison for the given values.
-    */
-   fun resolve(actual: Any?, expected: Any?): Eq<out Any?>
-}
-
-/**
  * The [DefaultEqResolver] is the standard implementation of [EqResolver].
  * In the future we may support users registering their own custom implementation.
  *
