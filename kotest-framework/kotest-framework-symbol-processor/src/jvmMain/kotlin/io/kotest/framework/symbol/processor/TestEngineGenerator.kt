@@ -67,7 +67,7 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
          .addCode("\n")
          .addCode(
             """
-val config = ${configs.first().qualifiedName?.asString()}()
+val config = ${if (configs.isEmpty()) "null" else (configs.first().qualifiedName?.asString() + "()")}
 val specs = listOf(
     """.trim()
          ).addCode("\n")
