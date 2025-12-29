@@ -2,6 +2,7 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestScope
@@ -11,7 +12,7 @@ import kotlin.time.Duration
 class ContainerWithConfigBuilder<T>(
    private val name: TestName,
    private val context: ContainerScope,
-   private val xdisabled: Boolean,
+   private val xmethod: TestXMethod,
    private val contextFn: (TestScope) -> T
 ) {
 
@@ -34,6 +35,6 @@ class ContainerWithConfigBuilder<T>(
          failfast = failfast,
          blockingTest = blockingTest,
       )
-      context.registerContainer(name, xdisabled, config) { contextFn(this).test() }
+      context.registerContainer(name, xmethod, config) { contextFn(this).test() }
    }
 }
