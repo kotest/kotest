@@ -6,7 +6,7 @@ package io.kotest.matchers
  * The matcher returned by [invert] will _also_ assert that the value is not `null`. Use this for matchers that
  * should fail on `null` values, whether called with `should` or `shouldNot`.
  */
-class NeverNullMatcher<T : Any?>(
+class NeverNullMatcher<T>(
    private val next: Matcher<T>
 ) : Matcher<T?> {
    override fun test(value: T?): MatcherResult =
