@@ -116,9 +116,9 @@ interface DescribeSpecRootScope : RootScope {
       test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
       addContainer(
-         TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
+         testName = TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          xmethod = xmethod,
-         null
+         config = null
       ) { DescribeSpecContainerScope(this).test() }
    }
 }
