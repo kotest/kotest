@@ -1875,17 +1875,17 @@ public abstract class io/kotest/core/spec/style/DescribeSpec : io/kotest/core/sp
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
@@ -1898,17 +1898,17 @@ public final class io/kotest/core/spec/style/DescribeSpecTestFactoryConfiguratio
 	public fun <init> ()V
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
@@ -2306,17 +2306,17 @@ public final class io/kotest/core/spec/style/scopes/DescribeSpecContainerScope :
 public abstract interface class io/kotest/core/spec/style/scopes/DescribeSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
 	public fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun describe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun describe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun fdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun fdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun fit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun it (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public fun xdescribe (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public fun xdescribe (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public fun xit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
@@ -2324,17 +2324,17 @@ public abstract interface class io/kotest/core/spec/style/scopes/DescribeSpecRoo
 public final class io/kotest/core/spec/style/scopes/DescribeSpecRootScope$DefaultImpls {
 	public static fun context (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun context (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun describe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun fcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun fcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public static fun fdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public static fun fdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun fdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun fit (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun it (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xcontext (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
-	public static fun xdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;
+	public static fun xdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;
 	public static fun xdescribe (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 	public static fun xit (Lio/kotest/core/spec/style/scopes/DescribeSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
