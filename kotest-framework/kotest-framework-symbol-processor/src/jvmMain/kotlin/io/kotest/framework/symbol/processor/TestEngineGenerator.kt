@@ -87,7 +87,7 @@ val specs = listOf(
       return function.build()
    }
 
-   private fun createFileSpec(
+   internal fun createFileSpec(
       specs: List<KSClassDeclaration>,
       configs: List<KSClassDeclaration>
    ): FileSpec {
