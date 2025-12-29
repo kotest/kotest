@@ -412,7 +412,7 @@ abstract class KotestPlugin : Plugin<Project> {
       if (!project.pluginManager.hasPlugin(KSP_PLUGIN_ID)) {
          throw StopExecutionException(
             "KSP neither found in root project nor ${project.name}, " +
-               "please add 'com.google.devtools.ksp' to the project's plugins"
+               "please add 'com.google.devtools.ksp' to the project's plugins. See Kotest docs here: https://kotest.io/docs/framework/project-setup.html"
          )
       }
 

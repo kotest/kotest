@@ -10,14 +10,11 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import kotlinx.coroutines.delay
 
 class MarkTestAsIgnored : TestCaseExtension {
-
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
       return TestResult.Ignored(null)
    }
-
 }
 
 @Issue("https://github.com/kotest/kotest/issues/3318")
@@ -27,14 +24,12 @@ class TestIgnoredExtensionTest : FunSpec() {
    init {
       extension(MarkTestAsIgnored())
 
-      suspend fun somethingThatTakesAWhile() {
-         delay(2000)
-      }
-
       test("should not run").config(enabledOrReasonIf = { Enabled.enabled }) {
-         somethingThatTakesAWhile()
          fail("This should not run as the test interceptor should skip it")
       }
+
+      test("!ignored1") {}
+      xtest("ignored2") {}
    }
 
 }
