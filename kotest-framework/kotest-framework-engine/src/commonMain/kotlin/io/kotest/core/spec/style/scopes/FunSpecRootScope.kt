@@ -33,13 +33,6 @@ interface FunSpecRootScope : RootScope {
    fun fcontext(name: String) = context(name, TestXMethod.FOCUSED)
    fun xcontext(name: String) = context(name, TestXMethod.DISABLED)
 
-   fun xcontext(name: String): RootContainerWithConfigBuilder<FunSpecContainerScope> =
-      RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
-         xmethod = TestXMethod.DISABLED,
-         context = this,
-      ) { FunSpecContainerScope(it) }
-
    /**
     * Adds a [RootTest], with the given name and config taken from the config builder.
     */
