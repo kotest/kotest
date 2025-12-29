@@ -1,5 +1,3 @@
 package io.kotest.common
 
-actual val platformExecution = object : PlatformEnvironment {
-   override val platform = Platform.Native
-}
+actual val platform: Platform = Platform.Native

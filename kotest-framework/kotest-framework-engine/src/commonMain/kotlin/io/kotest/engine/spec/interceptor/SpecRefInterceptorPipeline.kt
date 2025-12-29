@@ -1,7 +1,7 @@
 package io.kotest.engine.spec.interceptor
 
 import io.kotest.common.Platform
-import io.kotest.common.platformExecution
+import io.kotest.common.platform
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
@@ -55,14 +55,14 @@ internal class SpecRefInterceptorPipeline(
    private fun createCommonInterceptors(): List<SpecRefInterceptor> {
       return listOfNotNull(
          RequiresPlatformInterceptor(listener, context),
-         if (platformExecution.platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
-         if (platformExecution.platform == Platform.JVM) DisabledIfInterceptor(listener, context.specExtensions()) else null,
+         if (platform == Platform.JVM) EnabledIfInterceptor(listener, context.specExtensions()) else null,
+         if (platform == Platform.JVM) DisabledIfInterceptor(listener, context.specExtensions()) else null,
          IgnoredSpecInterceptor(listener, context.specExtensions()),
-         if (platformExecution.platform == Platform.JVM) ApplyExtensionsInterceptor(context.listener, context.registry) else null,
+         if (platform == Platform.JVM) ApplyExtensionsInterceptor(context.listener, context.registry) else null,
          DescriptorFilterSpecRefInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
 //         SystemPropertyDescriptorFilterInterceptor(listener, context.specExtensions()),
          TagsInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
-         if (platformExecution.platform == Platform.JVM)
+         if (platform == Platform.JVM)
             RequiresTagInterceptor(listener, context.projectConfigResolver, context.specExtensions())
          else
             null,

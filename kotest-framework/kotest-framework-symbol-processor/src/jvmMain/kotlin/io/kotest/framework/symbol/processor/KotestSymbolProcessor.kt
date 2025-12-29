@@ -1,8 +1,6 @@
 package io.kotest.framework.symbol.processor
 
 import com.google.devtools.ksp.getAllSuperTypes
-import com.google.devtools.ksp.processing.JsPlatformInfo
-import com.google.devtools.ksp.processing.NativePlatformInfo
 import com.google.devtools.ksp.processing.Resolver
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
@@ -70,12 +68,7 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    override fun finish() {
       validateProjectConfigs()
       val files = visitor.specs.mapNotNull { it.containingFile }
-      // see https://github.com/google/ksp/issues/2544
-      when (environment.platforms.first()) {
-         is JsPlatformInfo -> JSGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         is NativePlatformInfo -> NativeGenerator(environment).generate(files, visitor.specs, visitor.configs)
-         else -> TestEngineGenerator(environment).generate(files, visitor.specs, visitor.configs)
-      }
+      TestEngineGenerator(environment).generate(files, visitor.specs, visitor.configs)
    }
 
    private fun validateProjectConfigs() {

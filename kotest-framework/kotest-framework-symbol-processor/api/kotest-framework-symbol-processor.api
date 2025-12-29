@@ -1,8 +1,3 @@
-public final class io/kotest/framework/symbol/processor/JSGenerator {
-	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
-	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
-}
-
 public final class io/kotest/framework/symbol/processor/KotestFileVisitor : com/google/devtools/ksp/symbol/KSVisitorVoid {
 	public fun <init> ()V
 	public synthetic fun visitClassDeclaration (Lcom/google/devtools/ksp/symbol/KSClassDeclaration;Ljava/lang/Object;)Ljava/lang/Object;
@@ -24,17 +19,7 @@ public final class io/kotest/framework/symbol/processor/KotestSymbolProcessorPro
 	public fun create (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)Lcom/google/devtools/ksp/processing/SymbolProcessor;
 }
 
-public final class io/kotest/framework/symbol/processor/NativeGenerator {
-	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
-	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
-}
-
 public final class io/kotest/framework/symbol/processor/TestEngineGenerator {
-	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
-	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
-}
-
-public final class io/kotest/framework/symbol/processor/WasmJsGenerator {
 	public fun <init> (Lcom/google/devtools/ksp/processing/SymbolProcessorEnvironment;)V
 	public final fun generate (Ljava/util/List;Ljava/util/List;Ljava/util/List;)V
 }

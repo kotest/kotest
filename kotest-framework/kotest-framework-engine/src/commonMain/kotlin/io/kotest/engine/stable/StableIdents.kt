@@ -1,7 +1,7 @@
 package io.kotest.engine.stable
 
 import io.kotest.common.Platform
-import io.kotest.common.platformExecution
+import io.kotest.common.platform
 import io.kotest.common.reflection.bestName
 import io.kotest.common.reflection.hasAnnotation
 import io.kotest.common.reflection.reflection
@@ -56,7 +56,7 @@ internal object StableIdents {
    fun getStableIdentifier(t: Any?): String {
       return when {
          t == null -> "<null>"
-         t::class.hasAnnotation<IsStableType>() || platformExecution.platform != Platform.JVM -> t.toString()
+         t::class.hasAnnotation<IsStableType>() || platform != Platform.JVM -> t.toString()
          t is WithDataTestName -> t.dataTestName()
          else -> {
             val psv = platformStableValue(t)

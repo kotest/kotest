@@ -170,6 +170,11 @@ data class TestEngineLauncher(
       }
    }
 
+   suspend fun execute(): EngineResult {
+      val engine = TestEngine(toConfig())
+      return engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
+   }
+
    /**
     * Launch the [TestEngine] created from this builder using a Javascript promise.
     * This method will throw on JVM or native.

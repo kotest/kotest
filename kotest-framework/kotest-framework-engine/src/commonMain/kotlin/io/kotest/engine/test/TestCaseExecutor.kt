@@ -1,7 +1,7 @@
 package io.kotest.engine.test
 
 import io.kotest.common.Platform
-import io.kotest.common.platformExecution
+import io.kotest.common.platform
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -72,7 +72,7 @@ internal class TestCaseExecutor(
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before before/after callbacks so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
-         if (platformExecution.platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
+         if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(
             context.projectConfigResolver,
             context.specConfigResolver,
@@ -85,7 +85,7 @@ internal class TestCaseExecutor(
          AssertionModeInterceptor(context.testConfigResolver),
          SoftAssertInterceptor(context.testConfigResolver),
          CoroutineLoggingInterceptor(context.projectConfigResolver, context.testExtensions()),
-         if (platformExecution.platform == Platform.JVM)
+         if (platform == Platform.JVM)
             blockedThreadTimeoutInterceptor(timeMark, context.testConfigResolver)
          else null,
          TimeoutInterceptor(timeMark, context.testConfigResolver),

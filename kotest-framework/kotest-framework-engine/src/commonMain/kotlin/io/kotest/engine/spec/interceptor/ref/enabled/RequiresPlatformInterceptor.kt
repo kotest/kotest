@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.ref.enabled
 
-import io.kotest.common.platformExecution
+import io.kotest.common.platform
 import io.kotest.common.reflection.annotation
 import io.kotest.core.annotation.RequiresPlatform
 import io.kotest.core.spec.SpecRef
@@ -25,7 +25,7 @@ internal class RequiresPlatformInterceptor(
       return when (val requiresPlatform = ref.kclass.annotation<RequiresPlatform>()) {
          null -> next.invoke(ref)
          else -> {
-            if (requiresPlatform.values.contains(platformExecution.platform)) next.invoke(ref)
+            if (requiresPlatform.values.contains(platform)) next.invoke(ref)
             else runCatching { listener.specIgnored(ref.kclass, "Disabled by @RequiresPlatform") }
                .flatMap { context.specExtensions().ignored(ref.kclass, "Disabled by @RequiresPlatform") }
                .map { emptyMap() }

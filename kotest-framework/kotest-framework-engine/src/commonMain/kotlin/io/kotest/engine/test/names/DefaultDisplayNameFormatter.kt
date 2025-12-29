@@ -1,7 +1,7 @@
 package io.kotest.engine.test.names
 
 import io.kotest.common.Platform
-import io.kotest.common.platformExecution
+import io.kotest.common.platform
 import io.kotest.common.reflection.annotation
 import io.kotest.core.annotation.DisplayName
 import io.kotest.core.names.TestNameCase
@@ -73,7 +73,7 @@ class DefaultDisplayNameFormatter(
     * otherwise the default is to use the class name.
     */
    override fun format(kclass: KClass<*>): String {
-      return when (platformExecution.platform) {
+      return when (platform) {
          Platform.JVM -> kclass.annotation<DisplayName>()?.name ?: kclass.simpleName ?: "<unknown>"
          else -> kclass.simpleName ?: "<unknown>"
       }
