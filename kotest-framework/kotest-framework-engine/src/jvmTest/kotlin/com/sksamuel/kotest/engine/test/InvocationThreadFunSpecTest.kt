@@ -42,12 +42,14 @@ class InvocationThreadDescribeSpecTest : DescribeSpec({
       singleThreadMultipleInvocationCallCount.get() shouldBe 5
    }
 
-   describe("single invocation").config(invocations = 1) {
-      singleThreadSingleInvocationCallCount.incrementAndGet()
-   }
+   describe("context") {
+      it("single invocation").config(invocations = 1) {
+         singleThreadSingleInvocationCallCount.incrementAndGet()
+      }
 
-   describe("multiple invocations").config(invocations = 5) {
-      singleThreadMultipleInvocationCallCount.incrementAndGet()
+      it("multiple invocations").config(invocations = 5) {
+         singleThreadMultipleInvocationCallCount.incrementAndGet()
+      }
    }
 })
 
