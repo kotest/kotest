@@ -1,4 +1,4 @@
-package io.kotest.framework.symbol.processor
+package com.sksamuel.kotest.framework.symbol.processor
 
 import com.google.devtools.ksp.processing.CodeGenerator
 import com.google.devtools.ksp.processing.Dependencies

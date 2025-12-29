@@ -1,4 +1,4 @@
-package io.kotest.framework.symbol.processor
+package com.sksamuel.kotest.framework.symbol.processor
 
 import com.google.devtools.ksp.symbol.ClassKind
 import com.google.devtools.ksp.symbol.KSAnnotation

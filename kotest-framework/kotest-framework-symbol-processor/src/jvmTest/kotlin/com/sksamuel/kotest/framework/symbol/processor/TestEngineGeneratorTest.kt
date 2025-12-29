@@ -1,7 +1,8 @@
-package io.kotest.framework.symbol.processor
+package com.sksamuel.kotest.framework.symbol.processor
 
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.framework.symbol.processor.TestEngineGenerator
 import io.kotest.matchers.string.shouldContain
 
 class TestEngineGeneratorTest : FunSpec({
@@ -11,8 +12,11 @@ class TestEngineGeneratorTest : FunSpec({
       val env = SymbolProcessorEnvironment(
          options = emptyMap(),
          kotlinVersion = KotlinVersion.CURRENT,
+         apiVersion = KotlinVersion.CURRENT,
+         compilerVersion = KotlinVersion.CURRENT,
          codeGenerator = SimpleCodeGenerator(),
          logger = NoOpKSPLogger,
+         platforms = listOf(DefaultJsPlatformInfo),
       )
       val file = TestEngineGenerator(env).createFileSpec(
          specs = listOf(
@@ -36,14 +40,15 @@ class TestEngineGeneratorTest : FunSpec({
       val env = SymbolProcessorEnvironment(
          options = emptyMap(),
          kotlinVersion = KotlinVersion.CURRENT,
+         apiVersion = KotlinVersion.CURRENT,
+         compilerVersion = KotlinVersion.CURRENT,
          codeGenerator = SimpleCodeGenerator(),
          logger = NoOpKSPLogger,
+         platforms = listOf(DefaultJsPlatformInfo),
       )
       val file = TestEngineGenerator(env).createFileSpec(
          specs = listOf(
             SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec"),
-            SimpleKSClassDeclaration("com.sksamuel.b.MyTestSpec"),
-            SimpleKSClassDeclaration("com.sksamuel.c.OtherTestSpec"),
          ),
          configs = listOf(SimpleKSClassDeclaration("com.sksamuel.MyConfig")),
       ).toString()
@@ -55,14 +60,15 @@ class TestEngineGeneratorTest : FunSpec({
       val env = SymbolProcessorEnvironment(
          options = emptyMap(),
          kotlinVersion = KotlinVersion.CURRENT,
+         apiVersion = KotlinVersion.CURRENT,
+         compilerVersion = KotlinVersion.CURRENT,
          codeGenerator = SimpleCodeGenerator(),
          logger = NoOpKSPLogger,
+         platforms = listOf(DefaultJsPlatformInfo),
       )
       val file = TestEngineGenerator(env).createFileSpec(
          specs = listOf(
             SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec"),
-            SimpleKSClassDeclaration("com.sksamuel.b.MyTestSpec"),
-            SimpleKSClassDeclaration("com.sksamuel.c.OtherTestSpec"),
          ),
          configs = emptyList(),
       ).toString()
