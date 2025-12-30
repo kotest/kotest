@@ -28,7 +28,7 @@ fun containOnlyDigits() = neverNullMatcher<String> { value ->
    val firstNonDigit = value.toCharArray().withIndex().firstOrNull { it.value !in '0'..'9' }
    MatcherResult(
       firstNonDigit == null,
-      { "${value.print().value} should contain only digits, but contained ${firstNonDigit?.let { it.value.print().value }} at index ${firstNonDigit?.index}" },
+      { "${value.print().value} should contain only digits, but contained ${firstNonDigit?.value?.print()?.value} at index ${firstNonDigit?.index}" },
       { "${value.print().value} should not contain only digits" })
 }
 
