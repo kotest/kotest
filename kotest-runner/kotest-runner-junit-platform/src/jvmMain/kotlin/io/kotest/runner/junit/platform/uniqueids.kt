@@ -31,15 +31,15 @@ internal sealed class Segment {
 /**
  * The created [UniqueId] will have segment type [Segment.Spec] and will use the descriptor id.
  */
-internal fun EngineDescriptor.deriveSpecUniqueId(id: DescriptorId): UniqueId =
-   uniqueId.append(Segment.Spec.value, id.value)
+internal fun createUniqueIdForSpec(root: EngineDescriptor, id: DescriptorId): UniqueId =
+   root.uniqueId.append(Segment.Spec.value, id.value)
 
 /**
  * The created [UniqueId] will have segment type [Segment.Test] and will use the descriptor id.
  */
 internal fun EngineDescriptor.deriveTestUniqueId(descriptor: Descriptor): UniqueId {
    return when (descriptor) {
-      is Descriptor.SpecDescriptor -> deriveSpecUniqueId(descriptor.id)
+      is Descriptor.SpecDescriptor -> createUniqueIdForSpec(this, descriptor.id)
       is Descriptor.TestDescriptor -> deriveTestUniqueId(descriptor.parent)
          .append(Segment.Test.value, descriptor.id.value)
    }

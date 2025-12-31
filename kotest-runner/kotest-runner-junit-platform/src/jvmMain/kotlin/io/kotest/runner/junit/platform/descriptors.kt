@@ -18,7 +18,7 @@ import kotlin.reflect.KClass
  * Specs are always registered when the test suite is created, so this is expected to never fail.
  */
 internal fun findTestDescriptorForSpec(root: EngineDescriptor, descriptor: Descriptor.SpecDescriptor): TestDescriptor? {
-   val id = root.deriveSpecUniqueId(descriptor.id)
+   val id = createUniqueIdForSpec(root, descriptor.id)
    return root.findByUniqueId(id).getOrNull()
 }
 
@@ -31,7 +31,7 @@ internal fun createSpecTestDescriptor(
    descriptor: Descriptor.SpecDescriptor,
    displayName: String,
 ): TestDescriptor {
-   val id = root.deriveSpecUniqueId(descriptor.id)
+   val id = createUniqueIdForSpec(root, descriptor.id)
    val source = ClassSource.from(descriptor.id.value)
    return object : AbstractTestDescriptor(id, displayName, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
