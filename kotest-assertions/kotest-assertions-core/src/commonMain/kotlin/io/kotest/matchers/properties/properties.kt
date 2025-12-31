@@ -1,6 +1,7 @@
 package io.kotest.matchers.properties
 
 import io.kotest.assertions.eq.EqCompare
+import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.print.print
 import io.kotest.assertions.withClue
 import io.kotest.matchers.ComparisonMatcherResult
@@ -37,7 +38,7 @@ fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
       val actual = value.get()
 
       return ComparisonMatcherResult(
-         passed = EqCompare.compare(actual, expected, false) == null,
+         passed = EqCompare.compare(actual, expected, EqContext(false)) == null,
          actual = actual.print(),
          expected = expected.print(),
          failureMessageFn = prependMessage,

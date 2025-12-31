@@ -8,11 +8,7 @@ import io.kotest.assertions.print.print
  */
 internal object NullEq : Eq<Any?> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: Any?, expected: Any?, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   override fun equals(actual: Any?, expected: Any?, context: EqContext): Throwable? {
       // need this to test for overriden equals methods
       val eq = actual == expected
       val neq = !eq
