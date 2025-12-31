@@ -19,9 +19,7 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
-import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
-import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.reflect.KClass
 
 /**
@@ -122,7 +120,7 @@ class JUnitTestEngineListener(
       try {
 
          // descriptor must definitely exist for a started spec
-         val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+         val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
          descriptors[ref.kclass.toDescriptor()] = descriptor ?: error("Could not find TestDescriptor for ${ref.kclass}")
 
          logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
@@ -143,7 +141,7 @@ class JUnitTestEngineListener(
          // if we had an error in the spec, we will attach a placeholder error-test to the spec
          // and mark that as failed
          t != null -> {
-            val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+            val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
                ?: error("Could not find TestDescriptor for ${ref.kclass}")
             addPlaceholderTest(descriptor, t, ref.kclass)
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
@@ -151,7 +149,7 @@ class JUnitTestEngineListener(
          }
 
          else -> {
-            val descriptor = root.getSpecTestDescriptor(ref.kclass.toDescriptor())
+            val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor") }
             listener.executionFinished(descriptor, TestExecutionResult.successful())
          }
@@ -166,7 +164,7 @@ class JUnitTestEngineListener(
       // instead of showing all tests minus the one we are running as ignored, we'll just skip
 
       logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
-      val testDescriptor = root.getSpecTestDescriptor(kclass.toDescriptor())
+      val testDescriptor = findTestDescriptorForSpec(root, kclass.toDescriptor())
       if (testDescriptor != null)
          listener.executionSkipped(testDescriptor, reason)
    }
@@ -268,7 +266,7 @@ class JUnitTestEngineListener(
       // if it was not started, then it must be a Type.TEST (otherwise its children would have started it)
       startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
 
-      val descriptor = createTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
+      val descriptor = createTestDescriptorWithMethodSource(root, testCase, TestDescriptor.Type.TEST, formatter)
 
       logger.log { Pair(testCase.name.name, "executionFinished: $descriptor") }
       listener.executionFinished(descriptor, result.toTestExecutionResult())
@@ -283,7 +281,7 @@ class JUnitTestEngineListener(
 
       // like all tests, an ignored test should be registered first
       // ignored test should be a TEST type, because an ignored test will never have child tests.
-      val testDescriptor = createTestDescriptorWithMethodSource(testCase, TestDescriptor.Type.TEST)
+      val testDescriptor = createTestDescriptorWithMethodSource(root, testCase, TestDescriptor.Type.TEST, formatter)
       attachToParent(testCase, testDescriptor)
 
       logger.log { Pair(testCase.name.name, "Registering dynamic test: $testDescriptor") }
@@ -312,7 +310,7 @@ class JUnitTestEngineListener(
    private fun startTestIfNotStarted(testCase: TestCase, type: TestDescriptor.Type) {
       if (!startedTests.contains(testCase.descriptor)) {
 
-         val testDescriptor = createTestDescriptorWithMethodSource(testCase, type)
+         val testDescriptor = createTestDescriptorWithMethodSource(root, testCase, type, formatter)
          attachToParent(testCase, testDescriptor)
          descriptors[testCase.descriptor] = testDescriptor
 
@@ -333,28 +331,6 @@ class JUnitTestEngineListener(
       val p = descriptors[parent] ?: error("No parent found: ${parent.id.value}")
       p.addChild(testDescriptor)
    }
-
-   private fun createTestDescriptorWithMethodSource(
-      testCase: TestCase,
-      type: TestDescriptor.Type,
-   ): TestDescriptor {
-      val id = root.deriveTestUniqueId(testCase.descriptor)
-      val testDescriptor = createTestTestDescriptor(
-         id = id,
-         displayName = formatter.format(testCase),
-         type = type,
-         // gradle-junit-platform hides tests if we don't send a source at all
-         // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
-         // and produce more correct XML report with test case name.
-         source = getMethodSource(testCase.spec::class, id),
-      )
-      return testDescriptor
-   }
-
-   private fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
-      /* className = */ kclass.qualifiedName,
-      /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
-   )
 
    /**
     * Registers placeholder specs and marks them as failed for each throwable.
