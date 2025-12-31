@@ -201,7 +201,7 @@ class MapEqTest : FunSpec({
       map2["ref"] = map1
 
       // These two maps have the same structure, so they should be equal
-      MapEq.equals(map1, map2, false, EqContext()).shouldBeNull()
+      MapEq.equals(map1, map2, EqContext()).shouldBeNull()
    }
 
 })
