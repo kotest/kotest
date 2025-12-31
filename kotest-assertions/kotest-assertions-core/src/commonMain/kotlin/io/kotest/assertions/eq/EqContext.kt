@@ -5,6 +5,8 @@ package io.kotest.assertions.eq
  */
 class EqContext(val strictNumberEq: Boolean) {
 
+   constructor() : this(false)
+
    private val visited = mutableListOf<Pair<Any?, Any?>>()
 
    companion object {
