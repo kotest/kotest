@@ -155,6 +155,7 @@ public final class io/kotest/assertions/eq/EqCompare {
 public final class io/kotest/assertions/eq/EqContext {
 	public static final field Companion Lio/kotest/assertions/eq/EqContext$Companion;
 	public static final field MAX_DEPTH I
+	public fun <init> ()V
 	public fun <init> (Z)V
 	public final fun getStrictNumberEq ()Z
 	public final fun isVisited (Ljava/lang/Object;Ljava/lang/Object;)Z
