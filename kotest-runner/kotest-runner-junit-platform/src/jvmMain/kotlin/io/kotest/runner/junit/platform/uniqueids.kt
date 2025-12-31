@@ -39,7 +39,8 @@ internal fun createSpecUniqueId(engine: EngineDescriptor, id: DescriptorId): Uni
 /**
  * Creates a [UniqueId] for a test from the given [EngineDescriptor] and [Descriptor.TestDescriptor].
  *
- * The created id will have segment type [Segment.Test].
+ * The created id will have segment type [Segment.Test], and any parent tests plus the spec will
+ * be prepended to the created id.
  */
 internal fun createTestUniqueId(engine: EngineDescriptor, descriptor: Descriptor.TestDescriptor): UniqueId {
    val parentDescriptor = when (val parent = descriptor.parent) {

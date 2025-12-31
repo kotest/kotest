@@ -124,20 +124,20 @@ class JUnitTestEngineListener(
       logger.log { "specStarted ${ref.kclass}" }
       try {
 
-         var jdescriptor = findSpecTestDescriptor(root, ref.kclass.toDescriptor())
+         var descriptor = findSpecTestDescriptor(root, ref.kclass.toDescriptor())
 
          // usually we add the spec test descriptors when the root engine descriptor is created,
          // but when using test-retry-plugin the root is pruned and re-used, so it may not be registered yet
-         if (jdescriptor == null) {
-            jdescriptor = createSpecTestDescriptor(root, ref.kclass.toDescriptor(), ref.kclass.bestName())
-            root.addChild(jdescriptor)
-            listener.dynamicTestRegistered(jdescriptor)
+         if (descriptor == null) {
+            descriptor = createSpecTestDescriptor(root, ref.kclass.toDescriptor(), ref.kclass.bestName())
+            root.addChild(descriptor)
+            listener.dynamicTestRegistered(descriptor)
          }
 
-         descriptors[ref.kclass.toDescriptor()] = jdescriptor
+         descriptors[ref.kclass.toDescriptor()] = descriptor
 
-         logger.log { Pair(ref.kclass.bestName(), "executionStarted $jdescriptor") }
-         listener.executionStarted(jdescriptor)
+         logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
+         listener.executionStarted(descriptor)
 
       } catch (t: Throwable) {
          logger.log { Pair(ref.kclass.bestName(), "Error marking spec as started $t") }
@@ -155,7 +155,7 @@ class JUnitTestEngineListener(
          // and mark that as failed
          t != null -> {
             val descriptor = findSpecTestDescriptor(root, ref.kclass.toDescriptor())
-               ?: error("Could not find TestDescriptor for ${ref.kclass}")
+               ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             addPlaceholderTest(descriptor, t, ref.kclass)
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
@@ -163,7 +163,7 @@ class JUnitTestEngineListener(
 
          else -> {
             val descriptor = findSpecTestDescriptor(root, ref.kclass.toDescriptor())
-               ?: error("Could not find TestDescriptor for ${ref.kclass}")
+               ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor") }
             listener.executionFinished(descriptor, TestExecutionResult.successful())
          }

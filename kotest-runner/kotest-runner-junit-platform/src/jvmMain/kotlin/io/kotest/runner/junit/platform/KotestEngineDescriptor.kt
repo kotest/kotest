@@ -1,6 +1,5 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.common.reflection.bestName
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
 import io.kotest.core.log
