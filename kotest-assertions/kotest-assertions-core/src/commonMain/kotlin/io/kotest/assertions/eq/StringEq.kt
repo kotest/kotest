@@ -9,6 +9,7 @@ import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.submatching.StringPartialMatch
 import io.kotest.common.sysprop
+import io.kotest.matchers.string.StringPreprocessor
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
@@ -29,30 +30,34 @@ object StringEq : Eq<String> {
       equals(actual, expected, strictNumberEq, EqContext())
 
    override fun equals(actual: String, expected: String, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      val t = StringPartialMatch(expected, actual)
-      return when {
-         actual == expected -> null
 
-         equalIgnoringWhitespace(actual, expected) -> AssertionErrorBuilder.create()
+      val actualEscaped = StringPreprocessor.process(actual)
+      val expectedEscaped = StringPreprocessor.process(expected)
+
+      val t = StringPartialMatch(expectedEscaped, actualEscaped)
+      return when {
+         actualEscaped == expectedEscaped -> null
+
+         equalIgnoringWhitespace(actualEscaped, expectedEscaped) -> AssertionErrorBuilder.create()
             .withMessage("(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n")
             .withValues(
-               expected = Expected(Printed(escapeLineBreaks(expected))),
-               actual = Actual(Printed(escapeLineBreaks(actual)))
+               expected = Expected(Printed(escapeLineBreaks(expectedEscaped))),
+               actual = Actual(Printed(escapeLineBreaks(actualEscaped)))
             ).build()
 
-         useDiff(expected, actual) -> diff(expected, actual)
+         useDiff(expectedEscaped, actualEscaped) -> diff(expectedEscaped, actualEscaped)
 
          t.matched -> AssertionErrorBuilder.create()
             .withMessage("Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n")
             .withValues(
-               expected = Expected(StringPrint.printUnquoted(expected)),
-               actual = Actual(StringPrint.printUnquoted(actual))
+               expected = Expected(StringPrint.printUnquoted(expectedEscaped)),
+               actual = Actual(StringPrint.printUnquoted(actualEscaped))
             ).build()
 
          else -> AssertionErrorBuilder.create()
             .withValues(
-               expected = Expected(StringPrint.printUnquoted(expected)),
-               actual = Actual(StringPrint.printUnquoted(actual))
+               expected = Expected(StringPrint.printUnquoted(expectedEscaped)),
+               actual = Actual(StringPrint.printUnquoted(actualEscaped))
             ).build()
       }
    }
