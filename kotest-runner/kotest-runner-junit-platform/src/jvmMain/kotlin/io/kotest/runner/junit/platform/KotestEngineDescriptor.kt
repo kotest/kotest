@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.extensions.Extension
 import io.kotest.core.log
@@ -14,9 +15,9 @@ class KotestEngineDescriptor internal constructor(
    val classes: List<KClass<out Spec>>,
    val extensions: List<Extension>,
 ) : EngineDescriptor(id, KotestJunitPlatformTestEngine.ENGINE_NAME) {
-   // Only reports dynamic children (see ExtensionExceptionExtractor) if there are no test classes to run,
-   // so that we can add a placeholder test for the error
-   override fun mayRegisterTests(): Boolean = classes.isEmpty()
+   // we add tests dynamically to the engine when there's an engine exception to be reported, and also
+   // some plugins like the gradle test-retry-plugin prune the root test descriptor so they are re-registered
+   override fun mayRegisterTests(): Boolean = true
 }
 
 internal data class EngineDescriptorBuilder(

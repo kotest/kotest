@@ -29,18 +29,22 @@ internal sealed class Segment {
 }
 
 /**
- * The created [UniqueId] will have segment type [Segment.Spec] and will use the descriptor id.
+ * Creates a [UniqueId] for a spec from the given [EngineDescriptor] and [DescriptorId].
+ *
+ * The created id will have segment type [Segment.Spec].
  */
-internal fun EngineDescriptor.deriveSpecUniqueId(id: DescriptorId): UniqueId =
-   uniqueId.append(Segment.Spec.value, id.value)
+internal fun createSpecUniqueId(engine: EngineDescriptor, id: DescriptorId): UniqueId =
+   engine.uniqueId.append(Segment.Spec.value, id.value)
 
 /**
- * The created [UniqueId] will have segment type [Segment.Test] and will use the descriptor id.
+ * Creates a [UniqueId] for a test from the given [EngineDescriptor] and [Descriptor.TestDescriptor].
+ *
+ * The created id will have segment type [Segment.Test].
  */
-internal fun EngineDescriptor.deriveTestUniqueId(descriptor: Descriptor): UniqueId {
-   return when (descriptor) {
-      is Descriptor.SpecDescriptor -> deriveSpecUniqueId(descriptor.id)
-      is Descriptor.TestDescriptor -> deriveTestUniqueId(descriptor.parent)
-         .append(Segment.Test.value, descriptor.id.value)
+internal fun createTestUniqueId(engine: EngineDescriptor, descriptor: Descriptor.TestDescriptor): UniqueId {
+   val parentDescriptor = when (val parent = descriptor.parent) {
+      is Descriptor.SpecDescriptor -> createSpecUniqueId(engine, descriptor.id)
+      is Descriptor.TestDescriptor -> createTestUniqueId(engine, parent)
    }
+   return parentDescriptor.append(Segment.Test.value, descriptor.id.value)
 }
