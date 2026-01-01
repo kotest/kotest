@@ -5,17 +5,6 @@ import io.kotest.core.descriptors.DescriptorId
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 
-/**
- * Returns a new [UniqueId] by appending this [descriptor] to the receiver.
- */
-internal fun UniqueId.append(descriptor: Descriptor): UniqueId {
-   val segment = when (descriptor) {
-      is Descriptor.SpecDescriptor -> Segment.Spec
-      is Descriptor.TestDescriptor -> Segment.Test
-   }
-   return this.append(segment.value, descriptor.id.value)
-}
-
 internal sealed class Segment {
    abstract val value: String
 
