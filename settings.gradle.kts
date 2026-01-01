@@ -171,6 +171,9 @@ if (shouldRunJvmOnlyModules) {
 
       ":kotest-tests:kotest-tests-core",
 
+      // tests for Java APIs added in JDK21
+      ":kotest-tests:kotest-tests-assertions-java21",
+
       // defines the order of callbacks
       ":kotest-tests:kotest-tests-callback-order",
 
