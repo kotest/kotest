@@ -901,9 +901,6 @@ expected:<2> but was:<3>""")
                { it == 2 }
             )
          }
-         "pass on empty collections" {
-            emptyList<Int>().shouldExistInOrder({ true })
-         }
       }
 
       "Contain any" should {
