@@ -16,13 +16,13 @@ private val mysql = MySQLContainer("mysql:8.0.26").apply {
    withUrlParam("zeroDateTimeBehavior", "convertToNull")
 }
 
-private val ext = JdbcDatabaseContainerSpecExtension(mysql)
+private val extension = JdbcDatabaseContainerSpecExtension(mysql)
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class JdbcDatabaseContainerSpecExtensionTest1 : FunSpec() {
    init {
 
-      val ds = install(ext) {
+      val ds = install(extension) {
          maximumPoolSize = 8
          minimumIdle = 4
       }
@@ -41,7 +41,7 @@ class JdbcDatabaseContainerSpecExtensionTest1 : FunSpec() {
          }
       }
 
-      // if this created another container, it would not have the value we inserted above
+      // if this created another container, it would not have the value we inserted earlier
       test("another test should use the same container") {
          ds.connection.use {
             val rs = it.createStatement().executeQuery("SELECT count(*) FROM hashtags")
@@ -56,9 +56,9 @@ class JdbcDatabaseContainerSpecExtensionTest1 : FunSpec() {
 class JdbcDatabaseContainerSpecExtensionTest2 : FunSpec() {
    init {
 
-      val ds = install(ext)
+      val ds = install(extension)
 
-      // if this used the same container, it would have the value we inserted above
+      // if this created another container, it would not have the value we inserted earlier
       test("another spec should create a new container") {
          ds.connection.use {
             val rs = it.createStatement().executeQuery("SELECT count(*) FROM hashtags")

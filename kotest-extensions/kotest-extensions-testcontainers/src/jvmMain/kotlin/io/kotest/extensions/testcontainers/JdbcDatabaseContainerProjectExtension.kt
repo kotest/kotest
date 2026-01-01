@@ -27,6 +27,7 @@ import javax.sql.DataSource
  */
 class JdbcDatabaseContainerProjectExtension(
    private val container: JdbcDatabaseContainer<*>,
+   private val options: TestContainerOptions = TestContainerOptions(),
 ) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener {
 
    private val ref = AtomicReference<HikariDataSource>(null)
@@ -36,7 +37,11 @@ class JdbcDatabaseContainerProjectExtension(
       lock.lockInterruptibly()
       val t = ref.get()
       if (t == null) {
+         if (options.log)
+            container.withLogConsumer { print(it.utf8String) }
          container.start()
+         if (options.log)
+            container.followOutput { print(it.utf8String) }
          val config = HikariConfig()
          config.jdbcUrl = container.jdbcUrl
          config.username = container.username
@@ -45,6 +50,7 @@ class JdbcDatabaseContainerProjectExtension(
          val ds = HikariDataSource(config)
          ref.set(ds)
       }
+
       lock.unlock()
       return ref.get()
    }

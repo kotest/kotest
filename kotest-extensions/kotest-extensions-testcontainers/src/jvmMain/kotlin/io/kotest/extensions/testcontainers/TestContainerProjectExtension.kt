@@ -19,6 +19,7 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class TestContainerProjectExtension<T : GenericContainer<*>>(
    private val container: T,
+   private val options: TestContainerOptions = TestContainerOptions(),
 ) : MountableExtension<T, T>, AfterProjectListener {
 
    private val ref = AtomicReference<T>(null)
@@ -29,7 +30,11 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
       val t = ref.get()
       if (t == null) {
          configure(container)
+         if (options.log)
+            container.withLogConsumer { print(it.utf8String) }
          container.start()
+         if (options.log)
+            container.followOutput { print(it.utf8String) }
          ref.set(container)
       }
       lock.unlock()

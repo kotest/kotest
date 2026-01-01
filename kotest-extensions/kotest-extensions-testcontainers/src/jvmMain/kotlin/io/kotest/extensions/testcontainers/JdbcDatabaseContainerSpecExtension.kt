@@ -27,10 +27,15 @@ import javax.sql.DataSource
  */
 class JdbcDatabaseContainerSpecExtension(
    private val container: JdbcDatabaseContainer<*>,
+   private val options: TestContainerOptions = TestContainerOptions(),
 ) : MountableExtension<HikariConfig, DataSource>, AfterSpecListener {
 
    override fun mount(configure: HikariConfig.() -> Unit): DataSource {
+      if (options.log)
+         container.withLogConsumer { print(it.utf8String) }
       container.start()
+      if (options.log)
+         container.followOutput { print(it.utf8String) }
       val config = HikariConfig()
       config.jdbcUrl = container.jdbcUrl
       config.username = container.username
@@ -46,3 +51,5 @@ class JdbcDatabaseContainerSpecExtension(
       }
    }
 }
+
+data class TestContainerOptions(val log: Boolean = false)
