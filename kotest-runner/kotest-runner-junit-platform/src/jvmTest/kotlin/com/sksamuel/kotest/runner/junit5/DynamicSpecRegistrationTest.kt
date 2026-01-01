@@ -42,7 +42,7 @@ class DynamicSpecRegistrationTest : FunSpec() {
          val listener = JUnitTestEngineListener(engineExecutionListener, root, DisplayNameFormatting(null))
          listener.specStarted(SpecRef.Reference(DynamicSpecRegistrationTest::class))
 
-         val specId = createUniqueIdForSpec(root, DescriptorId(DynamicSpecRegistrationTest::class.java.name))
+         val specId = createUniqueIdForSpec(root.uniqueId, DescriptorId(DynamicSpecRegistrationTest::class.java.name))
          registered.shouldNotBeNull().uniqueId shouldBe specId
          started.shouldNotBeNull().uniqueId shouldBe specId
       }

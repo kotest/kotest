@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
  * If the engine descriptor does not contain the spec descriptor, then null is returned.
  */
 internal fun findTestDescriptorForSpec(root: EngineDescriptor, descriptor: Descriptor.SpecDescriptor): TestDescriptor? {
-   val id = createUniqueIdForSpec(root, descriptor.id)
+   val id = createUniqueIdForSpec(root.uniqueId, descriptor.id)
    return root.findByUniqueId(id).getOrNull()
 }
 
@@ -33,7 +33,7 @@ internal fun createSpecTestDescriptor(
    descriptor: Descriptor.SpecDescriptor,
    displayName: String,
 ): TestDescriptor {
-   val id = createUniqueIdForSpec(root, descriptor.id)
+   val id = createUniqueIdForSpec(root.uniqueId, descriptor.id)
    val source = ClassSource.from(descriptor.id.value)
    return object : AbstractTestDescriptor(id, displayName, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
@@ -70,7 +70,7 @@ internal fun createTestDescriptorWithMethodSource(
    type: TestDescriptor.Type,
    formatter: DisplayNameFormatting,
 ): TestDescriptor {
-   val id = root.deriveTestUniqueId(testCase.descriptor)
+   val id = createTestUniqueId(root.uniqueId, testCase.descriptor)
    val testDescriptor = createTestTestDescriptor(
       id = id,
       displayName = formatter.format(testCase),
