@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.Segment
-import io.kotest.runner.junit.platform.createTestUniqueId
+import io.kotest.runner.junit.platform.createUniqueIdForTest
 import io.kotest.runner.junit.platform.createUniqueIdForSpec
 import org.junit.platform.engine.UniqueId
 
@@ -20,7 +20,7 @@ class UniqueIdTest : FunSpec() {
       test("createTestUniqueId should handle rooot tests") {
          val root = UniqueId.forEngine("kotest")
          val testDescriptor = UniqueIdTest::class.toDescriptor().append("a")
-         createTestUniqueId(root, testDescriptor) shouldBe
+         createUniqueIdForTest(root, testDescriptor) shouldBe
             root.append(Segment.Spec.value, "com.sksamuel.kotest.runner.junit.platform.UniqueIdTest")
                .append(Segment.Test.value, "a")
       }
@@ -28,7 +28,7 @@ class UniqueIdTest : FunSpec() {
       test("createTestUniqueId should handle nested tests") {
          val root = UniqueId.forEngine("kotest")
          val testDescriptor = UniqueIdTest::class.toDescriptor().append("a").append("b")
-         createTestUniqueId(root, testDescriptor) shouldBe
+         createUniqueIdForTest(root, testDescriptor) shouldBe
             root.append(Segment.Spec.value, "com.sksamuel.kotest.runner.junit.platform.UniqueIdTest")
                .append(Segment.Test.value, "a")
                .append(Segment.Test.value, "b")

@@ -31,10 +31,10 @@ internal fun createUniqueIdForSpec(engineId: UniqueId, id: DescriptorId): Unique
  * The created id will have segment type [Segment.Test], and any parent tests plus the spec will
  * be prepended to the created id.
  */
-internal fun createTestUniqueId(engineId: UniqueId, descriptor: Descriptor.TestDescriptor): UniqueId {
+internal fun createUniqueIdForTest(engineId: UniqueId, descriptor: Descriptor.TestDescriptor): UniqueId {
    val parentDescriptor = when (val parent = descriptor.parent) {
       is Descriptor.SpecDescriptor -> createUniqueIdForSpec(engineId, parent.id)
-      is Descriptor.TestDescriptor -> createTestUniqueId(engineId, parent)
+      is Descriptor.TestDescriptor -> createUniqueIdForTest(engineId, parent)
    }
    return parentDescriptor.append(Segment.Test.value, descriptor.id.value)
 }

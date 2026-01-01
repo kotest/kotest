@@ -70,7 +70,7 @@ internal fun createTestDescriptorWithMethodSource(
    type: TestDescriptor.Type,
    formatter: DisplayNameFormatting,
 ): TestDescriptor {
-   val id = createTestUniqueId(root.uniqueId, testCase.descriptor)
+   val id = createUniqueIdForTest(root.uniqueId, testCase.descriptor)
    val testDescriptor = createTestTestDescriptor(
       id = id,
       displayName = formatter.format(testCase),
