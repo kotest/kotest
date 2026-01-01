@@ -1167,8 +1167,6 @@ public final class io/kotest/matchers/collections/BoundsKt {
 public final class io/kotest/matchers/collections/CollectionMatchersKt {
 	public static final fun beSorted ()Lio/kotest/matchers/Matcher;
 	public static final fun beSortedBy (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
-	public static final fun existInOrder (Ljava/util/List;)Lio/kotest/matchers/Matcher;
-	public static final fun existInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 	public static final fun haveSize (I)Lio/kotest/matchers/Matcher;
 	public static final fun matchEach (Ljava/util/List;)Lio/kotest/matchers/Matcher;
 	public static final fun matchEach (Ljava/util/List;Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
@@ -1367,6 +1365,11 @@ public final class io/kotest/matchers/collections/EmptyKt {
 	public static final fun shouldNotBeEmpty ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotBeEmpty ([S)[S
 	public static final fun shouldNotBeEmpty ([Z)[Z
+}
+
+public final class io/kotest/matchers/collections/ExistInOrderKt {
+	public static final fun existInOrder (Ljava/util/List;)Lio/kotest/matchers/Matcher;
+	public static final fun existInOrder ([Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 }
 
 public final class io/kotest/matchers/collections/IncreasingKt {

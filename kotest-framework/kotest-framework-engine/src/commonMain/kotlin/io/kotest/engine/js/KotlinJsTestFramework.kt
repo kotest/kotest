@@ -1,11 +1,11 @@
 package io.kotest.engine.js
 
 /**
- * The entry point that the Kotest Test Engine can invoke to run tests on javascript platforms.
+ * The entry point that the Kotest Test Engine can invoke to run tests on JavaScript platforms.
  *
  * Since js and wasmJs differ slightly in how they operate at runtime, the test engine invokes
  * the suite and test methods in this interface. Then at runtime, the appropriate implementation
- * of this handles the nuances of the underlying platform.
+ * of these handles the nuances of the underlying platform.
  *
  * Nesting of test suites may not be supported by TeamCity reporters of kotlin-test-js-runner.
  *

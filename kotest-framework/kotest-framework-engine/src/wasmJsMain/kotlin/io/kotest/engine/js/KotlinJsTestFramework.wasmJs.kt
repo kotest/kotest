@@ -2,6 +2,7 @@ package io.kotest.engine.js
 
 import kotlin.js.Promise
 
+@OptIn(ExperimentalWasmJsInterop::class)
 internal actual val kotlinJsTestFramework: KotlinJsTestFramework = object : KotlinJsTestFramework {
    override fun suite(name: String, ignored: Boolean, suiteFn: () -> Unit) {
       if (ignored) {
@@ -41,6 +42,7 @@ internal actual val kotlinJsTestFramework: KotlinJsTestFramework = object : Kotl
 // jasmine, and other test frameworks that have a similar API, define these functions
 // as global functions, so we declare them as external functions here.
 
+@OptIn(ExperimentalWasmJsInterop::class)
 @Suppress("UNUSED_PARAMETER")
 private fun describe(description: String, suiteFn: () -> Unit) {
    // Here we disable the default 2s timeout and use the timeout support which Kotest provides via coroutines.
@@ -50,6 +52,10 @@ private fun describe(description: String, suiteFn: () -> Unit) {
 }
 
 private external fun xdescribe(description: String, suiteFn: () -> Unit)
+
+@OptIn(ExperimentalWasmJsInterop::class)
 private external fun it(name: String, testFn: () -> JsAny?)
+
+@OptIn(ExperimentalWasmJsInterop::class)
 private external fun xit(name: String, testFn: () -> JsAny?)
 

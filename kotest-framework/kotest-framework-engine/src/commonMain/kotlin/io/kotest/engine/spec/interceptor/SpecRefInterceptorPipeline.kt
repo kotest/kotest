@@ -1,26 +1,26 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.core.Logger
 import io.kotest.common.Platform
 import io.kotest.common.platform
+import io.kotest.common.reflection.bestName
+import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.interceptor.ref.ApplyExtensionsInterceptor
 import io.kotest.engine.spec.interceptor.ref.DescriptorFilterSpecRefInterceptor
+import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.FinalizeSpecInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.PrepareSpecInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.RequiresPlatformInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.RequiresTagInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.SpecFinishedInterceptor
-import io.kotest.engine.spec.interceptor.ref.SpecRefExtensionInterceptor
 import io.kotest.engine.spec.interceptor.ref.callbacks.SpecStartedInterceptor
-import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.DisabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.EnabledIfInterceptor
 import io.kotest.engine.spec.interceptor.ref.enabled.IgnoredSpecInterceptor
-import io.kotest.common.reflection.bestName
+import io.kotest.engine.spec.interceptor.ref.enabled.RequiresPlatformInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.RequiresTagInterceptor
+import io.kotest.engine.spec.interceptor.ref.enabled.TagsInterceptor
+import io.kotest.engine.test.TestResult
 
 internal class SpecRefInterceptorPipeline(
    private val context: EngineContext,

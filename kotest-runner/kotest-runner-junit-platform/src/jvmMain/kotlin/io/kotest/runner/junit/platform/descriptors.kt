@@ -1,21 +1,27 @@
 package io.kotest.runner.junit.platform
 
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.test.TestCase
+import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.support.descriptor.AbstractTestDescriptor
 import org.junit.platform.engine.support.descriptor.ClassSource
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
+import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.jvm.optionals.getOrNull
+import kotlin.reflect.KClass
 
 /**
- * Returns the [org.junit.platform.engine.TestDescriptor] corresponding to the given spec.
- * Specs are always registered when the test suite is created, so this is expected to never fail.
+ * Finds and returns the [org.junit.platform.engine.TestDescriptor] corresponding to the
+ * given [Descriptor.SpecDescriptor] that was previously added to the engine.
+ *
+ * If the engine descriptor does not contain the spec descriptor, then null is returned.
  */
-internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecDescriptor): TestDescriptor? {
-   val id = deriveSpecUniqueId(descriptor.id)
-   return findByUniqueId(id).getOrNull()
+internal fun findTestDescriptorForSpec(root: EngineDescriptor, descriptor: Descriptor.SpecDescriptor): TestDescriptor? {
+   val id = createUniqueIdForSpec(root.uniqueId, descriptor.id)
+   return root.findByUniqueId(id).getOrNull()
 }
 
 /**
@@ -23,11 +29,11 @@ internal fun EngineDescriptor.getSpecTestDescriptor(descriptor: Descriptor.SpecD
  * This descriptor needs to be added to the parent engine descriptor.
  */
 internal fun createSpecTestDescriptor(
-   engine: EngineDescriptor,
+   root: EngineDescriptor,
    descriptor: Descriptor.SpecDescriptor,
    displayName: String,
 ): TestDescriptor {
-   val id = engine.deriveSpecUniqueId(descriptor.id)
+   val id = createUniqueIdForSpec(root.uniqueId, descriptor.id)
    val source = ClassSource.from(descriptor.id.value)
    return object : AbstractTestDescriptor(id, displayName, source) {
       override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
@@ -57,3 +63,27 @@ internal fun createTestTestDescriptor(
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = type == TestDescriptor.Type.CONTAINER
 }
+
+internal fun createTestDescriptorWithMethodSource(
+   root: EngineDescriptor,
+   testCase: TestCase,
+   type: TestDescriptor.Type,
+   formatter: DisplayNameFormatting,
+): TestDescriptor {
+   val id = createUniqueIdForTest(root.uniqueId, testCase.descriptor)
+   val testDescriptor = createTestTestDescriptor(
+      id = id,
+      displayName = formatter.format(testCase),
+      type = type,
+      // gradle-junit-platform hides tests if we don't send a source at all
+      // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
+      // and produce more correct XML report with test case name.
+      source = getMethodSource(testCase.spec::class, id),
+   )
+   return testDescriptor
+}
+
+internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
+   /* className = */ kclass.qualifiedName,
+   /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
+)

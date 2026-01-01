@@ -53,7 +53,6 @@ data class EngineContext(
    val projectConfigResolver: ProjectConfigResolver,
    val specConfigResolver: SpecConfigResolver,
    val testConfigResolver: TestConfigResolver,
-   val platform: Platform,
 ) {
 
    internal fun specExtensions() = SpecExtensions(specConfigResolver, projectConfigResolver)
@@ -73,7 +72,6 @@ data class EngineContext(
             specConfigResolver = SpecConfigResolver(projectConfig, registry),
             testConfigResolver = TestConfigResolver(projectConfig, registry),
             projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
-            platform = platform,
          )
       }
 
@@ -82,7 +80,6 @@ data class EngineContext(
          listener: TestEngineListener,
          tags: TagExpression,
          projectConfig: AbstractProjectConfig?,
-         platform: Platform,
          registry: ExtensionRegistry,
       ): EngineContext {
          return EngineContext(
@@ -94,7 +91,6 @@ data class EngineContext(
             specConfigResolver = SpecConfigResolver(projectConfig, registry),
             testConfigResolver = TestConfigResolver(projectConfig, registry),
             projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
-            platform = platform,
          )
       }
 
@@ -108,7 +104,6 @@ data class EngineContext(
          specConfigResolver = SpecConfigResolver(null, registry),
          testConfigResolver = TestConfigResolver(null, registry),
          projectConfigResolver = ProjectConfigResolver(null, registry),
-         platform = Platform.JVM,
       )
    }
 
@@ -125,7 +120,6 @@ data class EngineContext(
          projectConfigResolver = projectConfigResolver,
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
-         platform = platform,
       )
    }
 
@@ -139,7 +133,6 @@ data class EngineContext(
          projectConfigResolver = projectConfigResolver,
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
-         platform = platform,
       )
    }
 
@@ -153,7 +146,6 @@ data class EngineContext(
          projectConfigResolver = projectConfigResolver,
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
-         platform,
       )
    }
 
@@ -167,7 +159,6 @@ data class EngineContext(
          projectConfigResolver = ProjectConfigResolver(projectConfig, registry),
          specConfigResolver = SpecConfigResolver(projectConfig, registry),
          testConfigResolver = TestConfigResolver(projectConfig, registry),
-         platform,
       )
    }
 
@@ -181,14 +172,12 @@ data class EngineContext(
          projectConfigResolver = projectConfigResolver,
          specConfigResolver = specConfigResolver,
          testConfigResolver = testConfigResolver,
-         platform,
       )
    }
 }
 
 internal fun ProjectContext.toEngineContext(
    context: EngineContext,
-   platform: Platform,
 ): EngineContext {
    return EngineContext(
       suite,
@@ -199,7 +188,6 @@ internal fun ProjectContext.toEngineContext(
       ProjectConfigResolver(projectConfig, context.registry),
       SpecConfigResolver(projectConfig, context.registry),
       TestConfigResolver(projectConfig, context.registry),
-      platform,
    )
 }
 

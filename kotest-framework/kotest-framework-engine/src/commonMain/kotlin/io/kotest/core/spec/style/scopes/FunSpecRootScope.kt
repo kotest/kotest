@@ -50,7 +50,7 @@ interface FunSpecRootScope : RootScope {
 
 
    /**
-    * Adds a [RootTest], with the given name and default config.
+    * Adds a focused [RootTest], with the given name and with config taken from the config builder.
     */
    fun test(name: String, test: suspend TestScope.() -> Unit) {
       test(name, TestXMethod.FOCUSED, test)
