@@ -14,8 +14,10 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 
 /**
- * Returns the [org.junit.platform.engine.TestDescriptor] corresponding to the given spec.
- * Specs are always registered when the test suite is created, so this is expected to never fail.
+ * Finds and returns the [org.junit.platform.engine.TestDescriptor] corresponding to the
+ * given [Descriptor.SpecDescriptor] that was previously added to the engine.
+ *
+ * If the engine descriptor does not contain the spec descriptor, then null is returned.
  */
 internal fun findTestDescriptorForSpec(root: EngineDescriptor, descriptor: Descriptor.SpecDescriptor): TestDescriptor? {
    val id = createUniqueIdForSpec(root, descriptor.id)

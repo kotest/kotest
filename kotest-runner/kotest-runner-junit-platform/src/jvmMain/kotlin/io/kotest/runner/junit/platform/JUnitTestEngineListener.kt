@@ -70,6 +70,11 @@ import kotlin.reflect.KClass
  * Call addChild _before_ registering test otherwise will appear in the display out of order.
  * Must start tests after their parent or they can go missing.
  * Sibling containers can start and finish in parallel.
+ *
+ * Observations from 1.13.4
+ *
+ * TestDescriptor.Type.CONTAINER that do not contain TESTs are ignored in intellij's tree output
+ *
  */
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
@@ -79,7 +84,7 @@ class JUnitTestEngineListener(
 
    private val logger = Logger(JUnitTestEngineListener::class)
 
-   // contains a mapping of junit TestDescriptor's, so we can find previously registered tests
+   // JUnit TestDescriptors are mutable and contain children added dynamically, so we need to keep track of them
    private val descriptors = mutableMapOf<Descriptor, TestDescriptor>()
 
    private val startedTests = mutableSetOf<Descriptor.TestDescriptor>()
@@ -120,11 +125,13 @@ class JUnitTestEngineListener(
       try {
 
          var descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
+
          if (descriptor == null) {
             descriptor = createSpecTestDescriptor(root, ref.kclass.toDescriptor(), ref.kclass.bestName())
             root.addChild(descriptor)
             listener.dynamicTestRegistered(descriptor)
          }
+
          descriptors[ref.kclass.toDescriptor()] = descriptor
 
          logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
@@ -146,7 +153,7 @@ class JUnitTestEngineListener(
          // and mark that as failed
          t != null -> {
             val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
-               ?: error("Could not find TestDescriptor for ${ref.kclass}")
+               ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             addPlaceholderTest(descriptor, t, ref.kclass)
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
@@ -154,6 +161,7 @@ class JUnitTestEngineListener(
 
          else -> {
             val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
+               ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor") }
             listener.executionFinished(descriptor, TestExecutionResult.successful())
          }
@@ -172,24 +180,6 @@ class JUnitTestEngineListener(
       if (testDescriptor != null)
          listener.executionSkipped(testDescriptor, reason)
    }
-
-//   private fun markSpecStarted(kclass: KClass<*>): TestDescriptor {
-//      return try {
-//
-//         log { "Getting TestDescriptor for $kclass" }
-//         val descriptor = getSpecDescriptor(kclass)
-//
-//         logger.log { Pair(kclass.bestName(), "Spec executionStarted $descriptor") }
-//         listener.executionStarted(descriptor)
-//
-//         started = true
-//         descriptor
-//
-//      } catch (t: Throwable) {
-//         logger.log { Pair(kclass.bestName(), "Error marking spec as started $t") }
-//         throw t
-//      }
-//   }
 
    private fun reset() {
       results.clear()
@@ -222,25 +212,12 @@ class JUnitTestEngineListener(
 
    override suspend fun testStarted(testCase: TestCase) {
 
-      // We want to wait to notify junit, this is because gradle doesn't work properly with the junit test types.
-      // Ideally, we'd just set everything to CONTAINER_AND_TEST, which is supposed to mean a test can contain
-      // other tests as well as being a test itself, which is exactly how Kotest views tests, but unfortunately
-      // it's not supported by gradle :(
-      //
-      // So we need to not start tests until we can determine if they are a TEST or a CONTAINER.
-      // Once a nested test starts, we can start the parent, since we know the parent is definitely a CONTAINER
-      // at that point.
-      //
-      // Leaf tests must wait until they complete so we know there were no child tests.
-      //
-      // Further annoyance is that junit doesn't give us a way to specify test duration
-      // (instead it just calculates it itself from the time between marking a test as started and marking
-      // it as finished), so we end up having all leaf tests as 0ms
-      //
-      // Therefore, our workaround is to just add the execution time into the test name.
+      // JUnit has TEST and CONTAINER types, but intellij will not render a CONTAINER unless it has a child.
+      // Since Kotest allows you to have containers that do not contain tests, we must wait to see if a container
+      // has any children before we register it as a container. If it does not, then we will register it as a test
+      // once it completes. Therefore the testStarted listener must wait to register a test.
 
       logger.log { Pair(testCase.name.name, "test started") }
-
 
       // if this test has a parent, we can mark that parent as started, because it's definitely not a leaf
       if (testCase.parent != null)
@@ -308,7 +285,7 @@ class JUnitTestEngineListener(
    }
 
    /**
-    * If the given testCase has not yet been marked as tested, then now we register it and start it.
+    * If the given testCase has not yet been marked as started, then now we register it and start it.
     * This method is only invoked for parents, so we know the type is always CONTAINER.
     */
    private fun startTestIfNotStarted(testCase: TestCase, type: TestDescriptor.Type) {
