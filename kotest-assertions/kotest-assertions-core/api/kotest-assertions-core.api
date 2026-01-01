@@ -15,6 +15,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getEnabledSubmatchesInStrings ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMapDiffLimit ()I
+	public final fun getMapFileEndingsToUnix ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxErrorsOutput ()I
@@ -32,8 +33,8 @@ public final class io/kotest/assertions/AssertionsConfig {
 public final class io/kotest/assertions/AssertionsConfigSystemProperties {
 	public static final field COLLECTIONS_PRINT_SIZE Ljava/lang/String;
 	public static final field DISABLE_NAN_NEQUALITY Ljava/lang/String;
-	public static final field DISABLE_NA_NEQUALITY Ljava/lang/String;
 	public static final field INSTANCE Lio/kotest/assertions/AssertionsConfigSystemProperties;
+	public static final field MAP_FILE_ENDINGS_TO_UNIX Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/CluesKt {
@@ -47,9 +48,16 @@ public final class io/kotest/assertions/DiffLargeStringKt {
 }
 
 public final class io/kotest/assertions/EnvironmentConfigValue {
-	public fun <init> (Ljava/lang/String;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
-	public final fun getConverter ()Lkotlin/jvm/functions/Function1;
+	public static final field Companion Lio/kotest/assertions/EnvironmentConfigValue$Companion;
+	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
+	public final fun getName ()Ljava/lang/String;
 	public final fun getValue ()Ljava/lang/Object;
+	public final fun setValue (Ljava/lang/Object;)V
+	public final fun withValue (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class io/kotest/assertions/EnvironmentConfigValue$Companion {
+	public final fun invoke (Ljava/lang/String;Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/EnvironmentConfigValue;
 }
 
 public final class io/kotest/assertions/ExtractingKt {
@@ -3272,6 +3280,15 @@ public final class io/kotest/matchers/string/CaseKt {
 	public static final fun shouldNotBeUpperCase (Ljava/lang/CharSequence;)Ljava/lang/CharSequence;
 }
 
+public final class io/kotest/matchers/string/CharSequencePreprocessorMatcher : io/kotest/matchers/Matcher {
+	public fun <init> (Lio/kotest/matchers/Matcher;)V
+	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
+	public fun invert ()Lio/kotest/matchers/Matcher;
+	public fun invertIf (Z)Lio/kotest/matchers/Matcher;
+	public fun test (Ljava/lang/CharSequence;)Lio/kotest/matchers/MatcherResult;
+	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
 public abstract class io/kotest/matchers/string/Diff {
 	public static final field Companion Lio/kotest/matchers/string/Diff$Companion;
 	protected final fun getIndent (I)Ljava/lang/String;
@@ -3349,6 +3366,11 @@ public final class io/kotest/matchers/string/LinesKt {
 	public static final fun shouldNotHaveLineCount (Ljava/lang/CharSequence;I)Ljava/lang/CharSequence;
 }
 
+public final class io/kotest/matchers/string/MapFileEndingsToUnixStringPreprocessor : io/kotest/matchers/string/StringPreprocessor {
+	public static final field INSTANCE Lio/kotest/matchers/string/MapFileEndingsToUnixStringPreprocessor;
+	public fun map (Ljava/lang/String;)Ljava/lang/String;
+}
+
 public final class io/kotest/matchers/string/MatchKt {
 	public static final fun match (Ljava/lang/CharSequence;)Lio/kotest/matchers/Matcher;
 	public static final fun match (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
@@ -3410,6 +3432,16 @@ public final class io/kotest/matchers/string/StartKt {
 	public static final fun shouldStartWith (Ljava/lang/CharSequence;Lkotlin/text/Regex;)Ljava/lang/CharSequence;
 	public static final fun startWith (Ljava/lang/CharSequence;)Lio/kotest/matchers/Matcher;
 	public static final fun startWith (Lkotlin/text/Regex;)Lio/kotest/matchers/Matcher;
+}
+
+public abstract interface class io/kotest/matchers/string/StringPreprocessor {
+	public static final field Companion Lio/kotest/matchers/string/StringPreprocessor$Companion;
+	public abstract fun map (Ljava/lang/String;)Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/string/StringPreprocessor$Companion {
+	public final fun process (Ljava/lang/CharSequence;)Ljava/lang/String;
+	public final fun process (Ljava/lang/String;)Ljava/lang/String;
 }
 
 public final class io/kotest/matchers/string/TfKt {
