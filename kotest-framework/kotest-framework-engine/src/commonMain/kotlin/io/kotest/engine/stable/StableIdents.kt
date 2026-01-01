@@ -2,10 +2,11 @@ package io.kotest.engine.stable
 
 import io.kotest.common.Platform
 import io.kotest.common.platform
-import io.kotest.engine.names.WithDataTestName
 import io.kotest.common.reflection.bestName
 import io.kotest.common.reflection.hasAnnotation
 import io.kotest.common.reflection.reflection
+import io.kotest.engine.names.WithDataTestName
+import io.kotest.engine.stable.StableIdents.isStable
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
 
@@ -59,7 +60,7 @@ internal object StableIdents {
          t is WithDataTestName -> t.dataTestName()
          else -> {
             val psv = platformStableValue(t)
-            return when {
+            when {
                psv != null -> psv
                isStable(t::class, t) -> t.toString()
                else -> t::class.bestName()

@@ -73,6 +73,8 @@ object PropertyTesting {
 
    var defaultOutputHexForUnprintableChars: Boolean =
       sysprop("kotest.proptest.arb.string.output-hex-for-unprintable-chars", false)
+
+   var defaultCollectionsRange: IntRange = 0..100
 }
 
 enum class LabelOrder {
