@@ -61,7 +61,7 @@ internal class SpecRefExecutor(
       return inflator.inflate(ref).flatMap { spec ->
          try {
             val executor = specExecutor(context, spec)
-            logger.log { Pair(ref.kclass.bestName(), "Found executor $executor for platform ${platform}") }
+            logger.log { Pair(ref.kclass.bestName(), "Found executor $executor for platform $platform") }
             executor.execute(ref, spec)
          } catch (t: Throwable) {
             logger.log { Pair(spec::class.bestName(), "Error executing SpecRef $t") }
