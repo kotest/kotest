@@ -30,7 +30,7 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 
 allure-commons = "2.30.0"
-allure-plugin = "3.0.0"
+allure-plugin = "3.0.1"
 
 byte-buddy = "1.17.6"
 
