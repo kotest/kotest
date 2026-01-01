@@ -4,7 +4,7 @@ commons-lang3 = "3.18.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.16"
 jdom2 = "2.0.6.1"
-json-path = "2.9.0"
+json-path = "2.10.0"
 junit4 = "4.13.2"
 
 junit-platform5 = "1.13.4"
@@ -14,12 +14,12 @@ junit-jupiter6 = "6.0.1"
 
 jimfs = "1.3.1"
 
-kaml = "0.85.0"
+kaml = "0.104.0"
 kotlin = "2.2.21"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 ktor = "3.1.3"
-mockk = "1.14.6"
+mockk = "1.14.7"
 mordant = "3.0.2"
 opentest4j = "1.3.0"
 plugin-publish = "1.3.1"
@@ -30,19 +30,19 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 
 allure-commons = "2.30.0"
-allure-plugin = "3.0.0"
+allure-plugin = "3.0.1"
 
 byte-buddy = "1.17.6"
 
 dev-publish-plugin = "0.4.2"
 
-koin = "4.2.0-alpha3"
+koin = "4.2.0-beta2"
 wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
 arrow = "2.1.2"
-testcontainers = "2.0.2"
+testcontainers = "2.0.3"
 asm = "9.8"
 nmcp = "1.0.2"
 kotlin-poet = "2.2.0"
@@ -153,7 +153,7 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
 hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
-kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.0" }
+kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.1" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-jdbc = { module = "org.testcontainers:testcontainers-jdbc", version.ref = "testcontainers" }
