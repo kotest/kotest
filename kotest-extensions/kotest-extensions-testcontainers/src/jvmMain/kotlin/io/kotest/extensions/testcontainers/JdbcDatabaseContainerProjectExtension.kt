@@ -37,11 +37,9 @@ class JdbcDatabaseContainerProjectExtension(
       lock.lockInterruptibly()
       val t = ref.get()
       if (t == null) {
-         if (options.log)
-            container.withLogConsumer { print(it.utf8String) }
+         container.withLogConsumer(BasicLogConsumer(options.logs))
          container.start()
-         if (options.log)
-            container.followOutput { print(it.utf8String) }
+         container.followOutput(BasicLogConsumer(options.logs))
          val config = HikariConfig()
          config.jdbcUrl = container.jdbcUrl
          config.username = container.username

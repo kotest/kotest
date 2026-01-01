@@ -23,11 +23,9 @@ class TestContainerSpecExtension<T : GenericContainer<*>>(
 
    override fun mount(configure: T.() -> Unit): T {
       configure(container)
-      if (options.log)
-         container.withLogConsumer { print(it.utf8String) }
+      container.withLogConsumer(BasicLogConsumer(options.logs))
       container.start()
-      if (options.log)
-         container.followOutput { print(it.utf8String) }
+      container.followOutput(BasicLogConsumer(options.logs))
       return container
    }
 

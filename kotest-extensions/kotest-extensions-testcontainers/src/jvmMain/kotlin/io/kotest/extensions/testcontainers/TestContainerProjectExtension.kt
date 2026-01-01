@@ -30,11 +30,9 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
       val t = ref.get()
       if (t == null) {
          configure(container)
-         if (options.log)
-            container.withLogConsumer { print(it.utf8String) }
+         container.withLogConsumer(BasicLogConsumer(options.logs))
          container.start()
-         if (options.log)
-            container.followOutput { print(it.utf8String) }
+         container.followOutput(BasicLogConsumer(options.logs))
          ref.set(container)
       }
       lock.unlock()

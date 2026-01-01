@@ -8,6 +8,8 @@ import io.kotest.core.spec.Spec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
+import org.testcontainers.containers.output.OutputFrame
+import java.util.function.Consumer
 import javax.sql.DataSource
 
 /**
@@ -31,11 +33,9 @@ class JdbcDatabaseContainerSpecExtension(
 ) : MountableExtension<HikariConfig, DataSource>, AfterSpecListener {
 
    override fun mount(configure: HikariConfig.() -> Unit): DataSource {
-      if (options.log)
-         container.withLogConsumer { print(it.utf8String) }
+      container.withLogConsumer(BasicLogConsumer(options.logs))
       container.start()
-      if (options.log)
-         container.followOutput { print(it.utf8String) }
+      container.followOutput(BasicLogConsumer(options.logs))
       val config = HikariConfig()
       config.jdbcUrl = container.jdbcUrl
       config.username = container.username
@@ -52,4 +52,19 @@ class JdbcDatabaseContainerSpecExtension(
    }
 }
 
-data class TestContainerOptions(val log: Boolean = false)
+class BasicLogConsumer(private val type: LogTypes) : Consumer<OutputFrame> {
+   override fun accept(t: OutputFrame) {
+      when (t.type) {
+         OutputFrame.OutputType.STDOUT if (type == LogTypes.STDOUT || type == LogTypes.ALL) -> println(t.utf8String)
+         OutputFrame.OutputType.STDERR if (type == LogTypes.STDERR || type == LogTypes.ALL) -> println(t.utf8String)
+         OutputFrame.OutputType.END -> println(t.utf8String)
+         else -> Unit
+      }
+   }
+}
+
+data class TestContainerOptions(
+   val logs: LogTypes = LogTypes.NONE
+)
+
+enum class LogTypes { NONE, STDOUT, STDERR, ALL }
