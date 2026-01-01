@@ -1,7 +1,6 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.Platform
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.TestSuite
@@ -43,7 +42,6 @@ data class TestEngineConfig(
    val interceptors: List<EngineInterceptor>,
    val projectConfig: AbstractProjectConfig?,
    val explicitTags: TagExpression?,
-   val platform: Platform,
    val registry: ExtensionRegistry,
 )
 
@@ -79,7 +77,6 @@ class TestEngine(private val config: TestEngineConfig) {
             listener = config.listener,
             tags = tags,
             projectConfig = config.projectConfig,
-            platform = config.platform,
             registry = config.registry,
          )
       )

@@ -7,8 +7,8 @@ package io.kotest.engine.js
  * framework specific test functions at runtime.
  *
  * In theory a js framework called wibble-test might have a function called runSuite and another
- * framework called wobble-test might have a function called suiteMe. This interface allows the kotlin
- * compiler to generate code that can work with either framework at runtime as configured in gradle.
+ * framework called wobble-test might have a function called suiteMe. This interface allows the Kotlin
+ * compiler to generate code that can work with either framework at runtime as configured in Gradle.
  *
  * This interface allows framework function invocations to be conditionally transformed as required for proper
  * reporting of [failing JS tests on Node.js](https://youtrack.jetbrains.com/issue/KT-64533).

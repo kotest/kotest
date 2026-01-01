@@ -9,8 +9,8 @@ import kotlin.time.TimeMark
 internal actual fun blockedThreadTimeoutInterceptor(
    start: TimeMark,
    testConfigResolver: TestConfigResolver,
-): TestExecutionInterceptor = error("Unsupported on $platform")
+): TestExecutionInterceptor = error("Unsupported on ${platform}")
 
 @JVMOnly
 internal actual fun coroutineErrorCollectorInterceptor(): TestExecutionInterceptor =
-   error("Unsupported on $platform")
+   error("Unsupported on ${platform}")

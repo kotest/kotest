@@ -36,8 +36,6 @@ dependencyResolutionManagement {
          content { includeModule("com.yarnpkg", "yarn") }
       }
       //endregion
-
-      mavenLocal()
    }
 }
 

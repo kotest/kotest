@@ -120,6 +120,7 @@ internal class TestSuiteScheduler(
 
    /**
     * Returns the max concurrent specs to execute.
+    *
     * On non-JVM platforms, this will always be 1, otherwise the value
     * of [io.kotest.engine.concurrency.SpecExecutionMode] from project configuration is used.
     */

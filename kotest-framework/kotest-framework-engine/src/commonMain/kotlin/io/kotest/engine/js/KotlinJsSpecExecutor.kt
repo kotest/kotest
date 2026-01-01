@@ -62,15 +62,17 @@ internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecEx
          testNameEscape(formatter.format(testCase)),
          ignored = ignored,
       ) {
-         // We rely on JS Promise to interact with the JS test framework. We cannot use callbacks here
-         // because we pass our function through the Kotlin/JS test infra via its interface `FrameworkAdapter`,
-         // which does not support callbacks. It does, however, allow the test function to return a Promise-like
-         // type for asynchronous invocations. See `KotlinJsTestFramework` for details.
+         /**
+          * We rely on JS Promise to interact with the JS test framework. We cannot use callbacks here
+          * because we pass our function through the Kotlin/JS test infra via its interface `FrameworkAdapter`,
+          * which does not support callbacks. It does, however, allow the test function to return a Promise-like
+          * type for asynchronous invocations. See [KotlinJsTestFramework] for details.
+          */
          @OptIn(DelicateCoroutinesApi::class)
          runPromise {
             val cc = coroutineContext
             val testExecutor = TestCaseExecutor(context)
-            //  we use the `TerminalTestScope` because we don't support nested test suites on javascript
+            //  we use the `TerminalTestScope` because we don't support nested test suites on JavaScript
             testExecutor.execute(testCase, TerminalTestScope(testCase, cc), specContext)
                .errorOrNull?.let { throw it }
          }

@@ -17,7 +17,7 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
 
    override fun getDescription(): Description = Description(klass.toDescriptor().path().value, klass.java)
 
-   override fun execute(rc: ResultCollector) = runBlocking<Unit> {
+   override fun execute(rc: ResultCollector) = runBlocking {
       val listener = object : AbstractTestEngineListener() {
 
          private val started = mutableSetOf<Descriptor.TestDescriptor>()
@@ -43,7 +43,7 @@ class KotestUnit(val klass: KClass<out Spec>) : TestUnit {
       val result = TestEngineLauncher()
          .withListener(listener)
          .withClasses(klass)
-         .launch()
+         .async()
 
       if (result.errors.isNotEmpty())
          error("Test suite failed with errors")
