@@ -4,7 +4,7 @@ commons-lang3 = "3.18.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.16"
 jdom2 = "2.0.6.1"
-json-path = "2.9.0"
+json-path = "2.10.0"
 junit4 = "4.13.2"
 
 junit-platform5 = "1.13.4"
