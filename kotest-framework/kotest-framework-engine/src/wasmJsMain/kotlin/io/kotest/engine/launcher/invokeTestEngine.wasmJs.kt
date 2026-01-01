@@ -33,7 +33,7 @@ private fun handleEngineResult(result: EngineResult) {
       }
    } else {
       // throwing here shows "Disconnected (0 times) , because no message in 30000 ms."
-      // see KT-73911 https://youtrack.jetbrains.com/issue/KT-73911
+      // TODO see KT-73911 https://youtrack.jetbrains.com/issue/KT-73911
       // so nothing we can do at the moment
    }
 }
