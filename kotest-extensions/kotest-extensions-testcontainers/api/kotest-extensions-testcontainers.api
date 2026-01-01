@@ -8,6 +8,12 @@ public abstract class io/kotest/extensions/testcontainers/AbstractContainerExten
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/GenericContainer;
 }
 
+public final class io/kotest/extensions/testcontainers/BasicLogConsumer : java/util/function/Consumer {
+	public fun <init> (Lio/kotest/extensions/testcontainers/LogTypes;)V
+	public synthetic fun accept (Ljava/lang/Object;)V
+	public fun accept (Lorg/testcontainers/containers/output/OutputFrame;)V
+}
+
 public final class io/kotest/extensions/testcontainers/ComposeContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
 	public fun <init> (Lorg/testcontainers/containers/ComposeContainer;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -136,14 +142,16 @@ public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerExte
 }
 
 public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
-	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;)V
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lcom/zaxxer/hikari/HikariDataSource;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener {
-	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;)V
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Ljavax/sql/DataSource;
@@ -191,6 +199,16 @@ public final class io/kotest/extensions/testcontainers/LifecycleMode : java/lang
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/extensions/testcontainers/LifecycleMode;
 	public static fun values ()[Lio/kotest/extensions/testcontainers/LifecycleMode;
+}
+
+public final class io/kotest/extensions/testcontainers/LogTypes : java/lang/Enum {
+	public static final field ALL Lio/kotest/extensions/testcontainers/LogTypes;
+	public static final field NONE Lio/kotest/extensions/testcontainers/LogTypes;
+	public static final field STDERR Lio/kotest/extensions/testcontainers/LogTypes;
+	public static final field STDOUT Lio/kotest/extensions/testcontainers/LogTypes;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/extensions/testcontainers/LogTypes;
+	public static fun values ()[Lio/kotest/extensions/testcontainers/LogTypes;
 }
 
 public final class io/kotest/extensions/testcontainers/ProjectContainerExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener {
@@ -392,15 +410,30 @@ public final class io/kotest/extensions/testcontainers/TestContainerHikariConfig
 	public final fun setDbInitScripts (Ljava/util/List;)V
 }
 
+public final class io/kotest/extensions/testcontainers/TestContainerOptions {
+	public fun <init> ()V
+	public fun <init> (Lio/kotest/extensions/testcontainers/LogTypes;)V
+	public synthetic fun <init> (Lio/kotest/extensions/testcontainers/LogTypes;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Lio/kotest/extensions/testcontainers/LogTypes;
+	public final fun copy (Lio/kotest/extensions/testcontainers/LogTypes;)Lio/kotest/extensions/testcontainers/TestContainerOptions;
+	public static synthetic fun copy$default (Lio/kotest/extensions/testcontainers/TestContainerOptions;Lio/kotest/extensions/testcontainers/LogTypes;ILjava/lang/Object;)Lio/kotest/extensions/testcontainers/TestContainerOptions;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLogs ()Lio/kotest/extensions/testcontainers/LogTypes;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/extensions/testcontainers/TestContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
-	public fun <init> (Lorg/testcontainers/containers/GenericContainer;)V
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/GenericContainer;
 }
 
 public final class io/kotest/extensions/testcontainers/TestContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/TestListener {
-	public fun <init> (Lorg/testcontainers/containers/GenericContainer;)V
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
