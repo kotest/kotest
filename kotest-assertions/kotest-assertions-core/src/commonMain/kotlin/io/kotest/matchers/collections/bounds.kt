@@ -12,7 +12,10 @@ import io.kotest.matchers.should
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun ByteArray.shouldHaveUpperBound(value: Byte): ByteArray {
    asList() should haveUpperBound(value, "ByteArray")
@@ -22,7 +25,10 @@ infix fun ByteArray.shouldHaveUpperBound(value: Byte): ByteArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun ShortArray.shouldHaveUpperBound(value: Short): ShortArray {
    asList() should haveUpperBound(value, "ShortArray")
@@ -32,7 +38,10 @@ infix fun ShortArray.shouldHaveUpperBound(value: Short): ShortArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun CharArray.shouldHaveUpperBound(value: Char): CharArray {
    asList() should haveUpperBound(value, "CharArray")
@@ -42,7 +51,10 @@ infix fun CharArray.shouldHaveUpperBound(value: Char): CharArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun IntArray.shouldHaveUpperBound(value: Int): IntArray {
    asList() should haveUpperBound(value, "IntArray")
@@ -52,7 +64,10 @@ infix fun IntArray.shouldHaveUpperBound(value: Int): IntArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun LongArray.shouldHaveUpperBound(value: Long): LongArray {
    asList() should haveUpperBound(value, "LongArray")
@@ -62,7 +77,10 @@ infix fun LongArray.shouldHaveUpperBound(value: Long): LongArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun FloatArray.shouldHaveUpperBound(value: Float): FloatArray {
    asList() should haveUpperBound(value, "FloatArray")
@@ -72,7 +90,10 @@ infix fun FloatArray.shouldHaveUpperBound(value: Float): FloatArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun DoubleArray.shouldHaveUpperBound(value: Double): DoubleArray {
    asList() should haveUpperBound(value, "DoubleArray")
@@ -82,7 +103,10 @@ infix fun DoubleArray.shouldHaveUpperBound(value: Double): DoubleArray {
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(value: T): Array<T> {
    asList() should haveUpperBound(value, "Array")
@@ -92,7 +116,10 @@ infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(value: T): Array<T> 
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(value: T): I {
    this should haveUpperBound(value, null)
@@ -102,7 +129,10 @@ infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(value: T):
 /**
  * Verifies that all elements are less than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 fun <T : Comparable<T>, C : Collection<T>> haveUpperBound(value: T): Matcher<C> = haveUpperBound(value, null)
 
@@ -124,7 +154,10 @@ private fun <T : Comparable<T>, I : Iterable<T>> haveUpperBound(t: T, name: Stri
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun ByteArray.shouldHaveLowerBound(value: Byte): ByteArray {
    asList() should haveLowerBound(value, "ByteArray")
@@ -134,7 +167,10 @@ infix fun ByteArray.shouldHaveLowerBound(value: Byte): ByteArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun ShortArray.shouldHaveLowerBound(value: Short): ShortArray {
    asList() should haveLowerBound(value, "ShortArray")
@@ -144,7 +180,10 @@ infix fun ShortArray.shouldHaveLowerBound(value: Short): ShortArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun CharArray.shouldHaveLowerBound(value: Char): CharArray {
    asList() should haveLowerBound(value, "CharArray")
@@ -154,7 +193,10 @@ infix fun CharArray.shouldHaveLowerBound(value: Char): CharArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun IntArray.shouldHaveLowerBound(value: Int): IntArray {
    asList() should haveLowerBound(value, "IntArray")
@@ -164,7 +206,10 @@ infix fun IntArray.shouldHaveLowerBound(value: Int): IntArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun LongArray.shouldHaveLowerBound(value: Long): LongArray {
    asList() should haveLowerBound(value, "LongArray")
@@ -174,7 +219,10 @@ infix fun LongArray.shouldHaveLowerBound(value: Long): LongArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun FloatArray.shouldHaveLowerBound(value: Float): FloatArray {
    asList() should haveLowerBound(value, "FloatArray")
@@ -184,7 +232,10 @@ infix fun FloatArray.shouldHaveLowerBound(value: Float): FloatArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun DoubleArray.shouldHaveLowerBound(value: Double): DoubleArray {
    asList() should haveLowerBound(value, "DoubleArray")
@@ -194,7 +245,10 @@ infix fun DoubleArray.shouldHaveLowerBound(value: Double): DoubleArray {
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(value: T): Array<T> {
    asList() should haveLowerBound(value, "Array")
@@ -204,13 +258,22 @@ infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(value: T): Array<T> 
 /**
  * Verifies that all elements are greater than or equal to [value].
  *
- * Passes if `this` is empty.
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveLowerBound(value: T): I {
    this should haveLowerBound(value, null)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>, C : Collection<T>> haveLowerBound(t: T): Matcher<C> = haveLowerBound(t, null)
 
 private fun <T : Comparable<T>, I : Iterable<T>> haveLowerBound(t: T, name: String?): Matcher<I> = object : Matcher<I> {
