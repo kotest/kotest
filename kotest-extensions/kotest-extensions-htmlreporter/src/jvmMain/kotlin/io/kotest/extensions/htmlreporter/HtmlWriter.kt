@@ -13,10 +13,9 @@ class HtmlWriter(
       const val summaryTitle = "Test Summary"
       const val classTitle = "Class"
       const val homeAnchorHref = "Home"
-      const val defaultStylesPath = "css/style.css"
    }
 
-   fun buildSummaryDocument(summaryList: List<TestClassInfo>, stylesPath: String = defaultStylesPath): Document {
+   fun buildSummaryDocument(summaryList: List<TestClassInfo>, stylesPath: String): Document {
       return withDocument(stylesPath) { body ->
          body.addContent(Element("h1").setContent(Text(summaryTitle)))
          body.addContent(
@@ -31,7 +30,7 @@ class HtmlWriter(
    fun buildClassDocument(
       testClass: TestClassInfo,
       homepage: String,
-      stylesPath: String = defaultStylesPath
+      stylesPath: String,
    ): Document {
       return withDocument(stylesPath) { body ->
          body.addContent(Element("h1").setContent(Text("$classTitle ${testClass.name}")))
@@ -93,7 +92,7 @@ class HtmlWriter(
          row.addContent(Element("td").setContent(Text(failures.toString())))
          row.addContent(Element("td").setContent(Text(skipped.toString())))
 
-         if((errors + failures + skipped) == 0) row.setAttribute("class", "success")
+         if ((errors + failures + skipped) == 0) row.setAttribute("class", "success")
          if (failures > 0) row.setAttribute("class", "failure")
 
          table.addContent(row)
