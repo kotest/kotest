@@ -119,9 +119,13 @@ class JUnitTestEngineListener(
       logger.log { "specStarted ${ref.kclass}" }
       try {
 
-         // descriptor must definitely exist for a started spec
-         val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
-         descriptors[ref.kclass.toDescriptor()] = descriptor ?: error("Could not find TestDescriptor for ${ref.kclass}")
+         var descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
+         if (descriptor == null) {
+            descriptor = createSpecTestDescriptor(root, ref.kclass.toDescriptor(), ref.kclass.bestName())
+            root.addChild(descriptor)
+            listener.dynamicTestRegistered(descriptor)
+         }
+         descriptors[ref.kclass.toDescriptor()] = descriptor
 
          logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
          listener.executionStarted(descriptor)
