@@ -17,7 +17,7 @@ class UniqueIdTest : FunSpec() {
             root.append(Segment.Spec.value, "com.sksamuel.kotest.runner.junit.platform.UniqueIdTest")
       }
 
-      test("createTestUniqueId should handle rooot tests") {
+      test("createTestUniqueId should handle root tests") {
          val root = UniqueId.forEngine("kotest")
          val testDescriptor = UniqueIdTest::class.toDescriptor().append("a")
          createUniqueIdForTest(root, testDescriptor) shouldBe
