@@ -34,6 +34,7 @@ import io.kotest.matchers.collections.shouldContainNoNulls
 import io.kotest.matchers.collections.shouldContainNull
 import io.kotest.matchers.collections.shouldContainOnlyNulls
 import io.kotest.matchers.collections.shouldExist
+import io.kotest.matchers.collections.shouldExistInOrder
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt

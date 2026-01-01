@@ -23,6 +23,12 @@ Sequence<T>.count() may run through the whole sequence (sequences from `generate
 For now, the documentation should mention that infinite sequences will cause these matchers never to halt.
 */
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Sequence<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
@@ -70,7 +76,14 @@ fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matche
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldContainNoNulls() = this should containNoNulls()
+
 fun <T> Sequence<T>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
 fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
@@ -209,8 +222,20 @@ fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
    override fun test(value: C): MatcherResult {
       val elementBelowLowerBound = value.withIndex().firstOrNull { it.value < t }
@@ -225,11 +250,17 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
+
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
    val delegate = beUniqueByEquals<T>("Sequence")
-
    override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
@@ -241,10 +272,30 @@ fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted()
+
 fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorted()
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> beSorted(): Matcher<Sequence<T>> = sorted()
+
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
       val valueAsList = value.toList()
@@ -476,7 +527,14 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
+
 infix fun <T> Sequence<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
 fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) =
    toList().shouldMatchEach(expected.toList(), asserter)
