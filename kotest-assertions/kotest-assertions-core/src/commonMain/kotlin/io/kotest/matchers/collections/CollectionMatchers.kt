@@ -8,11 +8,22 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.errorCollector
 import io.kotest.matchers.neverNullMatcher
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> existInOrder(vararg ps: (T) -> Boolean): Matcher<Collection<T>?> = existInOrder(ps.asList())
 
 /**
  * Assert that a collections contains a subsequence that matches the given subsequence of predicates, possibly with
  * values in between.
+ *
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
 fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> = neverNullMatcher { actual ->
    require(predicates.isNotEmpty()) { "predicates must not be empty" }
@@ -45,11 +56,36 @@ fun <T> existInOrder(predicates: List<(T) -> Boolean>): Matcher<Collection<T>?> 
 
 fun <T> haveSize(size: Int): Matcher<Collection<T>> = haveSizeMatcher(size)
 
-
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> beSorted(): Matcher<List<T>> = sorted()
+
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> sorted(): Matcher<List<T>> = sortedBy { it }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T, E : Comparable<E>> beSortedBy(transform: (T) -> E): Matcher<List<T>> = sortedBy(transform)
+
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T, E : Comparable<E>> sortedBy(transform: (T) -> E): Matcher<List<T>> = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val failure =
