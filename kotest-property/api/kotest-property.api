@@ -550,6 +550,7 @@ public final class io/kotest/property/PropertyTest9Kt {
 
 public final class io/kotest/property/PropertyTesting {
 	public static final field INSTANCE Lio/kotest/property/PropertyTesting;
+	public final fun getDefaultCollectionsRange ()Lkotlin/ranges/IntRange;
 	public final fun getDefaultEdgecasesGenerationProbability ()D
 	public final fun getDefaultIterationCount ()I
 	public final fun getDefaultListeners ()Ljava/util/List;
@@ -571,6 +572,7 @@ public final class io/kotest/property/PropertyTesting {
 	public final fun getStatisticsReportMode ()Lio/kotest/property/statistics/StatisticsReportMode;
 	public final fun getStatisticsReporter ()Lio/kotest/property/statistics/StatisticsReporter;
 	public final fun getWriteFailedSeed ()Z
+	public final fun setDefaultCollectionsRange (Lkotlin/ranges/IntRange;)V
 	public final fun setDefaultEdgecasesGenerationProbability (D)V
 	public final fun setDefaultIterationCount (I)V
 	public final fun setDefaultListeners (Ljava/util/List;)V
@@ -859,12 +861,6 @@ public final class io/kotest/property/arbitrary/CollectionsKt {
 	public static synthetic fun list$default (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;ILjava/lang/Object;)Lio/kotest/property/Arb;
 	public static final fun of (Lio/kotest/property/Arb$Companion;Ljava/util/Collection;)Lio/kotest/property/Arb;
 	public static final fun of (Lio/kotest/property/Arb$Companion;[Ljava/lang/Object;)Lio/kotest/property/Arb;
-	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;)Lio/kotest/property/Arb;
-	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;II)Lio/kotest/property/Arb;
-	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
-	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;I)Lio/kotest/property/Arb;
-	public static synthetic fun set$default (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;IIILjava/lang/Object;)Lio/kotest/property/Arb;
-	public static synthetic fun set$default (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;IILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/CombinationsKt {
@@ -1230,6 +1226,15 @@ public final class io/kotest/property/arbitrary/SetShrinker : io/kotest/property
 	public final fun getListShrinker ()Lio/kotest/property/arbitrary/ListShrinker;
 	public synthetic fun shrink (Ljava/lang/Object;)Ljava/util/List;
 	public fun shrink (Ljava/util/Set;)Ljava/util/List;
+}
+
+public final class io/kotest/property/arbitrary/SetsKt {
+	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;)Lio/kotest/property/Arb;
+	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;II)Lio/kotest/property/Arb;
+	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;)Lio/kotest/property/Arb;
+	public static final fun set (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;I)Lio/kotest/property/Arb;
+	public static synthetic fun set$default (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;IIILjava/lang/Object;)Lio/kotest/property/Arb;
+	public static synthetic fun set$default (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lkotlin/ranges/IntRange;IILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
 public final class io/kotest/property/arbitrary/ShortsKt {
