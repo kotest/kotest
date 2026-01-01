@@ -16,8 +16,8 @@ class HtmlReporter(
 ) : ProjectListener {
 
    companion object {
-      const val DefaultResultsLocation = "./build/test-results/test"
-      const val BuildDirKey = "gradle.build.dir"
+      const val DEFAULT_RESULTS_LOCATION = "./build/test-results/test"
+      const val BUILD_DIR_KEY = "gradle.build.dir"
    }
 
    override suspend fun afterProject() {
@@ -53,23 +53,23 @@ class HtmlReporter(
          }
       }
 
-      write(writer.buildSummaryDocument(testClasses), "index.html")
+      write(writer.buildSummaryDocument(testClasses, "./css/style.css"), "index.html")
       testClasses.forEach { testClass ->
-         write(writer.buildClassDocument(testClass, "../index.html"), "classes/${testClass.name}.html")
+         write(writer.buildClassDocument(testClass, "../index.html", "../css/style.css"), "classes/${testClass.name}.html")
       }
 
       write({}.javaClass.getResource("/style.css").readText(), "./css/style.css")
    }
 
    private fun getTestResults(): Sequence<File> {
-      return File(DefaultResultsLocation)
+      return File(DEFAULT_RESULTS_LOCATION)
          .walk()
          .filter { Files.isRegularFile(it.toPath())}
          .filter { it.toString().endsWith(".xml") }
    }
 
    private fun outputDir(): Path {
-      val buildDir = System.getProperty(BuildDirKey)
+      val buildDir = System.getProperty(BUILD_DIR_KEY)
       return if (buildDir != null)
          Paths.get(buildDir).resolve(outputDir)
       else
