@@ -1,5 +1,7 @@
 package io.kotest.extensions.testcontainers
 
+import io.kotest.core.annotation.EnabledIf
+import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.install
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.style.FunSpec
@@ -14,6 +16,7 @@ private val container = GenericContainer("redis:5.0.3-alpine").apply {
 
 private val extension = TestContainerProjectExtension(container)
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Order(1)
 class TestContainerProjectExtensionTest1 : FunSpec() {
    init {
@@ -32,6 +35,7 @@ class TestContainerProjectExtensionTest1 : FunSpec() {
    }
 }
 
+@EnabledIf(LinuxOnlyGithubCondition::class)
 @Order(2)
 class TestContainerProjectExtensionTest2 : FunSpec() {
    init {
