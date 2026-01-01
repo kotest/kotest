@@ -4,7 +4,6 @@ pluginManagement {
    repositories {
       google()
       mavenCentral()
-      mavenLocal()
       gradlePluginPortal()
    }
 }
@@ -37,8 +36,6 @@ dependencyResolutionManagement {
          content { includeModule("com.yarnpkg", "yarn") }
       }
       //endregion
-
-      mavenLocal()
    }
 }
 
