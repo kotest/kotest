@@ -2587,6 +2587,12 @@ public final class io/kotest/core/spec/style/scopes/StringSpecRootScope$DefaultI
 	public static fun invoke (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
+public final class io/kotest/core/spec/style/scopes/StringSpecScope : io/kotest/core/spec/style/scopes/TerminalScope {
+	public fun <init> (Lio/kotest/core/test/TestScope;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getTestCase ()Lio/kotest/core/test/TestCase;
+}
+
 public abstract class io/kotest/core/spec/style/scopes/TerminalScope : io/kotest/core/test/TestScope {
 	public fun <init> ()V
 	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
