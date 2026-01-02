@@ -100,6 +100,14 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeStrictlyIncreasingWith(comparator)
          }
+         "pass for empty collections" {
+            emptyList<Int>().shouldBeMonotonicallyIncreasing()
+            emptyList<Int>().shouldBeStrictlyIncreasing()
+            emptyArray<Int>().shouldBeMonotonicallyIncreasing()
+            emptyArray<Int>().shouldBeStrictlyIncreasing()
+            emptySet<Int>().shouldBeMonotonicallyIncreasing()
+            emptySet<Int>().shouldBeStrictlyIncreasing()
+         }
       }
 
       "shouldBeDecreasing" should {
@@ -172,6 +180,14 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(-4, 2, 3).shouldBeStrictlyDecreasingWith(comparator)
             sequenceOf(-4, 2, 2, 3).shouldNotBeStrictlyDecreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeStrictlyDecreasingWith(comparator)
+         }
+         "pass for empty collections" {
+            emptyList<Int>().shouldBeMonotonicallyDecreasing()
+            emptyList<Int>().shouldBeStrictlyDecreasing()
+            emptyArray<Int>().shouldBeMonotonicallyDecreasing()
+            emptyArray<Int>().shouldBeStrictlyDecreasing()
+            emptySet<Int>().shouldBeMonotonicallyDecreasing()
+            emptySet<Int>().shouldBeStrictlyDecreasing()
          }
       }
    }
