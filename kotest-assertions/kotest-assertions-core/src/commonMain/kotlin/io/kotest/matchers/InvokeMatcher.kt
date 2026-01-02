@@ -20,8 +20,17 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
                ).build()
          )
 
+         is DiffableMatcherResult -> errorCollector.collectOrThrow(
+            AssertionErrorBuilder.create()
+               .withMessage(result.failureMessage() + "\n")
+               .withValues(
+                  expected = Expected(result.expected()),
+                  actual = Actual(result.actual())
+               ).build()
+         )
+
          is MatcherResultWithError -> {
-            val error = result.error ?: AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
+            val error = result.error() ?: AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
             errorCollector.collectOrThrow(error)
          }
 
@@ -31,4 +40,15 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
       }
    }
    return t
+}
+
+internal class MatcherResultWithError(
+   val passed: Boolean,
+   val error: () -> Throwable?,
+   val failureMessageFn: (error: Throwable?) -> String,
+   val negatedFailureMessageFn: (error: Throwable?) -> String,
+) : MatcherResult {
+   override fun passed(): Boolean = passed
+   override fun failureMessage(): String = failureMessageFn(error())
+   override fun negatedFailureMessage(): String = negatedFailureMessageFn(error())
 }

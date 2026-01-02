@@ -180,9 +180,9 @@ class AssertSoftlyTest : FreeSpec({
                message.shouldContainInOrder(
                   "The following 2 assertions for \"foo\" failed:",
                   "1) expected:<2> but was:<3>",
-                  "com.sksamuel.kotest.matchers.AssertSoftlyTest\$1\$1\$10\$1.invokeSuspend",
+                  $$"com.sksamuel.kotest.matchers.AssertSoftlyTest$1$1$10$1.invokeSuspend",
                   "2) \"foo\" should not equal \"foo\"",
-                  "com.sksamuel.kotest.matchers.AssertSoftlyTest\$1\$1\$10\$1.invokeSuspend",
+                  $$"com.sksamuel.kotest.matchers.AssertSoftlyTest$1$1$10$1.invokeSuspend",
                )
             }
          }

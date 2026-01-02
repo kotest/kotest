@@ -3,13 +3,14 @@ package com.sksamuel.kotest.eq
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.CollectionEq
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.throwableWithFallback
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -34,12 +35,12 @@ class CollectionEqTest : FunSpec({
       """.trimIndent()
    }
 
-   test("should give null for two equal sets") {
-      CollectionEq.equals(setOf(1, 2, 3), setOf(2, 3, 1), EqContext()).shouldBeNull()
+   test("should pass for two equal sets") {
+      CollectionEq.equals(setOf(1, 2, 3), setOf(2, 3, 1), EqContext()).equal.shouldBeTrue()
    }
 
    test("should give error for unequal sets") {
-      val error = CollectionEq.equals(setOf(1, 2, 3), setOf(2, 3), EqContext())
+      val error = CollectionEq.equals(setOf(1, 2, 3), setOf(2, 3), EqContext()).error()
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -47,12 +48,12 @@ class CollectionEqTest : FunSpec({
       }
    }
 
-   test("should give null for two equal list") {
-      CollectionEq.equals(listOf(1, 2, 3), listOf(1, 2, 3), EqContext()).shouldBeNull()
+   test("should pass for two equal list") {
+      CollectionEq.equals(listOf(1, 2, 3), listOf(1, 2, 3), EqContext()).equal.shouldBeTrue()
    }
 
    test("should give error for two unequal list") {
-      val error = CollectionEq.equals(listOf(3), listOf(1, 2, 3), EqContext())
+      val error = CollectionEq.equals(listOf(3), listOf(1, 2, 3), EqContext()).error()
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -63,13 +64,13 @@ class CollectionEqTest : FunSpec({
    }
 
    test("should not give error for kotlin ordered set comparison with list") {
-      CollectionEq.equals(setOf(1, 2, 3), listOf(1, 2, 3), EqContext()).shouldBeNull()
+      CollectionEq.equals(setOf(1, 2, 3), listOf(1, 2, 3), EqContext()).equal.shouldBeTrue()
    }
 
    test("should give error for unordered set comparison with list") {
       val hs = HashSet<Int>(3)
       hs.addAll(setOf(1, 2, 3))
-      val error = CollectionEq.equals(hs, listOf(1, 2, 3), EqContext())
+      val error = CollectionEq.equals(hs, listOf(1, 2, 3), EqContext()).error()
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldBe """Disallowed: Sets can only be compared to sets, unless both types provide a stable iteration order.
@@ -77,9 +78,9 @@ class CollectionEqTest : FunSpec({
       }
    }
 
-   test("should give null for java-only TreeSet comparison with list") {
+   test("should pass for java-only TreeSet comparison with list") {
       val hs = TreeSet(setOf(1, 2, 3))
-      CollectionEq.equals(hs, listOf(1, 2, 3), EqContext()).shouldBeNull()
+      CollectionEq.equals(hs, listOf(1, 2, 3), EqContext()).equal.shouldBeTrue()
    }
 
    test("should return true for deeply nested arrays in sets") {
@@ -97,11 +98,11 @@ class CollectionEqTest : FunSpec({
    test("should have linear performance for lists").config(timeout = 5.seconds) {
       val a = List(10000000) { "foo" }
       val b = List(10000000) { "foo" }
-      CollectionEq.equals(a, b, EqContext()) shouldBe null
+      CollectionEq.equals(a, b, EqContext()).equal.shouldBeTrue()
    }
 
    test("should have linear performance for primitive sets").config(timeout = 5.seconds) {
-      CollectionEq.equals(List(1000) { it }.toSet(), List(1000) { it }.reversed().toSet(), EqContext()) shouldBe null
+      CollectionEq.equals(List(1000) { it }.toSet(), List(1000) { it }.reversed().toSet(), EqContext()).equal.shouldBeTrue()
    }
 
    test("should have linear performance for string sets").config(timeout = 5.seconds) {
@@ -109,16 +110,16 @@ class CollectionEqTest : FunSpec({
          List(1000) { it.toString() }.toSet(),
          List(1000) { it.toString() }.reversed().toSet(),
          EqContext()
-      ) shouldBe null
+      ).equal.shouldBeTrue()
    }
 
    test("should work for empty lists") {
-      val errorMessage1 = CollectionEq.equals(emptyList<Int>(), listOf(1), EqContext())?.message
-      errorMessage1 shouldBe """Missing elements from index 0
+      val errorMessage1 = CollectionEq.equals(emptyList<Int>(), listOf(1), EqContext()).throwableWithFallback()
+      errorMessage1.message shouldBe """Missing elements from index 0
                                |expected:<[1]> but was:<[]>""".trimMargin()
 
-      val errorMessage2 = CollectionEq.equals(listOf(1, 2), emptyList<Int>(), EqContext())?.message
-      errorMessage2 shouldBe """Unexpected elements from index 1
+      val errorMessage2 = CollectionEq.equals(listOf(1, 2), emptyList<Int>(), EqContext()).throwableWithFallback()
+      errorMessage2.message shouldBe """Unexpected elements from index 1
                                |expected:<[]> but was:<[1, 2]>""".trimMargin()
    }
 
@@ -133,7 +134,7 @@ class CollectionEqTest : FunSpec({
       cyclicList.add(cyclicList)
 
       // Comparing a cyclic list with itself should work (same instance)
-      CollectionEq.equals(cyclicList, cyclicList, EqContext()).shouldBeNull()
+      CollectionEq.equals(cyclicList, cyclicList, EqContext()).equal.shouldBeTrue()
    }
 
    test("should handle mutually recursive collections") {
@@ -144,7 +145,7 @@ class CollectionEqTest : FunSpec({
       cyclicList2.add(cyclicList1)
 
       // These two lists have the same structure, so they should be equal
-      CollectionEq.equals(cyclicList1, cyclicList2, EqContext()).shouldBeNull()
+      CollectionEq.equals(cyclicList1, cyclicList2, EqContext()).equal.shouldBeTrue()
    }
 
    test("should return null (equal) for different instances with same content") {
@@ -153,7 +154,7 @@ class CollectionEqTest : FunSpec({
 
       actual shouldNotBeSameInstanceAs expected
 
-      CollectionEq.equals(actual, expected, EqContext()).shouldBeNull()
+      CollectionEq.equals(actual, expected, EqContext()).equal.shouldBeTrue()
    }
 
    test("should verify recursion depth limit boundary") {
@@ -168,7 +169,7 @@ class CollectionEqTest : FunSpec({
       val limitList2 = createDeeplyNestedList(63)
 
       shouldNotThrowAny {
-         CollectionEq.equals(limitList1, limitList2, EqContext()).shouldBeNull()
+         CollectionEq.equals(limitList1, limitList2, EqContext()).equal.shouldBeTrue()
       }
 
       val exceededList1 = createDeeplyNestedList(64)

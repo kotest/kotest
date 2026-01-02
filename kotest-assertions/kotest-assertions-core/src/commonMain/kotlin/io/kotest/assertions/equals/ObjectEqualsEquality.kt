@@ -9,9 +9,10 @@ open class ObjectEqualsEquality<T>(
    override fun name(): String = "object equality"
 
    override fun verify(actual: T, expected: T): EqualityResult {
-      val throwable = EqCompare.compare(actual, expected, EqContext(strictNumberEquality)) ?:
-      return EqualityResult.equal(actual, expected, this)
+      val result = EqCompare.compare(actual, expected, EqContext(strictNumberEquality))
+      if (result.equal) return EqualityResult.equal(actual, expected, this)
 
+      val throwable = result.error() ?: RuntimeException("Equality comparison failed but no error was returned")
       return EqualityResult.notEqual(actual, expected, this).let { result ->
          throwable.message?.let { message ->
             result.withDetails { message }

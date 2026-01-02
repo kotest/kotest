@@ -78,8 +78,8 @@ private fun compareValue(
          type,
          config.useDefaultShouldBeForFields
       ) -> {
-         val throwable = EqCompare.compare(actual, expected, EqContext(false))
-         if (throwable == null) CompareResult.match(field) else CompareResult.single(field, throwable)
+         val result = EqCompare.compare(actual, expected, EqContext(false))
+         if (result.equal) CompareResult.match(field) else CompareResult.single(field, result.error() ?: AssertionError())
       }
 
       else -> compareFields(actual, expected, field, config)

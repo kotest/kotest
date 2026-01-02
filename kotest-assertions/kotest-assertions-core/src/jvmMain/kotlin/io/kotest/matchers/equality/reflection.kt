@@ -2,6 +2,7 @@ package io.kotest.matchers.equality
 
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.throwableWithFallback
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -451,7 +452,7 @@ private fun <T, V> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, o
    requireNotNull(other)
    val equalityChecker: (actual: Any?, expected: Any?, propertyName: String) -> String? =
       { actual, expected, propertyName ->
-         val isEqual = EqCompare.compare(actual, expected, EqContext(false)) == null
+         val isEqual = EqCompare.compare(actual, expected, EqContext(false)).equal
          if (isEqual) null else "$propertyName: ${actual.print().value} != ${expected.print().value}"
       }
    return when (value::class == other::class) {
@@ -519,12 +520,10 @@ internal fun <T> checkEqualityOfFieldsRecursively(
          }
 
          else -> {
-            val throwable = EqCompare.compare(actual, expected, EqContext(false))
-            if (throwable != null) {
-               "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
-            } else {
-               null
-            }
+            val result = EqCompare.compare(actual, expected, EqContext(false))
+            if (result.equal) null else {
+               val throwable = result.throwableWithFallback()
+               "$heading\n${"\t".repeat(level + 1)}${throwable.message}" }
          }
       }
 

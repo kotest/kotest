@@ -11,26 +11,29 @@ import io.kotest.assertions.print.print
  */
 internal object RegexEq : Eq<Regex> {
 
-   override fun equals(actual: Regex, expected: Regex, context: EqContext): Throwable? {
-      return patternsAreNotEqual(actual, expected) ?: optionsAreNotEqual(actual, expected)
+   override fun equals(actual: Regex, expected: Regex, context: EqContext): EqResult {
+      return patternsAreNotEqual(actual, expected)
+         .flatMapIfEqual { optionsAreNotEqual(actual, expected) }
    }
 
-   private fun patternsAreNotEqual(actual: Regex, expected: Regex): Throwable? {
-      return if (actual.pattern == expected.pattern) null else
-         return AssertionErrorBuilder.create()
+   private fun patternsAreNotEqual(actual: Regex, expected: Regex): EqResult {
+      return if (actual.pattern == expected.pattern) EqResult.Success else EqResult.failure {
+         AssertionErrorBuilder.create()
             .withValues(
                Expected(Printed(expected.pattern)),
                Actual(Printed(actual.pattern))
             ).build()
+      }
    }
 
-   private fun optionsAreNotEqual(actual: Regex, expected: Regex): Throwable? {
-      return if (actual.options == expected.options) null else
-         return AssertionErrorBuilder.create()
+   private fun optionsAreNotEqual(actual: Regex, expected: Regex): EqResult {
+      return if (actual.options == expected.options) EqResult.Success else EqResult.failure {
+         AssertionErrorBuilder.create()
             .withValues(
                Expected(expected.options.print()),
                Actual(actual.options.print())
             ).build()
+      }
    }
 }
 

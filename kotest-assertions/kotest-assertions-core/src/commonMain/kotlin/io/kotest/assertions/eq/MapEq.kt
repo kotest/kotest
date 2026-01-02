@@ -12,22 +12,22 @@ import io.kotest.assertions.print.print
  */
 internal object MapEq : Eq<Map<*, *>> {
 
-    override fun equals(actual: Map<*, *>, expected: Map<*, *>, context: EqContext): Throwable? {
-      if (actual === expected) return null
+    override fun equals(actual: Map<*, *>, expected: Map<*, *>, context: EqContext): EqResult {
+      if (actual === expected) return EqResult.Success
 
-      if (context.isVisited(actual, expected)) return null
+      if (context.isVisited(actual, expected)) return EqResult.Success
 
       context.push(actual, expected)
       try {
          val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, context)
 
-         return if (haveUnequalKeys != null) generateError(actual, expected)
+         return if (!haveUnequalKeys.equal) EqResult.failure { generateError(actual, expected) }
          else {
             val hasDifferentValue = actual.keys.any { key ->
-               EqCompare.compare(actual[key], expected[key], context) != null
+               !EqCompare.compare(actual[key], expected[key], context).equal
             }
-            if (hasDifferentValue) generateError(actual, expected)
-            else null
+            if (hasDifferentValue) EqResult.failure { generateError(actual, expected) }
+            else EqResult.Success
          }
       } finally {
          context.pop()

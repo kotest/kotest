@@ -7,7 +7,8 @@ import io.kotest.assertions.print.print
 
 object ArrayEq : Eq<Array<*>> {
 
-   override fun equals(actual: Array<*>, expected: Array<*>, context: EqContext): Throwable? {
+   override fun equals(actual: Array<*>, expected: Array<*>, context: EqContext): EqResult {
+
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
       val elementDifferAtIndex = mutableListOf<Int>()
@@ -27,11 +28,13 @@ object ArrayEq : Eq<Array<*>> {
          return true
       }
 
-      fun equalXorDisallowed(signal: Throwable?): Throwable? = signal?.let {
-         if (it.message?.startsWith(DISALLOWED) == true) {
-            setDisallowedState(it.message!!)
+      fun equalXorDisallowed(result: EqResult): Throwable? {
+         if (result.equal) return null
+         val error = result.error() ?: return null
+         return if (error.message?.startsWith(DISALLOWED) == true) {
+            setDisallowedState(error.message!!)
             AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
-         } else it
+         } else error
       }
 
       var index = 0
@@ -72,12 +75,19 @@ object ArrayEq : Eq<Array<*>> {
          }
       }.toString()
 
-      return nestedIteratorError?.let { AssertionErrorBuilder.create().withMessage(it).build() }
-         ?: if (detailErrorMessage.isNotBlank()) {
+      if (nestedIteratorError != null) {
+         return EqResult.failure {
+            AssertionErrorBuilder.create().withMessage(nestedIteratorError).build()
+         }
+      }
+
+      return if (detailErrorMessage.isNotBlank()) {
+         EqResult.failure {
             AssertionErrorBuilder.create().withMessage(detailErrorMessage)
                .withValues(Expected(expected.print()), Actual(actual.print()))
                .build()
-         } else null
+         }
+      } else EqResult.Success
    }
 
    const val TRIGGER = "Disallowed"

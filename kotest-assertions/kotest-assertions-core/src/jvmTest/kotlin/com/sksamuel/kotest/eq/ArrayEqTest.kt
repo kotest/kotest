@@ -4,7 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.ArrayEq
 import io.kotest.assertions.eq.EqContext
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
@@ -13,11 +13,11 @@ import io.kotest.matchers.string.shouldStartWith
 class ArrayEqTest : FunSpec({
 
    test("should give null for two equal arrays") {
-      ArrayEq.equals(arrayOf(1, 2, 3), arrayOf(1, 2, 3), EqContext()).shouldBeNull()
+      ArrayEq.equals(arrayOf(1, 2, 3), arrayOf(1, 2, 3), EqContext()).equal.shouldBeTrue()
    }
 
    test("should give error for two unequal arrays") {
-      val error = ArrayEq.equals(arrayOf(3), arrayOf(1, 2, 3), EqContext())
+      val error = ArrayEq.equals(arrayOf(3), arrayOf(1, 2, 3), EqContext()).error()
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -28,11 +28,11 @@ class ArrayEqTest : FunSpec({
    }
 
    test("should work for empty arrays") {
-      val errorMessage1 = ArrayEq.equals(emptyArray<Int>(), arrayOf(1), EqContext())?.message
+      val errorMessage1 = ArrayEq.equals(emptyArray<Int>(), arrayOf(1), EqContext()).error()?.message
       errorMessage1 shouldBe """Missing elements from index 0
                                |expected:<[1]> but was:<[]>""".trimMargin()
 
-      val errorMessage2 = ArrayEq.equals(arrayOf(1, 2), emptyArray<Int>(), EqContext())?.message
+      val errorMessage2 = ArrayEq.equals(arrayOf(1, 2), emptyArray<Int>(), EqContext()).error()?.message
       errorMessage2 shouldBe """Unexpected elements from index 1
                                |expected:<[]> but was:<[1, 2]>""".trimMargin()
    }
@@ -41,7 +41,7 @@ class ArrayEqTest : FunSpec({
       val array1 = arrayOf(arrayOf(1, 2), 3)
       val array2 = arrayOf(arrayOf(1, 2), 3)
 
-      val error = ArrayEq.equals(array1, array2, EqContext())
+      val error = ArrayEq.equals(array1, array2, EqContext()).error()
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldStartWith "Disallowed nesting array"

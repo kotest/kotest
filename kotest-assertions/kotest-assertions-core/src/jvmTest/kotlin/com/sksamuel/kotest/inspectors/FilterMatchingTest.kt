@@ -94,7 +94,7 @@ class FilterMatchingTest : FunSpec({
 
     test("Filtering sequences should be done lazily") {
         shouldNotThrowAny {
-            sequence<Int> {
+            sequence {
                 (1..100).forEach { yield(it) }
                 error("Should not be evaluated") // If the filtering is not done lazily, this will throw
             }.filterMatching { it.shouldBeEven() }

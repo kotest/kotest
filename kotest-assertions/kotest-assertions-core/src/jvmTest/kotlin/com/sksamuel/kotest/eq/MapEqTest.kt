@@ -4,23 +4,23 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.eq.MapEq
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 
 class MapEqTest : FunSpec({
-   test("should give null for simple equal maps") {
-      val equals = MapEq.equals(emptyMap<Any, Any>(), emptyMap<Any, Any>(), EqContext())
 
-      equals.shouldBeNull()
+   test("should pass for simple equal maps") {
+      val result = MapEq.equals(emptyMap<Any, Any>(), emptyMap<Any, Any>(), EqContext())
+      result.equal.shouldBeTrue()
    }
 
    test("should give error for simple not equal maps") {
       val map1 = mapOf("a" to "actual")
       val map2 = mapOf("a" to "expected")
 
-      val throwable = MapEq.equals(map1, map2, EqContext())
+      val throwable = MapEq.equals(map1, map2, EqContext()).error()
 
       assertSoftly {
          throwable.shouldBeInstanceOf<AssertionError>()
@@ -35,14 +35,14 @@ class MapEqTest : FunSpec({
       }
    }
 
-   test("should give null for complex equal maps") {
+   test("should pass for complex equal maps") {
       val map1 = mapOf("a" to arrayOf(1, 2))
       val map2 = mapOf("a" to arrayOf(1, 2))
 
-      MapEq.equals(map1, map2, EqContext()).shouldBeNull()
+      MapEq.equals(map1, map2, EqContext()).equal.shouldBeTrue()
    }
 
-   test("should give null for deeply nested equal maps") {
+   test("should pass for deeply nested equal maps") {
       val actual = mapOf(
          "1" to mapOf(
             "2" to mapOf(
@@ -62,7 +62,7 @@ class MapEqTest : FunSpec({
          )
       )
 
-      MapEq.equals(actual, expected, EqContext()).shouldBeNull()
+      MapEq.equals(actual, expected, EqContext()).equal.shouldBeTrue()
    }
 
    test("should give error for deeply nested not equal maps") {
@@ -83,7 +83,7 @@ class MapEqTest : FunSpec({
          )
       )
 
-      val throwable = MapEq.equals(actual, expected, EqContext())
+      val throwable = MapEq.equals(actual, expected, EqContext()).error()
       assertSoftly {
          throwable.shouldNotBeNull()
          throwable.message shouldBe """
@@ -97,7 +97,7 @@ class MapEqTest : FunSpec({
       }
    }
 
-   test("should give null for equal maps having map as keys") {
+   test("should pass for equal maps having map as keys") {
 
       val map1 = mapOf(
          mapOf("a" to "b") to mapOf(
@@ -109,7 +109,7 @@ class MapEqTest : FunSpec({
             "a" to arrayOf(1, 2, 3)
          )
       )
-      MapEq.equals(map1, map2, EqContext()).shouldBeNull()
+      MapEq.equals(map1, map2, EqContext()).equal.shouldBeTrue()
    }
 
    test("should give error for non equal maps having map as keys") {
@@ -124,7 +124,7 @@ class MapEqTest : FunSpec({
             "a" to arrayOf(1, 2, 3)
          )
       )
-      val throwable = MapEq.equals(map1, map2, EqContext())
+      val throwable = MapEq.equals(map1, map2, EqContext()).error()
       assertSoftly {
          throwable.shouldNotBeNull()
          throwable.message shouldBe """
@@ -177,7 +177,7 @@ class MapEqTest : FunSpec({
       cyclicMap["self"] = cyclicMap
 
       // Comparing a cyclic map with itself should work (same instance)
-      MapEq.equals(cyclicMap, cyclicMap, EqContext()).shouldBeNull()
+      MapEq.equals(cyclicMap, cyclicMap, EqContext()).equal.shouldBeTrue()
    }
 
    test("should handle cyclic maps in nested structures") {
@@ -190,7 +190,7 @@ class MapEqTest : FunSpec({
 
       // This should not overflow when comparing the cyclic map with itself
       val extracted = (container["foo"] as Map<*, *>)["baz"]
-      MapEq.equals(extracted as Map<*, *>, cyclicMap, EqContext(false)).shouldBeNull()
+      MapEq.equals(extracted as Map<*, *>, cyclicMap, EqContext(false)).equal.shouldBeTrue()
    }
 
    test("should handle mutually recursive maps without StackOverflowError") {
@@ -201,7 +201,7 @@ class MapEqTest : FunSpec({
       map2["ref"] = map1
 
       // These two maps have the same structure, so they should be equal
-      MapEq.equals(map1, map2, EqContext()).shouldBeNull()
+      MapEq.equals(map1, map2, EqContext()).equal.shouldBeTrue()
    }
 
 })

@@ -7,21 +7,24 @@ import io.kotest.assertions.print.print
 
 object CollectionEq : Eq<Collection<*>> {
 
-   override fun equals(actual: Collection<*>, expected: Collection<*>, context: EqContext): Throwable? {
-      if (actual === expected) return null
+   override fun equals(actual: Collection<*>, expected: Collection<*>, context: EqContext): EqResult {
+      if (actual === expected) return EqResult.Success
 
-      if (context.isVisited(actual, expected)) return null
+      if (context.isVisited(actual, expected)) return EqResult.Success
 
       context.push(actual, expected)
       try {
          return when {
-            actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, context)
+            actual is Set<*> && expected is Set<*> -> EqResult.wrap(checkSetEquality(actual, expected, context))
             isOrderedSet(actual) || isOrderedSet(expected) -> {
-               checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
+               val t = checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
+               EqResult.wrap(t)
             }
-            actual is Set<*> || expected is Set<*> -> errorWithTypeDetails(actual, expected)
+
+            actual is Set<*> || expected is Set<*> -> EqResult.failure { errorWithTypeDetails(actual, expected) }
             else -> {
-               checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
+               val t = checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
+               EqResult.wrap(t)
             }
          }
       } finally {
@@ -40,7 +43,7 @@ object CollectionEq : Eq<Collection<*>> {
       val isCompatible =
          ((actual is Collection) && (expected is Collection))
             || (actual::class.isInstance(expected) && expected::class.isInstance(actual))
-      return if (isCompatible) null else errorWithTypeDetails(actual,expected)
+      return if (isCompatible) null else errorWithTypeDetails(actual, expected)
    }
 
    // when comparing sets we need to consider that {1,2,3} is the same set as {3,2,1}.
@@ -52,11 +55,13 @@ object CollectionEq : Eq<Collection<*>> {
 
       var innerError: Throwable? = null
 
-      fun equalWithDetection(elementInActualSet: Any?, it: Any?) =
-         EqCompare.compare(elementInActualSet, it, context)?.let {
-            if (null == innerError && (it.message?.startsWith(TRIGGER) == true)) innerError = it
-            false
-         } != false
+      fun equalWithDetection(elementInActualSet: Any?, it: Any?): Boolean {
+         val result = EqCompare.compare(elementInActualSet, it, context)
+         if (result.equal) return true
+         val t = result.error() ?: return true
+         if (null == innerError && (t.message?.startsWith(TRIGGER) == true)) innerError = t
+         return false
+      }
 
       return Pair(actual.all { elementInActualSet ->
          // if we have a collection type we must use the eq typeclass
@@ -65,14 +70,17 @@ object CollectionEq : Eq<Collection<*>> {
             is Set<*> -> expected.any {
                it is Set<*> && equalWithDetection(elementInActualSet, it)
             }
-            is Map<*,*> -> expected.any {
-               it is Map<*,*> && equalWithDetection(elementInActualSet, it)
+
+            is Map<*, *> -> expected.any {
+               it is Map<*, *> && equalWithDetection(elementInActualSet, it)
             }
+
             is Collection<*>, is Array<*> -> expected.any {
                it !is Set<*>
                   && (it is Collection<*> || it is Array<*>)
                   && equalWithDetection(elementInActualSet, it)
             }
+
             is Iterable<*> -> expected.any {
                it !is Set<*>
                   && it !is Collection<*>
@@ -80,6 +88,7 @@ object CollectionEq : Eq<Collection<*>> {
                   && it is Iterable<*>
                   && equalWithDetection(elementInActualSet, it)
             }
+
             else -> expected.contains(elementInActualSet)
          }
       }, innerError)
@@ -100,6 +109,7 @@ object CollectionEq : Eq<Collection<*>> {
 
             "$TRIGGER: Sets can only be compared to sets, unless both types provide a stable iteration order.\n$setType does not provide a stable iteration order and was compared with $nonSetType which is not a Set"
          }
+
          (actual is Collection) || (expected is Collection) -> "$TRIGGER typed contract\nMay not compare $tag"
          else -> "$TRIGGER promiscuous iterators\nMay not compare $tag"
       }
@@ -115,9 +125,13 @@ object CollectionEq : Eq<Collection<*>> {
       val elementDifferAtIndex = mutableListOf<Int>()
 
       fun <T> nestedIterator(item: T, oracle: Iterable<*>): String? = item?.let {
-         if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(it))) {
-         """$DISALLOWED $it (${it::class.simpleName ?: "anonymous" }) within $oracle (${oracle::class.simpleName ?: "anonymous" }); (use custom test code instead)"""
-      } else null }
+         if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(
+               it
+            ))
+         ) {
+            """$DISALLOWED $it (${it::class.simpleName ?: "anonymous"}) within $oracle (${oracle::class.simpleName ?: "anonymous"}); (use custom test code instead)"""
+         } else null
+      }
 
       var nestedIteratorError: String? = null
       var accrueDetails = true
@@ -128,11 +142,13 @@ object CollectionEq : Eq<Collection<*>> {
          return true
       }
 
-      fun equalXorDisallowed(signal: Throwable?): Throwable? = signal?.let {
-         if (it.message?.startsWith(DISALLOWED) == true) {
-            setDisallowedState(it.message!!)
+      fun equalXorDisallowed(result: EqResult): Throwable? {
+         if (result.equal) return null
+         val t = result.error() ?: return null
+         return if (t.message?.startsWith(DISALLOWED) == true) {
+            setDisallowedState(t.message!!)
             AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
-         } else it
+         } else t
       }
 
       var index = 0
@@ -147,8 +163,10 @@ object CollectionEq : Eq<Collection<*>> {
                a === b -> null
                nestedIterator(a, actual)?.let { setDisallowedState(it) } == true ->
                   AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
+
                nestedIterator(b, expected)?.let { setDisallowedState(it) } == true ->
                   AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
+
                else -> equalXorDisallowed(EqCompare.compare(a, b, context))
             }
             if (!accrueDetails) break
@@ -171,12 +189,13 @@ object CollectionEq : Eq<Collection<*>> {
          }
       }.toString()
 
-      return nestedIteratorError?.let { AssertionErrorBuilder.create().withMessage(it).build() } ?: if (detailErrorMessage.isNotBlank()) {
-         AssertionErrorBuilder.create()
-            .withMessage(detailErrorMessage)
-            .withValues(Expected(expected.print()), Actual(actual.print()))
-            .build()
-      } else null
+      return nestedIteratorError?.let { AssertionErrorBuilder.create().withMessage(it).build() }
+         ?: if (detailErrorMessage.isNotBlank()) {
+            AssertionErrorBuilder.create()
+               .withMessage(detailErrorMessage)
+               .withValues(Expected(expected.print()), Actual(actual.print()))
+               .build()
+         } else null
    }
 
    private fun generateError(actual: Any, expected: Any): Throwable = AssertionErrorBuilder.create()
