@@ -112,10 +112,31 @@ interface MatcherResult {
  * assertion error message that contains the actual and expected values in a way
  * that allows intellij to create a 'Click to see difference' link in the IDE output window.
  */
+@Deprecated("Use DiffableMatcherResult instead which provides the printed values lazily for performance. Deprecated snce 6.1. Will be removed in 6.3")
 data class ComparisonMatcherResult(
    @JsName("passed_val") val passed: Boolean,
    val actual: Printed,
    val expected: Printed,
+   val failureMessageFn: () -> String,
+   val negatedFailureMessageFn: () -> String,
+) : MatcherResult {
+   override fun passed(): Boolean = passed
+   override fun failureMessage(): String = failureMessageFn()
+   override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+}
+
+/**
+ * An instance of [MatcherResult] that contains the actual and expected values
+ * as [Printed] values, along with the failure and negated failure messages.
+ *
+ * By returning this [MatcherResult], Kotest will automatically generate the appropriate
+ * assertion error message that contains the actual and expected values in a way
+ * that allows intellij to create a 'Click to see difference' link in the IDE output window.
+ */
+data class DiffableMatcherResult(
+   @JsName("passed_val") val passed: Boolean,
+   val actual: () -> Printed,
+   val expected: () -> Printed,
    val failureMessageFn: () -> String,
    val negatedFailureMessageFn: () -> String,
 ) : MatcherResult {

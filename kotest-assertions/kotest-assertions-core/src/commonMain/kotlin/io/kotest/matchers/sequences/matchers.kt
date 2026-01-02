@@ -4,6 +4,7 @@ package io.kotest.matchers.sequences
 
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -134,7 +135,8 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       consumedActualValues.add(actualElement)
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
-      if (EqCompare.compare(actualElement.value, expectedElement.value, EqContext(false)) != null) {
+      val result = EqCompare.compare(actualElement.value, expectedElement.value, EqContext(false))
+      if (result is EqResult.Failure) {
          failDetails =
             "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
@@ -350,22 +352,38 @@ infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot sing
 
 fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      var failureMessage: String? = null
+
+      val negatedFailureMessageFn = "Sequence should not have a single element of $expectedElement."
       val iterator = value.iterator()
-      var actualElement: T?
       if (!iterator.hasNext()) {
-         failureMessage = "Sequence should have a single element of $expectedElement but is empty."
-      } else if (EqCompare.compare(iterator.next().also { actualElement = it }, expectedElement, EqContext(false)) != null) {
-         failureMessage =
-            "Sequence should have a single element of $expectedElement but has $actualElement as first element."
-      } else if (iterator.hasNext()) {
-         failureMessage = "Sequence should have a single element of $expectedElement but has more than one element."
+         return MatcherResult(
+            passed = false,
+            failureMessageFn = { "Sequence should have a single element of $expectedElement but is empty." },
+            negatedFailureMessageFn = { negatedFailureMessageFn }
+         )
       }
-      return MatcherResult(
-         failureMessage == null,
-         { failureMessage ?: "" },
-         { "Sequence should not have a single element of $expectedElement." }
-      )
+
+      val actualElement = iterator.next()
+      val result = EqCompare.compare(actualElement, expectedElement, EqContext(false))
+      return if (iterator.hasNext()) {
+         return MatcherResult(
+            passed = false,
+            failureMessageFn = { "Sequence should have a single element of $expectedElement but has more than one element." },
+            negatedFailureMessageFn = { negatedFailureMessageFn }
+         )
+      } else if (result is EqResult.Success) {
+         MatcherResult(
+            true,
+            { "Sequence should have a single element of $expectedElement." },
+            { negatedFailureMessageFn }
+         )
+      } else {
+         MatcherResult(
+            passed = false,
+            failureMessageFn = { "Sequence should have a single element of $expectedElement but has $actualElement as first element." },
+            negatedFailureMessageFn = { negatedFailureMessageFn },
+         )
+      }
    }
 }
 
@@ -520,10 +538,8 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
          remaining.remove(iter.next())
       }
 
-      val failure =
-         { "Sequence should contain all of ${ts.print().value} but was missing ${remaining.print().value}" }
+      val failure = { "Sequence should contain all of ${ts.print().value} but was missing ${remaining.print().value}" }
       val negFailure = { "Sequence should not contain all of ${ts.print().value}" }
-
       return MatcherResult(remaining.isEmpty(), failure, negFailure)
    }
 }

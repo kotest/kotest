@@ -19,8 +19,6 @@ fun interface Print<in A> {
    fun print(a: A): Printed
 }
 
-internal fun indent(level: Int): String = "  ".repeat(level)
-
 /**
  * Obtains a [Printed] instance for the given receiver by delegating to the common
  * and platform print lookups.

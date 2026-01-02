@@ -12,11 +12,10 @@ import io.kotest.matchers.MatcherResultWithError
 class EqMatcher<T>(private val expected: T) : Matcher<T> {
 
    override fun test(value: T): MatcherResult {
-      val error = EqCompare.compare(value, expected, EqContext(false))
-
+      val result = EqCompare.compare(value, expected, EqContext(false))
       return MatcherResultWithError(
-         error = error,
-         passed = error == null,
+         passed = result is EqResult.Success,
+         error = { if (result is EqResult.Failure) result.error() else null },
          failureMessageFn = { e ->
             e?.message ?: "${expected.print().value} should be equal to ${value.print().value}"
          },
