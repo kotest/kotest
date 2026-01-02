@@ -9,13 +9,19 @@ public abstract class io/kotest/extensions/testcontainers/AbstractContainerExten
 }
 
 public final class io/kotest/extensions/testcontainers/ComposeContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
+	public static final field Companion Lio/kotest/extensions/testcontainers/ComposeContainerProjectExtension$Companion;
 	public fun <init> (Lorg/testcontainers/containers/ComposeContainer;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/ComposeContainer;
 }
 
+public final class io/kotest/extensions/testcontainers/ComposeContainerProjectExtension$Companion {
+	public final fun fromResource (Ljava/lang/String;)Lio/kotest/extensions/testcontainers/ComposeContainerProjectExtension;
+}
+
 public final class io/kotest/extensions/testcontainers/ComposeContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/TestListener {
+	public static final field Companion Lio/kotest/extensions/testcontainers/ComposeContainerSpecExtension$Companion;
 	public fun <init> (Lorg/testcontainers/containers/ComposeContainer;)V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -33,6 +39,10 @@ public final class io/kotest/extensions/testcontainers/ComposeContainerSpecExten
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/ComposeContainer;
 	public fun prepareSpec (Lkotlin/reflect/KClass;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/extensions/testcontainers/ComposeContainerSpecExtension$Companion {
+	public final fun fromResource (Ljava/lang/String;)Lio/kotest/extensions/testcontainers/ComposeContainerSpecExtension;
 }
 
 public final class io/kotest/extensions/testcontainers/ContainerExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/AfterTestListener, io/kotest/core/listeners/BeforeSpecListener, io/kotest/core/listeners/BeforeTestListener {

@@ -7,6 +7,7 @@ import io.kotest.core.spec.Spec
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.ComposeContainer
+import java.io.File
 
 /**
  * A Kotest [MountableExtension] for [ComposeContainer]s that will launch the container
@@ -19,6 +20,13 @@ import org.testcontainers.containers.ComposeContainer
 class ComposeContainerSpecExtension(
    private val container: ComposeContainer,
 ) : MountableExtension<ComposeContainer, ComposeContainer>, AfterSpecListener, TestListener {
+
+   companion object {
+      fun fromResource(resource: String): ComposeContainerSpecExtension {
+         val file = this::class.java.classLoader.getResource(resource) ?: error("Resource not found: $resource")
+         return ComposeContainerSpecExtension(ComposeContainer(File(file.path)))
+      }
+   }
 
    override fun mount(configure: ComposeContainer.() -> Unit): ComposeContainer {
       configure(container)
