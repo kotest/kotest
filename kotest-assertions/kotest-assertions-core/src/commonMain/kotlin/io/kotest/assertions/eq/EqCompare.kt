@@ -5,8 +5,9 @@ package io.kotest.assertions.eq
  * The appropriate [Eq] is resolved using the [DefaultEqResolver] class.
  */
 object EqCompare {
+   @Suppress("UNCHECKED_CAST")
    internal fun <T> compare(actual: T, expected: T, context: EqContext): Throwable? {
-      val eq = EqResolver.resolve(actual, expected) as Eq<T>
+      val eq = DefaultEqResolver.resolve(actual, expected) as Eq<T>
       return eq.equals(actual, expected, context)
    }
 }
