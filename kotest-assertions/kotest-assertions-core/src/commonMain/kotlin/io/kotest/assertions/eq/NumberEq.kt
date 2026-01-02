@@ -13,7 +13,7 @@ object NumberEq : Eq<Number> {
 
    override fun equals(actual: Number, expected: Number, context: EqContext): EqResult {
       return if (compare(actual, expected, context.strictNumberEq)) EqResult.Success
-      else EqResult.failure {
+      else EqResult.Failure {
          AssertionErrorBuilder.create()
             .withValues(Expected(expected.print()), Actual(actual.print()))
             .build()

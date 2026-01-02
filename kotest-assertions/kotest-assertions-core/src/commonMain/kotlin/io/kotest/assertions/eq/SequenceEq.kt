@@ -13,7 +13,7 @@ object SequenceEq : Eq<Sequence<*>> {
     */
 
    override fun equals(actual: Sequence<*>, expected: Sequence<*>, context: EqContext): EqResult {
-      return EqResult.failure {
+      return EqResult.Failure {
          AssertionErrorBuilder.create()
             .withMessage("Sequence type is not supported in shouldBe: use custom test code")
             .build()

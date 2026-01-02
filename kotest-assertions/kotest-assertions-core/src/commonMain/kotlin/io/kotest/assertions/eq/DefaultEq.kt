@@ -19,7 +19,7 @@ internal object DefaultEq : Eq<Any?> {
       return if (test(actual, expected)) EqResult.Success else {
          val e = if (expected is String) StringPrint.printUnquoted(expected) else expected.print()
          val a = if (actual is String) StringPrint.printUnquoted(actual) else actual.print()
-         EqResult.failure {
+         EqResult.Failure {
             AssertionErrorBuilder.create()
                .withValues(Expected(e), Actual(a))
                .build()

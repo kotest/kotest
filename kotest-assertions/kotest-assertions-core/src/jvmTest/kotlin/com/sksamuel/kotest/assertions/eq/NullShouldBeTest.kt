@@ -22,7 +22,7 @@ class MyStatefulObject : Iterable<Int> {
 
 @Issue("https://github.com/kotest/kotest/issues/5036")
 class NullShouldBeTest : FunSpec({
-   test("shouldBe null and shouldNotBe null should handle nulls without alterating state") {
+   test("shouldBe null and shouldNotBe null should handle nulls without altering state") {
       val obj = MyStatefulObject()
 
       obj shouldNotBe null

@@ -29,12 +29,16 @@ object ArrayEq : Eq<Array<*>> {
       }
 
       fun equalXorDisallowed(result: EqResult): Throwable? {
-         if (result.equal) return null
-         val error = result.error() ?: return null
-         return if (error.message?.startsWith(DISALLOWED) == true) {
-            setDisallowedState(error.message!!)
-            AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
-         } else error
+         return when (result) {
+            is EqResult.Failure -> {
+               val e = result.error()
+               if (e.message?.startsWith(DISALLOWED) == true) {
+                  setDisallowedState(e.message!!)
+                  AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
+               } else e
+            }
+            EqResult.Success -> null
+         }
       }
 
       var index = 0
@@ -76,13 +80,13 @@ object ArrayEq : Eq<Array<*>> {
       }.toString()
 
       if (nestedIteratorError != null) {
-         return EqResult.failure {
+         return EqResult.Failure {
             AssertionErrorBuilder.create().withMessage(nestedIteratorError).build()
          }
       }
 
       return if (detailErrorMessage.isNotBlank()) {
-         EqResult.failure {
+         EqResult.Failure {
             AssertionErrorBuilder.create().withMessage(detailErrorMessage)
                .withValues(Expected(expected.print()), Actual(actual.print()))
                .build()

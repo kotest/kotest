@@ -4,6 +4,7 @@ package io.kotest.matchers.sequences
 
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -135,7 +136,7 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
       val result = EqCompare.compare(actualElement.value, expectedElement.value, EqContext(false))
-      if (!result.equal) {
+      if (result is EqResult.Failure) {
          failDetails =
             "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
@@ -370,7 +371,7 @@ fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
             failureMessageFn = { "Sequence should have a single element of $expectedElement but has more than one element." },
             negatedFailureMessageFn = { negatedFailureMessageFn }
          )
-      } else if (result.equal) {
+      } else if (result is EqResult.Success) {
          MatcherResult(
             true,
             { "Sequence should have a single element of $expectedElement." },

@@ -166,11 +166,6 @@ public final class io/kotest/assertions/eq/EqContext {
 public final class io/kotest/assertions/eq/EqContext$Companion {
 }
 
-public final class io/kotest/assertions/eq/EqKt {
-	public static final fun flatMapIfEqual (Lio/kotest/assertions/eq/EqResult;Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
-	public static final fun throwableWithFallback (Lio/kotest/assertions/eq/EqResult;)Ljava/lang/Throwable;
-}
-
 public final class io/kotest/assertions/eq/EqMatcher : io/kotest/matchers/Matcher {
 	public fun <init> (Ljava/lang/Object;)V
 	public fun contramap (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
@@ -184,24 +179,30 @@ public final class io/kotest/assertions/eq/EqResolver {
 	public final fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
 }
 
-public final class io/kotest/assertions/eq/EqResult {
+public abstract interface class io/kotest/assertions/eq/EqResult {
 	public static final field Companion Lio/kotest/assertions/eq/EqResult$Companion;
-	public fun <init> (ZLkotlin/jvm/functions/Function0;)V
-	public final fun component1 ()Z
-	public final fun component2 ()Lkotlin/jvm/functions/Function0;
-	public final fun copy (ZLkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
-	public static synthetic fun copy$default (Lio/kotest/assertions/eq/EqResult;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/assertions/eq/EqResult;
+}
+
+public final class io/kotest/assertions/eq/EqResult$Companion {
+	public final fun wrap (Ljava/lang/Throwable;)Lio/kotest/assertions/eq/EqResult;
+}
+
+public final class io/kotest/assertions/eq/EqResult$Failure : io/kotest/assertions/eq/EqResult {
+	public fun <init> (Lkotlin/jvm/functions/Function0;)V
+	public final fun component1 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult$Failure;
+	public static synthetic fun copy$default (Lio/kotest/assertions/eq/EqResult$Failure;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/assertions/eq/EqResult$Failure;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getEqual ()Z
 	public final fun getError ()Lkotlin/jvm/functions/Function0;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/assertions/eq/EqResult$Companion {
-	public final fun failure (Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/eq/EqResult;
-	public final fun getSuccess ()Lio/kotest/assertions/eq/EqResult;
-	public final fun wrap (Ljava/lang/Throwable;)Lio/kotest/assertions/eq/EqResult;
+public final class io/kotest/assertions/eq/EqResult$Success : io/kotest/assertions/eq/EqResult {
+	public static final field INSTANCE Lio/kotest/assertions/eq/EqResult$Success;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/eq/IsOrderedSetKt {

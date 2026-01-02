@@ -12,12 +12,14 @@ import io.kotest.assertions.print.print
 internal object RegexEq : Eq<Regex> {
 
    override fun equals(actual: Regex, expected: Regex, context: EqContext): EqResult {
-      return patternsAreNotEqual(actual, expected)
-         .flatMapIfEqual { optionsAreNotEqual(actual, expected) }
+      return when (val result = patternsAreNotEqual(actual, expected)) {
+         is EqResult.Failure -> result
+         EqResult.Success -> optionsAreNotEqual(actual, expected)
+      }
    }
 
    private fun patternsAreNotEqual(actual: Regex, expected: Regex): EqResult {
-      return if (actual.pattern == expected.pattern) EqResult.Success else EqResult.failure {
+      return if (actual.pattern == expected.pattern) EqResult.Success else EqResult.Failure {
          AssertionErrorBuilder.create()
             .withValues(
                Expected(Printed(expected.pattern)),
@@ -27,7 +29,7 @@ internal object RegexEq : Eq<Regex> {
    }
 
    private fun optionsAreNotEqual(actual: Regex, expected: Regex): EqResult {
-      return if (actual.options == expected.options) EqResult.Success else EqResult.failure {
+      return if (actual.options == expected.options) EqResult.Success else EqResult.Failure {
          AssertionErrorBuilder.create()
             .withValues(
                Expected(expected.options.print()),

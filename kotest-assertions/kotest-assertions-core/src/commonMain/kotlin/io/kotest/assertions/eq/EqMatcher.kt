@@ -14,8 +14,8 @@ class EqMatcher<T>(private val expected: T) : Matcher<T> {
    override fun test(value: T): MatcherResult {
       val result = EqCompare.compare(value, expected, EqContext(false))
       return MatcherResultWithError(
-         passed = result.equal,
-         error = result.error,
+         passed = result is EqResult.Success,
+         error = { if (result is EqResult.Failure) result.error() else null },
          failureMessageFn = { e ->
             e?.message ?: "${expected.print().value} should be equal to ${value.print().value}"
          },

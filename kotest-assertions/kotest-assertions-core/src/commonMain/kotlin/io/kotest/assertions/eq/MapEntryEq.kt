@@ -14,10 +14,10 @@ internal object MapEntryEq : Eq<Map.Entry<*, *>> {
    override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, context: EqContext): EqResult {
       val compareKey = EqCompare.compare(actual.key, expected.key, context)
       val compareValue = EqCompare.compare(actual.value, expected.value, context)
-      return if (compareKey.equal && compareValue.equal)
+      return if (compareKey is EqResult.Success && compareValue is EqResult.Success)
          EqResult.Success
       else
-         EqResult.failure {
+         EqResult.Failure {
             AssertionErrorBuilder.create()
                .withValues(Expected(expected.print()), Actual(actual.print()))
                .build()

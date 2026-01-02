@@ -35,7 +35,7 @@ object StringEq : Eq<String> {
       return when {
          actualEscaped == expectedEscaped -> EqResult.Success
 
-         equalIgnoringWhitespace(actualEscaped, expectedEscaped) -> EqResult.failure {
+         equalIgnoringWhitespace(actualEscaped, expectedEscaped) -> EqResult.Failure {
             AssertionErrorBuilder.create()
                .withMessage("(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n")
                .withValues(
@@ -44,11 +44,11 @@ object StringEq : Eq<String> {
                ).build()
          }
 
-         useDiff(expectedEscaped, actualEscaped) -> EqResult.failure {
+         useDiff(expectedEscaped, actualEscaped) -> EqResult.Failure {
             diff(expectedEscaped, actualEscaped)
          }
 
-         t.matched -> EqResult.failure {
+         t.matched -> EqResult.Failure {
             AssertionErrorBuilder.create()
                .withMessage("Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n")
                .withValues(
@@ -57,7 +57,7 @@ object StringEq : Eq<String> {
                ).build()
          }
 
-         else -> EqResult.failure {
+         else -> EqResult.Failure {
             AssertionErrorBuilder.create()
                .withValues(
                   expected = Expected(StringPrint.printUnquoted(expectedEscaped)),

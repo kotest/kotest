@@ -14,7 +14,7 @@ object ThrowableEq : Eq<Throwable> {
       return if (actual.message == expected.message && expected::class == actual::class)
          EqResult.Success
       else
-         EqResult.failure {
+         EqResult.Failure {
             AssertionErrorBuilder.create()
                .withValues(Expected(expected.print()), Actual(actual.print()))
                .build()

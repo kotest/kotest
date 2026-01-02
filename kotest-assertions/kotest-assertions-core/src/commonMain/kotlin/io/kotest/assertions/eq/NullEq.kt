@@ -22,7 +22,7 @@ internal object NullEq : Eq<Any?> {
    }
 
    fun actualIsNull(expected: Any): EqResult {
-      return EqResult.failure {
+      return EqResult.Failure {
          AssertionErrorBuilder.create()
             .withMessage("Expected ${expected.print().value} but actual was null")
             .build()
@@ -30,7 +30,7 @@ internal object NullEq : Eq<Any?> {
    }
 
    fun expectedIsNull(actual: Any): EqResult {
-      return EqResult.failure {
+      return EqResult.Failure {
          AssertionErrorBuilder.create()
             .withMessage("Expected null but actual was ${actual.print().value}")
             .build()

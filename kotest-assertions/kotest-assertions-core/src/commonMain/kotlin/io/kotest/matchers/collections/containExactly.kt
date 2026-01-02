@@ -4,6 +4,7 @@ import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.CollectionEq
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.equals.Equality
 import io.kotest.assertions.print.print
 import io.kotest.assertions.similarity.possibleMatchesDescription
@@ -74,7 +75,11 @@ fun <T, C : Collection<T>> containExactly(
       this?.message?.startsWith(CollectionEq.TRIGGER) == true
 
    val failureReason = if (verifier == null) {
-      EqCompare.compare(actual, expected, EqContext(true)).error()
+      val result = EqCompare.compare(actual, expected, EqContext(true))
+      when (result) {
+         is EqResult.Failure -> result.error()
+         EqResult.Success -> null
+      }
    } else {
       matchCollectionsWithVerifier(actual, expected, verifier)
    }

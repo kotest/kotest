@@ -21,7 +21,7 @@ object CollectionEq : Eq<Collection<*>> {
                EqResult.wrap(t)
             }
 
-            actual is Set<*> || expected is Set<*> -> EqResult.failure { errorWithTypeDetails(actual, expected) }
+            actual is Set<*> || expected is Set<*> -> EqResult.Failure { errorWithTypeDetails(actual, expected) }
             else -> {
                val t = checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
                EqResult.wrap(t)
@@ -56,11 +56,14 @@ object CollectionEq : Eq<Collection<*>> {
       var innerError: Throwable? = null
 
       fun equalWithDetection(elementInActualSet: Any?, it: Any?): Boolean {
-         val result = EqCompare.compare(elementInActualSet, it, context)
-         if (result.equal) return true
-         val t = result.error() ?: return true
-         if (null == innerError && (t.message?.startsWith(TRIGGER) == true)) innerError = t
-         return false
+         return when (val result = EqCompare.compare(elementInActualSet, it, context)) {
+            is EqResult.Failure -> {
+               val t = result.error()
+               if (null == innerError && (t.message?.startsWith(TRIGGER) == true)) innerError = t
+               return false
+            }
+            EqResult.Success -> true
+         }
       }
 
       return Pair(actual.all { elementInActualSet ->
@@ -143,12 +146,16 @@ object CollectionEq : Eq<Collection<*>> {
       }
 
       fun equalXorDisallowed(result: EqResult): Throwable? {
-         if (result.equal) return null
-         val t = result.error() ?: return null
-         return if (t.message?.startsWith(DISALLOWED) == true) {
-            setDisallowedState(t.message!!)
-            AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
-         } else t
+         return when (result) {
+            is EqResult.Failure -> {
+               val t = result.error()
+               return if (t.message?.startsWith(DISALLOWED) == true) {
+                  setDisallowedState(t.message!!)
+                  AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
+               } else t
+            }
+            EqResult.Success -> null
+         }
       }
 
       var index = 0

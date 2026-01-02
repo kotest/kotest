@@ -20,14 +20,15 @@ internal object MapEq : Eq<Map<*, *>> {
       context.push(actual, expected)
       try {
          val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, context)
-
-         return if (!haveUnequalKeys.equal) EqResult.failure { generateError(actual, expected) }
-         else {
-            val hasDifferentValue = actual.keys.any { key ->
-               !EqCompare.compare(actual[key], expected[key], context).equal
+         return when (haveUnequalKeys) {
+            is EqResult.Failure -> EqResult.Failure { generateError(actual, expected) }
+            EqResult.Success -> {
+               val hasDifferentValue = actual.keys.any { key ->
+                  EqCompare.compare(actual[key], expected[key], context) is EqResult.Failure
+               }
+               if (hasDifferentValue) EqResult.Failure { generateError(actual, expected) }
+               else EqResult.Success
             }
-            if (hasDifferentValue) EqResult.failure { generateError(actual, expected) }
-            else EqResult.Success
          }
       } finally {
          context.pop()

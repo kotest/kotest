@@ -48,7 +48,7 @@ internal object DataClassEq : Eq<Any> {
                dataClassDiff(actual, expected, context = context)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
             }.getOrElse { "" }
 
-            EqResult.failure {
+            EqResult.Failure {
                AssertionErrorBuilder.create()
                   .withMessage(detailedDiffMsg)
                   .withValues(Expected(expected.print()), Actual(actual.print()))
@@ -87,8 +87,13 @@ internal object DataClassEq : Eq<Any> {
             }
          else {
             val result = EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
-            val error = result.error()
-            if (error != null) Pair(prop, StandardDifference(error)) else null
+            when (result) {
+               is EqResult.Failure -> {
+                  val error = result.error()
+                  Pair(prop, StandardDifference(error))
+               }
+               EqResult.Success -> null
+            }
          }
       }
 
