@@ -1,0 +1,102 @@
+package io.kotest.runner.junit.platform
+
+import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestType
+import io.kotest.engine.test.names.DisplayNameFormatting
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
+import org.junit.platform.engine.TestDescriptor
+import org.junit.platform.engine.UniqueId
+import org.junit.platform.engine.support.descriptor.ClassSource
+import org.junit.platform.engine.support.descriptor.MethodSource
+
+/**
+ * Tests for [createTestDescriptorWithMethodSource] to ensure that:
+ * - CONTAINER type tests use [ClassSource] for proper tree rendering in Android Studio
+ * - TEST (leaf) type tests use [MethodSource] for Maven surefire-junit-platform compatibility
+ *
+ * This is needed because:
+ * - Android Studio's ijLog parser does not correctly render nested test trees when CONTAINER
+ *   tests use MethodSource - sibling containers appear incorrectly nested under each other
+ * - Maven surefire-junit-platform needs MethodSource for leaf tests to produce correct XML reports
+ *
+ */
+class CreateTestDescriptorWithMethodSourceTest : FunSpec({
+   val root = EngineDescriptorBuilder
+      .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+      .withSpecs(listOf(DummySpec::class))
+      .build()
+
+   val containerTestCase = TestCase(
+      DummySpec::class.toDescriptor().append("container test"),
+      TestNameBuilder.builder("container test").build(),
+      DummySpec(),
+      { 1 + 1 shouldBe 2},
+      SourceRef.None,
+      TestType.Container,
+   )
+
+   val leafTestCase = TestCase(
+      containerTestCase.descriptor.append("leaf test"),
+      TestNameBuilder.builder("leaf test").build(),
+      containerTestCase.spec,
+      { 1 + 1 shouldBe 2},
+      SourceRef.None,
+      TestType.Test,
+      parent = containerTestCase,
+   )
+
+   test("CONTAINER type tests should use ClassSource for Android Studio compatibility") {
+      val descriptor = createTestDescriptorWithMethodSource(
+         root = root,
+         testCase = containerTestCase,
+         type = TestDescriptor.Type.CONTAINER,
+         formatter = DisplayNameFormatting(null),
+      )
+
+      descriptor.source.isPresent shouldBe true
+      descriptor.source.get().shouldBeInstanceOf<ClassSource>()
+
+      val classSource = descriptor.source.get() as ClassSource
+      classSource.className shouldBe DummySpec::class.qualifiedName
+   }
+
+   test("TEST type tests should use MethodSource for Maven surefire compatibility") {
+      val descriptor = createTestDescriptorWithMethodSource(
+         root = root,
+         testCase = leafTestCase,
+         type = TestDescriptor.Type.TEST,
+         formatter = DisplayNameFormatting(null),
+      )
+
+      descriptor.source.isPresent shouldBe true
+      descriptor.source.get().shouldBeInstanceOf<MethodSource>()
+
+      val methodSource = descriptor.source.get() as MethodSource
+      methodSource.className shouldBe DummySpec::class.qualifiedName
+      methodSource.methodName shouldBe "container test/leaf test"
+   }
+
+   test("CONTAINER_AND_TEST type tests should use MethodSource") {
+      val descriptor = createTestDescriptorWithMethodSource(
+         root = root,
+         testCase = containerTestCase,
+         type = TestDescriptor.Type.CONTAINER_AND_TEST,
+         formatter = DisplayNameFormatting(null),
+      )
+
+      descriptor.source.isPresent shouldBe true
+      descriptor.source.get().shouldBeInstanceOf<MethodSource>()
+
+      val methodSource = descriptor.source.get() as MethodSource
+      methodSource.className shouldBe DummySpec::class.qualifiedName
+      methodSource.methodName shouldBe "container test"
+   }
+})
+
+private class DummySpec : FunSpec({})
+
