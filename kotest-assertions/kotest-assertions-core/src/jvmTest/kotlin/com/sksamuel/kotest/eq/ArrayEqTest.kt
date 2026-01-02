@@ -30,12 +30,12 @@ class ArrayEqTest : FunSpec({
    test("should work for empty arrays") {
       val result1 = ArrayEq.equals(emptyArray<Int>(), arrayOf(1), EqContext()) as EqResult.Failure
       val error1 = result1.error()
-      error1 shouldBe """Missing elements from index 0
+      error1.message shouldBe """Missing elements from index 0
                                |expected:<[1]> but was:<[]>""".trimMargin()
 
       val result2 = ArrayEq.equals(arrayOf(1, 2), emptyArray<Int>(), EqContext()) as EqResult.Failure
       val error2 = result2.error()
-      error2 shouldBe """Unexpected elements from index 1
+      error2.message shouldBe """Unexpected elements from index 1
                                |expected:<[]> but was:<[1, 2]>""".trimMargin()
    }
 
