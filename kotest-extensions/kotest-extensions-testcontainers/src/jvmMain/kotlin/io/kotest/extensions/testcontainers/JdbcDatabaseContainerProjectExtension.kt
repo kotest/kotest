@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.extensions.testcontainers.options.ContainerExtensionConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
@@ -27,6 +28,7 @@ import javax.sql.DataSource
  */
 class JdbcDatabaseContainerProjectExtension(
    private val container: JdbcDatabaseContainer<*>,
+   private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
 ) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener {
 
    private val ref = AtomicReference<HikariDataSource>(null)
@@ -37,6 +39,7 @@ class JdbcDatabaseContainerProjectExtension(
       val t = ref.get()
       if (t == null) {
          container.start()
+         container.followOutput(config.logConsumer)
          val config = HikariConfig()
          config.jdbcUrl = container.jdbcUrl
          config.username = container.username
@@ -45,6 +48,7 @@ class JdbcDatabaseContainerProjectExtension(
          val ds = HikariDataSource(config)
          ref.set(ds)
       }
+
       lock.unlock()
       return ref.get()
    }
