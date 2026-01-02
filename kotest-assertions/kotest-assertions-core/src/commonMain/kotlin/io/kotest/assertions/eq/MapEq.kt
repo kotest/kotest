@@ -1,8 +1,8 @@
 package io.kotest.assertions.eq
 
-import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
 import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.print
@@ -12,23 +12,19 @@ import io.kotest.assertions.print.print
  */
 internal object MapEq : Eq<Map<*, *>> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: Map<*, *>, expected: Map<*, *>, strictNumberEq: Boolean, context: EqContext): Throwable? {
+    override fun equals(actual: Map<*, *>, expected: Map<*, *>, context: EqContext): Throwable? {
       if (actual === expected) return null
 
       if (context.isVisited(actual, expected)) return null
 
       context.push(actual, expected)
       try {
-         val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, strictNumberEq, context)
+         val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, context)
 
          return if (haveUnequalKeys != null) generateError(actual, expected)
          else {
             val hasDifferentValue = actual.keys.any { key ->
-               EqCompare.compare(actual[key], expected[key], strictNumberEq, context) != null
+               EqCompare.compare(actual[key], expected[key], context) != null
             }
             if (hasDifferentValue) generateError(actual, expected)
             else null

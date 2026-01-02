@@ -25,11 +25,7 @@ import io.kotest.matchers.string.StringPreprocessor
  */
 object StringEq : Eq<String> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: String, expected: String, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   override fun equals(actual: String, expected: String, context: EqContext): Throwable? {
 
       val actualEscaped = StringPreprocessor.process(actual)
       val expectedEscaped = StringPreprocessor.process(expected)
