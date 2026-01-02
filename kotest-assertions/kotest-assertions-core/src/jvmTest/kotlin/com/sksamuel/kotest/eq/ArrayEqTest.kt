@@ -13,11 +13,11 @@ import io.kotest.matchers.string.shouldStartWith
 class ArrayEqTest : FunSpec({
 
    test("should give null for two equal arrays") {
-      ArrayEq.equals(arrayOf(1, 2, 3), arrayOf(1, 2, 3), false, EqContext()).shouldBeNull()
+      ArrayEq.equals(arrayOf(1, 2, 3), arrayOf(1, 2, 3), EqContext()).shouldBeNull()
    }
 
    test("should give error for two unequal arrays") {
-      val error = ArrayEq.equals(arrayOf(3), arrayOf(1, 2, 3), false, EqContext())
+      val error = ArrayEq.equals(arrayOf(3), arrayOf(1, 2, 3), EqContext())
 
       assertSoftly {
          error.shouldNotBeNull()
@@ -28,11 +28,11 @@ class ArrayEqTest : FunSpec({
    }
 
    test("should work for empty arrays") {
-      val errorMessage1 = ArrayEq.equals(emptyArray<Int>(), arrayOf(1), false, EqContext())?.message
+      val errorMessage1 = ArrayEq.equals(emptyArray<Int>(), arrayOf(1), EqContext())?.message
       errorMessage1 shouldBe """Missing elements from index 0
                                |expected:<[1]> but was:<[]>""".trimMargin()
 
-      val errorMessage2 = ArrayEq.equals(arrayOf(1, 2), emptyArray<Int>(), false, EqContext())?.message
+      val errorMessage2 = ArrayEq.equals(arrayOf(1, 2), emptyArray<Int>(), EqContext())?.message
       errorMessage2 shouldBe """Unexpected elements from index 1
                                |expected:<[]> but was:<[1, 2]>""".trimMargin()
    }
@@ -41,7 +41,7 @@ class ArrayEqTest : FunSpec({
       val array1 = arrayOf(arrayOf(1, 2), 3)
       val array2 = arrayOf(arrayOf(1, 2), 3)
 
-      val error = ArrayEq.equals(array1, array2, false, EqContext())
+      val error = ArrayEq.equals(array1, array2, EqContext())
       assertSoftly {
          error.shouldNotBeNull()
          error.message shouldStartWith "Disallowed nesting array"

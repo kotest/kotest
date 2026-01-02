@@ -3,6 +3,7 @@
 package io.kotest.matchers.sequences
 
 import io.kotest.assertions.eq.EqCompare
+import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -133,7 +134,7 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       consumedActualValues.add(actualElement)
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
-      if (EqCompare.compare(actualElement.value, expectedElement.value, false) != null) {
+      if (EqCompare.compare(actualElement.value, expectedElement.value, EqContext(false)) != null) {
          failDetails =
             "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
@@ -354,7 +355,7 @@ fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
       var actualElement: T?
       if (!iterator.hasNext()) {
          failureMessage = "Sequence should have a single element of $expectedElement but is empty."
-      } else if (EqCompare.compare(iterator.next().also { actualElement = it }, expectedElement, false) != null) {
+      } else if (EqCompare.compare(iterator.next().also { actualElement = it }, expectedElement, EqContext(false)) != null) {
          failureMessage =
             "Sequence should have a single element of $expectedElement but has $actualElement as first element."
       } else if (iterator.hasNext()) {

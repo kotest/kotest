@@ -24,8 +24,11 @@ enum class SpecExecutionOrder {
    Random,
 
    /**
-    * Orders specs by the [Order] annotation. Any specs without such an annotation are considered "last"
-    * and the order is undefined.
+    * Orders specs by the [Order] annotation with lower values first.
+    * Any specs without such an annotation are considered last and the order is undefined.
+    *
+    * Note: Runtime annotations are not supported on Native or JS so on those platforms
+    * this sort order is a no-op.
     */
    Annotated,
 
