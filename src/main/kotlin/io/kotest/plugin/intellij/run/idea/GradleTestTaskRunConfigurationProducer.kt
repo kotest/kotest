@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.Location
 import com.intellij.execution.actions.ConfigurationContext
+import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
@@ -19,6 +20,28 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
  */
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProducer() {
+
+   /**
+    * When two configurations are created from the same context by two different producers, checks if the
+    * configuration created by this producer should be preferred over the other one.
+    *
+    * We return true when the other configuration is NOT a Gradle run configuration, to ensure Kotest specs
+    * take priority over JUnit (which may claim the class due to Spring Boot test annotations like
+    * `@SpringBootTest` that are meta-annotated with `@ExtendWith(SpringExtension.class)`).
+    */
+   override fun isPreferredConfiguration(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
+      // Prefer this over non GradleRunConfiguration
+      return other.configuration !is GradleRunConfiguration
+   }
+
+   /**
+    * Returns true if this configuration should replace the other configuration.
+    * We replace JUnit configurations when we detect a Kotest spec.
+    */
+   override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
+      // Replace non GradleRunConfiguration with this
+      return other.configuration !is GradleRunConfiguration
+   }
 
    override fun setupConfigurationFromContext(
       configuration: GradleRunConfiguration,
