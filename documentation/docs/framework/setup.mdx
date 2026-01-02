@@ -38,28 +38,9 @@ A working project with JVM support can be found here:
 https://github.com/kotest/kotest-examples
 :::
 
-Kotest on the JVM has two ways for running tests. One uses the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest), which provides detailed test output in the console, and a rich experience in Intellij (in conjuction with the Intellij Kotest plugin).
-The other option uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin which is ubiquitous in the JVM ecosystem but lacks some features of the Kotest gradle plugin.
+Kotest on the JVM builds on the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin which is ubiquitous in the JVM ecosystem.
 
-To use the Kotest gradle plugin, add the following to your `build.gradle.kts` file:
-
-```kotlin
-plugins {
-   id("io.kotest") version "<kotest-version>"
-}
-```
-
-Add the following dependency to your build:
-
-```kotlin
-dependencies {
-   testImplementation("io.kotest:kotest-framework-engine:<kotest-version>")
-}
-```
-
-And then execute the `jvmKotest` task in gradle, or run tests directly from the IDE.
-
-To use the JUnit Platform plugin, add the following to your `build.gradle.kts` file:
+To use the JUnit Platform support, first configure Gradle:
 
 ```kotlin
 tasks.withType<Test>().configureEach {
@@ -67,7 +48,7 @@ tasks.withType<Test>().configureEach {
 }
 ```
 
-Add the following dependency to your build:
+Andd then add the following dependency to your build:
 
 ```kotlin
 dependencies {
