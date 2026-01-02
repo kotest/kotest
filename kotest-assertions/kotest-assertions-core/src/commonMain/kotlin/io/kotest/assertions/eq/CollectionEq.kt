@@ -7,11 +7,7 @@ import io.kotest.assertions.print.print
 
 object CollectionEq : Eq<Collection<*>> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: Collection<*>, expected: Collection<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   override fun equals(actual: Collection<*>, expected: Collection<*>, context: EqContext): Throwable? {
       if (actual === expected) return null
 
       if (context.isVisited(actual, expected)) return null
@@ -19,13 +15,13 @@ object CollectionEq : Eq<Collection<*>> {
       context.push(actual, expected)
       try {
          return when {
-            actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, strictNumberEq, context)
+            actual is Set<*> && expected is Set<*> -> checkSetEquality(actual, expected, context)
             isOrderedSet(actual) || isOrderedSet(expected) -> {
-               checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq, context)
+               checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
             }
             actual is Set<*> || expected is Set<*> -> errorWithTypeDetails(actual, expected)
             else -> {
-               checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, strictNumberEq, context)
+               checkIterableCompatibility(actual, expected) ?: checkEquality(actual, expected, context)
             }
          }
       } finally {
@@ -33,9 +29,9 @@ object CollectionEq : Eq<Collection<*>> {
       }
    }
 
-   private fun checkSetEquality(actual: Set<*>, expected: Set<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   private fun checkSetEquality(actual: Set<*>, expected: Set<*>, context: EqContext): Throwable? {
       return if (actual.size != expected.size) generateError(actual, expected) else {
-         val (isEqual, innerError) = equalsIgnoringOrder(actual, expected, strictNumberEq, context)
+         val (isEqual, innerError) = equalsIgnoringOrder(actual, expected, context)
          (innerError ?: if (isEqual) null else generateError(actual, expected))
       }
    }
@@ -52,12 +48,12 @@ object CollectionEq : Eq<Collection<*>> {
    // { [1,2,3], 4 } != { [1,2,3], 4 }
    // so we must use Kotest's Eq typeclass.
    // Performance is sensitive so we must be careful to not end up with O(n^2)
-   private fun equalsIgnoringOrder(actual: Set<*>, expected: Set<*>, strictNumberEq: Boolean, context: EqContext): Pair<Boolean, Throwable?> {
+   private fun equalsIgnoringOrder(actual: Set<*>, expected: Set<*>, context: EqContext): Pair<Boolean, Throwable?> {
 
       var innerError: Throwable? = null
 
       fun equalWithDetection(elementInActualSet: Any?, it: Any?) =
-         EqCompare.compare(elementInActualSet, it, strictNumberEq, context)?.let {
+         EqCompare.compare(elementInActualSet, it, context)?.let {
             if (null == innerError && (it.message?.startsWith(TRIGGER) == true)) innerError = it
             false
          } != false
@@ -112,7 +108,7 @@ object CollectionEq : Eq<Collection<*>> {
 
    private const val DISALLOWED = "$TRIGGER nesting iterator"
 
-   private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, context: EqContext): Throwable? {
 
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
@@ -153,7 +149,7 @@ object CollectionEq : Eq<Collection<*>> {
                   AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
                nestedIterator(b, expected)?.let { setDisallowedState(it) } == true ->
                   AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
-               else -> equalXorDisallowed(EqCompare.compare(a, b, strictNumberEq, context))
+               else -> equalXorDisallowed(EqCompare.compare(a, b, context))
             }
             if (!accrueDetails) break
             if (t != null) elementDifferAtIndex.add(index)

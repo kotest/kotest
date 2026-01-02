@@ -1,6 +1,12 @@
 package io.kotest.assertions.eq
 
-class EqContext {
+/**
+ * @param strictNumberEq used by number types to determine if they should be compared using == or by converting to the larger type.
+ */
+class EqContext(val strictNumberEq: Boolean) {
+
+   constructor() : this(false)
+
    private val visited = mutableListOf<Pair<Any?, Any?>>()
 
    companion object {

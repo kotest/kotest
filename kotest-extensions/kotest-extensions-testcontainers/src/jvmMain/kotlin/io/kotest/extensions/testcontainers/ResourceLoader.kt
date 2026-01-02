@@ -25,7 +25,9 @@ fun Resource.endsWith(name: String): Boolean = when (this) {
 
 @Deprecated("use Flyway or another db migration tool. Will be removed in 6.2")
 fun Resource.loadToReader(): BufferedReader = when (this) {
-   is Resource.Classpath -> javaClass.getResourceAsStream(this.resource)?.bufferedReader() ?: error("$this was not found on classpath")
+   is Resource.Classpath -> javaClass.getResourceAsStream(this.resource)?.bufferedReader()
+      ?: error("$this was not found on classpath")
+
    is Resource.File -> Files.newBufferedReader(this.path)
 }
 
@@ -55,7 +57,7 @@ class ResourceLoader {
       }
    }
 
-   private fun getClasspathResourcesFromJar(resource: String) : List<Resource> {
+   private fun getClasspathResourcesFromJar(resource: String): List<Resource> {
       val uri = javaClass.getResource(resource)!!.toURI()
       FileSystems.newFileSystem(uri, mutableMapOf<String, Any>()).use { fs ->
          val pathList = fs.getPath(resource).getDirContentsOrItself()
@@ -73,7 +75,7 @@ class ResourceLoader {
 
       } else {
          //On Classpath
-         when(url.protocol){
+         when (url.protocol) {
             "jar" -> getClasspathResourcesFromJar(resource)
             "file" -> getFileResourcesFromPath(Paths.get(url.toURI()))
             else -> error("Unhandled protocol: ${url.protocol}")
@@ -81,4 +83,3 @@ class ResourceLoader {
       }
    }
 }
-

@@ -34,11 +34,7 @@ internal object DataClassEq : Eq<Any> {
     */
    private const val MAX_NESTED_DEPTH = 10
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: Any, expected: Any, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   override fun equals(actual: Any, expected: Any,  context: EqContext): Throwable? {
       if (actual === expected) return null
 
       if (context.isVisited(actual, expected)) return null
@@ -49,7 +45,7 @@ internal object DataClassEq : Eq<Any> {
             null
          } else {
             val detailedDiffMsg = runCatching {
-               dataClassDiff(actual, expected, strictNumberEq = strictNumberEq, context = context)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
+               dataClassDiff(actual, expected, context = context)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
             }.getOrElse { "" }
 
             AssertionErrorBuilder.create()
@@ -64,26 +60,26 @@ internal object DataClassEq : Eq<Any> {
 
    private fun test(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)
 
-   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0, strictNumberEq: Boolean, context: EqContext): DataClassDifference? {
+   private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0, context: EqContext): DataClassDifference? {
       require(actual != null && expected != null) { "Actual and expected values cannot be null in a data class comparison" }
       require(depth < MAX_NESTED_DEPTH) { "Max depth reached" }
-      val differences = computeMemberDifferences(expected, actual, depth, strictNumberEq, context)
+      val differences = computeMemberDifferences(expected, actual, depth, context)
       return when {
          differences.isEmpty() -> null
          else -> DataClassDifference(expected::class.bestName(), differences)
       }
    }
 
-   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int, strictNumberEq: Boolean, context: EqContext) =
+   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int, context: EqContext) =
       reflection.primaryConstructorMembers(expected::class).mapNotNull { prop ->
          val actualPropertyValue = prop.call(actual)
          val expectedPropertyValue = prop.call(expected)
          if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue))
-            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, strictNumberEq, context)?.let { diff ->
+            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
                Pair(prop, diff)
             }
          else {
-            EqCompare.compare(actualPropertyValue, expectedPropertyValue, strictNumberEq, context)
+            EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
                ?.let { Pair(prop, StandardDifference(it)) }
          }
       }

@@ -7,11 +7,7 @@ import io.kotest.assertions.print.print
 
 object ArrayEq : Eq<Array<*>> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
+   override fun equals(actual: Array<*>, expected: Array<*>, context: EqContext): Throwable? {
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
       val elementDifferAtIndex = mutableListOf<Int>()
@@ -54,7 +50,7 @@ object ArrayEq : Eq<Array<*>> {
                nestedIterator(b, expected)?.let { setDisallowedState(it) } == true ->
                   AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
 
-               else -> equalXorDisallowed(EqCompare.compare(a, b, strictNumberEq, context))
+               else -> equalXorDisallowed(EqCompare.compare(a, b, context))
             }
             if (!accrueDetails) break
             if (t != null) elementDifferAtIndex.add(index)
