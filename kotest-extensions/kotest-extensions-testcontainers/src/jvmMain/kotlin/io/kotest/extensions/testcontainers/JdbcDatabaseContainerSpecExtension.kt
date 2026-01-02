@@ -5,8 +5,7 @@ import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Spec
-import io.kotest.extensions.testcontainers.options.BasicLogConsumer
-import io.kotest.extensions.testcontainers.options.TestContainerOptions
+import io.kotest.extensions.testcontainers.options.ContainerExtensionConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
@@ -29,13 +28,12 @@ import javax.sql.DataSource
  */
 class JdbcDatabaseContainerSpecExtension(
    private val container: JdbcDatabaseContainer<*>,
-   private val options: TestContainerOptions = TestContainerOptions(),
+   private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
 ) : MountableExtension<HikariConfig, DataSource>, AfterSpecListener {
 
    override fun mount(configure: HikariConfig.() -> Unit): DataSource {
-      container.withLogConsumer(BasicLogConsumer(options.logs))
       container.start()
-      container.followOutput(BasicLogConsumer(options.logs))
+      container.followOutput(config.logConsumer)
       val config = HikariConfig()
       config.jdbcUrl = container.jdbcUrl
       config.username = container.username

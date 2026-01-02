@@ -146,16 +146,16 @@ public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerExte
 }
 
 public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
-	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;)V
-	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lcom/zaxxer/hikari/HikariDataSource;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener {
-	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;)V
-	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Ljavax/sql/DataSource;
@@ -405,16 +405,16 @@ public final class io/kotest/extensions/testcontainers/TestContainerHikariConfig
 }
 
 public final class io/kotest/extensions/testcontainers/TestContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
-	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;)V
-	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lorg/testcontainers/containers/GenericContainer;
 }
 
 public final class io/kotest/extensions/testcontainers/TestContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener, io/kotest/core/listeners/TestListener {
-	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;)V
-	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/TestContainerOptions;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/GenericContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterAny (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterContainer (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun afterEach (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -484,10 +484,17 @@ public final class io/kotest/extensions/testcontainers/kafka/KafkaKt {
 	public static synthetic fun createStringStringProducer$default (Lorg/testcontainers/containers/KafkaContainer;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lorg/apache/kafka/clients/producer/KafkaProducer;
 }
 
-public final class io/kotest/extensions/testcontainers/options/BasicLogConsumer : java/util/function/Consumer {
-	public fun <init> (Lio/kotest/extensions/testcontainers/options/LogTypes;)V
-	public synthetic fun accept (Ljava/lang/Object;)V
-	public fun accept (Lorg/testcontainers/containers/output/OutputFrame;)V
+public final class io/kotest/extensions/testcontainers/options/ContainerExtensionConfig {
+	public fun <init> ()V
+	public fun <init> (Ljava/util/function/Consumer;)V
+	public synthetic fun <init> (Ljava/util/function/Consumer;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun component1 ()Ljava/util/function/Consumer;
+	public final fun copy (Ljava/util/function/Consumer;)Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;
+	public static synthetic fun copy$default (Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;Ljava/util/function/Consumer;ILjava/lang/Object;)Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getLogConsumer ()Ljava/util/function/Consumer;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/extensions/testcontainers/options/LogTypes : java/lang/Enum {
@@ -500,16 +507,11 @@ public final class io/kotest/extensions/testcontainers/options/LogTypes : java/l
 	public static fun values ()[Lio/kotest/extensions/testcontainers/options/LogTypes;
 }
 
-public final class io/kotest/extensions/testcontainers/options/TestContainerOptions {
+public final class io/kotest/extensions/testcontainers/options/StandardLogConsumer : java/util/function/Consumer {
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/extensions/testcontainers/options/LogTypes;)V
 	public synthetic fun <init> (Lio/kotest/extensions/testcontainers/options/LogTypes;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun component1 ()Lio/kotest/extensions/testcontainers/options/LogTypes;
-	public final fun copy (Lio/kotest/extensions/testcontainers/options/LogTypes;)Lio/kotest/extensions/testcontainers/options/TestContainerOptions;
-	public static synthetic fun copy$default (Lio/kotest/extensions/testcontainers/options/TestContainerOptions;Lio/kotest/extensions/testcontainers/options/LogTypes;ILjava/lang/Object;)Lio/kotest/extensions/testcontainers/options/TestContainerOptions;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getLogs ()Lio/kotest/extensions/testcontainers/options/LogTypes;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+	public synthetic fun accept (Ljava/lang/Object;)V
+	public fun accept (Lorg/testcontainers/containers/output/OutputFrame;)V
 }
 

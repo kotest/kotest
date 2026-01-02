@@ -180,3 +180,21 @@ Alternative, if our docker compose file is in the resources folder of our projec
 // eg for src/main/resources/docker-compose.yml
 val container = install(ComposeContainerSpecExtension.fromResource("docker-compose.yml"))
 ```
+
+## Container Logs
+
+Kotest provides the option to capture the logs from the containers that are started by the extensions and output
+those in the test console. This can be enabled by passing an instance of `ContainerExtensionConfig` to the extension.
+In the config instance, set the `logConsumer` option to be `StandardLogConsumer`, specifying the level of logs to
+capture. For example:
+
+```kotlin
+install(
+   TestContainerSpecExtension(
+      container,
+      ContainerExtensionConfig(logConsumer = StandardLogConsumer(LogTypes.ALL))
+   )
+)
+```
+
+The log types can be set to capture `ALL`, `STDOUT`, `STDERR` or `NONE`.
