@@ -118,7 +118,7 @@ we retry the operation 10 times, or until 8 seconds has expired.
 
 ```kotlin
 val config = eventuallyConfig {
-  initialDelay = 8.seconds
+  duration = 8.seconds
   retries = 10
 }
 
