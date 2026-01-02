@@ -1,10 +1,10 @@
 package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.assertSoftly
-import io.kotest.assertions.eq.SequenceEq
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
+import io.kotest.assertions.eq.SequenceEq
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 
 class SequenceEqTest : FunSpec({
@@ -33,10 +33,9 @@ class SequenceEqTest : FunSpec({
    // therefore...
 
    test("Sequence type is not supported") {
-      val error = SequenceEq.equals(sequenceOf(1, 2, 3), sequenceOf(2, 3), EqContext()).error()
-
+      val result = SequenceEq.equals(sequenceOf(1, 2, 3), sequenceOf(2, 3), EqContext()) as EqResult.Failure
+      val error = result.error()
       assertSoftly {
-         error.shouldNotBeNull()
          error.message?.startsWith("Sequence type is not supported") shouldBe true
       }
    }
