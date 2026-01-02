@@ -5,11 +5,11 @@ import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Spec
+import io.kotest.extensions.testcontainers.options.BasicLogConsumer
+import io.kotest.extensions.testcontainers.options.TestContainerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer
-import org.testcontainers.containers.output.OutputFrame
-import java.util.function.Consumer
 import javax.sql.DataSource
 
 /**
@@ -52,19 +52,3 @@ class JdbcDatabaseContainerSpecExtension(
    }
 }
 
-class BasicLogConsumer(private val type: LogTypes) : Consumer<OutputFrame> {
-   override fun accept(t: OutputFrame) {
-      when (t.type) {
-         OutputFrame.OutputType.STDOUT if (type == LogTypes.STDOUT || type == LogTypes.ALL) -> println(t.utf8String)
-         OutputFrame.OutputType.STDERR if (type == LogTypes.STDERR || type == LogTypes.ALL) -> println(t.utf8String)
-         OutputFrame.OutputType.END -> println(t.utf8String)
-         else -> Unit
-      }
-   }
-}
-
-data class TestContainerOptions(
-   val logs: LogTypes = LogTypes.NONE
-)
-
-enum class LogTypes { NONE, STDOUT, STDERR, ALL }

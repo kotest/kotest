@@ -4,6 +4,8 @@ import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.extensions.testcontainers.options.BasicLogConsumer
+import io.kotest.extensions.testcontainers.options.TestContainerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.JdbcDatabaseContainer

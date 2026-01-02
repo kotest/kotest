@@ -4,6 +4,8 @@ import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
+import io.kotest.extensions.testcontainers.options.BasicLogConsumer
+import io.kotest.extensions.testcontainers.options.TestContainerOptions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.testcontainers.containers.GenericContainer
