@@ -2,6 +2,7 @@ package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.eq.DefaultEqResolver
 import io.kotest.assertions.eq.Eq
+import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -29,11 +30,7 @@ class CustomEqTest : FunSpec() {
 }
 
 val fooEq = object : Eq<Foo> {
-   override fun equals(
-      actual: Foo,
-      expected: Foo,
-      strictNumberEq: Boolean
-   ): Throwable? {
+   override fun equals(actual: Foo, expected: Foo, context: EqContext): Throwable? {
       return if (actual.value == "hello" && expected.value == "world") null else RuntimeException("foo")
    }
 }
