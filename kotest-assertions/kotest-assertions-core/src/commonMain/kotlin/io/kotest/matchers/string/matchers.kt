@@ -4,7 +4,7 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
 import io.kotest.assertions.submatching.describePartialMatchesInStringForSlice
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -249,10 +249,10 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
       "${value.print().value} should include substring ${substr.print().value}",
       describePartialMatchesInStringForSlice(substr, value).toString(),
    )
-   ComparisonMatcherResult(
+   DiffableMatcherResult(
       passed = passed,
-      actual = StringPrint.printUnquoted(value),
-      expected = StringPrint.printUnquoted(substr),
+      actual = { StringPrint.printUnquoted(value) },
+      expected = { StringPrint.printUnquoted(substr) },
       failureMessageFn = { differencesDescription.filter { it.isNotEmpty() }.joinToString("\n") },
       negatedFailureMessageFn = { "${value.print().value} should not include substring ${substr.print().value}" }
    )

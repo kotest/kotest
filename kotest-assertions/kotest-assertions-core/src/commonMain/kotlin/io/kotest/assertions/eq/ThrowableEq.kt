@@ -10,12 +10,14 @@ import io.kotest.assertions.print.print
  */
 object ThrowableEq : Eq<Throwable> {
 
-   override fun equals(actual: Throwable, expected: Throwable, context: EqContext): Throwable? {
+   override fun equals(actual: Throwable, expected: Throwable, context: EqContext): EqResult {
       return if (actual.message == expected.message && expected::class == actual::class)
-         null
+         EqResult.Success
       else
-         AssertionErrorBuilder.create()
-            .withValues(Expected(expected.print()), Actual(actual.print()))
-            .build()
+         EqResult.Failure {
+            AssertionErrorBuilder.create()
+               .withValues(Expected(expected.print()), Actual(actual.print()))
+               .build()
+         }
    }
 }
