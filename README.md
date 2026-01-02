@@ -3,12 +3,12 @@
 
 [![master](https://github.com/kotest/kotest/actions/workflows/master.yml/badge.svg)](https://github.com/kotest/kotest/actions/workflows/master.yml)
 [![version](https://img.shields.io/maven-central/v/io.kotest/kotest-runner-junit5.svg?label=latest%20release)](https://central.sonatype.com/search?q=io.kotest)
+[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml)
 ![intellij-badge](https://img.shields.io/jetbrains/plugin/v/14080-kotest?label=intellij%20plugin)
-![GitHub](https://img.shields.io/github/license/kotest/kotest)
+![GitHub](https://img.shields.io/github/license/kotest/kotest)<br/>
 [![kotest @ kotlinlang.slack.com](https://img.shields.io/static/v1?label=kotlinlang&message=kotest&color=blue&logo=slack)](https://kotlinlang.slack.com/archives/CT0G9SD7Z)
 [![Average time to resolve an issue](https://isitmaintained.com/badge/resolution/kotest/kotest.svg)](https://isitmaintained.com/project/kotest/kotest "Average time to resolve an issue")
 [![Percentage of issues still open](http://isitmaintained.com/badge/open/kotest/kotest.svg)](http://isitmaintained.com/project/kotest/kotest "Percentage of issues still open")
-[<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml)
 
 __Kotest is a flexible and comprehensive testing tool for [Kotlin](https://kotlinlang.org/) with multiplatform support.__
 
