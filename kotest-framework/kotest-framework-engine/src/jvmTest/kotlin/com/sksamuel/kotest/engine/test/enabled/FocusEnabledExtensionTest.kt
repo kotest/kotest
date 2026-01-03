@@ -7,7 +7,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.test.status.FocusEnabledExtension
+import io.kotest.engine.test.enabled.FocusEnabledExtension
 import io.kotest.matchers.shouldBe
 
 class FocusEnabledExtensionTest : FunSpec() {

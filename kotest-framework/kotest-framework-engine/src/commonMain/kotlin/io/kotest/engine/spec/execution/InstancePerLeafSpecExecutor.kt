@@ -56,10 +56,8 @@ internal class InstancePerLeafSpecExecutor(
     * Each root will be executed in new specs for isolation.
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
-      val specContext = SpecContext.create()
-
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
-         pipeline.execute(seed, specContext) {
+         pipeline.execute(seed) {
             launchRootTests(seed, ref)
             Result.success(results.toMap())
          }
@@ -79,7 +77,7 @@ internal class InstancePerLeafSpecExecutor(
          roots.forEachIndexed { index, root ->
             launch {
                semaphore.withPermit {
-                  RootTestExecutor().launchRootTest(root, ref, seed, index)
+                  RootTestExecutor().launchRootTest(root, ref, index)
                }
             }
          }
@@ -94,22 +92,26 @@ internal class InstancePerLeafSpecExecutor(
    inner class RootTestExecutor {
       private val discoveredOperations = ArrayDeque<InstancePerLeafOperation>()
 
-      suspend fun launchRootTest(root: TestCase, ref: SpecRef, seed: Spec, index: Int) {
+      suspend fun launchRootTest(root: TestCase, ref: SpecRef, index: Int) {
          val operationQueue = ArrayDeque<InstancePerLeafOperation>()
 
-         val (root, spec) = if (index == 0) {
-            root to seed
-         } else {
-            val spec = inflator.inflate(ref).getOrThrow()
-            val freshRoot = materializer.materialize(spec).first { it.descriptor == root.descriptor }
-            freshRoot to spec
-         }
-
-         executeInNewSpec(newSpec = spec) {
-            val result = executeTest(root, null, it, ref)
+         // for index 0 we can use the supplied test root that just operates against the seed instance
+         // and the spec pipelines will already have been executed
+         if (index == 0) {
+            val specContext = SpecContext.create()
+            val result = executeTest(root, null, specContext, ref)
             operationQueue.addAll(discoveredOperations)
             discoveredOperations.clear()
             Result.success(mapOf(root to result))
+         } else {
+            val spec = inflator.inflate(ref).getOrThrow()
+            val freshRoot = materializer.materialize(spec).first { it.descriptor == root.descriptor }
+            executeInGivenSpec(givenSpec = spec) {
+               val result = executeTest(freshRoot, null, it, ref)
+               operationQueue.addAll(discoveredOperations)
+               discoveredOperations.clear()
+               Result.success(mapOf(root to result))
+            }
          }
 
          while (operationQueue.isNotEmpty()) {
@@ -128,14 +130,13 @@ internal class InstancePerLeafSpecExecutor(
          }
       }
 
-      private suspend fun executeInNewSpec(
-         newSpec: Spec,
+      private suspend fun executeInGivenSpec(
+         givenSpec: Spec,
          executor: suspend (SpecContext) -> Result<Map<TestCase, TestResult>>
       ) {
          val specContext = SpecContext.create()
-
-         withContext(CoroutineName("spec-scope-" + newSpec.hashCode())) {
-            pipeline.execute(newSpec, specContext) {
+         withContext(CoroutineName("spec-scope-" + givenSpec.hashCode())) {
+            pipeline.execute(givenSpec) {
                executor(specContext)
             }
          }.getOrThrow()
@@ -158,7 +159,7 @@ internal class InstancePerLeafSpecExecutor(
          val root = materializer.materialize(spec).first { it.descriptor.isPrefixOf(testCase.descriptor) }
          logger.log { "Located root for target $root" }
 
-         executeInNewSpec(newSpec = spec) {
+         executeInGivenSpec(givenSpec = spec) {
             val result = executeTest(root, testCase.descriptor, it, ref)
             Result.success(mapOf(testCase to result))
          }

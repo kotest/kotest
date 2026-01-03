@@ -102,7 +102,7 @@ internal class InstancePerTestSpecExecutor(
          // seed instance (for the first test), or in a fresh instance (for the rest).
 
          val specContext = SpecContext.create()
-         pipeline.execute(seed, specContext) {
+         pipeline.execute(seed) {
             launchRootTests(seed, ref, specContext)
             Result.success(results.toMap())
          }.map { results.toMap() }
@@ -161,7 +161,7 @@ internal class InstancePerTestSpecExecutor(
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
-         pipeline.execute(spec, specContext) {
+         pipeline.execute(spec) {
             val result = executeTest(root, testCase.descriptor, specContext, ref)
             Result.success(mapOf(testCase to result))
          }

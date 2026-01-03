@@ -46,7 +46,7 @@ class RequiresTagTest : FunSpec({
          assertSoftly(collector.specs[TaggedSpec::class]) {
             shouldNotBeNull()
             isIgnored.shouldBeTrue()
-            reasonOrNull shouldBe "Disabled by @RequiresTag"
+            reasonOrNull shouldBe "Disabled by @RequiresTag (Foo)"
          }
       }
    }

@@ -4,7 +4,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.isRootTest
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
@@ -14,6 +13,8 @@ import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
+import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.enabled.TestEnabledChecker
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
@@ -23,17 +24,18 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 
 internal class InstancePerRootSpecExecutor(
-   private val context: EngineContext,
+   private val ctx: EngineContext,
 ) : SpecExecutor {
 
-   private val pipeline = SpecInterceptorPipeline(context)
-   private val extensions = SpecExtensions(context.specConfigResolver, context.projectConfigResolver)
-   private val materializer = Materializer(context.specConfigResolver)
+   private val pipeline = SpecInterceptorPipeline(ctx)
+   private val extensions = SpecExtensions(ctx.specConfigResolver, ctx.projectConfigResolver)
+   private val materializer = Materializer(ctx.specConfigResolver)
+   private val checker = TestEnabledChecker(ctx.projectConfigResolver, ctx.specConfigResolver, ctx.testConfigResolver)
    private val results = TestResults()
 
    private val inflator = SpecRefInflator(
-      registry = context.registry,
-      projectConfigRegistry = context.projectConfigResolver,
+      registry = ctx.registry,
+      projectConfigRegistry = ctx.projectConfigResolver,
       extensions = extensions,
    )
 
@@ -47,7 +49,7 @@ internal class InstancePerRootSpecExecutor(
          // then materialize the root tests. These root tests will either execute in the
          // seed instance (for the first test), or in a fresh instance (for the rest).
 
-         pipeline.execute(seed, specContext) {
+         pipeline.execute(seed) {
             materializeAndInvokeRootTests(seed, ref, specContext)
             Result.success(results.toMap())
          }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
@@ -59,31 +61,41 @@ internal class InstancePerRootSpecExecutor(
       val rootTests = materializer.materialize(seed)
 
       // controls how many tests to execute concurrently
-      val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
+      val concurrency = ctx.specConfigResolver.testExecutionMode(seed).concurrency
       val semaphore = Semaphore(concurrency)
 
       // all root test coroutines are launched immediately,
       // the semaphore will control how many can actually run concurrently
-
       coroutineScope { // will wait for all tests to complete
-         rootTests.withIndex().toList().forEach { (index, root) ->
-            launch {
-               semaphore.withPermit {
-                  if (index == 0) {
-                     /**
-                      * The first time we run a root test, we can use the already instantiated spec as the instance.
-                      * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
-                      * Eg, see https://github.com/kotest/kotest/issues/3490
-                      */
-                     executeTest(testCase = root, specContext = specContext)
-                  } else {
-                     // for subsequent tests, we create a new instance of the spec
-                     // and will re-run the pipelines etc
-                     executeRootInFreshSpec(root = root, ref = ref)
+
+         rootTests
+            .mapNotNull { rootTest ->
+               // disabled root tests can be immediately marked as ignored,
+               // we won't bother to create fresh specs for them
+               val status = checker.isEnabled(rootTest)
+               if (status.isDisabled) {
+                  ctx.listener.specIgnored(ref.kclass, status.reason)
+                  null
+               } else rootTest
+               // now all we have left are enabled tests so we can pass through them the full pipeline
+            }.withIndex().toList().forEach { (index, root) ->
+               launch {
+                  semaphore.withPermit {
+                     if (index == 0) {
+                        /**
+                         * The first time we run a root test, we can use the already instantiated spec as the instance.
+                         * This avoids creating specs that do nothing other than scheduling tests for other specs to run in.
+                         * Eg, see https://github.com/kotest/kotest/issues/3490
+                         */
+                        executeTest(testCase = root, specContext = specContext)
+                     } else {
+                        // for subsequent tests, we create a new instance of the spec
+                        // and will re-run the pipelines etc
+                        executeRootInFreshSpec(root = root, ref = ref)
+                     }
                   }
                }
             }
-         }
       }
    }
 
@@ -108,7 +120,7 @@ internal class InstancePerRootSpecExecutor(
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
-         pipeline.execute(spec, specContext) {
+         pipeline.execute(spec) {
             val result = executeTest(freshRoot, specContext)
             Result.success(mapOf(freshRoot to result))
          }
@@ -123,8 +135,8 @@ internal class InstancePerRootSpecExecutor(
     */
    private suspend fun executeTest(testCase: TestCase, specContext: SpecContext): TestResult {
       val duplicateTestNameHandler = DuplicateTestNameHandler()
-      val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
-      val executor = TestCaseExecutor(context)
+      val duplicateTestNameMode = ctx.specConfigResolver.duplicateTestNameMode(testCase.spec)
+      val executor = TestCaseExecutor(ctx)
       val result = executor.execute(
          testCase = testCase,
          testScope = DefaultTestScope(testCase) {
