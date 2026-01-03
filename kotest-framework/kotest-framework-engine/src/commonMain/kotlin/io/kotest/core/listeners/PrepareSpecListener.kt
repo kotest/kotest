@@ -12,6 +12,9 @@ import kotlin.reflect.KClass
  * If a spec is instantiated multiple times because the isolation mode
  * is set to create multiple instances, then this listener will not be
  * invoked multiple times.
+ *
+ * Any errors on this listener will be immediately propagated to the engine and
+ * further execution, including [FinalizeSpecListener]s will be skipped.
  */
 interface PrepareSpecListener : Extension {
 

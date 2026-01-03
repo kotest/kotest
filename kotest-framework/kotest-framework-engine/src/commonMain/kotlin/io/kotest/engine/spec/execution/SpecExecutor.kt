@@ -8,9 +8,9 @@ import io.kotest.engine.test.TestResult
 internal interface SpecExecutor {
 
    /**
-    * Executes the given [io.kotest.core.spec.SpecRef] using the provided [seed] spec as the initial state.
+    * Executes the given [SpecRef] using the provided [seed] spec as the initial state.
     *
-    * Returns a map of [io.kotest.core.test.TestCase] to [TestResult] for all tests that were executed to be
+    * Returns a map of [TestCase] to [TestResult] for all tests that were executed to be
     * passed back to the SpecRef interceptor pipeline.
     */
    suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>>

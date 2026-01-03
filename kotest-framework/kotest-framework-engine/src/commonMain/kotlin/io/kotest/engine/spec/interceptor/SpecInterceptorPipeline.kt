@@ -6,10 +6,10 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
-import io.kotest.engine.spec.interceptor.instance.AfterSpecListenerInterceptor
-import io.kotest.engine.spec.interceptor.instance.BeforeSpecFailureInterceptor
+import io.kotest.engine.spec.interceptor.instance.BeforeAfterSpecCallbacksInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineScopeInterceptor
+import io.kotest.engine.spec.interceptor.instance.EnabledTestsCheckSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.EngineContextInterceptor
 import io.kotest.engine.spec.interceptor.instance.InlineTagSpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.ProjectConfigResolverSpecInterceptor
@@ -35,14 +35,15 @@ internal class SpecInterceptorPipeline(
     * If any [SpecInterceptor] elects to skip the given spec instance, then the result will contain
     * an empty map.
     */
+   @Suppress("ObjectLiteralToLambda")
    suspend fun execute(
       spec: Spec,
-      context: SpecContext,
       initial: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
-      val interceptors = createPipeline(context)
+      val interceptors = createPipeline()
       logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
       return interceptors.foldRight(initial) { ext, next ->
+         // changing this to a lambda seems to keep wrapping a result in a result, unsure why
          object : NextSpecInterceptor {
             override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
                return ext.intercept(spec, next)
@@ -51,7 +52,7 @@ internal class SpecInterceptorPipeline(
       }.invoke(spec)
    }
 
-   private fun createPipeline(specContext: SpecContext): List<SpecInterceptor> {
+   private fun createPipeline(): List<SpecInterceptor> {
       return listOfNotNull(
          CoroutineScopeInterceptor,
          EngineContextInterceptor(this.context),
@@ -61,8 +62,8 @@ internal class SpecInterceptorPipeline(
          ProjectContextInterceptor(this.context.toProjectContext()),
          SpecExtensionInterceptor(context.specExtensions()),
          InlineTagSpecInterceptor(listener, context.projectConfigResolver, context.specExtensions()),
-         BeforeSpecFailureInterceptor(specContext),
-         AfterSpecListenerInterceptor(specContext, context.specExtensions()),
+         EnabledTestsCheckSpecInterceptor(this.context),
+         BeforeAfterSpecCallbacksInterceptor(context.specExtensions()),
       )
    }
 }

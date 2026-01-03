@@ -10,7 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.test.status.SystemPropertyTestFilterEnabledExtension
+import io.kotest.engine.test.enabled.SystemPropertyTestFilterEnabledExtension
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 

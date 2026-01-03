@@ -1,5 +1,6 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -12,13 +13,12 @@ import io.kotest.core.listeners.InstantiationListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.mapError
-import io.kotest.common.reflection.bestName
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 /**
@@ -38,7 +38,7 @@ internal class SpecExtensions(
     * in [ExtensionException.BeforeSpecException] and if more than one error,
     * all will be wrapped in a [MultipleExceptions].
     */
-   suspend fun beforeSpec(spec: Spec): Result<Spec> {
+   suspend fun beforeSpec(spec: Spec) {
       logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
 
       val errors = specConfigResolver.extensions(spec)
@@ -50,9 +50,9 @@ internal class SpecExtensions(
          }
 
       return when {
-         errors.isEmpty() -> Result.success(spec)
-         errors.size == 1 -> Result.failure(errors.first())
-         else -> Result.failure(MultipleExceptions(errors))
+         errors.isEmpty() -> Unit
+         errors.size == 1 -> throw errors.first()
+         else -> throw MultipleExceptions(errors)
       }
    }
 
@@ -101,24 +101,26 @@ internal class SpecExtensions(
    }
 
    /**
-    * Runs all the [PrepareSpecListener]s for this [Spec]. All errors are caught and wrapped
-    * in [ExtensionException.PrepareSpecException] and if more than one error,
-    * all will be wrapped in a [MultipleExceptions].
+    * Runs all the [PrepareSpecListener]s for this [Spec].
+    *
+    * All errors are caught and wrapped and then rethrown:
+    * - in [ExtensionException.PrepareSpecException] for a single error
+    * - in [MultipleExceptions] for multiple errors
     */
-   suspend fun prepareSpec(kclass: KClass<out Spec>): Result<KClass<*>> {
+   suspend fun prepareSpec(kclass: KClass<out Spec>) {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<PrepareSpecListener>()
       logger.log { Pair(kclass.bestName(), "prepareSpec (${exts.size})") }
 
-      val errors = exts.mapNotNull {
-         runCatching { it.prepareSpec(kclass) }
+      val errors = exts.mapNotNull { listener ->
+         runCatching { listener.prepareSpec(kclass) }
             .mapError { ExtensionException.PrepareSpecException(it) }.exceptionOrNull()
       }
 
       return when {
-         errors.isEmpty() -> Result.success(kclass)
-         errors.size == 1 -> Result.failure(errors.first())
-         else -> Result.failure(MultipleExceptions(errors))
+         errors.size == 1 -> throw errors.single()
+         errors.size > 1 -> throw MultipleExceptions(errors)
+         else -> Unit
       }
    }
 
@@ -130,7 +132,6 @@ internal class SpecExtensions(
    suspend fun finalizeSpec(
       kclass: KClass<out Spec>,
       results: Map<TestCase, TestResult>,
-      t: Throwable?
    ): Result<KClass<out Spec>> {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<FinalizeSpecListener>()

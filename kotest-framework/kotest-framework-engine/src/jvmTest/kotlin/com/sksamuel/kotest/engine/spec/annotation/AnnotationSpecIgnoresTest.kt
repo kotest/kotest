@@ -16,33 +16,51 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
 
       it("should ignore banged tests") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecWithBangTest::class).launch()
+         TestEngineLauncher()
+            .withListener(listener)
+            .withClasses(AnnotationSpecWithBangTest::class)
+            .execute()
          listener.tests
             .mapKeys { it.key.name.name }
-            .mapValues { it.value.reasonOrNull } shouldBe mapOf("foo" to "Disabled by bang")
+            .mapValues { it.value.reasonOrNull } shouldBe mapOf("foo" to "Disabled by bang", "enabled" to null)
       }
 
       it("should ignore tests annotated with @Ignore") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher().withListener(listener).withClasses(AnnotationSpecAtIgnoreTest::class).launch()
+         TestEngineLauncher()
+            .withListener(listener)
+            .withClasses(AnnotationSpecAtIgnoreTest::class)
+            .execute()
          listener.tests
             .mapKeys { it.key.name.name }
-            .mapValues { it.value.reasonOrNull } shouldBe mapOf("bar" to "Disabled by xmethod")
+            .mapValues { it.value.reasonOrNull } shouldBe mapOf("bar" to "Disabled by xmethod", "enabled" to null)
       }
    }
 })
 
 class AnnotationSpecWithBangTest : AnnotationSpec() {
+
+   // we need at least one enabled test or the entire spec is marked as ignored
+   @Test
+   fun enabled() {
+   }
+
    @Test
    fun `!foo`() {
-     AssertionErrorBuilder.fail("This should never execute as the test name starts with !")
+      AssertionErrorBuilder.fail("This should never execute as the test name starts with !")
    }
 }
 
 class AnnotationSpecAtIgnoreTest : AnnotationSpec() {
+
+   // we need at least one enabled test or the entire spec is marked as ignored
+   @Test
+   fun enabled() {
+   }
+
    @Ignore
    @Test
    fun bar() {
-     AssertionErrorBuilder.fail("This should never execute as the test is marked with @Ignore")
+      AssertionErrorBuilder.fail("This should never execute as the test is marked with @Ignore")
    }
 }
