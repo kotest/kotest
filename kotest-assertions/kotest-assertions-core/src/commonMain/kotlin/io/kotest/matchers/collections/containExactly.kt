@@ -4,10 +4,11 @@ import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.eq.CollectionEq
 import io.kotest.assertions.eq.EqCompare
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.equals.Equality
 import io.kotest.assertions.print.print
 import io.kotest.assertions.similarity.possibleMatchesDescription
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -69,11 +70,16 @@ fun <T, C : Collection<T>> containExactly(
    expected: C,
    verifier: Equality<T>?,
 ): Matcher<C?> = neverNullMatcher { actual ->
+
    fun Throwable?.isDisallowedIterableComparisonFailure() =
       this?.message?.startsWith(CollectionEq.TRIGGER) == true
 
-   val failureReason = if(verifier == null) {
-      EqCompare.compare(actual, expected, EqContext(true))
+   val failureReason = if (verifier == null) {
+      val result = EqCompare.compare(actual, expected, EqContext(true))
+      when (result) {
+         is EqResult.Failure -> result.error()
+         EqResult.Success -> null
+      }
    } else {
       matchCollectionsWithVerifier(actual, expected, verifier)
    }
@@ -126,21 +132,17 @@ fun <T, C : Collection<T>> containExactly(
       expected.size > AssertionsConfig.maxCollectionEnumerateSize
    ) {
       MatcherResult(
-         passed,
-         {
-            failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)"
-         },
-         {
-            negatedFailureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)"
-         },
+         passed = passed,
+         failureMessageFn = { failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)" },
+         negatedFailureMessageFn = { negatedFailureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)" },
       )
    } else {
-      ComparisonMatcherResult(
-         passed,
-         actual.print(),
-         expected.print(),
-         failureMessage,
-         negatedFailureMessage,
+      DiffableMatcherResult(
+         passed = passed,
+         actual = { actual.print() },
+         expected = { expected.print() },
+         failureMessageFn = failureMessage,
+         negatedFailureMessageFn = negatedFailureMessage,
       )
    }
 }

@@ -50,7 +50,7 @@ class MatchersTest : FreeSpec({
 
       "should support matching non null with null" {
          shouldThrow<AssertionError> {
-            val name: String = "nullornot"
+            val name = "nullornot"
             name shouldBe null
          }
          shouldThrow<AssertionError> {
