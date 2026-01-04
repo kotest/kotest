@@ -12,8 +12,8 @@ val b = a.take(3)
 b shouldBe "sam"
 ```
 
-When two values do not compare equal, Kotest will print out a nice error message including an intellij <click to see
-difference> between the two values. For example:
+When two values do not compare equal, Kotest will print out a nice error message including an intellij `<click to see
+difference>` between the two values. For example:
 
 ```
 Expected :world
@@ -69,7 +69,7 @@ object FooEq : Eq<Foo> {
 ```
 
 :::tip
-If we specify the _expected_ and _actual_ values to the error builder the <click to see difference> link will be
+If we specify the _expected_ and _actual_ values to the error builder the `<click to see difference>` link will be
 automatically generated too.
 :::
 
