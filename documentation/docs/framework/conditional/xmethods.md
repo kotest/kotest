@@ -56,6 +56,12 @@ class XMethodsExample : DescribeSpec({
 })
 ```
 
+:::caution
+The focus flag does not work if placed on nested tests due to the fact that nested tests are only discovered once the
+parent test has executed. So there would be no way for the test engine to know that a nested test has the `f` prefix
+without first executing all the parents.
+:::
+
 :::info[Why is this helpful?]
 If you just want to run a single test, you can of course just run that from intelliJ directly using the green arrow.
 However sometimes you want to run a subset of tests, or you want to run all tests except a few. This is when focus and
