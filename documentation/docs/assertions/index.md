@@ -5,11 +5,6 @@ slug: assertions.html
 ---
 
 
-
-
-
-
-
 Kotest is split into several subprojects which can be used independently. One of these subprojects is
 the comprehensive assertion / matchers support. These can be used with the [Kotest test framework](../framework/index.md),
 or with another test framework like JUnit or Spock.

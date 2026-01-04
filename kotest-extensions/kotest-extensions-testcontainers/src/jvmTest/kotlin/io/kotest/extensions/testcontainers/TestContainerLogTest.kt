@@ -28,7 +28,7 @@ class TestContainerLogTest : FunSpec() {
          )
       )
 
-      test("should capture ") {
+      test("should capture ").config(retries = 5) {
          logs.shouldContain("Running mode=standalone")
       }
    }

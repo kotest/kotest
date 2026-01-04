@@ -144,6 +144,13 @@ public final class io/kotest/assertions/eq/CollectionEq : io/kotest/assertions/e
 	public fun equals (Ljava/util/Collection;Ljava/util/Collection;Lio/kotest/assertions/eq/EqContext;)Lio/kotest/assertions/eq/EqResult;
 }
 
+public final class io/kotest/assertions/eq/DefaultEqResolver {
+	public static final field INSTANCE Lio/kotest/assertions/eq/DefaultEqResolver;
+	public final fun register (Lkotlin/reflect/KClass;Lio/kotest/assertions/eq/Eq;)V
+	public final fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
+	public final fun unregister (Lkotlin/reflect/KClass;)V
+}
+
 public abstract interface class io/kotest/assertions/eq/Eq {
 	public abstract fun equals (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/eq/EqContext;)Lio/kotest/assertions/eq/EqResult;
 }
@@ -174,9 +181,8 @@ public final class io/kotest/assertions/eq/EqMatcher : io/kotest/matchers/Matche
 	public fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 
-public final class io/kotest/assertions/eq/EqResolver {
-	public static final field INSTANCE Lio/kotest/assertions/eq/EqResolver;
-	public final fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
+public abstract interface class io/kotest/assertions/eq/EqResolver {
+	public abstract fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
 }
 
 public abstract interface class io/kotest/assertions/eq/EqResult {
