@@ -14,9 +14,9 @@ import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
+import io.kotest.engine.test.enabled.TestEnabledChecker
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.engine.test.scopes.TerminalTestScope
-import io.kotest.engine.test.status.isEnabledInternal
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -27,13 +27,15 @@ internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecEx
    private val formatter = DisplayNameFormatting(context.projectConfig)
    private val pipeline = SpecInterceptorPipeline(context)
    private val materializer = Materializer(context.specConfigResolver)
+   private val checker = TestEnabledChecker(context.projectConfigResolver, context.specConfigResolver, context.testConfigResolver)
+
    private val results = TestResults()
 
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
-         pipeline.execute(seed, specContext) { spec ->
+         pipeline.execute(seed) { spec ->
             // This implementation supports a two-level test hierarchy with the spec itself as the test `suite`,
             // which declares a single level of `test`s.
             kotlinJsTestFramework.suite(testNameEscape(ref.name()), ignored = false) {
@@ -53,10 +55,7 @@ internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecEx
     * @return the result of this single test.
     */
    private fun executeTest(testCase: TestCase, specContext: SpecContext) {
-      val ignored = testCase.isEnabledInternal(
-         context.projectConfigResolver,
-         context.testConfigResolver,
-      ).isDisabled
+      val ignored = checker.isEnabledInternal(testCase).isDisabled
 
       kotlinJsTestFramework.test(
          testNameEscape(formatter.format(testCase)),

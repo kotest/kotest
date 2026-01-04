@@ -23,7 +23,7 @@ signing {
       useGpgCmd()
       useInMemoryPgpKeys(signingKey, signingPassword)
    } else {
-      logger.lifecycle("[kotest-publishing] No GPG signing key or password provided, skipping signing")
+      logger.info("[kotest-publishing] No GPG signing key or password provided, skipping signing")
    }
    sign(publishing.publications)
    setRequired { Ci.isRelease } // only require signing when releasing
@@ -35,9 +35,9 @@ gradle.taskGraph.whenReady {
    val isPublishingToMavenCentral = Ci.isRelease
 
    if (isPublishingToMavenCentral) {
-      logger.lifecycle("[kotest-publishing] Publishing to Maven Central, signing is required")
+      logger.info("[kotest-publishing] Publishing to Maven Central, signing is required")
    } else {
-      logger.lifecycle("[kotest-publishing] Not publishing to Maven Central, signing is not required")
+      logger.info("[kotest-publishing] Not publishing to Maven Central, signing is not required")
    }
 
    signing.setRequired({ isPublishingToMavenCentral })

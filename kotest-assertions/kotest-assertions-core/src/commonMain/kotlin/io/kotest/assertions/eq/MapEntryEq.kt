@@ -11,12 +11,16 @@ import io.kotest.assertions.print.print
  */
 internal object MapEntryEq : Eq<Map.Entry<*, *>> {
 
-   override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, context: EqContext): Throwable? {
+   override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, context: EqContext): EqResult {
       val compareKey = EqCompare.compare(actual.key, expected.key, context)
       val compareValue = EqCompare.compare(actual.value, expected.value, context)
-      return if (compareKey == null && compareValue == null)
-         null
+      return if (compareKey is EqResult.Success && compareValue is EqResult.Success)
+         EqResult.Success
       else
-         AssertionErrorBuilder.create().withValues(Expected(expected.print()), Actual(actual.print())).build()
+         EqResult.Failure {
+            AssertionErrorBuilder.create()
+               .withValues(Expected(expected.print()), Actual(actual.print()))
+               .build()
+         }
    }
 }

@@ -15,7 +15,7 @@ import io.kotest.assertions.withClue
  *
  * When the power-assert plugin is enabled, this invocation is replaced by shouldBe(expected, msg).
  *
- * @see [eq]
+ * @see [io.kotest.assertions.eq.Eq]
  */
 @Suppress("UNCHECKED_CAST")
 infix fun <T> T.shouldBe(expected: T?): T {
@@ -34,11 +34,11 @@ infix fun <T> T.shouldBe(expected: T?): T {
  * If the expected value is a [io.kotest.matchers.Matcher] then the matcher is invoked using the left hand side as the input
  * as the matchers expected value.
  *
- * Otherwise, comparison is done using [eq] via an [EqMatcher] to compare actual and expected.
+ * Otherwise, comparison is done using [io.kotest.assertions.eq.Eq] via an [EqMatcher] to compare actual and expected.
  *
  * This version is used by the power-assert plugin to add extra information to the error message.
  *
- * @see [eq]
+ * @see [io.kotest.assertions.eq.Eq]
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> T.shouldBe(expected: T?, msg: String): T {
@@ -52,10 +52,10 @@ fun <T> T.shouldBe(expected: T?, msg: String): T {
 }
 
 @Suppress("UNCHECKED_CAST")
-infix fun <T> T.shouldNotBe(any: Any?): T {
-   when (any) {
-      is Matcher<*> -> shouldNot(any as Matcher<T>)
-      else -> this shouldNot be(any)
+infix fun <T> T.shouldNotBe(expected: Any?): T {
+   when (expected) {
+      is Matcher<*> -> shouldNot(expected as Matcher<T>)
+      else -> this shouldNot be(expected)
    }
    return this
 }

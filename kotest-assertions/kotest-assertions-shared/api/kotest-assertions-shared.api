@@ -167,6 +167,28 @@ public final class io/kotest/matchers/ComparisonMatcherResult : io/kotest/matche
 	public fun toString ()Ljava/lang/String;
 }
 
+public final class io/kotest/matchers/DiffableMatcherResult : io/kotest/matchers/MatcherResult {
+	public fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public final fun component1 ()Z
+	public final fun component2 ()Lkotlin/jvm/functions/Function0;
+	public final fun component3 ()Lkotlin/jvm/functions/Function0;
+	public final fun component4 ()Lkotlin/jvm/functions/Function0;
+	public final fun component5 ()Lkotlin/jvm/functions/Function0;
+	public final fun copy (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/DiffableMatcherResult;
+	public static synthetic fun copy$default (Lio/kotest/matchers/DiffableMatcherResult;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/matchers/DiffableMatcherResult;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureMessage ()Ljava/lang/String;
+	public final fun getActual ()Lkotlin/jvm/functions/Function0;
+	public final fun getExpected ()Lkotlin/jvm/functions/Function0;
+	public final fun getFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getNegatedFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getPassed ()Z
+	public fun hashCode ()I
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/matchers/ErrorCollectionMode : java/lang/Enum {
 	public static final field Hard Lio/kotest/matchers/ErrorCollectionMode;
 	public static final field Soft Lio/kotest/matchers/ErrorCollectionMode;

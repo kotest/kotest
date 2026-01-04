@@ -20,9 +20,9 @@ interface FinalizeSpecListener : Extension {
     * is set to create multiple instances, then this listener will not be
     * invoked multiple times.
     *
-    * The results' parameter contains every [TestCase], along with
+    * The [results] parameter contains every [TestCase], along with
     * the result of that test, including tests that were ignored (which
-    * will have a TestResult that has TestStatus.Ignored).
+    * will have a [TestResult] that has TestStatus.Ignored).
     *
     * @param kclass the [Spec] class
     * @param results a map of each test case mapped to its result.

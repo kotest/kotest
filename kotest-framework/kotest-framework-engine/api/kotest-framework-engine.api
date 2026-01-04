@@ -1218,7 +1218,7 @@ public final class io/kotest/core/extensions/SpecExtension$DefaultImpls {
 }
 
 public abstract interface class io/kotest/core/extensions/SpecRefExtension : io/kotest/core/extensions/Extension {
-	public abstract fun interceptRef (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun intercept (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/core/extensions/TagExtension : io/kotest/core/extensions/Extension {
@@ -2519,6 +2519,14 @@ public final class io/kotest/core/spec/style/scopes/FunSpecRootScope$DefaultImpl
 	public static fun xtest (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
+public final class io/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder {
+	public fun <init> (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;)V
+	public final fun config (Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
+	public final fun config-AcCKELw (Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun config-AcCKELw$default (Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
+	public final fun getContextFn ()Lkotlin/jvm/functions/Function1;
+}
+
 public abstract interface class io/kotest/core/spec/style/scopes/RootScope {
 	public abstract fun add (Lio/kotest/core/spec/RootTest;)V
 }
@@ -2526,6 +2534,12 @@ public abstract interface class io/kotest/core/spec/style/scopes/RootScope {
 public final class io/kotest/core/spec/style/scopes/RootScopeKt {
 	public static final fun addContainer (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
 	public static final fun addTest (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class io/kotest/core/spec/style/scopes/RootTestWithConfigBuilder {
+	public fun <init> (Lio/kotest/core/spec/style/scopes/RootScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;)V
+	public final fun config-n4j-3yA (Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;)V
+	public static synthetic fun config-n4j-3yA$default (Lio/kotest/core/spec/style/scopes/RootTestWithConfigBuilder;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/ShouldSpecContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
@@ -2585,6 +2599,12 @@ public final class io/kotest/core/spec/style/scopes/StringSpecRootScope$DefaultI
 	public static fun config-4xH7vM4 (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;)V
 	public static synthetic fun config-4xH7vM4$default (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public static fun invoke (Lio/kotest/core/spec/style/scopes/StringSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+}
+
+public final class io/kotest/core/spec/style/scopes/StringSpecScope : io/kotest/core/spec/style/scopes/TerminalScope {
+	public fun <init> (Lio/kotest/core/test/TestScope;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getTestCase ()Lio/kotest/core/test/TestCase;
 }
 
 public abstract class io/kotest/core/spec/style/scopes/TerminalScope : io/kotest/core/test/TestScope {
@@ -4290,6 +4310,32 @@ public final class io/kotest/engine/spec/TempfileKt {
 
 public final class io/kotest/engine/spec/ThreadSafeMapKt {
 	public static final fun threadSafeMap ()Ljava/util/Map;
+}
+
+public abstract interface class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
+}
+
+public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled : io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;
+	public static synthetic fun copy$default (Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Enabled : io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
+	public static final field INSTANCE Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Enabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/spec/execution/enabled/SpecRefEnabledChecker {
+	public fun <init> (Lio/kotest/engine/config/ProjectConfigResolver;)V
+	public final fun isEnabled (Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled;
 }
 
 public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
