@@ -50,6 +50,9 @@ sealed interface EnabledOrDisabled {
    data class Disabled(val reason: String?) : EnabledOrDisabled
 }
 
+/**
+ * Returns a list of platform specific [SpecRefEnabledExtension]s such as the class vvisibility check on the JVM
+ */
 internal expect fun platformSpecRefEnabledExtensions(
    projectConfigResolver: ProjectConfigResolver
 ): List<SpecRefEnabledExtension>

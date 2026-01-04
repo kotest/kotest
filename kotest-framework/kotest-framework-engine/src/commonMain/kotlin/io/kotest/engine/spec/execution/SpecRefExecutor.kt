@@ -75,8 +75,8 @@ internal class SpecRefExecutor(
    }
 
    /**
-    * Applies any extensions that have been annotated with [ApplyExtension], and removes them
-    * after the spec has been executed.
+    * Applies any extensions that have been annotated with [ApplyExtension] by adding them to the context
+    * registry, and removes them after the spec has been executed.
     */
    private suspend fun applyExtensions(ref: SpecRef) {
       try {
@@ -116,6 +116,11 @@ internal class SpecRefExecutor(
       chain.invoke(ref)
    }
 
+   /**
+    * Executes the engine callbacks for the spec.
+    *
+    * Any errors here will be swallowed and logged as we cannot do anything about them.
+    */
    private suspend fun invokeEngineListeners(ref: SpecRef) {
       try {
          context.listener.specStarted(ref)
@@ -129,6 +134,12 @@ internal class SpecRefExecutor(
       }
    }
 
+   /**
+    * Executes the lifecycle callbacks for the reference, [io.kotest.core.listeners.PrepareSpecListener]
+    * and [io.kotest.core.listeners.FinalizeSpecListener].
+    *
+    * Any errors in these listeners will cause the spec to be aborted and marked as failed.
+    */
    private suspend fun invokeUserListeners(ref: SpecRef): Triple<Duration, Map<TestCase, TestResult>, Throwable?> {
       return try {
          extensions.prepareSpec(ref.kclass)
