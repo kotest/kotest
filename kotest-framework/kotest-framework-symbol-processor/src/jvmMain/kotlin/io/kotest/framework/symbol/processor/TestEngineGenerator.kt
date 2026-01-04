@@ -41,7 +41,6 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
    // on native we use https://youtrack.jetbrains.com/issue/KT-63218/EagerInitialization-use-cases
    private fun createNativeEntryPoint(): PropertySpec {
       val prop = PropertySpec.builder("testEngineEntryPoint", UNIT)
-         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
          .addAnnotation(ClassName("kotlin.native", "EagerInitialization"))
          .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("ExperimentalStdlibApi::class").build())
          .initializer("""runBlocking { launch() }""".trim())
@@ -98,6 +97,7 @@ val specs = listOf(
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine.launcher", "invokeTestEngine")
          .addImport("kotlinx.coroutines", "runBlocking")
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
 
       specs.forEachIndexed { index, spec ->
          file.addAliasedImport(
