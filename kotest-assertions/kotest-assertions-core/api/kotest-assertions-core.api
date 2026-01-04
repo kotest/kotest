@@ -148,6 +148,7 @@ public final class io/kotest/assertions/eq/DefaultEqResolver {
 	public static final field INSTANCE Lio/kotest/assertions/eq/DefaultEqResolver;
 	public final fun register (Lkotlin/reflect/KClass;Lio/kotest/assertions/eq/Eq;)V
 	public final fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
+	public final fun unregister (Lkotlin/reflect/KClass;)V
 }
 
 public abstract interface class io/kotest/assertions/eq/Eq {

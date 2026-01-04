@@ -20,6 +20,10 @@ object DefaultEqResolver {
       customEqInstances[type] = eq
    }
 
+   fun <T : Any> unregister(type: KClass<T>) {
+      customEqInstances.remove(type)
+   }
+
    /**
     * Returns the [Eq] to use for comparison for the given values.
     * If both values are nullable, then [NullEq] will be returned.
