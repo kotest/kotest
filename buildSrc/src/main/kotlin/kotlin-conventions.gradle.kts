@@ -28,7 +28,6 @@ kotlin {
    }
    sourceSets.configureEach {
       languageSettings {
-         optIn("io.kotest.common.ExperimentalKotest")
          optIn("io.kotest.common.KotestInternal")
          optIn("kotlin.contracts.ExperimentalContracts")
          optIn("kotlin.experimental.ExperimentalTypeInference")
