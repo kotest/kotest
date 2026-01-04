@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalWasmJsInterop::class)
+
 package io.kotest.engine
 
 import kotlinx.coroutines.DelicateCoroutinesApi

@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.names.DuplicateTestNameMode
@@ -31,6 +32,7 @@ import io.kotest.engine.extensions.ExtensionRegistry
  * - system property overrides
  * - kotest defaults
  */
+@OptIn(ExperimentalKotest::class)
 class SpecConfigResolver(
    private val projectConfig: AbstractProjectConfig?,
    private val registry: ExtensionRegistry,
