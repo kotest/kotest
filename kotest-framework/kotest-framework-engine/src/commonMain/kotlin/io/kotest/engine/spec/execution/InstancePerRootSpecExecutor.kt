@@ -69,14 +69,14 @@ internal class InstancePerRootSpecExecutor(
       coroutineScope { // will wait for all tests to complete
 
          rootTests
-            .mapNotNull { rootTest ->
+            .mapNotNull { root ->
                // disabled root tests can be immediately marked as ignored,
                // we won't bother to create fresh specs for them
-               val status = checker.isEnabled(rootTest)
+               val status = checker.isEnabled(root)
                if (status.isDisabled) {
-                  ctx.listener.specIgnored(ref.kclass, status.reason)
+                  ctx.listener.testIgnored(root, status.reason)
                   null
-               } else rootTest
+               } else root
                // now all we have left are enabled tests so we can pass through them the full pipeline
             }.withIndex().toList().forEach { (index, root) ->
                launch {
