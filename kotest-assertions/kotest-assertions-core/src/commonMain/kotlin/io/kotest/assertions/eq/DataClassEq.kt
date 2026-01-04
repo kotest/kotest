@@ -34,24 +34,26 @@ internal object DataClassEq : Eq<Any> {
     */
    private const val MAX_NESTED_DEPTH = 10
 
-   override fun equals(actual: Any, expected: Any,  context: EqContext): Throwable? {
-      if (actual === expected) return null
+   override fun equals(actual: Any, expected: Any,  context: EqContext): EqResult {
+      if (actual === expected) return EqResult.Success
 
-      if (context.isVisited(actual, expected)) return null
+      if (context.isVisited(actual, expected)) return EqResult.Success
 
       context.push(actual, expected)
       try {
          return if (test(actual, expected)) {
-            null
+            EqResult.Success
          } else {
             val detailedDiffMsg = runCatching {
                dataClassDiff(actual, expected, context = context)?.let { diff -> formatDifferences(diff) + "\n\n" } ?: ""
             }.getOrElse { "" }
 
-            AssertionErrorBuilder.create()
-               .withMessage(detailedDiffMsg)
-               .withValues(Expected(expected.print()), Actual(actual.print()))
-               .build()
+            EqResult.Failure {
+               AssertionErrorBuilder.create()
+                  .withMessage(detailedDiffMsg)
+                  .withValues(Expected(expected.print()), Actual(actual.print()))
+                  .build()
+            }
          }
       } finally {
          context.pop()
@@ -70,7 +72,12 @@ internal object DataClassEq : Eq<Any> {
       }
    }
 
-   private fun computeMemberDifferences(expected: Any, actual: Any, depth: Int, context: EqContext) =
+   private fun computeMemberDifferences(
+      expected: Any,
+      actual: Any,
+      depth: Int,
+      context: EqContext
+   ): List<Pair<Property, PropertyDifference>> =
       reflection.primaryConstructorMembers(expected::class).mapNotNull { prop ->
          val actualPropertyValue = prop.call(actual)
          val expectedPropertyValue = prop.call(expected)
@@ -79,8 +86,14 @@ internal object DataClassEq : Eq<Any> {
                Pair(prop, diff)
             }
          else {
-            EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
-               ?.let { Pair(prop, StandardDifference(it)) }
+            val result = EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
+            when (result) {
+               is EqResult.Failure -> {
+                  val error = result.error()
+                  Pair(prop, StandardDifference(error))
+               }
+               EqResult.Success -> null
+            }
          }
       }
 

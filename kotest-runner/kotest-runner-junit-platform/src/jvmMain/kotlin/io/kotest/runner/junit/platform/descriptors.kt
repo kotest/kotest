@@ -75,10 +75,15 @@ internal fun createTestDescriptorWithMethodSource(
       id = id,
       displayName = formatter.format(testCase),
       type = type,
+      // For CONTAINER types, use ClassSource (like v5.9.1) to ensure proper tree structure in Android Studio.
+      // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
       // gradle-junit-platform hides tests if we don't send a source at all
       // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
       // and produce more correct XML report with test case name.
-      source = getMethodSource(testCase.spec::class, id),
+      source = when (type) {
+         TestDescriptor.Type.CONTAINER -> ClassSource.from(testCase.spec::class.java)
+         else -> getMethodSource(testCase.spec::class, id)
+      },
    )
    return testDescriptor
 }

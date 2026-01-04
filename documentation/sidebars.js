@@ -48,13 +48,14 @@ module.exports = {
   "assertions": [
     "assertions/index",
     "assertions/matchers",
+    "assertions/shouldbe",
     "assertions/custom_matchers",
     "assertions/composed_matchers",
     "assertions/exceptions",
     "assertions/similarity",
+    "assertions/power-assert",
     "assertions/clues",
     "assertions/soft_assertions",
-    "assertions/power-assert",
     {
       "type": "category",
       "label": "Non-deterministic Testing",

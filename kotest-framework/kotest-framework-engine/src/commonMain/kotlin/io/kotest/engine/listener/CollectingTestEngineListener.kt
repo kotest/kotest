@@ -65,6 +65,8 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    fun TestCase.toKey(): TestCaseKey {
       return TestCaseKey(this.descriptor, this.name, this.spec::class)
    }
+
+   fun testResult(name: String): TestResult =  tests.entries.first { it.key.name.name == name }.value
 }
 
 /**

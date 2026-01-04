@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
@@ -88,10 +87,7 @@ interface StringSpecRootScope : RootScope {
 /**
  * This scope exists purely to stop nested string scopes.
  */
-
-
 @KotestTestScope
-@KotestInternal
 class StringSpecScope(
    testScope: TestScope
 ) : TerminalScope() {

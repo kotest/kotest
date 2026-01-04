@@ -1,9 +1,10 @@
 package io.kotest.matchers.equality
 
+import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqCompare
-import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.print.print
 import io.kotest.common.reflection.bestName
 import kotlin.reflect.KClass
@@ -78,8 +79,10 @@ private fun compareValue(
          type,
          config.useDefaultShouldBeForFields
       ) -> {
-         val throwable = EqCompare.compare(actual, expected, EqContext(false))
-         if (throwable == null) CompareResult.match(field) else CompareResult.single(field, throwable)
+         when (val result = EqCompare.compare(actual, expected, EqContext(false))) {
+            is EqResult.Failure -> CompareResult.single(field, result.error())
+            EqResult.Success -> CompareResult.match(field)
+         }
       }
 
       else -> compareFields(actual, expected, field, config)

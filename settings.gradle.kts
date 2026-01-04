@@ -137,7 +137,7 @@ include(
 
    ":kotest-runner:kotest-runner-junit4",
    ":kotest-runner:kotest-runner-junit5",
-//   ":kotest-runner:kotest-runner-junit6",
+   ":kotest-runner:kotest-runner-junit6",
 
    // shared support executing tests via junit platform
    ":kotest-runner:kotest-runner-junit-platform",
