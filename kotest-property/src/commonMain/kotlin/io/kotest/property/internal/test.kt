@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.property.internal
 
 import io.kotest.assertions.print.print
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.stacktrace.stacktraces
 import io.kotest.engine.IterationSkippedException
 import io.kotest.property.AfterPropertyContextElement
@@ -11,7 +14,7 @@ import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
 import io.kotest.property.seed.writeFailedSeed
 import io.kotest.property.statistics.outputStatistics
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.currentCoroutineContext
 
 /**
  * Performs a property test for a single set of values, tracking the min success and max failure rates.
@@ -51,10 +54,10 @@ internal suspend fun test(
             }
          }
 
-         coroutineContext[BeforePropertyContextElement]?.before?.invoke()
+         currentCoroutineContext()[BeforePropertyContextElement]?.before?.invoke()
          testFn()
          context.markSuccess()
-         coroutineContext[AfterPropertyContextElement]?.after?.invoke()
+         currentCoroutineContext()[AfterPropertyContextElement]?.after?.invoke()
       } catch (_: IterationSkippedException) {
          // we don't mark failed assumptions as errors
       } catch (e: Throwable) {

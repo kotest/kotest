@@ -1,5 +1,6 @@
 package io.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.Logger
@@ -39,6 +40,7 @@ import kotlin.time.TimeSource
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
+@OptIn(ExperimentalKotest::class)
 internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
    private val context: EngineContext,

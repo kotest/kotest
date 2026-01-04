@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.engine.config
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
