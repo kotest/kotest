@@ -1218,7 +1218,7 @@ public final class io/kotest/core/extensions/SpecExtension$DefaultImpls {
 }
 
 public abstract interface class io/kotest/core/extensions/SpecRefExtension : io/kotest/core/extensions/Extension {
-	public abstract fun interceptRef (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public abstract fun intercept (Lio/kotest/core/spec/SpecRef;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public abstract interface class io/kotest/core/extensions/TagExtension : io/kotest/core/extensions/Extension {
@@ -4310,6 +4310,32 @@ public final class io/kotest/engine/spec/TempfileKt {
 
 public final class io/kotest/engine/spec/ThreadSafeMapKt {
 	public static final fun threadSafeMap ()Ljava/util/Map;
+}
+
+public abstract interface class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
+}
+
+public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled : io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;
+	public static synthetic fun copy$default (Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Enabled : io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
+	public static final field INSTANCE Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Enabled;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/spec/execution/enabled/SpecRefEnabledChecker {
+	public fun <init> (Lio/kotest/engine/config/ProjectConfigResolver;)V
+	public final fun isEnabled (Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled;
 }
 
 public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {

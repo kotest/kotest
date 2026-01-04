@@ -87,8 +87,6 @@ interface StringSpecRootScope : RootScope {
 /**
  * This scope exists purely to stop nested string scopes.
  */
-
-
 @KotestTestScope
 class StringSpecScope(
    testScope: TestScope

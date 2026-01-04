@@ -7,14 +7,15 @@ import io.kotest.matchers.shouldBe
 
 class EnabledIfErrorsTest : FunSpec() {
    init {
-      test("error in enabledIf should disable test but run others") {
+      test("error in enabledIf should ignore test but run others") {
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(EnabledIfFailues::class)
             .launch()
 
-         collector.result("a")!!.isErrorOrFailure shouldBe true
-         collector.result("b")!!.isErrorOrFailure shouldBe true
+         collector.result("a")!!.isIgnored shouldBe true
+         collector.result("b")!!.isIgnored shouldBe true
          collector.result("c")!!.isSuccess shouldBe true
       }
    }

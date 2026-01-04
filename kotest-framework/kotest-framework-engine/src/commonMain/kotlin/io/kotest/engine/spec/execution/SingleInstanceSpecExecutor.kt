@@ -32,7 +32,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
-         pipeline.execute(seed, specContext) { spec ->
+         pipeline.execute(seed) { spec ->
             launchRootTests(spec, specContext)
             Result.success(results.toMap())
          }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
