@@ -60,6 +60,13 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
       specs: List<KSClassDeclaration>,
       configs: List<KSClassDeclaration>
    ): FunSpec {
+
+      if (specs.isEmpty()) {
+         return FunSpec.builder("launch")
+            .addModifiers(KModifier.PUBLIC)
+            .build()
+      }
+
       val function = FunSpec.builder("launch")
          .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
          .addAnnotation(
