@@ -31,7 +31,9 @@ object FreeSpecStyle : SpecStyle {
 
    override fun getDataTestMethodNames(): Set<String> =
       setOf(
-         "withData"
+         "withData",
+         "withContexts",
+         "withTests"
       )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
@@ -102,6 +104,8 @@ object FreeSpecStyle : SpecStyle {
     * "test name" {} // a test
     * "test name" - {} // a container
     * withData(...) { }
+    * withTests(...) { }
+    * withContexts(...) { }
     */
    override fun test(element: LeafPsiElement): Test? {
       val ktcall = element.ifCallExpressionLhsStringOpenQuote()
