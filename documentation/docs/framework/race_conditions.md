@@ -4,14 +4,33 @@ slug: race_conditions.html
 ---
 
 A simple tool to reproduce some common race conditions such as deadlocks in automated tests.
-<br/>
-<br/>
-
 Whenever multiple coroutines or threads mutate shared state, there is a possibility of race conditions.
-<br/>
-<br/>
 In many common cases this tool allows to reproduce them easily.
 <br/>
+Suppose, for example, that two threads or coroutins are acquiring exclusive locks on the same two resources in different order:
+
+| Thread 1        | Thread 2        |
+|-----------------|-----------------|
+| Lock Resource A | Lock Resource B |
+| Lock Resource B | Lock Resource A |
+
+If we are continuously running these two functions in parallel, eventually there should be deadlocks, but we don't know when exactly. With the help of `runInParallel` we can reliably reproduce the deadlock every time we run the following code:
+
+```kotlin
+  runInParallel({ runner: ParallelRunner ->
+    lockResourceA()
+    runner.await()
+    lockResourceB()
+  },
+    { runner: ParallelRunner ->
+      lockResourceB()
+      runner.await()
+      lockResourceA()
+    }
+  )
+```
+
+Let's discuss a few more advanced scenarios where reproducing race conditions comes very handy.
 <br/>
 Suppose, for instance, that the following code runs without any synchronization concurrently:
 
