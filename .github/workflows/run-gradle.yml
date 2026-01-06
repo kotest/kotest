@@ -24,16 +24,11 @@ jobs:
    gradle:
       runs-on: ${{ inputs.runs-on }}
       steps:
-         -  name: "Redirect caches to fast D: drive for Windows runners"
+         -  name: "Set KONAN_DATA_DIR (windows)"
             if: runner.os == 'Windows'
             shell: cmd
             run: |
-               mkdir D:\.gradle
-               mklink /D C:\Users\runneradmin\.gradle D:\.gradle
-
-               mkdir D:\.konan
-               mklink /D C:\Users\runneradmin\.konan D:\.konan
-               echo KONAN_DATA_DIR=D:\.konan>>%GITHUB_ENV%
+               echo KONAN_DATA_DIR=C:\Users\runneradmin\.konan>>%GITHUB_ENV%
 
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
