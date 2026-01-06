@@ -76,13 +76,13 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // configures standalone Kotlin JVM projects
          handleKotlinJvm(project)
-
-         // configures Kotlin multiplatform projects
-         handleKotlinMultiplatform(project)
-
-         // configure Kotlin Android projects when it is not a multiplatform project
-         handleAndroid(project)
       }
+
+      // configure Kotlin Android projects when it is not a multiplatform project
+      handleAndroid(project, kotestExtension)
+
+      // configures Kotlin multiplatform projects
+      handleMultiplatform(project, kotestExtension)
 
       project.gradle.taskGraph.whenReady {
          configureTestTasks(project)
@@ -96,7 +96,6 @@ abstract class KotestPlugin : Plugin<Project> {
     */
    private fun configureTestTasks(project: Project) {
       project.tasks.withType(AbstractTestTask::class.java).configureEach {
-
          doFirst {
 
             val includes = when (val f = filter) {
@@ -184,7 +183,7 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun handleKotlinMultiplatform(project: Project) {
+   private fun handleMultiplatform(project: Project, kotestExtension: KotestGradleExtension) {
       project.plugins.withType<KotlinMultiplatformPluginWrapper> { // this is the multiplatform plugin, not the kotlin plugin
          project.extensions.configure<KotlinMultiplatformExtension> { // this is the multiplatform extension
             this.targets
@@ -192,15 +191,15 @@ abstract class KotestPlugin : Plugin<Project> {
                   val target = this
                   if (name !in unsupportedTargets) {
                      when (platformType) {
-                        KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target)
+                        KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target, kotestExtension)
                         KotlinPlatformType.common -> Unit // these are not buildable targets, so we skip them
                         KotlinPlatformType.jvm -> handleMultiplatformJvm(target)
-                        KotlinPlatformType.js -> handleJs(target)
+                        KotlinPlatformType.js -> handleJs(target, kotestExtension)
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
                         // Testable target: mingwX64, platformType: native, disambiguationClassifier: mingwX64
-                        KotlinPlatformType.wasm -> handleWasm(target)
-                        KotlinPlatformType.native -> handleNative(target)
+                        KotlinPlatformType.wasm -> handleWasm(target, kotestExtension)
+                        KotlinPlatformType.native -> handleNative(target, kotestExtension)
                      }
                   }
                }
@@ -216,7 +215,7 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun handleNative(target: KotlinTarget) {
+   private fun handleNative(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
       val nativeTaskName = nativeTestTaskName(target)
       when (val existing = target.project.tasks.findByName(nativeTaskName)) {
 
@@ -229,31 +228,6 @@ abstract class KotestPlugin : Plugin<Project> {
             // so we check if the task is enabled
             if (!existing.isEnabled) return
 
-            val moduleTestDir = getModuleTestReportsDir(target.project, existing.name).get()
-            moduleTestDir.asFile.mkdirs()
-            val moduleTestDirAbsolutePath = moduleTestDir.asFile.absolutePath
-
-            val rootTestDir = getRootTestReportsDir(target.project, existing.name).get()
-            rootTestDir.asFile.mkdirs()
-            val rootTestDirAbsolutePath = rootTestDir.asFile.absolutePath
-
-            // passed to the xml report generator
-            val targetName = target.name
-
-            // we can execute check or test tasks with -Pkotest.include and this will then be
-            // passed to the kotest runtime as an environment variable to filter specs and tests
-            val include = target.project.findProperty(KOTEST_INCLUDE_PROPERTY)
-
-            existing.doFirst {
-
-               if (include != null)
-                  existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_INCLUDE", include.toString())
-
-               // we need to switch to TCSM format if running inside of intellij
-               val listener = if (IntellijUtils.isIntellij()) "teamcity" else "console"
-               existing.environment("KOTEST_FRAMEWORK_RUNTIME_NATIVE_LISTENER", listener)
-            }
-
             // the ksp plugin will create a configuration for each target that contains
             // the symbol processors used by the test configuration. We want to wire in
             // the kotest symbol processor to this configuration so the user doesn't have to manually
@@ -261,16 +235,17 @@ abstract class KotestPlugin : Plugin<Project> {
             wireKsp(target.project, kspConfigurationName(target))
 
             // wire in the kmp test task into our kotest task
-            target.project.tasks.getByName(KOTEST_TASK_NAME) {
-               target.project.logger.info("> Configuring kotest task for $nativeTaskName")
-               dependsOn(existing)
-            }
+            if (kotestExtension.customGradleTask)
+               target.project.tasks.getByName(KOTEST_TASK_NAME) {
+                  target.project.logger.info("> Configuring kotest task for $nativeTaskName")
+                  dependsOn(existing)
+               }
          }
       }
    }
 
    // wasmJs and wasmWasi land here, so we must not use hardcoded names
-   private fun handleWasm(target: KotlinTarget) {
+   private fun handleWasm(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
       if (target is KotlinJsIrTarget) {
          when (target.wasmTargetType) {
             KotlinWasmTargetType.JS -> {
@@ -279,10 +254,11 @@ abstract class KotestPlugin : Plugin<Project> {
                // the kotest symbol processor to this configuration so the user doesn't have to manually
                target.project.logger.info("> Configuring kotest KSP processor for $KSP_WASM_JS_SOURCESET")
                wireKsp(target.project, KSP_WASM_JS_SOURCESET)
-               target.project.tasks.getByName(KOTEST_TASK_NAME) {
-                  target.project.logger.info("> Configuring kotest task for $KSP_WASM_JS_SOURCESET")
-                  dependsOn(target.project.tasks[WASM_JS_TEST_TASK_NAME])
-               }
+               if (kotestExtension.customGradleTask)
+                  target.project.tasks.getByName(KOTEST_TASK_NAME) {
+                     target.project.logger.info("> Configuring kotest task for $KSP_WASM_JS_SOURCESET")
+                     dependsOn(target.project.tasks[WASM_JS_TEST_TASK_NAME])
+                  }
             }
 
             KotlinWasmTargetType.WASI -> {
@@ -301,29 +277,30 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun handleJs(target: KotlinTarget) {
+   private fun handleJs(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
       if (target is KotlinJsIrTarget) {
          // the ksp plugin will create a configuration named kspJsTest that contains
          // the symbol processors used by the test configuration. We want to wire in
          // the kotest symbol processor to this configuration so the user doesn't have to manually
          wireKsp(target.project, KSP_JS_SOURCESET)
-         target.project.tasks.getByName(KOTEST_TASK_NAME) {
-            target.project.logger.info("> Configuring kotest task for $JS_TEST_TASK_NAME")
-            dependsOn(target.project.tasks[JS_TEST_TASK_NAME])
-         }
+         if (kotestExtension.customGradleTask)
+            target.project.tasks.getByName(KOTEST_TASK_NAME) {
+               target.project.logger.info("> Configuring kotest task for $JS_TEST_TASK_NAME")
+               dependsOn(target.project.tasks[JS_TEST_TASK_NAME])
+            }
       }
    }
 
-   private fun handleMultiplatformAndroid(target: KotlinTarget) {
+   private fun handleMultiplatformAndroid(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
       if (target is KotlinAndroidTarget) {
-         configureAndroid(target.project, target.compilations, "android")
+         configureAndroid(target.project, target.compilations, "android", kotestExtension)
       }
    }
 
-   private fun handleAndroid(project: Project) {
+   private fun handleAndroid(project: Project, kotestExtension: KotestGradleExtension) {
       project.plugins.withType<KotlinAndroidPluginWrapper> {
          project.extensions.configure<KotlinAndroidExtension> {
-            configureAndroid(project, target.compilations, null)
+            configureAndroid(project, target.compilations, null, kotestExtension)
          }
       }
    }
@@ -332,6 +309,7 @@ abstract class KotestPlugin : Plugin<Project> {
       project: Project,
       compilations: NamedDomainObjectContainer<out KotlinCompilation<out Any>>,
       target: String?,
+      kotestExtension: KotestGradleExtension,
    ) {
       // example compilations for a typical project:
       // [debug, debugAndroidTest, debugUnitTest, release, releaseUnitTest]
@@ -368,45 +346,48 @@ abstract class KotestPlugin : Plugin<Project> {
          // gradle best practice is to only apply to this project, and users add the plugin to each subproject
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
          val kotestTaskName = androidKotestTaskName(compilation)
-         val task = project.tasks.register(kotestTaskName, KotestAndroidTask::class) {
 
-            group = JavaBasePlugin.VERIFICATION_GROUP
-            description = TASK_DESCRIPTION
+         if (kotestExtension.customGradleTask) {
+            val task = project.tasks.register(kotestTaskName, KotestAndroidTask::class) {
 
-            // I don't know why this has to be set here and not inside the exec method
-            // it works for JVM but not KMP JVM
-            // I think the KMP version must be shadowing the mainClass variable somewhere
-            mainClass.set(LAUNCHER_MAIN_CLASS)
-            classpath = runtimeWithTests
+               group = JavaBasePlugin.VERIFICATION_GROUP
+               description = TASK_DESCRIPTION
 
-            // we don't want to abort test runs when we have test failures for one target
-            isIgnoreExitValue = true
+               // I don't know why this has to be set here and not inside the exec method
+               // it works for JVM but not KMP JVM
+               // I think the KMP version must be shadowing the mainClass variable somewhere
+               mainClass.set(LAUNCHER_MAIN_CLASS)
+               classpath = runtimeWithTests
 
-            // for specs we only care about what's outputted by this compilation
-            specsClasspath.set(compilation.output.allOutputs)
+               // we don't want to abort test runs when we have test failures for one target
+               isIgnoreExitValue = true
 
-            // we set the test reports dir to the standard android test reports dir
-            // this will result in something like build/test-results/kotestDebugUnitTest
-            moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
-            rootTestReportsDir.set(getRootTestReportsDir(project, name))
-            compilationName.set(compilation.name)
+               // for specs we only care about what's outputted by this compilation
+               specsClasspath.set(compilation.output.allOutputs)
 
-            if (target != null)
-               targetName.set(target + " " + androidBuildType(compilation))
+               // we set the test reports dir to the standard android test reports dir
+               // this will result in something like build/test-results/kotestDebugUnitTest
+               moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+               rootTestReportsDir.set(getRootTestReportsDir(project, name))
+               compilationName.set(compilation.name)
 
-            // we can execute check or test tasks with -Pkotest.include and this will then be
-            // passed to the kotest runtime as an environment variable to filter specs and tests
-            project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
+               if (target != null)
+                  targetName.set(target + " " + androidBuildType(compilation))
 
-            // we depend on the standard android test task to ensure compilation has happened
-            dependsOn(androidTestTaskName(compilation))
-            inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
-         }
+               // we can execute check or test tasks with -Pkotest.include and this will then be
+               // passed to the kotest runtime as an environment variable to filter specs and tests
+               project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
 
-         // this means this kotest task will be run when the user runs "gradle kotest"
-         project.tasks.getByName(KOTEST_TASK_NAME) {
-            project.logger.info("> Configuring kotest task for $kotestTaskName")
-            dependsOn(task)
+               // we depend on the standard android test task to ensure compilation has happened
+               dependsOn(androidTestTaskName(compilation))
+               inputs.files(project.tasks.named(androidTestTaskName(compilation)).map { it.outputs.files })
+            }
+
+            // this means this kotest task will be run when the user runs "gradle kotest"
+            project.tasks.getByName(KOTEST_TASK_NAME) {
+               project.logger.info("> Configuring kotest task for $kotestTaskName")
+               dependsOn(task)
+            }
          }
       }
    }
