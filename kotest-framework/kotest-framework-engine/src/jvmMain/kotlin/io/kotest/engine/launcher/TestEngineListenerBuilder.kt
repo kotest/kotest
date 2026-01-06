@@ -1,7 +1,6 @@
 package io.kotest.engine.launcher
 
 import io.kotest.engine.listener.ConsoleTestEngineListener
-import io.kotest.engine.listener.EnhancedConsoleTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
@@ -31,7 +30,7 @@ data class TestEngineListenerBuilder(
    fun build(): TestEngineListener {
       return when (type) {
          LISTENER_TC -> TeamCityTestEngineListener()
-         LISTENER_CONSOLE -> EnhancedConsoleTestEngineListener()
+         LISTENER_CONSOLE -> ConsoleTestEngineListener()
          // if not speciifed, we'll try to detect instead
          else if isIntellij() -> TeamCityTestEngineListener()
          else -> ConsoleTestEngineListener()

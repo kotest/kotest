@@ -20,7 +20,7 @@ import kotlin.time.TimeSource
  * It delegates to a [io.kotest.engine.console.ConsoleRenderer] to do the actual rendering on each platform,
  * to take advantage of enchanced console capabilities where available.
  */
-open class ConsoleTestEngineListener : AbstractTestEngineListener() {
+class ConsoleTestEngineListener : AbstractTestEngineListener() {
 
    private var errors = 0
    private var start = TimeSource.Monotonic.markNow()
@@ -130,53 +130,6 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       consoleRenderer.println(str)
    }
 
-   private fun printThrowable(error: Throwable?, padding: Int) {
-      if (error != null) {
-         val message = error.message
-         if (message != null) {
-            consoleRenderer.println(consoleRenderer.brightRed(message.padStart(padding, ' ')))
-         }
-         printlnStackTrace(error, padding)
-      }
-   }
-
-   open fun printlnStackTrace(error: Throwable, padding: Int) {
-   }
-
-   private fun printSpecCounts() {
-      val specsSeenSize = specsSeen.distinct().size
-      val specsPassedSize = specsSeen.distinct().minus(specsFailed.toSet()).size
-      val specsFailedSize = specsFailed.distinct().size
-      val str = buildString {
-         append("Specs:   ${consoleRenderer.greenBold("$specsPassedSize passed")}, ")
-         if (specsFailed.isEmpty()) {
-            append(consoleRenderer.bold("$specsFailedSize failed") + ", ")
-         } else {
-            append(consoleRenderer.redBold("$specsFailedSize failed") + ", ")
-         }
-         append("$specsSeenSize total")
-      }
-      consoleRenderer.println(str)
-   }
-
-   private fun printTestsCounts() {
-      val str = buildString {
-         append("Tests:   ${consoleRenderer.greenBold("$testsPassed passed")}, ")
-         if (testsFailed.isEmpty()) {
-            append(consoleRenderer.bold("${testsFailed.size} failed") + ", ")
-         } else {
-            append(consoleRenderer.redBold("${testsFailed.size} failed") + ", ")
-         }
-         if (testsIgnored > 0) {
-            append(consoleRenderer.yellowBold("$testsIgnored ignored") + ", ")
-         } else {
-            append(consoleRenderer.bold("$testsIgnored ignored") + ", ")
-         }
-         append("${testsPassed + testsFailed.size + testsIgnored} total")
-      }
-      consoleRenderer.println(str)
-   }
-
    override suspend fun specStarted(ref: SpecRef) {
       specsSeen = specsSeen + ref.kclass.toDescriptor()
       val specCount = specsSeen.size
@@ -215,8 +168,20 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       }
    }
 
+   override suspend fun testStarted(testCase: TestCase) {
+      // we want to output containers immediately so they appear in the correct order in the console
+      if (testCase.type == TestType.Container) {
+         val str = buildString {
+            append("".padEnd(testCase.descriptor.depth() * 4, ' '))
+            append("+ ")
+            append(formatter.format(testCase))
+         }
+         consoleRenderer.println(str)
+      }
+   }
+
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      // only leaf tests or failed containers contribute to the counts
+      // gradle counts only leaf tests or failed containers in the totals so our console listener does the same
       when (result) {
          is TestResult.Success -> if (testCase.type == TestType.Test) testsPassed++
          is TestResult.Failure, is TestResult.Error -> {
@@ -225,10 +190,9 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
             specsFailed = specsFailed + testCase.spec::class
          }
 
-         else -> Unit
+         is TestResult.Ignored -> Unit
       }
 
-      // we only consoleRenderer.print the name and status for leafs, as containers are consoleRenderer.printed in advance
       if (testCase.type == TestType.Test) {
          val r = when (result) {
             is TestResult.Success -> consoleRenderer.greenBold(" OK")
@@ -252,15 +216,49 @@ open class ConsoleTestEngineListener : AbstractTestEngineListener() {
       }
    }
 
-   override suspend fun testStarted(testCase: TestCase) {
-      // containers we display straight away without pass / fail message
-      if (testCase.type == TestType.Container) {
-         val str = buildString {
-            append("".padEnd(testCase.descriptor.depth() * 4, ' '))
-            append("+ ")
-            append(formatter.format(testCase))
+   private fun printSpecCounts() {
+      val specsSeenSize = specsSeen.distinct().size
+      val specsPassedSize = specsSeen.distinct().minus(specsFailed.toSet()).size
+      val specsFailedSize = specsFailed.distinct().size
+      val str = buildString {
+         append("Specs:   ${consoleRenderer.greenBold("$specsPassedSize passed")}, ")
+         if (specsFailed.isEmpty()) {
+            append(consoleRenderer.bold("$specsFailedSize failed") + ", ")
+         } else {
+            append(consoleRenderer.redBold("$specsFailedSize failed") + ", ")
          }
-         consoleRenderer.println(str)
+         append("$specsSeenSize total")
+      }
+      consoleRenderer.println(str)
+   }
+
+   private fun printTestsCounts() {
+      val str = buildString {
+         append("Tests:   ${consoleRenderer.greenBold("$testsPassed passed")}, ")
+         if (testsFailed.isEmpty()) {
+            append(consoleRenderer.bold("${testsFailed.size} failed") + ", ")
+         } else {
+            append(consoleRenderer.redBold("${testsFailed.size} failed") + ", ")
+         }
+         if (testsIgnored > 0) {
+            append(consoleRenderer.yellowBold("$testsIgnored ignored") + ", ")
+         } else {
+            append(consoleRenderer.bold("$testsIgnored ignored") + ", ")
+         }
+         append("${testsPassed + testsFailed.size + testsIgnored} total")
+      }
+      consoleRenderer.println(str)
+   }
+
+   private fun printThrowable(error: Throwable?, padding: Int) {
+      if (error != null) {
+         val message = error.message
+         if (message != null) {
+            consoleRenderer.println(consoleRenderer.brightRed(message.padStart(padding, ' ')))
+         }
+         printlnStackTrace(error, padding)
       }
    }
 }
+
+expect fun printlnStackTrace(error: Throwable, padding: Int)
