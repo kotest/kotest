@@ -56,6 +56,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val TEST_TASK_NAME = "test"
       internal const val ANDROID_UNIT_TEST_SUFFIX = "UnitTest"
       internal const val KOTEST_INCLUDE_PROPERTY = "kotest.include"
+      internal const val GRADLE_EXTENSION_NAME = "kotest"
       private val unsupportedTargets = listOf("metadata")
 
       internal const val KOTEST_INCLUDE_PATTERN = "KOTEST_INCLUDE_PATTERN"
@@ -65,19 +66,23 @@ abstract class KotestPlugin : Plugin<Project> {
 
    override fun apply(project: Project) {
 
-      project.tasks.register(KOTEST_TASK_NAME) {
-         group = JavaBasePlugin.VERIFICATION_GROUP
-         description = TASK_DESCRIPTION
+      val kotestExtension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
+      if (kotestExtension.customGradleTask) {
+
+         project.tasks.register(KOTEST_TASK_NAME) {
+            group = JavaBasePlugin.VERIFICATION_GROUP
+            description = TASK_DESCRIPTION
+         }
+
+         // configures standalone Kotlin JVM projects
+         handleKotlinJvm(project)
+
+         // configures Kotlin multiplatform projects
+         handleKotlinMultiplatform(project)
+
+         // configure Kotlin Android projects when it is not a multiplatform project
+         handleAndroid(project)
       }
-
-      // configures standalone Kotlin JVM projects
-      handleKotlinJvm(project)
-
-      // configures Kotlin multiplatform projects
-      handleKotlinMultiplatform(project)
-
-      // configure Kotlin Android projects when it is not a multiplatform project
-      handleAndroid(project)
 
       project.gradle.taskGraph.whenReady {
          configureTestTasks(project)
