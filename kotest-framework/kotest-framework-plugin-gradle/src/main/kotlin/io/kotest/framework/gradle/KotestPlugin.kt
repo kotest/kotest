@@ -92,20 +92,23 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun configureTestTasks(project: Project) {
       project.tasks.withType(AbstractTestTask::class.java).configureEach {
 
-         val includes = when (val f = filter) {
-            is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
-            else -> f.includePatterns
-         }
+         doFirst {
 
-         val pattern = includes.joinToString(";")
+            val includes = when (val f = filter) {
+               is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
+               else -> f.includePatterns
+            }
 
-//         project.logger.warn("Detected gradle includes $name: $includes")
-//         project.logger.warn("Setting env var to " + includes.joinToString(";"))
+            val pattern = includes.joinToString(";")
 
-         when (this) {
-            is KotlinJsTest -> environment(KOTEST_INCLUDE_PATTERN, pattern)
-            is KotlinNativeTest -> environment(KOTEST_INCLUDE_PATTERN, pattern, false)
-            is Test -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+//            project.logger.warn("Detected gradle includes $name: $includes")
+//            project.logger.warn("Setting env var to " + includes.joinToString(";"))
+
+            when (this) {
+               is KotlinJsTest -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+               is KotlinNativeTest -> environment(KOTEST_INCLUDE_PATTERN, pattern, false)
+               is Test -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+            }
          }
       }
    }

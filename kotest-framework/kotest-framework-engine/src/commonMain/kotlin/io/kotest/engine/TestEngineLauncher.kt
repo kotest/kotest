@@ -124,9 +124,6 @@ data class TestEngineLauncher(
 
    private fun toConfig(): TestEngineConfig {
 
-      // if the engine was configured with explicit tags, we register those via a tag extension
-      tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
-
       val safeListener = ThreadSafeTestEngineListener( // to avoid race conditions with concurrent spec execution
          PinnedSpecTestEngineListener( // to ensure we don't interleave output in TCSM which requires sequential outputs
             CompositeTestEngineListener(listeners + collecting) // add in a collecting listener so we know to exit appropriately on errors
@@ -135,6 +132,9 @@ data class TestEngineLauncher(
 
       // add in extensions that are enabled by default
       registry.add(IncludeTestPatternDescriptorFilter)
+
+      // if the engine was configured with explicit tags, we register those via a tag extension
+      tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
       return TestEngineConfig(
          listener = safeListener,
