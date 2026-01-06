@@ -153,7 +153,7 @@ By default, all specs are not isolated and are eligible to run concurrently if c
 above docs. Isolated specs will execute first sequentially, before the non isolated specs run together.
 
 :::tip
-The project configuration object has a setting `concurrencyOrder` which can be used to control if isolated specs
+In Kotest 6.1 the project config object has a setting `concurrencyOrder` which can be used to control if isolated specs
 should be executed first or last.
 :::
 
