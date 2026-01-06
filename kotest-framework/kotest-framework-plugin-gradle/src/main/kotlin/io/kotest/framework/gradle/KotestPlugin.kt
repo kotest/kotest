@@ -104,15 +104,18 @@ abstract class KotestPlugin : Plugin<Project> {
                else -> f.includePatterns
             }
 
-            val pattern = includes.joinToString(";")
+            if (includes.isNotEmpty()) {
 
-//            project.logger.warn("Detected gradle includes $name: $includes")
-//            project.logger.warn("Setting env var to " + includes.joinToString(";"))
+               val pattern = includes.joinToString(";")
 
-            when (this) {
-               is KotlinJsTest -> environment(KOTEST_INCLUDE_PATTERN, pattern)
-               is KotlinNativeTest -> environment(KOTEST_INCLUDE_PATTERN, pattern, false)
-               is Test -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+               project.logger.warn("Detected gradle includes $name: $includes")
+               project.logger.warn("Setting env var to " + includes.joinToString(";"))
+
+               when (this) {
+                  is KotlinJsTest -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+                  is KotlinNativeTest -> environment(KOTEST_INCLUDE_PATTERN, pattern, false)
+                  is Test -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+               }
             }
          }
       }
