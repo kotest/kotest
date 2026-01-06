@@ -35,11 +35,11 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
    private var formatter = DisplayNameFormatting(null)
 
    private val intros = listOf(
-      "Feeding the kotest engine with freshly harvested tests",
-      "Engaging kotest engine at warp factor 9",
+      "Feeding the Kotest engine with freshly harvested tests",
+      "Engaging Kotest engine at warp factor 9",
       "Harvesting the test fields",
       "Preparing to sacrifice your code to the gods of testing",
-      "Hamsters are turning the wheels of kotest",
+      "Hamsters are turning the wheels of Kotest",
       "Battle commanders are ready to declare war on bugs",
       "Be afraid - be very afraid - of failing tests",
       "The point is, ladies and gentlemen, that green is good",
