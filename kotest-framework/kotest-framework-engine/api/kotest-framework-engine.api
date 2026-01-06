@@ -3758,31 +3758,6 @@ public final class io/kotest/engine/extensions/DefaultExtensionRegistry : io/kot
 	public fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
 
-public abstract interface class io/kotest/engine/extensions/DescriptorFilter : io/kotest/core/extensions/Extension {
-	public abstract fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
-}
-
-public abstract interface class io/kotest/engine/extensions/DescriptorFilterResult {
-}
-
-public final class io/kotest/engine/extensions/DescriptorFilterResult$Exclude : io/kotest/engine/extensions/DescriptorFilterResult {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/extensions/DescriptorFilterResult$Exclude;
-	public static synthetic fun copy$default (Lio/kotest/engine/extensions/DescriptorFilterResult$Exclude;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/extensions/DescriptorFilterResult$Exclude;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getReason ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/extensions/DescriptorFilterResult$Include : io/kotest/engine/extensions/DescriptorFilterResult {
-	public static final field INSTANCE Lio/kotest/engine/extensions/DescriptorFilterResult$Include;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class io/kotest/engine/extensions/EmptyExtensionRegistry : io/kotest/engine/extensions/ExtensionRegistry {
 	public static final field INSTANCE Lio/kotest/engine/extensions/EmptyExtensionRegistry;
 	public fun add (Lio/kotest/core/extensions/Extension;)V
@@ -3875,13 +3850,38 @@ public abstract interface class io/kotest/engine/extensions/ExtensionRegistry {
 	public abstract fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
 
-public final class io/kotest/engine/extensions/IncludeDescriptorFilter : io/kotest/engine/extensions/DescriptorFilter {
-	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
-	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/DescriptorFilterResult;
+public abstract interface class io/kotest/engine/extensions/filter/DescriptorFilter : io/kotest/core/extensions/Extension {
+	public abstract fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult;
 }
 
-public final class io/kotest/engine/extensions/SystemPropertyOrEnvTagExtension : io/kotest/core/extensions/TagExtension {
-	public static final field INSTANCE Lio/kotest/engine/extensions/SystemPropertyOrEnvTagExtension;
+public abstract interface class io/kotest/engine/extensions/filter/DescriptorFilterResult {
+}
+
+public final class io/kotest/engine/extensions/filter/DescriptorFilterResult$Exclude : io/kotest/engine/extensions/filter/DescriptorFilterResult {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult$Exclude;
+	public static synthetic fun copy$default (Lio/kotest/engine/extensions/filter/DescriptorFilterResult$Exclude;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult$Exclude;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/extensions/filter/DescriptorFilterResult$Include : io/kotest/engine/extensions/filter/DescriptorFilterResult {
+	public static final field INSTANCE Lio/kotest/engine/extensions/filter/DescriptorFilterResult$Include;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/extensions/filter/IncludeDescriptorFilter : io/kotest/engine/extensions/filter/DescriptorFilter {
+	public fun <init> ([Lio/kotest/core/descriptors/Descriptor;)V
+	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult;
+}
+
+public final class io/kotest/engine/extensions/tags/SystemPropertyOrEnvTagExtension : io/kotest/core/extensions/TagExtension {
+	public static final field INSTANCE Lio/kotest/engine/extensions/tags/SystemPropertyOrEnvTagExtension;
 	public fun tags ()Lio/kotest/engine/tags/TagExpression;
 }
 
@@ -3969,11 +3969,10 @@ public final class io/kotest/engine/listener/CompositeTestEngineListener : io/ko
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public class io/kotest/engine/listener/ConsoleTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
+public final class io/kotest/engine/listener/ConsoleTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {
 	public fun <init> ()V
 	public fun engineFinished (Ljava/util/List;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun engineInitialized (Lio/kotest/engine/interceptors/EngineContext;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public fun printlnStackTrace (Ljava/lang/Throwable;I)V
 	public fun specFinished (Lio/kotest/core/spec/SpecRef;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun specStarted (Lio/kotest/core/spec/SpecRef;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun testFinished (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -3981,9 +3980,8 @@ public class io/kotest/engine/listener/ConsoleTestEngineListener : io/kotest/eng
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/listener/EnhancedConsoleTestEngineListener : io/kotest/engine/listener/ConsoleTestEngineListener {
-	public fun <init> ()V
-	public fun printlnStackTrace (Ljava/lang/Throwable;I)V
+public final class io/kotest/engine/listener/ConsoleTestEngineListener_jvmKt {
+	public static final fun printlnStackTrace (Ljava/lang/Throwable;I)V
 }
 
 public final class io/kotest/engine/listener/LoggingTestEngineListener : io/kotest/engine/listener/AbstractTestEngineListener {

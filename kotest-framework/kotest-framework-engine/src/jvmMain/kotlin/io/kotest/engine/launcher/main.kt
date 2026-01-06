@@ -4,7 +4,7 @@ import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
-import io.kotest.engine.extensions.IncludeDescriptorFilter
+import io.kotest.engine.extensions.filter.IncludeDescriptorFilter
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener

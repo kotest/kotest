@@ -2,7 +2,7 @@
 
 package io.kotest.runner.junit.platform.gradle
 
-import io.kotest.engine.extensions.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.runner.junit.platform.postFilters
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.launcher.PostDiscoveryFilter

@@ -5,11 +5,11 @@ import io.kotest.core.Logger
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 
 /**
- * Evaluates a spec against any registered [io.kotest.engine.extensions.DescriptorFilter]s.
+ * Evaluates a spec against any registered [DescriptorFilter]s.
  */
 internal class DescriptorFilterSpecRefEnabledExtension(
    private val projectConfigResolver: ProjectConfigResolver,

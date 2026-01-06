@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.extensions.tags
 
 import io.kotest.common.env
 import io.kotest.common.sysprop
@@ -10,11 +10,11 @@ import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.tags.TagExpression
 
 /**
- * This [TagExtension] includes and excludes tags using the system properties:
- * [KotestEngineProperties.TAG_EXPRESSION], [KotestEngineProperties.INCLUDE_TAGS]
- * and [KotestEngineProperties.EXCLUDE_TAGS] or the equivalent environment variables.
+ * This [io.kotest.core.extensions.TagExtension] includes and excludes tags using the system properties:
+ * [io.kotest.engine.config.KotestEngineProperties.TAG_EXPRESSION], [io.kotest.engine.config.KotestEngineProperties.INCLUDE_TAGS]
+ * and [io.kotest.engine.config.KotestEngineProperties.EXCLUDE_TAGS] or the equivalent environment variables.
  *
- * Note: If [KotestEngineProperties.TAG_EXPRESSION] is used then the other two properties will be ignored.
+ * Note: If [io.kotest.engine.config.KotestEngineProperties.TAG_EXPRESSION] is used then the other two properties will be ignored.
  *
  * This extension is registered automatically by the Kotest engine.
  *
@@ -29,7 +29,7 @@ object SystemPropertyOrEnvTagExtension : TagExtension {
       val expression = sysprop(KotestEngineProperties.TAG_EXPRESSION) ?: env(KotestEngineEnvVars.TAG_EXPRESSION)
 
       return if (expression == null)
-         TagExpression(includedTags.toSet(), excludedTags.toSet())
+         TagExpression.Companion(includedTags.toSet(), excludedTags.toSet())
       else
          TagExpression(expression)
    }

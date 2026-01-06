@@ -10,10 +10,12 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.Directory
+import org.gradle.api.internal.tasks.testing.filter.DefaultTestFilter
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
+import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
@@ -30,6 +32,7 @@ import org.jetbrains.kotlin.gradle.plugin.KotlinTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinAndroidTarget
 import org.jetbrains.kotlin.gradle.targets.js.KotlinWasmTargetType
 import org.jetbrains.kotlin.gradle.targets.js.ir.KotlinJsIrTarget
+import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
@@ -54,6 +57,8 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val ANDROID_UNIT_TEST_SUFFIX = "UnitTest"
       internal const val KOTEST_INCLUDE_PROPERTY = "kotest.include"
       private val unsupportedTargets = listOf("metadata")
+
+      internal const val KOTEST_INCLUDE_PATTERN = "KOTEST_INCLUDE_PATTERN"
    }
 
    private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
@@ -73,6 +78,36 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // configure Kotlin Android projects when it is not a multiplatform project
       handleAndroid(project)
+
+      project.gradle.taskGraph.whenReady {
+         configureTestTasks(project)
+      }
+   }
+
+   /**
+    * Forwards the --tests arg and test filters from the Gradle test tasks to Kotest in the form
+    * of environment variables that Kotest picks up and applies via a descriptor filter.
+    * This allow us to run specific tests using the regular gradle task.
+    */
+   private fun configureTestTasks(project: Project) {
+      project.tasks.withType(AbstractTestTask::class.java).configureEach {
+
+         val includes = when (val f = filter) {
+            is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
+            else -> f.includePatterns
+         }
+
+         val pattern = includes.joinToString(";")
+
+//         project.logger.warn("Detected gradle includes $name: $includes")
+//         project.logger.warn("Setting env var to " + includes.joinToString(";"))
+
+         when (this) {
+            is KotlinJsTest -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+            is KotlinNativeTest -> environment(KOTEST_INCLUDE_PATTERN, pattern, false)
+            is Test -> environment(KOTEST_INCLUDE_PATTERN, pattern)
+         }
+      }
    }
 
    /**

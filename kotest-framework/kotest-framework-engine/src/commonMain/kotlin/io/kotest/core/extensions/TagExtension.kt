@@ -12,7 +12,7 @@ import io.kotest.engine.tags.TagExpression
  * Note: If multiple extensions are registered then all returned
  * [TagExpression] are combined using [TagExpression.combine], which acts like an OR.
  *
- * The [io.kotest.engine.extensions.SystemPropertyOrEnvTagExtension] is automatically registered when
+ * The [io.kotest.engine.extensions.tags.SystemPropertyOrEnvTagExtension] is automatically registered when
  * running JVM tests which includes and excludes tags using the system properties
  * 'kotest.tags.include' and 'kotest.tags.exclude'.
  *

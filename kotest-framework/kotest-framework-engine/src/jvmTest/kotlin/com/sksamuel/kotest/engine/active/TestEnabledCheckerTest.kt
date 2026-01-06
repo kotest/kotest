@@ -17,8 +17,8 @@ import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.test.enabled.TestEnabledChecker
 import io.kotest.matchers.shouldBe

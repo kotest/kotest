@@ -3,8 +3,8 @@ package io.kotest.runner.junit.platform.gradle
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorPath
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 
 internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String>) : DescriptorFilter {
 

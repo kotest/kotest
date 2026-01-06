@@ -1,9 +1,11 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.extensions.filter
 
 import io.kotest.common.env
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
+import io.kotest.engine.extensions.TestPattern
+import io.kotest.engine.extensions.TestPatternParser
 
 /**
  * An implementation of [DescriptorFilter] that uses an include pattern from an env variable.

@@ -11,8 +11,8 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
-import io.kotest.engine.extensions.IncludeTestPatternDescriptorFilter
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.filter.IncludeTestPatternDescriptorFilter
+import io.kotest.engine.extensions.tags.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.ConsoleTestEngineListener

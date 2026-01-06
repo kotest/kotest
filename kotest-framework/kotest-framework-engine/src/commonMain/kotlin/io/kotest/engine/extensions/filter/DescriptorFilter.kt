@@ -1,4 +1,4 @@
-package io.kotest.engine.extensions
+package io.kotest.engine.extensions.filter
 
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.Extension

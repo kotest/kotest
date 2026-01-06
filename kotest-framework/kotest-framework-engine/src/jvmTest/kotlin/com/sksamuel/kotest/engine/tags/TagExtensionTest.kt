@@ -7,7 +7,7 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.tags.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import io.kotest.extensions.system.OverrideMode
