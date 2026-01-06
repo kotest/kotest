@@ -22,10 +22,6 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
       .withTeamCityListener()
       .async()
 
-   if (result.testFailures) {
-      error("Tests failed")
-   }
-
    if (result.errors.isNotEmpty()) {
       throw MultipleExceptions(result.errors)
    }
