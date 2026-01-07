@@ -70,10 +70,8 @@ val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == produc
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
 plugins {
-   val kotlinVersion = "2.2.0"
-   id("java")
-   id("org.jetbrains.kotlin.jvm").version(kotlinVersion)
-   id("org.jetbrains.intellij.platform") version "2.10.3"
+   id("org.jetbrains.intellij.platform") version "2.10.5"
+   kotlin("jvm")
 }
 
 repositories {
@@ -174,6 +172,8 @@ configurations.runtimeOnly {
    exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-test-jvm")
 }
 
+// allows us to have different implementations of the same logic for different intellij versions
+// useful when we want to move from a deprecated function to a non deprecated one in a more recent intellij version
 sourceSets {
    main {
       kotlin {
@@ -191,6 +191,7 @@ sourceSets {
 }
 
 kotlin {
+   jvmToolchain { languageVersion = JavaLanguageVersion.of(jvmTargetVersion) }
    compilerOptions {
       jvmToolchain(JavaLanguageVersion.of(jvmTargetVersion).asInt())
       optIn.set(listOf("org.jetbrains.kotlin.analysis.api.permissions.KaAllowProhibitedAnalyzeFromWriteAction"))
