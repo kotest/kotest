@@ -11,7 +11,6 @@ import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import io.kotest.plugin.intellij.psi.isRunnableSpec
-import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
 import org.jetbrains.kotlin.lexer.KtKeywordToken
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 import org.jetbrains.kotlin.lexer.KtToken
@@ -85,6 +84,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
 
          if (classOrObject.isRunnableSpec()) {
             configuration.setSpec(classOrObject)
+            configuration.setSpecsName(classOrObject.fqName?.asString() ?: "")
             configuration.setModule(context.module)
             configuration.name = generateName(classOrObject, null)
             return true
@@ -109,9 +109,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       if (element != null && element is LeafPsiElement) {
          val spec = element.asKtClassOrObjectOrNull() ?: return false
          if (spec.isRunnableSpec()) {
-            return configuration.getTestPath().isNullOrBlank()
-               && configuration.getPackageName().isNullOrBlank()
-               && configuration.getSpecName() == spec.fqName?.asString()
+            return configuration.getTestPath().isNullOrBlank() && configuration.getSpecName() == spec.fqName?.asString()
          }
       }
       return false

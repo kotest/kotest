@@ -33,6 +33,7 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
    JavaTestConfigurationBase(name, JavaRunConfigurationModule(project, false), factory),
    TargetEnvironmentAwareRunProfile {
 
+   private var include: String? = null
    private var alternativeJrePath: String? = ""
    private var alternativeJrePathEnabled = false
    private var envs = mutableMapOf<String, String>()
@@ -40,13 +41,42 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
    private var programParameters: String? = null
    private var vmParameters: String? = ""
    private var workingDirectory: String? = PathMacroUtil.MODULE_WORKING_DIR
+
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    private var testPath: String? = null
+
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    private var specName: String? = null
+   private var specsName: String? = null
+
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    private var packageName: String? = null
    private var searchScope: TestSearchScope.Wrapper = TestSearchScope.Wrapper()
 
+   fun getInclude(): String? = include
+
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    fun getTestPath(): String? = testPath
-   fun getSpecName(): String? = specName
+
+   fun getSpecName(): String? = specsName?.split(';')?.get(0)
+   fun getSpecsName(): String? = specsName
+
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    fun getPackageName(): String? = packageName
 
    override fun isPassParentEnvs(): Boolean = passParentEnvs
@@ -67,6 +97,7 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
    override fun getTestType(): String = when {
       testPath != null -> "test"
       specName != null -> "spec"
+      specsName != null -> "specs"
       packageName != null -> "package"
       else -> "source"
    }
@@ -149,18 +180,38 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       this.envs = envs
    }
 
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    fun setTestPath(testName: String?) {
       this.testPath = testName
    }
 
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    fun setSpecName(specName: String?) {
       this.specName = specName
    }
 
+   fun setSpecsName(specsName: String?) {
+      this.specsName = specsName
+   }
+
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    fun setSpec(spec: KtClassOrObject?) {
       this.specName = spec?.fqName?.asString()
    }
 
+   @Deprecated(
+      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
+      level = DeprecationLevel.WARNING
+   )
    fun setPackageName(packageName: String?) {
       this.packageName = packageName
    }
@@ -193,6 +244,7 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       JDOMExternalizerUtil.writeField(element, PassParentEnvsField, passParentEnvs.toString())
       JDOMExternalizerUtil.writeField(element, WorkingDirField, workingDirectory)
       JDOMExternalizerUtil.writeField(element, ProgramParamsField, programParameters)
+      JDOMExternalizerUtil.writeField(element, SpecsNameField, specsName)
       JDOMExternalizerUtil.writeField(element, SpecNameField, specName)
       JDOMExternalizerUtil.writeField(element, TestPathField, testPath)
       JDOMExternalizerUtil.writeField(element, PackageNameField, packageName)
@@ -208,6 +260,7 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       passParentEnvs = JDOMExternalizerUtil.readField(element, PassParentEnvsField, "false").toBoolean()
       workingDirectory = JDOMExternalizerUtil.readField(element, WorkingDirField)
       programParameters = JDOMExternalizerUtil.readField(element, ProgramParamsField)
+      specsName = JDOMExternalizerUtil.readField(element, SpecsNameField)
       specName = JDOMExternalizerUtil.readField(element, SpecNameField)
       testPath = JDOMExternalizerUtil.readField(element, TestPathField)
       packageName = JDOMExternalizerUtil.readField(element, PackageNameField)
@@ -220,6 +273,10 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       return KotestTestConsoleProperties(this, executor)
    }
 
+   fun setInclude(include: String?) {
+      this.include = include
+   }
+
    companion object {
       const val PassParentEnvsField = "passParentEnvs"
       const val ProgramParamsField = "programParameters"
@@ -228,6 +285,7 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       const val VmParamsField = "vmparams"
       const val TestPathField = "testPath"
       const val SpecNameField = "specName"
+      const val SpecsNameField = "specsName"
       const val AlternativeJrePathField = "jrePath"
       const val AlternativeJrePathEnabledField = "jrePathEnabled"
    }

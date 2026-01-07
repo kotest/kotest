@@ -5,15 +5,24 @@ import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.configurations.ModuleBasedConfiguration
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.JavaDirectoryService
+import com.intellij.psi.JavaPsiFacade
+import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.search.PackageScope
+import com.intellij.psi.search.searches.ClassInheritorsSearch
 import io.kotest.plugin.intellij.dependencies.ModuleDependencies
+import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
+
 
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
@@ -75,8 +84,18 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
          if (index.isInTestSourceContent(psiDirectory.virtualFile)) {
             val psiPackage = dirservice.getPackage(psiDirectory)
             if (psiPackage != null) {
+               val psiClasses = findKotestSpecsByStyle(context.project, psiPackage.qualifiedName);
+               val specs = psiClasses.joinToString(";") { it.qualifiedName.toString() }
+               LOG.info("Found ${psiClasses.size} classes in package ${psiPackage.qualifiedName}")
+               LOG.info(
+                  """
+                  Specs:
+                     $specs
+               """.trimIndent()
+               )
                setupConfigurationModule(context, configuration)
                configuration.setPackageName(psiPackage.qualifiedName)
+               configuration.setSpecsName(specs)
                configuration.name = generateName(psiPackage.qualifiedName)
                return true
             }
@@ -85,6 +104,23 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       return false
    }
 
+   fun findKotestSpecsByStyle(
+      project: Project,
+      targetPackageName: String
+   ): List<PsiClass> {
+      val kotestStyles = SpecStyle.styles.map { it.fqn().asString() }.toSet()
+      val facade = JavaPsiFacade.getInstance(project)
+      val targetPackage = facade.findPackage(targetPackageName) ?: return emptyList()
+      val packageScope = PackageScope(targetPackage, true, false)
+      val libraryScope = GlobalSearchScope.allScope(project)
+      val foundClasses = mutableSetOf<PsiClass>() as LinkedHashSet<PsiClass>
+      for (styleFqn in kotestStyles) {
+         val styleClass = facade.findClass(styleFqn, libraryScope) ?: continue
+         val query = ClassInheritorsSearch.search(styleClass, packageScope, true)
+         foundClasses.addAll(query.findAll())
+      }
+      return foundClasses.filter { it.language.id == "kotlin" }
+   }
    private fun setupConfigurationModule(context: ConfigurationContext, configuration: KotestRunConfiguration): Boolean {
       val template = context.runManager.getConfigurationTemplate(configurationFactory)
       val contextModule = context.module
@@ -106,5 +142,9 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
          return contextModule
       }
       return null
+   }
+
+   companion object {
+      private val LOG = Logger.getInstance(PackageRunConfigurationProducer::class.java)
    }
 }
