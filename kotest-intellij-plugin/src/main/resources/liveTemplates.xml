@@ -1,0 +1,34 @@
+<templateSet group="Kotest">
+   <template name="behaviorspec"
+             value="class $SPEC$: io.kotest.core.spec.style.BehaviorSpec({&#10;    Given(&quot;$FIRST_TEST$&quot;) {&#10;        When(&quot;$first_when$&quot;) {&#10;            Then(&quot;$then$&quot;) {&#10;                $FIRST_TEST_CONTENT$&#10;            }&#10;        }  &#10;    }&#10;})"
+             description="Creates a new BehaviorSpec" toReformat="false" toShortenFQNames="true">
+      <variable name="SPEC" expression="" defaultValue="fileNameWithoutExtension()" alwaysStopAt="true"/>
+      <variable name="FIRST_TEST" expression="" defaultValue="&quot;foo&quot;" alwaysStopAt="true"/>
+      <variable name="first_when" expression="" defaultValue="&quot;bar&quot;" alwaysStopAt="true"/>
+      <variable name="then" expression="" defaultValue="&quot;baz&quot;" alwaysStopAt="true"/>
+      <variable name="FIRST_TEST_CONTENT" expression="" defaultValue="&quot;1 shouldBe 1&quot;" alwaysStopAt="true"/>
+      <context>
+         <option name="KOTLIN_TOPLEVEL" value="true"/>
+      </context>
+   </template>
+   <template name="funspec"
+             value="class $SPEC$: io.kotest.core.spec.style.FunSpec({&#10;    test(&quot;$FIRST_TEST$&quot;) {&#10;        $FIRST_TEST_CONTENT$  &#10;    }&#10;})"
+             description="Creates a new FunSpec" toReformat="false" toShortenFQNames="true">
+      <variable name="SPEC" expression="" defaultValue="fileNameWithoutExtension()" alwaysStopAt="true"/>
+      <variable name="FIRST_TEST" expression="" defaultValue="&quot;Foo&quot;" alwaysStopAt="true"/>
+      <variable name="FIRST_TEST_CONTENT" expression="" defaultValue="&quot;1 shouldBe 1&quot;" alwaysStopAt="true"/>
+      <context>
+         <option name="KOTLIN_TOPLEVEL" value="true"/>
+      </context>
+   </template>
+   <template name="stringspec"
+             value="class $SPEC$: io.kotest.core.spec.style.StringSpec({&#10;    &quot;$FIRST_TEST$&quot; {&#10;        $FIRST_TEST_CONTENT$  &#10;    }&#10;})"
+             description="Creates a new StringSpec" toReformat="false" toShortenFQNames="true">
+      <variable name="SPEC" expression="" defaultValue="fileNameWithoutExtension()" alwaysStopAt="true"/>
+      <variable name="FIRST_TEST" expression="" defaultValue="&quot;Foo&quot;" alwaysStopAt="true"/>
+      <variable name="FIRST_TEST_CONTENT" expression="" defaultValue="&quot;1 shouldBe 1&quot;" alwaysStopAt="true"/>
+      <context>
+         <option name="KOTLIN_TOPLEVEL" value="true"/>
+      </context>
+   </template>
+</templateSet>

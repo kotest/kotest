@@ -1,0 +1,5 @@
+{
+   "extends": [
+      "config:base", "github>kotest/renovate-config"
+   ]
+}

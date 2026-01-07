@@ -1,0 +1,132 @@
+<idea-plugin>
+
+   <id>kotest-plugin-intellij</id>
+   <name>Kotest</name>
+
+   <vendor email="sam@sksamuel.com" url="http://github.com/kotest">Kotest</vendor>
+
+   <description><![CDATA[
+      Official IntelliJ-based IDEA plugin for <a href="https://github.com/kotest/kotest">Kotest</a>.<br/><br/>
+      This plugin requires the use of Kotest 4.2.0 or later.
+    ]]></description>
+
+   <!-- correct values will be set by the build plugin -->
+   <version>1.0.0</version>
+   <idea-version since-build="223.4884.69"/>
+
+   <depends>org.jetbrains.kotlin</depends>
+   <depends>com.intellij.modules.java</depends>
+   <depends>org.jetbrains.plugins.gradle</depends>
+   <depends optional="true" config-file="intellilang-kotlin-support.xml">org.intellij.intelliLang</depends>
+
+   <actions>
+      <action id="io.kotest.actions.NextTestAction"
+              class="io.kotest.plugin.intellij.actions.NextTestAction" text="Next Test"
+              description="Navigate to the next test in this spec class">
+         <add-to-group group-id="CodeMenu" anchor="last"/>
+         <keyboard-shortcut keymap="$default" first-keystroke="alt n"/>
+      </action>
+
+      <action id="io.kotest.actions.PreviousTestAction"
+              class="io.kotest.plugin.intellij.actions.PreviousTestAction" text="Previous Test"
+              description="Navigate to the previous test in this spec class">
+         <add-to-group group-id="CodeMenu" anchor="last"/>
+         <keyboard-shortcut keymap="$default" first-keystroke="alt P"/>
+      </action>
+   </actions>
+
+   <extensions defaultExtensionNs="com.intellij">
+      <configurationType implementation="io.kotest.plugin.intellij.run.idea.KotestConfigurationType"/>
+      <defaultLiveTemplates file="liveTemplates.xml"/>
+
+      <notificationGroup id="kotest.notification.group"
+                         displayType="BALLOON"
+                         key="kotest.notification.group"/>
+
+      <annotator language="kotlin"
+                 implementationClass="io.kotest.plugin.intellij.annotators.DuplicatedTestNameAnnotator"/>
+
+      <annotator language="kotlin"
+                 implementationClass="io.kotest.plugin.intellij.annotators.FocusInNestedTestAnnotator"/>
+
+      <toolWindow id="Kotest" anchor="left" icon="/iconToolWindow.png"
+                  factoryClass="io.kotest.plugin.intellij.toolwindow.TestExplorerToolWindowFactory"/>
+
+      <lang.structureViewExtension implementation="io.kotest.plugin.intellij.structure.KotestStructureViewExtension"/>
+
+      <codeInsight.lineMarkerProvider language="kotlin"
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
+      <codeInsight.lineMarkerProvider language="kotlin"
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
+      <runLineMarkerContributor language="kotlin"
+                                implementationClass="io.kotest.plugin.intellij.linemarker.SpecRunLineMarkerContributor"/>
+
+      <externalSystemExecutionConsoleManager
+         implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
+         order="before gradle"/>
+
+      <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestStartupActivity"/>
+
+      <runConfigurationProducer
+         implementation="io.kotest.plugin.intellij.run.gradle.TestOrSpecGradleRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestPathRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.PackageRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.GradleTestTaskRunConfigurationProducer"/>
+
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ConfigClassesImplicitUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
+
+      <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
+      <testFinder implementation="io.kotest.plugin.intellij.tests.KotestTestFinder"/>
+      <testGenerator implementationClass="io.kotest.plugin.intellij.tests.KotestTestGenerator" language="kotlin"/>
+
+      <!--    this was removed because it adds a new entry to the "go to tests" dialog with a custom "create new test" option, but the java one appears too so we use that  -->
+      <!--      <testCreator implementationClass="io.kotest.plugin.intellij.tests.KotestTestCreator" language="Kotlin" order="first"/>-->
+
+      <codeInsight.externalLibraryResolver implementation="io.kotest.plugin.intellij.KotestExternalLibraryResolver"/>
+      <stacktrace.fold substring="at io.kotest."/>
+      <programRunner implementation="io.kotest.plugin.intellij.run.idea.KotestDebuggerRunner"/>
+      <library.dependencyScopeSuggester implementation="io.kotest.plugin.intellij.KotestDependencyScopeSuggester"/>
+
+      <breadcrumbProvider implementation="io.kotest.plugin.intellij.breadcrumbs.KotestBreadcrumbProvider"/>
+
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.SoftAssertIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>SoftAssertIntention</descriptionDirectoryName>
+      </intentionAction>
+
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.BangIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>BangIntention</descriptionDirectoryName>
+      </intentionAction>
+
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.ShouldThrowIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>ShouldThrowIntention</descriptionDirectoryName>
+      </intentionAction>
+
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.ShouldThrowAnyIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>ShouldThrowAnyIntention</descriptionDirectoryName>
+      </intentionAction>
+
+      <intentionAction>
+         <className>io.kotest.plugin.intellij.intentions.ShouldThrowExactlyIntention</className>
+         <category>Kotlin/Test</category>
+         <descriptionDirectoryName>ShouldThrowExactlyIntention</descriptionDirectoryName>
+      </intentionAction>
+   </extensions>
+
+   <extensions defaultExtensionNs="org.jetbrains.kotlin">
+      <supportsKotlinPluginMode supportsK2="true"/>
+   </extensions>
+
+</idea-plugin>
