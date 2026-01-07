@@ -8,6 +8,7 @@ on:
          - '*.md'
          - '*.yml'
          - '.github/workflows/**'
+         - 'kotest-intellij-plugin/**'
       branches:
          - master
 
