@@ -1,4 +1,4 @@
-name: build-pr
+name: pr-intellij-plugin
 
 on:
    pull_request:
