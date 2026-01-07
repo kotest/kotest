@@ -36,8 +36,6 @@ class TeamCityTestEngineListener(
 
    private val results = mutableMapOf<Descriptor, TestResult>()
 
-   private val started = mutableSetOf<Descriptor.TestDescriptor>()
-
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that
    private fun insertPlaceholder(t: Throwable, parent: Descriptor) {
@@ -99,15 +97,8 @@ class TeamCityTestEngineListener(
       logger.log { Pair(testCase.name.name, "testStarted $testCase") }
       if (testCase.parent != null) addChild(testCase)
       when (testCase.type) {
-         TestType.Container -> {
-            writer.outputTestSuiteStarted(testCase)
-            started.add(testCase.descriptor)
-         }
-
-         TestType.Test -> {
-            writer.outputTestStarted(testCase)
-            started.add(testCase.descriptor)
-         }
+         TestType.Container -> writer.outputTestSuiteStarted(testCase)
+         TestType.Test -> writer.outputTestStarted(testCase)
       }
    }
 
@@ -129,7 +120,6 @@ class TeamCityTestEngineListener(
          }
 
          TestType.Test -> {
-            if (!started.contains(testCase.descriptor)) writer.outputTestStarted(testCase)
             if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
             writer.outputTestFinished(testCase, result)
          }
