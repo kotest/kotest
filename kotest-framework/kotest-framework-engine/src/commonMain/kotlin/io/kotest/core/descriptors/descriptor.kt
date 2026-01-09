@@ -17,6 +17,7 @@ import kotlin.reflect.KClass
  * and the top most parent being a [SpecDescriptor].
  *
  */
+@Suppress("DEPRECATION")
 sealed interface Descriptor {
 
    val id: DescriptorId
@@ -59,6 +60,7 @@ sealed interface Descriptor {
     * On KMP the KClass reference does not include the fully qualified name, so if the spec descriptor
     * is just the simple class name, then we will have to compare using that only.
     */
+   @Deprecated("This method will be removed in 6.2 as Kotest 6.1 now populates the fully qualified name")
    fun isEqual(other: Descriptor): Boolean {
       return when (other) {
          is SpecDescriptor if this is SpecDescriptor -> {
@@ -80,7 +82,7 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns a parseable path to the test.
+    * Returns a parseable path to the test including the spec name.
     *
     * For example, a test with name "my test" inside a context "my context" in a spec called "my spec"
     * would have the path "my spec/my context -- my test".
