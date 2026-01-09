@@ -1,4 +1,4 @@
-name: build-pr
+name: pr-intellij-plugin
 
 on:
    pull_request:
@@ -17,17 +17,17 @@ jobs:
          fail-fast: false
 
       steps:
-         -  uses: actions/checkout@v4
+         -  uses: actions/checkout@v6
             with:
                fetch-depth: 0
 
-         -  uses: actions/setup-java@v4
+         -  uses: actions/setup-java@v5
             with:
                java-version: "21"
                distribution: "temurin"
 
          -  name: Run tests
-            run: ./gradlew check
+            run: ./gradlew :kotest-intellij-plugin:check
             env:
                PRODUCT_NAME: ${{ matrix.product }}
 

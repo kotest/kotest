@@ -193,7 +193,7 @@ abstract class KotestPlugin : Plugin<Project> {
                      when (platformType) {
                         KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target, kotestExtension)
                         KotlinPlatformType.common -> Unit // these are not buildable targets, so we skip them
-                        KotlinPlatformType.jvm -> handleMultiplatformJvm(target)
+                        KotlinPlatformType.jvm -> if (kotestExtension.customGradleTask) handleMultiplatformJvm(target, kotestExtension)
                         KotlinPlatformType.js -> handleJs(target, kotestExtension)
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
@@ -207,7 +207,7 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun handleMultiplatformJvm(target: KotlinTarget) {
+   private fun handleMultiplatformJvm(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
       val existing = target.project.tasks.findByName(JVM_TEST_NAME)
       when (existing) {
          null -> target.project.logger.info("> No $JVM_TEST_NAME task found in project ${target.project.name} - no $JVM_KOTEST_NAME task will be added")

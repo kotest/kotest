@@ -1,4 +1,4 @@
-name: PR-Test
+name: pr-framework
 
 on:
    pull_request:

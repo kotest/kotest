@@ -4,6 +4,7 @@ import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlNode
 import io.kotest.assertions.print.print
 import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -87,12 +88,11 @@ private fun equalYamlNode(
    expected: YamlNode,
 ): Matcher<YamlNode> =
    Matcher { value ->
-      val error = expected.equivalentContentTo( value)
-
-      ComparisonMatcherResult(
+      val error = expected.equivalentContentTo(value)
+      DiffableMatcherResult(
          error,
-         value.contentToString().print(),
-         expected.contentToString().print(),
+         { value.contentToString().print() },
+         { expected.contentToString().print() },
          { "$error\n" },
          { "Expected values to not match" },
       )
