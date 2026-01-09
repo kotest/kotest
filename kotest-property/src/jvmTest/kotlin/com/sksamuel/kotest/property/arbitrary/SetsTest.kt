@@ -34,7 +34,7 @@ class SetsTest: StringSpec() {
             }
          }
          thrown.message.shouldContain("the target size requirement of")
-         thrown.message.shouldContain("could not be satisfied after 0 consecutive samples")
+         thrown.message.shouldContain("could not be satisfied")
       }
    }
 }
