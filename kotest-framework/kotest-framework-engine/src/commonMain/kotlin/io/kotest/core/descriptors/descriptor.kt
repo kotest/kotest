@@ -1,5 +1,9 @@
 package io.kotest.core.descriptors
 
+import io.kotest.common.KotestInternal
+import io.kotest.common.reflection.bestName
+import kotlin.reflect.KClass
+
 /**
  * A stable, consistent identifier for a test element.
  *
@@ -184,4 +188,8 @@ sealed interface Descriptor {
       is TestDescriptor -> this.parent.spec()
    }
 }
+
+// only for creating spec descriptors in unit tests
+@KotestInternal
+fun KClass<*>.toDescriptor() = Descriptor.SpecDescriptor(DescriptorId(bestName()))
 
