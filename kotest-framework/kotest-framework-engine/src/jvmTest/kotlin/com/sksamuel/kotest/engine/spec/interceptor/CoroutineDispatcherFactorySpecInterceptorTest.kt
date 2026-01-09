@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
@@ -41,13 +42,12 @@ class CoroutineDispatcherFactorySpecInterceptorTest : DescribeSpec() {
                override val coroutineDispatcherFactory = factory
             }
             CoroutineDispatcherFactorySpecInterceptor(SpecConfigResolver(c)).intercept(
-               this@CoroutineDispatcherFactorySpecInterceptorTest,,
-               object : NextSpecInterceptor {
-                  override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
-                     Thread.currentThread().name.shouldStartWith("foo")
-                     return Result.success(emptyMap())
-                  }
-               })
+               this@CoroutineDispatcherFactorySpecInterceptorTest,
+               SpecRef.Reference(CoroutineDispatcherFactorySpecInterceptorTest::class, CoroutineDispatcherFactorySpecInterceptorTest::class.java.name)
+            ) {
+               Thread.currentThread().name.shouldStartWith("foo")
+               Result.success(emptyMap())
+            }
          }
       }
    }
