@@ -25,13 +25,54 @@ fun interface Print<in A> {
  */
 fun Any?.print(): Printed = if (this == null) NullPrint.print(this) else PrintResolver.printFor(this).print(this)
 
+/**
+ * Context for tracking visited objects during recursive printing to detect cycles.
+ * Uses reference equality (===) to detect reference cycles.
+ */
+private object PrintContext {
+   private val visited = mutableListOf<Any>()
+
+   fun isVisited(obj: Any): Boolean = visited.any { it === obj }
+
+   fun push(obj: Any) {
+      visited.add(obj)
+   }
+
+   fun pop() {
+      visited.removeLastOrNull()
+   }
+}
+
 internal fun recursiveRepr(root: Any, node: Any?): Printed {
    return when (root) {
       node -> Printed("(this ${root::class.simpleName})")
       is Iterable<*> if node is Iterable<*> && root.toList() == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is Iterable<*> if node is Iterable<*> -> node.print()
+      is Iterable<*> if node is Iterable<*> -> printWithCycleDetection(node)
       is List<*> if node is Iterable<*> && root == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is List<*> if node is Iterable<*> -> node.print()
+      is List<*> if node is Iterable<*> -> printWithCycleDetection(node)
+      is Map<*, *> if node is Map<*, *> -> printWithCycleDetection(node)
       else -> node.print()
    }
 }
+
+/**
+ * Prints a value with cycle detection. If the object has already been visited
+ * during the current print operation, returns a cycle indicator instead of
+ * recursively printing to avoid StackOverflowError.
+ */
+private fun printWithCycleDetection(node: Any?): Printed {
+   if (node == null) return NullPrint.print(null)
+
+   return if (PrintContext.isVisited(node)) {
+      Printed("(this ${node::class.simpleName})")
+   } else {
+      PrintContext.push(node)
+      try {
+         node.print()
+      } finally {
+         PrintContext.pop()
+      }
+   }
+}
+
+

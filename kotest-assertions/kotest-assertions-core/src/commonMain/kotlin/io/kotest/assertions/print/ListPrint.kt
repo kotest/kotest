@@ -21,7 +21,7 @@ class ListPrint<T>(
             else -> null
          }
 
-         return Printed(
+         Printed(
             a.joinToString(
             separator = ", ",
             prefix = "[",

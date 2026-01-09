@@ -4,10 +4,12 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.MapEq
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import kotlin.text.equals
 
 class MapEqTest : FunSpec({
 
@@ -207,6 +209,31 @@ class MapEqTest : FunSpec({
 
       // These two maps have the same structure, so they should be equal
       MapEq.equals(map1, map2, EqContext()).shouldBeInstanceOf<EqResult.Success>()
+   }
+
+   test("should not throw StackOverflowError for unequal indirect cyclic maps") {
+      val cyclicMap1 = mutableMapOf<String, Any?>()
+      val cyclicMap2 = mutableMapOf<String, Any?>()
+
+      cyclicMap1["ref"] = cyclicMap2
+      cyclicMap1["extra"] = "value"
+      cyclicMap2["ref"] = cyclicMap1
+
+      val result = MapEq.equals(cyclicMap1, cyclicMap2, EqContext()) as EqResult.Failure
+      val throwable = result.error()
+
+      assertSoftly {
+         throwable.shouldBeInstanceOf<AssertionError>()
+         throwable.message shouldBe """
+         Values differed at keys ref, extra
+         expected:<{
+           "ref" = [("ref", [("ref", [("ref", (this LinkedHashMap)), ("extra", "value")])]), ("extra", "value")]
+         }> but was:<{
+           "ref" = [("ref", [("ref", [("ref", (this LinkedHashMap))]), ("extra", "value")])],
+           "extra" = "value"
+         }>
+      """.trimIndent()
+      }
    }
 
 })

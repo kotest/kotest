@@ -16,6 +16,7 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import java.util.TreeSet
+import kotlin.text.equals
 import kotlin.time.Duration.Companion.seconds
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -153,6 +154,26 @@ class CollectionEqTest : FunSpec({
 
       // These two lists have the same structure, so they should be equal
       CollectionEq.equals(cyclicList1, cyclicList2, EqContext()).shouldBeInstanceOf<EqResult.Success>()
+   }
+
+   test("should not throw StackOverflowError for unequal indirect cyclic collections") {
+      val cyclicList1 = mutableListOf<Any?>()
+      val cyclicList2 = mutableListOf<Any?>()
+
+      cyclicList1.add(cyclicList2)
+      cyclicList1.add("extra")
+      cyclicList2.add(cyclicList1)
+
+      val result = CollectionEq.equals(cyclicList1, cyclicList2, EqContext()) as EqResult.Failure
+      val throwable = result.error()
+
+      assertSoftly {
+         throwable.shouldBeInstanceOf<AssertionError>()
+         throwable.message shouldBe """
+         Unexpected elements from index 1
+         expected:<[[[(this ArrayList)], "extra"]]> but was:<[[[(this ArrayList), "extra"]], "extra"]>
+         """.trimIndent()
+      }
    }
 
    test("should return null (equal) for different instances with same content") {
