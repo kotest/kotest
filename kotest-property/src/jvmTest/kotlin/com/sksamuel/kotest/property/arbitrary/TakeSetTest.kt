@@ -10,28 +10,28 @@ class TakeSetTest: StringSpec() {
           takeSet(
           sequenceOf(1, 2, 3),
              targetSize = 4,
-             maxMisses = 20,
+             maxAttempts = 20,
           ) shouldBe setOf(1, 2, 3)
        }
       "takes set shorter than required because not enough distinct elements" {
          takeSet(
             sequenceOf(1, 2, 3, 1, 2, 3, 1, 2, 3,),
             targetSize = 4,
-            maxMisses = 20,
+            maxAttempts = 20,
          ) shouldBe setOf(1, 2, 3)
       }
       "takes set shorter than required because not enough distinct elements within slippage" {
          takeSet(
             sequenceOf(1, 2, 3, 1, 2, 3, 1, 2, 3, 4,),
             targetSize = 4,
-            maxMisses = 8,
+            maxAttempts = 8,
          ) shouldBe setOf(1, 2, 3)
       }
       "takes set of required size" {
          takeSet(
             sequenceOf(1, 2, 1, 2, 1, 2, 3, 4,),
             targetSize = 4,
-            maxMisses = 20,
+            maxAttempts = 20,
          ) shouldBe setOf(1, 2, 3, 4)
       }
    }
