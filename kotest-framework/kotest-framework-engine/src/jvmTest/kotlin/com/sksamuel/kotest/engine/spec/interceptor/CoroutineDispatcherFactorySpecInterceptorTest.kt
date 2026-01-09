@@ -41,14 +41,13 @@ class CoroutineDispatcherFactorySpecInterceptorTest : DescribeSpec() {
                override val coroutineDispatcherFactory = factory
             }
             CoroutineDispatcherFactorySpecInterceptor(SpecConfigResolver(c)).intercept(
-               this@CoroutineDispatcherFactorySpecInterceptorTest,
+               this@CoroutineDispatcherFactorySpecInterceptorTest,,
                object : NextSpecInterceptor {
                   override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
                      Thread.currentThread().name.shouldStartWith("foo")
                      return Result.success(emptyMap())
                   }
-               }
-            )
+               })
          }
       }
    }

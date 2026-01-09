@@ -4,7 +4,7 @@ package io.kotest.core.descriptors
  * A stable, consistent identifier for a test element.
  *
  * A [Descriptor] does not depend on runtime configuration and does not change between test runs, unless
- * that test, a parent test, or the containing spec is renamed by the user.
+ * the user renames that test, a parent test, or the containing spec.
  *
  * Descriptors are a chain of instances, with each instance containing a link to its parent, except
  * for [SpecDescriptor] which is the root of a chain.

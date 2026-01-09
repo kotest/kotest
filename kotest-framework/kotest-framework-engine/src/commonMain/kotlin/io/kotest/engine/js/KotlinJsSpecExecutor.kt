@@ -19,15 +19,16 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.engine.test.scopes.TerminalTestScope
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecExecutor {
 
    private val formatter = DisplayNameFormatting(context.projectConfig)
    private val pipeline = SpecInterceptorPipeline(context)
    private val materializer = Materializer(context.specConfigResolver)
-   private val checker = TestEnabledChecker(context.projectConfigResolver, context.specConfigResolver, context.testConfigResolver)
+   private val checker =
+      TestEnabledChecker(context.projectConfigResolver, context.specConfigResolver, context.testConfigResolver)
 
    private val results = TestResults()
 
@@ -35,11 +36,11 @@ internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecEx
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
-         pipeline.execute(seed) { spec ->
+         pipeline.execute(seed, ref) { spec ->
             // This implementation supports a two-level test hierarchy with the spec itself as the test `suite`,
             // which declares a single level of `test`s.
             kotlinJsTestFramework.suite(testNameEscape(ref.name()), ignored = false) {
-               materializer.materialize(seed).forEach { testCase ->
+               materializer.materialize(seed, ref).forEach { testCase ->
                   executeTest(testCase, specContext)
                }
             }
@@ -50,7 +51,7 @@ internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecEx
 
    /**
     * Executes the given [TestCase] using a [io.kotest.engine.test.TestCaseExecutor].
-    * Logs the results in the results tree.
+    * Logs the results in the result tree.
     *
     * @return the result of this single test.
     */
@@ -69,7 +70,7 @@ internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecEx
           */
          @OptIn(DelicateCoroutinesApi::class)
          runPromise {
-            val cc = coroutineContext
+            val cc = currentCoroutineContext()
             val testExecutor = TestCaseExecutor(context)
             //  we use the `TerminalTestScope` because we don't support nested test suites on JavaScript
             testExecutor.execute(testCase, TerminalTestScope(testCase, cc), specContext)

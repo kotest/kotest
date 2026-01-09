@@ -1,8 +1,8 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.console.consoleRenderer
@@ -131,7 +131,7 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
    }
 
    override suspend fun specStarted(ref: SpecRef) {
-      specsSeen = specsSeen + ref.kclass.toDescriptor()
+      specsSeen = specsSeen + ref.descriptor()
       val specCount = specsSeen.size
       val str = buildString {
          append(consoleRenderer.bold("$specCount. ".padEnd(4, ' ')))

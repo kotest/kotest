@@ -31,7 +31,7 @@ class ProjectContextInterceptorTest : FunSpec() {
 
       test("ProjectContextInterceptor should set project context on coroutine scope") {
          fired.shouldBeFalse()
-         ProjectContextInterceptor(c).intercept(BazSpec(), next)
+         ProjectContextInterceptor(c).intercept(BazSpec(),, next)
          fired.shouldBeTrue()
       }
    }

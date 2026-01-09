@@ -24,7 +24,7 @@ class ConfigurationInContextInterceptorTest : FunSpec() {
 
       test("config should be injected into the test context") {
          var fired = false
-         ProjectConfigResolverSpecInterceptor(ProjectConfigResolver()).intercept(DummySpec(), object : NextSpecInterceptor {
+         ProjectConfigResolverSpecInterceptor(ProjectConfigResolver()).intercept(DummySpec(),, object : NextSpecInterceptor {
             override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
                testConfig()
                fired = true
