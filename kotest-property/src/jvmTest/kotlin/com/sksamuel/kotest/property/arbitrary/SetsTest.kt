@@ -18,8 +18,7 @@ class SetsTest: StringSpec() {
             range = 3..4,
             slippage = 10,
             )) {
-            val actual = it
-            actual.size.shouldBeIn(3, 4)
+            it.size.shouldBeIn(3, 4)
          }
       }
       "handle case where not enough distinct elements" {
