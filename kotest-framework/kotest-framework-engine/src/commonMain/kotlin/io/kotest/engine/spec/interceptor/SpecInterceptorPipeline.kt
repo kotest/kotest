@@ -3,6 +3,7 @@ package io.kotest.engine.spec.interceptor
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.interceptors.toProjectContext
@@ -38,6 +39,7 @@ internal class SpecInterceptorPipeline(
    @Suppress("ObjectLiteralToLambda")
    suspend fun execute(
       spec: Spec,
+      ref: SpecRef,
       initial: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       val interceptors = createPipeline()
@@ -46,7 +48,7 @@ internal class SpecInterceptorPipeline(
          // changing this to a lambda seems to keep wrapping a result in a result, unsure why
          object : NextSpecInterceptor {
             override suspend fun invoke(spec: Spec): Result<Map<TestCase, TestResult>> {
-               return ext.intercept(spec, next)
+               return ext.intercept(spec, ref, next)
             }
          }
       }.invoke(spec)
@@ -57,7 +59,7 @@ internal class SpecInterceptorPipeline(
          CoroutineScopeInterceptor,
          EngineContextInterceptor(this.context),
          ProjectConfigResolverSpecInterceptor(context.projectConfigResolver),
-         // the dispatcher factory should run before before/after callbacks so they are executed in the right context
+         // the dispatcher factory should run before the before/after callbacks, so they are executed in the right context
          CoroutineDispatcherFactorySpecInterceptor(context.specConfigResolver),
          ProjectContextInterceptor(this.context.toProjectContext()),
          SpecExtensionInterceptor(context.specExtensions()),

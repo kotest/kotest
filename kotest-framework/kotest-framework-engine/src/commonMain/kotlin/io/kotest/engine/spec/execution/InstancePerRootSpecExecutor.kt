@@ -45,11 +45,11 @@ internal class InstancePerRootSpecExecutor(
       // we switch to a new coroutine for each spec instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
 
-         // for the seed spec that is passed in, we need to run the instance pipeline,
+         // for the seed spec passed in, we need to run the instance pipeline,
          // then materialize the root tests. These root tests will either execute in the
          // seed instance (for the first test), or in a fresh instance (for the rest).
 
-         pipeline.execute(seed) {
+         pipeline.execute(seed, ref) {
             materializeAndInvokeRootTests(seed, ref, specContext)
             Result.success(results.toMap())
          }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
@@ -58,13 +58,13 @@ internal class InstancePerRootSpecExecutor(
 
    private suspend fun materializeAndInvokeRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
 
-      val rootTests = materializer.materialize(seed)
+      val rootTests = materializer.materialize(seed, ref)
 
       // controls how many tests to execute concurrently
       val concurrency = ctx.specConfigResolver.testExecutionMode(seed).concurrency
       val semaphore = Semaphore(concurrency)
 
-      // all root test coroutines are launched immediately,
+      // all root test coroutines are launched immediately;
       // the semaphore will control how many can actually run concurrently
       coroutineScope { // will wait for all tests to complete
 
@@ -112,15 +112,15 @@ internal class InstancePerRootSpecExecutor(
 
       val spec = inflator.inflate(ref).getOrThrow()
 
-      // map all the names again so they are unique, and then find the matching root test in the new spec instance
-      val freshRoot = materializer.materialize(spec)
+      // map all the names again so they are unique and then find the matching root test in the new spec instance
+      val freshRoot = materializer.materialize(spec, ref)
          .first { it.descriptor == root.descriptor }
 
       val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
-         pipeline.execute(spec) {
+         pipeline.execute(spec, ref) {
             val result = executeTest(freshRoot, specContext)
             Result.success(mapOf(freshRoot to result))
          }
@@ -129,7 +129,7 @@ internal class InstancePerRootSpecExecutor(
 
    /**
     * Executes the given [TestCase] using a [TestCaseExecutor].
-    * Logs the results in the results tree.
+    * Logs the results in the result tree.
     *
     * @return the result of this single test.
     */

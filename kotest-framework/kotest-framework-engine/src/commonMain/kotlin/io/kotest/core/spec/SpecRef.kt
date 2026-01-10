@@ -1,5 +1,8 @@
 package io.kotest.core.spec
 
+import io.kotest.common.KotestInternal
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.DescriptorId
 import kotlin.reflect.KClass
 
 /**
@@ -19,10 +22,18 @@ sealed interface SpecRef {
    val kclass: KClass<out Spec>
 
    /**
+    * The fully qualified name of the spec.
+    */
+   val fqn: String
+
+   /**
     * A [SpecRef] that contains only a [kclass] reference and instances are created using reflection.
     * This allows the engine to instantiate specs with non-empty constructors, eg for dependency injection.
     */
-   data class Reference(override val kclass: KClass<out Spec>) : SpecRef
+   data class Reference(
+      override val kclass: KClass<out Spec>,
+      override val fqn: String
+   ) : SpecRef
 
    /**
     * A [SpecRef] that contains a function that can be invoked to construct a spec.
@@ -32,9 +43,12 @@ sealed interface SpecRef {
    data class Function(
       val f: () -> Spec,
       override val kclass: KClass<out Spec>,
-      val fqn: String,
+      override val fqn: String,
    ) : SpecRef
 }
+
+@KotestInternal
+fun SpecRef.descriptor() = Descriptor.SpecDescriptor(DescriptorId(fqn))
 
 fun SpecRef.name() = when (this) {
    is SpecRef.Reference -> kclass.simpleName ?: "UnknownSpec"

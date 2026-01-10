@@ -1,12 +1,16 @@
 package io.kotest.core.descriptors
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor.SpecDescriptor
 import io.kotest.core.descriptors.Descriptor.TestDescriptor
+import io.kotest.core.descriptors.DescriptorPaths.SPEC_DELIMITER
+import io.kotest.core.descriptors.DescriptorPaths.TEST_DELIMITER
 import io.kotest.core.descriptors.DescriptorPaths.render
 
 /**
  * Utility functions for working with [Descriptor] paths.
  */
+@KotestInternal
 object DescriptorPaths {
 
    const val SPEC_DELIMITER = "/"
@@ -15,7 +19,8 @@ object DescriptorPaths {
    /**
     * Returns a string representation of the given [descriptor] wrapped in a [DescriptorPath].
     *
-    * Spec descriptors are separated by a slash (/) and test descriptors are separated by a double dash ( -- ).
+    * The spec name is followed by a [SPEC_DELIMITER] and then the test context. Each element in the test
+    * context is separated by a [TEST_DELIMITER].
     *
     * Examples:
     *

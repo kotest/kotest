@@ -2,6 +2,7 @@ package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
@@ -15,6 +16,7 @@ internal class SpecExtensionInterceptor(private val specExtensions: SpecExtensio
 
    override suspend fun intercept(
       spec: Spec,
+      ref: SpecRef,
       next: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
       return specExtensions.intercept(spec) { next.invoke(spec) } ?: Result.success(emptyMap())

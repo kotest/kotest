@@ -57,7 +57,7 @@ internal class InstancePerLeafSpecExecutor(
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
-         pipeline.execute(seed) {
+         pipeline.execute(seed, ref) {
             launchRootTests(seed, ref)
             Result.success(results.toMap())
          }
@@ -65,7 +65,7 @@ internal class InstancePerLeafSpecExecutor(
    }
 
    private suspend fun launchRootTests(seed: Spec, ref: SpecRef) {
-      val roots = materializer.materialize(seed)
+      val roots = materializer.materialize(seed, ref)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
@@ -95,7 +95,7 @@ internal class InstancePerLeafSpecExecutor(
       suspend fun launchRootTest(root: TestCase, ref: SpecRef, index: Int) {
          val operationQueue = ArrayDeque<InstancePerLeafOperation>()
 
-         // for index 0 we can use the supplied test root that just operates against the seed instance
+         // for index 0 we can use the supplied test root that just operates against the seed instance,
          // and the spec pipelines will already have been executed
          if (index == 0) {
             val specContext = SpecContext.create()
@@ -105,8 +105,8 @@ internal class InstancePerLeafSpecExecutor(
             Result.success(mapOf(root to result))
          } else {
             val spec = inflator.inflate(ref).getOrThrow()
-            val freshRoot = materializer.materialize(spec).first { it.descriptor == root.descriptor }
-            executeInGivenSpec(givenSpec = spec) {
+            val freshRoot = materializer.materialize(spec, ref).first { it.descriptor == root.descriptor }
+            executeInGivenSpec(givenSpec = spec, ref) {
                val result = executeTest(freshRoot, null, it, ref)
                operationQueue.addAll(discoveredOperations)
                discoveredOperations.clear()
@@ -132,11 +132,12 @@ internal class InstancePerLeafSpecExecutor(
 
       private suspend fun executeInGivenSpec(
          givenSpec: Spec,
+         ref: SpecRef,
          executor: suspend (SpecContext) -> Result<Map<TestCase, TestResult>>
       ) {
          val specContext = SpecContext.create()
          withContext(CoroutineName("spec-scope-" + givenSpec.hashCode())) {
-            pipeline.execute(givenSpec) {
+            pipeline.execute(givenSpec, ref) {
                executor(specContext)
             }
          }.getOrThrow()
@@ -156,10 +157,10 @@ internal class InstancePerLeafSpecExecutor(
          val spec = inflator.inflate(ref).getOrThrow()
 
          // we need to find the same root test but in the newly created spec
-         val root = materializer.materialize(spec).first { it.descriptor.isPrefixOf(testCase.descriptor) }
+         val root = materializer.materialize(spec, ref).first { it.descriptor.isPrefixOf(testCase.descriptor) }
          logger.log { "Located root for target $root" }
 
-         executeInGivenSpec(givenSpec = spec) {
+         executeInGivenSpec(givenSpec = spec, ref) {
             val result = executeTest(root, testCase.descriptor, it, ref)
             Result.success(mapOf(testCase to result))
          }
@@ -167,7 +168,7 @@ internal class InstancePerLeafSpecExecutor(
 
       /**
        * Executes the given [TestCase] using a [TestCaseExecutor].
-       * Logs the results in the results tree.
+       * Logs the results in the result tree.
        *
        * @return the result of this single test.
        */

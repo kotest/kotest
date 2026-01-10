@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
@@ -26,16 +27,17 @@ import org.junit.platform.engine.support.descriptor.MethodSource
  *
  */
 class CreateTestDescriptorWithMethodSourceTest : FunSpec({
+
    val root = EngineDescriptorBuilder
       .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-      .withSpecs(listOf(DummySpec::class))
+      .withSpecs(listOf(SpecRef.Reference(DummySpec::class, DummySpec::class.java.name)))
       .build()
 
    val containerTestCase = TestCase(
       DummySpec::class.toDescriptor().append("container test"),
       TestNameBuilder.builder("container test").build(),
       DummySpec(),
-      { 1 + 1 shouldBe 2},
+      { 1 + 1 shouldBe 2 },
       SourceRef.None,
       TestType.Container,
    )
@@ -44,7 +46,7 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
       containerTestCase.descriptor.append("leaf test"),
       TestNameBuilder.builder("leaf test").build(),
       containerTestCase.spec,
-      { 1 + 1 shouldBe 2},
+      { 1 + 1 shouldBe 2 },
       SourceRef.None,
       TestType.Test,
       parent = containerTestCase,

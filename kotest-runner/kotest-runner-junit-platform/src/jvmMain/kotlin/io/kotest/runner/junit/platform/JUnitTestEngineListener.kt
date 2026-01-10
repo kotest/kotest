@@ -4,8 +4,8 @@ import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
@@ -124,15 +124,15 @@ class JUnitTestEngineListener(
       logger.log { "specStarted ${ref.kclass}" }
       try {
 
-         var descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
+         var descriptor = findTestDescriptorForSpec(root, ref.descriptor())
 
          if (descriptor == null) {
-            descriptor = createSpecTestDescriptor(root, ref.kclass.toDescriptor(), ref.kclass.bestName())
+            descriptor = createSpecTestDescriptor(root, ref.descriptor(), ref.kclass.bestName())
             root.addChild(descriptor)
             listener.dynamicTestRegistered(descriptor)
          }
 
-         descriptors[ref.kclass.toDescriptor()] = descriptor
+         descriptors[ref.descriptor()] = descriptor
 
          logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
          listener.executionStarted(descriptor)
@@ -152,7 +152,7 @@ class JUnitTestEngineListener(
          // if we had an error in the spec, we will attach a placeholder error-test to the spec
          // and mark that as failed
          t != null -> {
-            val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
+            val descriptor = findTestDescriptorForSpec(root, ref.descriptor())
                ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             addPlaceholderTest(descriptor, t, ref.kclass)
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
@@ -160,7 +160,7 @@ class JUnitTestEngineListener(
          }
 
          else -> {
-            val descriptor = findTestDescriptorForSpec(root, ref.kclass.toDescriptor())
+            val descriptor = findTestDescriptorForSpec(root, ref.descriptor())
                ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor") }
             listener.executionFinished(descriptor, TestExecutionResult.successful())
@@ -176,7 +176,7 @@ class JUnitTestEngineListener(
       // instead of showing all tests minus the one we are running as ignored, we'll just skip
 
       logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
-      val testDescriptor = findTestDescriptorForSpec(root, kclass.toDescriptor())
+      val testDescriptor = findTestDescriptorForSpec(root, Descriptor.SpecDescriptor(DescriptorId(kclass.java.name)))
       if (testDescriptor != null)
          listener.executionSkipped(testDescriptor, reason)
    }
@@ -255,8 +255,8 @@ class JUnitTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
 
-      // an ignored test should never be started or finished
-      // however an ingored test may be inside a test that wasn't yet marked as started
+      // an ignored test should never be started or finished,
+      // however, an ingored test may be inside a test not yet marked as started,
       // so we must ensure we start any parents
       startParents(testCase)
 

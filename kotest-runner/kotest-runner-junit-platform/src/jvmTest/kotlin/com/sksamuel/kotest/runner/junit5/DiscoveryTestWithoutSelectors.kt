@@ -26,7 +26,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 0
+      descriptor.specs.size shouldBe 0
    }
 
    // will be replaced when we add the discovery builders
@@ -38,7 +38,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 30
+      descriptor.specs.size shouldBe 30
    }
 
    // will be replaced when we add the discovery builders
@@ -50,7 +50,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 28
+      descriptor.specs.size shouldBe 28
    }
 
    xtest("kotest should support include package name filter") {
@@ -61,7 +61,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName }.toSet() shouldBe setOf(
+      descriptor.specs.map { it.qualifiedName }.toSet() shouldBe setOf(
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2",
@@ -77,7 +77,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 0
+      descriptor.specs.size shouldBe 0
    }
 
    xtest("kotest should recognize fully qualified include class name filters") {
@@ -88,7 +88,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe
+      descriptor.specs.map { it.qualifiedName } shouldBe
          listOf(DiscoveryTestWithoutSelectors::class.java.canonicalName)
    }
 
@@ -100,7 +100,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 0
+      descriptor.specs.size shouldBe 0
    }
 
    xtest("kotest should recognize prefixed class name filters") {
@@ -111,7 +111,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 1
+      descriptor.specs.size shouldBe 1
    }
 
    xtest("kotest should recognize suffixed class name pattern filters") {
@@ -122,7 +122,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.size shouldBe 1
+      descriptor.specs.size shouldBe 1
    }
 
    xtest("kotest should support excluded class name pattern filters") {
@@ -134,7 +134,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName } shouldBe listOf(
+      descriptor.specs.map { it.qualifiedName } shouldBe listOf(
          DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
       )
@@ -149,7 +149,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.classes.map { it.qualifiedName }.toSet() shouldBe setOf(
+      descriptor.specs.map { it.qualifiedName }.toSet() shouldBe setOf(
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
          DummySpec2::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec2::class.java.canonicalName,

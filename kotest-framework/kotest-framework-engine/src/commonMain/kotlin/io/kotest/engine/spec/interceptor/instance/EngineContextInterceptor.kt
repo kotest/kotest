@@ -2,6 +2,7 @@ package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
@@ -18,6 +19,7 @@ internal class EngineContextInterceptor(
 ) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,
+      ref: SpecRef,
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       return withContext(EngineContextElement(context)) {

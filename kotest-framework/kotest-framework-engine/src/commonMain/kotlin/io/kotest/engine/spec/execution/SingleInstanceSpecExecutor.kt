@@ -32,16 +32,16 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
-         pipeline.execute(seed) { spec ->
-            launchRootTests(spec, specContext)
+         pipeline.execute(seed, ref) { spec ->
+            launchRootTests(spec, specContext, ref)
             Result.success(results.toMap())
          }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
       }
    }
 
-   private suspend fun launchRootTests(spec: Spec, specContext: SpecContext) {
+   private suspend fun launchRootTests(spec: Spec, specContext: SpecContext, ref: SpecRef) {
 
-      val rootTests = materializer.materialize(spec)
+      val rootTests = materializer.materialize(spec, ref)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(spec).concurrency
@@ -62,7 +62,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
 
    /**
     * Executes the given [TestCase] using a [io.kotest.engine.test.TestCaseExecutor].
-    * Logs the results in the results tree.
+    * Logs the results in the result tree.
     *
     * @return the result of this single test.
     */

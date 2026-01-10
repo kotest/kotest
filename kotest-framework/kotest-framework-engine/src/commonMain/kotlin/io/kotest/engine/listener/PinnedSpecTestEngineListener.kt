@@ -3,10 +3,10 @@
 package io.kotest.engine.listener
 
 import io.kotest.core.spec.SpecRef
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 /**
@@ -47,7 +47,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
 
    override suspend fun specStarted(ref: SpecRef) {
       if (runningSpec == null) {
-         runningSpec = ref.kclass.toDescriptor().path().value
+         runningSpec = ref.descriptor().path().value
          listener.specStarted(ref)
       } else {
          queue {
@@ -57,7 +57,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      if (runningSpec == ref.kclass.toDescriptor().path().value) {
+      if (runningSpec == ref.descriptor().path().value) {
          listener.specFinished(ref, result)
          runningSpec = null
          replay()
@@ -73,7 +73,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
          listener.testStarted(testCase)
       } else {
          queue {
@@ -83,7 +83,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
          listener.testFinished(testCase, result)
       } else {
          queue {
@@ -93,7 +93,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
          listener.testIgnored(testCase, reason)
       } else {
          queue {

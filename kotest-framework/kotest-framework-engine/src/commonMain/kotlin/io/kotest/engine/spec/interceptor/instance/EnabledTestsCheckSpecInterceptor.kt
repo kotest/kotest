@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.Materializer
@@ -26,9 +27,10 @@ internal class EnabledTestsCheckSpecInterceptor(
 
    override suspend fun intercept(
       spec: Spec,
+      ref: SpecRef,
       next: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
-      val tests = materializer.materialize(spec)
+      val tests = materializer.materialize(spec, ref)
       val hasEnabledTests = tests.any { checker.isEnabled(it).isEnabled }
       return if (hasEnabledTests) {
          next.invoke(spec)

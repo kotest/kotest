@@ -3,6 +3,7 @@
 package io.kotest.engine
 
 import io.kotest.common.Platform
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
@@ -82,9 +83,12 @@ data class TestEngineLauncher(
       return withListener(NoopTestEngineListener)
    }
 
+   @Deprecated("use withSpecRefs. Deprecated since 6.1")
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
+
+   @Deprecated("use withSpecRefs. Deprecated since 6.1")
    fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher =
-      withSpecRefs(specs.map { SpecRef.Reference(it) })
+      withSpecRefs(specs.map { SpecRef.Reference(it, it.bestName()) })
 
    fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
    fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {

@@ -3,6 +3,7 @@ package io.kotest.engine.spec.interceptor.instance
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
@@ -18,6 +19,7 @@ internal class BeforeAfterSpecCallbacksInterceptor(
 
    override suspend fun intercept(
       spec: Spec,
+      ref: SpecRef,
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
 

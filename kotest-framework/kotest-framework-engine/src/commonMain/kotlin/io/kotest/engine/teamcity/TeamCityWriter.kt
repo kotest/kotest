@@ -1,8 +1,8 @@
 package io.kotest.engine.teamcity
 
 import io.kotest.core.Logger
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.engine.teamcity.names.TeamCityTestNameSanitizer
 import io.kotest.engine.test.TestResult
@@ -174,7 +174,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteStarted(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
          .testSuiteStarted(prefix, formatting.format(ref.kclass))
-         .id(ref.kclass.toDescriptor().path().value)
+         .id(ref.descriptor().path().value)
          .locationHint(Locations.location(ref))
          .build()
       println(msg)
@@ -186,7 +186,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteFinished(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
          .testSuiteFinished(prefix, formatting.format(ref.kclass))
-         .id(ref.kclass.toDescriptor().path().value)
+         .id(ref.descriptor().path().value)
          .build()
       println(msg)
    }

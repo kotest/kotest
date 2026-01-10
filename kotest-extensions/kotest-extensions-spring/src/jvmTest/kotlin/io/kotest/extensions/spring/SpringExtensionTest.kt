@@ -1,6 +1,7 @@
 package io.kotest.extensions.spring
 
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.WordSpec
@@ -31,7 +32,7 @@ class SpringExtensionTest : WordSpec() {
          "generate applicable method name for a root test" {
             SpringJavaCompatibility.methodName(
                TestCase(
-                  descriptor = SpringExtensionTest::class.toDescriptor()
+                  descriptor = Descriptor.SpecDescriptor(DescriptorId(SpringExtensionTest::class.java.name))
                      .append("0foo__!!55@#woo"),
                   name = TestNameBuilder.builder("0foo__!!55@#woo").build(),
                   spec = this@SpringExtensionTest,
@@ -44,7 +45,7 @@ class SpringExtensionTest : WordSpec() {
          "generate applicable method name for a nested test" {
             SpringJavaCompatibility.methodName(
                TestCase(
-                  descriptor = SpringExtensionTest::class.toDescriptor()
+                  descriptor = Descriptor.SpecDescriptor(DescriptorId(SpringExtensionTest::class.java.name))
                      .append("0foo__!!55@#woo")
                      .append("wibble%%wobble"),
                   name = TestNameBuilder.builder("wibble%%wobble").build(),

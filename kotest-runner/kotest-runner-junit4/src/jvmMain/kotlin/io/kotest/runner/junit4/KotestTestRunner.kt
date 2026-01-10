@@ -1,6 +1,7 @@
 package io.kotest.runner.junit4
 
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.SpecConfigResolver
@@ -15,7 +16,7 @@ import org.junit.runner.Runner
 import org.junit.runner.notification.RunNotifier
 
 class KotestTestRunner(
-   private val kclass: Class<out Spec>
+   private val clazz: Class<out Spec>
 ) : Runner() {
 
    private val formatter = DefaultDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
@@ -23,7 +24,10 @@ class KotestTestRunner(
    override fun run(notifier: RunNotifier) {
       runBlocking {
          val listener = JUnitTestEngineListener(notifier)
-         TestEngineLauncher().withListener(listener).withClasses(kclass.kotlin).async()
+         TestEngineLauncher()
+            .withListener(listener)
+            .withSpecRefs(SpecRef.Reference(clazz.kotlin, clazz.name))
+            .async()
       }
    }
 
@@ -32,13 +36,14 @@ class KotestTestRunner(
          SpecInstantiator(
             DefaultExtensionRegistry(),
             ProjectConfigResolver()
-         ).createAndInitializeSpec(kclass.kotlin).getOrThrow()
+         ).createAndInitializeSpec(clazz.kotlin).getOrThrow()
       }
       val desc = Description.createSuiteDescription(spec::class.java)
-      Materializer(SpecConfigResolver()).materialize(spec).forEach { rootTest ->
-         desc.addChild(
-            describeTestCase(
-               rootTest,
+      Materializer(SpecConfigResolver()).materialize(spec, SpecRef.Reference(clazz.kotlin, clazz.name))
+         .forEach { rootTest ->
+            desc.addChild(
+               describeTestCase(
+                  rootTest,
                formatter.format(rootTest)
             )
          )
