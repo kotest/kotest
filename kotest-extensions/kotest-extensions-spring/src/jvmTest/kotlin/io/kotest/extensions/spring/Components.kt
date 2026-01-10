@@ -11,4 +11,7 @@ open class Components {
 
    @Bean
    open fun userRepository() = DefaultRepository()
+
+   @Bean
+   open fun lifecycleTestService() = LifecycleTestService()
 }
