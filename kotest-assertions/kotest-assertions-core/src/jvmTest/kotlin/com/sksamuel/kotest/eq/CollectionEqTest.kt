@@ -16,7 +16,6 @@ import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import java.util.TreeSet
-import kotlin.text.equals
 import kotlin.time.Duration.Companion.seconds
 
 @EnabledIf(LinuxOnlyGithubCondition::class)

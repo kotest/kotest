@@ -44,13 +44,12 @@ private object PrintContext {
 }
 
 internal fun recursiveRepr(root: Any, node: Any?): Printed {
-   return when (root) {
-      node -> Printed("(this ${root::class.simpleName})")
-      is Iterable<*> if node is Iterable<*> && root.toList() == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is Iterable<*> if node is Iterable<*> -> printWithCycleDetection(node)
-      is List<*> if node is Iterable<*> && root == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is List<*> if node is Iterable<*> -> printWithCycleDetection(node)
-      is Map<*, *> if node is Map<*, *> -> printWithCycleDetection(node)
+   // Use reference equality (===) to detect cycles without triggering equals() which could recurse
+   return when {
+      root === node -> Printed("(this ${root::class.simpleName})")
+      node == null -> NullPrint.print(null)
+      PrintContext.isVisited(node) -> Printed("(this ${root::class.simpleName})")
+      node is Iterable<*> || node is Map<*, *> -> printWithCycleDetection(node)
       else -> node.print()
    }
 }
@@ -61,16 +60,16 @@ internal fun recursiveRepr(root: Any, node: Any?): Printed {
  * recursively printing to avoid StackOverflowError.
  */
 private fun printWithCycleDetection(node: Any?): Printed {
-   if (node == null) return NullPrint.print(null)
-
-   return if (PrintContext.isVisited(node)) {
-      Printed("(this ${node::class.simpleName})")
-   } else {
-      PrintContext.push(node)
-      try {
-         node.print()
-      } finally {
-         PrintContext.pop()
+   return when (node) {
+      null -> NullPrint.print(null)
+      PrintContext::isVisited -> Printed("(this ${node::class.simpleName})")
+      else -> {
+         PrintContext.push(node)
+         runCatching {
+            node.print()
+         }.also {
+            PrintContext.pop()
+         }.getOrThrow()
       }
    }
 }

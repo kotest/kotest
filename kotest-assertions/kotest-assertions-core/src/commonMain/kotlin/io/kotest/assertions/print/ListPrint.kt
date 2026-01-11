@@ -29,10 +29,7 @@ class ListPrint<T>(
             limit = limit,
             truncated = "...and $remainingItems more$limitHint"
          ) {
-            when {
-               it is Iterable<*> && it.toList() == a && a.size == 1 -> a[0].toString()
-               else -> recursiveRepr(a, it).value
-            }
+            recursiveRepr(a, it).value
          }, null
          )
       }
