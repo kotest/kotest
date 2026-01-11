@@ -1,6 +1,7 @@
 package io.kotest.core.spec
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.reflection.bestName
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import kotlin.reflect.KClass
@@ -33,7 +34,12 @@ sealed interface SpecRef {
    data class Reference(
       override val kclass: KClass<out Spec>,
       override val fqn: String
-   ) : SpecRef
+   ) : SpecRef {
+
+      // used for testing only
+      @KotestInternal
+      constructor(kclass: KClass<out Spec>):this(kclass, kclass.bestName())
+   }
 
    /**
     * A [SpecRef] that contains a function that can be invoked to construct a spec.
