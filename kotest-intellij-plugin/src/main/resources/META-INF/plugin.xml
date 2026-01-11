@@ -36,7 +36,7 @@
    </actions>
 
    <projectListeners>
-      <listener class="io.kotest.plugin.intellij.locations.KotestSMTRunnerEventsAdapter"
+      <listener class="io.kotest.plugin.intellij.locations.EmbeddedLocationSMTRunnerEventsAdapter"
                 topic="com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener"/>
    </projectListeners>
 

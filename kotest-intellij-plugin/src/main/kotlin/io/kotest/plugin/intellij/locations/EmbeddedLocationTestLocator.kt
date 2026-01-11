@@ -16,9 +16,9 @@ import io.kotest.plugin.intellij.psi.specStyle
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * A [SMTestLocator] that handles a parsed [KotestLocation] format.
+ * A [SMTestLocator] that handles a parsed [EmbeddedLocation] format.
  */
-internal class KotestLocationTestLocator(private val location: KotestLocation) : SMTestLocator, DumbAware {
+internal class EmbeddedLocationTestLocator(private val location: EmbeddedLocation) : SMTestLocator, DumbAware {
 
    override fun getLocation(
       protocol: String,

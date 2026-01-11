@@ -7,7 +7,7 @@ import com.intellij.execution.testframework.sm.runner.SMTestProxy
  * Listens to SMTest events and updates the [SMTestProxy] if the test name is using
  * the special Kotest format for jump-to-source support on tests.
  */
-internal class KotestSMTRunnerEventsAdapter : SMTRunnerEventsAdapter() {
+internal class EmbeddedLocationSMTRunnerEventsAdapter : SMTRunnerEventsAdapter() {
 
    override fun onSuiteStarted(suite: SMTestProxy) {
       handleKotestLocator(suite)
@@ -19,24 +19,24 @@ internal class KotestSMTRunnerEventsAdapter : SMTRunnerEventsAdapter() {
 
    private fun handleKotestLocator(proxy: SMTestProxy) {
       // attempt to parse out the location from the test name
-      val location = KotestLocationParser.parse(proxy.name)
+      val location = EmbeddedLocationParser.parse(proxy.name)
       // if we have the special Kotest element, then we will reset the presentable name and use our
       // own test locator to allow for jump-to-source support
       if (location != null) {
-         proxy.locator = KotestLocationTestLocator(location)
+         proxy.locator = EmbeddedLocationTestLocator(location)
          proxy.setPresentableName(location.presentableName)
       }
    }
 }
 
-internal object KotestLocationParser {
+internal object EmbeddedLocationParser {
 
    private val regex = "<kotest>(.*)</kotest>(.*)".toRegex()
 
-   fun parse(name: String): KotestLocation? {
+   fun parse(name: String): EmbeddedLocation? {
       val result = regex.find(name) ?: return null
-      return KotestLocation(result.groupValues[1], result.groupValues[2])
+      return EmbeddedLocation(result.groupValues[1], result.groupValues[2])
    }
 }
 
-internal data class KotestLocation(val path: String, val presentableName: String)
+internal data class EmbeddedLocation(val path: String, val presentableName: String)
