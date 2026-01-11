@@ -28,19 +28,14 @@ fun Any?.print(): Printed = if (this == null) NullPrint.print(this) else PrintRe
 /**
  * Context for tracking visited objects during recursive printing to detect cycles.
  * Uses reference equality (===) to detect reference cycles.
+ *
+ * Platform-specific implementations ensure thread-safety on JVM while remaining
+ * efficient on single-threaded platforms like JS.
  */
-private object PrintContext {
-   private val visited = mutableListOf<Any>()
-
-   fun isVisited(obj: Any): Boolean = visited.any { it === obj }
-
-   fun push(obj: Any) {
-      visited.add(obj)
-   }
-
-   fun pop() {
-      visited.removeLastOrNull()
-   }
+internal expect object PrintContext {
+   fun isVisited(obj: Any): Boolean
+   fun push(obj: Any)
+   fun pop()
 }
 
 internal fun recursiveRepr(root: Any, node: Any?): Printed {
