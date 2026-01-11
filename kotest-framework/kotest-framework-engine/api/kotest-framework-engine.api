@@ -1133,18 +1133,6 @@ public final class io/kotest/core/descriptors/DescriptorPathContextElement : kot
 public final class io/kotest/core/descriptors/DescriptorPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
 }
 
-public final class io/kotest/core/descriptors/DescriptorPaths {
-	public static final field INSTANCE Lio/kotest/core/descriptors/DescriptorPaths;
-	public static final field SPEC_DELIMITER Ljava/lang/String;
-	public static final field TEST_DELIMITER Ljava/lang/String;
-	public final fun parse (Ljava/lang/String;)Lio/kotest/core/descriptors/Descriptor;
-	public final fun render (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/DescriptorPath;
-}
-
-public final class io/kotest/core/descriptors/KclassesKt {
-	public static final fun toDescriptor (Lkotlin/reflect/KClass;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
-}
-
 public abstract interface annotation class io/kotest/core/extensions/ApplyExtension : java/lang/annotation/Annotation {
 	public abstract fun extensions ()[Ljava/lang/Class;
 }
@@ -1735,6 +1723,7 @@ public final class io/kotest/core/spec/SpecExecutionOrder : java/lang/Enum {
 }
 
 public abstract interface class io/kotest/core/spec/SpecRef {
+	public abstract fun getFqn ()Ljava/lang/String;
 	public abstract fun getKclass ()Lkotlin/reflect/KClass;
 }
 
@@ -1747,18 +1736,20 @@ public final class io/kotest/core/spec/SpecRef$Function : io/kotest/core/spec/Sp
 	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Function;Lkotlin/jvm/functions/Function0;Lkotlin/reflect/KClass;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Function;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getF ()Lkotlin/jvm/functions/Function0;
-	public final fun getFqn ()Ljava/lang/String;
+	public fun getFqn ()Ljava/lang/String;
 	public fun getKclass ()Lkotlin/reflect/KClass;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/core/spec/SpecRef$Reference : io/kotest/core/spec/SpecRef {
-	public fun <init> (Lkotlin/reflect/KClass;)V
+	public fun <init> (Lkotlin/reflect/KClass;Ljava/lang/String;)V
 	public final fun component1 ()Lkotlin/reflect/KClass;
-	public final fun copy (Lkotlin/reflect/KClass;)Lio/kotest/core/spec/SpecRef$Reference;
-	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/reflect/KClass;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Reference;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Lkotlin/reflect/KClass;Ljava/lang/String;)Lio/kotest/core/spec/SpecRef$Reference;
+	public static synthetic fun copy$default (Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/reflect/KClass;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/spec/SpecRef$Reference;
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getFqn ()Ljava/lang/String;
 	public fun getKclass ()Lkotlin/reflect/KClass;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -4297,7 +4288,7 @@ public final class io/kotest/engine/reports/TimeSerializer : kotlinx/serializati
 public final class io/kotest/engine/spec/Materializer {
 	public fun <init> ()V
 	public fun <init> (Lio/kotest/engine/config/SpecConfigResolver;)V
-	public final fun materialize (Lio/kotest/core/spec/Spec;)Ljava/util/List;
+	public final fun materialize (Lio/kotest/core/spec/Spec;Lio/kotest/core/spec/SpecRef;)Ljava/util/List;
 	public final fun materialize (Lio/kotest/core/test/NestedTest;Lio/kotest/core/test/TestCase;)Lio/kotest/core/test/TestCase;
 }
 

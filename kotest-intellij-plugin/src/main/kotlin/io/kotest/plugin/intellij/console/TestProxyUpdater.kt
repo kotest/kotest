@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.testframework.sm.runner.SMTestProxy
 
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 object TestProxyUpdater {
 
    fun setFailed(proxy: SMTestProxy, attrs: MessageAttributes) {

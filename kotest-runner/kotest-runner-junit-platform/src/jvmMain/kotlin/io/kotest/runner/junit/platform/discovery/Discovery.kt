@@ -2,6 +2,7 @@ package io.kotest.runner.junit.platform.discovery
 
 import io.kotest.core.log
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.runner.junit.platform.Segment
 import org.junit.platform.engine.ConfigurationParameters
 import org.junit.platform.engine.EngineDiscoveryRequest
@@ -13,11 +14,9 @@ import kotlin.reflect.KClass
 
 /**
  * Contains the results of a discovery scan.
- *
- * @param specs these are classes which extend one of the spec classes
  */
 internal data class DiscoveryResult(
-   val specs: List<KClass<out Spec>>,
+   val specs: List<SpecRef>,
 )
 
 /**
@@ -48,7 +47,7 @@ internal object Discovery {
 
       log { "[Discovery] ${specsAfterInitialFiltering.size} specs will be returned" }
 
-      return DiscoveryResult(specsAfterInitialFiltering)
+      return DiscoveryResult(specsAfterInitialFiltering.map { SpecRef.Reference(it, it.java.name) })
    }
 
    private fun filters(configurationParameters: ConfigurationParameters): List<DiscoveryFilter> {

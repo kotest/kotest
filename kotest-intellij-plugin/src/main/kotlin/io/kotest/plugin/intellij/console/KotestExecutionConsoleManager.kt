@@ -28,6 +28,7 @@ import org.jetbrains.plugins.gradle.util.GradleConstants
  * An implementation of [ExternalSystemExecutionConsoleManager] that provides a custom [SMTRunnerConsoleView]
  * for displaying Kotest test results when executing tests via the Kotest Gradle plugin tasks.
  */
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTRunnerConsoleView, ProcessHandler> {
 
    override fun getExternalSystemId(): ProjectSystemId {

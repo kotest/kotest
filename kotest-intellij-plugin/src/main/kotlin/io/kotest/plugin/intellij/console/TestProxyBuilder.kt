@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.console
 import com.intellij.execution.testframework.sm.runner.SMTestProxy
 import io.kotest.plugin.intellij.locations.KotestTestLocator
 
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 data class TestProxyBuilder(
    val name: String,
    val suite: Boolean,

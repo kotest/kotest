@@ -11,18 +11,20 @@ import java.text.ParseException
 /**
  * An implementation of [ServiceMessageParserCallback] that updates the given [console].
  */
+@Suppress("DEPRECATION")
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 class KotestServiceMessageCallback(
    private val console: KotestSMTRunnerConsole,
 ) : ServiceMessageParserCallback {
 
    fun root(): SMTestProxy.SMRootTestProxy = console.resultsViewer.testsRootNode
 
-   // this is text that was a service message but couldn't be parsed
+   // this is a string that was a service message but couldn't be parsed
    override fun parseException(p0: ParseException, p1: String) {
       console.notifyWarn("Error parsing test result", p0.message ?: "")
    }
 
-   // this is text that wasn't a service message, we don't care about this
+   // this is a string that wasn't a service message; we don't care about this
    override fun regularText(p0: String) {
    }
 
@@ -34,6 +36,7 @@ class KotestServiceMessageCallback(
             console.resultsViewer.onSuiteStarted(proxy)
             console.publisher.onSuiteStarted(proxy)
          }
+
          ServiceMessageTypes.TEST_SUITE_FINISHED -> {
             val proxy = getProxy(msg)
             proxy.setFinished()
@@ -42,12 +45,14 @@ class KotestServiceMessageCallback(
             console.resultsViewer.onSuiteFinished(proxy)
             console.publisher.onSuiteFinished(proxy)
          }
+
          ServiceMessageTypes.TEST_STARTED -> {
             val proxy = createProxy(msg = msg, suite = false)
             proxy.setStarted()
             console.resultsViewer.onTestStarted(proxy)
             console.publisher.onTestStarted(proxy)
          }
+
          ServiceMessageTypes.TEST_FINISHED -> {
             val proxy = getProxy(msg)
             proxy.setFinished()
@@ -56,6 +61,7 @@ class KotestServiceMessageCallback(
             console.resultsViewer.onTestFinished(proxy)
             console.publisher.onTestFinished(proxy)
          }
+
          ServiceMessageTypes.TEST_IGNORED -> {
             val proxy = createProxy(msg = msg, suite = false)
             val attrs = MessageAttributeParser.parse(msg)
@@ -63,6 +69,7 @@ class KotestServiceMessageCallback(
             console.resultsViewer.onTestIgnored(proxy)
             console.publisher.onTestIgnored(proxy)
          }
+
          ServiceMessageTypes.TEST_FAILED -> {
             val proxy = getProxy(msg)
             val attrs = MessageAttributeParser.parse(msg)
@@ -70,6 +77,7 @@ class KotestServiceMessageCallback(
             console.resultsViewer.onTestFailed(proxy)
             console.publisher.onTestFailed(proxy)
          }
+
          else -> Unit
       }
    }

@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.test.status
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.style.FunSpec
@@ -9,7 +10,6 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.enabled.SystemPropertyTestFilterEnabledExtension
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe

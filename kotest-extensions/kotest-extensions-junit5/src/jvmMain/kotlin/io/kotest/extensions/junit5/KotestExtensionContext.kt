@@ -1,6 +1,5 @@
 package io.kotest.extensions.junit5
 
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -51,7 +50,7 @@ class KotestExtensionContext(
    override fun getParent(): Optional<ExtensionContext> = Optional.empty()
    override fun getRoot(): ExtensionContext = this
 
-   override fun getUniqueId(): String = spec::class.toDescriptor().id.value
+   override fun getUniqueId(): String = spec::class.java.name
 
    override fun getDisplayName(): String = when (testCase) {
       null -> formatter.format(spec::class)

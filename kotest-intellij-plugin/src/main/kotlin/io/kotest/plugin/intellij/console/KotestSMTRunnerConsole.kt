@@ -14,7 +14,7 @@ import com.intellij.openapi.project.Project
  * An [KotestSMTRunnerConsole] is a customized [SMTRunnerConsoleView] for ServiceMessage (ie TeamCity format)
  * based test runners. We are extending this to support hiding the gradle build stages view pane.
  */
-@Suppress("UnstableApiUsage")
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 class KotestSMTRunnerConsole(
    consoleProperties: KotestSMTRunnerConsoleProperties,
    splitterPropertyName: String,

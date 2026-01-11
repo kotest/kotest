@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.tags
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.NamedTag
 import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
@@ -9,6 +10,7 @@ import io.kotest.core.annotation.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.SpecRef.Reference
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.datatest.withData
@@ -34,7 +36,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override val extensions: List<Extension> = listOf(ext)
          }
 
-         val tests = Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
+         val spec = MyTestClass()
+         val tests =
+            Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
          val checker = TestEnabledChecker(
             ProjectConfigResolver(c),
@@ -56,7 +60,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override val extensions: List<Extension> = listOf(ext)
          }
 
-         val tests = Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
+         val spec = MyTestClass()
+         val tests =
+            Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
          val checker = TestEnabledChecker(
             ProjectConfigResolver(c),
@@ -79,7 +85,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override val extensions: List<Extension> = listOf(ext)
          }
 
-         val tests = Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
+         val spec = MyTestClass()
+         val tests =
+            Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
          val checker = TestEnabledChecker(
             ProjectConfigResolver(c),
@@ -102,7 +110,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override val extensions: List<Extension> = listOf(ext)
          }
 
-         val tests = Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
+         val spec = MyTestClass()
+         val tests =
+            Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
          val checker = TestEnabledChecker(
             ProjectConfigResolver(c),
@@ -124,7 +134,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override val extensions: List<Extension> = listOf(ext)
          }
 
-         val tests = Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
+         val spec = MyTestClass()
+         val tests =
+            Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
          val checker = TestEnabledChecker(
             ProjectConfigResolver(c),
@@ -146,7 +158,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
             override val extensions: List<Extension> = listOf(ext)
          }
 
-         val tests = Materializer(SpecConfigResolver(c)).materialize(MyTestClass())
+         val spec = MyTestClass()
+         val tests =
+            Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
          val checker = TestEnabledChecker(
             ProjectConfigResolver(c),
@@ -175,7 +189,9 @@ class TagsAnnotationInheritenceTest : FunSpec() {
                override val extensions: List<Extension> = listOf(ext)
             }
 
-            val tests = Materializer(SpecConfigResolver(c)).materialize(InheritingTest())
+            val spec = InheritingTest()
+            val tests =
+               Materializer(SpecConfigResolver(c)).materialize(spec, Reference(spec::class, spec::class.bestName()))
 
             val checker = TestEnabledChecker(
                ProjectConfigResolver(c),

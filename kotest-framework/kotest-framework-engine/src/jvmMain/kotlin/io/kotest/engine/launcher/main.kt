@@ -2,6 +2,7 @@ package io.kotest.engine.launcher
 
 import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
 import io.kotest.engine.extensions.filter.IncludeDescriptorFilter
@@ -97,7 +98,7 @@ fun main(args: Array<String>) {
          .withListener(consoleListener)
          .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_ROOT_TEST_REPORTS_DIR, launcherArgs))
          .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_MODULE_TEST_REPORTS_DIR, launcherArgs))
-         .withClasses(classes)
+         .withSpecRefs(classes.map { SpecRef.Reference(it, it.java.name) })
          .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
          .launch()
    }
