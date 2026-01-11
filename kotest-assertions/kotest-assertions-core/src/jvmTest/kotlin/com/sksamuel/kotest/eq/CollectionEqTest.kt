@@ -155,6 +155,26 @@ class CollectionEqTest : FunSpec({
       CollectionEq.equals(cyclicList1, cyclicList2, EqContext()).shouldBeInstanceOf<EqResult.Success>()
    }
 
+   test("should not throw StackOverflowError for unequal indirect cyclic collections") {
+      val cyclicList1 = mutableListOf<Any?>()
+      val cyclicList2 = mutableListOf<Any?>()
+
+      cyclicList1.add(cyclicList2)
+      cyclicList1.add("extra")
+      cyclicList2.add(cyclicList1)
+
+      val result = CollectionEq.equals(cyclicList1, cyclicList2, EqContext()) as EqResult.Failure
+      val throwable = result.error()
+
+      assertSoftly {
+         throwable.shouldBeInstanceOf<AssertionError>()
+         throwable.message shouldBe """
+         Unexpected elements from index 1
+         expected:<[[[(this ArrayList)], "extra"]]> but was:<[[[(this ArrayList), "extra"]], "extra"]>
+         """.trimIndent()
+      }
+   }
+
    test("should return null (equal) for different instances with same content") {
       val expected = listOf(1, 2, 3)
       val actual = listOf(3, 2, 1).reversed()
