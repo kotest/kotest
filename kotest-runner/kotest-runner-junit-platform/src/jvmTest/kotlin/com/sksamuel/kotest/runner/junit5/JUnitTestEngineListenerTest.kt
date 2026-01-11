@@ -33,7 +33,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    val root = EngineDescriptorBuilder
       .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-      .withSpecs(listOf(MySpec::class))
+      .withSpecs(listOf(SpecRef.Reference(MySpec::class)))
       .build()
 
    val tc1 = TestCase(
@@ -283,7 +283,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       val root2 = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(MySpec::class, MySpec2::class))
+         .withSpecs(listOf(SpecRef.Reference(MySpec::class), SpecRef.Reference(MySpec2::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
@@ -331,7 +331,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       val root2 = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(MySpec::class, MySpec2::class))
+         .withSpecs(listOf(SpecRef.Reference(MySpec::class), SpecRef.Reference(MySpec2::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
@@ -428,7 +428,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
       }
    }
 
-   override fun executionSkipped(testDescriptor: TestDescriptor, reason: String?) {
+   override fun executionSkipped(testDescriptor: TestDescriptor, reason: String) {
       events.add(Event.ExecutionSkipped(testDescriptor.displayName, reason))
    }
 
@@ -440,7 +440,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
       events.add(Event.ExecutionFinished(testDescriptor.displayName, testExecutionResult.status))
    }
 
-   override fun reportingEntryPublished(testDescriptor: TestDescriptor?, entry: ReportEntry?) {
+   override fun reportingEntryPublished(testDescriptor: TestDescriptor, entry: ReportEntry) {
       error("Unused")
    }
 }
