@@ -215,7 +215,7 @@ class JUnitTestEngineListener(
       // JUnit has TEST and CONTAINER types, but intellij will not render a CONTAINER unless it has a child.
       // Since Kotest allows you to have containers that do not contain tests, we must wait to see if a container
       // has any children before we register it as a container. If it does not, then we will register it as a test
-      // once it completes. Therefore the testStarted listener must wait to register a test.
+      // once it completes. Therefore, the testStarted listener must wait to register a test.
 
       logger.log { Pair(testCase.name.name, "test started") }
 
@@ -237,7 +237,7 @@ class JUnitTestEngineListener(
       // we don't need to start parents, because they would have been started by the coresponding
       // call to testStarted
       //
-      // because of the gradle bugs described elsewhere, if this was a leaf test, we would not yet have
+      // because of the Gradle bugs described elsewhere, if this was a leaf test, we would not yet have
       // started it, so we need to start it if not.
 
       logger.log { Pair(testCase.name.name, "test finished $result") }

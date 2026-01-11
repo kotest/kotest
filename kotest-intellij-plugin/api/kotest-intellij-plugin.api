@@ -203,14 +203,6 @@ public final class io/kotest/plugin/intellij/annotators/FocusInNestedTestAnnotat
 	public fun annotate (Lcom/intellij/psi/PsiElement;Lcom/intellij/lang/annotation/AnnotationHolder;)V
 }
 
-public final class io/kotest/plugin/intellij/breadcrumbs/KotestBreadcrumbProvider : com/intellij/ui/breadcrumbs/BreadcrumbsProvider {
-	public fun <init> ()V
-	public fun acceptElement (Lcom/intellij/psi/PsiElement;)Z
-	public fun getElementInfo (Lcom/intellij/psi/PsiElement;)Ljava/lang/String;
-	public fun getLanguages ()[Lcom/intellij/lang/Language;
-	public fun isShownByDefault ()Z
-}
-
 public final class io/kotest/plugin/intellij/console/KotestConsoleViewOnOutputHandler {
 	public fun <init> ()V
 	public final fun onOutput (Lio/kotest/plugin/intellij/console/KotestSMTRunnerConsole;Ljava/lang/String;Lcom/intellij/openapi/util/Key;)V

@@ -83,6 +83,7 @@ data class TestEngineLauncher(
       return withListener(NoopTestEngineListener)
    }
 
+   @Suppress("DEPRECATION")
    @Deprecated("use withSpecRefs. Deprecated since 6.1")
    fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
 

@@ -70,7 +70,7 @@ data class Test(
    val isNested: Boolean = !root
 
    /**
-    * Full path to this test is all parents plus this test
+    * The full path to this test is all parents plus this test
     */
    fun path(): List<TestPathEntry> = when (parent) {
       null -> listOf(TestPathEntry(name.name))

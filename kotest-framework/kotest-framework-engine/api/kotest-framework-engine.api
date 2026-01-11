@@ -1133,14 +1133,6 @@ public final class io/kotest/core/descriptors/DescriptorPathContextElement : kot
 public final class io/kotest/core/descriptors/DescriptorPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
 }
 
-public final class io/kotest/core/descriptors/DescriptorPaths {
-	public static final field INSTANCE Lio/kotest/core/descriptors/DescriptorPaths;
-	public static final field SPEC_DELIMITER Ljava/lang/String;
-	public static final field TEST_DELIMITER Ljava/lang/String;
-	public final fun parse (Ljava/lang/String;)Lio/kotest/core/descriptors/Descriptor;
-	public final fun render (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/core/descriptors/DescriptorPath;
-}
-
 public abstract interface annotation class io/kotest/core/extensions/ApplyExtension : java/lang/annotation/Annotation {
 	public abstract fun extensions ()[Ljava/lang/Class;
 }
