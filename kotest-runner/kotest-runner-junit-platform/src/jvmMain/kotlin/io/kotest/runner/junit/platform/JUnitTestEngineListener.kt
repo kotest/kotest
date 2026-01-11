@@ -178,7 +178,7 @@ class JUnitTestEngineListener(
       logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
       val testDescriptor = findTestDescriptorForSpec(root, Descriptor.SpecDescriptor(DescriptorId(kclass.java.name)))
       if (testDescriptor != null)
-         listener.executionSkipped(testDescriptor, reason)
+         listener.executionSkipped(testDescriptor, reason ?: "")
    }
 
    private fun reset() {
@@ -272,7 +272,7 @@ class JUnitTestEngineListener(
       results[testCase.descriptor] = TestResult.Ignored(reason)
 
       logger.log { Pair(testCase.name.name, "executionSkipped: $testDescriptor") }
-      listener.executionSkipped(testDescriptor, reason)
+      listener.executionSkipped(testDescriptor, reason ?: "")
    }
 
    private fun startParents(testCase: TestCase) {

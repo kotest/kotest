@@ -345,7 +345,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specFinished(SpecRef.Reference(MySpec2::class), TestResult.Success(0.seconds))
 
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("MySpec", null),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("MySpec", ""),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("MySpec2"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
             "baz",
