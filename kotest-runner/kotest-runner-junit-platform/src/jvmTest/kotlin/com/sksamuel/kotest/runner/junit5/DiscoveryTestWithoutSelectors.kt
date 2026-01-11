@@ -21,7 +21,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
    test("discovery should be skipped if request excludes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .filters(
-            EngineFilter.excludeEngines(KotestJunitPlatformTestEngine.Companion.ENGINE_ID)
+            EngineFilter.excludeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
@@ -33,7 +33,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
    xtest("discovery should run if request includes kotest engine") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .filters(
-            EngineFilter.includeEngines(KotestJunitPlatformTestEngine.Companion.ENGINE_ID)
+            EngineFilter.includeEngines(KotestJunitPlatformTestEngine.ENGINE_ID)
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
@@ -61,7 +61,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.specs.map { it.qualifiedName }.toSet() shouldBe setOf(
+      descriptor.specs.map { it.fqn }.toSet() shouldBe setOf(
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2",
@@ -88,7 +88,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.specs.map { it.qualifiedName } shouldBe
+      descriptor.specs.map { it.fqn } shouldBe
          listOf(DiscoveryTestWithoutSelectors::class.java.canonicalName)
    }
 
@@ -134,7 +134,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.specs.map { it.qualifiedName } shouldBe listOf(
+      descriptor.specs.map { it.fqn } shouldBe listOf(
          DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
       )
@@ -149,7 +149,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          .build()
       val engine = KotestJunitPlatformTestEngine()
       val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
-      descriptor.specs.map { it.qualifiedName }.toSet() shouldBe setOf(
+      descriptor.specs.map { it.fqn }.toSet() shouldBe setOf(
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
          DummySpec2::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec2::class.java.canonicalName,
