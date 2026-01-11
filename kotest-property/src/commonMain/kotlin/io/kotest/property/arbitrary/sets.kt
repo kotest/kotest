@@ -45,23 +45,27 @@ fun <A> Arb.Companion.set(gen: Gen<A>, range: IntRange = PropertyTesting.default
    return arbitrary(SetShrinker(range)) {
       val genIter = gen.generate(it).iterator()
       val targetSize = it.random.nextInt(range)
-      val set = mutableSetOf<A>()
-      var iterations = 0
-      val maxMisses = targetSize * slippage
+      val maxAttempts = targetSize * slippage
+      val elements: Sequence<A> = genIter.asSequence().map { sample-> sample.value }
       // We may generate duplicates, but we don't know if the underlying gen has sufficient cardinality
       // to satisfy our range, so we can try for a while, but must not try forever.
       // The slippage factor controls how many times we will accept a non unique element before giving up,
       // which is the number of elements in the target set * slippage
-      while (iterations < maxMisses && set.size < targetSize && genIter.hasNext()) {
-         val size = set.size
-         set.add(genIter.next().value)
-         if (set.size == size) iterations++
-      }
+      val set = takeSet(elements, targetSize, maxAttempts)
       check(set.size == targetSize) {
-         "the target size requirement of $targetSize could not be satisfied after $iterations consecutive samples"
+         "the target size requirement of $targetSize could not be satisfied"
       }
       set
    }
+}
+
+internal fun<A> takeSet(elements: Sequence<A>, targetSize: Int, maxAttempts: Int): Set<A> {
+   var elementsTaken = 0
+   val chunk = elements
+      .takeWhile { elementsTaken++ < maxAttempts }
+      .distinct()
+      .take(targetSize)
+   return chunk.toSet()
 }
 
 /**
