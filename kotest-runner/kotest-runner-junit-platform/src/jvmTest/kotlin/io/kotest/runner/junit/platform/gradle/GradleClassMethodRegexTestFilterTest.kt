@@ -6,7 +6,7 @@ import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
-import io.kotest.engine.extensions.filter.IncludePatternEnvDescriptorFilter
+import io.kotest.engine.extensions.filter.INCLUDE_PATTERN_ENV
 import io.kotest.extensions.system.withEnvironment
 import io.kotest.matchers.shouldBe
 
@@ -111,7 +111,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val container = spec.append("a context")
       val test = container.append("nested test")
-      withEnvironment(IncludePatternEnvDescriptorFilter.ENV_NAME, "foo") {
+      withEnvironment(INCLUDE_PATTERN_ENV, "foo") {
          GradleClassMethodRegexTestFilter(setOf("io.nothing")).filter(test) shouldBe DescriptorFilterResult.Include
       }
    }
