@@ -78,7 +78,7 @@ internal object GradleUtils {
 
    /**
     * Returns the version of Kotest defined for this module or null if Kotest is a dependency.
-    * Assumes that all artifacts in the io.kotest group are using the same version.
+    * Uses the engine module as the source of truth for the version.
     */
    fun getKotestVersion(module: Module?): Version? {
       if (module == null) return null
