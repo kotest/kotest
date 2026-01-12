@@ -98,20 +98,15 @@ internal object GradleUtils {
       return (version.major == 6 && version.minor > 0) || version.major > 6
    }
 
-   fun isGradleTestRunner(module: Module?): Boolean {
-      if (module == null) return false
+   fun runner(module: Module?): TestRunner? {
+      if (module == null) return null
       return GradleProjectSettings.getTestRunner(
          module.project,
          ExternalSystemApiUtil.getExternalProjectPath(module)
-      ) != TestRunner.PLATFORM
+      )
    }
 
-   fun isPlatformRunner(module: Module?): Boolean {
-      if (module == null) return false
-      return GradleProjectSettings.getTestRunner(
-         module.project,
-         ExternalSystemApiUtil.getExternalProjectPath(module)
-      ) == TestRunner.PLATFORM
-   }
+   fun isGradleTestRunner(module: Module?): Boolean = runner(module) != TestRunner.PLATFORM
+   fun isPlatformRunner(module: Module?): Boolean = runner(module) == TestRunner.PLATFORM
 }
 
