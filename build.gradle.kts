@@ -15,6 +15,8 @@ apiValidation {
          "io.kotest.framework.multiplatform.native"
       )
    )
+   // the intellij plugin is not an API and doesn't need its api to be validated
+   ignoredProjects.addAll(listOf("kotest-intellij-plugin"))
    nonPublicMarkers.addAll(
       listOf(
          "io.kotest.common.KotestInternal",
