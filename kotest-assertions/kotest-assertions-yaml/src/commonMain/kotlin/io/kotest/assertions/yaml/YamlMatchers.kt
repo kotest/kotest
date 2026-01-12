@@ -3,7 +3,6 @@ package io.kotest.assertions.yaml
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlNode
 import io.kotest.assertions.print.print
-import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
