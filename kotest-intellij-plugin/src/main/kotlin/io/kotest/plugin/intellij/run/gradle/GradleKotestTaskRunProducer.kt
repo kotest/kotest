@@ -11,20 +11,23 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingSpec
+import io.kotest.plugin.intellij.run.RunnerMode
+import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.plugins.gradle.execution.GradleRunConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
-private val KOTEST_RUN = Key.create<Boolean>("KOTEST_RUN")
-
 /**
- * Runs a Kotest individual test or a single spec using Gradle.
+ * Runs a Kotest individual test or a single spec using the Gradle kotest task.
  *
  * This uses a [GradleRunConfigurationProducer] which is an intellij provided
  * [com.intellij.openapi.externalSystem.service.execution.ExternalSystemRunConfiguration] that runs gradle tasks.
  */
-class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer() {
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via the standard gradle test task and not the kotest task")
+class GradleKotestTaskRunProducer : GradleRunConfigurationProducer() {
+
+   val kotestRun = Key.create<Boolean>("KOTEST_RUN")
 
    /**
     * When two configurations are created from the same context by two different producers, checks if the
@@ -68,8 +71,7 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      // checks we have the kotest gradle plugin for this run producer to be applicable
-      if (!GradleUtils.hasGradlePlugin(context.module)) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_KOTEST_TASK) return false
 
       val project = context.project ?: return false
       val module = context.module ?: return false
@@ -99,8 +101,8 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
       configuration.isShowConsoleOnStdErr = false
       configuration.isShowConsoleOnStdOut = false
 
-      configuration.putUserData<Boolean>(KOTEST_RUN, true)
-      configuration.putCopyableUserData<Boolean>(KOTEST_RUN, true)
+      configuration.putUserData<Boolean>(kotestRun, true)
+      configuration.putCopyableUserData<Boolean>(kotestRun, true)
 
       val runManager = RunManager.getInstance(project)
       runManager.setUniqueNameIfNeeded(configuration)
@@ -116,7 +118,7 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
    }
 
    private fun configurationName(spec: KtClassOrObject, test: Test?): String {
-      return GradleTestRunNameBuilder.Companion.builder()
+      return GradleTestRunNameBuilder.builder()
          .withSpec(spec)
          .withTest(test)
          .build()
@@ -142,7 +144,7 @@ class TestOrSpecGradleRunConfigurationProducer : GradleRunConfigurationProducer(
    ): Boolean {
 
       // we must have the kotest gradle plugin for this configuration to be applicable
-      if (!GradleUtils.hasGradlePlugin(context.module)) return false
+      if (!GradleUtils.hasKotestGradlePlugin(context.module)) return false
 
       // if kotest is not a task this configuration is running, then this isn't a configuration we can re-use
       // eg, we might be passed another gradle run configuration that was running build or clean etc.

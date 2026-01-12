@@ -3871,6 +3871,12 @@ public final class io/kotest/engine/extensions/filter/IncludeDescriptorFilter : 
 	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult;
 }
 
+public final class io/kotest/engine/extensions/filter/IncludePatternEnvDescriptorFilter : io/kotest/engine/extensions/filter/DescriptorFilter {
+	public static final field ENV_NAME Ljava/lang/String;
+	public static final field INSTANCE Lio/kotest/engine/extensions/filter/IncludePatternEnvDescriptorFilter;
+	public fun filter (Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult;
+}
+
 public final class io/kotest/engine/extensions/tags/SystemPropertyOrEnvTagExtension : io/kotest/core/extensions/TagExtension {
 	public static final field INSTANCE Lio/kotest/engine/extensions/tags/SystemPropertyOrEnvTagExtension;
 	public fun tags ()Lio/kotest/engine/tags/TagExpression;

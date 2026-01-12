@@ -2,10 +2,12 @@ package io.kotest.runner.junit.platform.gradle
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.IncludePatternEnvDescriptorFilter
+import io.kotest.extensions.system.withEnvironment
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -102,6 +104,15 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       ) { filter ->
          GradleClassMethodRegexTestFilter(setOf(filter))
             .filter(test) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
+
+   test("is true when KOTEST_INCLUDE_PATTERN is set") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val container = spec.append("a context")
+      val test = container.append("nested test")
+      withEnvironment(IncludePatternEnvDescriptorFilter.ENV_NAME, "foo") {
+         GradleClassMethodRegexTestFilter(setOf("io.nothing")).filter(test) shouldBe DescriptorFilterResult.Include
       }
    }
 })

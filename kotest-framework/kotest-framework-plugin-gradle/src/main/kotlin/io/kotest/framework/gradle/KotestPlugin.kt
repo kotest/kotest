@@ -115,7 +115,6 @@ abstract class KotestPlugin : Plugin<Project> {
                project.logger.warn("Setting env var to " + includes.joinToString(";"))
 
                setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
-
             }
 
             when (this) {
