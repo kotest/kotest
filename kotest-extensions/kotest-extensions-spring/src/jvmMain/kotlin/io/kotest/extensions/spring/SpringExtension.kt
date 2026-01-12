@@ -67,7 +67,6 @@ open class SpringExtension(
    }
 
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
-      println("intercept of $spec")
       SpringJavaCompatibility.checkForSafeClassName(spec::class)
 
       val manager = getTestContextManager(spec::class)
