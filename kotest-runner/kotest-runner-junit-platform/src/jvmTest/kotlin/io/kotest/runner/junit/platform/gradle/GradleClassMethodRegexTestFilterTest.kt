@@ -107,7 +107,7 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
-   test("is true when KOTEST_INCLUDE_PATTERN is set") {
+   test("!is true when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val container = spec.append("a context")
       val test = container.append("nested test")
