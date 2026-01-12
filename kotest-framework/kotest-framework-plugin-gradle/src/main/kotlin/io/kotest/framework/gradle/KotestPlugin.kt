@@ -63,6 +63,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val KOTEST_INCLUDE_PATTERN = "KOTEST_INCLUDE_PATTERN"
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
+      internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
    }
 
    private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
@@ -88,7 +89,7 @@ abstract class KotestPlugin : Plugin<Project> {
       handleMultiplatform(project, kotestExtension)
 
       project.gradle.taskGraph.whenReady {
-         configureTestTasks(project)
+         decorateGradleTestTask(project)
       }
    }
 
@@ -97,7 +98,7 @@ abstract class KotestPlugin : Plugin<Project> {
     * of environment variables that Kotest picks up and applies via a descriptor filter.
     * This allows us to run specific tests using the regular Gradle task.
     */
-   private fun configureTestTasks(project: Project) {
+   private fun decorateGradleTestTask(project: Project) {
       project.tasks.withType(AbstractTestTask::class.java).configureEach {
          doFirst {
 
@@ -115,6 +116,14 @@ abstract class KotestPlugin : Plugin<Project> {
 
                setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
 
+            }
+
+            when (this) {
+               is KotlinNativeTest ->
+                  // saves the user having to set this manually
+                  if (hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
+                     setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
+                  }
             }
 
             // when running Gradle from intellij, the test tasks are forked and so the idea.active systemm property
@@ -207,7 +216,11 @@ abstract class KotestPlugin : Plugin<Project> {
                      when (platformType) {
                         KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target, kotestExtension)
                         KotlinPlatformType.common -> Unit // these are not buildable targets, so we skip them
-                        KotlinPlatformType.jvm -> if (kotestExtension.customGradleTask) handleMultiplatformJvm(target, kotestExtension)
+                        KotlinPlatformType.jvm -> if (kotestExtension.customGradleTask) handleMultiplatformJvm(
+                           target,
+                           kotestExtension
+                        )
+
                         KotlinPlatformType.js -> handleJs(target, kotestExtension)
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
