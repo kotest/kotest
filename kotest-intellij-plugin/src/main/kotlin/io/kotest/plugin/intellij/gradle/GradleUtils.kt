@@ -93,12 +93,7 @@ object GradleUtils {
       LOG.info("Kotest dependency found $dependency")
 
       val version = dependency?.name?.substringAfterLast(":") ?: return null
-
-      // we assume x.y..... format
-      val major = version.take(1).toIntOrNull() ?: return null
-      val minor = version.drop(2).take(1).toIntOrNull() ?: return null
-
-      return Version(major, minor)
+      return VersionParser.parse(version)
    }
 
    fun isKotest61OrAbove(module: Module?): Boolean {
@@ -124,4 +119,3 @@ object GradleUtils {
    }
 }
 
-data class Version(val major: Int, val minor: Int)
