@@ -1,6 +1,5 @@
 package io.kotest.plugin.intellij.gradle
 
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
@@ -13,9 +12,8 @@ import org.jetbrains.plugins.gradle.settings.TestRunner
 import org.jetbrains.plugins.gradle.util.GradleModuleData
 import org.jetbrains.plugins.gradle.util.GradleTaskData
 
+@Suppress("DEPRECATION")
 internal object GradleUtils {
-
-   private val LOG = logger<GradleUtils>()
 
    /**
     * Returns true if we have the Kotest Gradle plugin configured for the given module.
@@ -82,11 +80,9 @@ internal object GradleUtils {
     */
    fun getKotestVersion(module: Module?): Version? {
       if (module == null) return null
-      LOG.info("Getting kotest version for module $module")
 
       val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.project)
       val dependency = libraryTable.libraries.find { it.name?.contains("io.kotest:kotest-framework-engine") ?: false }
-      LOG.info("Kotest dependency found $dependency")
 
       val version = dependency?.name?.substringAfterLast(":") ?: return null
       return VersionParser.parse(version)
