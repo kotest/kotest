@@ -4,6 +4,7 @@ import io.kotest.common.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
@@ -118,7 +119,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(BehaviorSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(BehaviorSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -126,7 +127,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(FeatureSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(FeatureSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -134,7 +135,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(WordSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(WordSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -142,7 +143,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(ShouldSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(ShouldSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -150,7 +151,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(StringSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(StringSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -158,7 +159,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(DescribeSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(DescribeSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -166,7 +167,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(FreeSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(FreeSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -174,7 +175,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(FunSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(FunSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }
@@ -182,7 +183,7 @@ class AfterAnyExceptionTest : WordSpec({
          val executor = SpecRefExecutor(
             EngineContext(null, Platform.JVM).withListener(listener)
          )
-         executor.execute(ExpectSpecWithAfterTestError::class)
+         executor.execute(SpecRef.Reference(ExpectSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
          error!!.cause!!.shouldHaveMessage("boom")
       }

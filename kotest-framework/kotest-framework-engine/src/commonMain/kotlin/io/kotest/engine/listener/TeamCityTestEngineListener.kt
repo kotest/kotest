@@ -4,8 +4,8 @@ import io.kotest.common.KotestInternal
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
@@ -35,8 +35,6 @@ class TeamCityTestEngineListener(
    private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
 
    private val results = mutableMapOf<Descriptor, TestResult>()
-
-   private val started = mutableSetOf<Descriptor.TestDescriptor>()
 
    // intellij has no method for failed suites, so if a container or spec fails we must insert
    // a dummy "test" in order to tag the error against that
@@ -86,8 +84,8 @@ class TeamCityTestEngineListener(
       // if the spec itself has an error, we must insert a placeholder test
       when (val t = result.errorOrNull) {
          null -> Unit
-         is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, ref.kclass.toDescriptor()) }
-         else -> insertPlaceholder(t, ref.kclass.toDescriptor())
+         is MultipleExceptions -> t.causes.forEach { insertPlaceholder(it, ref.descriptor()) }
+         else -> insertPlaceholder(t, ref.descriptor())
       }
 
       writer.outputTestSuiteFinished(ref)
@@ -99,15 +97,8 @@ class TeamCityTestEngineListener(
       logger.log { Pair(testCase.name.name, "testStarted $testCase") }
       if (testCase.parent != null) addChild(testCase)
       when (testCase.type) {
-         TestType.Container -> {
-            writer.outputTestSuiteStarted(testCase)
-            started.add(testCase.descriptor)
-         }
-
-         TestType.Test -> {
-            writer.outputTestStarted(testCase)
-            started.add(testCase.descriptor)
-         }
+         TestType.Container -> writer.outputTestSuiteStarted(testCase)
+         TestType.Test -> writer.outputTestStarted(testCase)
       }
    }
 
@@ -129,7 +120,6 @@ class TeamCityTestEngineListener(
          }
 
          TestType.Test -> {
-            if (!started.contains(testCase.descriptor)) writer.outputTestStarted(testCase)
             if (result.isErrorOrFailure) writer.outputTestFailed(testCase, result, details)
             writer.outputTestFinished(testCase, result)
          }

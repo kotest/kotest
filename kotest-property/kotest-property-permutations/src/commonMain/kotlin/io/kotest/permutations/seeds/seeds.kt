@@ -1,5 +1,6 @@
 package io.kotest.permutations.seeds
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.descriptors.DescriptorPathContextElement
 import io.kotest.permutations.PermutationConfiguration
@@ -8,6 +9,7 @@ import io.kotest.property.RandomSource
 import io.kotest.property.random
 import kotlinx.coroutines.currentCoroutineContext
 
+@OptIn(ExperimentalKotest::class)
 internal object SeedOperations {
 
    suspend fun createRandomSource(configuration: PermutationConfiguration): RandomSource {

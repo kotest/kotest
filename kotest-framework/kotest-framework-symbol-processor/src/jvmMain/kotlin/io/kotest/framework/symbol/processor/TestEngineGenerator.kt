@@ -42,7 +42,8 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
    private fun createNativeEntryPoint(): PropertySpec {
       val prop = PropertySpec.builder("testEngineEntryPoint", UNIT)
          .addAnnotation(ClassName("kotlin.native", "EagerInitialization"))
-         .initializer("""runBlocking { launch(emptyArray()) }""".trim())
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("ExperimentalStdlibApi::class").build())
+         .initializer("""runBlocking { launch() }""".trim())
       return prop.build()
    }
 
@@ -59,6 +60,13 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
       specs: List<KSClassDeclaration>,
       configs: List<KSClassDeclaration>
    ): FunSpec {
+
+      if (specs.isEmpty()) {
+         return FunSpec.builder("launch")
+            .addModifiers(KModifier.PUBLIC)
+            .build()
+      }
+
       val function = FunSpec.builder("launch")
          .addModifiers(KModifier.PUBLIC, KModifier.SUSPEND)
          .addAnnotation(
@@ -95,6 +103,8 @@ val specs = listOf(
       val file = FileSpec.builder("io.kotest.framework.runtime", "kotest.kt")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine.launcher", "invokeTestEngine")
+         .addImport("kotlinx.coroutines", "runBlocking")
+         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
 
       specs.forEachIndexed { index, spec ->
          file.addAliasedImport(

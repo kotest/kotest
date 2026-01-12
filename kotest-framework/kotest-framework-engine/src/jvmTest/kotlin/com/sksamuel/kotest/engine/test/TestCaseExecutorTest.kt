@@ -1,8 +1,10 @@
 package com.sksamuel.kotest.engine.test
 
 import io.kotest.common.Platform
+import io.kotest.common.reflection.bestName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef.Reference
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -49,7 +51,9 @@ class TestCaseExecutorTest : FunSpec({
          }
       }
       val executor = TestCaseExecutor(listener, EngineContext(null, Platform.JVM))
-      val testCase = Materializer().materialize(Tests()).first { it.name.name == "a" }
+     val spec = Tests()
+     val testCase =
+       Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first { it.name.name == "a" }
       executor.execute(testCase, context(testCase), SpecContext.create()).isSuccess shouldBe true
       started shouldBe true
       finished shouldBe true
@@ -70,7 +74,9 @@ class TestCaseExecutorTest : FunSpec({
          }
       }
       val executor = TestCaseExecutor(listener, EngineContext(null, Platform.JVM))
-      val testCase = Materializer().materialize(Tests()).first { it.name.name == "b" }
+     val spec = Tests()
+     val testCase =
+       Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first { it.name.name == "b" }
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull shouldBe TestTimeoutException(100.milliseconds, "b")
@@ -85,7 +91,7 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
       }, EngineContext(null, Platform.JVM))
       val spec = BeforeTest()
-      val testCase = Materializer().materialize(spec).shuffled().first()
+      val testCase = Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).shuffled().first()
       executor.execute(testCase, context(testCase), SpecContext.create())
       spec.before.shouldBeTrue()
    }
@@ -97,7 +103,7 @@ class TestCaseExecutorTest : FunSpec({
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {}
       }, EngineContext(null, Platform.JVM))
       val spec = AfterTest()
-      val testCase = Materializer().materialize(spec).shuffled().first()
+      val testCase = Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).shuffled().first()
       executor.execute(testCase, context(testCase), SpecContext.create())
       spec.after.shouldBeTrue()
    }
@@ -115,7 +121,8 @@ class TestCaseExecutorTest : FunSpec({
             finished = true
          }
       }, EngineContext(null, Platform.JVM))
-      val testCase = Materializer().materialize(BeforeTestWithException()).shuffled().first()
+     val spec = BeforeTestWithException()
+     val testCase = Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
@@ -136,7 +143,8 @@ class TestCaseExecutorTest : FunSpec({
             finished = true
          }
       }, EngineContext(null, Platform.JVM))
-      val testCase = Materializer().materialize(AfterTestWithException()).shuffled().first()
+     val spec = AfterTestWithException()
+     val testCase = Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).shuffled().first()
       val result = executor.execute(testCase, context(testCase), SpecContext.create())
       result.isError shouldBe true
       result.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterAnyException>()

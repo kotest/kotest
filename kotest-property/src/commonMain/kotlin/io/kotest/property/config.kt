@@ -1,4 +1,5 @@
 @file:Suppress("DEPRECATION")
+@file:OptIn(ExperimentalKotest::class)
 
 package io.kotest.property
 

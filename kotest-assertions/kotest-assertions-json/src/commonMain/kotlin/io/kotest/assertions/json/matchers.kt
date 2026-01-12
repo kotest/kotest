@@ -3,6 +3,7 @@ package io.kotest.assertions.json
 import io.kotest.assertions.json.comparisons.compare
 import io.kotest.assertions.print.StringPrint
 import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -54,10 +55,10 @@ private fun equalJsonTree(
          options,
       )?.asString()
 
-      ComparisonMatcherResult(
+      DiffableMatcherResult(
          passed = error == null,
-         actual = StringPrint.printUnquoted(value.raw),
-         expected = StringPrint.printUnquoted(expected.raw),
+         actual = { StringPrint.printUnquoted(value.raw) },
+         expected = { StringPrint.printUnquoted(expected.raw) },
          failureMessageFn = { "$error\n" },
          negatedFailureMessageFn = { "Expected values to not match" },
       )

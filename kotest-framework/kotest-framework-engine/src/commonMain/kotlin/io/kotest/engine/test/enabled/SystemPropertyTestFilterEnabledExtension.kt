@@ -5,8 +5,8 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 import io.kotest.common.syspropOrEnv
 
 /**

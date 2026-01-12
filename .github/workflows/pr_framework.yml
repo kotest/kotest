@@ -1,0 +1,46 @@
+name: pr-intellij-plugin
+
+on:
+   pull_request:
+      paths-ignore:
+         - 'doc/**'
+         - '*.md'
+
+jobs:
+   build:
+      runs-on: ubuntu-latest
+
+      strategy:
+         matrix:
+            product: [ "IC-242", "IC-243", "IC-251", "IC-252" ]
+         max-parallel: 10
+         fail-fast: false
+
+      steps:
+         -  uses: actions/checkout@v6
+            with:
+               fetch-depth: 0
+
+         -  uses: actions/setup-java@v5
+            with:
+               java-version: "21"
+               distribution: "temurin"
+
+         -  name: Run tests
+            run: ./gradlew :kotest-intellij-plugin:check
+            env:
+               PRODUCT_NAME: ${{ matrix.product }}
+
+         -  name: Bundle the build report
+            if: failure()
+            run: find . -type d -name 'reports' | zip -@ -r build-reports.zip
+
+         -  name: Upload the build report
+            if: failure()
+            uses: actions/upload-artifact@master
+            with:
+               name: error-report
+               path: build-reports.zip
+
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"

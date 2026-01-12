@@ -4,8 +4,8 @@ import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 
 /**
  * This [DescriptorFilterTestEnabledExtension] disables tests if they are filtered by a [DescriptorFilter].

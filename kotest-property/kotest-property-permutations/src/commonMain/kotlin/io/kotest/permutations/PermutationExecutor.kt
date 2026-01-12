@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.permutations
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.engine.IterationSkippedException
 import io.kotest.permutations.checks.AllowCustomSeedBeforeCheck
 import io.kotest.permutations.checks.MaxDiscardCheck
@@ -47,7 +50,7 @@ internal class PermutationExecutor(
             iterations++
             successes++
 
-         } catch (e: IterationSkippedException) {
+         } catch (_: IterationSkippedException) {
 
             MaxDiscardCheck.ensureConfigured(context.maxDiscardPercentage)
 

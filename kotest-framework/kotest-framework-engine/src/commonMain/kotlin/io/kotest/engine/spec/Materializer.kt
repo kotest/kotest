@@ -1,9 +1,10 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -32,7 +33,7 @@ class Materializer(
     * Will adjust names to be unique based on the duplicateTestNameMode setting in either
     * the spec or project configuration.
     */
-   fun materialize(spec: Spec): List<TestCase> {
+   fun materialize(spec: Spec, ref: SpecRef): List<TestCase> {
 
       val handler = DuplicateTestNameHandler()
       val mode = specConfigResolver.duplicateTestNameMode(spec)
@@ -47,7 +48,7 @@ class Materializer(
          else rootTest.config
 
          TestCase(
-            descriptor = spec::class.toDescriptor().append(resolvedName.name),
+            descriptor = ref.descriptor().append(resolvedName.name),
             name = resolvedName,
             spec = spec,
             type = rootTest.type,

@@ -2,7 +2,6 @@ package io.kotest.matchers.throwable
 
 import io.kotest.assertions.print.print
 import io.kotest.common.reflection.bestName
-import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult

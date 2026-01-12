@@ -5,12 +5,12 @@ slug: conditional-tests-with-focus-and-bang.html
 sidebar_label: Focus and Bang
 ---
 
+Kotest allows us to quickly disable or focus a subset of tests via test name prefixes.
 
 ## Focus
 
-Kotest supports isolating a single **top level** test by preceding the test name with `f:`.
-
-Then only that test (and any subtests defined inside that scope) will be executed, with the rest being skipped.
+Kotest supports isolating **top level** tests by preceding the test name with `f:`. Then only those tests (and any
+subtests defined inside that scope) will be executed, with the rest being skipped.
 
 For example, in the following snippet only the middle test will be executed.
 
@@ -83,6 +83,12 @@ class BangExample : FreeSpec({
   }
 })
 ```
+
+:::info[Why is this helpful?]
+If you just want to run a single test, you can of course just run that from intelliJ directly using the green arrow.
+However sometimes you want to run a subset of tests, or you want to run all tests except a few. This is when focus and
+disabling can be useful.
+:::
 
 :::tip
 If you want to disable the use of ! (and allow it to be used as the first character in enabled test names) then set the system property `kotest.bang.disable` to `true`.

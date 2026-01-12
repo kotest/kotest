@@ -15,7 +15,7 @@ plugins {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-   repositoriesMode = RepositoriesMode.PREFER_SETTINGS
+   repositoriesMode = RepositoriesMode.PREFER_PROJECT
 
    repositories {
       google()
@@ -55,6 +55,9 @@ include(
    // generates KMP tests
    ":kotest-framework:kotest-framework-symbol-processor",
 
+   ":kotest-intellij-plugin",
+
+   // the older kotest 4.x era data/table testing, now pulled out into a legacy module
    ":kotest-assertions:kotest-assertions-table",
 
    // provides the base Matcher and assertion counters which are used by the engine to track assertion usage

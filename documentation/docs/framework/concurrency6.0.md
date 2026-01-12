@@ -132,6 +132,31 @@ class MySpec : FreeSpec() {
 }
 ```
 
+## Isolation
+
+Sometimes you may have some tests which are not safe to run concurrently with other tests (maybe they mutate some
+external state or something along those lines), even if the rest of the test suite is still safe to run concurrently.
+
+To support this, Kotest allows bifurcating specs into two contexts - those which
+can run concurrently with other specs, and those which should run sequentially - in _isolation_.
+
+To mark a spec as being isolated, add the `@Isolate` annotation to the spec class:
+
+```kotlin
+@Isolate
+class SomeIsolationSpec : FreeSpec() {
+  // tests
+}
+```
+
+By default, all specs are not isolated and are eligible to run concurrently if concurrency modes are enabled as per the
+above docs. Isolated specs will execute first sequentially, before the non isolated specs run together.
+
+:::tip
+In Kotest 6.1 the project config object has a setting `concurrencyOrder` which can be used to control if isolated specs
+should be executed first or last.
+:::
+
 ## Examples
 
 ### Example: Running tests within a spec concurrently

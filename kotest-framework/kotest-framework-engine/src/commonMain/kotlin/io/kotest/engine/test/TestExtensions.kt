@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.listeners.AfterContainerListener
@@ -23,7 +26,7 @@ import io.kotest.engine.mapError
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.logging.LogExtension
 import io.kotest.engine.test.scopes.withCoroutineContext
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.currentCoroutineContext
 
 /**
  * Used to invoke [Extension]s on tests.
@@ -140,7 +143,7 @@ internal class TestExtensions(
                ext.intercept(tc) {
                   // the user's intercept method is free to change the context of the coroutine
                   // to support this, we should switch the context used by the test case context
-                  execute(it, ctx.withCoroutineContext(coroutineContext))
+                  execute(it, ctx.withCoroutineContext(currentCoroutineContext()))
                }
             }
          }

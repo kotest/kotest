@@ -19,7 +19,6 @@ import io.kotest.engine.spec.execution.enabled.EnabledOrDisabled
 import io.kotest.engine.spec.execution.enabled.SpecRefEnabledChecker
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTimedValue
@@ -51,14 +50,10 @@ internal class SpecRefExecutor(
       extensions = extensions,
    )
 
-   suspend fun execute(kclass: KClass<out Spec>) {
-      execute(SpecRef.Reference(kclass))
-   }
-
    suspend fun execute(ref: SpecRef) {
 
-      // first check if this spec should be skipped and if so, mark as ignored and exit
-      // otherwise proceed to setting up the spec lifecycle callbacks
+      // first check if this spec should be skipped, and if so, mark as ignored and exit
+      // otherwise proceed to set up the spec lifecycle callbacks
       when (val enabled = specRefEnabledChecker.isEnabled(ref)) {
 
          is EnabledOrDisabled.Disabled -> {

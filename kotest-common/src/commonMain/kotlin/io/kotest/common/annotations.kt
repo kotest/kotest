@@ -21,6 +21,7 @@ annotation class DelicateKotest
    AnnotationTarget.FUNCTION,
    AnnotationTarget.TYPEALIAS,
    AnnotationTarget.PROPERTY,
+   AnnotationTarget.CONSTRUCTOR,
 )
 @MustBeDocumented
 @Retention(value = AnnotationRetention.BINARY)

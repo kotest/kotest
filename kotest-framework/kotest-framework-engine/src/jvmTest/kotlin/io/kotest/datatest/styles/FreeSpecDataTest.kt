@@ -5,7 +5,8 @@ import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.datatest.FruitWithMemberNameCollision
 import io.kotest.datatest.PythagTriple
-import io.kotest.datatest.withData
+import io.kotest.datatest.withContexts
+import io.kotest.datatest.withTests
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldHaveLength
@@ -22,11 +23,11 @@ class FreeSpecDataTest : FreeSpec() {
       }
 
       afterSpec {
-         count shouldBe 68
+         count shouldBe 70
       }
 
       // test root level with varargs
-      withData(
+      withContexts(
          PythagTriple(3, 4, 5),
          PythagTriple(6, 8, 10),
       ) { (a, b, c) ->
@@ -34,7 +35,7 @@ class FreeSpecDataTest : FreeSpec() {
       }
 
       // test root level with a sequence
-      withData(
+      withContexts(
          sequenceOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -45,7 +46,7 @@ class FreeSpecDataTest : FreeSpec() {
       }
 
       // test root level with an iterable
-      withData(
+      withContexts(
          listOf(
             PythagTriple(8, 15, 17),
             PythagTriple(9, 12, 15),
@@ -57,7 +58,7 @@ class FreeSpecDataTest : FreeSpec() {
 
       // testing repeated names get mangled
       var index = 0
-      withData("a", "a", "a") {
+      withContexts("a", "a", "a") {
          when (index) {
             0 -> this.testCase.name.name shouldBe "a"
             1 -> this.testCase.name.name shouldBe "(1) a"
@@ -67,24 +68,24 @@ class FreeSpecDataTest : FreeSpec() {
       }
 
       // tests mixing sequences and iterables and varargs
-      withData("p", "q") { a ->
-         withData(listOf("r", "s")) { b ->
-            withData(sequenceOf("x", "y")) { c ->
+      withContexts("p", "q") { a ->
+         withContexts(listOf("r", "s")) { b ->
+            withContexts(sequenceOf("x", "y")) { c ->
                a + b + c shouldHaveLength 3
             }
          }
       }
 
       // handle collision between function name and property name
-      withData(
+      withContexts(
          FruitWithMemberNameCollision("apple", 11),
          FruitWithMemberNameCollision("orange", 12),
       ) { (_, weight) ->
          weight shouldBeGreaterThan 10
       }
 
-      // test we can define further context and tests inside a root level withData
-      withData(
+      // test we can define further context and tests inside a root level withContexts
+      withContexts(
          "foo",
          "bar"
       ) {
@@ -95,10 +96,18 @@ class FreeSpecDataTest : FreeSpec() {
          }
       }
 
+      // test we can create leaf tests with withTests
+      withTests(
+         FruitWithMemberNameCollision("apple", 11),
+         FruitWithMemberNameCollision("orange", 12),
+      ) { (_, weight) ->
+         weight shouldBeGreaterThan 10
+      }
+
       "inside a context" - {
 
          // test nested level with varargs
-         withData(
+         withContexts(
             PythagTriple(3, 4, 5),
             PythagTriple(6, 8, 10),
          ) { (a, b, c) ->
@@ -106,7 +115,7 @@ class FreeSpecDataTest : FreeSpec() {
          }
 
          // test nested level with a sequence
-         withData(
+         withContexts(
             sequenceOf(
                PythagTriple(8, 15, 17),
                PythagTriple(9, 12, 15),
@@ -117,7 +126,7 @@ class FreeSpecDataTest : FreeSpec() {
          }
 
          // test nested level with an iterable
-         withData(
+         withContexts(
             listOf(
                PythagTriple(8, 15, 17),
                PythagTriple(9, 12, 15),
@@ -127,7 +136,7 @@ class FreeSpecDataTest : FreeSpec() {
             a * a + b * b shouldBe c * c
          }
 
-         withData(
+         withContexts(
             mapOf(
                "true" to true,
                "false" to false,
@@ -138,7 +147,7 @@ class FreeSpecDataTest : FreeSpec() {
 
          // testing repeated names get mangled inside a context
          index = 0
-         withData("a", "a", "a") {
+         withContexts("a", "a", "a") {
             when (index) {
                0 -> this.testCase.name.name shouldBe "a"
                1 -> this.testCase.name.name shouldBe "(1) a"
@@ -148,16 +157,16 @@ class FreeSpecDataTest : FreeSpec() {
          }
 
          // tests mixing sequences and iterables and varargs inside a context
-         withData("p", "q") { a ->
-            withData(listOf("r", "s")) { b ->
-               withData(sequenceOf("x", "y")) { c ->
+         withContexts("p", "q") { a ->
+            withContexts(listOf("r", "s")) { b ->
+               withContexts(sequenceOf("x", "y")) { c ->
                   a + b + c shouldHaveLength 3
                }
             }
          }
 
-         // test we can define further context and tests inside a container level withData
-         withData(
+         // test we can define further context and tests inside a container level withContexts
+         withContexts(
             "foo",
             "bar"
          ) {

@@ -1,5 +1,6 @@
 package io.kotest.permutations.statistics
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.TestNameContextElement
 import io.kotest.property.LabelOrder
 import io.kotest.property.PropertyTesting
@@ -15,6 +16,7 @@ interface StatisticsReporter {
    suspend fun output(classifications: Classifications)
 }
 
+@OptIn(ExperimentalKotest::class)
 object DefaultStatisticsReporter : StatisticsReporter {
 
    private fun row(classification: Any?, count: Int, iterations: Int, countPad: Int) {

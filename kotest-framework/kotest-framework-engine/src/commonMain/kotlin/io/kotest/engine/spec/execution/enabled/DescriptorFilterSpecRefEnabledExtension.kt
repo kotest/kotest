@@ -2,14 +2,14 @@ package io.kotest.engine.spec.execution.enabled
 
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 
 /**
- * Evaluates a spec against any registered [io.kotest.engine.extensions.DescriptorFilter]s.
+ * Evaluates a spec against any registered [DescriptorFilter]s.
  */
 internal class DescriptorFilterSpecRefEnabledExtension(
    private val projectConfigResolver: ProjectConfigResolver,
@@ -23,7 +23,7 @@ internal class DescriptorFilterSpecRefEnabledExtension(
       logger.log { Pair(ref.kclass.bestName(), "${filters.size} descriptor filters") }
 
       val excluded = filters.firstNotNullOfOrNull {
-         val result = it.filter(ref.kclass.toDescriptor())
+         val result = it.filter(ref.descriptor())
          result as? DescriptorFilterResult.Exclude
       }
 
