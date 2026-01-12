@@ -12,7 +12,7 @@ import io.kotest.core.extensions.Extension
  *
  * If no filters are registered, then all specs and tests will be executed.
  *
- * See [IncludeTestPatternDescriptorFilter].
+ * See [IncludePatternEnvDescriptorFilter].
  */
 interface DescriptorFilter : Extension {
 

@@ -48,11 +48,14 @@ class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProdu
       context: ConfigurationContext,
       sourceElement: Ref<PsiElement?>
    ): Boolean {
+
+
+
       // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasGradlePlugin(context.module)) return false
+      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
 
       // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
 
       return super.setupConfigurationFromContext(configuration, context, sourceElement)
    }
@@ -62,10 +65,10 @@ class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProdu
       context: ConfigurationContext
    ): Boolean {
       // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasGradlePlugin(context.module)) return false
+      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
 
       // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
 
 
       return super.isConfigurationFromContext(configuration, context)

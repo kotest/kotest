@@ -72,12 +72,11 @@
          implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
          order="before gradle"/>
 
-      <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestStartupActivity"/>
+      <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestProjectActivity"/>
 
-      <runConfigurationProducer
-         implementation="io.kotest.plugin.intellij.run.gradle.TestOrSpecGradleRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestPathRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.PackageRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.GradleTestTaskRunConfigurationProducer"/>
 

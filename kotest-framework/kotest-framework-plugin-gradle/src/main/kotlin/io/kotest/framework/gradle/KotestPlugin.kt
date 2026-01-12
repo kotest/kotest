@@ -115,15 +115,15 @@ abstract class KotestPlugin : Plugin<Project> {
                project.logger.warn("Setting env var to " + includes.joinToString(";"))
 
                setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
-
             }
 
             when (this) {
-               is KotlinNativeTest ->
+               is KotlinNativeTest -> Unit
                   // saves the user having to set this manually
-                  if (hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
-                     setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
-                  }
+                  // Caused by: java.lang.IllegalStateException: The value for task ':linuxX64Test' property 'failOnNoDiscoveredTests' is final and cannot be changed any further.
+//                  if (hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
+//                     setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
+//                  }
             }
 
             // when running Gradle from intellij, the test tasks are forked and so the idea.active systemm property

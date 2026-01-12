@@ -4,34 +4,36 @@ import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * Builds names to show in the run configuration dropdown for tests/specs/packages.
+ * Builds the --tests filter used by gradle to run a subset of tests.
  */
-data class GradleTestRunNameBuilder(
+data class GradleTestFilterBuilder(
    private val spec: KtClassOrObject?,
    private val test: Test?
 ) {
 
    companion object {
-      fun builder(): GradleTestRunNameBuilder = GradleTestRunNameBuilder(null, null)
+      fun builder(): GradleTestFilterBuilder = GradleTestFilterBuilder(null, null)
    }
 
-   fun withSpec(spec: KtClassOrObject): GradleTestRunNameBuilder {
+   fun withSpec(spec: KtClassOrObject): GradleTestFilterBuilder {
       return copy(spec = spec)
    }
 
-   fun withTest(test: Test?): GradleTestRunNameBuilder {
+   fun withTest(test: Test?): GradleTestFilterBuilder {
       return copy(test = test)
    }
 
    fun build(): String {
       return buildString {
+         append("--tests '")
          if (spec != null) {
-            append(spec.name)
+            append(spec.fqName!!.asString())
          }
          if (test != null) {
             append(".")
-            append(test.readableTestPath())
+            append(test.path().joinToString(" -- ") { it.name })
          }
+         append("'")
       }
    }
 }

@@ -319,23 +319,11 @@ public final class io/kotest/plugin/intellij/console/TestProxyUpdater {
 
 public final class io/kotest/plugin/intellij/dependencies/ModuleDependencies {
 	public static final field INSTANCE Lio/kotest/plugin/intellij/dependencies/ModuleDependencies;
-	public final fun hasKotest (Lcom/intellij/openapi/module/Module;)Z
+	public final fun hasKotestEngine (Lcom/intellij/openapi/module/Module;)Z
 }
 
 public final class io/kotest/plugin/intellij/files/FindFilesKt {
 	public static final fun findFiles (Lcom/intellij/openapi/project/Project;)Ljava/util/List;
-}
-
-public final class io/kotest/plugin/intellij/gradle/GradleUtils {
-	public static final field INSTANCE Lio/kotest/plugin/intellij/gradle/GradleUtils;
-	public final fun getIncludeArg (Ljava/util/List;)Ljava/lang/String;
-	public final fun hasGradlePlugin (Lcom/intellij/openapi/module/Module;)Z
-	public final fun hasKotestTask (Ljava/util/List;)Z
-	public final fun isKotestTaskName (Ljava/lang/String;)Z
-	public final fun listTasks (Lcom/intellij/openapi/module/Module;)Ljava/util/List;
-	public final fun moduleData (Lcom/intellij/openapi/module/Module;)Lorg/jetbrains/plugins/gradle/util/GradleModuleData;
-	public final fun resolveModulePath (Lcom/intellij/openapi/module/Module;)Ljava/lang/String;
-	public final fun resolveProjectPath (Lcom/intellij/openapi/module/Module;)Ljava/lang/String;
 }
 
 public final class io/kotest/plugin/intellij/implicits/AutoScanUsageProvider : com/intellij/codeInsight/daemon/ImplicitUsageProvider {
@@ -623,6 +611,36 @@ public final class io/kotest/plugin/intellij/psi/UtilsKt {
 	public static final fun isSingleStringTemplateArg (Lorg/jetbrains/kotlin/psi/KtValueArgumentList;)Z
 }
 
+public final class io/kotest/plugin/intellij/run/RunnerMode : java/lang/Enum {
+	public static final field GRADLE_KOTEST_TASK Lio/kotest/plugin/intellij/run/RunnerMode;
+	public static final field GRADLE_TEST_TASK Lio/kotest/plugin/intellij/run/RunnerMode;
+	public static final field IDEA Lio/kotest/plugin/intellij/run/RunnerMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/plugin/intellij/run/RunnerMode;
+	public static fun values ()[Lio/kotest/plugin/intellij/run/RunnerMode;
+}
+
+public final class io/kotest/plugin/intellij/run/RunnerModes {
+	public static final field INSTANCE Lio/kotest/plugin/intellij/run/RunnerModes;
+	public final fun mode (Lcom/intellij/openapi/module/Module;)Lio/kotest/plugin/intellij/run/RunnerMode;
+}
+
+public final class io/kotest/plugin/intellij/run/gradle/GradleKotestTaskRunProducer : org/jetbrains/plugins/gradle/execution/GradleRunConfigurationProducer {
+	public fun <init> ()V
+	public final fun getKotestRun ()Lcom/intellij/openapi/util/Key;
+	public synthetic fun isConfigurationFromContext (Lcom/intellij/execution/configurations/RunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;)Z
+	public fun isConfigurationFromContext (Lorg/jetbrains/plugins/gradle/service/execution/GradleRunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;)Z
+	public fun isPreferredConfiguration (Lcom/intellij/execution/actions/ConfigurationFromContext;Lcom/intellij/execution/actions/ConfigurationFromContext;)Z
+	public synthetic fun setupConfigurationFromContext (Lcom/intellij/execution/configurations/RunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;Lcom/intellij/openapi/util/Ref;)Z
+	public fun setupConfigurationFromContext (Lorg/jetbrains/plugins/gradle/service/execution/GradleRunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;Lcom/intellij/openapi/util/Ref;)Z
+	public fun shouldReplace (Lcom/intellij/execution/actions/ConfigurationFromContext;Lcom/intellij/execution/actions/ConfigurationFromContext;)Z
+}
+
+public final class io/kotest/plugin/intellij/run/gradle/GradleMultiplatformJvmTestTaskRunProducer : org/jetbrains/plugins/gradle/execution/test/runner/GradleTestRunConfigurationProducer {
+	public fun <init> ()V
+	public fun onFirstRun (Lcom/intellij/execution/actions/ConfigurationFromContext;Lcom/intellij/execution/actions/ConfigurationContext;Ljava/lang/Runnable;)V
+}
+
 public final class io/kotest/plugin/intellij/run/gradle/GradleTaskNamesBuilder {
 	public static final field Companion Lio/kotest/plugin/intellij/run/gradle/GradleTaskNamesBuilder$Companion;
 	public static final field PROPERTY_INCLUDE Ljava/lang/String;
@@ -640,6 +658,23 @@ public final class io/kotest/plugin/intellij/run/gradle/GradleTaskNamesBuilder$C
 	public final fun builder (Lcom/intellij/openapi/module/Module;Lorg/jetbrains/kotlin/psi/KtClassOrObject;)Lio/kotest/plugin/intellij/run/gradle/GradleTaskNamesBuilder;
 }
 
+public final class io/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder {
+	public static final field Companion Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder$Companion;
+	public fun <init> (Lorg/jetbrains/kotlin/psi/KtClassOrObject;Lio/kotest/plugin/intellij/Test;)V
+	public final fun build ()Ljava/lang/String;
+	public final fun copy (Lorg/jetbrains/kotlin/psi/KtClassOrObject;Lio/kotest/plugin/intellij/Test;)Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder;
+	public static synthetic fun copy$default (Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder;Lorg/jetbrains/kotlin/psi/KtClassOrObject;Lio/kotest/plugin/intellij/Test;ILjava/lang/Object;)Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withSpec (Lorg/jetbrains/kotlin/psi/KtClassOrObject;)Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder;
+	public final fun withTest (Lio/kotest/plugin/intellij/Test;)Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder;
+}
+
+public final class io/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder$Companion {
+	public final fun builder ()Lio/kotest/plugin/intellij/run/gradle/GradleTestFilterBuilder;
+}
+
 public final class io/kotest/plugin/intellij/run/gradle/GradleTestRunNameBuilder {
 	public static final field Companion Lio/kotest/plugin/intellij/run/gradle/GradleTestRunNameBuilder$Companion;
 	public fun <init> (Lorg/jetbrains/kotlin/psi/KtClassOrObject;Lio/kotest/plugin/intellij/Test;)V
@@ -655,16 +690,6 @@ public final class io/kotest/plugin/intellij/run/gradle/GradleTestRunNameBuilder
 
 public final class io/kotest/plugin/intellij/run/gradle/GradleTestRunNameBuilder$Companion {
 	public final fun builder ()Lio/kotest/plugin/intellij/run/gradle/GradleTestRunNameBuilder;
-}
-
-public final class io/kotest/plugin/intellij/run/gradle/TestOrSpecGradleRunConfigurationProducer : org/jetbrains/plugins/gradle/execution/GradleRunConfigurationProducer {
-	public fun <init> ()V
-	public synthetic fun isConfigurationFromContext (Lcom/intellij/execution/configurations/RunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;)Z
-	public fun isConfigurationFromContext (Lorg/jetbrains/plugins/gradle/service/execution/GradleRunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;)Z
-	public fun isPreferredConfiguration (Lcom/intellij/execution/actions/ConfigurationFromContext;Lcom/intellij/execution/actions/ConfigurationFromContext;)Z
-	public synthetic fun setupConfigurationFromContext (Lcom/intellij/execution/configurations/RunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;Lcom/intellij/openapi/util/Ref;)Z
-	public fun setupConfigurationFromContext (Lorg/jetbrains/plugins/gradle/service/execution/GradleRunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;Lcom/intellij/openapi/util/Ref;)Z
-	public fun shouldReplace (Lcom/intellij/execution/actions/ConfigurationFromContext;Lcom/intellij/execution/actions/ConfigurationFromContext;)Z
 }
 
 public final class io/kotest/plugin/intellij/run/idea/GradleTestTaskRunConfigurationProducer : org/jetbrains/plugins/gradle/execution/test/runner/TestClassGradleConfigurationProducer {
@@ -841,7 +866,7 @@ public final class io/kotest/plugin/intellij/run/idea/SpecRunConfigurationProduc
 	public fun shouldReplace (Lcom/intellij/execution/actions/ConfigurationFromContext;Lcom/intellij/execution/actions/ConfigurationFromContext;)Z
 }
 
-public final class io/kotest/plugin/intellij/run/idea/TestPathRunConfigurationProducer : com/intellij/execution/actions/LazyRunConfigurationProducer {
+public final class io/kotest/plugin/intellij/run/idea/TestRunConfigurationProducer : com/intellij/execution/actions/LazyRunConfigurationProducer {
 	public fun <init> ()V
 	public fun getConfigurationFactory ()Lcom/intellij/execution/configurations/ConfigurationFactory;
 	public synthetic fun isConfigurationFromContext (Lcom/intellij/execution/configurations/RunConfiguration;Lcom/intellij/execution/actions/ConfigurationContext;)Z
@@ -1079,9 +1104,9 @@ public final class io/kotest/plugin/intellij/styles/WordSpecStyle : io/kotest/pl
 	public fun tryDataTest (Lorg/jetbrains/kotlin/psi/KtCallExpression;)Lio/kotest/plugin/intellij/Test;
 }
 
-public final class io/kotest/plugin/intellij/tests/KotestStartupActivity : com/intellij/openapi/startup/StartupActivity {
+public final class io/kotest/plugin/intellij/tests/KotestProjectActivity : com/intellij/openapi/startup/ProjectActivity {
 	public fun <init> ()V
-	public fun runActivity (Lcom/intellij/openapi/project/Project;)V
+	public fun execute (Lcom/intellij/openapi/project/Project;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/plugin/intellij/tests/KotestTestFinder : com/intellij/testIntegration/TestFinder {

@@ -5,7 +5,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
-import io.kotest.engine.extensions.filter.IncludeTestPatternDescriptorFilter
+import io.kotest.engine.extensions.filter.IncludePatternEnvDescriptorFilter
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -13,7 +13,7 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
 
    test("include matching packages") {
       val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest.a -- b",
          spec
       ) shouldBe DescriptorFilterResult.Include
@@ -21,7 +21,7 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
 
    test("include matching subpackages if wildcard") {
       val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.*",
          spec
       ) shouldBe DescriptorFilterResult.Include
@@ -29,7 +29,7 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
 
    test("exclude non matching subpackages if not wildcard") {
       val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine",
          spec
       ) shouldBe DescriptorFilterResult.Exclude(null)
@@ -38,7 +38,7 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
 
    test("exclude non matching packages") {
       val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.xxxx.IncludeTestPatternDescriptorFilterTest.a -- b",
          spec
       ) shouldBe DescriptorFilterResult.Exclude(null)
@@ -46,11 +46,11 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
 
    test("include matching classes") {
       val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest",
          spec
       ) shouldBe DescriptorFilterResult.Include
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest.a -- b",
          spec
       ) shouldBe DescriptorFilterResult.Include
@@ -58,11 +58,11 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
 
    test("exclude non matching classes") {
       val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.extensions.SomeSpec",
          spec
       ) shouldBe DescriptorFilterResult.Exclude(null)
-      IncludeTestPatternDescriptorFilter.filter(
+      IncludePatternEnvDescriptorFilter.filter(
          "com.sksamuel.kotest.engine.extensions.SomeSpec.a -- b",
          spec
       ) shouldBe DescriptorFilterResult.Exclude(null)
@@ -75,10 +75,10 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
       val test3 = spec.append("c")
       val test4 = test1.append("d")
       val pattern = "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest.a -- b"
-      IncludeTestPatternDescriptorFilter.filter(pattern, test1) shouldBe DescriptorFilterResult.Include
-      IncludeTestPatternDescriptorFilter.filter(pattern, test2) shouldBe DescriptorFilterResult.Include
-      IncludeTestPatternDescriptorFilter.filter(pattern, test3) shouldBe DescriptorFilterResult.Exclude(null)
-      IncludeTestPatternDescriptorFilter.filter(pattern, test4) shouldBe DescriptorFilterResult.Exclude(null)
+      IncludePatternEnvDescriptorFilter.filter(pattern, test1) shouldBe DescriptorFilterResult.Include
+      IncludePatternEnvDescriptorFilter.filter(pattern, test2) shouldBe DescriptorFilterResult.Include
+      IncludePatternEnvDescriptorFilter.filter(pattern, test3) shouldBe DescriptorFilterResult.Exclude(null)
+      IncludePatternEnvDescriptorFilter.filter(pattern, test4) shouldBe DescriptorFilterResult.Exclude(null)
 
 
    }

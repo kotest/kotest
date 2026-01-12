@@ -2,26 +2,26 @@ package io.kotest.plugin.intellij.gradle
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import io.kotest.plugin.intellij.run.gradle.GradleTaskNamesBuilder
 import org.jetbrains.plugins.gradle.execution.GradleRunnerUtil
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.project.GradleTasksIndices
+import org.jetbrains.plugins.gradle.settings.GradleProjectSettings
+import org.jetbrains.plugins.gradle.settings.TestRunner
 import org.jetbrains.plugins.gradle.util.GradleModuleData
 import org.jetbrains.plugins.gradle.util.GradleTaskData
 
-object GradleUtils {
+@Suppress("DEPRECATION")
+internal object GradleUtils {
 
    /**
     * Returns true if we have the Kotest Gradle plugin configured for the given module.
     */
    @Suppress("UnstableApiUsage")
-   fun hasGradlePlugin(module: Module?): Boolean {
+   fun hasKotestGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
-//      GradleSettings.getInstance(module.project).linkedProjectsSettings.forEach { settings ->
-//         val gm = ExternalSystemApiUtil.getManager() as GradleManager
-//         gm.
-//      }
-      // if we have any kotest gradle task in the project, we assume the plugin is applied
+      // if we have any Kotest Gradle task in the project, we assume the plugin is applied
       return listTasks(module).any { isKotestTaskName(it.name) }
    }
 
@@ -42,13 +42,14 @@ object GradleUtils {
       return taskNames.any { isKotestTaskName(it) }
    }
 
+   @Deprecated("Support in 6.1 has moved to use the standard gradle test tasks")
    fun isKotestTaskName(taskName: String): Boolean {
       return taskName == "kotest" // jvm only task name
          || taskName == "jvmKotest" // multiplatform jvm task name
          || taskName.matches("kotest[a-zA-Z]+UnitTest".toRegex()) // android task names eg kotestReleaseUnitTest, kotestDebugUnitTest, etc.
    }
 
-
+   @Deprecated("Support in 6.1 has moved to use --tests over a gradle property")
    fun getIncludeArg(taskNames: List<String>): String? {
       val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.PROPERTY_INCLUDE) } ?: return null
       return arg.substringAfter(GradleTaskNamesBuilder.PROPERTY_INCLUDE).trim().removePrefix("=").removeSurrounding("'")
@@ -72,4 +73,36 @@ object GradleUtils {
    fun moduleData(module: Module): GradleModuleData? {
       return CachedModuleDataFinder.getGradleModuleData(module)
    }
+
+   /**
+    * Returns the version of Kotest defined for this module or null if Kotest is a dependency.
+    * Uses the engine module as the source of truth for the version.
+    */
+   fun getKotestVersion(module: Module?): Version? {
+      if (module == null) return null
+
+      val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.project)
+      val dependency = libraryTable.libraries.find { it.name?.contains("io.kotest:kotest-framework-engine") ?: false }
+
+      val version = dependency?.name?.substringAfterLast(":") ?: return null
+      return VersionParser.parse(version)
+   }
+
+   fun isKotest61OrAbove(module: Module?): Boolean {
+      if (module == null) return false
+      val version = getKotestVersion(module) ?: return false
+      return (version.major == 6 && version.minor > 0) || version.major > 6
+   }
+
+   fun runner(module: Module?): TestRunner? {
+      if (module == null) return null
+      return GradleProjectSettings.getTestRunner(
+         module.project,
+         ExternalSystemApiUtil.getExternalProjectPath(module)
+      )
+   }
+
+   fun isGradleTestRunner(module: Module?): Boolean = runner(module) != TestRunner.PLATFORM
+   fun isPlatformRunner(module: Module?): Boolean = runner(module) == TestRunner.PLATFORM
 }
+

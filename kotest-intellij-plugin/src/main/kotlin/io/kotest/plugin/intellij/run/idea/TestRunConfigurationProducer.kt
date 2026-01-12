@@ -10,19 +10,17 @@ import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
+import io.kotest.plugin.intellij.run.RunnerMode
+import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
 /**
- * A run configuration creates the details of a particular run (in the drop down run box).
- *
- * A Run producer is called to create a [KotestRunConfiguration] from the [KotestConfigurationFactory]
- * and then again to configure it with a context.
- *
- * This producer creates run configurations for individual tests.
+ * This producer creates run configurations for individual tests using an IDEA runner.
  */
+@Suppress("DEPRECATION")
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
-class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+class TestRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
@@ -39,11 +37,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasGradlePlugin(context.module)) return false
-
-      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) return false
 
       val element = sourceElement.get()
       if (element != null) {
@@ -71,17 +65,17 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    }
 
    // compares the existing configurations to the context in question
-   // if one of the configurations matches then this should return true
+   // if one of the configurations matches, then this should return true
    override fun isConfigurationFromContext(
       configuration: KotestRunConfiguration,
       context: ConfigurationContext
    ): Boolean {
 
-      // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasGradlePlugin(context.module)) return false
+      // if we have the kotest plugin, then we shouldn't use this
+      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
 
-      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      // if we don't have the kotest engine on the classpath, then we shouldn't use this producer
+      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
 
       val element = context.psiLocation
       if (element != null) {
@@ -98,7 +92,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
    }
 
    private fun findTest(element: PsiElement): Test? {
-      return SpecStyle.Companion.styles.asSequence()
+      return SpecStyle.styles.asSequence()
          .filter { it.isContainedInSpec(element) }
          .mapNotNull { it.findAssociatedTest(element) }
          .firstOrNull()
@@ -108,7 +102,7 @@ class TestPathRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunC
     * When two configurations are created from the same context by two different producers, checks if the configuration created by
     * this producer should be preferred over the other one.
     *
-    * We return true when the other configuration is NOT a Kotest configuration and NOT a Gradle configuration,
+    * We return true when the other configuration is NOT a Kotest configuration and NOT a Gradle configuration. This is
     * to ensure Kotest specs take priority over JUnit (which may claim the class due to Spring Boot test annotations
     * like `@SpringBootTest` that are meta-annotated with `@ExtendWith(SpringExtension.class)`).
     *

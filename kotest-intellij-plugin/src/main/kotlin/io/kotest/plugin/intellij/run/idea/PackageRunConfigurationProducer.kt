@@ -18,12 +18,12 @@ import com.intellij.psi.impl.file.PsiJavaDirectoryImpl
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PackageScope
 import com.intellij.psi.search.searches.ClassInheritorsSearch
-import io.kotest.plugin.intellij.dependencies.ModuleDependencies
+import io.kotest.plugin.intellij.run.RunnerMode
+import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
-
+@Suppress("DEPRECATION")
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
@@ -74,8 +74,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) return false
 
       val index = ProjectRootManager.getInstance(context.project).fileIndex
       val dirservice = JavaDirectoryService.getInstance()
@@ -87,12 +86,6 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
                val psiClasses = findKotestSpecsByStyle(context.project, psiPackage.qualifiedName);
                val specs = psiClasses.joinToString(";") { it.qualifiedName.toString() }
                LOG.info("Found ${psiClasses.size} classes in package ${psiPackage.qualifiedName}")
-               LOG.info(
-                  """
-                  Specs:
-                     $specs
-               """.trimIndent()
-               )
                setupConfigurationModule(context, configuration)
                configuration.setPackageName(psiPackage.qualifiedName)
                configuration.setSpecsName(specs)

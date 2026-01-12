@@ -1,10 +1,12 @@
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.common.env
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.INCLUDE_PATTERN_ENV
 
 internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String>) : DescriptorFilter {
 
@@ -12,7 +14,11 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
 
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
       logger.log { Pair(descriptor.toString(), "Testing against $patterns") }
+      val env = env(INCLUDE_PATTERN_ENV)
       return when {
+         // when we have the KOTEST_INCLUDE_PATTERN set, that means the Kotest plugin has forwarded the --tests arg
+         // in the form of an env variable. So we will use that to take priority and ignore --tests here
+         env != null -> DescriptorFilterResult.Include
          patterns.isEmpty() -> DescriptorFilterResult.Include
          patterns.any { match(it, descriptor) } -> DescriptorFilterResult.Include
          else -> DescriptorFilterResult.Exclude(null)
@@ -20,7 +26,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
    }
 
    /**
-    * Matches the pattern supplied from gradle build script or command line interface.
+    * Matches the pattern supplied from the Gradle build script or command line interface.
     *
     * supports:
     * - gradle test --tests "SomeTest"
@@ -35,7 +41,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     * - gradle test --tests "*.first level context*"
     *
     * Exact nested context / test matching is NOT CURRENTLY SUPPORTED.
-    * Kotest support lazy test registration within nested context. Gradle test filter does not
+    * Kotest supports lazy test registration within a nested context. Gradle test filter does not
     * natively work nicely with kotest. In order to make it work we need to think of a way to
     * recursively apply partial context-search as we dive deeper into the contexts.
     *
@@ -91,9 +97,9 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     *
     * Note: I'm forced to do this... :(
     *
-    * We cannot use the / separator for contexts as gradle rejects that.
+    * We cannot use the / separator for contexts as Gradle rejects that.
     * Filters also seemingly only works on first "." after the class. This was severely limiting.
-    * The other problem is that also means we can't have "." in the test / context path because gradle doesn't
+    * The other problem is that also means we can't have "." in the test / context path because Gradle doesn't
     * like it and will not even give us any candidate classes.
     */
    private fun Descriptor.dotSeparatedFullPath(): DescriptorPath = when (this) {
