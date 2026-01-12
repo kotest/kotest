@@ -6,7 +6,7 @@ import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
-import io.kotest.engine.extensions.filter.IncludePatternEnvDescriptorFilter
+import io.kotest.engine.extensions.filter.INCLUDE_PATTERN_ENV
 
 internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String>) : DescriptorFilter {
 
@@ -14,7 +14,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
 
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
       logger.log { Pair(descriptor.toString(), "Testing against $patterns") }
-      val env = env(IncludePatternEnvDescriptorFilter.ENV_NAME)
+      val env = env(INCLUDE_PATTERN_ENV)
       return when {
          // when we have the KOTEST_INCLUDE_PATTERN set, that means the Kotest plugin has forwarded the --tests arg
          // in the form of an env variable. So we will use that to take priority and ignore --tests here

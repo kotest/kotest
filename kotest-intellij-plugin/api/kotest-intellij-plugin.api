@@ -326,35 +326,6 @@ public final class io/kotest/plugin/intellij/files/FindFilesKt {
 	public static final fun findFiles (Lcom/intellij/openapi/project/Project;)Ljava/util/List;
 }
 
-public final class io/kotest/plugin/intellij/gradle/GradleUtils {
-	public static final field INSTANCE Lio/kotest/plugin/intellij/gradle/GradleUtils;
-	public final fun getIncludeArg (Ljava/util/List;)Ljava/lang/String;
-	public final fun getKotestVersion (Lcom/intellij/openapi/module/Module;)Lio/kotest/plugin/intellij/gradle/Version;
-	public final fun hasKotestGradlePlugin (Lcom/intellij/openapi/module/Module;)Z
-	public final fun hasKotestTask (Ljava/util/List;)Z
-	public final fun isGradleTestRunner (Lcom/intellij/openapi/module/Module;)Z
-	public final fun isKotest61OrAbove (Lcom/intellij/openapi/module/Module;)Z
-	public final fun isKotestTaskName (Ljava/lang/String;)Z
-	public final fun isPlatformRunner (Lcom/intellij/openapi/module/Module;)Z
-	public final fun listTasks (Lcom/intellij/openapi/module/Module;)Ljava/util/List;
-	public final fun moduleData (Lcom/intellij/openapi/module/Module;)Lorg/jetbrains/plugins/gradle/util/GradleModuleData;
-	public final fun resolveModulePath (Lcom/intellij/openapi/module/Module;)Ljava/lang/String;
-	public final fun resolveProjectPath (Lcom/intellij/openapi/module/Module;)Ljava/lang/String;
-}
-
-public final class io/kotest/plugin/intellij/gradle/Version {
-	public fun <init> (II)V
-	public final fun component1 ()I
-	public final fun component2 ()I
-	public final fun copy (II)Lio/kotest/plugin/intellij/gradle/Version;
-	public static synthetic fun copy$default (Lio/kotest/plugin/intellij/gradle/Version;IIILjava/lang/Object;)Lio/kotest/plugin/intellij/gradle/Version;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getMajor ()I
-	public final fun getMinor ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public final class io/kotest/plugin/intellij/implicits/AutoScanUsageProvider : com/intellij/codeInsight/daemon/ImplicitUsageProvider {
 	public fun <init> ()V
 	public fun isImplicitRead (Lcom/intellij/psi/PsiElement;)Z

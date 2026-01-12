@@ -13,7 +13,7 @@ import org.jetbrains.plugins.gradle.settings.TestRunner
 import org.jetbrains.plugins.gradle.util.GradleModuleData
 import org.jetbrains.plugins.gradle.util.GradleTaskData
 
-object GradleUtils {
+internal object GradleUtils {
 
    private val LOG = logger<GradleUtils>()
 
@@ -23,10 +23,6 @@ object GradleUtils {
    @Suppress("UnstableApiUsage")
    fun hasKotestGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
-//      GradleSettings.getInstance(module.project).linkedProjectsSettings.forEach { settings ->
-//         val gm = ExternalSystemApiUtil.getManager() as GradleManager
-//         gm.
-//      }
       // if we have any Kotest Gradle task in the project, we assume the plugin is applied
       return listTasks(module).any { isKotestTaskName(it.name) }
    }
