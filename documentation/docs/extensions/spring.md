@@ -43,7 +43,7 @@ class MyTestSpec : FunSpec() {}
 ```
 
 In order to let Spring know which configuration class to use, you must annotate your Spec classes with
-`@ContextConfiguration`. This should point to a class annotated with the Spring `@Configuration` annotation.
+Spring Test annotation such as `@Configuration`. This should point to a class annotated with the Spring `@Configuration` annotation.
 Alternatively, you can use [
 `@ActiveProfiles`](https://docs.spring.io/spring-framework/reference/testing/annotations/integration-spring/annotation-activeprofiles.html)
 to point to

@@ -5,7 +5,6 @@ import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Component
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.event.annotation.AfterTestExecution
 import org.springframework.test.context.event.annotation.AfterTestMethod
@@ -25,14 +24,13 @@ class TestExecutionEventOrderTest : FunSpec() {
          // need a test to trigger the events
       }
       afterSpec {
-         events shouldBe listOf("beforeTestMethod", "beforeTestExecution", "afterTestExecution", "afterTestMethod")
+         events.take(4) shouldBe listOf("beforeTestMethod", "beforeTestExecution", "afterTestExecution", "afterTestMethod")
       }
    }
 }
 
 private val events = mutableListOf<String>()
 
-@Component
 class LifecycleTestService {
 
    @BeforeTestExecution

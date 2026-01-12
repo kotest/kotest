@@ -57,22 +57,28 @@ open class SpringExtension(
       val manager = getTestContextManager(clazz)
       val context = manager.testContext.applicationContext
 
+      println("Creating nstance of $clazz")
+
       logger.log { Pair(clazz.simpleName, "Spring extension will try to create autowired instance") }
-      val spec = context.autowireCapableBeanFactory.autowire(
+      return context.autowireCapableBeanFactory.autowire(
          clazz.java,
          AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR, true
       ) as Spec
-
-      // the spring docs state this method should be called immediately after instantiation of the test class
-      // or as soon after instantiation as possible
-      getTestContextManager(clazz).prepareTestInstance(spec)
-
-      return spec
    }
 
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
+      println("intercept of $spec")
       SpringJavaCompatibility.checkForSafeClassName(spec::class)
+
       val manager = getTestContextManager(spec::class)
+
+      // the spring docs state this method should be called immediately after instantiation of the test class
+      // or as soon after instantiation as possible. We want to run it during the interception phase, and not
+      // in the instantiate phase, so that anyone who registers the spring extension through a spec property override
+      // still gets this called (which is needed to wire in late init dependencies); eg, people not using the
+      // ApplyExtension annotation won't have any specs instantiated via the constructor extension
+      manager.prepareTestInstance(spec)
+
       withContext(SpringTestContextCoroutineContextElement(manager)) {
          testContextManager().beforeTestClass()
          execute(spec)
