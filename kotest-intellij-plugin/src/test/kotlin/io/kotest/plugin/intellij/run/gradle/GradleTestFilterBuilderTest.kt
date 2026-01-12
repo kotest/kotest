@@ -13,10 +13,10 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
    fun testWithSpec() {
       val factory = KtPsiFactory(project)
       val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
-      GradleTestFilterBuilder.builder().withSpec(spec).build() shouldBe ""
+      GradleTestFilterBuilder.builder().withSpec(spec).build() shouldBe "--tests 'MyTestClass'"
    }
 
-   fun testWithClass() {
+   fun testWithSpecAndTest() {
       val factory = KtPsiFactory(project)
       val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
       val test = Test(
@@ -28,7 +28,34 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
          psi = spec,
          isDataTest = false
       )
-      GradleTestFilterBuilder.builder().withSpec(spec).withTest(test).build() shouldBe ""
+      GradleTestFilterBuilder.builder().withSpec(spec).withTest(test).build() shouldBe "--tests 'MyTestClass.foo'"
+   }
+
+   fun testWithSpecAndNestedTest() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val root = Test(
+         name = TestName(prefix = null, name = "foo", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Container,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      val test = Test(
+         name = TestName(prefix = null, name = "bar", interpolated = false),
+         parent = root,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build() shouldBe "--tests 'MyTestClass.foo -- bar'"
    }
 
 }
