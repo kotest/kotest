@@ -13,12 +13,12 @@ import kotlin.reflect.KClass
 /**
  * [TeamCityWriter] handles outputting in the team city format using a [TeamCityMessageBuilder].
  *
- * @param embedLocation set to true to embed the test location in the test name.
+ * @param embedLocations set to true to embed the test location in the test name.
  */
 internal class TeamCityWriter(
    private val prefix: String,
    private val formatting: DisplayNameFormatting,
-   private val embedLocation: Boolean = false,
+   private val embedLocations: Boolean = false,
 ) {
 
    private val logger = Logger(TeamCityWriter::class)
@@ -31,7 +31,7 @@ internal class TeamCityWriter(
    }
 
    internal fun testName(testCase: TestCase): String {
-      return if (embedLocation)
+      return if (embedLocations)
          LocationEmbedder.embeddedTestName(testCase.descriptor, formatting.format(santizeTestCaseName(testCase)))
       else
          formatting.format(santizeTestCaseName(testCase))

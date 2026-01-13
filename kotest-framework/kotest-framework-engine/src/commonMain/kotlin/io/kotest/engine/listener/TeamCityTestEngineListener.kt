@@ -24,11 +24,16 @@ import kotlin.reflect.KClass
 class TeamCityTestEngineListener(
    private val prefix: String = TeamCityMessageBuilder.TEAM_CITY_PREFIX,
    private val details: Boolean = true,
+   private val embedLocations: Boolean = false,
 ) : TestEngineListener {
 
    private val logger = Logger(TeamCityTestEngineListener::class)
 
-   private var writer: TeamCityWriter = TeamCityWriter(prefix, DisplayNameFormatting(null))
+   private var writer: TeamCityWriter = TeamCityWriter(
+      prefix = prefix,
+      formatting = DisplayNameFormatting(null),
+      embedLocations = embedLocations
+   )
 
    // once a spec has completed, we want to be able to check whether any given test is
    // a container or a leaf test, and so this map contains all test that have children
@@ -56,7 +61,8 @@ class TeamCityTestEngineListener(
    override suspend fun engineInitialized(context: EngineContext) {
       writer = TeamCityWriter(
          prefix = prefix,
-         formatting = DisplayNameFormatting(context.projectConfig)
+         formatting = DisplayNameFormatting(context.projectConfig),
+         embedLocations = embedLocations,
       )
    }
 
