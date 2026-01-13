@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform.gradle
 
 /**
- * Parses the gradle --tests option when using a nested test.
+ * Parses the Gradle --tests option when using a nested test.
  *
  * This parser expects a package name, a fully qualified test name, and a test name with context.
  * This parser only checks for nested tests. If the test is not nested, then we can let gradle
@@ -12,7 +12,7 @@ package io.kotest.runner.junit.platform.gradle
  * - gradle test --tests "io.kotest.SomeTest.my test -- nested test"
  * - gradle test --tests "io.kotest.SomeTest.my test -- nested test -- leaf test"
  *
- * Examples not handled:
+ * Examples that are not handled:
  *
  * - gradle test --tests "io.kotest" (package only)
  * - gradle test --tests "io.kotest.SomeTest" (spec only)
