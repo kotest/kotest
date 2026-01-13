@@ -3,13 +3,14 @@ package io.kotest.plugin.intellij.run.idea
 import com.intellij.execution.Location
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.dependencies.ModuleDependencies
-import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
+import io.kotest.plugin.intellij.run.RunnerMode
+import io.kotest.plugin.intellij.run.RunnerModes
 import org.jetbrains.kotlin.asJava.toLightClass
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.plugins.gradle.execution.test.runner.TestClassGradleConfigurationProducer
@@ -18,8 +19,10 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 /**
  * Runs a Kotest spec using the standard gradle `task` test.
  */
-@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
-class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProducer() {
+@Deprecated("Starting with Kotest 6.1 the preferred method is use GradleMultiplatformJvmTestTaskRunProducer")
+class SpecGradleConfigurationProducer : TestClassGradleConfigurationProducer() {
+
+   private val logger = logger<SpecGradleConfigurationProducer>()
 
    /**
     * When two configurations are created from the same context by two different producers, checks if the
@@ -49,29 +52,12 @@ class GradleTestTaskRunConfigurationProducer : TestClassGradleConfigurationProdu
       sourceElement: Ref<PsiElement?>
    ): Boolean {
 
-
-
-      // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
-
-      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
+         logger.info("Runner mode is not LEGACY so this producer will not contribute")
+         return false
+      }
 
       return super.setupConfigurationFromContext(configuration, context, sourceElement)
-   }
-
-   override fun isConfigurationFromContext(
-      configuration: GradleRunConfiguration,
-      context: ConfigurationContext
-   ): Boolean {
-      // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
-
-      // if we don't have the kotest engine on the classpath then we shouldn't use this producer
-      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
-
-
-      return super.isConfigurationFromContext(configuration, context)
    }
 
    override fun getPsiClassForLocation(contextLocation: Location<*>): PsiClass? {

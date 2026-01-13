@@ -75,10 +75,10 @@
       <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestProjectActivity"/>
 
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecPlatformRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestPlatformRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.PackageRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.GradleTestTaskRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecGradleConfigurationProducer"/>
 
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ConfigClassesImplicitUsageProvider"/>

@@ -13,7 +13,6 @@ import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
-import io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
@@ -21,10 +20,10 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
  * This producer creates run configurations for individual tests using an IDEA runner.
  */
 @Suppress("DEPRECATION")
-@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
-class TestRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+@Deprecated("Starting with Kotest 6.1 use GradleMultiplatformJvmTestTaskRunProducer")
+class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
-   private val logger = logger<TestRunConfigurationProducer>()
+   private val logger = logger<TestPlatformRunConfigurationProducer>()
 
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
@@ -41,7 +40,7 @@ class TestRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) {
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
          logger.info("Runner mode is not IDEA so this producer will not contribute")
          return false
       }

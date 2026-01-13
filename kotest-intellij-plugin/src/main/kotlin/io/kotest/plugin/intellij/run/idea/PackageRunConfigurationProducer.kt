@@ -24,7 +24,7 @@ import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
 @Suppress("DEPRECATION")
-@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
+@Deprecated("Starting with Kotest 6.1 use GradleMultiplatformJvmTestTaskRunProducer")
 class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    /**
@@ -74,7 +74,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) return false
 
       val index = ProjectRootManager.getInstance(context.project).fileIndex
       val dirservice = JavaDirectoryService.getInstance()

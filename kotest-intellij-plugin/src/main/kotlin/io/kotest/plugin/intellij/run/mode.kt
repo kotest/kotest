@@ -6,7 +6,7 @@ import io.kotest.plugin.intellij.gradle.GradleUtils
 
 enum class RunnerMode {
 
-   // the standard Gradle test task used by JUnit and Kotlin multiplatform.
+   // the standard Gradle test tasks used by JUnit and Kotlin multiplatform.
    // Starting with Kotest 6.1, this is the preferred method of running tests.
    GRADLE_TEST_TASK,
 
@@ -14,10 +14,9 @@ enum class RunnerMode {
    @Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
    GRADLE_KOTEST_TASK,
 
-   // run via invoking the engine through a main method. Only useful for Maven users currently.
+   // Run via invoking the engine through a main method. Only useful for Maven users currently.
    @Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
-   IDEA
-
+   LEGACY
 }
 
 @Suppress("DEPRECATION")
@@ -33,7 +32,7 @@ object RunnerModes {
       // if we have the Kotest Gradle plugin, then we use the Kotest task
       if (GradleUtils.hasKotestGradlePlugin(module)) return RunnerMode.GRADLE_KOTEST_TASK
 
-      // otherwise we fall back to the classic IDEA runner
-      return RunnerMode.IDEA
+      // otherwise we fall back to the legacy runners
+      return RunnerMode.LEGACY
    }
 }

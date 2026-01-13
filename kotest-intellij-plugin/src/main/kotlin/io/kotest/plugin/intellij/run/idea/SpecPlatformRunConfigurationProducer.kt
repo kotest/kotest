@@ -22,10 +22,10 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 /**
  * Runs a spec via the IDEA runner.
  */
-@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
-class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+@Deprecated("Starting with Kotest 6.1 use GradleMultiplatformJvmTestTaskRunProducer")
+class SpecPlatformRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
-   private val logger = logger<SpecRunConfigurationProducer>()
+   private val logger = logger<SpecPlatformRunConfigurationProducer>()
 
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
@@ -70,8 +70,8 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) {
-         logger.info("Runner mode is not IDEA so this producer will not contribute")
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
+         logger.info("Runner mode is not LEGACY so this producer will not contribute")
          return false
       }
 
@@ -105,10 +105,10 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       context: ConfigurationContext
    ): Boolean {
 
-      // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
-
-      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
+         logger.info("Runner mode is not LEGACY so this producer will not contribute")
+         return false
+      }
 
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {

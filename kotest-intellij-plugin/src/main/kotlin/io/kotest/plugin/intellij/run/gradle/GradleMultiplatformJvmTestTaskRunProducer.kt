@@ -17,15 +17,14 @@ import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.kotlin.idea.gradleJava.run.MultiplatformTestTasksChooser
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestRunConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
-import org.jetbrains.plugins.gradle.util.GradleConstants.SYSTEM_ID
 
 /**
- * Creates run configurations that use the Gradle test task, passing in --tests as the filter.
+ * Creates run configurations that use the Gradle test task, passing in a `--tests` arg.
  * This producer applies to running all tests in a spec (the double run icon on the spec name), as well
  * as individual tests (the single run icon on the test names).
  *
  * This producer will work with any Kotest version for JVM, since the JVM engine has always supported --tests.
- * For multiplatform though, only Kotest 6.1+ correctly forwards the tests parameter to the engine.
+ * For multiplatform though, only Kotest 6.1+ correctly forwards the tests arg to the engine.
  */
 class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProducer() {
 
@@ -53,10 +52,6 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
 
       if (RunnerModes.mode(p1.module) != RunnerMode.GRADLE_TEST_TASK) {
          logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
-         return false
-      }
-      if (SYSTEM_ID != p0.settings.externalSystemId) {
-         logger.info("p0.settings.externalSystemId mode is not $SYSTEM_ID so this producer will not contribute")
          return false
       }
 
@@ -95,6 +90,11 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       p0: GradleRunConfiguration,
       p1: ConfigurationContext
    ): Boolean {
+
+      if (RunnerModes.mode(p1.module) != RunnerMode.GRADLE_TEST_TASK) {
+         logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
+         return false
+      }
 
       val element = p1.psiLocation ?: return false
       val testContext = createTestContext(element) ?: return false
