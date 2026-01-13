@@ -4,7 +4,6 @@ import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import io.kotest.plugin.intellij.run.gradle.GradleTaskNamesBuilder
-import org.jetbrains.plugins.gradle.execution.GradleRunnerUtil
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.project.GradleTasksIndices
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings
@@ -19,6 +18,7 @@ internal object GradleUtils {
     * Returns true if we have the Kotest Gradle plugin configured for the given module.
     */
    @Suppress("UnstableApiUsage")
+   @Deprecated("Support in 6.1 has moved to use the standard gradle test tasks")
    fun hasKotestGradlePlugin(module: Module?): Boolean {
       if (module == null) return false
       // if we have any Kotest Gradle task in the project, we assume the plugin is applied
@@ -36,8 +36,9 @@ internal object GradleUtils {
    }
 
    /**
-    * Returns true if any of the given [taskNames] are are the 'kotest' task.
+    * Returns true if any of the given [taskNames] are the 'kotest' task.
     */
+   @Deprecated("Support in 6.1 has moved to use the standard gradle test tasks")
    fun hasKotestTask(taskNames: List<String>): Boolean {
       return taskNames.any { isKotestTaskName(it) }
    }
@@ -49,20 +50,10 @@ internal object GradleUtils {
          || taskName.matches("kotest[a-zA-Z]+UnitTest".toRegex()) // android task names eg kotestReleaseUnitTest, kotestDebugUnitTest, etc.
    }
 
-   @Deprecated("Support in 6.1 has moved to use --tests over a gradle property")
+   @Deprecated("Support in 6.1 has moved to use the standard gradle test tasks")
    fun getIncludeArg(taskNames: List<String>): String? {
       val arg = taskNames.firstOrNull { it.startsWith(GradleTaskNamesBuilder.PROPERTY_INCLUDE) } ?: return null
       return arg.substringAfter(GradleTaskNamesBuilder.PROPERTY_INCLUDE).trim().removePrefix("=").removeSurrounding("'")
-   }
-
-   @Suppress("UnstableApiUsage")
-   fun resolveProjectPath(module: Module): String? {
-      val gradleModuleData: GradleModuleData = CachedModuleDataFinder.getGradleModuleData(module) ?: return null
-      val isGradleProjectDirUsedToRunTasks = gradleModuleData.directoryToRunTask == gradleModuleData.gradleProjectDir
-      if (!isGradleProjectDirUsedToRunTasks) {
-         return gradleModuleData.directoryToRunTask
-      }
-      return GradleRunnerUtil.resolveProjectPath(module)
    }
 
    fun resolveModulePath(module: Module): String? {
