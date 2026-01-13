@@ -42,5 +42,17 @@ class NestedTestsArgParserTest : FunSpec() {
          NestedTestsArgParser.parse("\\Qcom.sksamuel.kotest.engine.gradle.Test.some method name -- with a \\E.*\\Q wildcard\\E") shouldBe
             NestedTestArg("com.sksamuel.kotest.engine.gradle", "Test", listOf("some method name", "with a * wildcard"))
       }
+
+      test("should return null for leading wildcard pattern") {
+         NestedTestsArgParser.parse(".*\\QFooTest\\E") shouldBe null
+      }
+
+      test("should return null for surrounding wildcard pattern") {
+         NestedTestsArgParser.parse(".*\\QFooTest\\E.*") shouldBe null
+      }
+
+      test("should return null for wildcard only pattern") {
+         NestedTestsArgParser.parse(".*") shouldBe null
+      }
    }
 }
