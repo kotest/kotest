@@ -109,12 +109,7 @@ abstract class KotestPlugin : Plugin<Project> {
             }
 
             if (includes.isNotEmpty()) {
-
                val pattern = includes.joinToString(";")
-
-               project.logger.warn("Detected gradle includes $name: $includes")
-               project.logger.warn("Setting env var to " + includes.joinToString(";"))
-
                setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
             }
 
@@ -141,6 +136,7 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun setEnvVar(task: Task, name: String, value: String) {
+      task.project.logger.info("Setting environment variable $name=$value for task ${task.name}")
       when (task) {
          is KotlinJsTest -> task.environment(name, value)
          is KotlinNativeTest -> task.environment(name, value, false)

@@ -276,17 +276,17 @@ class JUnitTestEngineListener(
       listener.executionSkipped(testDescriptor, reasonIfEnabled(reason))
    }
 
-   private fun reasonIfEnabled(reason: String?): String? {
-      if (reason == null) return null
+   private fun reasonIfEnabled(reason: String?): String {
+      if (reason == null) return ""
       if (env("KOTEST_SHOW_IGNORE_REASONS") == "true") return reason
-      return null
+      return ""
    }
 
    private fun startParents(testCase: TestCase) {
       val parent = testCase.parent
       if (parent != null) {
          startParents(parent)
-         // when starting parents, type must be CONTAINER
+         // when starting parents, the type must be CONTAINER
          startTestIfNotStarted(parent, TestDescriptor.Type.CONTAINER)
       }
    }
