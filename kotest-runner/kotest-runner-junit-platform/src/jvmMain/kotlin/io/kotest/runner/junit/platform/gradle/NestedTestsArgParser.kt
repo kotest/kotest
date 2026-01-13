@@ -58,6 +58,7 @@ internal object NestedTestsArgParser {
          .removeSuffix("\\E")
          .replace("\\E.*\\Q", WILDCARD) // we use a regex wildcard to support periods in names
          .split(".")
+         .filter { it.isNotEmpty() }
          .map { it.replace(WILDCARD, "*") }
    }
 }
