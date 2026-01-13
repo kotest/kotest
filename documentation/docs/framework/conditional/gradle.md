@@ -35,8 +35,8 @@ See full Gradle documentation [here](https://docs.gradle.org/6.2.2/userguide/jav
 
 :::note
 Because Gradle's test support is `class.method` based, when filtering to individual tests, we can specify nested tests
-by using the ` -- ` delimiter between test names. For example, `com.mypackage.MySpec.test -- nested test`. Note the
-delimiter has a space around the double dashes.
+by using the ` -- ` delimiter between test names. For example, `--tests 'com.mypackage.MySpec.test -- nested test'`. Note the
+delimiter has a space around the double dashes and remember to escape the test path with single quotes.
 :::
 
 ### Kotest Specific Test Filtering
