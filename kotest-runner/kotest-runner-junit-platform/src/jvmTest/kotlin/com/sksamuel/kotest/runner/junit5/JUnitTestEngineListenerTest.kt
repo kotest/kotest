@@ -93,10 +93,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
       listener.specIgnored(MySpec::class, "disabled foo")
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped(
-            "MySpec",
-            "disabled foo"
-         )
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("MySpec", "")
       )
    }
 
@@ -159,7 +156,7 @@ class JUnitTestEngineListenerTest : FunSpec({
             "com.sksamuel.kotest.runner.junit5.MySpec",
             "foo"
          ),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", "secret!"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", ""),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "MySpec",
             TestExecutionResult.Status.SUCCESSFUL
@@ -240,7 +237,7 @@ class JUnitTestEngineListenerTest : FunSpec({
             "com.sksamuel.kotest.runner.junit5.MySpec",
             "foo/bar"
          ),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", "secret!"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", ""),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "MySpec",
@@ -412,7 +409,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
    sealed interface Event {
       data class TestCaseRegistered(val descriptor: String, val className: String, val methodName: String) : Event
       data class TestRegistered(val descriptor: String, val type: TestDescriptor.Type) : Event
-      data class ExecutionSkipped(val descriptor: String, val reason: String?) : Event
+      data class ExecutionSkipped(val descriptor: String, val reason: String) : Event
       data class ExecutionStarted(val descriptor: String) : Event
       data class ExecutionFinished(val descriptor: String, val status: TestExecutionResult.Status) : Event
    }

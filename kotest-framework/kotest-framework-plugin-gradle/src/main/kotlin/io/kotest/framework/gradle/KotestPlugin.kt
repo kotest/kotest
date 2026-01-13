@@ -61,6 +61,7 @@ abstract class KotestPlugin : Plugin<Project> {
       private val unsupportedTargets = listOf("metadata")
 
       internal const val KOTEST_INCLUDE_PATTERN = "KOTEST_INCLUDE_PATTERN"
+      internal const val KOTEST_SHOW_IGNORE_REASONS = "KOTEST_SHOW_IGNORE_REASONS"
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
@@ -70,8 +71,8 @@ abstract class KotestPlugin : Plugin<Project> {
 
    override fun apply(project: Project) {
 
-      val kotestExtension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
-      if (kotestExtension.customGradleTask) {
+      val extension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
+      if (extension.customGradleTask) {
 
          project.tasks.register(KOTEST_TASK_NAME) {
             group = JavaBasePlugin.VERIFICATION_GROUP
@@ -83,22 +84,22 @@ abstract class KotestPlugin : Plugin<Project> {
       }
 
       // configure Kotlin Android projects when it is not a multiplatform project
-      handleAndroid(project, kotestExtension)
+      handleAndroid(project, extension)
 
       // configures Kotlin multiplatform projects
-      handleMultiplatform(project, kotestExtension)
+      handleMultiplatform(project, extension)
 
       project.gradle.taskGraph.whenReady {
-         decorateGradleTestTask(project)
+         decorateGradleTestTask(project, extension)
       }
    }
 
    /**
-    * Forwards the --tests arg and test filters from the Gradle test tasks to Kotest in the form
+    * Forwards the tests arg and test filters from the Gradle test tasks to Kotest in the form
     * of environment variables that Kotest picks up and applies via a descriptor filter.
     * This allows us to run specific tests using the regular Gradle task.
     */
-   private fun decorateGradleTestTask(project: Project) {
+   private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension) {
       project.tasks.withType(AbstractTestTask::class.java).configureEach {
          doFirst {
 
@@ -108,19 +109,14 @@ abstract class KotestPlugin : Plugin<Project> {
             }
 
             if (includes.isNotEmpty()) {
-
                val pattern = includes.joinToString(";")
-
-               project.logger.warn("Detected gradle includes $name: $includes")
-               project.logger.warn("Setting env var to " + includes.joinToString(";"))
-
                setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
             }
 
             when (this) {
                is KotlinNativeTest -> Unit
-                  // saves the user having to set this manually
-                  // Caused by: java.lang.IllegalStateException: The value for task ':linuxX64Test' property 'failOnNoDiscoveredTests' is final and cannot be changed any further.
+               // saves the user having to set this manually
+               // Caused by: java.lang.IllegalStateException: The value for task ':linuxX64Test' property 'failOnNoDiscoveredTests' is final and cannot be changed any further.
 //                  if (hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
 //                     setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
 //                  }
@@ -131,11 +127,16 @@ abstract class KotestPlugin : Plugin<Project> {
             if (System.getProperty(IDEA_ACTIVE_SYSPROP) != null) {
                setEnvVar(this, IDEA_ACTIVE_ENV, "true")
             }
+
+            if (extension.showIgnoreReasons) {
+               setEnvVar(this, KOTEST_SHOW_IGNORE_REASONS, "true")
+            }
          }
       }
    }
 
    private fun setEnvVar(task: Task, name: String, value: String) {
+      task.project.logger.info("Setting environment variable $name=$value for task ${task.name}")
       when (task) {
          is KotlinJsTest -> task.environment(name, value)
          is KotlinNativeTest -> task.environment(name, value, false)
@@ -164,7 +165,7 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun configureJvmTask(sourceSetName: String, project: Project, target: String?) {
-      // gradle best practice is to only apply to this project, and users add the plugin to each subproject
+      // Gradle's best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val jvmKotest = project.tasks.register(JVM_KOTEST_NAME, KotestJvmTask::class) {
 
