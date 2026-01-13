@@ -14,11 +14,11 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
    // workaround for delay exiting the wasmWasiNodeRun task
    withContext(Dispatchers.Default) { }
 
-   val result = TestEngineLauncher()
+   TestEngineLauncher()
       .withSpecRefs(specs)
       .withProjectConfig(config)
       .withTeamCityListener()
       .execute()
 
-   // Wasm/WASI kotlin std-lib has no process exit call so we can't do anything with the result
+   // Wasm/WASI kotlin std-lib has no process exit call, so we can't do anything with the result
 }
