@@ -18,7 +18,7 @@ import io.kotest.plugin.intellij.psi.elementAtLine
  *
  * Kotest reports its location hints as kotest://qualifiedName:linenumber
  */
-@Deprecated("Starting with Kotest 6.1 locations will be handled be the Kotest embedded test path mode")
+@Deprecated("Starting with Kotest 6.1 locations will be handled by the EmbeddedLocationTestLocator")
 class KotestTestLocator : SMTestLocator, DumbAware {
 
    companion object {

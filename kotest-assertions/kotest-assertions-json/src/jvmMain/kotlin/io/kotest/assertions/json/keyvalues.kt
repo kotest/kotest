@@ -7,9 +7,9 @@ import io.kotest.assertions.json.ExtractValueOutcome.ExtractedValue
 import io.kotest.assertions.json.ExtractValueOutcome.JsonPathNotFound
 import io.kotest.assertions.print.print
 import io.kotest.common.KotestInternal
+import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
@@ -61,10 +61,10 @@ fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = ob
           is ExtractedValue<*> -> {
              val actualValue = actualKeyValue.value
              val passed = t == actualValue
-             return ComparisonMatcherResult(
+             return DiffableMatcherResult(
                 passed = passed,
-                expected = t.print(),
-                actual = actualValue.print(),
+                expected = { t.print() },
+                actual = { actualValue.print() },
                 failureMessageFn = { "Value mismatch at '$path'" },
                 negatedFailureMessageFn = { "$sub should not contain the element $path = $t" }
              )

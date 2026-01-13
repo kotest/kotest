@@ -1,10 +1,11 @@
-package io.kotest.plugin.intellij.tests
+package io.kotest.plugin.intellij
 
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
 import com.intellij.testIntegration.createTest.TestGenerators
+import io.kotest.plugin.intellij.tests.KotestTestGenerator
 import org.jetbrains.kotlin.idea.KotlinLanguage
 
 class KotestProjectActivity : ProjectActivity {
