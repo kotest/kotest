@@ -23,19 +23,19 @@ internal object ClassMethodNameFilterAdapter {
     * implementation of [ClassMethodNameFilter].
     *
     * If the format contains a nested test name, then we use a special Kotest parsed version, otherwise
-    * we use a wrapper around the gradle filter.
+    * we use a wrapper around the Gradle filter.
     *
-    * If no post filters are present, this will return an empty list.
+    * If no post-filters are present, this will return an empty list.
     */
    internal fun adapt(request: EngineDiscoveryRequest): List<DescriptorFilter> {
       return ClassMethodNameFilterUtils.extractIncludePatterns(request.postFilters())
          .map { filter ->
             val nestedTestArg = NestedTestsArgParser.parse(filter)
             if (nestedTestArg != null) {
-               // HACK since we have a tests filter with nested test name, we will clear the list of post filters
-               // so gradle doesn't do any filtering - otherwise, gradle will incorrectly filter out the nested
+               // HACK since we have a tests filter with a nested test name, we will clear the list of post-filters
+               // so Gradle doesn't do any filtering - otherwise, Gradle will incorrectly filter out the nested
                // test as it doesn't understand the kotest format
-               // note - this implementation assumes if we have one nested post filter, then there are no others
+               // note - this implementation assumes that if we have one nested post-filter, then there are no others
                ClassMethodNameFilterUtils.reset(request.postFilters())
                NestedTestsArgDescriptorFilter(setOf(nestedTestArg))
             } else
