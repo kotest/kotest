@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.env
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
@@ -178,7 +179,7 @@ class JUnitTestEngineListener(
       logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
       val testDescriptor = findTestDescriptorForSpec(root, Descriptor.SpecDescriptor(DescriptorId(kclass.java.name)))
       if (testDescriptor != null)
-         listener.executionSkipped(testDescriptor, reason ?: "")
+         listener.executionSkipped(testDescriptor, reasonIfEnabled(reason))
    }
 
    private fun reset() {
@@ -272,7 +273,13 @@ class JUnitTestEngineListener(
       results[testCase.descriptor] = TestResult.Ignored(reason)
 
       logger.log { Pair(testCase.name.name, "executionSkipped: $testDescriptor") }
-      listener.executionSkipped(testDescriptor, reason ?: "")
+      listener.executionSkipped(testDescriptor, reasonIfEnabled(reason))
+   }
+
+   private fun reasonIfEnabled(reason: String?): String? {
+      if (reason == null) return null
+      if (env("KOTEST_SHOW_IGNORE_REASONS") == "true") return reason
+      return null
    }
 
    private fun startParents(testCase: TestCase) {
