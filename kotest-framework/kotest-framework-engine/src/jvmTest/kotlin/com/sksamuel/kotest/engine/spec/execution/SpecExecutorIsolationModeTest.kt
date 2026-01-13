@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.execution
 import io.kotest.common.Platform
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
@@ -46,7 +47,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(FunSpecTest::class)
+               executor.execute(SpecRef.Reference(FunSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(FunSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -84,7 +85,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(BehaviorSpecTest::class)
+               executor.execute(SpecRef.Reference(BehaviorSpecTest::class))
                listener.events.shouldHaveSize(12).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(BehaviorSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -124,7 +125,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(DescribeSpecTest::class)
+               executor.execute(SpecRef.Reference(DescribeSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(DescribeSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -162,7 +163,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(ExpectSpecTest::class)
+               executor.execute(SpecRef.Reference(ExpectSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(ExpectSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -200,7 +201,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(FeatureSpecTest::class)
+               executor.execute(SpecRef.Reference(FeatureSpecTest::class))
                listener.events.shouldHaveSize(12).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(FeatureSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -240,7 +241,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(FreeSpecTest::class)
+               executor.execute(SpecRef.Reference(FreeSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(FreeSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -278,7 +279,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(ShouldSpecTest::class)
+               executor.execute(SpecRef.Reference(ShouldSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(ShouldSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -316,7 +317,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(StringSpecTest::class)
+               executor.execute(SpecRef.Reference(StringSpecTest::class))
                listener.events.shouldHaveSize(6).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(StringSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
@@ -350,7 +351,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
-               executor.execute(WordSpecTest::class)
+               executor.execute(SpecRef.Reference(WordSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
                   TestEventsTestEngineListener.TestEvent.SpecStarted(WordSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),

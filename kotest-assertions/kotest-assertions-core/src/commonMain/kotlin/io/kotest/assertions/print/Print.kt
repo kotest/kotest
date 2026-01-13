@@ -25,13 +25,48 @@ fun interface Print<in A> {
  */
 fun Any?.print(): Printed = if (this == null) NullPrint.print(this) else PrintResolver.printFor(this).print(this)
 
+/**
+ * Context for tracking visited objects during recursive printing to detect cycles.
+ * Uses reference equality (===) to detect reference cycles.
+ *
+ * Platform-specific implementations ensure thread-safety on JVM while remaining
+ * efficient on single-threaded platforms like JS.
+ */
+internal expect object PrintContext {
+   fun isVisited(obj: Any): Boolean
+   fun push(obj: Any)
+   fun pop()
+}
+
 internal fun recursiveRepr(root: Any, node: Any?): Printed {
-   return when (root) {
-      node -> Printed("(this ${root::class.simpleName})")
-      is Iterable<*> if node is Iterable<*> && root.toList() == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is Iterable<*> if node is Iterable<*> -> node.print()
-      is List<*> if node is Iterable<*> && root == node.toList() -> Printed("(this ${root::class.simpleName})")
-      is List<*> if node is Iterable<*> -> node.print()
+   // Use reference equality (===) to detect cycles without triggering equals() which could recurse
+   return when {
+      root === node -> Printed("(this ${root::class.simpleName})")
+      node == null -> NullPrint.print(null)
+      PrintContext.isVisited(node) -> Printed("(this ${root::class.simpleName})")
+      node is Iterable<*> || node is Map<*, *> -> printWithCycleDetection(node)
       else -> node.print()
    }
 }
+
+/**
+ * Prints a value with cycle detection. If the object has already been visited
+ * during the current print operation, returns a cycle indicator instead of
+ * recursively printing to avoid StackOverflowError.
+ */
+private fun printWithCycleDetection(node: Any?): Printed {
+   return when (node) {
+      null -> NullPrint.print(null)
+      PrintContext::isVisited -> Printed("(this ${node::class.simpleName})")
+      else -> {
+         PrintContext.push(node)
+         runCatching {
+            node.print()
+         }.also {
+            PrintContext.pop()
+         }.getOrThrow()
+      }
+   }
+}
+
+

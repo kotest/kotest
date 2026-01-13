@@ -13,6 +13,10 @@ public final class io/kotest/common/EnvKt {
 public abstract interface annotation class io/kotest/common/ExperimentalKotest : java/lang/annotation/Annotation {
 }
 
+public final class io/kotest/common/IntellijKt {
+	public static final fun isIntellij ()Z
+}
+
 public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/annotation/Annotation {
 }
 

@@ -1,7 +1,8 @@
 package com.sksamuel.kotest.engine
 
-import io.kotest.core.annotation.EnabledIf
+import io.kotest.common.reflection.bestName
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef.Reference
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCaseOrder
@@ -15,21 +16,31 @@ import io.kotest.matchers.shouldNotBe
 class TestCaseOrderTest : FunSpec() {
    init {
       test("sequential test case ordering specified in the spec") {
-         Materializer().materialize(SequentialSpec()).map { it.name.name } shouldBe
+         run {
+           val spec = SequentialSpec()
+           Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+         } shouldBe
             listOf("c", "b", "d", "e", "a")
       }
       test("Lexicographic test case ordering specified in the spec") {
-         Materializer().materialize(LexicographicSpec()).map { it.name.name } shouldBe
+         run {
+           val spec = LexicographicSpec()
+           Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+         } shouldBe
             listOf("a", "b", "c", "d", "e")
       }
       test("random test case ordering specified in the spec") {
-         val a = Materializer().materialize(RandomSpecByMethodOverride()).map { it.name.name }
-         val b = Materializer().materialize(RandomSpecByMethodOverride()).map { it.name.name }
+        val spec = RandomSpecByMethodOverride()
+        val a = Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+        val spec1 = RandomSpecByMethodOverride()
+        val b = Materializer().materialize(spec1, Reference(spec1::class, spec1::class.bestName())).map { it.name.name }
          a shouldNotBe b
       }
       test("random test case ordering specified in default test case") {
-         val a = Materializer().materialize(RandomSpecByDefaultConfig()).map { it.name.name }
-         val b = Materializer().materialize(RandomSpecByDefaultConfig()).map { it.name.name }
+        val spec = RandomSpecByDefaultConfig()
+        val a = Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+        val spec1 = RandomSpecByDefaultConfig()
+        val b = Materializer().materialize(spec1, Reference(spec1::class, spec1::class.bestName())).map { it.name.name }
          a shouldNotBe b
       }
       test("sequential test case ordering specified in project config") {
@@ -37,7 +48,10 @@ class TestCaseOrderTest : FunSpec() {
             override val testCaseOrder = TestCaseOrder.Sequential
          }
          val c = SpecConfigResolver(p, EmptyExtensionRegistry)
-         Materializer(c).materialize(UnspecifiedSpec()).map { it.name.name } shouldBe
+         run {
+           val spec = UnspecifiedSpec()
+           Materializer(c).materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+         } shouldBe
             listOf("d", "b", "c", "e", "h", "f", "g", "i", "a", "l", "j", "k", "m", "p", "n", "o", "q", "r")
       }
       test("Lexicographic test case ordering specified in project config") {
@@ -45,7 +59,10 @@ class TestCaseOrderTest : FunSpec() {
             override val testCaseOrder = TestCaseOrder.Lexicographic
          }
          val c = SpecConfigResolver(p, EmptyExtensionRegistry)
-         Materializer(c).materialize(UnspecifiedSpec()).map { it.name.name } shouldBe
+         run {
+           val spec = UnspecifiedSpec()
+           Materializer(c).materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+         } shouldBe
             listOf("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r")
       }
       test("random test case ordering specified in project config") {
@@ -53,8 +70,11 @@ class TestCaseOrderTest : FunSpec() {
             override val testCaseOrder = TestCaseOrder.Random
          }
          val c = SpecConfigResolver(p, EmptyExtensionRegistry)
-         val a = Materializer(c).materialize(UnspecifiedSpec()).map { it.name.name }
-         val b = Materializer(c).materialize(UnspecifiedSpec()).map { it.name.name }
+        val spec = UnspecifiedSpec()
+        val a = Materializer(c).materialize(spec, Reference(spec::class, spec::class.bestName())).map { it.name.name }
+        val spec1 = UnspecifiedSpec()
+        val b =
+          Materializer(c).materialize(spec1, Reference(spec1::class, spec1::class.bestName())).map { it.name.name }
          a shouldNotBe b
       }
    }

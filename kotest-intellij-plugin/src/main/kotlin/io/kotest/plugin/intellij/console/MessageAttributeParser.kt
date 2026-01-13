@@ -4,6 +4,7 @@ import jetbrains.buildServer.messages.serviceMessages.ServiceMessage
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 object MessageAttributeParser {
 
    fun parse(msg: ServiceMessage): MessageAttributes {
@@ -19,6 +20,7 @@ object MessageAttributeParser {
    }
 }
 
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 data class MessageAttributes(
    val id: String,
    val parentId: String?,

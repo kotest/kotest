@@ -22,7 +22,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(SpecWithInstanceFieldError::class))
+         .withSpecs(listOf(SpecRef.Reference(SpecWithInstanceFieldError::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
@@ -56,7 +56,7 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(SpecWithInitError::class))
+         .withSpecs(listOf(SpecRef.Reference(SpecWithInitError::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()

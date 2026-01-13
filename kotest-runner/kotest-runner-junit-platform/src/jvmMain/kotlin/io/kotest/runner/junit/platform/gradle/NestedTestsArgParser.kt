@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform.gradle
 
 /**
- * Parses the gradle --tests option when using a nested test.
+ * Parses the Gradle --tests option when using a nested test.
  *
  * This parser expects a package name, a fully qualified test name, and a test name with context.
  * This parser only checks for nested tests. If the test is not nested, then we can let gradle
@@ -12,7 +12,7 @@ package io.kotest.runner.junit.platform.gradle
  * - gradle test --tests "io.kotest.SomeTest.my test -- nested test"
  * - gradle test --tests "io.kotest.SomeTest.my test -- nested test -- leaf test"
  *
- * Examples not handled:
+ * Examples that are not handled:
  *
  * - gradle test --tests "io.kotest" (package only)
  * - gradle test --tests "io.kotest.SomeTest" (spec only)
@@ -21,9 +21,9 @@ package io.kotest.runner.junit.platform.gradle
  */
 internal object NestedTestsArgParser {
 
-   // this token is used because gradle thinks of tests as methods, and methods cannot be nested
-   // so when we have nested tests we collapse into a fake test name with this delimiter in it.
-   // obviously this will break if you have this in a test name, but we use this format everywhere
+   // this token is used because Gradle thinks of tests as methods, and methods cannot be nested,
+   // so when we have nested tests, we collapse into a fake test name with this delimiter in it.
+   // obviously, this will break if you have this in a test name, but we use this format everywhere
    const val CONTEXT = " -- "
 
    // used to replace .* regexes with a value that doesn't contain a period so we can split on the period, then revert

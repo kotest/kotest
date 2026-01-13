@@ -35,6 +35,11 @@
       </action>
    </actions>
 
+   <projectListeners>
+      <listener class="io.kotest.plugin.intellij.locations.EmbeddedLocationSMTRunnerEventsAdapter"
+                topic="com.intellij.execution.testframework.sm.runner.SMTRunnerEventsListener"/>
+   </projectListeners>
+
    <extensions defaultExtensionNs="com.intellij">
       <configurationType implementation="io.kotest.plugin.intellij.run.idea.KotestConfigurationType"/>
       <defaultLiveTemplates file="liveTemplates.xml"/>
@@ -67,12 +72,11 @@
          implementation="io.kotest.plugin.intellij.console.KotestExecutionConsoleManager"
          order="before gradle"/>
 
-      <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestStartupActivity"/>
+      <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.tests.KotestProjectActivity"/>
 
-      <runConfigurationProducer
-         implementation="io.kotest.plugin.intellij.run.gradle.TestOrSpecGradleRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecRunConfigurationProducer"/>
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestPathRunConfigurationProducer"/>
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.PackageRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.GradleTestTaskRunConfigurationProducer"/>
 
@@ -92,33 +96,36 @@
       <programRunner implementation="io.kotest.plugin.intellij.run.idea.KotestDebuggerRunner"/>
       <library.dependencyScopeSuggester implementation="io.kotest.plugin.intellij.KotestDependencyScopeSuggester"/>
 
-      <breadcrumbProvider implementation="io.kotest.plugin.intellij.breadcrumbs.KotestBreadcrumbProvider"/>
-
       <intentionAction>
+         <language>kotlin</language>
          <className>io.kotest.plugin.intellij.intentions.SoftAssertIntention</className>
          <category>Kotlin/Test</category>
          <descriptionDirectoryName>SoftAssertIntention</descriptionDirectoryName>
       </intentionAction>
 
       <intentionAction>
+         <language>kotlin</language>
          <className>io.kotest.plugin.intellij.intentions.BangIntention</className>
          <category>Kotlin/Test</category>
          <descriptionDirectoryName>BangIntention</descriptionDirectoryName>
       </intentionAction>
 
       <intentionAction>
+         <language>kotlin</language>
          <className>io.kotest.plugin.intellij.intentions.ShouldThrowIntention</className>
          <category>Kotlin/Test</category>
          <descriptionDirectoryName>ShouldThrowIntention</descriptionDirectoryName>
       </intentionAction>
 
       <intentionAction>
+         <language>kotlin</language>
          <className>io.kotest.plugin.intellij.intentions.ShouldThrowAnyIntention</className>
          <category>Kotlin/Test</category>
          <descriptionDirectoryName>ShouldThrowAnyIntention</descriptionDirectoryName>
       </intentionAction>
 
       <intentionAction>
+         <language>kotlin</language>
          <className>io.kotest.plugin.intellij.intentions.ShouldThrowExactlyIntention</className>
          <category>Kotlin/Test</category>
          <descriptionDirectoryName>ShouldThrowExactlyIntention</descriptionDirectoryName>

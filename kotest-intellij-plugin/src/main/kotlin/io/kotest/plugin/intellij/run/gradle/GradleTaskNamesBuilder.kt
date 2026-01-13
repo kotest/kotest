@@ -6,8 +6,9 @@ import io.kotest.plugin.intellij.gradle.GradleUtils
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * Builds the gradle command line to execute a kotest test.
+ * Builds the Gradle command line to execute a kotest test.
  */
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via the standard gradle test task")
 data class GradleTaskNamesBuilder(
    private val module: Module,
    private val spec: KtClassOrObject,

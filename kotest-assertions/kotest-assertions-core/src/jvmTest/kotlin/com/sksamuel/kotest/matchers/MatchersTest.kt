@@ -147,7 +147,7 @@ class MatchersTest : FreeSpec({
             l.add(l)
             l shouldBe emptyList()
          }.message shouldBe """Unexpected elements from index 0
-                                                              |expected:<[]> but was:<[[(this Collection)]]>""".trimMargin()
+                                                              |expected:<[]> but was:<[(this ArrayList)]>""".trimMargin()
       }
    }
 

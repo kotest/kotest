@@ -1,10 +1,14 @@
 package io.kotest.core.descriptors
 
+import io.kotest.common.KotestInternal
+import io.kotest.common.reflection.bestName
+import kotlin.reflect.KClass
+
 /**
  * A stable, consistent identifier for a test element.
  *
  * A [Descriptor] does not depend on runtime configuration and does not change between test runs, unless
- * that test, a parent test, or the containing spec is renamed by the user.
+ * the user renames that test, a parent test, or the containing spec.
  *
  * Descriptors are a chain of instances, with each instance containing a link to its parent, except
  * for [SpecDescriptor] which is the root of a chain.
@@ -13,6 +17,7 @@ package io.kotest.core.descriptors
  * and the top most parent being a [SpecDescriptor].
  *
  */
+@Suppress("DEPRECATION")
 sealed interface Descriptor {
 
    val id: DescriptorId
@@ -55,6 +60,7 @@ sealed interface Descriptor {
     * On KMP the KClass reference does not include the fully qualified name, so if the spec descriptor
     * is just the simple class name, then we will have to compare using that only.
     */
+   @Deprecated("This method will be removed in 6.2 as Kotest 6.1 now populates the fully qualified name")
    fun isEqual(other: Descriptor): Boolean {
       return when (other) {
          is SpecDescriptor if this is SpecDescriptor -> {
@@ -76,7 +82,7 @@ sealed interface Descriptor {
    }
 
    /**
-    * Returns a parseable path to the test.
+    * Returns a parseable path to the test including the spec name.
     *
     * For example, a test with name "my test" inside a context "my context" in a spec called "my spec"
     * would have the path "my spec/my context -- my test".
@@ -184,4 +190,8 @@ sealed interface Descriptor {
       is TestDescriptor -> this.parent.spec()
    }
 }
+
+// only for creating spec descriptors in unit tests
+@KotestInternal
+fun KClass<*>.toDescriptor() = Descriptor.SpecDescriptor(DescriptorId(bestName()))
 

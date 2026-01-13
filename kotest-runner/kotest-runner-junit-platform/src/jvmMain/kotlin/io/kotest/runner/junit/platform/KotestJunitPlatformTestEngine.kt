@@ -79,7 +79,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          TestEngineLauncher()
             .withListener(listener)
             .addExtensions(root.extensions)
-            .withClasses(root.classes)
+            .withSpecRefs(root.specs)
             .async()
       }
    }
@@ -127,7 +127,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .build()
 
       logger.log { "JUnit discovery completed [descriptor=$engine]" }
-      logger.log { "Final specs [${engine.classes.joinToString(", ")}]" }
+      logger.log { "Final specs [${engine.specs.joinToString(", ")}]" }
       return engine
    }
 
@@ -158,7 +158,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
-    * If we are excluded from the engines then we do not run discovery.
+    * If we are excluded from the engines, then we do not run discovery.
     */
    private fun isEngineIncluded(request: EngineDiscoveryRequest): Boolean {
       return request.engineFilters().all { it.toPredicate().test(this) }

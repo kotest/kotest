@@ -1,5 +1,6 @@
 package io.kotest.extensions.spring
 
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.springframework.beans.factory.annotation.Autowired
@@ -13,12 +14,11 @@ import org.springframework.test.context.TestExecutionListener as SpringTestExecu
    mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS
 )
 @SpringBootTest(classes = [Components::class])
+@ApplyExtension(SpringExtension::class)
 class SpringTestExecutionListenerTest : FunSpec() {
 
    @Autowired
    lateinit var userService: UserService
-
-   override val extensions = listOf(SpringExtension())
 
    init {
       test("Should autowire with spring listeners") {

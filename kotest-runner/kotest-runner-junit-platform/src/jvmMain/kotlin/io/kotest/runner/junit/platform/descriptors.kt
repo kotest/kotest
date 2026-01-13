@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.isIntellij
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -50,7 +51,7 @@ internal fun createTestTestDescriptor(
    id: UniqueId,
    displayName: String,
    type: TestDescriptor.Type,
-   source: TestSource?,
+   source: TestSource,
 ): TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
 
    // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting or hangs the build, as it is not handled
@@ -73,13 +74,13 @@ internal fun createTestDescriptorWithMethodSource(
    val id = createUniqueIdForTest(root.uniqueId, testCase.descriptor)
    val testDescriptor = createTestTestDescriptor(
       id = id,
-      displayName = formatter.format(testCase),
+      displayName = embeddedTestName(testCase, formatter),
       type = type,
-      // For CONTAINER types, use ClassSource (like v5.9.1) to ensure proper tree structure in Android Studio.
+      // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
       // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
       // gradle-junit-platform hides tests if we don't send a source at all
-      // surefire-junit-platform (maven) needs a MethodSource in order to separate test cases from each other
-      // and produce more correct XML report with test case name.
+      // surefire-junit-platform (maven) needs a MethodSource to separate test cases from each other
+      // and produce a more correct XML report with the test case name.
       source = when (type) {
          TestDescriptor.Type.CONTAINER -> ClassSource.from(testCase.spec::class.java)
          else -> getMethodSource(testCase.spec::class, id)
@@ -89,6 +90,16 @@ internal fun createTestDescriptorWithMethodSource(
 }
 
 internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
-   /* className = */ kclass.qualifiedName,
+   /* className = */ kclass.java.name,
    /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
 )
+
+// since we have no control over the proxy location urls created by intellij, we will include the full
+// test path in the display name and use the kotest intellij plugin to parse it out
+// note: the KMP test tasks will append a context e.g. [linuxX64], so we must put the full path first
+private fun embeddedTestName(testCase: TestCase, formatter: DisplayNameFormatting): String {
+   return when {
+      isIntellij() -> "<kotest>" + testCase.descriptor.path().value + "</kotest>" + formatter.format(testCase)
+      else -> formatter.format(testCase)
+   }
+}

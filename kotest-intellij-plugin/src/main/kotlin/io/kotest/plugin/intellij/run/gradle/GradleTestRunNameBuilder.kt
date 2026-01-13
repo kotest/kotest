@@ -25,9 +25,11 @@ data class GradleTestRunNameBuilder(
 
    fun build(): String {
       return buildString {
-         append(spec?.name)
+         if (spec != null) {
+            append(spec.name)
+         }
          if (test != null) {
-            append(" ")
+            append(".")
             append(test.readableTestPath())
          }
       }

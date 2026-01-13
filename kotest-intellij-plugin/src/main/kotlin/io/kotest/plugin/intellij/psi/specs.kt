@@ -122,3 +122,17 @@ fun PsiElement.enclosingSpec(): KtClassOrObject? {
       else -> ktclassOrObject.enclosingSpec() // recurse with outer classes
    }
 }
+
+/**
+ * Returns the [KtClassOrObject] that contains this element if the element is located inside a
+ * spec class, otherwise null.
+ */
+@RequiresReadLock
+fun PsiElement.enclosingSpecEdt(): KtClassOrObject? {
+   val ktclassOrObject = this.getStrictParentOfType<KtClassOrObject>()
+   return when {
+      ktclassOrObject == null -> null
+      ktclassOrObject.isSpec() -> ktclassOrObject
+      else -> ktclassOrObject.enclosingSpec() // recurse with outer classes
+   }
+}

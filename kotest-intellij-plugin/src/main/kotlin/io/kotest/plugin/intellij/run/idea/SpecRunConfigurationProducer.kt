@@ -11,15 +11,15 @@ import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
 import io.kotest.plugin.intellij.psi.isRunnableSpec
+import io.kotest.plugin.intellij.run.RunnerMode
+import io.kotest.plugin.intellij.run.RunnerModes
 import org.jetbrains.kotlin.lexer.KtKeywordToken
-import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.psi.KtClassOrObject
+import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
 /**
- * A run configuration supports creating run configurations from context (by right-clicking a code element in the source editor or the project view).
- *
- * This producer creates run configurations for spec classes (run all).
+ * Runs a spec via the IDEA runner.
  */
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
@@ -67,10 +67,7 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasGradlePlugin(context.module)) return false
-
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) return false
 
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
@@ -101,9 +98,9 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
    ): Boolean {
 
       // if we have the kotest plugin then we shouldn't use this
-      if (GradleUtils.hasGradlePlugin(context.module)) return false
+      if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
 
-      if (!ModuleDependencies.hasKotest(context.module)) return false
+      if (!ModuleDependencies.hasKotestEngine(context.module)) return false
 
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {

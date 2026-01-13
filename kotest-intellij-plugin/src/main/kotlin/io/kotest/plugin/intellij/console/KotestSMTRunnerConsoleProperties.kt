@@ -18,6 +18,7 @@ import io.kotest.plugin.intellij.Constants
 import io.kotest.plugin.intellij.locations.KotestTestLocator
 import javax.swing.tree.TreeSelectionModel
 
+@Deprecated("Starting with Kotest 6.1 the preferred method is to run via gradle test task")
 class KotestSMTRunnerConsoleProperties(
    project: Project,
    conf: RunConfiguration,

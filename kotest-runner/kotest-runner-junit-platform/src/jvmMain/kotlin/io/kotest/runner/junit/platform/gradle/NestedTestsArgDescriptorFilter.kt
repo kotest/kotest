@@ -1,10 +1,12 @@
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.common.env
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.INCLUDE_PATTERN_ENV
 
 /**
  * An implementation of [DescriptorFilter] that supports nested test names.
@@ -15,7 +17,11 @@ internal class NestedTestsArgDescriptorFilter(private val args: Set<NestedTestAr
 
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
       logger.log { Pair(descriptor.toString(), "Testing against nested test args $args") }
+      val env = env(INCLUDE_PATTERN_ENV)
       return when {
+         // when we have the INCLUDE_PATTERN_ENV set, that means the Kotest plugin has forwarded the --tests arg
+         // in the form of an env variable. So we will use that to take priority and ignore --tests here
+         env != null -> DescriptorFilterResult.Include
          args.isEmpty() -> DescriptorFilterResult.Include
          args.any { match(it, descriptor) } -> DescriptorFilterResult.Include
          else -> DescriptorFilterResult.Exclude(null)

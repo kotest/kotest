@@ -7,7 +7,9 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
-* [Kotest Cookbook](https://github.com/kotest/kotest-cookbook)
+* [Property-based testing with Kotlin and Kotest: the Christmas edition](https://xebia.com/blog/property-based-testing-with-kotlin-and-kotest-the-christmas-edition)
+* [Kotest : Modern Testing in Kotlin: Test Styles, Mocking and Writing Tests on Android](https://proandroiddev.com/kotest-modern-testing-in-kotlin-test-styles-mocking-and-writing-tests-on-android-857a1f0beed6)
+* [Kotest Cookbook (2025)](https://github.com/kotest/kotest-cookbook)
 * [Kotlin Testing Toolkit: Kotest, MockK, and Writing Fluent Tests (2025)](https://jamshidbekboynazarov.medium.com/kotlin-testing-toolkit-kotest-mockk-and-writing-fluent-tests-f73a1240c9b7)
 * [Kotest: The Kotlin Testing Framework You Will Love (2025)](https://softwaremill.com/kotest-the-kotlin-testing-framework-you-will-love/)
 * [Automated Screenshot Taking in Android using Kotest and Ktor (2025)](https://dev.to/leocolman/automated-screenshot-taking-in-android-using-kotest-and-ktor-o71)
