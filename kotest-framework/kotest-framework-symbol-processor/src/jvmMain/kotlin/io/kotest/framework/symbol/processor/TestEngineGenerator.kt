@@ -42,12 +42,14 @@ class TestEngineGenerator(private val environment: SymbolProcessorEnvironment) {
    private fun createNativeEntryPoint(): PropertySpec {
       val prop = PropertySpec.builder("testEngineEntryPoint", UNIT)
          .addAnnotation(ClassName("kotlin.native", "EagerInitialization"))
-         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("ExperimentalStdlibApi::class").build())
+         .addAnnotation(
+            AnnotationSpec.builder(ClassName("kotlin", "OptIn")).addMember("ExperimentalStdlibApi::class").build()
+         )
          .initializer("""runBlocking { launch() }""".trim())
       return prop.build()
    }
 
-   // on JS,WasmJS it is enough to create a main method and the kotlin compiler will find and invoke it
+   // on JS and WasmJS it is enough to create a main method, and the kotlin compiler will find and invoke it
    private fun createJsEntryPoint(): FunSpec {
       val function = FunSpec.builder("main")
          .addParameter(ParameterSpec.builder("args", ARRAY.parameterizedBy(STRING)).build())
@@ -103,8 +105,14 @@ val specs = listOf(
       val file = FileSpec.builder("io.kotest.framework.runtime", "kotest.kt")
          .addImport("io.kotest.core.spec", "SpecRef")
          .addImport("io.kotest.engine.launcher", "invokeTestEngine")
-         .addImport("kotlinx.coroutines", "runBlocking")
-         .addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
+
+      when (environment.platforms.first()) {
+         is NativePlatformInfo ->
+            // native uses runBlocking to launch the engine
+            file.addImport("kotlinx.coroutines", "runBlocking")
+      }
+
+      file.addAnnotation(AnnotationSpec.builder(ClassName("kotlin", "Suppress")).addMember("\"DEPRECATION\"").build())
 
       specs.forEachIndexed { index, spec ->
          file.addAliasedImport(
