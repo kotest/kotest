@@ -31,7 +31,7 @@ object RunnerModes {
       if (GradleUtils.isKotest61OrAbove(module) && GradleUtils.isGradleTestRunner(module)) return RunnerMode.GRADLE_TEST_TASK
 
       // if we have the Kotest Gradle plugin, then we use the Kotest task
-      if (!GradleUtils.hasKotestGradlePlugin(module)) return RunnerMode.GRADLE_KOTEST_TASK
+      if (GradleUtils.hasKotestGradlePlugin(module)) return RunnerMode.GRADLE_KOTEST_TASK
 
       // otherwise we fall back to the classic IDEA runner
       return RunnerMode.IDEA
