@@ -4,6 +4,7 @@ import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.Test
@@ -12,6 +13,7 @@ import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
+import io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
@@ -21,6 +23,8 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 @Suppress("DEPRECATION")
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class TestRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+
+   private val logger = logger<TestRunConfigurationProducer>()
 
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
@@ -37,7 +41,10 @@ class TestRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) {
+         logger.info("Runner mode is not IDEA so this producer will not contribute")
+         return false
+      }
 
       val element = sourceElement.get()
       if (element != null) {
@@ -61,6 +68,8 @@ class TestRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
             }
          }
       }
+
+      logger.info("Test was not detected from $element so this producer will not contribute")
       return false
    }
 

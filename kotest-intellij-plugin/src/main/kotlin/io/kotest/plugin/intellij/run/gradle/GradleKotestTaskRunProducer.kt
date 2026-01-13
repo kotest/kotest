@@ -4,6 +4,7 @@ import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.RunManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.util.Ref
@@ -27,6 +28,7 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 @Deprecated("Starting with Kotest 6.1 the preferred method is to run via the standard gradle test task and not the kotest task")
 class GradleKotestTaskRunProducer : GradleRunConfigurationProducer() {
 
+   private val logger = logger<GradleKotestTaskRunProducer>()
    val kotestRun = Key.create<Boolean>("KOTEST_RUN")
 
    /**
@@ -71,7 +73,10 @@ class GradleKotestTaskRunProducer : GradleRunConfigurationProducer() {
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_KOTEST_TASK) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_KOTEST_TASK) {
+         logger.info("Runner mode is not GRADLE_KOTEST_TASK so this producer will not contribute")
+         return false
+      }
 
       val project = context.project ?: return false
       val module = context.module ?: return false
@@ -82,7 +87,11 @@ class GradleKotestTaskRunProducer : GradleRunConfigurationProducer() {
       // we must be in a class or object to define tests,
       // and we will use the FQN of that class or object as the specs class list, so the kotest
       // launcher doesn't need to be passed more than one class
-      val spec = element.enclosingSpec() ?: return false
+      val spec = element.enclosingSpec()
+      if (spec == null) {
+         logger.info("Spec was not detected from $element so this producer will not contribute")
+         return false
+      }
       val test = SpecStyle.findTest(element)
 
       // this is the path to the project on the file system

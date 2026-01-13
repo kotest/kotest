@@ -51,14 +51,24 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       p2: Ref<PsiElement?>
    ): Boolean {
 
-      if (RunnerModes.mode(p1.module) != RunnerMode.GRADLE_TEST_TASK) return false
-      if (SYSTEM_ID != p0.settings.externalSystemId) return false
+      if (RunnerModes.mode(p1.module) != RunnerMode.GRADLE_TEST_TASK) {
+         logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
+         return false
+      }
+      if (SYSTEM_ID != p0.settings.externalSystemId) {
+         logger.info("p0.settings.externalSystemId mode is not $SYSTEM_ID so this producer will not contribute")
+         return false
+      }
 
       // we will always have an element when running from the gutter or directory
       val element = p2.get() ?: return false
       val location = p1.location ?: return false
 
-      val testContext = createTestContext(element) ?: return false
+      val testContext = createTestContext(element)
+      if (testContext == null) {
+         logger.info("Test context could not be resolved for $element so this producer will not contribute")
+         return false
+      }
 
       p0.name = testContext.runName
       p0.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)

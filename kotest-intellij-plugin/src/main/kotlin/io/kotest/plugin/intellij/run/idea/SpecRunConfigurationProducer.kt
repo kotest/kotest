@@ -4,6 +4,7 @@ import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -23,6 +24,8 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
  */
 @Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
+
+   private val logger = logger<SpecRunConfigurationProducer>()
 
    override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
 
@@ -67,7 +70,10 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
       sourceElement: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) return false
+      if (RunnerModes.mode(context.module) != RunnerMode.IDEA) {
+         logger.info("Runner mode is not IDEA so this producer will not contribute")
+         return false
+      }
 
       val element = sourceElement.get()
       if (element != null && element is LeafPsiElement) {
@@ -87,6 +93,8 @@ class SpecRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfi
             return true
          }
       }
+
+      logger.info("Spec was not detected from $element so this producer will not contribute")
       return false
    }
 
