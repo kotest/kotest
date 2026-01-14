@@ -95,7 +95,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestFailed(testCase: TestCase, result: TestResult, details: Boolean) {
       val msg = TeamCityMessageBuilder
-         .testFailed(prefix, formatting.format(santizeTestCaseName(testCase)))
+         .testFailed(prefix, testName(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -125,7 +125,7 @@ internal class TeamCityWriter(
    internal fun outputTestFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "finishTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testFinished(prefix, formatting.format(santizeTestCaseName(testCase)))
+         .testFinished(prefix, testName(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
@@ -163,7 +163,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "finishTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatting.format(santizeTestCaseName(testCase)))
+         .testSuiteFinished(prefix, testName(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .duration(result.duration)
