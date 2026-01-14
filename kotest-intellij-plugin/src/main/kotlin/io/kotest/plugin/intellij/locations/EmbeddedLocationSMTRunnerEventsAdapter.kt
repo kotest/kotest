@@ -17,6 +17,10 @@ internal class EmbeddedLocationSMTRunnerEventsAdapter : SMTRunnerEventsAdapter()
       handleKotestLocator(test)
    }
 
+   override fun onTestIgnored(test: SMTestProxy) {
+      handleKotestLocator(test)
+   }
+
    private fun handleKotestLocator(proxy: SMTestProxy) {
       // attempt to parse out the location from the test name
       val location = EmbeddedLocationParser.parse(proxy.name)

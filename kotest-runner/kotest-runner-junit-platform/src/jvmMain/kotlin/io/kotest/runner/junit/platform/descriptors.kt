@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.common.isIntellij
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
+import io.kotest.engine.names.LocationEmbedder
 import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
@@ -60,7 +61,7 @@ internal fun createTestTestDescriptor(
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    // update sep 2021: gradle 7.1 seems we can use TEST for everything but CONTAINER_AND_TEST will not show without a contained test
    // update for 5.0.0.M2 - will just dynamically add tests after they have completed, and we can see the full tree
-   // update 5.0.0.M3 - if we add dynamically afterwards then the timings are all messed up, seems gradle keeps the time itself
+   // update 5.0.0.M3 - if we add dynamically afterward then the timings are all messed up, seems gradle keeps the time itself
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = type == TestDescriptor.Type.CONTAINER
 }
@@ -74,7 +75,10 @@ internal fun createTestDescriptorWithMethodSource(
    val id = createUniqueIdForTest(root.uniqueId, testCase.descriptor)
    val testDescriptor = createTestTestDescriptor(
       id = id,
-      displayName = embeddedTestName(testCase, formatter),
+      displayName = if (isIntellij())
+         LocationEmbedder.embeddedTestName(testCase.descriptor, formatter.format(testCase))
+      else
+         formatter.format(testCase),
       type = type,
       // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
       // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
@@ -93,13 +97,3 @@ internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = Me
    /* className = */ kclass.java.name,
    /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
 )
-
-// since we have no control over the proxy location urls created by intellij, we will include the full
-// test path in the display name and use the kotest intellij plugin to parse it out
-// note: the KMP test tasks will append a context e.g. [linuxX64], so we must put the full path first
-private fun embeddedTestName(testCase: TestCase, formatter: DisplayNameFormatting): String {
-   return when {
-      isIntellij() -> "<kotest>" + testCase.descriptor.path().value + "</kotest>" + formatter.format(testCase)
-      else -> formatter.format(testCase)
-   }
-}

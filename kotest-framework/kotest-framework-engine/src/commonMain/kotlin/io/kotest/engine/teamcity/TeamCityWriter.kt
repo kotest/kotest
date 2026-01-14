@@ -4,6 +4,7 @@ import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
+import io.kotest.engine.names.LocationEmbedder
 import io.kotest.engine.teamcity.names.TeamCityTestNameSanitizer
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -11,10 +12,13 @@ import kotlin.reflect.KClass
 
 /**
  * [TeamCityWriter] handles outputting in the team city format using a [TeamCityMessageBuilder].
+ *
+ * @param embedLocations set to true to embed the test location in the test name.
  */
 internal class TeamCityWriter(
    private val prefix: String,
    private val formatting: DisplayNameFormatting,
+   private val embedLocations: Boolean = false,
 ) {
 
    private val logger = Logger(TeamCityWriter::class)
@@ -31,7 +35,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestIgnored(testCase: TestCase, result: TestResult.Ignored) {
       val msg = TeamCityMessageBuilder
-         .testIgnored(prefix, formatting.format(santizeTestCaseName(testCase)))
+         .testIgnored(prefix, testName(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -47,7 +51,7 @@ internal class TeamCityWriter(
    internal fun outputTestStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "startTest ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testStarted(prefix, formatting.format(santizeTestCaseName(testCase)))
+         .testStarted(prefix, testName(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -145,7 +149,7 @@ internal class TeamCityWriter(
    internal fun outputTestSuiteStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "startTestSuite ${testCase.descriptor.path().value}") }
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatting.format(santizeTestCaseName(testCase)))
+         .testSuiteStarted(prefix, testName(testCase))
          .id(testCase.descriptor.path().value)
          .parent(testCase.descriptor.parent.path().value)
          .locationHint(Locations.location(testCase.source))
@@ -189,6 +193,14 @@ internal class TeamCityWriter(
          .id(ref.descriptor().path().value)
          .build()
       println(msg)
+   }
+
+
+   internal fun testName(testCase: TestCase): String {
+      return if (embedLocations)
+         LocationEmbedder.embeddedTestName(testCase.descriptor, formatting.format(santizeTestCaseName(testCase)))
+      else
+         formatting.format(santizeTestCaseName(testCase))
    }
 
    internal fun santizeTestCaseName(testCase: TestCase): TestCase {

@@ -16,8 +16,8 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
       // but we don't have a way of detecting intellij from kotlin native so aren't able to detect when to skip
       .withConsoleListener()
       // TCSM is always included to hook into the native test task reporting
-      // also, gradle test task will capture stdout when it receives a TCSM test started event until it receives
-      // a test finished event, so this TCSM listener must come after the console listener, otherwise, some console
+      // also, the Gradle test task will capture stdout when it receives a TCSM test-started event until it receives
+      // a test-finished event, so this TCSM listener must come after the console listener, otherwise, some console
       // output will be swallowed
       .withTeamCityListener()
       .async()
