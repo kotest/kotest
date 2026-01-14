@@ -30,18 +30,6 @@ internal class TeamCityWriter(
       println(msg)
    }
 
-   internal fun testName(testCase: TestCase): String {
-      return if (embedLocations)
-         LocationEmbedder.embeddedTestName(testCase.descriptor, formatting.format(santizeTestCaseName(testCase)))
-      else
-         formatting.format(santizeTestCaseName(testCase))
-   }
-
-   internal fun santizeTestCaseName(testCase: TestCase): TestCase {
-      val name = TeamCityTestNameSanitizer.sanitize(testCase.name, testCase.parent?.name)
-      return testCase.copy(name = name)
-   }
-
    /**
     * For a given [TestCase] will output the "test ignored" message.
     */
@@ -205,5 +193,18 @@ internal class TeamCityWriter(
          .id(ref.descriptor().path().value)
          .build()
       println(msg)
+   }
+
+
+   internal fun testName(testCase: TestCase): String {
+      return if (embedLocations)
+         LocationEmbedder.embeddedTestName(testCase.descriptor, formatting.format(santizeTestCaseName(testCase)))
+      else
+         formatting.format(santizeTestCaseName(testCase))
+   }
+
+   internal fun santizeTestCaseName(testCase: TestCase): TestCase {
+      val name = TeamCityTestNameSanitizer.sanitize(testCase.name, testCase.parent?.name)
+      return testCase.copy(name = name)
    }
 }
