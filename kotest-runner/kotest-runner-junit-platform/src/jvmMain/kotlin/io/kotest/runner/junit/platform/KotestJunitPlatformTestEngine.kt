@@ -8,7 +8,6 @@ import io.kotest.engine.config.KotestPropertiesLoader
 import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
-import io.kotest.engine.runBlocking
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
@@ -75,12 +74,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      runBlocking {
+      kotlinx.coroutines.runBlocking {
          TestEngineLauncher()
             .withListener(listener)
             .addExtensions(root.extensions)
             .withSpecRefs(root.specs)
-            .async()
+            .execute()
       }
    }
 

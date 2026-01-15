@@ -3398,8 +3398,7 @@ public final class io/kotest/engine/ResultsKt {
 	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/RunBlocking_jvmKt {
-	public static final fun runBlocking (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+public final class io/kotest/engine/RunPromise_jvmKt {
 	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
@@ -3415,13 +3414,11 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public final fun addExtension (Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun addExtensions ([Lio/kotest/core/extensions/Extension;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun async (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun copy (Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;)Lio/kotest/engine/TestEngineLauncher;
 	public static synthetic fun copy$default (Lio/kotest/engine/TestEngineLauncher;Ljava/util/List;Lio/kotest/core/config/AbstractProjectConfig;Ljava/util/List;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;ILjava/lang/Object;)Lio/kotest/engine/TestEngineLauncher;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun execute (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun hashCode ()I
-	public final fun launch ()Lio/kotest/engine/EngineResult;
 	public final fun promise ()Ljava/lang/Object;
 	public fun toString ()Ljava/lang/String;
 	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;

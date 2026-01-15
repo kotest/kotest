@@ -15,7 +15,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesDescribeSpec::class)
-            .launch()
+            .execute()
 
          collector.names shouldBe listOf(
             "Foo(name=sam)",
@@ -34,7 +34,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesDescribeSpecRoot::class)
-            .launch()
+            .execute()
 
          collector.names shouldBe listOf(
             "Foo(name=sam)",
@@ -52,7 +52,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesFunSpec::class)
-            .launch()
+            .execute()
 
          collector.names shouldBe listOf(
             "Foo(name=sam)",
@@ -71,7 +71,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(RepeatedNamesRootFunSpec::class)
-            .launch()
+            .execute()
 
          collector.names shouldBe listOf(
             "Foo(name=sam)",

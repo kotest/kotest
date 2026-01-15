@@ -39,7 +39,7 @@ class ExcludeTagExtensionTest : FunSpec() {
          TestEngineLauncher().withListener(listener)
             .withClasses(ExcludedSpec::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
       }
    }
 }

@@ -2,7 +2,6 @@
 
 package io.kotest.engine
 
-import io.kotest.common.Platform
 import io.kotest.common.isIntellij
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
@@ -156,27 +155,8 @@ data class TestEngineLauncher(
     *
     * @return the [EngineResult] containing the results of the test execution.
     */
-   suspend fun async(): EngineResult {
-      logger.log { "Launching Test Engine" }
-      val engine = TestEngine(toConfig())
-      return engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-   }
-
-   /**
-    * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
-    * This method will throw on JS.
-    *
-    * @return the [EngineResult] containing the results of the test execution.
-    */
-   fun launch(): EngineResult {
-      logger.log { "Launching Test Engine" }
-      return runBlocking {
-         val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-      }
-   }
-
    suspend fun execute(): EngineResult {
+      logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
       return engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
    }
@@ -195,5 +175,3 @@ data class TestEngineLauncher(
       }
    }
 }
-
-internal expect fun Platform.listeners(): List<TestEngineListener>

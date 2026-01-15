@@ -48,7 +48,7 @@ class UnstableTestNameTest : FunSpec() {
                .withProjectConfig(config)
                .withListener(listener)
                .withClasses(NonDataClassesTest::class)
-               .launch()
+               .execute()
 
             results shouldBe listOf(
                Pair("io.kotest.datatest.NotADataClass", TestStatus.Success.name),

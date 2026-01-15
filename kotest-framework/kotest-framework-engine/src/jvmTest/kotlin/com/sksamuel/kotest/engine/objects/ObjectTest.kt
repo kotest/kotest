@@ -12,7 +12,7 @@ class ObjectSpecTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(MyObjectSpec::class)
-            .launch()
+            .execute()
          collector.result("foo")!!.isSuccess shouldBe true
       }
    }

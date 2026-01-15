@@ -27,7 +27,7 @@ class KotestTestRunner(
          TestEngineLauncher()
             .withListener(listener)
             .withSpecRefs(SpecRef.Reference(clazz.kotlin, clazz.name))
-            .async()
+            .execute()
       }
    }
 

@@ -23,7 +23,7 @@ class InstantiationListenerTest : FunSpec() {
             .withListener(NoopTestEngineListener)
             .withClasses(DummySpec7::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          MyInstantiationListener.fired shouldBe "com.sksamuel.kotest.engine.extensions.DummySpec7"
       }

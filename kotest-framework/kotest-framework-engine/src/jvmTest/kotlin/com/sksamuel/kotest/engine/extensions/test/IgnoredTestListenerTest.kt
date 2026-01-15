@@ -27,7 +27,7 @@ class IgnoredTestListenerTest : FunSpec({
          .withListener(NoopTestEngineListener)
          .withClasses(IgnoredTests::class)
          .addExtensions(ignoredTestListener)
-         .launch()
+         .execute()
       ignoredTests shouldBe setOf(
          "should be ignored by failfast strategy",
          "should be disabled by enabled flag in config",

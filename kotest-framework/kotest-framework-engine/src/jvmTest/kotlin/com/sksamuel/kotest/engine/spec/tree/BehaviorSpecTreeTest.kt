@@ -17,7 +17,7 @@ class BehaviorSpecTreeTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(MyBehaviorSpecTree::class)
-            .launch()
+            .execute()
          collector.tests.mapKeys { it.key.descriptor.path() }.keys shouldBe setOf(
             DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b -- c"),
             DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b"),

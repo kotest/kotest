@@ -16,7 +16,7 @@ class PackageConfigTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(BarTest::class)
-            .launch()
+            .execute()
          // if the package config isn't picked up, this test won't timeout
          collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 22ms"
       }

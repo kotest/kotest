@@ -1,7 +1,5 @@
 package io.kotest.engine
 
-expect fun <T> runBlocking(f: suspend () -> T): T
-
 /**
  * Runs the given [f] function in a promise on JS or throws an exception on other platforms.
  *

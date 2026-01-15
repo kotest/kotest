@@ -11,5 +11,3 @@ actual fun <T> runPromise(f: suspend () -> T): Any {
       throw it
    }
 }
-
-actual fun <T> runBlocking(f: suspend () -> T): T = error("runBlocking is not available on JS")

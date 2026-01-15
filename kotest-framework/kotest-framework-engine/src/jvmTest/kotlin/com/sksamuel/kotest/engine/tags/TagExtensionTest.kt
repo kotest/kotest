@@ -32,7 +32,7 @@ class TagExtensionTest : StringSpec() {
             TestEngineLauncher().withListener(collector)
                .withClasses(TestWithTags::class)
                .withProjectConfig(c)
-               .launch()
+               .execute()
 
             collector.tests.mapKeys { it.key.name.name }.mapValues { it.value.reasonOrNull } shouldBe
                mapOf(

@@ -22,7 +22,7 @@ class TempDirTest : FunSpec({
       TestEngineLauncher()
          .withListener(collector)
          .withClasses(TempDirPassSpec::class)
-         .launch()
+         .execute()
 
       // check the tests passed so we know the dir was created
       collector.tests.toList().single().second.isSuccess shouldBe true
@@ -34,7 +34,7 @@ class TempDirTest : FunSpec({
       TestEngineLauncher()
          .withListener(NoopTestEngineListener)
          .withClasses(TempDirFailSpec::class)
-         .launch()
+         .execute()
       dir2!!.shouldExist()
    }
 
@@ -45,7 +45,7 @@ class TempDirTest : FunSpec({
       TestEngineLauncher()
          .withListener(collector)
          .withClasses(TempDirSymLink::class)
-         .launch()
+         .execute()
 
       // check the tests passed so we know the dir was created
       collector.tests.toList().single().second.isSuccess shouldBe true

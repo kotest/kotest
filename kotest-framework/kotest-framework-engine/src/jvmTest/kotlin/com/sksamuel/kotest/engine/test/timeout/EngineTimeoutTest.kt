@@ -20,7 +20,7 @@ class EngineTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(DannyDelay::class)
-            .launch()
+            .execute()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 400ms"
@@ -31,7 +31,7 @@ class EngineTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(LarryLauncher::class)
-            .launch()
+            .execute()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "Test 'a' did not complete within 400ms"
@@ -42,7 +42,7 @@ class EngineTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(BillyBlocked::class)
-            .launch()
+            .execute()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
             result?.errorOrNull?.message shouldBe "sleep interrupted"

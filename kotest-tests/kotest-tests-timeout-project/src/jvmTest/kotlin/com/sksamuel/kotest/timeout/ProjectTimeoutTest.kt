@@ -27,7 +27,7 @@ class ProjectTimeoutTest : FunSpec({
          .withListener(NoopTestEngineListener)
          .withClasses(ProjectTimeoutSampleSpec::class)
          .withProjectConfig(c)
-         .launch()
+         .execute()
 
       result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }
    }

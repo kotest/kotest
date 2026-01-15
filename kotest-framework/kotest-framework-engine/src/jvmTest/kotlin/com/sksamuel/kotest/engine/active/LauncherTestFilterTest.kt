@@ -36,7 +36,7 @@ class LauncherTestFilterTest : FunSpec() {
          TestEngineLauncher().withListener(listener)
             .withClasses(MyTestClass::class)
             .addExtensions(filter)
-            .launch()
+            .execute()
       }
 
       test("filter with test path added via launcher should filter test cases") {
@@ -57,7 +57,7 @@ class LauncherTestFilterTest : FunSpec() {
          TestEngineLauncher().withListener(listener)
             .withClasses(MyTestClass::class)
             .addExtensions(filter)
-            .launch()
+            .execute()
       }
    }
 }

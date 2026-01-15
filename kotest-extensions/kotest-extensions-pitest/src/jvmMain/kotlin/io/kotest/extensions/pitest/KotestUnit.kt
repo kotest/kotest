@@ -43,7 +43,7 @@ class KotestUnit(val kclass: KClass<out Spec>) : TestUnit {
       val result = TestEngineLauncher()
          .withListener(listener)
          .withSpecRefs(listOf(SpecRef.Reference(kclass, kclass.java.name)))
-         .async()
+         .execute()
 
       if (result.errors.isNotEmpty())
          error("Test suite failed with errors")

@@ -16,7 +16,7 @@ class KotestPropertiesTest : FunSpec() {
             TestEngineLauncher()
                .withListener(NoopTestEngineListener)
                .withClasses(C::class)
-               .launch()
+               .execute()
             value shouldBe 123
          }
       }

@@ -18,7 +18,7 @@ class SystemPropertyConfigClassTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(FooTest::class)
-            .launch()
+            .execute()
          counter.get() shouldBe 5
       }
    }

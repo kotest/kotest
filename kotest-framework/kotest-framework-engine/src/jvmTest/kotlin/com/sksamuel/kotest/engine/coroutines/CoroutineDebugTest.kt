@@ -26,7 +26,7 @@ class CoroutineDebugTest : FunSpec() {
                .withListener(NoopTestEngineListener)
                .withClasses(Wibble::class)
                .withProjectConfig(p)
-               .launch()
+               .execute()
                .errors.shouldBeEmpty()
          }
          output shouldContain "DeferredCoroutine"

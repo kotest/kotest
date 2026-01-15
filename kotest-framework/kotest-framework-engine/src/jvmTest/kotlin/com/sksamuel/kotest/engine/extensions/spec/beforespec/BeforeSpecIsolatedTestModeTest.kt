@@ -20,7 +20,7 @@ class BeforeSpecIsolatedTestModeTest : FunSpec({
       val collector = CollectingTestEngineListener()
       TestEngineLauncher().withListener(collector)
          .withClasses(ParallelTests::class)
-         .launch()
+         .execute()
 
       collector.tests.values.size shouldBe 20
       collector.tests.values.forAll { it.isSuccess shouldBe true }

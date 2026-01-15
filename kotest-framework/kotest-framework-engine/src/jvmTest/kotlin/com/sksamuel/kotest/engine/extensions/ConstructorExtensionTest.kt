@@ -27,7 +27,7 @@ class ConstructorExtensionTest : FunSpec() {
          TestEngineLauncher().withListener(collector)
             .withClasses(DummySpec::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          // the extension was applied then the instantiation will fail
          collector.specs[DummySpec::class]!!.errorOrNull shouldBe IllegalStateException("THWACK!")
@@ -39,7 +39,7 @@ class ConstructorExtensionTest : FunSpec() {
 
          TestEngineLauncher().withListener(collector)
             .withClasses(FunkySpec::class)
-            .launch()
+            .execute()
 
          // if the extension isn't applied, it would fail to instantiate the class
          collector.specs[FunkySpec::class]!!.isSuccess shouldBe true

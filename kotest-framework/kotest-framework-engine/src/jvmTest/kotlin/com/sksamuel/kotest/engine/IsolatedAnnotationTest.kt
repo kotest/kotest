@@ -19,7 +19,7 @@ class IsolatedAnnotationTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(MyIsolatedSpec::class)
-            .launch()
+            .execute()
          collector.tests.shouldHaveSize(1)
          collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.isSuccess shouldBe true
       }

@@ -14,7 +14,7 @@ class AnnotationSpecNestedTest : FunSpec() {
          TestEngineLauncher()
             .withListener(listener)
             .withClasses(AnnotationSpecWithNested::class)
-            .launch()
+            .execute()
          listener.tests.shouldHaveSize(2)
          listener.tests.keys.map { it.name.name }.toSet() shouldBe setOf("foo", "bar")
          listener.result("foo")!!.isSuccess shouldBe true

@@ -15,7 +15,7 @@ class DefaultFqnConfigClassTest : FunSpec() {
          TestEngineLauncher()
             .withListener(NoopTestEngineListener)
             .withClasses(BarTest::class)
-            .launch()
+            .execute()
          invocations.get() shouldBe 5
       }
    }

@@ -24,7 +24,7 @@ class ApplyExtensionsTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(MyAnnotatedSpec1::class)
-            .launch()
+            .execute()
 
          // if apply extension was not applied, it would fail to intercept the failing test
          collector.tests.keys.single().name.name shouldBe "foo"
@@ -37,7 +37,7 @@ class ApplyExtensionsTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(MyAnnotatedSpec2::class)
-            .launch()
+            .execute()
 
          // if apply extension was not applied, it would fail to intercept the failing test
          collector.tests.keys.single().name.name shouldBe "foo"
@@ -50,7 +50,7 @@ class ApplyExtensionsTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(MyAnnotatedSpec3::class)
-            .launch()
+            .execute()
 
          // if apply extension was not applied, it would fail to intercept the failing test
          collector.tests.keys.single().name.name shouldBe "foo"
@@ -62,7 +62,7 @@ class ApplyExtensionsTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(MyAnnotatedSpec4::class)
-            .launch()
+            .execute()
          collector.specs.toList()
             .first().second.errorOrNull.shouldNotBeNull().message shouldContain "Cannot use private class"
       }

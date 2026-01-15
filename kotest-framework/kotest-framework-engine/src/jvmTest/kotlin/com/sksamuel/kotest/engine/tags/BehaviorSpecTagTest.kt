@@ -16,7 +16,7 @@ class BehaviorSpecTagTest : FunSpec() {
             TestEngineLauncher()
                .withListener(listener)
                .withClasses(ThenTagTest::class)
-               .launch()
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isSuccess shouldBe true
          listener.tests.toList().first { it.first.name.name == "b" }.second.isSuccess shouldBe true
@@ -30,7 +30,7 @@ class BehaviorSpecTagTest : FunSpec() {
             TestEngineLauncher()
                .withListener(listener)
                .withClasses(GivenTagTest::class)
-               .launch()
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isSuccess shouldBe true
          listener.tests.toList().first { it.first.name.name == "b" }.second.isSuccess shouldBe true
@@ -44,7 +44,7 @@ class BehaviorSpecTagTest : FunSpec() {
             TestEngineLauncher()
                .withListener(listener)
                .withClasses(GivenTagTest::class)
-               .launch()
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isIgnored shouldBe true
          listener.tests.toList().first { it.first.name.name == "d" }.second.isSuccess shouldBe true
@@ -58,7 +58,7 @@ class BehaviorSpecTagTest : FunSpec() {
             TestEngineLauncher()
                .withListener(listener)
                .withClasses(WhenTagTest::class)
-               .launch()
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isSuccess shouldBe true
          listener.tests.toList().first { it.first.name.name == "b" }.second.isIgnored shouldBe true

@@ -20,7 +20,7 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
       // a test-finished event, so this TCSM listener must come after the console listener, otherwise, some console
       // output will be swallowed
       .withTeamCityListener()
-      .async()
+      .execute()
 
    if (result.errors.isNotEmpty()) {
       throw MultipleExceptions(result.errors)

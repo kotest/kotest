@@ -25,7 +25,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(ExpectSpecWithExtraRootTests::class)
-            .launch()
+            .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
 
@@ -33,7 +33,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(FeatureSpecWithExtraRootTests::class)
-            .launch()
+            .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
 
@@ -41,7 +41,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(FreeSpecWithExtraRootTests::class)
-            .launch()
+            .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
 
@@ -49,7 +49,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(FunSpecWithExtraRootTests::class)
-            .launch()
+            .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
 
@@ -57,7 +57,7 @@ class LateRootTestDefinitionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(ShouldSpecWithExtraRootTests::class)
-            .launch()
+            .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
    }

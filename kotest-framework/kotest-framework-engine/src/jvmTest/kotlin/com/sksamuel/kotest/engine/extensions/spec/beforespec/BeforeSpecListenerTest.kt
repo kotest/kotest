@@ -43,7 +43,7 @@ class BeforeSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecTests::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -56,7 +56,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecOverrideMethodTests::class)
-            .launch()
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -69,7 +69,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineTest::class)
-            .launch()
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -82,11 +82,11 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineOrderFunSpecTest::class)
-            .launch()
+            .execute()
 
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineOrderDescribeSpecTest::class)
-            .launch()
+            .execute()
 
          a shouldBe "spectest1test2spectestinner"
       }
@@ -96,7 +96,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecInlineWithTestInterceptor::class)
-            .launch()
+            .execute()
 
          b shouldBe "beforeSpecintercepttest"
       }
@@ -106,7 +106,7 @@ class BeforeSpecListenerTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(BeforeSpecByReturningExtensionsTest::class)
-            .launch()
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -123,7 +123,7 @@ class BeforeSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(BeforeSpecNoTests::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -137,7 +137,7 @@ class BeforeSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(BeforeSpecErrorNoTests::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -151,7 +151,7 @@ class BeforeSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(BeforeSpecDisabledOnlyTests::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -170,7 +170,7 @@ class BeforeSpecListenerTest : FunSpec() {
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
                .withClasses(BeforeSpecFunctionOverrideWithError::class)
-               .launch()
+               .execute()
             listener.specs.size shouldBe 1
             listener.specs.values.first().isError.shouldBeTrue()
             listener.specs.values.first().errorOrNull!!.message shouldBe "java.lang.IllegalStateException: boom"
@@ -191,7 +191,7 @@ class BeforeSpecListenerTest : FunSpec() {
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
                .withClasses(BeforeSpecInlineWithError::class)
-               .launch()
+               .execute()
             listener.specs.size shouldBe 1
             listener.specs.values.first().isError.shouldBeTrue()
             listener.specs.values.first().errorOrNull!!.message shouldBe "java.lang.IllegalStateException: SPLOOSH!"
@@ -213,7 +213,7 @@ class BeforeSpecListenerTest : FunSpec() {
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
                .withClasses(NestedSpec::class)
-               .launch()
+               .execute()
             counter.get() shouldBe instances
          }
       }

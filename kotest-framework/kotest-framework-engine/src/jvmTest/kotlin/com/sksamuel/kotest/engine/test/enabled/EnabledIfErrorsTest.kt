@@ -12,7 +12,7 @@ class EnabledIfErrorsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(EnabledIfFailues::class)
-            .launch()
+            .execute()
 
          collector.result("a")!!.isIgnored shouldBe true
          collector.result("b")!!.isIgnored shouldBe true

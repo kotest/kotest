@@ -19,7 +19,7 @@ class WithTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(WithTimeoutSpec::class)
-            .launch()
+            .execute()
          collector.result("a")!!.errorOrNull!!.message shouldBe """Timed out waiting for 1000 ms"""
 
       }

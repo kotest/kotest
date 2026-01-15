@@ -28,7 +28,7 @@ class PrivateClassesIngoreOptionTest : FunSpec() {
             .withListener(listener)
             .withClasses(PrivateClassesAreIgnoredTest::class)
             .withProjectConfig(p)
-            .launch()
+            .execute()
          listener.errors shouldBe false
          listener.tests.size shouldBe 0
          includeTest = false

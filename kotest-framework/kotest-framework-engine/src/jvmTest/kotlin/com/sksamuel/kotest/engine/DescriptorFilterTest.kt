@@ -38,7 +38,7 @@ class DescriptorFilterTest : FunSpec() {
             .withListener(collector)
             .withClasses(SillySpec::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          collector.result("foo") shouldBe TestResult.Ignored("get outta here!")
          collector.result("bar")!!.isSuccess.shouldBeTrue()

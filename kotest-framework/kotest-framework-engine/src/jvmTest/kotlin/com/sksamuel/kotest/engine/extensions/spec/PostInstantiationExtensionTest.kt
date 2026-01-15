@@ -24,7 +24,7 @@ class PostInstantiationExtensionTest : FunSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MySpec::class)
             .withProjectConfig(p)
-            .launch()
+            .execute()
 
          a shouldBe "foo"
       }

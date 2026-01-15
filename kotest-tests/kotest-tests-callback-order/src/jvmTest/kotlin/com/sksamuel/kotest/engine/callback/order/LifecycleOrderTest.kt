@@ -21,7 +21,7 @@ class LifecycleOrderTest : FunSpec() {
             .withListener(collector)
             .withClasses(LifecycleTests::class)
             .addExtensions(LifecycleExtension("engine"))
-            .launch()
+            .execute()
          collector.names shouldBe listOf("foo", "bar")
          LifecycleExtension.state shouldBe listOf(
             Triple("engine", Type.PROJECT, Phase.ENTRY),

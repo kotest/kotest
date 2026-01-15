@@ -17,7 +17,7 @@ class FreeSpecTreeTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(MyFreeSpec::class)
-            .launch()
+            .execute()
          collector.tests.mapKeys { it.key.descriptor.path() }.keys shouldBe setOf(
             DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyFreeSpec/a"),
             DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyFreeSpec/a -- b"),

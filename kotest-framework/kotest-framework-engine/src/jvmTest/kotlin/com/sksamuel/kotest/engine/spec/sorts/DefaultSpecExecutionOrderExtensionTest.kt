@@ -117,7 +117,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
             .withListener(listener)
             .withClasses(ASpec::class, ZSpec::class, YSpec::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          listener.names shouldBe listOf("z", "y", "a")
 

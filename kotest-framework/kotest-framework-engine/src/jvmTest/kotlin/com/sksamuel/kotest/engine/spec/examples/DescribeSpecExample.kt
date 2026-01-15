@@ -24,7 +24,7 @@ class DescribeSpecExampleTest : FunSpec({
       val duration = testTimeSource().measureTime {
          TestEngineLauncher().withListener(collector)
             .withClasses(DescribeSpecExample::class)
-            .async()
+            .execute()
       }
 
       duration shouldBe 0.seconds

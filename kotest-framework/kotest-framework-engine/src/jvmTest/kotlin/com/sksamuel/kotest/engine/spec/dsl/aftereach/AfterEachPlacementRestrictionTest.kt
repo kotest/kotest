@@ -23,7 +23,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(FunSpecWithAfterEach::class)
-            .launch()
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -33,7 +33,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(ShouldSpecWithAfterEach::class)
-            .launch()
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -43,7 +43,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(ExpectSpecWithAfterEach::class)
-            .launch()
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -53,7 +53,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(WordSpecWithAfterEach::class)
-            .launch()
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -63,7 +63,7 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(FreeSpecWithAfterEach::class)
-            .launch()
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }

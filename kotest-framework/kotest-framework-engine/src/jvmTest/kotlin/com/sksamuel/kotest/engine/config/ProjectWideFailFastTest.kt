@@ -19,7 +19,7 @@ class ProjectWideFailFastTest : FunSpec() {
       TestEngineLauncher().withListener(listener)
          .withProjectConfig(c)
          .withClasses(A::class, B::class)
-         .launch()
+         .execute()
       listener.result("a").shouldNotBeNull().isError.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")
    }

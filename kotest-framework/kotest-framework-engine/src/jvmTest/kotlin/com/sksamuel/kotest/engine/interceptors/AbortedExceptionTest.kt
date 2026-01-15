@@ -19,7 +19,7 @@ class AbortedExceptionTest : FreeSpec({
 
       TestEngineLauncher().withListener(collector)
          .withClasses(DummySpec::class)
-         .launch()
+         .execute()
 
       collector.tests.toList().shouldMatchEach(
          {

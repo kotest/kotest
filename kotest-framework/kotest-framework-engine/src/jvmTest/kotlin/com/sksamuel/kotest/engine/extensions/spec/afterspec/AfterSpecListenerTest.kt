@@ -37,7 +37,7 @@ class AfterSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(collector)
             .withClasses(MyPopulatedSpec2::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          collector.specs.size shouldBe 1
          collector.tests.size shouldBe 1
@@ -49,7 +49,7 @@ class AfterSpecListenerTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(MyErrorSpec2::class)
-            .launch()
+            .execute()
          collector.specs.size shouldBe 1
          collector.specs[MyErrorSpec2::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
          collector.tests.size shouldBe 1
@@ -65,7 +65,7 @@ class AfterSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(MyEmptySpec2::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -80,7 +80,7 @@ class AfterSpecListenerTest : FunSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(NoActiveTestsSpec2::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -88,7 +88,7 @@ class AfterSpecListenerTest : FunSpec() {
       test("inline afterSpec functions should be invoked") {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(InlineAfterSpec::class)
-            .launch()
+            .execute()
          inlineAfterSpec.shouldBeTrue()
       }
 
@@ -104,7 +104,7 @@ class AfterSpecListenerTest : FunSpec() {
             TestEngineLauncher().withListener(collector)
                .withProjectConfig(config)
                .withClasses(InlineAfterSpecError::class)
-               .launch()
+               .execute()
             collector.specs.size.shouldBe(1)
             collector.specs[InlineAfterSpecError::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
          }
@@ -122,7 +122,7 @@ class AfterSpecListenerTest : FunSpec() {
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
                .withClasses(AfterSpecFunctionOverrideWithError::class)
-               .launch()
+               .execute()
             listener.specs.size shouldBe 1
             listener.specs.values.first().isError.shouldBeTrue()
             listener.specs.values.first().errorOrNull!!.message shouldBe "java.lang.IllegalStateException: zam!"
@@ -145,7 +145,7 @@ class AfterSpecListenerTest : FunSpec() {
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
                .withClasses(NestedSpec::class)
-               .launch()
+               .execute()
             counter.get() shouldBe instances
          }
       }

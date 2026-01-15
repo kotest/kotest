@@ -40,7 +40,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
             .errors.shouldBeEmpty()
       }
 
@@ -51,7 +51,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(TestWithTag::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
             .errors.shouldBeEmpty()
       }
 
@@ -62,7 +62,7 @@ class RuntimeTagExtensionTest : StringSpec() {
          TestEngineLauncher().withListener(NoopTestEngineListener)
             .withClasses(TestWithListenerAndTag::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
          counter.get() shouldBe 0
       }
    }

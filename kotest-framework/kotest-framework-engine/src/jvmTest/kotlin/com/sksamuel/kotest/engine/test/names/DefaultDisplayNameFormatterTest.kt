@@ -192,7 +192,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
                .withProjectConfig(c)
                .withClasses(TaggedSpec::class)
                .withTagExpression(TagExpression.Empty)
-               .launch()
+               .execute()
          }
 
          assertSoftly(report) {

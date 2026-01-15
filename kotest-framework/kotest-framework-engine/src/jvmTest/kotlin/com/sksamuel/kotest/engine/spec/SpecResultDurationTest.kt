@@ -16,7 +16,7 @@ class SpecResultDurationTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
             .withClasses(Wobble::class)
-            .launch()
+            .execute()
          listener.specs.values.first().duration.inWholeMicroseconds.shouldBeGreaterThan(1000)
       }
    }

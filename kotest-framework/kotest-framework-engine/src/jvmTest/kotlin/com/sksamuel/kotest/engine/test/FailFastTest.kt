@@ -20,7 +20,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher().withListener(listener)
             .withClasses(FailFastFunSpec::class)
-            .launch()
+            .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
          results["a"]?.isSuccess shouldBe true
@@ -41,7 +41,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher().withListener(listener)
             .withClasses(FailFastFreeSpec::class)
-            .launch()
+            .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
          results["a"]?.isSuccess shouldBe true
@@ -62,7 +62,7 @@ class FailFastTest : FunSpec() {
 
          TestEngineLauncher().withListener(listener)
             .withClasses(GrandfatherFailFastFreeSpec::class)
-            .launch()
+            .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
          results["a"]?.isSuccess shouldBe true

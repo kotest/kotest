@@ -55,7 +55,7 @@ class GlobalAssertionTest : FunSpec({
       TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
          .withClasses(ShouldThrowSoftlyTest::class)
-         .launch()
+         .execute()
 
       collector.result("shouldThrow")!!.isSuccess shouldBe false
       collector.result("shouldThrow")!!.errorOrNull!!.message shouldInclude
@@ -73,7 +73,7 @@ class GlobalAssertionTest : FunSpec({
       TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
          .withClasses(FooTest::class)
-         .launch()
+         .execute()
 
       collector.result("Should log for 1")?.isSuccess shouldBe true
       collector.result("Should log for 2")?.isFailure shouldBe true
@@ -89,7 +89,7 @@ class GlobalAssertionTest : FunSpec({
       TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
          .withClasses(FooTest::class)
-         .launch()
+         .execute()
 
       collector.result("a dummy test with no assertion")?.isSuccess shouldBe true
       collector.result("a dummy test with two assertions both of which will fail")?.isFailure shouldBe true

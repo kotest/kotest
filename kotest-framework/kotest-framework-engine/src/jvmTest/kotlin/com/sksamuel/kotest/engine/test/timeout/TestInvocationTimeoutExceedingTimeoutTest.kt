@@ -22,7 +22,7 @@ class TestInvocationTimeoutExceedingTimeoutTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(SpecWithInvalidInvocationTimeout::class)
-            .launch()
+            .execute()
 
          collector.specs.getValue(SpecWithInvalidInvocationTimeout::class).errorOrNull
             .shouldBeInstanceOf<SpecInstantiationException>()

@@ -29,7 +29,7 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
          TestEngineLauncher().withListener(collector)
             .withProjectConfig(c)
             .withClasses(ShouldBeExcluded::class)
-            .launch()
+            .execute()
 
          collector.errors.shouldBeFalse()
       }

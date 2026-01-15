@@ -34,7 +34,7 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
                // two classes so we know these callbacks are only invoked once
                .withClasses(A::class, B::class)
                .withProjectConfig(config)
-               .launch()
+               .execute()
             beforeAfterProject shouldBe "beforeabafter"
          }
       }

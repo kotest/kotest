@@ -21,7 +21,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(EnabledOrReasonIfSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "wobble"
       }
 
@@ -38,7 +38,7 @@ class IgnoredTestReasonTest : FunSpec() {
          TestEngineLauncher().withListener(collector)
             .withClasses(MyFunSpec::class)
             .withProjectConfig(c)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "wibble"
       }
 
@@ -46,7 +46,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(XReasonFunSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by xmethod"
       }
 
@@ -54,7 +54,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(XReasonDescribeSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by xmethod"
       }
 
@@ -62,7 +62,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(XReasonShouldSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by xmethod"
       }
 
@@ -70,7 +70,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(EnabledSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by enabled flag in config"
       }
 
@@ -78,7 +78,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(EnabledIfSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by enabledIf flag in config"
       }
 
@@ -86,7 +86,7 @@ class IgnoredTestReasonTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
             .withClasses(BangSpec::class)
-            .launch()
+            .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by bang"
       }
    }

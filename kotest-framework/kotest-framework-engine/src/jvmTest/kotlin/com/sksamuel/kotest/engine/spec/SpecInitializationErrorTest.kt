@@ -16,7 +16,7 @@ class SpecInitializationErrorTest : FunSpec() {
          TestEngineLauncher()
             .withListener(collector)
             .withClasses(FieldInitErrorSpec::class)
-            .launch()
+            .execute()
          collector.specs[FieldInitErrorSpec::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
       }
    }

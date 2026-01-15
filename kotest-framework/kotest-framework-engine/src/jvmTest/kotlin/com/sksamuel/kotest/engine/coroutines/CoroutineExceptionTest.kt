@@ -33,7 +33,7 @@ class CoroutineExceptionTest : FunSpec({
       TestEngineLauncher()
          .withListener(listener)
          .withClasses(FailingCoroutineTest::class)
-         .launch()
+         .execute()
 
       _result?.isError shouldBe true
    }

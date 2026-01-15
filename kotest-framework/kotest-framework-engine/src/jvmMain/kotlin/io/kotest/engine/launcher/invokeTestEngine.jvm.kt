@@ -13,7 +13,7 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
    val result = TestEngineLauncher()
       .withSpecRefs(specs)
       .withProjectConfig(config)
-      .async()
+      .execute()
 
    if (result.testFailures) {
       // the kotest task test will pick up return code as 1 as failed errors

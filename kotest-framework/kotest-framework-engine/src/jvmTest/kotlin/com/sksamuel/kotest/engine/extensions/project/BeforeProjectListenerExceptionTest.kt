@@ -39,7 +39,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       TestEngineLauncher().withListener(listener)
          .withClasses(DummySpec3::class)
          .withProjectConfig(c)
-         .launch()
+         .execute()
 
       errors shouldHaveSize 1
       errors[0].shouldBeInstanceOf<ExtensionException.BeforeProjectException>()
@@ -75,7 +75,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       TestEngineLauncher().withListener(listener)
          .withClasses(DummySpec3::class)
          .withProjectConfig(c)
-         .launch()
+         .execute()
 
       errors shouldHaveSize 2
       errors.filterIsInstance<ExtensionException.BeforeProjectException>() shouldHaveSize 2

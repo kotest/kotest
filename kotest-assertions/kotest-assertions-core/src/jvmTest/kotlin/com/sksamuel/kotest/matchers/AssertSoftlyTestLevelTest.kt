@@ -15,7 +15,7 @@ class AssertSoftlyTestLevelTest : FunSpec() {
          TestEngineLauncher()
             .withListener(listener)
             .withClasses(AssertSoftlyAtTestLevel::class)
-            .launch()
+            .execute()
          listener.tests.size shouldBe 2
          listener.errors shouldBe true
          listener.result("spec level assertSoftly should work on containers")!!.errorOrNull!!.message shouldContain "The following 2 assertions failed"

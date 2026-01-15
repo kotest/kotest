@@ -26,7 +26,7 @@ class RequiresTagTest : FunSpec({
             .withListener(collector)
             .withTagExpression(TagExpression("Foo"))
             .withClasses(TaggedSpec::class)
-            .launch()
+            .execute()
 
          collector
             .specs[TaggedSpec::class].shouldNotBeNull()
@@ -41,7 +41,7 @@ class RequiresTagTest : FunSpec({
          TestEngineLauncher().withListener(collector)
             .withClasses(TaggedSpec::class)
             .withTagExpression(TagExpression("UnrelatedTag"))
-            .launch()
+            .execute()
 
          assertSoftly(collector.specs[TaggedSpec::class]) {
             shouldNotBeNull()
@@ -59,7 +59,7 @@ class RequiresTagTest : FunSpec({
             .withListener(collector)
             .withClasses(TaggedSpec::class)
             .withTagExpression(TagExpression.Empty)
-            .launch()
+            .execute()
 
          collector
             .specs[TaggedSpec::class].shouldNotBeNull()

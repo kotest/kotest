@@ -10,7 +10,6 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.reports.JunitXmlReportTestEngineListener
-import io.kotest.engine.runBlocking
 import java.net.InetAddress
 import java.net.UnknownHostException
 import kotlin.reflect.KClass
@@ -91,7 +90,7 @@ fun main(args: Array<String>) {
    // this is used so we can see if any test failed and so exit with a non-zero code
    val collector = CollectingTestEngineListener()
 
-   val result = runBlocking {
+   val result = kotlinx.coroutines.runBlocking {
       TestEngineLauncher()
          .withListener(collector)
          .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
@@ -100,7 +99,7 @@ fun main(args: Array<String>) {
          .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_MODULE_TEST_REPORTS_DIR, launcherArgs))
          .withSpecRefs(classes.map { SpecRef.Reference(it, it.java.name) })
          .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
-         .launch()
+         .execute()
    }
 
    if (result.errors.isNotEmpty())
