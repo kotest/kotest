@@ -7,6 +7,7 @@ import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.runBlocking
 
 class ProjectWideFailFastTest : FunSpec() {
    init {
@@ -16,10 +17,13 @@ class ProjectWideFailFastTest : FunSpec() {
       }
 
       val listener = CollectingTestEngineListener()
-      TestEngineLauncher().withListener(listener)
-         .withProjectConfig(c)
-         .withClasses(A::class, B::class)
-         .execute()
+      runBlocking {
+         TestEngineLauncher().withListener(listener)
+            .withProjectConfig(c)
+            .withClasses(A::class, B::class)
+            .execute()
+      }
+
       listener.result("a").shouldNotBeNull().isError.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")
    }
