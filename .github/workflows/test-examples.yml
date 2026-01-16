@@ -14,11 +14,41 @@ concurrency:
    group: "test-examples: ${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
    cancel-in-progress: true
 
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+
 jobs:
-   test-kotest-examples:
-      name: Test kotest-examples
+   fetch-kotest-version:
+      name: Fetch Kotest snapshot version
       runs-on: ubuntu-latest
       if: github.repository == 'kotest/kotest'
+      outputs:
+         kotest-version: ${{ steps.kotest-version.outputs.version }}
+      steps:
+         - name: Fetch latest Kotest snapshot version
+           id: kotest-version
+           run: |
+              LATEST_SNAPSHOT=$(curl -s "https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml" \
+                | sed -n 's/.*<latest>\([^<]*\)<\/latest>.*/\1/p')
+              echo "version=$LATEST_SNAPSHOT" >> $GITHUB_OUTPUT
+              echo "Latest Kotest snapshot: $LATEST_SNAPSHOT"
+
+   linux:
+      name: Test ${{ matrix.project }} (Linux)
+      runs-on: ubuntu-latest
+      needs: fetch-kotest-version
+      strategy:
+         fail-fast: false
+         matrix:
+            project:
+               - kotest-allure
+               - kotest-android
+               - kotest-javascript
+               - kotest-jvm
+               - kotest-multiplatform
+               - kotest-native
+               - kotest-spring-webflux
+               - kotest-wasm
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v5
@@ -35,22 +65,90 @@ jobs:
          - name: Setup Gradle
            uses: gradle/actions/setup-gradle@v5
 
-         - name: Fetch latest Kotest snapshot version
-           id: kotest-version
+         - name: Run tests
+           working-directory: kotest-examples/${{ matrix.project }}
+           run: KOTEST_VERSION=${{ needs.fetch-kotest-version.outputs.kotest-version }} ./gradlew check
+
+         - name: Upload test reports
+           if: failure()
+           uses: actions/upload-artifact@v5
+           with:
+              name: test-reports-linux-${{ matrix.project }}-${{ github.run_id }}
+              path: kotest-examples/${{ matrix.project }}/**/build/reports/
+
+   macos:
+      name: Test ${{ matrix.project }} (macOS)
+      runs-on: macos-latest
+      needs: fetch-kotest-version
+      strategy:
+         fail-fast: false
+         matrix:
+            project:
+               - kotest-multiplatform
+               - kotest-native
+      steps:
+         - name: Checkout kotest-examples
+           uses: actions/checkout@v5
+           with:
+              repository: kotest/kotest-examples
+              path: kotest-examples
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "21"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Run tests
+           working-directory: kotest-examples/${{ matrix.project }}
+           run: KOTEST_VERSION=${{ needs.fetch-kotest-version.outputs.kotest-version }} ./gradlew check
+
+         - name: Upload test reports
+           if: failure()
+           uses: actions/upload-artifact@v5
+           with:
+              name: test-reports-macos-${{ matrix.project }}-${{ github.run_id }}
+              path: kotest-examples/${{ matrix.project }}/**/build/reports/
+
+   windows:
+      name: Test ${{ matrix.project }} (Windows)
+      runs-on: windows-latest
+      needs: fetch-kotest-version
+      strategy:
+         fail-fast: false
+         matrix:
+            project:
+               - kotest-multiplatform
+               - kotest-native
+      steps:
+         - name: Checkout kotest-examples
+           uses: actions/checkout@v5
+           with:
+              repository: kotest/kotest-examples
+              path: kotest-examples
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "17"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Run tests
+           working-directory: kotest-examples/${{ matrix.project }}
            run: |
-              LATEST_SNAPSHOT=$(curl -s "https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml" \
-                | sed -n 's/.*<latest>\([^<]*\)<\/latest>.*/\1/p')
-              echo "version=$LATEST_SNAPSHOT" >> $GITHUB_OUTPUT
-              echo "Latest Kotest snapshot: $LATEST_SNAPSHOT"
+              $env:KOTEST_VERSION="${{ needs.fetch-kotest-version.outputs.kotest-version }}"
+              ./gradlew check
 
-         - name: Run tests in kotest-examples
-           working-directory: kotest-examples/kotest-jvm
-           run: KOTEST_VERSION=${{ steps.kotest-version.outputs.version }} ./gradlew test
-
-#         - name: Upload test reports
-#           if: failure()
-#           uses: actions/upload-artifact@v5
-#           with:
-#              name: kotest-examples-test-reports-${{ github.run_id }}
-#              path: kotest-examples/kotest-jvm/build/reports/tests/
+         - name: Upload test reports
+           if: failure()
+           uses: actions/upload-artifact@v5
+           with:
+              name: test-reports-windows-${{ matrix.project }}-${{ github.run_id }}
+              path: kotest-examples/${{ matrix.project }}/**/build/reports/
 
