@@ -38,10 +38,8 @@ jobs:
          - name: Fetch latest Kotest snapshot version
            id: kotest-version
            run: |
-              LATEST_SNAPSHOT=$(curl -s "https://oss.sonatype.org/content/repositories/snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml" \
-                | grep -oP '(?<=<version>)[^<]+' \
-                | grep SNAPSHOT \
-                | tail -1)
+              LATEST_SNAPSHOT=$(curl -s "https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml" \
+                | sed -n 's/.*<latest>\([^<]*\)<\/latest>.*/\1/p')
               echo "version=$LATEST_SNAPSHOT" >> $GITHUB_OUTPUT
               echo "Latest Kotest snapshot: $LATEST_SNAPSHOT"
 
