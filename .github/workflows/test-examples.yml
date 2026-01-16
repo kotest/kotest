@@ -64,10 +64,6 @@ jobs:
          - name: Get published version
            id: get-version
            run: |
-              echo "Listing ~/.m2/repository/io/kotest/:"
-              ls -la ~/.m2/repository/io/kotest/ | head -20 || echo "Directory does not exist"
-              echo "Listing kotest-framework-engine:"
-              ls -la ~/.m2/repository/io/kotest/kotest-framework-engine/ || echo "Directory does not exist"
               VERSION=$(ls ~/.m2/repository/io/kotest/kotest-framework-engine/ | grep -E '^[0-9]' | head -1)
               echo "version=$VERSION" >> $GITHUB_OUTPUT
               echo "Published Kotest version: $VERSION"
@@ -242,6 +238,7 @@ jobs:
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
+              KOTEST_GRADLE_PLUGIN_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
 
          - name: Upload test reports
@@ -306,6 +303,7 @@ jobs:
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
+              KOTEST_GRADLE_PLUGIN_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
 
          - name: Upload test reports
@@ -372,6 +370,7 @@ jobs:
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
+              KOTEST_GRADLE_PLUGIN_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
 
          - name: Upload test reports
