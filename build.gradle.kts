@@ -42,6 +42,16 @@ val publishToAppropriateCentralRepository by tasks.registering {
    }
 }
 
+val publishToMavenLocalAppropriately by tasks.registering {
+   group = "publishing"
+   description = "Publishes all enabled publications to Maven Local based on kotest_enabledPublicationNamePrefixes"
+   dependsOn(
+      subprojects.mapNotNull { subproject ->
+         subproject.tasks.findByName("publishToMavenLocal")
+      }
+   )
+}
+
 // List all projects which should be included in publishing
 dependencies {
 
