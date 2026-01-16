@@ -38,7 +38,9 @@ object Ci {
     * We only include watchos, tvsos and ios builds if it's a non-CI build or if it's master build
     * due to the limited availability of the github macos runners
     */
-   val shouldRunWatchTvIosModules = !isCI || isMaster
+   // TODO: revert this after testing
+   // val shouldRunWatchTvIosModules = !isCI || isMaster
+   val shouldRunWatchTvIosModules = true
 
    /**
     * Property to flag the build as JVM only, can be used to run checks on local machine much faster.

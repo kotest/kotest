@@ -83,9 +83,6 @@ jobs:
       name: Publish Kotest to Maven Local (macOS)
       runs-on: macos-latest
       if: github.repository == 'kotest/kotest'
-      env:
-         # Force iOS/tvOS/watchOS targets to be enabled (normally only on master) - TODO remove once we run this on master only
-         GITHUB_REF_NAME: master
       steps:
          - name: Checkout kotest
            uses: actions/checkout@v5
