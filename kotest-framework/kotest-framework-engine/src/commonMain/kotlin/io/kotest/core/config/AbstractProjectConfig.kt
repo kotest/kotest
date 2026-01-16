@@ -168,7 +168,7 @@ abstract class AbstractProjectConfig {
    open val testCaseOrder: TestCaseOrder? = null
 
    /**
-    * Sets the seed that is used when randomizing specs and tests.
+    * Sets the seed used when randomizing specs and tests.
     */
    open val randomOrderSeed: Long? = null
 
