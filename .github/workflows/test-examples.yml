@@ -165,7 +165,7 @@ jobs:
    linux:
       name: Test ${{ matrix.project }} (Linux)
       runs-on: ubuntu-latest
-      needs: publish-local-linux
+      needs: [publish-local-linux, publish-local-macos, publish-local-windows]
       strategy:
          fail-fast: false
          matrix:
@@ -185,10 +185,22 @@ jobs:
               repository: kotest/kotest-examples
               path: kotest-examples
 
-         - name: Download Maven Local artifacts
+         - name: Download Linux Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download macOS Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download Windows Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-windows
               path: ~/.m2/repository/io/kotest/
 
          - name: Setup JDK
@@ -216,7 +228,7 @@ jobs:
    macos:
       name: Test ${{ matrix.project }} (macOS)
       runs-on: macos-latest
-      needs: [publish-local-linux, publish-local-macos]
+      needs: [publish-local-linux, publish-local-macos, publish-local-windows]
       strategy:
          fail-fast: false
          matrix:
@@ -230,10 +242,22 @@ jobs:
               repository: kotest/kotest-examples
               path: kotest-examples
 
-         - name: Download Maven Local artifacts
+         - name: Download Linux Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download Windows Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-windows
               path: ~/.m2/repository/io/kotest/
 
          - name: Setup JDK
@@ -261,7 +285,7 @@ jobs:
    windows:
       name: Test ${{ matrix.project }} (Windows)
       runs-on: windows-latest
-      needs: [publish-local-linux, publish-local-windows]
+      needs: [publish-local-linux, publish-local-macos, publish-local-windows]
       strategy:
          fail-fast: false
          matrix:
@@ -275,7 +299,19 @@ jobs:
               repository: kotest/kotest-examples
               path: kotest-examples
 
-         - name: Download Maven Local artifacts
+         - name: Download Linux Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download macOS Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
