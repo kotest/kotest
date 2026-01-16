@@ -4,7 +4,7 @@ import io.kotest.core.test.TestCase
 import kotlin.reflect.KClass
 
 /**
- * A [DisplayNameFormatter] is an responsible for formatting test and spec names
+ * A [DisplayNameFormatter] is responsible for formatting test and spec names
  * for display or reporting purposes.
  */
 interface DisplayNameFormatter {
