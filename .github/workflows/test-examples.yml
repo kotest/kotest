@@ -99,6 +99,7 @@ jobs:
          - name: Publish macOS to Maven Local
            run: >
               ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
               -P"kotest_enableKotlinNative=true"
               -P"kotest_enabledPublicationNamePrefixes=macOS"
               --no-configuration-cache
@@ -106,6 +107,7 @@ jobs:
          - name: Publish iOS to Maven Local
            run: >
               ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
               -P"kotest_enableKotlinNative=true"
               -P"kotest_enabledPublicationNamePrefixes=iOS"
               --no-configuration-cache
@@ -113,6 +115,7 @@ jobs:
          - name: Publish tvOS to Maven Local
            run: >
               ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
               -P"kotest_enableKotlinNative=true"
               -P"kotest_enabledPublicationNamePrefixes=tvOS"
               --no-configuration-cache
@@ -120,9 +123,15 @@ jobs:
          - name: Publish watchOS to Maven Local
            run: >
               ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
               -P"kotest_enableKotlinNative=true"
               -P"kotest_enabledPublicationNamePrefixes=watchOS"
               --no-configuration-cache
+
+         - name: Debug - List published iOS artifacts
+           run: |
+              echo "=== Checking for iOS artifacts ==="
+              ls ~/.m2/repository/io/kotest/ | grep -i ios || echo "No iOS artifacts found"
 
          - name: Upload Maven Local artifacts
            uses: actions/upload-artifact@v5
@@ -151,6 +160,7 @@ jobs:
          - name: Publish mingw to Maven Local
            run: >
               ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
               -P"kotest_enableKotlinNative=true"
               -P"kotest_enabledPublicationNamePrefixes=mingw"
               --no-configuration-cache
@@ -189,19 +199,35 @@ jobs:
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
-              path: ~/.m2/repository/io/kotest/
+              path: /tmp/maven-linux/
 
          - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
-              path: ~/.m2/repository/io/kotest/
+              path: /tmp/maven-macos/
 
          - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
-              path: ~/.m2/repository/io/kotest/
+              path: /tmp/maven-windows/
+
+         - name: Merge Maven Local artifacts
+           run: |
+              mkdir -p ~/.m2/repository/io/kotest/
+              cp -r /tmp/maven-linux/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
+              cp -r /tmp/maven-macos/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
+              cp -r /tmp/maven-windows/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
+
+         - name: Debug - List downloaded artifacts
+           run: |
+              echo "=== Listing kotest artifacts ==="
+              ls -la ~/.m2/repository/io/kotest/ | head -50
+              echo "=== Checking for iOS artifacts ==="
+              ls ~/.m2/repository/io/kotest/ | grep -i ios || echo "No iOS artifacts found"
+              echo "=== Checking kotest-framework-engine variants ==="
+              ls ~/.m2/repository/io/kotest/ | grep kotest-framework-engine
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -246,19 +272,26 @@ jobs:
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
-              path: ~/.m2/repository/io/kotest/
+              path: /tmp/maven-linux/
 
          - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
-              path: ~/.m2/repository/io/kotest/
+              path: /tmp/maven-macos/
 
          - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
-              path: ~/.m2/repository/io/kotest/
+              path: /tmp/maven-windows/
+
+         - name: Merge Maven Local artifacts
+           run: |
+              mkdir -p ~/.m2/repository/io/kotest/
+              cp -r /tmp/maven-linux/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
+              cp -r /tmp/maven-macos/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
+              cp -r /tmp/maven-windows/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -303,19 +336,28 @@ jobs:
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
-              path: ~/.m2/repository/io/kotest/
+              path: C:\tmp\maven-linux
 
          - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
-              path: ~/.m2/repository/io/kotest/
+              path: C:\tmp\maven-macos
 
          - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
-              path: ~/.m2/repository/io/kotest/
+              path: C:\tmp\maven-windows
+
+         - name: Merge Maven Local artifacts
+           shell: pwsh
+           run: |
+              $m2Path = "$env:USERPROFILE\.m2\repository\io\kotest"
+              New-Item -ItemType Directory -Force -Path $m2Path | Out-Null
+              Copy-Item -Path "C:\tmp\maven-linux\*" -Destination $m2Path -Recurse -Force -ErrorAction SilentlyContinue
+              Copy-Item -Path "C:\tmp\maven-macos\*" -Destination $m2Path -Recurse -Force -ErrorAction SilentlyContinue
+              Copy-Item -Path "C:\tmp\maven-windows\*" -Destination $m2Path -Recurse -Force -ErrorAction SilentlyContinue
 
          - name: Setup JDK
            uses: actions/setup-java@v5
