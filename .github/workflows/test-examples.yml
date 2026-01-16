@@ -3,9 +3,13 @@ name: test-kotest-examples
 on:
    # pull_request just for testing purposes, will go away
    pull_request:
+   # Uncomment below to run on merge to master instead of on PRs
    # push:
    #    branches:
    #       - master
+   # Uncomment below to run at midnight Chicago time (6 AM UTC during CST, 5 AM UTC during CDT)
+   # schedule:
+   #    - cron: '0 6 * * *'
 
 permissions:
    contents: read
