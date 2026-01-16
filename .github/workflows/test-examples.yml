@@ -3,11 +3,7 @@ name: test-kotest-examples
 on:
    # pull_request just for testing purposes, will go away
    pull_request:
-   # Uncomment below to run on merge to master instead of on PRs
-   # push:
-   #    branches:
-   #       - master
-   # Uncomment below to run at midnight Chicago time (6 AM UTC during CST, 5 AM UTC during CDT)
+   # Uncomment below to run at midnight
    # schedule:
    #    - cron: '0 6 * * *'
 
@@ -124,11 +120,6 @@ jobs:
               -P"kotest_enabledPublicationNamePrefixes=watchOS"
               --no-configuration-cache
 
-         - name: Debug - List published iOS artifacts
-           run: |
-              echo "=== Checking for iOS artifacts ==="
-              ls ~/.m2/repository/io/kotest/ | grep -i ios || echo "No iOS artifacts found"
-
          - name: Upload Maven Local artifacts
            uses: actions/upload-artifact@v5
            with:
@@ -195,35 +186,19 @@ jobs:
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
-              path: /tmp/maven-linux/
+              path: ~/.m2/repository/io/kotest/
 
          - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
-              path: /tmp/maven-macos/
+              path: ~/.m2/repository/io/kotest/
 
          - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
-              path: /tmp/maven-windows/
-
-         - name: Merge Maven Local artifacts
-           run: |
-              mkdir -p ~/.m2/repository/io/kotest/
-              cp -r /tmp/maven-linux/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
-              cp -r /tmp/maven-macos/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
-              cp -r /tmp/maven-windows/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
-
-         - name: Debug - List downloaded artifacts
-           run: |
-              echo "=== Listing kotest artifacts ==="
-              ls -la ~/.m2/repository/io/kotest/ | head -50
-              echo "=== Checking for iOS artifacts ==="
-              ls ~/.m2/repository/io/kotest/ | grep -i ios || echo "No iOS artifacts found"
-              echo "=== Checking kotest-framework-engine variants ==="
-              ls ~/.m2/repository/io/kotest/ | grep kotest-framework-engine
+              path: ~/.m2/repository/io/kotest/
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -238,7 +213,6 @@ jobs:
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
-              KOTEST_GRADLE_PLUGIN_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
 
          - name: Upload test reports
@@ -269,26 +243,19 @@ jobs:
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
-              path: /tmp/maven-linux/
+              path: ~/.m2/repository/io/kotest/
 
          - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
-              path: /tmp/maven-macos/
+              path: ~/.m2/repository/io/kotest/
 
          - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
-              path: /tmp/maven-windows/
-
-         - name: Merge Maven Local artifacts
-           run: |
-              mkdir -p ~/.m2/repository/io/kotest/
-              cp -r /tmp/maven-linux/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
-              cp -r /tmp/maven-macos/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
-              cp -r /tmp/maven-windows/* ~/.m2/repository/io/kotest/ 2>/dev/null || true
+              path: ~/.m2/repository/io/kotest/
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -303,7 +270,6 @@ jobs:
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
-              KOTEST_GRADLE_PLUGIN_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
 
          - name: Upload test reports
@@ -334,28 +300,19 @@ jobs:
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-linux
-              path: C:\tmp\maven-linux
+              path: ~/.m2/repository/io/kotest/
 
          - name: Download macOS Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-macos
-              path: C:\tmp\maven-macos
+              path: ~/.m2/repository/io/kotest/
 
          - name: Download Windows Maven Local artifacts
            uses: actions/download-artifact@v5
            with:
               name: kotest-maven-local-windows
-              path: C:\tmp\maven-windows
-
-         - name: Merge Maven Local artifacts
-           shell: pwsh
-           run: |
-              $m2Path = "$env:USERPROFILE\.m2\repository\io\kotest"
-              New-Item -ItemType Directory -Force -Path $m2Path | Out-Null
-              Copy-Item -Path "C:\tmp\maven-linux\*" -Destination $m2Path -Recurse -Force -ErrorAction SilentlyContinue
-              Copy-Item -Path "C:\tmp\maven-macos\*" -Destination $m2Path -Recurse -Force -ErrorAction SilentlyContinue
-              Copy-Item -Path "C:\tmp\maven-windows\*" -Destination $m2Path -Recurse -Force -ErrorAction SilentlyContinue
+              path: ~/.m2/repository/io/kotest/
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -370,7 +327,6 @@ jobs:
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
-              KOTEST_GRADLE_PLUGIN_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
 
          - name: Upload test reports
