@@ -1,11 +1,8 @@
 name: test-kotest-examples
 
 on:
-   # pull_request just for testing purposes, will go away
-   pull_request:
-   # Uncomment below to run at midnight
-   # schedule:
-   #    - cron: '0 6 * * *'
+ schedule:
+    - cron: '0 6 * * *'
 
 permissions:
    contents: read
