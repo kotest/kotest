@@ -41,17 +41,33 @@ jobs:
          - name: Setup Gradle
            uses: gradle/actions/setup-gradle@v5
 
-         - name: Publish to Maven Local
+         - name: Publish KMP and JVM to Maven Local
            run: >
-              ./gradlew publishToMavenLocalAppropriately
+              ./gradlew publishToMavenLocal
+              -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm"
+              --no-configuration-cache
+
+         - name: Publish JS and Wasm to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
               -P"kotest_enableKotlinJs=true"
+              -P"kotest_enabledPublicationNamePrefixes=js,wasm"
+              --no-configuration-cache
+
+         - name: Publish Linux and Android Native to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
               -P"kotest_enableKotlinNative=true"
-              -P"kotest_enabledPublicationNamePrefixes=jvm,js,wasmJs,linuxX64,linuxArm64,androidNative"
+              -P"kotest_enabledPublicationNamePrefixes=linux,android"
               --no-configuration-cache
 
          - name: Get published version
            id: get-version
            run: |
+              echo "Listing ~/.m2/repository/io/kotest/:"
+              ls -la ~/.m2/repository/io/kotest/ | head -20 || echo "Directory does not exist"
+              echo "Listing kotest-framework-engine:"
+              ls -la ~/.m2/repository/io/kotest/kotest-framework-engine/ || echo "Directory does not exist"
               VERSION=$(ls ~/.m2/repository/io/kotest/kotest-framework-engine/ | grep -E '^[0-9]' | head -1)
               echo "version=$VERSION" >> $GITHUB_OUTPUT
               echo "Published Kotest version: $VERSION"
@@ -80,12 +96,32 @@ jobs:
          - name: Setup Gradle
            uses: gradle/actions/setup-gradle@v5
 
-         - name: Publish to Maven Local
+         - name: Publish macOS to Maven Local
            run: >
-              ./gradlew publishToMavenLocalAppropriately
-              -P"kotest_enableKotlinJs=true"
+              ./gradlew publishToMavenLocal
               -P"kotest_enableKotlinNative=true"
-              -P"kotest_enabledPublicationNamePrefixes=macOS,iOS,tvOS,watchOS"
+              -P"kotest_enabledPublicationNamePrefixes=macOS"
+              --no-configuration-cache
+
+         - name: Publish iOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=iOS"
+              --no-configuration-cache
+
+         - name: Publish tvOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=tvOS"
+              --no-configuration-cache
+
+         - name: Publish watchOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=watchOS"
               --no-configuration-cache
 
          - name: Upload Maven Local artifacts
@@ -112,10 +148,9 @@ jobs:
          - name: Setup Gradle
            uses: gradle/actions/setup-gradle@v5
 
-         - name: Publish to Maven Local
+         - name: Publish mingw to Maven Local
            run: >
-              ./gradlew publishToMavenLocalAppropriately
-              -P"kotest_enableKotlinJs=true"
+              ./gradlew publishToMavenLocal
               -P"kotest_enableKotlinNative=true"
               -P"kotest_enabledPublicationNamePrefixes=mingw"
               --no-configuration-cache
