@@ -1,0 +1,58 @@
+name: test-kotest-examples
+
+on:
+   # pull_request just for testing purposes, will go away
+   pull_request:
+   # push:
+   #    branches:
+   #       - master
+
+permissions:
+   contents: read
+
+concurrency:
+   group: "test-examples: ${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
+   cancel-in-progress: true
+
+jobs:
+   test-kotest-examples:
+      name: Test kotest-examples
+      runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
+      steps:
+         - name: Checkout kotest-examples
+           uses: actions/checkout@v5
+           with:
+              repository: kotest/kotest-examples
+              path: kotest-examples
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "21"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Fetch latest Kotest snapshot version
+           id: kotest-version
+           run: |
+              LATEST_SNAPSHOT=$(curl -s "https://oss.sonatype.org/content/repositories/snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml" \
+                | grep -oP '(?<=<version>)[^<]+' \
+                | grep SNAPSHOT \
+                | tail -1)
+              echo "version=$LATEST_SNAPSHOT" >> $GITHUB_OUTPUT
+              echo "Latest Kotest snapshot: $LATEST_SNAPSHOT"
+
+         - name: Run tests in kotest-examples
+           working-directory: kotest-examples/kotest-jvm
+           run: KOTEST_VERSION=${{ steps.kotest-version.outputs.version }} ./gradlew test
+
+#         - name: Upload test reports
+#           if: failure()
+#           uses: actions/upload-artifact@v5
+#           with:
+#              name: kotest-examples-test-reports-${{ github.run_id }}
+#              path: kotest-examples/kotest-jvm/build/reports/tests/
+
