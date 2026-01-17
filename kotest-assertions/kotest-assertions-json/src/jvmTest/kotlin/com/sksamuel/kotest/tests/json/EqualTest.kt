@@ -11,6 +11,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
@@ -743,15 +744,21 @@ expected:<{
             }
             """
          a.shouldEqualJson(b)
-         shouldFail {
+         val message = shouldFail {
             a shouldEqualJson {
                propertyOrder = PropertyOrder.Strict
                b
             }
-         }.shouldHaveMessage(
-            """The top level object expected field 0 to be 'sku' but was 'id'
+         }.message
 
-expected:<{
+         message.shouldContainInOrder(
+            "The top level object expected field 0 to be 'sku' but was 'id'",
+            "At 'id' expected string but was number",
+            "The top level object expected field 1 to be 'id' but was 'title'",
+            "At 'title' expected number but was string",
+            "The top level object expected field 2 to be 'title' but was 'sku'",
+            "At 'sku' expected 'Default Title' but was 'RIND-TOTEO-001-MCF'",
+            """expected:<{
   "sku": "RIND-TOTEO-001-MCF",
   "id": 32672932069455,
   "title": "Default Title",
