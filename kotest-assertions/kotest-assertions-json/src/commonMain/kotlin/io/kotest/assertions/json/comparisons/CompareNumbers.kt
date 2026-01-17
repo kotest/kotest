@@ -10,13 +10,13 @@ internal fun compareNumbers(
   expected: JsonNode.NumberNode,
   actual: JsonNode,
   options: CompareJsonOptions
-): JsonError? {
+): List<JsonError> {
    return when (actual) {
       is JsonNode.NumberNode -> {
          when (options.numberFormat) {
             NumberFormat.Strict -> {
-               if (expected.content != actual.content) JsonError.UnequalValues(path, expected.content, actual.content)
-               else null
+               if (expected.content != actual.content) listOf(JsonError.UnequalValues(path, expected.content, actual.content))
+               else emptyList()
             }
 
             NumberFormat.Lenient -> compareNumberNodes(path, expected, actual)
@@ -29,9 +29,9 @@ internal fun compareNumbers(
            expected,
            actual.toNumberNode()
          )
-         else JsonError.IncompatibleTypes(path, expected, actual)
+         else listOf(JsonError.IncompatibleTypes(path, expected, actual))
       }
 
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
+      else -> listOf(JsonError.IncompatibleTypes(path, expected, actual))
    }
 }
