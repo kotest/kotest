@@ -11,6 +11,7 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -773,6 +774,50 @@ expected:<{
   "taxable": true,
   "featured_image": null
 }>"""
+         )
+      }
+
+      test("find all differences, top level and nested - do not stop at first diff") {
+         val a = """
+            {
+            "name": "stuff",
+            "box": {
+              "length": 10,
+               "width": 20,
+               "attributes": {
+                   "fragile": false
+               }
+            },
+            "items": [1, 2],
+            "notes": "2024"
+            }
+         """.trimIndent()
+         val b = """
+            {
+            "name": "stuff",
+            "box": {
+              "length": 10,
+               "width": 15,
+               "attributes": {
+                   "fragile": true,
+                   "hazmat": false
+               }
+            },
+            "items": [1, 3],
+            "description": "trinkets"
+            }
+         """.trimIndent()
+
+         val message = shouldFail {
+            a.shouldEqualJson(b)
+         }.message
+
+         message.shouldContainInOrder(
+            "The top level object has extra field(s) [notes] and missing field(s) [description]",
+            "At 'box.width' expected 15 but was 20",
+            "At 'box.attributes' object was missing expected field(s) [hazmat]",
+            "At 'box.attributes.fragile' expected true but was false",
+            "At 'items.[1]' expected 3 but was 2",
          )
       }
    }
