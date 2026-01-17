@@ -12,16 +12,16 @@ internal fun compare(
   expected: JsonNode,
   actual: JsonNode,
   options: CompareJsonOptions
-): JsonError? {
+): List<JsonError> {
    return when (expected) {
       is JsonNode.ObjectNode -> when (actual) {
          is JsonNode.ObjectNode -> compareObjects(path, expected, actual, options)
-         else -> JsonError.ExpectedObject(path, actual)
+         else -> listOf(JsonError.ExpectedObject(path, actual))
       }
 
       is JsonNode.ArrayNode -> when (actual) {
          is JsonNode.ArrayNode -> compareArrays(path, expected, actual, options)
-         else -> JsonError.ExpectedArray(path, actual)
+         else -> listOf(JsonError.ExpectedArray(path, actual))
       }
 
       is JsonNode.BooleanNode -> compareBoolean(path, expected, actual, options)
