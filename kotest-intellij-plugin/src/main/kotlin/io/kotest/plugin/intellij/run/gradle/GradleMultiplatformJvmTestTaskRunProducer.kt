@@ -158,8 +158,35 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          runConfiguration.settings.taskNames = tasksWithFilter.toList()
          runConfiguration.settings.scriptParameters = if (tasks.size > 1) "--continue" else ""
 
+         setOrRemoveDataTestEnvVarIfNeeded(runConfiguration, testContext)
          startRunnable.run()
       }
+   }
+
+   /**
+    * Sets or removes the KOTEST_TAGS environment variable for data test filtering.
+    * If the test context has a data test tag, it sets KOTEST_TAGS to that tag.
+    * If not, it removes KOTEST_TAGS from the environment variables.
+    * Have to rely on env vars here because Gradle system properties (-D) do not propagate to the test JVM.
+    *
+    * @param runConfiguration The Gradle run configuration to modify.
+    * @param testContext The test context containing the data test tag.
+    */
+   private fun setOrRemoveDataTestEnvVarIfNeeded(
+      runConfiguration: GradleRunConfiguration,
+      testContext: TestContext
+   ) {
+      testContext.dataTestTag.takeIf { it != null }
+         ?.let {
+            val envVars = runConfiguration.settings.env.toMutableMap()
+            envVars["KOTEST_TAGS"] = testContext.dataTestTag
+            runConfiguration.settings.env = envVars
+         }
+         ?: {
+            val envVars = runConfiguration.settings.env.toMutableMap()
+            envVars.remove("KOTEST_TAGS")
+            runConfiguration.settings.env = envVars
+         }
    }
 
    @OptIn(KaImplementationDetail::class)
@@ -186,10 +213,15 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          }
       }
 
-      val filter = GradleTestFilterBuilder.builder()
+      val filterBuilder = GradleTestFilterBuilder.builder()
          .withSpec(spec)
          .withTest(test)
-         .build()
+
+      val filter = filterBuilder.build()
+
+      // For data tests, we use tag-based filtering instead of test path filtering
+      val tagExpression = filterBuilder.dataTestTagExpression().takeIf { filterBuilder.isDataTestFilter() }
+
 
       // the name will appear in two places - it will be in the run icon chooser in the gutter Run/Debug/Profile etc.,
       // and will also be the name of the configuration in the run configs drop down
@@ -199,7 +231,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          .withTest(test)
          .build()
 
-      return TestContext(runName, filter)
+      return TestContext(runName, filter, tagExpression)
    }
 
    /**
@@ -208,5 +240,6 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
    data class TestContext(
       val runName: String,
       val filter: String, // eg --tests "com.sksamuel.MySpec/a test"
+      val dataTestTag: String? = null, // eg "kotest.data.{lineNumber}" for data tests
    )
 }

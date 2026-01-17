@@ -92,6 +92,29 @@ data class Test(
     * Returns the test path without delimiters for display to a user.
     */
    fun readableTestPath() = path().joinToString(" ") { it.name }
+
+   /**
+    * Returns the 1-based line number where this test is defined in the source file.
+    * Returns null if the line number cannot be determined.
+    */
+   fun lineNumber(): Int? {
+      val file = psi.containingFile ?: return null
+      val document = file.viewProvider.document ?: return null
+      val offset = psi.textOffset
+      // Document line numbers are 0-based, we return 1-based to match source file
+      return document.getLineNumber(offset) + 1
+   }
+
+   /**
+    * Returns the data test tag for this test based on its line number.
+    * Format: "kotest.data.{lineNumber}"
+    * Returns null if this is not a data test or line number cannot be determined.
+    */
+   fun dataTestTag(): String? {
+      if (!isDataTest) return null
+      val line = lineNumber() ?: return null
+      return "kotest.data.$line"
+   }
 }
 
 enum class TestType {

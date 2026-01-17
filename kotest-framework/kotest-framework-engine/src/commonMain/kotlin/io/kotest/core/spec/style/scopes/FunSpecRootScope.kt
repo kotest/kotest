@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
@@ -15,6 +17,13 @@ interface FunSpecRootScope : RootScope {
     */
    fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       context(name, TestXMethod.NONE, test)
+   }
+
+   /**
+    * Adds a container [RootTest] that uses a [FunSpecContainerScope] as the test context and with config passed as a param.
+    */
+   fun context(name: String, config: TestConfig, test: suspend FunSpecContainerScope.() -> Unit) {
+      context(name, TestXMethod.NONE, test, config)
    }
 
    /**
@@ -57,6 +66,13 @@ interface FunSpecRootScope : RootScope {
    }
 
    /**
+    * Adds a [RootTest], with the given name and with config passed as a param.
+    */
+   fun test(name: String, config: TestConfig, test: suspend TestScope.() -> Unit, ) {
+      test(name, TestXMethod.NONE, test, config)
+   }
+
+   /**
     * Adds a focused [RootTest], with the given name and default config.
     */
    fun ftest(name: String, test: suspend TestScope.() -> Unit) {
@@ -78,20 +94,20 @@ interface FunSpecRootScope : RootScope {
       )
    }
 
-   private fun test(name: String, xMethod: TestXMethod, test: suspend TestScope.() -> Unit) {
+   private fun test(name: String, xMethod: TestXMethod, test: suspend TestScope.() -> Unit, config: TestConfig? = null) {
       addTest(
          testName = TestNameBuilder.builder(name).build(),
          xmethod = xMethod,
-         config = null,
+         config = config,
          test = test,
       )
    }
 
-   private fun context(name: String, xmethod: TestXMethod, test: suspend FunSpecContainerScope.() -> Unit) =
+   private fun context(name: String, xmethod: TestXMethod, test: suspend FunSpecContainerScope.() -> Unit, config: TestConfig? = null) =
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("context ").build(),
          xmethod = xmethod,
-         config = null
+         config = config
       ) { FunSpecContainerScope(this).test() }
 
    private fun context(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<FunSpecContainerScope> =
