@@ -5,9 +5,6 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
  * Builds the --tests filter used by gradle to run a subset of tests.
- *
- * For data tests, this builder generates a tag filter instead of a test path filter,
- * since data test names are only known at runtime.
  */
 data class GradleTestFilterBuilder(
    private val spec: KtClassOrObject?,
@@ -32,8 +29,11 @@ data class GradleTestFilterBuilder(
          if (spec != null) {
             append(spec.fqName!!.asString())
          }
-         // For data tests, we don't append the test path since names are runtime-generated.
-         // Instead, the caller should use dataTestTagExpression() to filter by tag.
+         /**
+          * For data tests, we don't append the test path since names are runtime-generated.
+          * Instead, we use tag based filtering to select data tests, handled via
+          * [GradleMultiplatformJvmTestTaskRunProducer.setOrRemoveDataTestEnvVarIfNeeded] and its callers.
+          */
          if (test != null && !test.isDataTest) {
             append(".")
             append(test.path().joinToString(" -- ") { it.name })
