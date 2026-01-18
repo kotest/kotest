@@ -203,6 +203,7 @@ fun <T> FunSpecRootScope.withContexts(
    ts: Iterable<T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    ts.forEach { t ->
       context(
          nameFn(t),
@@ -210,7 +211,7 @@ fun <T> FunSpecRootScope.withContexts(
             tags = setOf(
                DataTestTag,
                DataTestTagWithLineNumber(
-                  getDataTestCallSiteLineNumber()
+                  lineNumber
                )
             )
          )
@@ -228,6 +229,7 @@ fun <T> FunSpecRootScope.withTests(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    ts.forEach { t ->
       test(
          nameFn(t),
@@ -235,7 +237,7 @@ fun <T> FunSpecRootScope.withTests(
             tags = setOf(
                DataTestTag,
                DataTestTagWithLineNumber(
-                  getDataTestCallSiteLineNumber()
+                  lineNumber
                )
             )
          )
@@ -256,13 +258,15 @@ fun <T> FunSpecRootScope.withData(data: Map<String, T>, test: suspend FunSpecCon
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    data.forEach { (name, t) ->
       context(
-         name, TestConfig(
+         name,
+         TestConfig(
             tags = setOf(
                DataTestTag,
                DataTestTagWithLineNumber(
-                  getDataTestCallSiteLineNumber()
+                  lineNumber
                )
             )
          )
@@ -275,13 +279,15 @@ fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpe
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FunSpecRootScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    data.forEach { (name, t) ->
       test(
-         name, TestConfig(
+         name,
+         TestConfig(
             tags = setOf(
                DataTestTag,
                DataTestTagWithLineNumber(
-                  getDataTestCallSiteLineNumber()
+                  lineNumber
                )
             )
          )

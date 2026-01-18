@@ -21,7 +21,9 @@ interface FunSpecRootScope : RootScope {
 
    /**
     * Adds a container [RootTest] that uses a [FunSpecContainerScope] as the test context and with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
     */
+   @KotestInternal
    fun context(name: String, config: TestConfig, test: suspend FunSpecContainerScope.() -> Unit) {
       context(name, TestXMethod.NONE, test, config)
    }
@@ -67,8 +69,10 @@ interface FunSpecRootScope : RootScope {
 
    /**
     * Adds a [RootTest], with the given name and with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
     */
-   fun test(name: String, config: TestConfig, test: suspend TestScope.() -> Unit, ) {
+   @KotestInternal
+   fun test(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) {
       test(name, TestXMethod.NONE, test, config)
    }
 
