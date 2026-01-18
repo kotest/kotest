@@ -47,18 +47,18 @@ private fun equalJsonTree(
    options: CompareJsonOptions
 ): Matcher<JsonTree> =
    Matcher { value ->
-      val error = compare(
+      val errors = compare(
          path = listOf(),
          expected = expected.root,
          actual = value.root,
          options,
-      )?.asString()
+      )
 
       DiffableMatcherResult(
-         passed = error == null,
+         passed = errors.isEmpty(),
          actual = { StringPrint.printUnquoted(value.raw) },
          expected = { StringPrint.printUnquoted(expected.raw) },
-         failureMessageFn = { "$error\n" },
+         failureMessageFn = { "${errors.joinToString("\n"){it.asString()}}\n" },
          negatedFailureMessageFn = { "Expected values to not match" },
       )
    }
