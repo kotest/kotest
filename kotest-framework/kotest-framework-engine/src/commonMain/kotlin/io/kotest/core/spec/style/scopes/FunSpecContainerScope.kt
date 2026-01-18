@@ -1,10 +1,12 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.ExperimentalKotest
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -27,6 +29,19 @@ class FunSpecContainerScope(
          TestNameBuilder.builder(name).build(),
          xmethod = TestXMethod.NONE,
          null
+      ) { FunSpecContainerScope(this).test() }
+   }
+
+   /**
+    * Adds a 'context' container test as a child of the current test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun context(name: String,config: TestConfig, test: suspend FunSpecContainerScope.() -> Unit) {
+      registerContainer(
+         TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.NONE,
+         config
       ) { FunSpecContainerScope(this).test() }
    }
 
@@ -131,6 +146,15 @@ class FunSpecContainerScope(
     */
    suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(name = TestNameBuilder.builder(name).build(), xmethod = TestXMethod.NONE, config = null, test = test)
+   }
+
+   /**
+    * Adds a test case to this context with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun test(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) {
+      registerTest(name = TestNameBuilder.builder(name).build(), xmethod = TestXMethod.NONE, config = config, test = test)
    }
 
    /**

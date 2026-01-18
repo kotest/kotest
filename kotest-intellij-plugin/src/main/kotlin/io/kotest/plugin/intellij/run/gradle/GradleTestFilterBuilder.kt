@@ -29,7 +29,12 @@ data class GradleTestFilterBuilder(
          if (spec != null) {
             append(spec.fqName!!.asString())
          }
-         if (test != null) {
+         /**
+          * For data tests, we don't append the test path since names are runtime-generated.
+          * Instead, we use tag based filtering to select data tests, handled via
+          * [GradleMultiplatformJvmTestTaskRunProducer.setOrRemoveDataTestEnvVarIfNeeded] and its callers.
+          */
+         if (test != null && !test.isDataTest) {
             append(".")
             append(test.path().joinToString(" -- ") { it.name })
          }

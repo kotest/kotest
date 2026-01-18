@@ -3,6 +3,7 @@ package io.kotest.datatest
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 import io.kotest.core.spec.style.scopes.FunSpecRootScope
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.stable.StableIdents
 
 /**
@@ -202,8 +203,19 @@ fun <T> FunSpecRootScope.withContexts(
    ts: Iterable<T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(
+         nameFn(t),
+         TestConfig(
+            tags = setOf(
+               DataTestTag,
+               DataTestTagWithLineNumber(
+                  lineNumber
+               )
+            )
+         )
+      ) { this.test(t) }
    }
 }
 
@@ -217,8 +229,19 @@ fun <T> FunSpecRootScope.withTests(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    ts.forEach { t ->
-      test(nameFn(t)) { this.test(t) }
+      test(
+         nameFn(t),
+         TestConfig(
+            tags = setOf(
+               DataTestTag,
+               DataTestTagWithLineNumber(
+                  lineNumber
+               )
+            )
+         )
+      ) { this.test(t) }
    }
 }
 
@@ -235,8 +258,19 @@ fun <T> FunSpecRootScope.withData(data: Map<String, T>, test: suspend FunSpecCon
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(
+         name,
+         TestConfig(
+            tags = setOf(
+               DataTestTag,
+               DataTestTagWithLineNumber(
+                  lineNumber
+               )
+            )
+         )
+      ) { this.test(t) }
    }
 }
 
@@ -245,7 +279,18 @@ fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpe
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FunSpecRootScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
+   val lineNumber = getDataTestCallSiteLineNumber()
    data.forEach { (name, t) ->
-      test(name) { this.test(t) }
+      test(
+         name,
+         TestConfig(
+            tags = setOf(
+               DataTestTag,
+               DataTestTagWithLineNumber(
+                  lineNumber
+               )
+            )
+         )
+      ) { this.test(t) }
    }
 }
