@@ -15,6 +15,7 @@ import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfLhsArgOfIndexFunction
 import io.kotest.plugin.intellij.psi.isDataTestMethodCall
+import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -33,12 +34,7 @@ object WordSpecStyle : SpecStyle {
       return "\"$name\" should { }"
    }
 
-   override fun getDataTestMethodNames(): Set<String> =
-      setOf(
-         "withData",
-         "withWhens",
-         "withShoulds"
-      )
+   override fun getDataTestMethodNames(): Set<String> = DataTestUtil.styleToDataTestMethodNames[this] ?: emptySet()
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 

@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 data class TestElement(
@@ -94,27 +95,9 @@ data class Test(
    fun readableTestPath() = path().joinToString(" ") { it.name }
 
    /**
-    * Returns the 1-based line number where this test is defined in the source file.
-    * Returns null if the line number cannot be determined.
+    * @see DataTestUtil.dataTestTagMaybe
     */
-   private fun lineNumber(): Int? {
-      val file = psi.containingFile ?: return null
-      val document = file.viewProvider.document ?: return null
-      val offset = psi.textOffset
-      // Document line numbers are 0-based, we return 1-based to match source file
-      return document.getLineNumber(offset) + 1
-   }
-
-   /**
-    * Returns the data test tag for this test based on its line number.
-    * Format: "kotest.data.{lineNumber}"
-    * Returns null if this is not a data test or line number cannot be determined.
-    */
-   fun dataTestTagMaybe(): String? {
-      if (!isDataTest) return null
-      val line = lineNumber() ?: return null
-      return "kotest.data.$line"
-   }
+   fun dataTestTagMaybe(): String? = DataTestUtil.dataTestTagMaybe(isDataTest, psi)
 }
 
 enum class TestType {
