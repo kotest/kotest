@@ -26,18 +26,6 @@ data class GradleTestFilterBuilder(
       return copy(test = test)
    }
 
-   /**
-    * Returns true if this filter is for a data test that requires tag-based filtering.
-    */
-   fun isDataTestFilter(): Boolean = test?.isDataTest == true
-
-   /**
-    * Returns the tag expression for data test filtering.
-    * Format: "kotest.data.{lineNumber}"
-    * Returns null if this is not a data test or line number cannot be determined.
-    */
-   fun dataTestTagExpression(): String? = test?.dataTestTag()
-
    fun build(): String {
       return buildString {
          append("--tests '")

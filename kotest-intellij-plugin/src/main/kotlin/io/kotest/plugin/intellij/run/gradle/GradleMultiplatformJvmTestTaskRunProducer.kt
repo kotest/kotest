@@ -182,7 +182,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
             envVars["KOTEST_TAGS"] = testContext.dataTestTag
             runConfiguration.settings.env = envVars
          }
-         ?: {
+         ?: run {
             val envVars = runConfiguration.settings.env.toMutableMap()
             envVars.remove("KOTEST_TAGS")
             runConfiguration.settings.env = envVars
@@ -213,15 +213,16 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          }
       }
 
-      val filterBuilder = GradleTestFilterBuilder.builder()
+      val filter = GradleTestFilterBuilder.builder()
          .withSpec(spec)
          .withTest(test)
+         .build()
 
-      val filter = filterBuilder.build()
-
-      // For data tests, we use tag-based filtering instead of test path filtering
-      val tagExpression = filterBuilder.dataTestTagExpression().takeIf { filterBuilder.isDataTestFilter() }
-
+      /**
+       * For data tests, we use tag-based filtering instead of test path filtering
+       * For non data test, we set this to null to allow [onFirstRun] to remove such env var if it was set previously
+       */
+      val dataTestTagMaybe = test?.dataTestTagMaybe()
 
       // the name will appear in two places - it will be in the run icon chooser in the gutter Run/Debug/Profile etc.,
       // and will also be the name of the configuration in the run configs drop down
@@ -231,7 +232,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          .withTest(test)
          .build()
 
-      return TestContext(runName, filter, tagExpression)
+      return TestContext(runName, filter, dataTestTagMaybe)
    }
 
    /**

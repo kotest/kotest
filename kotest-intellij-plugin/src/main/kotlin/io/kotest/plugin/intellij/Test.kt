@@ -110,7 +110,7 @@ data class Test(
     * Format: "kotest.data.{lineNumber}"
     * Returns null if this is not a data test or line number cannot be determined.
     */
-   fun dataTestTag(): String? {
+   fun dataTestTagMaybe(): String? {
       if (!isDataTest) return null
       val line = lineNumber() ?: return null
       return "kotest.data.$line"
