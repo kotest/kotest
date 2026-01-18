@@ -70,9 +70,43 @@ object DataTestUtil {
     * Returns the data test tag expression for this data test.
     *
     * - For root data tests: returns `"kotest.data.{lineNumber}"`
-    * - For nested data tests within other data tests: returns `"kotest.data.{parentLineNumber} & !kotest.data.{sibling1} & !kotest.data.{sibling2} ..."`.
-    *   This allows running a specific nested data test by including the parent
-    *   (so it executes and discovers children) while excluding sibling data test blocks except itself
+    * - For nested data tests within other data tests: builds a chain from the root parent
+    *   down to this data test, excluding siblings at every level.
+    *   This allows running a specific nested, at any level, data test by including all ancestors
+    *   (so they execute and discover children) while excluding sibling data test blocks at each level.
+    *
+    * Example of tags for nested data tests - given the following spec:
+    * ```kotlin
+    *  1 | class ASpecWithManyDataTests : FunSpec({
+    *  2 |
+    *  3 |    withData("parent1", "parent2", "parent3") {                                            // -> "kotest.data.3"
+    *  4 |       withTests("firstChild1", "firstChild2") {                                           // -> "kotest.data.3 & !kotest.data.7 & !kotest.data.25"
+    *  5 |          1 + 1 shouldBe 2
+    *  6 |       }
+    *  7 |       withData("secondChild1", "secondChild2") {                                          // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25"
+    *  8 |          withData("firstChildOfSecondChild1", "firstChildOfSecondChild2") {               // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.16 & !kotest.data.19"
+    *  9 |             withTests("firstChildOfFirstChildOfSecondChild1", "...") {                    // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.16 & !kotest.data.19 & !kotest.data.12"
+    * 10 |                1 + 1 shouldBe 2
+    * 11 |             }
+    * 12 |             withTests("secondChildOfFirstChildOfSecondChild1", "...") {                   // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.16 & !kotest.data.19 & !kotest.data.9"
+    * 13 |                1 + 1 shouldBe 2
+    * 14 |             }
+    * 15 |          }
+    * 16 |          withTests("secondChildOfSecondChild1", "secondChildOfSecondChild2") {            // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.8 & !kotest.data.19"
+    * 17 |             1 + 1 shouldBe 2
+    * 18 |          }
+    * 19 |          withData("thirdChildOfSecondChild1", "thirdChildOfSecondChild2") {               // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.8 & !kotest.data.16"
+    * 20 |             withTests("firstAndOnlyChildOfThirdChildOfSecondChild1", "...") {             // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.8 & !kotest.data.16"
+    * 21 |                1 + 1 shouldBe 2                                                           //    (same as parent - no siblings to exclude at this level)
+    * 22 |             }
+    * 23 |          }
+    * 24 |       }
+    * 25 |       withTests("thirdChild1", "thirdChild2") {                                           // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.7"
+    * 26 |          1 + 1 shouldBe 2
+    * 27 |       }
+    * 28 |    }
+    * 29 | })
+    * ```
     *
     * Returns null early if this is not a data test or line number cannot be determined.
     */
@@ -80,24 +114,59 @@ object DataTestUtil {
       if (!isDataTest) return null
       val thisLine = lineNumber(currentTestPsi) ?: return null
 
-      // Find the enclosing data test call via PSI navigation - if null this is a root data test, return simple tag
-      val enclosingDataTestPsi = findEnclosingDataTestPsi(currentTestPsi) ?: return "kotest.data.$thisLine"
+      // Build the ancestor chain from current test up to root
+      // Each entry is (dataTestPsi, lineNumber)
+      val ancestorChain = buildAncestorChain(currentTestPsi, thisLine)
 
-      // Nested data test - need to include parent and exclude siblings
-      // if no parent line, because at this stage we are sure that this test should have had a parent data test, return simple tag (hopefully this does not happen)
-      val parentLine = lineNumber(enclosingDataTestPsi) ?: return "kotest.data.$thisLine"
-
-      // Find sibling data tests (other data tests with the same parent)
-      val siblingLines = findSiblingDataTestLines(enclosingDataTestPsi, thisLine)
-
-      return if (siblingLines.isEmpty()) {
-         // No sibling data tests, just include parent - effectively running all tests of the parent data test without exclusions
-         "kotest.data.$parentLine"
-      } else {
-         // Include parent and exclude all siblings
-         val exclusions = siblingLines.joinToString(" & ") { "!kotest.data.$it" }
-         "kotest.data.$parentLine & $exclusions"
+      // If no ancestors, this is a root data test
+      if (ancestorChain.size == 1) {
+         return "kotest.data.$thisLine"
       }
+
+      // The root ancestor is the first in the chain
+      val rootLine = ancestorChain.first().second
+
+      // Collect all sibling exclusions at every level
+      val allExclusions = mutableListOf<Int>()
+      for (i in 0 until ancestorChain.size - 1) {
+         val (parentPsi, _) = ancestorChain[i]
+         val (_, childLine) = ancestorChain[i + 1]
+         // Find siblings of the child within this parent
+         val siblingLines = findSiblingDataTestLines(parentPsi, childLine)
+         allExclusions.addAll(siblingLines)
+      }
+
+      return if (allExclusions.isEmpty()) {
+         // No sibling data tests at any level, just include root
+         "kotest.data.$rootLine"
+      } else {
+         // Include root and exclude all siblings at all levels
+         val exclusions = allExclusions.joinToString(" & ") { "!kotest.data.$it" }
+         "kotest.data.$rootLine & $exclusions"
+      }
+   }
+
+   /**
+    * Builds the ancestor chain from root to current test.
+    * Returns a list of [PsiElement] and [currentLine]) pairs, ordered from root (first) to current test (last).
+    */
+   private fun buildAncestorChain(currentTestPsi: PsiElement, currentLine: Int): List<Pair<PsiElement, Int>> {
+      val chain = mutableListOf<Pair<PsiElement, Int>>()
+      chain.add(currentTestPsi to currentLine)
+
+      var current: PsiElement? = currentTestPsi
+      while (current != null) {
+         val parent = findEnclosingDataTestPsi(current)
+         if (parent != null) {
+            val parentLine = lineNumber(parent)
+            if (parentLine != null) {
+               chain.add(0, parent to parentLine) // Add to front to maintain root-first order
+            }
+         }
+         current = parent
+      }
+
+      return chain
    }
 
    /**
