@@ -45,6 +45,7 @@ class DataTestTagTest : FunSpec({
       // Total per parent: 32 + 10 = 42, but we also count parent itself = 43
       // Total: 3 * 43 = 129
       capturedTests shouldHaveSize 129
+
       capturedTests.forEach { testCase ->
          testCase.config shouldNotBe null
          val tagNames = testCase.config?.tags?.map { it.name } ?: emptyList()
@@ -52,7 +53,7 @@ class DataTestTagTest : FunSpec({
          assertSoftly {
             tagNames shouldHaveSize 2
             tagNames.first() shouldBe "kotest.data"
-            // Each test should have a kotest.data.{lineNumber} tag based on its nesting level
+            // Each test should have a kotest.data.{lineNumber} tag based on its line number
             val expectedLineTag = when (testName) {
                 in listOf("parent1", "parent2", "parent3") -> "kotest.data.78"
                 in listOf("firstChild1", "firstChild2") -> "kotest.data.79"
@@ -73,7 +74,6 @@ class DataTestTagTest : FunSpec({
 
 })
 
-// Line numbers are important for tag generation
 private class DataTestTagTestSpec : FunSpec({
    withData("parent1", "parent2", "parent3") { // line 78 -> kotest.data.78
       withTests("firstChild1", "firstChild2") { // line 79 -> kotest.data.79
