@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContainAllInAnyOrder
 import io.kotest.matchers.collections.shouldNotContainAllInAnyOrder
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class ShouldContainAllInAnyOrderTest : FunSpec({
@@ -88,6 +89,22 @@ class ShouldContainAllInAnyOrderTest : FunSpec({
             |Count Mismatches:
             |  For 1: expected count: <2>, but was: <1>
             """.trimMargin())
+      }
+
+      test("should search for similar elements") {
+         val thrown = shouldThrowAny {
+            listOf(sweetGreenApple, sweetRedApple, sourYellowLemon) shouldContainAllInAnyOrder
+               listOf(sweetRedApple, sweetGreenPear)
+         }
+         thrown.message.shouldContainInOrder(
+            "Missing Elements:",
+            "Fruit(name=pear, color=green, taste=sweet)",
+            "Possible matches for unexpected elements:",
+            "expected: Fruit(name=pear, color=green, taste=sweet),",
+            "but was: Fruit(name=apple, color=green, taste=sweet),",
+            "The following fields did not match:",
+            """"name" expected: <"pear">, but was: <"apple">""",
+         )
       }
    }
 
