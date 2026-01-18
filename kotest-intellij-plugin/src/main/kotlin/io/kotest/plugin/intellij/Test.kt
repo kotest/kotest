@@ -97,7 +97,7 @@ data class Test(
     * Returns the 1-based line number where this test is defined in the source file.
     * Returns null if the line number cannot be determined.
     */
-   fun lineNumber(): Int? {
+   private fun lineNumber(): Int? {
       val file = psi.containingFile ?: return null
       val document = file.viewProvider.document ?: return null
       val offset = psi.textOffset

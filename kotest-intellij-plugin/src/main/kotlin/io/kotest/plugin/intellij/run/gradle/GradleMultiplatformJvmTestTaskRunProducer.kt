@@ -219,8 +219,9 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          .build()
 
       /**
-       * For data tests, we use tag-based filtering instead of test path filtering
-       * For non data test, we set this to null to allow [onFirstRun] to remove such env var if it was set previously
+       * For data tests, we use tag-based filtering instead of test path filtering.
+       * For non data test, we set this to null to allow [setOrRemoveDataTestEnvVarIfNeeded]
+       * to remove such env var if it was set previously.
        */
       val dataTestTagMaybe = test?.dataTestTagMaybe()
 
