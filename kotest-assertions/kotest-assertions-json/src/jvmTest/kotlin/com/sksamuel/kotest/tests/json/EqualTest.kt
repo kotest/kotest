@@ -11,6 +11,8 @@ import io.kotest.assertions.shouldFail
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.throwable.shouldHaveMessage
 import io.kotest.property.Arb
@@ -743,15 +745,21 @@ expected:<{
             }
             """
          a.shouldEqualJson(b)
-         shouldFail {
+         val message = shouldFail {
             a shouldEqualJson {
                propertyOrder = PropertyOrder.Strict
                b
             }
-         }.shouldHaveMessage(
-            """The top level object expected field 0 to be 'sku' but was 'id'
+         }.message
 
-expected:<{
+         message.shouldContainInOrder(
+            "The top level object expected field 0 to be 'sku' but was 'id'",
+            "At 'id' expected string but was number",
+            "The top level object expected field 1 to be 'id' but was 'title'",
+            "At 'title' expected number but was string",
+            "The top level object expected field 2 to be 'title' but was 'sku'",
+            "At 'sku' expected 'Default Title' but was 'RIND-TOTEO-001-MCF'",
+            """expected:<{
   "sku": "RIND-TOTEO-001-MCF",
   "id": 32672932069455,
   "title": "Default Title",
@@ -766,6 +774,50 @@ expected:<{
   "taxable": true,
   "featured_image": null
 }>"""
+         )
+      }
+
+      test("find all differences, top level and nested - do not stop at first diff") {
+         val a = """
+            {
+            "name": "stuff",
+            "box": {
+              "length": 10,
+               "width": 20,
+               "attributes": {
+                   "fragile": false
+               }
+            },
+            "items": [1, 2],
+            "notes": "2024"
+            }
+         """.trimIndent()
+         val b = """
+            {
+            "name": "stuff",
+            "box": {
+              "length": 10,
+               "width": 15,
+               "attributes": {
+                   "fragile": true,
+                   "hazmat": false
+               }
+            },
+            "items": [1, 3],
+            "description": "trinkets"
+            }
+         """.trimIndent()
+
+         val message = shouldFail {
+            a.shouldEqualJson(b)
+         }.message
+
+         message.shouldContainInOrder(
+            "The top level object has extra field(s) [notes] and missing field(s) [description]",
+            "At 'box.width' expected 15 but was 20",
+            "At 'box.attributes' object was missing expected field(s) [hazmat]",
+            "At 'box.attributes.fragile' expected true but was false",
+            "At 'items.[1]' expected 3 but was 2",
          )
       }
    }

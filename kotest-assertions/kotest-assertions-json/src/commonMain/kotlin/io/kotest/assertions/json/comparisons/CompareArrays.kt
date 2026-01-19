@@ -7,53 +7,55 @@ internal fun compareArrays(
   expected: JsonNode.ArrayNode,
   actual: JsonNode.ArrayNode,
   options: CompareJsonOptions,
-): JsonError? {
+): List<JsonError> {
 
    if (expected.elements.size != actual.elements.size)
-      return JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size)
+      return listOf(JsonError.UnequalArrayLength(path, expected.elements.size, actual.elements.size))
 
-   when (options.arrayOrder) {
-      ArrayOrder.Strict -> {
-         expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
-            val error = compare(path + "[${a.index}]", a.value, b.value, options)
-            if (error != null) return error
+   return buildList {
+      when (options.arrayOrder) {
+         ArrayOrder.Strict -> {
+            expected.elements.withIndex().zip(actual.elements.withIndex()).forEach { (a, b) ->
+               addAll(compare(path + "[${a.index}]", a.value, b.value, options))
+            }
          }
-      }
 
-      /**
-       * In [ArrayOrder.Lenient], we try to allow array contents to be out-of-order.
-       * We do this by searching for a match for each element in [actual], in the [expected] array,
-       * flagging used matches so they can't be used twice. This will probably be slow for very big arrays.
-       */
-      ArrayOrder.Lenient -> {
+         /**
+          * In [ArrayOrder.Lenient], we try to allow array contents to be out-of-order.
+          * We do this by searching for a match for each element in [actual], in the [expected] array,
+          * flagging used matches so they can't be used twice. This will probably be slow for very big arrays.
+          */
+         ArrayOrder.Lenient -> {
 
-         val consumedIndexes = BooleanArray(expected.elements.size) { false }
+            val consumedIndexes = BooleanArray(expected.elements.size) { false }
 
-         fun availableIndexes() = consumedIndexes
-            .mapIndexed { index, isConsumed -> if (!isConsumed) index else null }
-            .filterNotNull()
+            fun availableIndexes() = consumedIndexes
+               .mapIndexed { index, isConsumed -> if (!isConsumed) index else null }
+               .filterNotNull()
 
-         fun findMatchingIndex(element: JsonNode): Int? {
-            for (i in availableIndexes()) {
-               // Comparison with no error -> matching element
-               val isMatch = compare(path + "[$i]", expected.elements[i], element, options) == null
+            fun findMatchingIndex(element: JsonNode): Int? {
+               for (i in availableIndexes()) {
+                  // Comparison with no error -> matching element
+                  val isMatch = compare(path + "[$i]", expected.elements[i], element, options).isEmpty()
 
-               if (isMatch) {
-                  return i
+                  if (isMatch) {
+                     return i
+                  }
                }
+
+               return null
             }
 
-            return null
-         }
+            for ((i, element) in actual.elements.withIndex()) {
+               val match = findMatchingIndex(element)
 
-         for ((i, element) in actual.elements.withIndex()) {
-            val match = findMatchingIndex(element)
-               ?: return JsonError.UnequalArrayContent(path + "[$i]", expected, element)
-
-            consumedIndexes[match] = true
+               when(match) {
+                  null -> add(JsonError.UnequalArrayContent(path + "[$i]", expected, element))
+                  else -> consumedIndexes[match] = true
+               }
+            }
          }
       }
-   }
 
-   return null
+   }
 }
