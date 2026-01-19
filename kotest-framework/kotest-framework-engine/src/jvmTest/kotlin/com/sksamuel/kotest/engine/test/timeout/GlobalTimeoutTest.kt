@@ -31,7 +31,7 @@ class GlobalTimeoutTest : FunSpec() {
             val collector = CollectingTestEngineListener()
 
             TestEngineLauncher().withListener(collector)
-               .withClasses(TestTimeouts::class)
+               .withSpecRefs(SpecRef.Reference(TestTimeouts::class))
                .withProjectConfig(c)
                .execute()
 

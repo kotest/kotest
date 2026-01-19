@@ -190,7 +190,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             TestEngineLauncher()
                .withListener(collector)
                .withProjectConfig(c)
-               .withClasses(TaggedSpec::class)
+               .withSpecRefs(SpecRef.Reference(TaggedSpec::class))
                .withTagExpression(TagExpression.Empty)
                .execute()
          }

@@ -34,7 +34,7 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(MyTestClass::class)
+            .withSpecRefs(SpecRef.Reference(MyTestClass::class))
             .addExtensions(filter)
             .execute()
       }
@@ -55,7 +55,7 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(MyTestClass::class)
+            .withSpecRefs(SpecRef.Reference(MyTestClass::class))
             .addExtensions(filter)
             .execute()
       }

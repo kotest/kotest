@@ -17,7 +17,7 @@ class PackageConfigTest : FunSpec() {
          runBlocking {
             TestEngineLauncher()
                .withListener(collector)
-               .withClasses(BarTest::class)
+               .withSpecRefs(SpecRef.Reference(BarTest::class))
                .execute()
          }
          // if the package config isn't picked up, this test won't timeout

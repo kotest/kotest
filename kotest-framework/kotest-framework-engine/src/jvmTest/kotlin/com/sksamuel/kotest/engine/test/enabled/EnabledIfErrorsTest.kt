@@ -11,7 +11,7 @@ class EnabledIfErrorsTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(EnabledIfFailues::class)
+            .withSpecRefs(SpecRef.Reference(EnabledIfFailues::class))
             .execute()
 
          collector.result("a")!!.isIgnored shouldBe true

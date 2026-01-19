@@ -37,7 +37,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       }
 
       TestEngineLauncher().withListener(listener)
-         .withClasses(DummySpec3::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
          .withProjectConfig(c)
          .execute()
 
@@ -73,7 +73,7 @@ class BeforeProjectListenerExceptionTest : FunSpec({
       }
 
       TestEngineLauncher().withListener(listener)
-         .withClasses(DummySpec3::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
          .withProjectConfig(c)
          .execute()
 

@@ -17,7 +17,7 @@ class SystemPropertyConfigClassTest : FunSpec() {
          counter.set(0)
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(FooTest::class)
+            .withSpecRefs(SpecRef.Reference(FooTest::class))
             .execute()
          counter.get() shouldBe 5
       }

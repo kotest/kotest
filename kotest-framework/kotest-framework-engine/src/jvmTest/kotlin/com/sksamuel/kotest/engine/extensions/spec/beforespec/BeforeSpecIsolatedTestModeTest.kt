@@ -19,7 +19,7 @@ class BeforeSpecIsolatedTestModeTest : FunSpec({
 
       val collector = CollectingTestEngineListener()
       TestEngineLauncher().withListener(collector)
-         .withClasses(ParallelTests::class)
+         .withSpecRefs(SpecRef.Reference(ParallelTests::class))
          .execute()
 
       collector.tests.values.size shouldBe 20

@@ -13,7 +13,7 @@ class AnnotationSpecNestedTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(listener)
-            .withClasses(AnnotationSpecWithNested::class)
+            .withSpecRefs(SpecRef.Reference(AnnotationSpecWithNested::class))
             .execute()
          listener.tests.shouldHaveSize(2)
          listener.tests.keys.map { it.name.name }.toSet() shouldBe setOf("foo", "bar")

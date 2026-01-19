@@ -32,7 +32,7 @@ class CoroutineExceptionTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(FailingCoroutineTest::class)
+         .withSpecRefs(SpecRef.Reference(FailingCoroutineTest::class))
          .execute()
 
       _result?.isError shouldBe true

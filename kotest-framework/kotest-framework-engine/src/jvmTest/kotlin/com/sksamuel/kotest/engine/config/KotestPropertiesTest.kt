@@ -15,7 +15,7 @@ class KotestPropertiesTest : FunSpec() {
          withSystemProperty(KotestEngineProperties.PROPERTIES_FILENAME, "/test.kotest.properties") {
             TestEngineLauncher()
                .withListener(NoopTestEngineListener)
-               .withClasses(C::class)
+               .withSpecRefs(SpecRef.Reference(C::class))
                .execute()
             value shouldBe 123
          }

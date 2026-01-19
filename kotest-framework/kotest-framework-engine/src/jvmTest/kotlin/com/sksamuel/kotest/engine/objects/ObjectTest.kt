@@ -11,7 +11,7 @@ class ObjectSpecTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyObjectSpec::class)
+            .withSpecRefs(SpecRef.Reference(MyObjectSpec::class))
             .execute()
          collector.result("foo")!!.isSuccess shouldBe true
       }

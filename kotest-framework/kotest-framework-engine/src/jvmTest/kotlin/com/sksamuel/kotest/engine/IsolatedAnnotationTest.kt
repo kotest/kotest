@@ -18,7 +18,7 @@ class IsolatedAnnotationTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyIsolatedSpec::class)
+            .withSpecRefs(SpecRef.Reference(MyIsolatedSpec::class))
             .execute()
          collector.tests.shouldHaveSize(1)
          collector.tests.mapKeys { it.key.descriptor.id }[DescriptorId("a")]!!.isSuccess shouldBe true

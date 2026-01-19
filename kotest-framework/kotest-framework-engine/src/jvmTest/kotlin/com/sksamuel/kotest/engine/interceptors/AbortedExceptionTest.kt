@@ -18,7 +18,7 @@ class AbortedExceptionTest : FreeSpec({
       val collector = CollectingTestEngineListener()
 
       TestEngineLauncher().withListener(collector)
-         .withClasses(DummySpec::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec::class))
          .execute()
 
       collector.tests.toList().shouldMatchEach(

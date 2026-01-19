@@ -3421,8 +3421,6 @@ public final class io/kotest/engine/TestEngineLauncher {
 	public fun hashCode ()I
 	public final fun promise ()Ljava/lang/Object;
 	public fun toString ()Ljava/lang/String;
-	public final fun withClasses (Ljava/util/List;)Lio/kotest/engine/TestEngineLauncher;
-	public final fun withClasses ([Lkotlin/reflect/KClass;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withConsoleListener ()Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListener (Lio/kotest/engine/listener/TestEngineListener;)Lio/kotest/engine/TestEngineLauncher;
 	public final fun withListeners (Ljava/util/Collection;)Lio/kotest/engine/TestEngineLauncher;

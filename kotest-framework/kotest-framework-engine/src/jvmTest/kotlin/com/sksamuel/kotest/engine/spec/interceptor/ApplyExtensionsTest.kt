@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
@@ -23,7 +24,7 @@ class ApplyExtensionsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyAnnotatedSpec1::class)
+            .withSpecRefs(SpecRef.Reference((MyAnnotatedSpec1::class)))
             .execute()
 
          // if apply extension was not applied, it would fail to intercept the failing test
@@ -36,7 +37,7 @@ class ApplyExtensionsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyAnnotatedSpec2::class)
+            .withSpecRefs(SpecRef.Reference((MyAnnotatedSpec2::class)))
             .execute()
 
          // if apply extension was not applied, it would fail to intercept the failing test
@@ -49,7 +50,7 @@ class ApplyExtensionsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyAnnotatedSpec3::class)
+            .withSpecRefs(SpecRef.Reference((MyAnnotatedSpec3::class)))
             .execute()
 
          // if apply extension was not applied, it would fail to intercept the failing test
@@ -61,7 +62,7 @@ class ApplyExtensionsTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyAnnotatedSpec4::class)
+            .withSpecRefs(SpecRef.Reference((MyAnnotatedSpec4::class)))
             .execute()
          collector.specs.toList()
             .first().second.errorOrNull.shouldNotBeNull().message shouldContain "Cannot use private class"

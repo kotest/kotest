@@ -25,7 +25,7 @@ class ConstructorExtensionTest : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(DummySpec::class)
+            .withSpecRefs(SpecRef.Reference(DummySpec::class))
             .withProjectConfig(c)
             .execute()
 
@@ -38,7 +38,7 @@ class ConstructorExtensionTest : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(FunkySpec::class)
+            .withSpecRefs(SpecRef.Reference(FunkySpec::class))
             .execute()
 
          // if the extension isn't applied, it would fail to instantiate the class

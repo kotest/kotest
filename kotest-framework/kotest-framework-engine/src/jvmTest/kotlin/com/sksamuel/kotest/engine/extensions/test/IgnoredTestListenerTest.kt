@@ -25,7 +25,7 @@ class IgnoredTestListenerTest : FunSpec({
    test("ignored listener should be fired for all combinations of ingored tests") {
       TestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withClasses(IgnoredTests::class)
+         .withSpecRefs(SpecRef.Reference(IgnoredTests::class))
          .addExtensions(ignoredTestListener)
          .execute()
       ignoredTests shouldBe setOf(

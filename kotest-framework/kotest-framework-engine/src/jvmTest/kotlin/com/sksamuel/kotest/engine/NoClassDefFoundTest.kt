@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -15,7 +16,8 @@ class NoClassDefFoundTest : FunSpec() {
    init {
       test("java.lang.NoClassDefFoundError should be caught") {
          val listener = CollectingTestEngineListener()
-         TestEngineLauncher().withListener(listener).withClasses(SomeSpec1::class, SomeSpec2::class).execute()
+         TestEngineLauncher().withListener(listener)
+            .withSpecRefs(SpecRef.Reference(SomeSpec1::class), SpecRef.Reference(SomeSpec2::class)).execute()
          listener.specs.shouldHaveSize(2)
          listener.specs[SomeSpec1::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
          listener.specs[SomeSpec2::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()

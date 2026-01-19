@@ -21,7 +21,7 @@ class InstantiationListenerTest : FunSpec() {
 
          TestEngineLauncher()
             .withListener(NoopTestEngineListener)
-            .withClasses(DummySpec7::class)
+            .withSpecRefs(SpecRef.Reference(DummySpec7::class))
             .withProjectConfig(c)
             .execute()
 

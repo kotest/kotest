@@ -15,7 +15,7 @@ class InvocationThreadErrorTest : FunSpec({
       val listener = CollectingTestEngineListener()
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(InvocationErrorsTests::class)
+         .withSpecRefs(SpecRef.Reference(InvocationErrorsTests::class))
          .execute()
       listener.tests.keys.map { it.name.name } shouldBe setOf(
          "multiple invocations",

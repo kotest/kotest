@@ -47,7 +47,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(PassingProjectTest::class)
+         .withSpecRefs(SpecRef.Reference(PassingProjectTest::class))
          .withProjectConfig(c)
          .execute()
 

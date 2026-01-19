@@ -16,7 +16,7 @@ class SpecInstantiationErrorCapturedTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(listener)
-            .withClasses(SpecInstantiationFailureSpec::class)
+            .withSpecRefs(SpecRef.Reference(SpecInstantiationFailureSpec::class))
             .execute()
          listener.specs.shouldHaveSize(1)
          listener.specs[SpecInstantiationFailureSpec::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()

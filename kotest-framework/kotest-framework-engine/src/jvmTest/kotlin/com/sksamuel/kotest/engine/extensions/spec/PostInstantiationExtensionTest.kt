@@ -22,7 +22,7 @@ class PostInstantiationExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(MySpec::class)
+            .withSpecRefs(SpecRef.Reference(MySpec::class))
             .withProjectConfig(p)
             .execute()
 

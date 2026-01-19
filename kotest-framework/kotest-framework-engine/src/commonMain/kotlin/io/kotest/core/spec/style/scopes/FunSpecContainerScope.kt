@@ -55,7 +55,6 @@ class FunSpecContainerScope(
    /**
     * Adds a container test to this context expecting config.
     */
-   @ExperimentalKotest
    fun context(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),

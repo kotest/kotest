@@ -26,7 +26,7 @@ class AfterProjectListenerTest : FunSpec({
       }
 
       TestEngineLauncher().withListener(NoopTestEngineListener)
-         .withClasses(DummySpec4::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec4::class))
          .withProjectConfig(c)
          .execute()
 
@@ -48,7 +48,7 @@ class AfterProjectListenerTest : FunSpec({
       }
 
       TestEngineLauncher().withListener(NoopTestEngineListener)
-         .withClasses(DummySpec4::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec4::class))
          .withProjectConfig(c)
          .execute()
 

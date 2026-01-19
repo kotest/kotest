@@ -34,7 +34,7 @@ class RetryTests : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(InnerRetryTest::class)
+            .withSpecRefs(SpecRef.Reference(InnerRetryTest::class))
             .execute()
 
          checkResults(collector, 4)
@@ -44,7 +44,7 @@ class RetryTests : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(InnerRetryWithSpecDefaultTest::class)
+            .withSpecRefs(SpecRef.Reference(InnerRetryWithSpecDefaultTest::class))
             .execute()
 
          checkResults(collector, 1)

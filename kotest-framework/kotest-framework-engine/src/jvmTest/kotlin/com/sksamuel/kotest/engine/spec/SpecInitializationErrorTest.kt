@@ -15,7 +15,7 @@ class SpecInitializationErrorTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(FieldInitErrorSpec::class)
+            .withSpecRefs(SpecRef.Reference(FieldInitErrorSpec::class))
             .execute()
          collector.specs[FieldInitErrorSpec::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
       }

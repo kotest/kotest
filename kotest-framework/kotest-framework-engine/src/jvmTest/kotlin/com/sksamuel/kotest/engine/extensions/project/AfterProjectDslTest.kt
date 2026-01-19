@@ -26,7 +26,7 @@ class AfterProjectDslTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withClasses(DummySpec6::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec6::class))
          .withProjectConfig(c)
          .execute()
 

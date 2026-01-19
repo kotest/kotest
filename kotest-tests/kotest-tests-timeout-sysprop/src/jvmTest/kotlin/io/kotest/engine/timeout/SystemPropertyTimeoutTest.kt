@@ -19,7 +19,7 @@ class SystemPropertyTimeoutTest : FunSpec() {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher()
                .withListener(collector)
-               .withClasses(TimeoutTest::class)
+               .withSpecRefs(SpecRef.Reference(TimeoutTest::class))
                .execute()
             collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
          }
@@ -30,7 +30,7 @@ class SystemPropertyTimeoutTest : FunSpec() {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher()
                .withListener(collector)
-               .withClasses(TimeoutTest::class)
+               .withSpecRefs(SpecRef.Reference(TimeoutTest::class))
                .execute()
             collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
          }

@@ -47,7 +47,7 @@ class UnstableTestNameTest : FunSpec() {
             TestEngineLauncher()
                .withProjectConfig(config)
                .withListener(listener)
-               .withClasses(NonDataClassesTest::class)
+               .withSpecRefs(SpecRef.Reference(NonDataClassesTest::class))
                .execute()
 
             results shouldBe listOf(

@@ -23,7 +23,7 @@ class DescribeSpecExampleTest : FunSpec({
 
       val duration = testTimeSource().measureTime {
          TestEngineLauncher().withListener(collector)
-            .withClasses(DescribeSpecExample::class)
+            .withSpecRefs(SpecRef.Reference(DescribeSpecExample::class))
             .execute()
       }
 

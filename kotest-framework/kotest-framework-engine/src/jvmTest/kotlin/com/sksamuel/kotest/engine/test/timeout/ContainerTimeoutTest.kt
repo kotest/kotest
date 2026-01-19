@@ -30,7 +30,7 @@ class ContainerTimeoutTest : FunSpec() {
             TestEngineLauncher()
                .withListener(collector)
                .withProjectConfig(c)
-               .withClasses(NestedTimeout::class)
+               .withSpecRefs(SpecRef.Reference(NestedTimeout::class))
                .execute()
 
             collector.names.shouldContainExactly("a")

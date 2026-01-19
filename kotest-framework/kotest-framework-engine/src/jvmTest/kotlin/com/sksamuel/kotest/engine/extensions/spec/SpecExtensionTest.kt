@@ -31,7 +31,7 @@ class SpecExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(SpecInterceptSingleInstance::class)
+            .withSpecRefs(SpecRef.Reference(SpecInterceptSingleInstance::class))
             .withProjectConfig(c)
             .execute()
 
@@ -53,7 +53,7 @@ class SpecExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(SpecInterceptInstancePerRoot::class)
+            .withSpecRefs(SpecRef.Reference(SpecInterceptInstancePerRoot::class))
             .withProjectConfig(c)
             .execute()
 
@@ -73,7 +73,7 @@ class SpecExtensionTest : FunSpec() {
          val collecting = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collecting)
-            .withClasses(SpecInterceptInstancePerRoot::class)
+            .withSpecRefs(SpecRef.Reference(SpecInterceptInstancePerRoot::class))
             .withProjectConfig(c)
             .execute()
 

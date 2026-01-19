@@ -20,7 +20,7 @@ class ProjectWideFailFastTest : FunSpec() {
       runBlocking {
          TestEngineLauncher().withListener(listener)
             .withProjectConfig(c)
-            .withClasses(A::class, B::class)
+            .withSpecRefs(SpecRef.Reference(A::class, B::class))
             .execute()
       }
 

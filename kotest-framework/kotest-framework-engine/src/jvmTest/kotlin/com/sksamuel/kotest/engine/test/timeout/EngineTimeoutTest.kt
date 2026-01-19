@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.test.timeout
 import io.kotest.assertions.asClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -19,7 +20,7 @@ class EngineTimeoutTest : FunSpec() {
       test("timeouts should be applied by the engine to suspend delays") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(DannyDelay::class)
+            .withSpecRefs(SpecRef.Reference((DannyDelay::class)))
             .execute()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
@@ -30,7 +31,7 @@ class EngineTimeoutTest : FunSpec() {
       test("timeouts should be applied by the engine to suspend inside launched coroutines") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(LarryLauncher::class)
+            .withSpecRefs(SpecRef.Reference((LarryLauncher::class)))
             .execute()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->
@@ -41,7 +42,7 @@ class EngineTimeoutTest : FunSpec() {
       test("timeouts should be applied by the engine to blocked threads") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(BillyBlocked::class)
+            .withSpecRefs(SpecRef.Reference((BillyBlocked::class)))
             .execute()
          collector.names shouldBe listOf("a")
          collector.result("a").asClue { result ->

@@ -43,7 +43,7 @@ class FinalizeSpecTest : FunSpec() {
          }
          counter.set(0)
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(FinalizeSpec::class)
+            .withSpecRefs(SpecRef.Reference(FinalizeSpec::class))
             .withProjectConfig(c)
             .execute()
 

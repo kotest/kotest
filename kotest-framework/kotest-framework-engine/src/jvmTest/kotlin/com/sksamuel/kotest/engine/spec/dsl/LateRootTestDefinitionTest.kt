@@ -24,7 +24,7 @@ class LateRootTestDefinitionTest : FunSpec() {
       test("expect spec") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(ExpectSpecWithExtraRootTests::class)
+            .withSpecRefs(SpecRef.Reference(ExpectSpecWithExtraRootTests::class))
             .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -32,7 +32,7 @@ class LateRootTestDefinitionTest : FunSpec() {
       test("feature spec") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(FeatureSpecWithExtraRootTests::class)
+            .withSpecRefs(SpecRef.Reference(FeatureSpecWithExtraRootTests::class))
             .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -40,7 +40,7 @@ class LateRootTestDefinitionTest : FunSpec() {
       test("free spec") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(FreeSpecWithExtraRootTests::class)
+            .withSpecRefs(SpecRef.Reference(FreeSpecWithExtraRootTests::class))
             .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -48,7 +48,7 @@ class LateRootTestDefinitionTest : FunSpec() {
       test("fun spec") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(FunSpecWithExtraRootTests::class)
+            .withSpecRefs(SpecRef.Reference(FunSpecWithExtraRootTests::class))
             .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -56,7 +56,7 @@ class LateRootTestDefinitionTest : FunSpec() {
       test("should spec") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(ShouldSpecWithExtraRootTests::class)
+            .withSpecRefs(SpecRef.Reference(ShouldSpecWithExtraRootTests::class))
             .execute()
          listener.result("foo")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
