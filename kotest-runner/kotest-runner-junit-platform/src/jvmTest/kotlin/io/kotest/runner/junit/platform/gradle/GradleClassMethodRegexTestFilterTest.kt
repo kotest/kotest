@@ -107,6 +107,33 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
+   context("nested tests should be included when filtering to parent context without wildcard") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val container = spec.append("a context")
+      val nestedTest = container.append("nested test")
+      val fqn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      test("nested test should be INCLUDED when filtering to parent context") {
+         // This is the exact pattern gradle would generate for --tests 'FQN.a context'
+         val filter = "$fqn\\Q.a context\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(nestedTest) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("parent context should be INCLUDED when filtering to it") {
+         val filter = "$fqn\\Q.a context\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(container) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("deeply nested test should be INCLUDED when filtering to grandparent context") {
+         val deeplyNestedTest = nestedTest.append("deeply nested")
+         val filter = "$fqn\\Q.a context\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(deeplyNestedTest) shouldBe DescriptorFilterResult.Include
+      }
+   }
+
    test("!is true when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val container = spec.append("a context")
