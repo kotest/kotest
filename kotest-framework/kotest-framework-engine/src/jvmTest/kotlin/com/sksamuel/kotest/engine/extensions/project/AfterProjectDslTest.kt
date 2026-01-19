@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
@@ -26,7 +27,7 @@ class AfterProjectDslTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withClasses(DummySpec6::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec6::class))
          .withProjectConfig(c)
          .execute()
 

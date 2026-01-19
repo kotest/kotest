@@ -11,6 +11,7 @@ import io.kotest.core.extensions.RuntimeTagExtension
 import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
@@ -38,7 +39,7 @@ class RuntimeTagExtensionTest : StringSpec() {
             override val extensions = listOf(RuntimeTagExtension(included = emptySet(), excluded = setOf(MyRuntimeExcludedTag)))
          }
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(TestWithTag::class)
+            .withSpecRefs(SpecRef.Reference((TestWithTag::class)))
             .withProjectConfig(c)
             .execute()
             .errors.shouldBeEmpty()
@@ -49,7 +50,7 @@ class RuntimeTagExtensionTest : StringSpec() {
             override val extensions = listOf(RuntimeTagExpressionExtension("!MyRuntimeExcludedTag"))
          }
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(TestWithTag::class)
+            .withSpecRefs(SpecRef.Reference((TestWithTag::class)))
             .withProjectConfig(c)
             .execute()
             .errors.shouldBeEmpty()
@@ -60,7 +61,7 @@ class RuntimeTagExtensionTest : StringSpec() {
             override val extensions = listOf(FooTagExtension)
          }
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(TestWithListenerAndTag::class)
+            .withSpecRefs(SpecRef.Reference((TestWithListenerAndTag::class)))
             .withProjectConfig(c)
             .execute()
          counter.get() shouldBe 0

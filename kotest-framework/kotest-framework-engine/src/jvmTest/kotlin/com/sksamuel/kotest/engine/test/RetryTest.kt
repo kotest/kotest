@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.assertions.withClue
 import io.kotest.common.testTimeSource
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.config.DefaultTestConfig
@@ -34,7 +35,7 @@ class RetryTests : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(InnerRetryTest::class)
+            .withSpecRefs(SpecRef.Reference(InnerRetryTest::class))
             .execute()
 
          checkResults(collector, 4)
@@ -44,7 +45,7 @@ class RetryTests : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(InnerRetryWithSpecDefaultTest::class)
+            .withSpecRefs(SpecRef.Reference(InnerRetryWithSpecDefaultTest::class))
             .execute()
 
          checkResults(collector, 1)

@@ -5,6 +5,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.EnabledExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.ShouldSpec
@@ -20,7 +21,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("enabledOrReasonIf should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(EnabledOrReasonIfSpec::class)
+            .withSpecRefs(SpecRef.Reference((EnabledOrReasonIfSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "wobble"
       }
@@ -36,7 +37,7 @@ class IgnoredTestReasonTest : FunSpec() {
          }
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MyFunSpec::class)
+            .withSpecRefs(SpecRef.Reference((MyFunSpec::class)))
             .withProjectConfig(c)
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "wibble"
@@ -45,7 +46,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("xdisabled in fun spec should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(XReasonFunSpec::class)
+            .withSpecRefs(SpecRef.Reference((XReasonFunSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by xmethod"
       }
@@ -53,7 +54,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("xdisabled in describe spec should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(XReasonDescribeSpec::class)
+            .withSpecRefs(SpecRef.Reference((XReasonDescribeSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by xmethod"
       }
@@ -61,7 +62,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("xdisabled in should spec should report the reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(XReasonShouldSpec::class)
+            .withSpecRefs(SpecRef.Reference((XReasonShouldSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by xmethod"
       }
@@ -69,7 +70,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("enabled should report some reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(EnabledSpec::class)
+            .withSpecRefs(SpecRef.Reference((EnabledSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by enabled flag in config"
       }
@@ -77,7 +78,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("enabledIf should report some reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(EnabledIfSpec::class)
+            .withSpecRefs(SpecRef.Reference((EnabledIfSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by enabledIf flag in config"
       }
@@ -85,7 +86,7 @@ class IgnoredTestReasonTest : FunSpec() {
       test("bang should report some reason for skipping") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(BangSpec::class)
+            .withSpecRefs(SpecRef.Reference((BangSpec::class)))
             .execute()
          collector.testResult("a").reasonOrNull shouldBe "Disabled by bang"
       }

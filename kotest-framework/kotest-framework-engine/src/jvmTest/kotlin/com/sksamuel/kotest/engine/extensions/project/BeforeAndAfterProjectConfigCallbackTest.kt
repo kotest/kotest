@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.extensions.project
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.TestEngineLauncher
@@ -32,7 +33,10 @@ class BeforeAndAfterProjectConfigCallbackTest : WordSpec() {
             TestEngineLauncher()
                .withListener(NoopTestEngineListener)
                // two classes so we know these callbacks are only invoked once
-               .withClasses(A::class, B::class)
+               .withSpecRefs(
+                  SpecRef.Reference(A::class),
+                  SpecRef.Reference(B::class),
+               )
                .withProjectConfig(config)
                .execute()
             beforeAfterProject shouldBe "beforeabafter"

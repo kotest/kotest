@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.objects
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -11,7 +12,7 @@ class ObjectSpecTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(MyObjectSpec::class)
+            .withSpecRefs(SpecRef.Reference(MyObjectSpec::class))
             .execute()
          collector.result("foo")!!.isSuccess shouldBe true
       }

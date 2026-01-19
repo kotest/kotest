@@ -115,7 +115,11 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
          TestEngineLauncher()
             .withListener(listener)
-            .withClasses(ASpec::class, ZSpec::class, YSpec::class)
+            .withSpecRefs(
+               SpecRef.Reference(ASpec::class),
+               SpecRef.Reference(ZSpec::class),
+               SpecRef.Reference(YSpec::class)
+            )
             .withProjectConfig(c)
             .execute()
 

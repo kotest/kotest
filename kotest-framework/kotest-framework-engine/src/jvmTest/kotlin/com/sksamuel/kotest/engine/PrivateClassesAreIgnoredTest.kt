@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -18,7 +19,7 @@ private var includeTest = false
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class PrivateClassesIngoreOptionTest : FunSpec() {
    init {
-      test("private class should be ignore") {
+      test("private class should be ignored") {
          includeTest = true // causes the error test to be included when this engine runs
          val p = object : AbstractProjectConfig() {
             override val ignorePrivateClasses = true
@@ -26,7 +27,7 @@ class PrivateClassesIngoreOptionTest : FunSpec() {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(listener)
-            .withClasses(PrivateClassesAreIgnoredTest::class)
+            .withSpecRefs(SpecRef.Reference(PrivateClassesAreIgnoredTest::class))
             .withProjectConfig(p)
             .execute()
          listener.errors shouldBe false

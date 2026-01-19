@@ -4,6 +4,7 @@ import io.kotest.assertions.asClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.datatest.withData
@@ -31,7 +32,7 @@ class GlobalTimeoutTest : FunSpec() {
             val collector = CollectingTestEngineListener()
 
             TestEngineLauncher().withListener(collector)
-               .withClasses(TestTimeouts::class)
+               .withSpecRefs(SpecRef.Reference(TestTimeouts::class))
                .withProjectConfig(c)
                .execute()
 

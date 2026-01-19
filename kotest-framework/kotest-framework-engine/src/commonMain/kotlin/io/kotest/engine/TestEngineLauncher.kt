@@ -2,13 +2,12 @@
 
 package io.kotest.engine
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.isIntellij
-import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
@@ -23,14 +22,13 @@ import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.tags.TagExpression
-import kotlin.reflect.KClass
 
 /**
  * A builder class for creating and executing tests via a [TestEngine].
  *
- * Entry point for tests generated through the compiler plugins, and so the
- * public api cannot have breaking changes.
+ * This API is considered internal and should be used by other Kotest components only.
  */
+@KotestInternal
 data class TestEngineLauncher(
    private val listeners: List<TestEngineListener>,
    private val config: AbstractProjectConfig?,
@@ -82,14 +80,6 @@ data class TestEngineLauncher(
    fun withNoOpListener(): TestEngineLauncher {
       return withListener(NoopTestEngineListener)
    }
-
-   @Suppress("DEPRECATION")
-   @Deprecated("use withSpecRefs. Deprecated since 6.1")
-   fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
-
-   @Deprecated("use withSpecRefs. Deprecated since 6.1")
-   fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher =
-      withSpecRefs(specs.map { SpecRef.Reference(it, it.bestName()) })
 
    fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
    fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {

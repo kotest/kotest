@@ -5,6 +5,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
@@ -40,7 +41,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(DummySpec7::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec7::class))
          .withProjectConfig(c)
          .execute()
 
@@ -77,7 +78,7 @@ class AfterProjectListenerExceptionTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(DummySpec7::class)
+         .withSpecRefs(SpecRef.Reference(DummySpec7::class))
          .withProjectConfig(c)
          .execute()
 

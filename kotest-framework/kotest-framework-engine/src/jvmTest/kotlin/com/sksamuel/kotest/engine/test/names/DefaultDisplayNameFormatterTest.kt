@@ -20,6 +20,7 @@ import io.kotest.engine.config.IncludeTestScopeAffixes
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
@@ -190,7 +191,7 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             TestEngineLauncher()
                .withListener(collector)
                .withProjectConfig(c)
-               .withClasses(TaggedSpec::class)
+               .withSpecRefs(SpecRef.Reference(TaggedSpec::class))
                .withTagExpression(TagExpression.Empty)
                .execute()
          }

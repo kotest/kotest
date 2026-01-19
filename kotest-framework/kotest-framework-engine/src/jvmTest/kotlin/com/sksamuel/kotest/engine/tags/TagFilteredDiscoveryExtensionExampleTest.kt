@@ -8,6 +8,7 @@ import io.kotest.core.annotation.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -28,7 +29,7 @@ class TagFilteredDiscoveryExtensionExampleTest : StringSpec() {
          }
          TestEngineLauncher().withListener(collector)
             .withProjectConfig(c)
-            .withClasses(ShouldBeExcluded::class)
+            .withSpecRefs(SpecRef.Reference(ShouldBeExcluded::class))
             .execute()
 
          collector.errors.shouldBeFalse()

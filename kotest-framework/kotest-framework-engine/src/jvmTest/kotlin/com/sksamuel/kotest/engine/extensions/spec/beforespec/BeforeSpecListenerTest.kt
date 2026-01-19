@@ -11,6 +11,7 @@ import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -24,6 +25,7 @@ import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import java.util.concurrent.atomic.AtomicInteger
 
+@Suppress("DEPRECATION")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class BeforeSpecListenerTest : FunSpec() {
@@ -41,7 +43,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecTests::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -55,7 +57,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecOverrideMethodTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecOverrideMethodTests::class)))
             .execute()
 
          listener.specs.size shouldBe 1
@@ -68,7 +70,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineTest::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineTest::class)))
             .execute()
 
          listener.specs.size shouldBe 1
@@ -81,11 +83,11 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineOrderFunSpecTest::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineOrderFunSpecTest::class)))
             .execute()
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineOrderDescribeSpecTest::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineOrderDescribeSpecTest::class)))
             .execute()
 
          a shouldBe "spectest1test2spectestinner"
@@ -95,7 +97,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineWithTestInterceptor::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineWithTestInterceptor::class)))
             .execute()
 
          b shouldBe "beforeSpecintercepttest"
@@ -105,7 +107,7 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecByReturningExtensionsTest::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecByReturningExtensionsTest::class)))
             .execute()
 
          listener.specs.size shouldBe 1
@@ -121,7 +123,7 @@ class BeforeSpecListenerTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(BeforeSpecNoTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecNoTests::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -135,7 +137,7 @@ class BeforeSpecListenerTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(BeforeSpecErrorNoTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecErrorNoTests::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -149,7 +151,7 @@ class BeforeSpecListenerTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(BeforeSpecDisabledOnlyTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecDisabledOnlyTests::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -169,7 +171,7 @@ class BeforeSpecListenerTest : FunSpec() {
             }
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
-               .withClasses(BeforeSpecFunctionOverrideWithError::class)
+               .withSpecRefs(SpecRef.Reference((BeforeSpecFunctionOverrideWithError::class)))
                .execute()
             listener.specs.size shouldBe 1
             listener.specs.values.first().isError.shouldBeTrue()
@@ -190,7 +192,7 @@ class BeforeSpecListenerTest : FunSpec() {
             }
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
-               .withClasses(BeforeSpecInlineWithError::class)
+               .withSpecRefs(SpecRef.Reference((BeforeSpecInlineWithError::class)))
                .execute()
             listener.specs.size shouldBe 1
             listener.specs.values.first().isError.shouldBeTrue()
@@ -212,7 +214,7 @@ class BeforeSpecListenerTest : FunSpec() {
             }
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
-               .withClasses(NestedSpec::class)
+               .withSpecRefs(SpecRef.Reference((NestedSpec::class)))
                .execute()
             counter.get() shouldBe instances
          }

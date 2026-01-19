@@ -6,6 +6,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -47,7 +48,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(PassingProjectTest::class)
+         .withSpecRefs(SpecRef.Reference(PassingProjectTest::class))
          .withProjectConfig(c)
          .execute()
 

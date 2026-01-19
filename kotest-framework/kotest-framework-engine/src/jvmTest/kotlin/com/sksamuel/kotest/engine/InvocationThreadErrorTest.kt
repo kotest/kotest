@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -15,7 +16,7 @@ class InvocationThreadErrorTest : FunSpec({
       val listener = CollectingTestEngineListener()
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(InvocationErrorsTests::class)
+         .withSpecRefs(SpecRef.Reference(InvocationErrorsTests::class))
          .execute()
       listener.tests.keys.map { it.name.name } shouldBe setOf(
          "multiple invocations",

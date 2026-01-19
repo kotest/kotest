@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.spec
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -15,7 +16,7 @@ class SpecInitializationErrorTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(FieldInitErrorSpec::class)
+            .withSpecRefs(SpecRef.Reference(FieldInitErrorSpec::class))
             .execute()
          collector.specs[FieldInitErrorSpec::class]!!.errorOrNull.shouldBeInstanceOf<SpecInstantiationException>()
       }

@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.extensions
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.InstantiationListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
@@ -21,7 +22,7 @@ class InstantiationListenerTest : FunSpec() {
 
          TestEngineLauncher()
             .withListener(NoopTestEngineListener)
-            .withClasses(DummySpec7::class)
+            .withSpecRefs(SpecRef.Reference(DummySpec7::class))
             .withProjectConfig(c)
             .execute()
 

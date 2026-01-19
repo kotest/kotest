@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.coroutines
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
@@ -24,7 +25,7 @@ class CoroutineDebugTest : FunSpec() {
          val output = captureStandardOut {
             TestEngineLauncher()
                .withListener(NoopTestEngineListener)
-               .withClasses(Wibble::class)
+               .withSpecRefs(SpecRef.Reference(Wibble::class))
                .withProjectConfig(p)
                .execute()
                .errors.shouldBeEmpty()
