@@ -89,7 +89,8 @@ repositories {
 
 val jetbrainsToken: String by project
 
-version = "6.0." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
+// note GITHUB_RUN_NUMBER is reset whenever the workflow name changes
+version = "6.1." + (System.getenv("GITHUB_RUN_NUMBER") ?: "0-SNAPSHOT")
 
 val runWithCustomSandbox by intellijPlatformTesting.runIde.registering {
    prepareSandboxTask {
