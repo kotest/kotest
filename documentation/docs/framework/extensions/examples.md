@@ -5,8 +5,9 @@ slug: extension-examples.html
 sidebar_label: Examples
 ---
 
+This page contains some simple examples of how to write extensions.
 
-### System Out Listener
+## System Out Listener
 
 A real example of an extension, is the `NoSystemOutListener` which comes with Kotest.
 This extension throws an error if any output is written to standard out.
@@ -14,17 +15,17 @@ This extension throws an error if any output is written to standard out.
 ```kotlin
 class MyTestSpec : DescribeSpec({
 
-    listener(NoSystemOutListener)
+  extensions(NoSystemOutListener)
 
-    describe("All these tests should not write to standard out") {
-        it("silence in the court") {
-          println("boom") // failure
-        }
+  describe("All these tests should not write to standard out") {
+    it("silence in the court") {
+      println("boom") // failure
     }
+  }
 })
 ```
 
-### Timer Listener
+## Timer Listener
 
 Another example would be if we wanted to log the time taken for each test case.
 We can do this by using the `beforeTest` and `afterTest` functions as follows:
@@ -44,7 +45,7 @@ object TimerListener : BeforeTestListener, AfterTestListener {
 }
 ```
 
-Then we can register like so:
+Then we can register it in a single spec like so:
 
 ```kotlin
 class MyTestClass : FunSpec({
