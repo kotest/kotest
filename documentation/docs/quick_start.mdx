@@ -12,34 +12,30 @@ import TabItem from '@theme/TabItem';
 
 For latest updates see [Changelog](changelog.md).
 
-Kotest is divided into several, stand alone, subprojects, each of which can be used independently:
+Kotest is divided into three, stand-alone projects, each of which can be used independently:
 
 * [Test framework](framework/index.md)
 * [Assertions library](assertions/index.md)
 * [Property testing](proptest/index.mdx)
 
-You can decide to go _all in_ on Kotest, and use all three together, or you can choose to one or more modules in conjunction with other projects.
-For example, you could use the assertions library with JUnit, or you could use the test framework with another assertions library like assertj.
+You can decide to go _all in_ on Kotest and use all three together, or you can choose to one or more modules in conjunction with other projects.
+For example, you could use the assertion library with JUnit, or you could use the test framework with another assertion library like AssertJ.
 
 This page gives setup instructions for various combinations of projects and targets.
 
-:::note
-Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html).
-If you are unfamiliar with this, then Kotlin compiles to different targets - JVM, JS, Native, iOS and so on. If you are doing server side or android development then you want the modules that end with JVM, such as `kotest-property-jvm`.
+:::info[Multiplatform Support]
+Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html) and supports [all targets](https://kotlinlang.org/docs/multiplatform/supported-platforms.html#compose-multiplatform-ui-framework-stability-levels) - JVM, JS, Native, iOS and so on.
 :::
 
 ## Test Framework
 
-The Kotest test framework is supported on JVM, Android, Javascript and Native. To setup kotest as your testing framework, follow detailed instructions in the [framework documentation](framework/setup.mdx) page.
-
+The Kotest test framework is supported on all targets. On the JVM it builds on top of the JUnit Platform project, and on Kotlin Multiplatform, it leverages the existing Gradle Test infrastructure.
+To set up kotest as your testing framework, follow detailed instructions in the [framework documentation](framework/setup.mdx) page.
 
 ## Assertions Library
 
-
-The core assertions library framework is supported on all targets. Submodules are supported on the platforms that applicable.
-For example, the JDBC matchers only work for JVM since JDBC is a Java library.
-
-
+The core assertions library framework is supported on all targets. Extensions are supported on the platforms that are applicable to that extension.
+For example, the JDBC matchers are only provided for the JVM since JDBC is a Java library.
 
 <Tabs
    defaultValue="JVM/Gradle"
@@ -50,10 +46,10 @@ For example, the JDBC matchers only work for JVM since JDBC is a Java library.
    ]}>
    <TabItem value="JVM/Gradle">
 
-Add the following dependency to your build:
+Add the following dependency to your dependencies block:
 
-```groovy
-testImplementation 'io.kotest:kotest-assertions-core:$version'
+```kotlin
+testImplementation("io.kotest:kotest-assertions-core:$version")
 ```
 
    </TabItem>
@@ -65,7 +61,7 @@ Add the following dependency to your build.
 <dependency>
    <groupId>io.kotest</groupId>
    <artifactId>kotest-assertions-core-jvm</artifactId>
-   <version>{version}</version>
+   <version>${version}</version>
    <scope>test</scope>
 </dependency>
 ```
@@ -73,30 +69,10 @@ Add the following dependency to your build.
    </TabItem>
    <TabItem value="Multiplatform">
 
-Add the following dependency to your commonTest dependencies block:
-
-```groovy
-implementation 'io.kotest:kotest-assertions-core:$version'
-```
-
-Alternatively, add the dependency to a specific target. For example, we could add to the Javascript target only.
+Add the following dependency to your `commonTest` or target specific dependencies block:
 
 ```kotlin
-kotlin {
-   targets {
-      js {
-         browser()
-         nodejs()
-      }
-   }
-   sourceSets {
-      val jsTest by getting {
-         dependencies {
-            implementation("io.kotest:kotest-assertions-core:$version")
-         }
-      }
-   }
-}
+implementation("io.kotest:kotest-assertions-core:$version")
 ```
 
    </TabItem>
@@ -104,14 +80,9 @@ kotlin {
 
 View the [assertions library documentation](assertions/index.md) for more information.
 
-
-
-
 ## Property Testing
 
-
 The property test framework is supported on all targets.
-
 
 <Tabs
    defaultValue="JVM/Gradle"
@@ -124,8 +95,8 @@ The property test framework is supported on all targets.
 
 Add the following dependency to your build:
 
-```groovy
-testImplementation 'io.kotest:kotest-property:$version'
+```kotlin
+testImplementation("io.kotest:kotest-property:$version")
 ```
 
    </TabItem>
@@ -146,34 +117,11 @@ Add the following dependency to your build.
    </TabItem>
    <TabItem value="Multiplatform">
 
-Add the following dependency to your commonTest dependencies block:
-
-```groovy
-implementation 'io.kotest:kotest-property:$version'
-```
-
-
-Alternatively, add the dependency to a specific target. For example, we could add to the Javascript target only.
+Add the following dependency to your `commonTest` or target specific dependencies block:
 
 ```kotlin
-kotlin {
-   targets {
-      js {
-         browser()
-         nodejs()
-      }
-   }
-   sourceSets {
-      val jsTest by getting {
-         dependencies {
-            implementation("io.kotest:kotest-property:$version")
-         }
-      }
-   }
-}
+implementation("io.kotest:kotest-property:$version")
 ```
-
-
 
    </TabItem>
 </Tabs>
@@ -183,9 +131,14 @@ View the [property testing documentation](proptest/index.mdx) for more informati
 
 ## Snapshots
 
-Snapshot are automatically published on each commit to master.
-If you want to test the latest snapshot build, setup the same way described above, change the version to the current snapshot version and add the following repository to your `repositories` block:
+Snapshots are automatically published on each commit to master. If you want to use the latest snapshot build,
+set up the dependencies in the same way described above, changing the version to the current snapshot version
+and add the following repository to your `repositories` block:
 
 ```
-https://s01.oss.sonatype.org/content/repositories/snapshots
+repositories {
+   maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
 ```
+
+The latest snapshot version can be found on the [GitHub README page](https://github.com/kotest/kotest/) in the badges section.
