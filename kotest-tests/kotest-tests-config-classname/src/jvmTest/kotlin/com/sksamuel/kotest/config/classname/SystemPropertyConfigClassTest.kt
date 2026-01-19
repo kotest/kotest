@@ -2,6 +2,7 @@ package com.sksamuel.kotest.config.classname
 
 import io.kotest.core.annotation.Description
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
