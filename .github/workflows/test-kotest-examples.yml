@@ -23,7 +23,7 @@ jobs:
          kotest-version: ${{ steps.get-version.outputs.version }}
       steps:
          - name: Checkout kotest
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -74,7 +74,7 @@ jobs:
       if: github.repository == 'kotest/kotest'
       steps:
          - name: Checkout kotest
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -130,7 +130,7 @@ jobs:
       if: github.repository == 'kotest/kotest'
       steps:
          - name: Checkout kotest
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
 
          - name: Setup JDK
            uses: actions/setup-java@v5
@@ -174,7 +174,7 @@ jobs:
                - kotest-wasm
       steps:
          - name: Checkout kotest-examples
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
            with:
               repository: kotest/kotest-examples
               path: kotest-examples
@@ -231,7 +231,7 @@ jobs:
                - kotest-native
       steps:
          - name: Checkout kotest-examples
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
            with:
               repository: kotest/kotest-examples
               path: kotest-examples
@@ -288,7 +288,7 @@ jobs:
                - kotest-native
       steps:
          - name: Checkout kotest-examples
-           uses: actions/checkout@v5
+           uses: actions/checkout@v6
            with:
               repository: kotest/kotest-examples
               path: kotest-examples
