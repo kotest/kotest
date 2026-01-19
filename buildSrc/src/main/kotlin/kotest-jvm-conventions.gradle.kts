@@ -29,14 +29,14 @@ val jvmCompilerVersion: Provider<JavaLanguageVersion> = findJvmVersion("jvmCompi
 
 kotlin {
    jvm {
-      // Use a 'release' version Java launcher for the main tests,
+      // Use a 'release' version Java launcher for the main tests
       // to ensure that Kotest can actually be used with the 'release' version.
       testRuns.named(DEFAULT_TEST_RUN_NAME) {
          executionTask.configure {
             javaLauncher = javaToolchains.launcherFor { languageVersion = jvmMinTargetVersion }
          }
       }
-      // Use the 'max' version, to ensure that Kotest works with the latest Java version.
+      // Use the 'max' version to ensure that Kotest works with the latest Java version.
       val maxJdk by testRuns.creating {
          executionTask.configure {
             javaLauncher = javaToolchains.launcherFor { languageVersion = jvmMaxTargetVersion }

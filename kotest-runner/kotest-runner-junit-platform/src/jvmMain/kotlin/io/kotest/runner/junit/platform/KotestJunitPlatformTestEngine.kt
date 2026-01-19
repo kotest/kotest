@@ -52,7 +52,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
+      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
       // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
@@ -85,11 +85,11 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    /**
     * gradlew --tests rules:
-    * Classname: adds classname selector and ClassMethodNameFilter post discovery filter
-    * Classname.method: adds classname selector and ClassMethodNameFilter post discovery filter
+    * Classname: adds classname selector and ClassMethodNameFilter post-discovery filter
+    * Classname.method: adds classname selector and ClassMethodNameFilter post-discovery filter
     * org.Classname: doesn't seem to invoke the discover or execute methods.
     *
-    * filter in gradle test block:
+    * filter in Gradle test block:
     * includeTestsMatching("*Test") - class selectors and ClassMethodNameFilter with pattern
     * includeTestsMatching("*Test") AND includeTestsMatching("org.gradle.internal.*") - class selectors and ClassMethodNameFilter with two patterns
     */
@@ -107,8 +107,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val result = Discovery.discover(uniqueId, request)
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
-      // so we'll force the loading here as well. Ideally, this would all be taken care of in in the engine and junit shouldn't need to know
+      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
+      // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
       KotestPropertiesLoader.loadAndApplySystemPropsFile()
