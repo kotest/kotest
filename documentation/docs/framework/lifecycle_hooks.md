@@ -48,6 +48,7 @@ class TestSpec : FreeSpec() {
 :::note
 You can use `afterProject` as a DSL method but there is no equivalent `beforeProject`, because by the time the
 framework is at the stage of executing a spec, the project has already started!
+:::
 
 ### Lambda Type-aliases
 
