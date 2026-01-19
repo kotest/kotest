@@ -14,15 +14,15 @@ internal fun compareBoolean(
    expected: JsonNode.BooleanNode,
    actual: JsonNode,
    options: CompareJsonOptions
-): JsonError? {
+): List<JsonError> {
    return when {
       actual is JsonNode.BooleanNode -> compareBooleans(path, expected.value, actual.value)
       options.typeCoercion.isEnabled() && actual is JsonNode.StringNode -> when (actual.value) {
          "true" -> compareBooleans(path, expected.value, true)
          "false" -> compareBooleans(path, expected.value, false)
-         else -> JsonError.UnequalValues(path, expected, actual)
+         else -> listOf(JsonError.UnequalValues(path, expected, actual))
       }
 
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
+      else -> listOf(JsonError.IncompatibleTypes(path, expected, actual))
    }
 }
