@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.util.DataTestInfo
 import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -95,9 +96,9 @@ data class Test(
    fun readableTestPath() = path().joinToString(" ") { it.name }
 
    /**
-    * @see DataTestUtil.dataTestTagMaybe
+    * @see DataTestUtil.dataTestInfoMaybe
     */
-   fun dataTestTagMaybe(): String? = DataTestUtil.dataTestTagMaybe(isDataTest, psi)
+   fun dataTestInfoMaybe(): DataTestInfo? = DataTestUtil.dataTestInfoMaybe(isDataTest, psi)
 }
 
 enum class TestType {

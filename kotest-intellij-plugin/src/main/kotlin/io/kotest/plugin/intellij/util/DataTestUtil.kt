@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.util
 
 import com.intellij.psi.PsiElement
+import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
 import io.kotest.plugin.intellij.styles.DescribeSpecStyle
 import io.kotest.plugin.intellij.styles.ExpectSpecStyle
@@ -11,8 +12,25 @@ import io.kotest.plugin.intellij.styles.ShouldSpecStyle
 import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
+import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtLambdaArgument
+import org.jetbrains.kotlin.psi.KtLambdaExpression
+import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
+import org.jetbrains.kotlin.psi.KtStringTemplateExpression
+
+/**
+ * Contains information about a data test's tag expression and ancestor context path.
+ *
+ * @param tag The tag expression for filtering (e.g., `kotest.data.12` or `kotest.data.12 | !kotest.data`)
+ * @param ancestorTestPath The path to the ancestor regular context, if the data test is nested inside one.
+ *                         This is used in conjunction with the tag to properly filter tests.
+ *                         Example: "a context with nested withXXX calls"
+ */
+data class DataTestInfo(
+   val tag: String,
+   val ancestorTestPath: String? = null
+)
 
 object DataTestUtil {
    val styleToDataTestMethodNames: Map<SpecStyle, Set<String>> = mapOf(
@@ -66,84 +84,164 @@ object DataTestUtil {
    )
    private val allDataTestMethodNames = styleToDataTestMethodNames.values.flatten().toSet()
 
+   private val regularContainerMethodNames = setOf(
+      // used in multiple specs
+      "context", "when",
+      // BehaviorSpec
+      "Context", "`Context`", "`context`",
+      "given", "Given", "`given`", "`Given`",
+      "and", "And", "`and`", "`And`",
+      "When", "`when`", "`When`",
+      // DescribeSpec
+      "describe",
+      // FeatureSpec
+      "feature",
+   )
+
+
    /**
-    * Returns the data test tag expression for this data test.
+    * Returns [DataTestInfo] for this data test.
     *
-    * - For root data tests: returns `"kotest.data.{lineNumber}"`
-    * - For nested data tests within other data tests: builds a chain from the root parent
-    *   down to this data test, excluding siblings at every level.
-    *   This allows running a specific nested, at any level, data test by including all ancestors
-    *   (so they execute and discover children) while excluding sibling data test blocks at each level.
+    * - For root data tests: returns with tag `kotest.data.{lineNumber}` and no ancestor path.
+    * - For nested data tests within other data tests: returns with tag `kotest.data.{lineNumber} & !kotest.data.{siblingLineNumber} and no ancestor path
+    *   builds a chain from the root parent down to this data test, excluding siblings at every level.
+    * - For data tests inside regular containers (like `context("...")`): returns with
+    *   tag expression including `| !kotest.data` to allow parent container to run, and the ancestor
+    *   test path so the filter can target the specific container.
     *
-    * Example of tags for nested data tests - given the following spec:
-    * ```kotlin
-    *  1 | class ASpecWithManyDataTests : FunSpec({
-    *  2 |
-    *  3 |    withData("parent1", "parent2", "parent3") {                                            // -> "kotest.data.3"
-    *  4 |       withTests("firstChild1", "firstChild2") {                                           // -> "kotest.data.3 & !kotest.data.7 & !kotest.data.25"
-    *  5 |          1 + 1 shouldBe 2
-    *  6 |       }
-    *  7 |       withData("secondChild1", "secondChild2") {                                          // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25"
-    *  8 |          withContexts("firstChildOfSecondChild1", "firstChildOfSecondChild2") {           // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.16 & !kotest.data.19"
-    *  9 |             withTests("firstChildOfFirstChildOfSecondChild1", "...") {                    // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.16 & !kotest.data.19 & !kotest.data.12"
-    * 10 |                1 + 1 shouldBe 2
-    * 11 |             }
-    * 12 |             withTests("secondChildOfFirstChildOfSecondChild1", "...") {                   // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.16 & !kotest.data.19 & !kotest.data.9"
-    * 13 |                1 + 1 shouldBe 2
-    * 14 |             }
-    * 15 |          }
-    * 16 |          withTests("secondChildOfSecondChild1", "secondChildOfSecondChild2") {            // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.8 & !kotest.data.19"
-    * 17 |             1 + 1 shouldBe 2
-    * 18 |          }
-    * 19 |          withData("thirdChildOfSecondChild1", "thirdChildOfSecondChild2") {               // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.8 & !kotest.data.16"
-    * 20 |             withTests("firstAndOnlyChildOfThirdChildOfSecondChild1", "...") {             // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.25 & !kotest.data.8 & !kotest.data.16"
-    * 21 |                1 + 1 shouldBe 2                                                           //    (same as parent - no siblings to exclude at this level)
-    * 22 |             }
-    * 23 |          }
-    * 24 |       }
-    * 25 |       withTests("thirdChild1", "thirdChild2") {                                           // -> "kotest.data.3 & !kotest.data.4 & !kotest.data.7"
-    * 26 |          1 + 1 shouldBe 2
-    * 27 |       }
-    * 28 |    }
-    * 29 | })
-    * ```
+    * This allows running a specific nested, at any level, data test by including all ancestors
+    * (so they execute and discover children) while excluding sibling data test blocks at each level.
     *
     * Returns null early if this is not a data test or line number cannot be determined.
+    *
+    * @see <a href="https://github.com/kotest/kotest/blob/master/kotest-intellij-plugin/src/test/resources/datatestspec.kt">
+    * DataTestSpecExample for full details of the various DataTestInfo generated for different data test nesting scenarios</a>
+    *
     */
-   fun dataTestTagMaybe(isDataTest: Boolean, currentTestPsi: PsiElement): String? {
+   fun dataTestInfoMaybe(isDataTest: Boolean, currentTestPsi: PsiElement): DataTestInfo? {
       if (!isDataTest) return null
       val thisLine = lineNumber(currentTestPsi) ?: return null
 
-      // Build the ancestor chain from current test up to root
+      // Check if this data test is inside a regular container
+      val regularAncestorPath = findRegularAncestorPath(currentTestPsi)
+      val isInsideRegularContainer = regularAncestorPath != null
+
+      // Build the ancestor chain from current test up to root data test
       // Each entry is (dataTestPsi, lineNumber)
       val ancestorChain = buildAncestorChain(currentTestPsi, thisLine)
 
-      // If no ancestors, this is a root data test
-      if (ancestorChain.size == 1) {
-         return "kotest.data.$thisLine"
-      }
-
-      // The root ancestor is the first in the chain
-      val rootLine = ancestorChain.first().second
-
-      // Collect all sibling exclusions at every level
-      val allExclusions = mutableListOf<Int>()
-      for (i in 0 until ancestorChain.size - 1) {
-         val (parentPsi, _) = ancestorChain[i]
-         val (_, childLine) = ancestorChain[i + 1]
-         // Find siblings of the child within this parent
-         val siblingLines = findSiblingDataTestLines(parentPsi, childLine)
-         allExclusions.addAll(siblingLines)
-      }
-
-      return if (allExclusions.isEmpty()) {
-         // No sibling data tests at any level, just include root
-         "kotest.data.$rootLine"
+      // Build the base tag expression
+      val baseTag = if (ancestorChain.size == 1) {
+         // No data test ancestors, this is either a root-level data test or a data test inside a regular container
+         "kotest.data.$thisLine"
       } else {
-         // Include root and exclude all siblings at all levels
-         val exclusions = allExclusions.joinToString(" & ") { "!kotest.data.$it" }
-         "kotest.data.$rootLine & $exclusions"
+         // The root ancestor is the first in the chain
+         val rootLine = ancestorChain.first().second
+
+         // Collect all sibling exclusions at every level
+         val allExclusions = mutableListOf<Int>()
+         for (i in 0 until ancestorChain.size - 1) {
+            val (parentPsi, _) = ancestorChain[i]
+            val (_, childLine) = ancestorChain[i + 1]
+            // Find siblings of the child within this parent
+            val siblingLines = findSiblingDataTestLines(parentPsi, childLine)
+            allExclusions.addAll(siblingLines)
+         }
+
+         if (allExclusions.isEmpty()) {
+            // No sibling data tests at any level, just include root
+            "kotest.data.$rootLine"
+         } else {
+            // Include root and exclude all siblings at all levels
+            val exclusions = allExclusions.joinToString(" & ") { "!kotest.data.$it" }
+            "kotest.data.$rootLine & $exclusions"
+         }
       }
+
+      // If inside a regular container, we need to add "| !kotest.data"
+      // to allow the parent container to think it is going to run (and therefore generate) all tests within it,
+      //  as this data test will have the full container test path, set via regularAncestorPath + this specific data test tag
+      // that will be defined by the baseTag setter above
+      val tag = if (isInsideRegularContainer) {
+         "($baseTag) | !kotest.data"
+      } else {
+         baseTag
+      }
+
+      return DataTestInfo(tag, regularAncestorPath)
+   }
+
+   /**
+    * Finds the path of regular test/context ancestors (like `context("...")`) that contain this data test.
+    * Returns the full path (e.g., "a context with nested withData calls") or null if no regular ancestors.
+    *
+    * Only includes ancestors up to the first data test ancestor (if any) or up to the spec root.
+    */
+   private fun findRegularAncestorPath(dataTestPsi: PsiElement): String? {
+      val pathParts = mutableListOf<String>()
+      var current: PsiElement? = dataTestPsi.parent
+
+      while (current != null) {
+         when (current) {
+            is KtCallExpression -> {
+               val calleeText = current.calleeExpression?.text
+               // If we hit a data test method, stop - we only care about regular contexts above this
+               if (calleeText in allDataTestMethodNames) {
+                  break
+               }
+               // If it's a regular test/context, extract its name and add to path
+               if (calleeText in regularContainerMethodNames) {
+                  val name = extractTestName(current)
+                  if (name != null) {
+                     pathParts.add(0, name) // Add to front to maintain order from root to leaf
+                  }
+               }
+            }
+
+            is KtBinaryExpression -> {
+               // Handle FreeSpec style: "container name" - { ... }
+               val name = extractFreeSpecContainerName(current)
+               if (name != null) {
+                  pathParts.add(0, name) // Add to front to maintain order from root to leaf
+               }
+            }
+         }
+         current = current.parent
+      }
+
+      return if (pathParts.isEmpty()) null else pathParts.joinToString(" -- ")
+   }
+
+   /**
+    * Extracts the container name from a FreeSpec binary expression.
+    * For example, extracts "my container" from `"my container" - { ... }`
+    */
+   private fun extractFreeSpecContainerName(binaryExpression: KtBinaryExpression): String? {
+      val children = binaryExpression.children
+      if (children.size == 3) {
+         val left = children[0]
+         val operator = children[1]
+         val right = children[2]
+         if (left is KtStringTemplateExpression
+            && operator is KtOperationReferenceExpression
+            && operator.text == "-"
+            && right is KtLambdaExpression
+         ) {
+            // Extract the string content without quotes
+            return left.entries.joinToString("") { it.text }
+         }
+      }
+      return null
+   }
+
+   /**
+    * Extracts the test name from a regular test/context call expression.
+    * For example, extracts "my test" from `context("my test") { ... }`
+    */
+   private fun extractTestName(callExpression: KtCallExpression): String? {
+      // Try to extract string argument from common test function patterns
+      val functionName = callExpression.calleeExpression?.text ?: return null
+      return callExpression.extractStringArgForFunctionWithStringAndLambdaArgs(functionName)?.text
    }
 
    /**
@@ -236,15 +334,30 @@ object DataTestUtil {
    }
 
    /**
-    * Finds the lambda body (block expression) within a call expression.
+    * Finds the lambda body (block expression) within a call expression or binary expression.
     */
-   private fun findLambdaBody(callExpression: PsiElement): PsiElement? {
-      for (child in callExpression.children) {
-         if (child is KtLambdaArgument) {
-            val lambda = child.getLambdaExpression()
-            return lambda?.bodyExpression
+   private fun findLambdaBody(element: PsiElement): PsiElement? {
+      return when (element) {
+         is KtCallExpression -> {
+            for (child in element.children) {
+               if (child is KtLambdaArgument) {
+                  val lambda = child.getLambdaExpression()
+                  return lambda?.bodyExpression
+               }
+            }
+            null
          }
+
+         is KtBinaryExpression -> {
+            // FreeSpec style: "name" - { ... }
+            val children = element.children
+            if (children.size == 3 && children[2] is KtLambdaExpression) {
+               return (children[2] as KtLambdaExpression).bodyExpression
+            }
+            null
+         }
+
+         else -> null
       }
-      return null
    }
 }
