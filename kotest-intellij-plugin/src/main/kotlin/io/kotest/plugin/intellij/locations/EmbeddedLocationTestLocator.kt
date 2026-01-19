@@ -13,6 +13,7 @@ import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
 import io.kotest.plugin.intellij.TestElement
 import io.kotest.plugin.intellij.psi.specStyle
+import org.jetbrains.kotlin.idea.stubindex.KotlinFullClassNameIndex
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
@@ -29,16 +30,21 @@ internal class EmbeddedLocationTestLocator(private val location: EmbeddedLocatio
       if (DumbService.isDumb(project)) return emptyList()
 
       val fqn = DescriptorPaths.fqn(location.path)
-      val psiClass: PsiClass = ClassUtil.findPsiClass(
+
+      // this will find the JVM class reference
+      val psiClass: PsiClass? = ClassUtil.findPsiClass(
          /* manager = */ PsiManager.getInstance(project),
          /* name = */ fqn,
-         /* parent = */ null,
-         /* jvmCompatible = */ true,
-         /* scope = */ scope
-      ) ?: return emptyList()
+      )
+
+      // if the JVM one is null, we'll try again with Kotlin kmp
+      if (psiClass == null) {
+         val ktclasses = KotlinFullClassNameIndex[fqn, project, GlobalSearchScope.allScope(project)]
+         return ktclasses.map { createKtClassNavigable(it) }
+      }
 
       val contexts = DescriptorPaths.contexts(location.path)
-      if (contexts.isEmpty()) return listOf(createClassNavigable(psiClass))
+      if (contexts.isEmpty()) return listOf(createPsiClassNavigable(psiClass))
 
       val ktClass = psiClass.navigationElement as? KtClassOrObject ?: return emptyList()
       val style = ktClass.specStyle() ?: return emptyList()
@@ -54,8 +60,12 @@ internal class EmbeddedLocationTestLocator(private val location: EmbeddedLocatio
       return findTest(test.nestedTests, contexts.drop(1))
    }
 
-   private fun createClassNavigable(psiClass: PsiClass): Location<PsiElement> {
+   private fun createPsiClassNavigable(psiClass: PsiClass): Location<PsiElement> {
       return PsiLocation(psiClass.project, psiClass)
+   }
+
+   private fun createKtClassNavigable(ktClassOrObject: KtClassOrObject): Location<PsiElement> {
+      return PsiLocation(ktClassOrObject.project, ktClassOrObject)
    }
 
    private fun createTestNavigable(test: TestElement): Location<PsiElement> {

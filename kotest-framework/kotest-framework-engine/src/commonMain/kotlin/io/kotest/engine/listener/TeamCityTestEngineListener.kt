@@ -36,13 +36,13 @@ class TeamCityTestEngineListener(
    )
 
    // once a spec has completed, we want to be able to check whether any given test is
-   // a container or a leaf test, and so this map contains all test that have children
+   // a container or a leaf test, and so this map contains all tests that have children
    private val children = mutableMapOf<Descriptor, MutableList<TestCase>>()
 
    private val results = mutableMapOf<Descriptor, TestResult>()
 
-   // intellij has no method for failed suites, so if a container or spec fails we must insert
-   // a dummy "test" in order to tag the error against that
+   // intellij has no method for failed suites, so if a container or spec fails, we must insert
+   // a dummy "test" to tag the error against that
    private fun insertPlaceholder(t: Throwable, parent: Descriptor) {
 
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
