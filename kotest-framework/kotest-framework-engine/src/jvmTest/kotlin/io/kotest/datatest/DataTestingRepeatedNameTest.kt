@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
@@ -14,7 +15,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(RepeatedNamesDescribeSpec::class)
+            .withSpecRefs(SpecRef.Reference((RepeatedNamesDescribeSpec::class)))
             .execute()
 
          collector.names shouldBe listOf(
@@ -33,7 +34,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(RepeatedNamesDescribeSpecRoot::class)
+            .withSpecRefs(SpecRef.Reference((RepeatedNamesDescribeSpecRoot::class)))
             .execute()
 
          collector.names shouldBe listOf(
@@ -51,7 +52,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(RepeatedNamesFunSpec::class)
+            .withSpecRefs(SpecRef.Reference((RepeatedNamesFunSpec::class)))
             .execute()
 
          collector.names shouldBe listOf(
@@ -70,7 +71,7 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(RepeatedNamesRootFunSpec::class)
+            .withSpecRefs(SpecRef.Reference((RepeatedNamesRootFunSpec::class)))
             .execute()
 
          collector.names shouldBe listOf(

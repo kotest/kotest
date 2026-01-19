@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.config.classname
 
 import io.kotest.core.annotation.Description
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
@@ -14,7 +15,7 @@ class DefaultFqnConfigClassTest : FunSpec() {
          invocations.set(0)
          TestEngineLauncher()
             .withListener(NoopTestEngineListener)
-            .withClasses(BarTest::class)
+            .withSpecRefs(SpecRef.Reference(BarTest::class))
             .execute()
          invocations.get() shouldBe 5
       }

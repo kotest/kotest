@@ -8,12 +8,12 @@ sidebar_label: Writing Tests
 By using the language features available in Kotlin, Kotest is able to provide a more powerful and yet simple approach
 to defining tests. Gone are the days when tests need to be methods defined in a Java file.
 
-In Kotest a test is essentially just a function `TestContext -> Unit` which contains your test logic.
+In Kotest a test is essentially just a function that contains your test logic.
 Any assert statements (_matchers_ in Kotest nomenclature) invoked in this function that throw an exception
 will be intercepted by the framework and used to mark that test as failed or success.
 
-Test functions are not defined manually, but instead using the Kotest DSL, which provides several ways in which these functions
-can be created and nested. The DSL is accessed by creating a class that extends from a class that implements a particular
+Test functions are defined using the Kotest DSL, which provides several ways in which these functions
+can be created and nested. The DSL is accessed by creating a class that extends from a superclass that implements a particular
 [testing style](styles.md).
 
 For example, using the _Fun Spec_ style, we create test functions using the `test` keyword, providing a name, and the
@@ -29,7 +29,9 @@ class MyFirstTestClass : FunSpec({
 })
 ```
 
-Note that tests must be defined inside an `init {}` block or a class body lambda as in the previous example.
+:::note
+Tests must be defined inside an `init {}` block or a class body lambda as in the previous example.
+:::
 
 ### Nested Tests
 

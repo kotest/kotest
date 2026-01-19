@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.annotation
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.engine.TestEngineLauncher
@@ -18,7 +19,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
          val listener = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(listener)
-            .withClasses(AnnotationSpecWithBangTest::class)
+            .withSpecRefs(SpecRef.Reference((AnnotationSpecWithBangTest::class)))
             .execute()
          listener.tests
             .mapKeys { it.key.name.name }
@@ -29,7 +30,7 @@ class AnnotationSpecIgnoresTest : DescribeSpec({
          val listener = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(listener)
-            .withClasses(AnnotationSpecAtIgnoreTest::class)
+            .withSpecRefs(SpecRef.Reference((AnnotationSpecAtIgnoreTest::class)))
             .execute()
          listener.tests
             .mapKeys { it.key.name.name }

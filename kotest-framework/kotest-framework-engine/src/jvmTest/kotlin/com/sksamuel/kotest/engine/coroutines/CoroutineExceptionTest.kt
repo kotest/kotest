@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.coroutines
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
@@ -20,7 +21,7 @@ class CoroutineExceptionTest : FunSpec({
 
    test("exception in coroutine") {
 
-      var _result: TestResult? = null
+      @Suppress("LocalVariableName") var _result: TestResult? = null
 
       val listener = object : AbstractTestEngineListener() {
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
@@ -32,7 +33,7 @@ class CoroutineExceptionTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(FailingCoroutineTest::class)
+         .withSpecRefs(SpecRef.Reference(FailingCoroutineTest::class))
          .execute()
 
       _result?.isError shouldBe true

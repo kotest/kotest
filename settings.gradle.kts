@@ -203,6 +203,14 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-timeout-project",
       ":kotest-tests:kotest-tests-timeout-sysprop",
       ":kotest-tests:kotest-tests-test-parallelism",
+
+      // tests various forms of the Gradle --tests filter
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class-root-test",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-single-class",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-package-recursive",
+
+
 //   ":kotest-tests:kotest-tests-js",
    )
 }

@@ -7,6 +7,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.test.TestCase
@@ -37,7 +38,7 @@ class ExcludeTagExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(ExcludedSpec::class)
+            .withSpecRefs(SpecRef.Reference(ExcludedSpec::class))
             .withProjectConfig(c)
             .execute()
       }

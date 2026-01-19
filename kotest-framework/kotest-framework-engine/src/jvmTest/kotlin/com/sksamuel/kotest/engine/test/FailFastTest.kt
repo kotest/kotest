@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -19,7 +20,7 @@ class FailFastTest : FunSpec() {
          val listener = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(FailFastFunSpec::class)
+            .withSpecRefs(SpecRef.Reference((FailFastFunSpec::class)))
             .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
@@ -40,7 +41,7 @@ class FailFastTest : FunSpec() {
          val listener = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(FailFastFreeSpec::class)
+            .withSpecRefs(SpecRef.Reference((FailFastFreeSpec::class)))
             .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
@@ -61,7 +62,7 @@ class FailFastTest : FunSpec() {
          val listener = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(GrandfatherFailFastFreeSpec::class)
+            .withSpecRefs(SpecRef.Reference(GrandfatherFailFastFreeSpec::class))
             .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }

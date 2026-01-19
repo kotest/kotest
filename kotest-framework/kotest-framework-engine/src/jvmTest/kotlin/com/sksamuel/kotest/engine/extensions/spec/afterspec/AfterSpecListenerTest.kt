@@ -9,6 +9,7 @@ import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withTests
 import io.kotest.engine.TestEngineLauncher
@@ -35,7 +36,7 @@ class AfterSpecListenerTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MyPopulatedSpec2::class)
+            .withSpecRefs(SpecRef.Reference((MyPopulatedSpec2::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -48,7 +49,7 @@ class AfterSpecListenerTest : FunSpec() {
       test("AfterSpecListener's exceptions should be propagated to specExit") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MyErrorSpec2::class)
+            .withSpecRefs(SpecRef.Reference((MyErrorSpec2::class)))
             .execute()
          collector.specs.size shouldBe 1
          collector.specs[MyErrorSpec2::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -63,7 +64,7 @@ class AfterSpecListenerTest : FunSpec() {
          counter.set(0)
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(MyEmptySpec2::class)
+            .withSpecRefs(SpecRef.Reference((MyEmptySpec2::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -78,7 +79,7 @@ class AfterSpecListenerTest : FunSpec() {
          counter.set(0)
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(NoActiveTestsSpec2::class)
+            .withSpecRefs(SpecRef.Reference((NoActiveTestsSpec2::class)))
             .withProjectConfig(c)
             .execute()
 
@@ -87,7 +88,7 @@ class AfterSpecListenerTest : FunSpec() {
 
       test("inline afterSpec functions should be invoked") {
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(InlineAfterSpec::class)
+            .withSpecRefs(SpecRef.Reference((InlineAfterSpec::class)))
             .execute()
          inlineAfterSpec.shouldBeTrue()
       }
@@ -103,7 +104,7 @@ class AfterSpecListenerTest : FunSpec() {
             }
             TestEngineLauncher().withListener(collector)
                .withProjectConfig(config)
-               .withClasses(InlineAfterSpecError::class)
+               .withSpecRefs(SpecRef.Reference((InlineAfterSpecError::class)))
                .execute()
             collector.specs.size.shouldBe(1)
             collector.specs[InlineAfterSpecError::class]!!.errorOrNull.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -121,7 +122,7 @@ class AfterSpecListenerTest : FunSpec() {
             }
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
-               .withClasses(AfterSpecFunctionOverrideWithError::class)
+               .withSpecRefs(SpecRef.Reference((AfterSpecFunctionOverrideWithError::class)))
                .execute()
             listener.specs.size shouldBe 1
             listener.specs.values.first().isError.shouldBeTrue()
@@ -144,7 +145,7 @@ class AfterSpecListenerTest : FunSpec() {
             }
             TestEngineLauncher().withListener(listener)
                .withProjectConfig(config)
-               .withClasses(NestedSpec::class)
+               .withSpecRefs(SpecRef.Reference((NestedSpec::class)))
                .execute()
             counter.get() shouldBe instances
          }

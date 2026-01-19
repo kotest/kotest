@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.config
 
 import io.kotest.assertions.throwables.shouldThrowSoftly
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -54,7 +55,7 @@ class GlobalAssertionTest : FunSpec({
 
       TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
-         .withClasses(ShouldThrowSoftlyTest::class)
+         .withSpecRefs(SpecRef.Reference(ShouldThrowSoftlyTest::class))
          .execute()
 
       collector.result("shouldThrow")!!.isSuccess shouldBe false
@@ -72,7 +73,7 @@ class GlobalAssertionTest : FunSpec({
 
       TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
-         .withClasses(FooTest::class)
+         .withSpecRefs(SpecRef.Reference(FooTest::class))
          .execute()
 
       collector.result("Should log for 1")?.isSuccess shouldBe true
@@ -88,7 +89,7 @@ class GlobalAssertionTest : FunSpec({
 
       TestEngineLauncher().withListener(collector)
          .withProjectConfig(c)
-         .withClasses(FooTest::class)
+         .withSpecRefs(SpecRef.Reference(FooTest::class))
          .execute()
 
       collector.result("a dummy test with no assertion")?.isSuccess shouldBe true

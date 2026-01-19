@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.tree
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -16,7 +17,7 @@ class BehaviorSpecTreeTest : FunSpec() {
       test("BehaviorSpec should nest tests properly") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MyBehaviorSpecTree::class)
+            .withSpecRefs(SpecRef.Reference(MyBehaviorSpecTree::class))
             .execute()
          collector.tests.mapKeys { it.key.descriptor.path() }.keys shouldBe setOf(
             DescriptorPath("com.sksamuel.kotest.engine.spec.tree.MyBehaviorSpecTree/a -- b -- c"),

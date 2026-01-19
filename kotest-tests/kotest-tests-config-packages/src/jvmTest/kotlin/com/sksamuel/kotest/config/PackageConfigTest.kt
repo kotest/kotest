@@ -2,6 +2,7 @@ package com.sksamuel.kotest.config
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -17,10 +18,10 @@ class PackageConfigTest : FunSpec() {
          runBlocking {
             TestEngineLauncher()
                .withListener(collector)
-               .withClasses(BarTest::class)
+               .withSpecRefs(SpecRef.Reference(BarTest::class))
                .execute()
          }
-         // if the package config isn't picked up, this test won't timeout
+         // if the package config isn't picked up, this test would not timeout
          collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 22ms"
       }
    }

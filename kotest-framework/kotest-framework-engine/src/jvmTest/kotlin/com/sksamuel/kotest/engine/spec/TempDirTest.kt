@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.spec
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -21,7 +22,7 @@ class TempDirTest : FunSpec({
       val collector = CollectingTestEngineListener()
       TestEngineLauncher()
          .withListener(collector)
-         .withClasses(TempDirPassSpec::class)
+         .withSpecRefs(SpecRef.Reference((TempDirPassSpec::class)))
          .execute()
 
       // check the tests passed so we know the dir was created
@@ -33,7 +34,7 @@ class TempDirTest : FunSpec({
    test("temp dir should be kept after the spec is completed because of keepOnFailure") {
       TestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withClasses(TempDirFailSpec::class)
+         .withSpecRefs(SpecRef.Reference((TempDirFailSpec::class)))
          .execute()
       dir2!!.shouldExist()
    }
@@ -44,7 +45,7 @@ class TempDirTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(collector)
-         .withClasses(TempDirSymLink::class)
+         .withSpecRefs(SpecRef.Reference((TempDirSymLink::class)))
          .execute()
 
       // check the tests passed so we know the dir was created

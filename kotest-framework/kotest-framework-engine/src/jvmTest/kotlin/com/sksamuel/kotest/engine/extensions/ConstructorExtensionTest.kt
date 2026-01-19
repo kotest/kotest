@@ -6,6 +6,7 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -25,11 +26,11 @@ class ConstructorExtensionTest : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(DummySpec::class)
+            .withSpecRefs(SpecRef.Reference(DummySpec::class))
             .withProjectConfig(c)
             .execute()
 
-         // the extension was applied then the instantiation will fail
+         // the extension was applied, then the instantiation will fail
          collector.specs[DummySpec::class]!!.errorOrNull shouldBe IllegalStateException("THWACK!")
       }
 
@@ -38,7 +39,7 @@ class ConstructorExtensionTest : FunSpec() {
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(FunkySpec::class)
+            .withSpecRefs(SpecRef.Reference(FunkySpec::class))
             .execute()
 
          // if the extension isn't applied, it would fail to instantiate the class
@@ -54,7 +55,7 @@ private class DummySpec : FunSpec() {
 }
 
 private class ErroringConstructorExtension : ConstructorExtension {
-   override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
+   override fun <T : Spec> instantiate(clazz: KClass<T>): Spec {
       error("THWACK!")
    }
 }

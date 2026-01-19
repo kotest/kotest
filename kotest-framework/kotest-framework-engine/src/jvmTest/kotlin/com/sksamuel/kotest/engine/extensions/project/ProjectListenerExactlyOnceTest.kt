@@ -6,6 +6,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.BeforeProjectListener
 import io.kotest.core.listeners.ProjectListener
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.TestEngineLauncher
@@ -49,7 +50,7 @@ class ProjectListenerExactlyOnceTest : WordSpec() {
 
             TestEngineLauncher()
                .withListener(NoopTestEngineListener)
-               .withClasses(MyTest1::class, MyTest2::class)
+               .withSpecRefs(SpecRef.Reference(MyTest1::class), SpecRef.Reference(MyTest2::class))
                .withProjectConfig(c)
                .execute()
 

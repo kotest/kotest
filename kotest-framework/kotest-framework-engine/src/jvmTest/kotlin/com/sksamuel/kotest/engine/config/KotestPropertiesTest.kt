@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.config
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestEngineProperties
@@ -15,7 +16,7 @@ class KotestPropertiesTest : FunSpec() {
          withSystemProperty(KotestEngineProperties.PROPERTIES_FILENAME, "/test.kotest.properties") {
             TestEngineLauncher()
                .withListener(NoopTestEngineListener)
-               .withClasses(C::class)
+               .withSpecRefs(SpecRef.Reference(C::class))
                .execute()
             value shouldBe 123
          }

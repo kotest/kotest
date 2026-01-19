@@ -3,6 +3,7 @@ package com.sksamuel.kotest.timeout
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.interceptors.ProjectTimeoutException
@@ -25,7 +26,7 @@ class ProjectTimeoutTest : FunSpec({
       // each test takes 5, but 3 tests, so we should easily hit project limit
       val result = TestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withClasses(ProjectTimeoutSampleSpec::class)
+         .withSpecRefs(SpecRef.Reference(ProjectTimeoutSampleSpec::class))
          .withProjectConfig(c)
          .execute()
 

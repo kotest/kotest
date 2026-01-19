@@ -6,6 +6,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.KotestEngineProperties
@@ -31,7 +32,7 @@ private val testSuite = listOf<KClass<out Spec>>(
    NearFutureSciFiTests::class,
    BarTests::class,
    FooTests::class,
-)
+).map { SpecRef.Reference(it) }
 
 /**
  * Test that the filter expressions in [KotestEngineProperties.FILTER_TESTS] and
@@ -52,7 +53,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "",
             KotestEngineProperties.FILTER_TESTS to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
       numberOfTestsRunShouldBe(13)
    }
 
@@ -62,7 +63,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "*DistantFutureSciFiTests",
             KotestEngineProperties.FILTER_TESTS to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
       numberOfTestsRunShouldBe(7)
    }
 
@@ -72,7 +73,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "*FutureSciFiTests",
             KotestEngineProperties.FILTER_TESTS to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
       numberOfTestsRunShouldBe(9)
    }
 
@@ -83,7 +84,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "*NearFutureSciFiTests",
             KotestEngineProperties.FILTER_TESTS to "Daedalus*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
 
       numberOfTestsRunShouldBe(1)
    }
@@ -95,7 +96,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "",
             KotestEngineProperties.FILTER_TESTS to "trek tests*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
 
       numberOfTestsRunShouldBe(3)
    }
@@ -107,7 +108,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "com.sksamuel.kotest.engine.interceptors.filters1.*",
             KotestEngineProperties.FILTER_TESTS to ""
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
 
       numberOfTestsRunShouldBe(2)
    }
@@ -119,7 +120,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "",
             KotestEngineProperties.FILTER_TESTS to "expanse tests*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
 
       numberOfTestsRunShouldBe(4)
    }
@@ -131,7 +132,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "",
             KotestEngineProperties.FILTER_TESTS to "*anse tes*"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
 
       numberOfTestsRunShouldBe(4)
    }
@@ -143,7 +144,7 @@ class SystemPropertyTestFiltersTests : FunSpec({
             KotestEngineProperties.FILTER_SPECS to "",
             KotestEngineProperties.FILTER_TESTS to "*BC-304"
          )
-      ) { TestEngineLauncher().withClasses(testSuite).execute() }
+      ) { TestEngineLauncher().withSpecRefs(testSuite).execute() }
 
       numberOfTestsRunShouldBe(2)
       executed.shouldContainExactly("Daedalus BC-304", "Odyssey BC-304")

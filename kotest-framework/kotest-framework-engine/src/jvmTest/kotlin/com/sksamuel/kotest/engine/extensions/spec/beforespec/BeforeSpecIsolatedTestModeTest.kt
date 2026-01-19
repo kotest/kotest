@@ -5,6 +5,7 @@ import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -19,7 +20,7 @@ class BeforeSpecIsolatedTestModeTest : FunSpec({
 
       val collector = CollectingTestEngineListener()
       TestEngineLauncher().withListener(collector)
-         .withClasses(ParallelTests::class)
+         .withSpecRefs(SpecRef.Reference(ParallelTests::class))
          .execute()
 
       collector.tests.values.size shouldBe 20

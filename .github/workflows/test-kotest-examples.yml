@@ -1,0 +1,335 @@
+name: test-kotest-examples
+
+on:
+ schedule:
+    - cron: '0 6 * * *'
+
+permissions:
+   contents: read
+
+concurrency:
+   group: "test-kotest-examples: ${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}"
+   cancel-in-progress: true
+
+env:
+   GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+
+jobs:
+   publish-local-linux:
+      name: Publish Kotest to Maven Local (Linux)
+      runs-on: ubuntu-latest
+      if: github.repository == 'kotest/kotest'
+      outputs:
+         kotest-version: ${{ steps.get-version.outputs.version }}
+      steps:
+         - name: Checkout kotest
+           uses: actions/checkout@v6
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "21"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Publish KMP and JVM to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm"
+              --no-configuration-cache
+
+         - name: Publish JS and Wasm to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
+              -P"kotest_enabledPublicationNamePrefixes=js,wasm"
+              --no-configuration-cache
+
+         - name: Publish Linux and Android Native to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=linux,android"
+              --no-configuration-cache
+
+         - name: Get published version
+           id: get-version
+           run: |
+              VERSION=$(ls ~/.m2/repository/io/kotest/kotest-framework-engine/ | grep -E '^[0-9]' | head -1)
+              echo "version=$VERSION" >> $GITHUB_OUTPUT
+              echo "Published Kotest version: $VERSION"
+
+         - name: Upload Maven Local artifacts
+           uses: actions/upload-artifact@v5
+           with:
+              name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+              retention-days: 1
+
+   publish-local-macos:
+      name: Publish Kotest to Maven Local (macOS)
+      runs-on: macos-latest
+      if: github.repository == 'kotest/kotest'
+      steps:
+         - name: Checkout kotest
+           uses: actions/checkout@v6
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "21"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Publish macOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=macOS"
+              --no-configuration-cache
+
+         - name: Publish iOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=iOS"
+              --no-configuration-cache
+
+         - name: Publish tvOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=tvOS"
+              --no-configuration-cache
+
+         - name: Publish watchOS to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=watchOS"
+              --no-configuration-cache
+
+         - name: Upload Maven Local artifacts
+           uses: actions/upload-artifact@v5
+           with:
+              name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+              retention-days: 1
+
+   publish-local-windows:
+      name: Publish Kotest to Maven Local (Windows)
+      runs-on: windows-latest
+      if: github.repository == 'kotest/kotest'
+      steps:
+         - name: Checkout kotest
+           uses: actions/checkout@v6
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "17"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Publish mingw to Maven Local
+           run: >
+              ./gradlew publishToMavenLocal
+              -P"kotest_enableKotlinJs=true"
+              -P"kotest_enableKotlinNative=true"
+              -P"kotest_enabledPublicationNamePrefixes=mingw"
+              --no-configuration-cache
+
+         - name: Upload Maven Local artifacts
+           uses: actions/upload-artifact@v5
+           with:
+              name: kotest-maven-local-windows
+              path: ~/.m2/repository/io/kotest/
+              retention-days: 1
+
+   linux:
+      name: Test ${{ matrix.project }} (Linux)
+      runs-on: ubuntu-latest
+      needs: [publish-local-linux, publish-local-macos, publish-local-windows]
+      strategy:
+         fail-fast: false
+         matrix:
+            project:
+               - kotest-allure
+               - kotest-android
+               - kotest-javascript
+               - kotest-jvm
+               - kotest-multiplatform
+               - kotest-native
+               - kotest-spring-webflux
+               - kotest-wasm
+      steps:
+         - name: Checkout kotest-examples
+           uses: actions/checkout@v6
+           with:
+              repository: kotest/kotest-examples
+              path: kotest-examples
+
+         - name: Download Linux Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download macOS Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download Windows Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-windows
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "21"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Run tests
+           working-directory: kotest-examples/${{ matrix.project }}
+           env:
+              KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
+           run: ./gradlew check
+
+         - name: Upload test reports
+           if: failure()
+           uses: actions/upload-artifact@v5
+           with:
+              name: test-reports-linux-${{ matrix.project }}-${{ github.run_id }}
+              path: kotest-examples/${{ matrix.project }}/**/build/reports/
+
+   macos:
+      name: Test ${{ matrix.project }} (macOS)
+      runs-on: macos-latest
+      needs: [publish-local-linux, publish-local-macos, publish-local-windows]
+      strategy:
+         fail-fast: false
+         matrix:
+            project:
+               - kotest-multiplatform
+               - kotest-native
+      steps:
+         - name: Checkout kotest-examples
+           uses: actions/checkout@v6
+           with:
+              repository: kotest/kotest-examples
+              path: kotest-examples
+
+         - name: Download Linux Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download macOS Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download Windows Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-windows
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "21"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Run tests
+           working-directory: kotest-examples/${{ matrix.project }}
+           env:
+              KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
+           run: ./gradlew check
+
+         - name: Upload test reports
+           if: failure()
+           uses: actions/upload-artifact@v5
+           with:
+              name: test-reports-macos-${{ matrix.project }}-${{ github.run_id }}
+              path: kotest-examples/${{ matrix.project }}/**/build/reports/
+
+   windows:
+      name: Test ${{ matrix.project }} (Windows)
+      runs-on: windows-latest
+      needs: [publish-local-linux, publish-local-macos, publish-local-windows]
+      strategy:
+         fail-fast: false
+         matrix:
+            project:
+               - kotest-multiplatform
+               - kotest-native
+      steps:
+         - name: Checkout kotest-examples
+           uses: actions/checkout@v6
+           with:
+              repository: kotest/kotest-examples
+              path: kotest-examples
+
+         - name: Download Linux Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-linux
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download macOS Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-macos
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Download Windows Maven Local artifacts
+           uses: actions/download-artifact@v5
+           with:
+              name: kotest-maven-local-windows
+              path: ~/.m2/repository/io/kotest/
+
+         - name: Setup JDK
+           uses: actions/setup-java@v5
+           with:
+              distribution: "temurin"
+              java-version: "17"
+
+         - name: Setup Gradle
+           uses: gradle/actions/setup-gradle@v5
+
+         - name: Run tests
+           working-directory: kotest-examples/${{ matrix.project }}
+           env:
+              KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
+           run: ./gradlew check
+
+         - name: Upload test reports
+           if: failure()
+           uses: actions/upload-artifact@v5
+           with:
+              name: test-reports-windows-${{ matrix.project }}-${{ github.run_id }}
+              path: kotest-examples/${{ matrix.project }}/**/build/reports/
+

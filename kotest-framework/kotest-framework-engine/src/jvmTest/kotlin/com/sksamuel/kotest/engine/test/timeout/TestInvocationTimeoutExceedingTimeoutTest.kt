@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -21,7 +22,7 @@ class TestInvocationTimeoutExceedingTimeoutTest : FunSpec() {
       test("invocation timeout shouldn't exceed test timeout") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(SpecWithInvalidInvocationTimeout::class)
+            .withSpecRefs(SpecRef.Reference(SpecWithInvalidInvocationTimeout::class))
             .execute()
 
          collector.specs.getValue(SpecWithInvalidInvocationTimeout::class).errorOrNull

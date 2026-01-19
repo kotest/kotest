@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.test.enabled
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -11,7 +12,7 @@ class EnabledIfErrorsTest : FunSpec() {
 
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(EnabledIfFailues::class)
+            .withSpecRefs(SpecRef.Reference(EnabledIfFailues::class))
             .execute()
 
          collector.result("a")!!.isIgnored shouldBe true

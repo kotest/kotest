@@ -3,13 +3,14 @@ package com.sksamuel.kotest.engine.extensions.errors
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.test.TestResult
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -20,7 +21,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("beforeSpec function overrides should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(BeforeSpecFunctionOverrideError::class)
+            .withSpecRefs(SpecRef.Reference(BeforeSpecFunctionOverrideError::class))
             .execute()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
@@ -29,7 +30,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("beforeSpec DSL errors should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(BeforeSpecDSLError::class)
+            .withSpecRefs(SpecRef.Reference(BeforeSpecDSLError::class))
             .execute()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeSpecException>()
@@ -38,7 +39,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("multiple beforeSpec should be collected") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MultipleBeforeSpecErrors::class)
+            .withSpecRefs(SpecRef.Reference(MultipleBeforeSpecErrors::class))
             .execute()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
@@ -49,7 +50,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("afterSpec function overrides should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(AfterSpecFunctionOverrideError::class)
+            .withSpecRefs(SpecRef.Reference(AfterSpecFunctionOverrideError::class))
             .execute()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -58,7 +59,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("afterSpec DSL errors should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(AfterSpecDSLError::class)
+            .withSpecRefs(SpecRef.Reference(AfterSpecDSLError::class))
             .execute()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterSpecException>()
@@ -67,7 +68,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("multiple afterSpec should be collected") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MultipleAfterSpecErrors::class)
+            .withSpecRefs(SpecRef.Reference(MultipleAfterSpecErrors::class))
             .execute()
          val error = collector.specs.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
@@ -78,7 +79,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("beforeTest function overrides should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(BeforeTestFunctionOverrideError::class)
+            .withSpecRefs(SpecRef.Reference(BeforeTestFunctionOverrideError::class))
             .execute()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
@@ -87,7 +88,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("beforeTest DSL errors should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(BeforeTestDSLError::class)
+            .withSpecRefs(SpecRef.Reference(BeforeTestDSLError::class))
             .execute()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.BeforeAnyException>()
@@ -96,7 +97,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("multiple beforeTest errors should be collected") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MultipleBeforeTestErrors::class)
+            .withSpecRefs(SpecRef.Reference(MultipleBeforeTestErrors::class))
             .execute()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
@@ -107,7 +108,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("afterTest function overrides should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(AfterTestFunctionOverrideError::class)
+            .withSpecRefs(SpecRef.Reference(AfterTestFunctionOverrideError::class))
             .execute()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -116,7 +117,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("afterTest DSL errors should be wrapped") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(AfterTestDSLError::class)
+            .withSpecRefs(SpecRef.Reference(AfterTestDSLError::class))
             .execute()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -125,7 +126,7 @@ class ExtensionErrorsTest : FunSpec() {
       test("multiple afterTest errors should be collected") {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(MultipleAfterTestErrors::class)
+            .withSpecRefs(SpecRef.Reference(MultipleAfterTestErrors::class))
             .execute()
          val error = collector.tests.values.first().errorOrNull
          error.shouldBeInstanceOf<MultipleExceptions>()
