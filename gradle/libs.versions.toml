@@ -4,7 +4,7 @@ kotlin = "2.2.21"
 runtime-kotest = "4.2.0" # intellij plugin
 test-kotest = "5.9.1"# intellij plugin
 
-blockhound = "1.0.15.RELEASE"
+blockhound = "1.0.16.RELEASE"
 commons-lang3 = "3.18.0"
 gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.16"
