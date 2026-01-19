@@ -43,4 +43,34 @@ class EmbeddedLocationSMTRunnerEventsAdapterTest {
       proxy.locator.shouldBeInstanceOf<EmbeddedLocationTestLocator>()
       proxy.presentableName shouldBe "nested"
    }
+
+   @Test
+   fun shouldDetectJavaSuiteClasses() {
+      val proxy = SMTestProxy(
+         /* testName = */ "a",
+         /* isSuite = */ true,
+         /* locationUrl = */ "java:suite://io.kotest.Spec"
+      )
+      EmbeddedLocationSMTRunnerEventsAdapter().isJavaSuiteClass(proxy) shouldBe true
+   }
+
+   @Test
+   fun shouldSkipJavaSuitesThatAreNotClasses() {
+      val proxy = SMTestProxy(
+         /* testName = */ "a",
+         /* isSuite = */ true,
+         /* locationUrl = */ "java:suite://io.kotest.examples.native.KotlinTest/nested"
+      )
+      EmbeddedLocationSMTRunnerEventsAdapter().isJavaSuiteClass(proxy) shouldBe false
+   }
+
+   @Test
+   fun shouldSkipJavaTests() {
+      val proxy = SMTestProxy(
+         /* testName = */ "a",
+         /* isSuite = */ false,
+         /* locationUrl = */ "java:test://io.kotest.examples.native.KotlinTest/myTest"
+      )
+      EmbeddedLocationSMTRunnerEventsAdapter().isJavaSuiteClass(proxy) shouldBe false
+   }
 }
