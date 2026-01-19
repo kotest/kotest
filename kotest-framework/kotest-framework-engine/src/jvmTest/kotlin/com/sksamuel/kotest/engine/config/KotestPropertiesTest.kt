@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.config
 
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.config.KotestEngineProperties

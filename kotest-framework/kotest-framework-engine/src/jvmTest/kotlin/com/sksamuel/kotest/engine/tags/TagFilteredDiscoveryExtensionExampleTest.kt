@@ -8,6 +8,7 @@ import io.kotest.core.annotation.Tags
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener

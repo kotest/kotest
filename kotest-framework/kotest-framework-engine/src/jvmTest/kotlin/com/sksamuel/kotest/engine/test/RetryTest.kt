@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.test
 
 import io.kotest.assertions.withClue
 import io.kotest.common.testTimeSource
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.config.DefaultTestConfig

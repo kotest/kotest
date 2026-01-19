@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.spec.annotation
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.descriptors.DescriptorId
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.engine.TestEngineLauncher

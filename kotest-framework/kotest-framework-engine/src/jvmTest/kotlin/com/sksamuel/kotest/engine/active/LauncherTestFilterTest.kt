@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
 import io.kotest.core.spec.style.FunSpec

@@ -5,6 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.InvalidDslException
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.core.spec.style.FreeSpec

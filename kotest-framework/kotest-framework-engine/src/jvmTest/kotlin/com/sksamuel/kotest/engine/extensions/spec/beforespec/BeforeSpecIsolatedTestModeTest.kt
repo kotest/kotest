@@ -5,6 +5,7 @@ import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher

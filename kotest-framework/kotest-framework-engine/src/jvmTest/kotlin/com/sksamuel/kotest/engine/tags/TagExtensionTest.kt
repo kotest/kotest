@@ -5,6 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.tags.SpecifiedTagsTagExtension
