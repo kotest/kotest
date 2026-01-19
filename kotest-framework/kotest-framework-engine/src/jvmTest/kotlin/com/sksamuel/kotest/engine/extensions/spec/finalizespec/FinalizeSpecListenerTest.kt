@@ -6,6 +6,7 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
