@@ -10,9 +10,17 @@ import io.kotest.matchers.sequences.UnorderedCollectionsDifference
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@Deprecated(
+   "use Kotest's Collection<T>.shouldNotContainAll.",
+   ReplaceWith("shouldNotContainAll", "io.kotest.matchers.collections")
+)
 infix fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
    this shouldNot containAllInAnyOrder(expected)
 
+@Deprecated(
+   "use Kotest's Collection<T>.shouldNotContainAll.",
+   ReplaceWith("shouldNotContainAll", "io.kotest.matchers.collections")
+)
 fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
    this shouldNot containAllInAnyOrder(*expected)
 
@@ -20,6 +28,10 @@ fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) 
  * Verifies that the given [Collection] contains all the specified elements in any order.
  * The collection may additionally contain other elements.
  */
+@Deprecated(
+   "use Kotest's Collection<T>.shouldContainAll.",
+   ReplaceWith("shouldContainAll", "io.kotest.matchers.collections")
+)
 infix fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(expected: C) =
    this should containAllInAnyOrder(expected)
 
@@ -27,6 +39,10 @@ infix fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(expected: C) =
  * Verifies that the given [Collection] contains all the specified elements in any order.
  * The collection may additionally contain other elements.
  */
+@Deprecated(
+   "use Kotest's Collection<T>.shouldContainAll.",
+   ReplaceWith("shouldContainAll", "io.kotest.matchers.collections")
+)
 fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
    this should containAllInAnyOrder(*expected)
 
@@ -34,6 +50,10 @@ fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
  * Verifies that the given [Collection] contains all the specified elements in any order.
  * The collection may additionally contain other elements.
  */
+@Deprecated(
+   "use Kotest's Collection<T>.shouldContainAll.",
+   ReplaceWith("shouldContainAll", "io.kotest.matchers.collections")
+)
 fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
    containAllInAnyOrder(expected.asList())
 
@@ -41,6 +61,10 @@ fun <T> containAllInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
  * Verifies that the given [Collection] contains all the specified elements in any order.
  * The collection may additionally contain other elements.
  */
+@Deprecated(
+   "use Kotest's Collection<T>.shouldContainAll.",
+   ReplaceWith("shouldContainAll", "io.kotest.matchers.collections")
+)
 fun <T, C : Collection<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverNullMatcher { value ->
    val expectedAsList = expected.toList()
    val actualAsList = value.toList()
