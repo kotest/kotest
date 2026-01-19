@@ -40,11 +40,6 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     * - gradle test --tests "SomeTest.first level context*"
     * - gradle test --tests "*.first level context*"
     *
-    * Exact nested context / test matching is NOT CURRENTLY SUPPORTED.
-    * Kotest supports lazy test registration within a nested context. Gradle test filter does not
-    * natively work nicely with kotest. In order to make it work we need to think of a way to
-    * recursively apply partial context-search as we dive deeper into the contexts.
-    *
     * Notes to Maintainers:
     *
     * Gradle supplies a pattern string which corresponds to a well-formed regex object.
@@ -82,13 +77,25 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
       val isPackageMatched by lazy { doesNotContainUppercase && packagePath.matches(laxRegexPattern) } // io.kotest
       val isPackageWithDotMatched by lazy { doesNotContainUppercase && "$packagePath.".matches(laxRegexPattern) } // io.kotest.*
 
+      // Check if this descriptor is a descendant of the pattern target.
+      // This ensures nested tests are included when filtering to a parent context.
+      // E.g., when filtering to "SomeSpec.context name", the nested test "SomeSpec.context name -- nested test"
+      // should also be included.
+      val isDescendantOfPattern by lazy {
+         // The pattern might match a prefix of this path (meaning this path is a descendant)
+         // We check if the path matches the pattern followed by " -- " (nested test separator) and more content
+         val descendantRegex = "^(.*)$pattern -- (.+)$".toRegex()
+         path.matches(descendantRegex)
+      }
+
       return isSimpleClassMatch ||
          isFullPathMatched ||
          isFullPathDotMatched ||
          isSpecMatched ||
          isSpecPrefix ||
          isPackageMatched ||
-         isPackageWithDotMatched
+         isPackageWithDotMatched ||
+         isDescendantOfPattern
    }
 
    /**
