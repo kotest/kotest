@@ -13,7 +13,7 @@ import io.kotest.matchers.shouldBe
 class TeamCityWriterTest : FunSpec() {
    init {
 
-      test("test name should use embedded locations when enabled") {
+      test("!test name should use embedded locations when enabled") {
          val writer = TeamCityWriter("tc", DisplayNameFormatting(null), true)
          val tc = TestCase(
             TeamCityWriterTest::class.toDescriptor().append("a"),

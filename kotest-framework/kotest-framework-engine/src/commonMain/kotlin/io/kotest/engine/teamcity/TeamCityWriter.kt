@@ -4,7 +4,6 @@ import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
-import io.kotest.engine.names.LocationEmbedder
 import io.kotest.engine.teamcity.names.TeamCityTestNameSanitizer
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -177,7 +176,7 @@ internal class TeamCityWriter(
     */
    internal fun outputTestSuiteStarted(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
-         .testSuiteStarted(prefix, formatting.format(ref.kclass))
+         .testSuiteStarted(prefix, specName(ref))
          .id(ref.descriptor().path().value)
          .locationHint(Locations.location(ref))
          .build()
@@ -189,18 +188,25 @@ internal class TeamCityWriter(
     */
    internal fun outputTestSuiteFinished(ref: SpecRef) {
       val msg = TeamCityMessageBuilder
-         .testSuiteFinished(prefix, formatting.format(ref.kclass))
+         .testSuiteFinished(prefix, specName(ref))
          .id(ref.descriptor().path().value)
          .build()
       println(msg)
    }
 
+   internal fun specName(ref: SpecRef): String {
+      // we ignore display name formatting for TCSM outputs, as intellij exects a FQN
+      return ref.fqn
+   }
 
    internal fun testName(testCase: TestCase): String {
-      return if (embedLocations)
-         LocationEmbedder.embeddedTestName(testCase.descriptor, formatting.format(santizeTestCaseName(testCase)))
-      else
-         formatting.format(santizeTestCaseName(testCase))
+      // todo there are some bugs to work out with TCMS nested tests, in particular around use of periods in test names
+      // so we'll punt nested test locations on native to 6.2
+      return formatting.format(santizeTestCaseName(testCase))
+//      return if (embedLocations)
+//         LocationEmbedder.embeddedTestName(testCase.descriptor, formatting.format(santizeTestCaseName(testCase)))
+//      else
+//         formatting.format(santizeTestCaseName(testCase))
    }
 
    internal fun santizeTestCaseName(testCase: TestCase): TestCase {

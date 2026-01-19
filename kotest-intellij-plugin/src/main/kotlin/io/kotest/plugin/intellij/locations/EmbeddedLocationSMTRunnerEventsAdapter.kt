@@ -22,15 +22,25 @@ internal class EmbeddedLocationSMTRunnerEventsAdapter : SMTRunnerEventsAdapter()
    }
 
    private fun handleKotestLocator(proxy: SMTestProxy) {
-      // attempt to parse out the location from the test name
+      // attempt to parse out an embedded location from the test name
       val location = EmbeddedLocationParser.parse(proxy.name)
-      // if we have the special Kotest element, then we will reset the presentable name and use our
-      // own test locator to allow for jump-to-source support
+
       if (location != null) {
+         // if we have an embedded location, then we will reset the presentable name and use our
+         // EmbeddedLocationTestLocator to allow for jump-to-source support
          proxy.locator = EmbeddedLocationTestLocator(location)
          proxy.setPresentableName(location.presentableName)
+
+      } else if (isJavaSuiteClass(proxy)) {
+         // if we have a java:suite locator, for a top level class, this doesn't work for kotlin native, so we can
+         // use our own locator which will work for both kmp and jvm
+         proxy.locator = MultiplatformJavaSuiteLocator()
       }
    }
+
+   // returns true if a class not a test
+   internal fun isJavaSuiteClass(proxy: SMTestProxy): Boolean =
+      proxy.locationUrl?.matches("java:suite://[a-zA-Z_.]+".toRegex()) == true
 }
 
 internal object EmbeddedLocationParser {
