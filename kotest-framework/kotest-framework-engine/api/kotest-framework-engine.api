@@ -3360,10 +3360,6 @@ public final class io/kotest/datatest/WordSpecWhenContainerScopeKt {
 	public static final fun withWhensMap (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/EmptyTestSuiteException : java/lang/Exception {
-	public fun <init> ()V
-}
-
 public final class io/kotest/engine/EngineResult {
 	public static final field Companion Lio/kotest/engine/EngineResult$Companion;
 	public fun <init> (Ljava/util/List;)V
@@ -3390,11 +3386,6 @@ public final class io/kotest/engine/IterationSkippedException : java/lang/Throwa
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public final fun getReason ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/ProjectTimeoutException : java/lang/Exception {
-	public synthetic fun <init> (JLkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getTimeout-UwyO8pc ()J
 }
 
 public final class io/kotest/engine/ResultsKt {
@@ -3925,6 +3916,7 @@ public final class io/kotest/engine/listener/LoggingTestEngineListener : io/kote
 }
 
 public final class io/kotest/engine/listener/TestEngineInitializedContext {
+	public static final field Companion Lio/kotest/engine/listener/TestEngineInitializedContext$Companion;
 	public fun <init> (Lio/kotest/core/project/TestSuite;Lio/kotest/engine/tags/TagExpression;Lio/kotest/engine/extensions/ExtensionRegistry;Lio/kotest/core/config/AbstractProjectConfig;)V
 	public final fun component1 ()Lio/kotest/core/project/TestSuite;
 	public final fun component2 ()Lio/kotest/engine/tags/TagExpression;
@@ -3939,6 +3931,10 @@ public final class io/kotest/engine/listener/TestEngineInitializedContext {
 	public final fun getTags ()Lio/kotest/engine/tags/TagExpression;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/engine/listener/TestEngineInitializedContext$Companion {
+	public final fun getEmpty ()Lio/kotest/engine/listener/TestEngineInitializedContext;
 }
 
 public abstract interface class io/kotest/engine/listener/TestEventsTestEngineListener$TestEvent {
