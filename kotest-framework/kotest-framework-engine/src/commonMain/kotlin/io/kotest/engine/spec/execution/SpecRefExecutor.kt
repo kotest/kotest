@@ -1,10 +1,12 @@
 package io.kotest.engine.spec.execution
 
+import io.kotest.common.KotestTesting
 import io.kotest.common.platform
 import io.kotest.common.reflection.annotation
 import io.kotest.common.reflection.bestName
 import io.kotest.common.reflection.instantiations
 import io.kotest.core.Logger
+import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.SpecRefExtension
 import io.kotest.core.spec.Spec
@@ -12,6 +14,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineContext
 import io.kotest.engine.flatMap
+import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.execution.enabled.EnabledOrDisabled
@@ -170,9 +173,11 @@ internal expect fun specExecutor(context: TestEngineContext, spec: Spec): SpecEx
  * Used to test a [SpecRefExecutor] from another module.
  * Should not be used by user's code and is subject to change.
  */
-internal suspend fun testSpecExecutor(
-   context: TestEngineContext,
+@KotestTesting
+suspend fun testSpecExecutor(
+   config: AbstractProjectConfig?,
+   listener: TestEngineListener,
    ref: SpecRef.Reference
 ) {
-   SpecRefExecutor(context).execute(ref)
+   SpecRefExecutor(TestEngineContext(config, listener)).execute(ref)
 }
