@@ -9,13 +9,13 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 @Description("Tests that nested tests using coroutineTestScope run successfully")
 @Issue("https://github.com/kotest/kotest/issues/5118")
@@ -44,7 +44,7 @@ internal class CoroutineExtension : BeforeEachListener, AfterEachListener {
 
    @OptIn(ExperimentalCoroutinesApi::class)
    override suspend fun beforeEach(testCase: TestCase) {
-      val scheduler = coroutineContext[TestCoroutineScheduler]
+      val scheduler = currentCoroutineContext()[TestCoroutineScheduler]
       dispatcher = StandardTestDispatcher(scheduler)
       Dispatchers.setMain(dispatcher)
    }

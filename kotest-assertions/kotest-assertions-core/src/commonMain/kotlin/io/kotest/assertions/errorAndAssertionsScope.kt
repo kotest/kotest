@@ -5,10 +5,10 @@ import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.ErrorCollector
 import io.kotest.matchers.assertionCounter
 import io.kotest.matchers.errorCollector
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 internal typealias Failures = List<Throwable>
 internal typealias Assertions = Int
@@ -29,7 +29,7 @@ internal class AssertionBlockContextElement : AbstractCoroutineContextElement(Ke
  */
 @ExperimentalKotest
 internal suspend fun <T> errorAndAssertionsScope(block: suspend () -> T): Triple<Result<T>, Failures, Assertions> {
-   if (coroutineContext[AssertionBlockContextElement] != null) {
+   if (currentCoroutineContext()[AssertionBlockContextElement] != null) {
       throw IllegalStateException("Assertion block functions one, any, and all are limited to a depth of 1")
    }
 
