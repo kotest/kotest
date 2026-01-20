@@ -115,14 +115,27 @@ class TestEngineTest : FunSpec({
    test("should invoke engineFinished with errors") {
 
       var errors = emptyList<Throwable>()
+
+      val ext = object : ProjectExtension {
+         override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
+            error("boom")
+         }
+      }
+
+
       val listener = object : AbstractTestEngineListener() {
          override suspend fun engineFinished(t: List<Throwable>) {
             errors = t
          }
       }
 
+      val c = object : AbstractProjectConfig() {
+         override val extensions = listOf(ext)
+      }
+
       TestEngineLauncher()
          .withListener(listener)
+         .withProjectConfig(c)
          .execute()
 
       errors.shouldHaveSize(1)
@@ -183,14 +196,14 @@ class TestEngineTest : FunSpec({
          override val extensions = listOf(ext1, ext2)
       }
 
-      val collector = object : AbstractTestEngineListener() {
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun specStarted(ref: SpecRef) {
             str += "spec"
          }
       }
 
       TestEngineLauncher()
-         .withListener(collector)
+         .withListener(listener)
          .withProjectConfig(c)
          .withSpecRefs(SpecRef.Reference(DummySpec2::class))
          .execute()
@@ -200,20 +213,19 @@ class TestEngineTest : FunSpec({
 
    test("should invoke specs if no project extensions") {
       var fired = false
-      val collector = object : AbstractTestEngineListener() {
+      val listener = object : AbstractTestEngineListener() {
          override suspend fun specStarted(ref: SpecRef) {
             fired = true
          }
       }
       TestEngineLauncher()
-         .withListener(collector)
+         .withListener(listener)
          .withSpecRefs(SpecRef.Reference(DummySpec2::class))
          .execute()
       fired shouldBe true
    }
 
    test("should propagate tag changes in project extensions") {
-      var tags = TagExpression("none")
 
       val ext = object : ProjectExtension {
          override suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit) {
@@ -225,13 +237,21 @@ class TestEngineTest : FunSpec({
          override val extensions = listOf(ext)
       }
 
+      var tags = TagExpression("none")
+
+      val listener = object : AbstractTestEngineListener() {
+         override suspend fun engineInitialized(context: TestEngineInitializedContext) {
+            tags = context.tags
+         }
+      }
+
       TestEngineLauncher()
-         .withListener(NoopTestEngineListener)
+         .withListener(listener)
          .withProjectConfig(c)
          .withSpecRefs(SpecRef.Reference(DummySpec2::class))
          .execute()
 
-      tags.expression shouldBe "foo & bar"
+      tags.expression shouldBe "bar"
    }
 })
 

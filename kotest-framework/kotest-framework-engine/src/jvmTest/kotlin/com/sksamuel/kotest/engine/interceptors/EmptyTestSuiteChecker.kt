@@ -14,7 +14,9 @@ import io.kotest.engine.EmptyTestSuiteChecker
 import io.kotest.engine.EmptyTestSuiteException
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestEngineContext
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.collections.shouldHaveSize
+import kotlin.time.Duration
 
 @OptIn(KotestTesting::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -44,7 +46,7 @@ class EmptyTestSuiteChecker : FunSpec() {
             override val failOnEmptyTestSuite = true
          }
          val context = TestEngineContext(c)
-         context.listener.testStarted(tc)
+         context.listener.testFinished(tc, TestResult.Success(Duration.ZERO))
          val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(context, EngineResult.empty)
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(0)
       }
