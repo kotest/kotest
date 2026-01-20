@@ -175,7 +175,7 @@ object DataTestUtil {
     * Finds the path of regular test/context ancestors (like `context("...")`) that contain this data test.
     * Returns the full path (e.g., "a context with nested withData calls") or null if no regular ancestors.
     *
-    * Only includes ancestors up to the first data test ancestor (if any) or up to the spec root.
+    * Traverses through all ancestors including data test methods to find the full path of regular containers.
     */
    private fun findRegularAncestorPath(dataTestPsi: PsiElement): String? {
       val pathParts = mutableListOf<String>()
@@ -185,15 +185,15 @@ object DataTestUtil {
          when (current) {
             is KtCallExpression -> {
                val calleeText = current.calleeExpression?.text
-               // If we hit a data test method, stop - we only care about regular contexts above this
-               if (calleeText in allDataTestMethodNames) {
-                  break
-               }
-               // If it's a regular test/context, extract its name and add to path
-               if (calleeText in regularContainerMethodNames) {
-                  val name = extractTestName(current)
-                  if (name != null) {
-                     pathParts.add(0, name) // Add to front to maintain order from root to leaf
+               // Skip data test methods but continue traversing - we want to find regular containers
+               // that might encapsulate data tests
+               if (calleeText !in allDataTestMethodNames) {
+                  // If it's a regular container, extract its name and add to path
+                  if (calleeText in regularContainerMethodNames) {
+                     val name = extractTestName(current)
+                     if (name != null) {
+                        pathParts.add(0, name) // Add to front to maintain order from root to leaf
+                     }
                   }
                }
             }
@@ -235,7 +235,7 @@ object DataTestUtil {
    }
 
    /**
-    * Extracts the test name from a regular test/context call expression.
+    * Extracts the test name from a regular container call expression.
     * For example, extracts "my test" from `context("my test") { ... }`
     */
    private fun extractTestName(callExpression: KtCallExpression): String? {
