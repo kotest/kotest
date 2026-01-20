@@ -2,16 +2,16 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * A [TestExecutionInterceptor] that installs a [UnconfinedTestDispatcher] as the coroutine
@@ -30,7 +30,7 @@ class TestDispatcherInterceptor : TestExecutionInterceptor {
       scope: TestScope,
       test: NextTestExecutionInterceptor
    ): TestResult {
-      return when (coroutineContext[CoroutineDispatcher]) {
+      return when (currentCoroutineContext()[CoroutineDispatcher]) {
          is TestDispatcher -> test(testCase, scope)
          else -> {
             val dispatcher = UnconfinedTestDispatcher()

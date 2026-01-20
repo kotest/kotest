@@ -3,7 +3,7 @@ package io.kotest.engine.tags
 import io.kotest.core.Tag
 
 /**
- * Contains an expression such as '(linux | mac) & mysql' which determines which tags are active
+ * Contains an expression such as `(linux | mac) & mysql` which determines which tags are active
  * or inactive at runtime.
  */
 data class TagExpression(val expression: String) {
@@ -16,7 +16,7 @@ data class TagExpression(val expression: String) {
       fun include(tag: Tag): TagExpression = TagExpression(tag.name)
 
       /**
-       * Backwards compatible version of tags. Note, this way you cannot do ANDs
+       * Backwards-compatible version of tags. Note, this way you cannot do ANDs
        */
       operator fun invoke(included: Set<Tag>, excluded: Set<Tag>): TagExpression = when {
          included.isEmpty() && excluded.isEmpty() -> Empty

@@ -1,9 +1,9 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.engine.interceptors.EngineContext
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.reflect.KClass
@@ -11,11 +11,12 @@ import kotlin.reflect.KClass
 /**
  * Wraps a [TestEngineListener]s methods with a mutex to ensure only one method is called at a time.
  */
+@KotestInternal
 class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : TestEngineListener {
 
    private val mutex = Mutex()
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       mutex.withLock {
          listener.engineInitialized(context)
       }

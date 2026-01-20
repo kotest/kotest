@@ -1,8 +1,8 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -10,6 +10,7 @@ import kotlin.reflect.KClass
  * A [TestEngineListener] that wraps one or more other test engine listeners,
  * forwarding calls to all listeners.
  */
+@KotestInternal
 class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
 
    constructor(vararg listeners: TestEngineListener) : this(listeners.toList())
@@ -22,7 +23,7 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.engineStarted() }
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       listeners.forEach { it.engineInitialized(context) }
    }
 

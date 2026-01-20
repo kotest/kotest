@@ -2,9 +2,9 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CancellationException
@@ -16,13 +16,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.yield
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 
@@ -72,7 +72,7 @@ private suspend fun <T> withAppropriateTimeout(
    timeout: Duration,
    block: suspend CoroutineScope.() -> T,
 ): T {
-   return if (coroutineContext[TestCoroutineScheduler] != null) {
+   return if (currentCoroutineContext()[TestCoroutineScheduler] != null) {
       // withTimeout uses virtual time, which will hang.
       withRealTimeTimeout(timeout, block)
    } else {

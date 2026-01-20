@@ -5,7 +5,7 @@ import io.kotest.common.TestNameContextElement
 import io.kotest.property.LabelOrder
 import io.kotest.property.PropertyTesting
 import io.kotest.property.statistics.Label
-import kotlin.coroutines.coroutineContext
+import kotlinx.coroutines.currentCoroutineContext
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -25,7 +25,7 @@ object DefaultStatisticsReporter : StatisticsReporter {
    }
 
    private suspend fun header(iterations: Int, args: Int, label: Label?): String {
-      val testName = coroutineContext[TestNameContextElement]?.testName
+      val testName = currentCoroutineContext()[TestNameContextElement]?.testName
       val prefix = if (testName == null) "" else "[$testName]"
       val suffix = if (label == null) "" else "[${label.value}]"
       return "Statistics: $prefix ($iterations iterations, $args args) $suffix"

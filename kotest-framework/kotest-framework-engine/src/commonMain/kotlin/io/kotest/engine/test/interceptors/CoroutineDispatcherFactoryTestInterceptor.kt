@@ -2,13 +2,13 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.SpecConfigResolver
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.test.TestDispatcher
-import kotlin.coroutines.coroutineContext
 
 /**
  * Switches execution onto a dispatcher provided by a [io.kotest.engine.coroutines.CoroutineDispatcherFactory].
@@ -29,7 +29,7 @@ internal class CoroutineDispatcherFactoryTestInterceptor(
       test: NextTestExecutionInterceptor
    ): TestResult {
 
-      val currentDispatcher = coroutineContext[CoroutineDispatcher]
+      val currentDispatcher = currentCoroutineContext()[CoroutineDispatcher]
       // we don't override if we've set a test dispatcher on this already
       return if (currentDispatcher is TestDispatcher) {
          test(testCase, scope)
@@ -42,7 +42,7 @@ internal class CoroutineDispatcherFactoryTestInterceptor(
          } else {
             logger.log { Pair(testCase.name.name, "Switching dispatcher using factory $userFactory") }
             userFactory.withDispatcher(testCase) {
-               test(testCase, scope.withCoroutineContext(coroutineContext))
+               test(testCase, scope.withCoroutineContext(currentCoroutineContext()))
             }
          }
       }

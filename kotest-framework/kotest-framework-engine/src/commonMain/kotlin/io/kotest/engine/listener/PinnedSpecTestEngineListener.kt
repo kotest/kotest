@@ -2,10 +2,10 @@
 
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -18,6 +18,7 @@ import kotlin.reflect.KClass
  * to the methods of this listener are strictly sequential, for example by using
  * an instance of [ThreadSafeTestEngineListener].
  */
+@KotestInternal
 class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
    private var runningSpec: String? = null
@@ -37,7 +38,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       listener.engineStarted()
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       listener.engineInitialized(context)
    }
 

@@ -64,7 +64,7 @@ interface FunSpecRootScope : RootScope {
     * Adds a focused [RootTest], with the given name and with config taken from the config builder.
     */
    fun test(name: String, test: suspend TestScope.() -> Unit) {
-      test(name, TestXMethod.FOCUSED, test)
+      test(name, TestXMethod.NONE, test)
    }
 
    /**

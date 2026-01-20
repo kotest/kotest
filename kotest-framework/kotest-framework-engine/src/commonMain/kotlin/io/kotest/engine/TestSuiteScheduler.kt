@@ -12,7 +12,7 @@ import io.kotest.core.spec.name
 import io.kotest.engine.concurrency.ConcurrencyOrder
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.concurrency.isParallel
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.execution.SpecRefExecutor
 import kotlinx.coroutines.coroutineScope
@@ -27,11 +27,10 @@ import kotlinx.coroutines.sync.withPermit
  * Additionally, on JVM targets, it will recognize the [Isolate] and [Parallel]
  * annotations to ensure those specs are never/always scheduled concurrently.
  */
-internal class TestSuiteScheduler(
-   private val context: EngineContext,
-) {
+internal class TestSuiteScheduler(private val context: TestEngineContext) {
 
    private val logger = Logger(TestSuiteScheduler::class)
+   private val projectConfigResolver = ProjectConfigResolver(context.projectConfig, context.registry)
 
    suspend fun schedule(suite: TestSuite): EngineResult {
       logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
@@ -46,7 +45,7 @@ internal class TestSuiteScheduler(
       val default = suite.specs.filter { !it.kclass.isIsolate() && !it.kclass.isParallel() }
       logger.log { Pair(null, "Remaining spec count: ${default.size}") }
 
-      when (context.projectConfigResolver.concurrencyOrder()) {
+      when (projectConfigResolver.concurrencyOrder()) {
          ConcurrencyOrder.IsolateFirst -> {
             schedule(isolated, 1)
             logger.log { Pair(null, "Isolated specs have completed") }
@@ -57,6 +56,7 @@ internal class TestSuiteScheduler(
             schedule(default, concurrency())
             logger.log { Pair(null, "Remaining specs have completed") }
          }
+
          ConcurrencyOrder.IsolateLast -> {
             schedule(default, concurrency())
             logger.log { Pair(null, "Remaining specs have completed") }
@@ -77,10 +77,6 @@ internal class TestSuiteScheduler(
       concurrency: Int,
    ) {
 
-      // we use this to check for failures for fast failure mode
-      val collector = CollectingTestEngineListener()
-      val mergedContext = context.mergeListener(collector)
-
       val semaphore = Semaphore(concurrency)
       logger.log { Pair(null, "Scheduling using concurrency: $concurrency") }
 
@@ -90,7 +86,7 @@ internal class TestSuiteScheduler(
             launch {
                semaphore.withPermit {
                   logger.log { Pair(ref.name(), "Acquired permit") }
-                  executeIfNotFailedFast(mergedContext, ref, collector)
+                  executeIfNotFailedFast(ref, context.collector)
                }
                logger.log { Pair(ref.name(), "Released permit") }
             }
@@ -99,11 +95,10 @@ internal class TestSuiteScheduler(
    }
 
    private suspend fun executeIfNotFailedFast(
-      context: EngineContext,
       ref: SpecRef,
       collector: CollectingTestEngineListener,
    ) {
-      if (context.projectConfigResolver.projectWideFailFast() && collector.errors) {
+      if (projectConfigResolver.projectWideFailFast() && collector.errors) {
          logger.log { Pair(ref.kclass.bestName(), "Project wide fail fast is active, skipping spec") }
          context.listener.specIgnored(ref.kclass, null)
       } else {
@@ -126,7 +121,7 @@ internal class TestSuiteScheduler(
     */
    private fun concurrency(): Int {
       return when (platform) {
-         Platform.JVM -> context.projectConfigResolver.specExecutionMode().concurrency
+         Platform.JVM -> projectConfigResolver.specExecutionMode().concurrency
          Platform.JS, Platform.Native, Platform.WasmWasi, Platform.WasmJs -> 1
       }
    }

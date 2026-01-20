@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.spec.execution
 
-import io.kotest.common.Platform
+import io.kotest.common.KotestTesting
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecRef
@@ -14,8 +14,8 @@ import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.datatest.withData
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.concurrency.TestExecutionMode
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEventsTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -24,6 +24,8 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 
+@Suppress("DEPRECATION")
+@OptIn(KotestTesting::class)
 class SpecExecutorIsolationModeTest : FunSpec() {
    init {
       context("FunSpec") {
@@ -43,9 +45,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(FunSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
@@ -81,9 +81,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(BehaviorSpecTest::class))
                listener.events.shouldHaveSize(12).toSet() shouldBe setOf(
@@ -121,9 +119,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(DescribeSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
@@ -159,9 +155,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(ExpectSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
@@ -197,9 +191,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(FeatureSpecTest::class))
                listener.events.shouldHaveSize(12).toSet() shouldBe setOf(
@@ -237,9 +229,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(FreeSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
@@ -275,9 +265,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config,  ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(ShouldSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
@@ -313,9 +301,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(StringSpecTest::class))
                listener.events.shouldHaveSize(6).toSet() shouldBe setOf(
@@ -347,9 +333,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
-                     ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
-                  )
+                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
                executor.execute(SpecRef.Reference(WordSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(

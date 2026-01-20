@@ -3,21 +3,21 @@ package io.kotest.engine.test.interceptors
 import io.kotest.common.JVMOnly
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.asCoroutineDispatcher
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
-import kotlin.coroutines.coroutineContext
 import kotlin.time.Duration
 import kotlin.time.TimeMark
 
@@ -62,7 +62,7 @@ internal class BlockedThreadTimeoutInterceptor(
          // this is a separate job that will run on the timeout dispatcher that will shutdown the executor
          // after the timeout has hit.
          @OptIn(ExperimentalCoroutinesApi::class)
-         val timeoutJob = CoroutineScope(coroutineContext).launch(timeoutDispatcher) {
+         val timeoutJob = CoroutineScope(currentCoroutineContext()).launch(timeoutDispatcher) {
             delay(timeout)
             logger.log { Pair(testCase.name.name, "Scheduled timeout has hit") }
             executor.shutdownNow()

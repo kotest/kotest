@@ -8,7 +8,7 @@ import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -36,7 +36,7 @@ import kotlin.coroutines.CoroutineContext
 @Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
 internal class InstancePerLeafSpecExecutor(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) : SpecExecutor {
 
    private val logger = Logger(InstancePerLeafSpecExecutor::class)
