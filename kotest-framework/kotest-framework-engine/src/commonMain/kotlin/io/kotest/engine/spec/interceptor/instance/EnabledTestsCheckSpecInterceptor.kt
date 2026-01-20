@@ -3,7 +3,7 @@ package io.kotest.engine.spec.interceptor.instance
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
@@ -15,7 +15,7 @@ import io.kotest.engine.test.enabled.TestEnabledChecker
  * If it does not, then further processing is skipped and any ignored tests are sent to the listener.
  */
 internal class EnabledTestsCheckSpecInterceptor(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) : SpecInterceptor {
 
    private val materializer = Materializer(context.specConfigResolver)

@@ -4,7 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.interceptors.TestEngineStartedFinishedInterceptor
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.matchers.collections.shouldHaveSize
@@ -21,7 +21,7 @@ class TestEngineStartedFinishedInterceptorTest : FunSpec({
          }
       }
       TestEngineStartedFinishedInterceptor.intercept(
-         EngineContext.empty.mergeListener(listener)
+         TestEngineContext.empty.mergeListener(listener)
       ) {
          fired += "b"
          EngineResult.empty
@@ -37,7 +37,7 @@ class TestEngineStartedFinishedInterceptorTest : FunSpec({
          }
       }
       TestEngineStartedFinishedInterceptor.intercept(
-         EngineContext.empty.mergeListener(listener)
+         TestEngineContext.empty.mergeListener(listener)
       ) {
          fired += "b"
          EngineResult(listOf(Exception("foo")))
@@ -53,7 +53,7 @@ class TestEngineStartedFinishedInterceptorTest : FunSpec({
          }
       }
       TestEngineStartedFinishedInterceptor.intercept(
-         EngineContext.empty.mergeListener(listener)
+         TestEngineContext.empty.mergeListener(listener)
       ) { EngineResult(listOf(Exception("foo"))) }
       errors.shouldHaveSize(1)
    }

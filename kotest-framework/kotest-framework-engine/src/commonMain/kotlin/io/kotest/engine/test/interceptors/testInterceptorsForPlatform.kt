@@ -1,6 +1,4 @@
-package io.kotest.engine
-
-import io.kotest.engine.test.interceptors.TestExecutionInterceptor
+package io.kotest.engine.test.interceptors
 
 /**
  * Returns the [TestExecutionInterceptor]s that should be used for this platform.

@@ -12,7 +12,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.engine.test.TestResult
@@ -35,7 +35,7 @@ class SpecRefExecutorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(ext)
          }
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM))
          e.execute(SpecRef.Reference(AlwaysFalseSpec::class))
          fired.shouldBeTrue()
       }
@@ -49,7 +49,7 @@ class SpecRefExecutorTest : FunSpec() {
          }
          val c = object : AbstractProjectConfig() {
          }
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM).withListener(listener))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM).withListener(listener))
          e.execute(SpecRef.Reference(AlwaysFalseSpec::class))
          r shouldBe "Disabled by @EnabledIf (AlwaysFalseCondition)"
       }
@@ -63,7 +63,7 @@ class SpecRefExecutorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(ext)
          }
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM))
          e.execute(SpecRef.Reference(BasicSpec::class))
          breadcrumb shouldBe "a"
       }
@@ -83,7 +83,7 @@ class SpecRefExecutorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(prepareSpec, finalizeSpec)
          }
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM))
          e.execute(SpecRef.Reference(BasicSpec::class))
          breadcrumb shouldBe "ab"
       }
@@ -103,7 +103,7 @@ class SpecRefExecutorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(prepareSpec)
          }
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM).withListener(listener))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM).withListener(listener))
          e.execute(SpecRef.Reference(BasicSpec::class))
          r?.errorOrNull?.message shouldBe "java.lang.IllegalStateException: kapow!"
       }
@@ -123,7 +123,7 @@ class SpecRefExecutorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val extensions = listOf(finalizeSpec)
          }
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM).withListener(listener))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM).withListener(listener))
          e.execute(SpecRef.Reference(BasicSpec::class))
          r!!.errorOrNull!!.message shouldBe "java.lang.IllegalStateException: kapow!"
       }
@@ -139,7 +139,7 @@ class SpecRefExecutorTest : FunSpec() {
             }
          }
          val c = object : AbstractProjectConfig() {}
-         val e = SpecRefExecutor(EngineContext(c, Platform.JVM).withListener(listener))
+         val e = SpecRefExecutor(TestEngineContext(c, Platform.JVM).withListener(listener))
          e.execute(SpecRef.Reference(FooSpec::class))
          specListenerOrder shouldBe "abc"
       }

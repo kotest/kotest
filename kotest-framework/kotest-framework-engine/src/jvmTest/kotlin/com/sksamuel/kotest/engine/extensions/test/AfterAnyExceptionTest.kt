@@ -17,7 +17,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.extensions.ExtensionException
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.spec.execution.SpecRefExecutor
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -117,7 +117,7 @@ class AfterAnyExceptionTest : WordSpec({
    "an exception in before test" should {
       "fail the test for behavior spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(BehaviorSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -125,7 +125,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for feature spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(FeatureSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -133,7 +133,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for word spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(WordSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -141,7 +141,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for should spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(ShouldSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -149,7 +149,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for string spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(StringSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -157,7 +157,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for describe spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(DescribeSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -165,7 +165,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for free spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(FreeSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -173,7 +173,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for fun spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(FunSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()
@@ -181,7 +181,7 @@ class AfterAnyExceptionTest : WordSpec({
       }
       "fail the test for expect spec" {
          val executor = SpecRefExecutor(
-            EngineContext(null, Platform.JVM).withListener(listener)
+            TestEngineContext(null, Platform.JVM).withListener(listener)
          )
          executor.execute(SpecRef.Reference(ExpectSpecWithAfterTestError::class))
          error.shouldBeInstanceOf<ExtensionException.AfterAnyException>()

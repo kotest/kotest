@@ -7,7 +7,7 @@ import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
 import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.shouldBe
@@ -38,7 +38,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override val extensions = listOf(ext1, ext2)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) { EngineResult.empty }
+      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) { EngineResult.empty }
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -64,7 +64,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override val extensions = listOf(ext1, ext2)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
+      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) {
          fired = true
          EngineResult.empty
       }
@@ -76,7 +76,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
 
       var fired = false
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty) {
+      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty) {
          fired = true
          EngineResult.empty
       }
@@ -97,7 +97,7 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override val extensions = listOf(ext)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(EngineContext.empty.withTags(TagExpression("foo")).withProjectConfig(c)) {
+      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty.withTags(TagExpression("foo")).withProjectConfig(c)) {
          tags = it.tags
          EngineResult.empty
       }

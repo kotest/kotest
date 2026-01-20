@@ -133,7 +133,6 @@ data class TestEngineLauncher(
 
       return TestEngineConfig(
          listener = safeListener,
-         interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,
          registry,
@@ -152,7 +151,7 @@ data class TestEngineLauncher(
    }
 
    /**
-    * Launch the [TestEngine] created from this builder using a Javascript promise.
+    * Launch the [TestEngine] created from this builder using a JavaScript promise.
     * This method will throw on JVM or native.
     *
     * @return the promise that will resolve to an [EngineResult] when the tests have completed.

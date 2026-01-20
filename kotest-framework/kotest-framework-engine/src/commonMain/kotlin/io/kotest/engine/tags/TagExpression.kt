@@ -3,7 +3,7 @@ package io.kotest.engine.tags
 import io.kotest.core.Tag
 
 /**
- * Contains an expression such as '(linux | mac) & mysql' which determines which tags are active
+ * Contains an expression such as `(linux | mac) & mysql` which determines which tags are active
  * or inactive at runtime.
  */
 data class TagExpression(val expression: String) {

@@ -4,7 +4,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.name
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.runPromise
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
@@ -22,7 +22,7 @@ import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 
-internal class KotlinJsSpecExecutor(private val context: EngineContext) : SpecExecutor {
+internal class KotlinJsSpecExecutor(private val context: TestEngineContext) : SpecExecutor {
 
    private val formatter = DisplayNameFormatting(context.projectConfig)
    private val pipeline = SpecInterceptorPipeline(context)

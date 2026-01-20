@@ -5,7 +5,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.interceptors.ProjectTimeoutEngineInterceptor
 import io.kotest.engine.interceptors.ProjectTimeoutException
 import io.kotest.matchers.shouldBe
@@ -20,7 +20,7 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val projectTimeout = 1.milliseconds
       }
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
+      val result = ProjectTimeoutEngineInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) {
          delay(1000)
          EngineResult.empty
       }
@@ -32,7 +32,7 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val projectTimeout = 100000.milliseconds
       }
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
+      val result = ProjectTimeoutEngineInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) {
          delay(1)
          EngineResult.empty
       }

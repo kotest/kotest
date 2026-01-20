@@ -12,7 +12,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -365,7 +365,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(c))
-      listener.engineInitialized(EngineContext.invoke(null, Platform.JVM))
+      listener.engineInitialized(TestEngineContext.invoke(null, Platform.JVM))
       listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testStarted(tc2)

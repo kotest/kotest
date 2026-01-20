@@ -10,7 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -45,7 +45,7 @@ class TestTimeoutTest : FunSpec() {
 
          val executor = TestCaseExecutor(
             NoopTestCaseExecutionListener,
-            EngineContext(null, Platform.JVM),
+            TestEngineContext(null, Platform.JVM),
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
@@ -71,7 +71,7 @@ class TestTimeoutTest : FunSpec() {
 
          val executor = TestCaseExecutor(
             NoopTestCaseExecutionListener,
-            EngineContext(null, Platform.JVM),
+            TestEngineContext(null, Platform.JVM),
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {

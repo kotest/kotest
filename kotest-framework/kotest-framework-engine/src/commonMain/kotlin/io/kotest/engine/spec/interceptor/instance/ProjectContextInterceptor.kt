@@ -6,7 +6,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import kotlinx.coroutines.withContext
@@ -30,7 +30,7 @@ internal class ProjectContextInterceptor(
    }
 }
 
-internal data class EngineContextElement(val context: EngineContext) :
+internal data class EngineContextElement(val context: TestEngineContext) :
    AbstractCoroutineContextElement(ProjectContextElement) {
    companion object Key : CoroutineContext.Key<ProjectContextElement>
 }

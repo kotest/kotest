@@ -24,11 +24,11 @@ import kotlin.time.Duration
  *
  * For spec level equivalent, see [SpecConfigResolver].
  *
- *  Order of precedence for each setting from highest priority to lowest:
+ *  Order of precedence for each setting from the highest priority to the lowest:
  *
- * - project level defaults from [io.kotest.core.config.AbstractProjectConfig]
- * - system property overrides
- * - kotest defaults
+ * - Project level defaults from [io.kotest.core.config.AbstractProjectConfig]
+ * - System Property overrides
+ * - Kotest defaults
  */
 class ProjectConfigResolver(
    private val config: AbstractProjectConfig?,
@@ -130,18 +130,16 @@ class ProjectConfigResolver(
     * Returns the [SpecExecutionOrder] to use, unless overridden by registered [SpecExecutionOrderExtension]s.
     */
    fun specExecutionOrder(): SpecExecutionOrder {
-      return config?.specExecutionOrder ?:
-      systemPropertyConfiguration?.specExecutionOrder() ?:
-      Defaults.SPEC_EXECUTION_ORDER
+      return config?.specExecutionOrder ?: systemPropertyConfiguration?.specExecutionOrder()
+      ?: Defaults.SPEC_EXECUTION_ORDER
    }
 
    /**
     * Returns the [ConcurrencyOrder] to use.
     */
    fun concurrencyOrder(): ConcurrencyOrder {
-      return config?.concurrencyOrder ?:
-      systemPropertyConfiguration?.concurrencyOrder() ?:
-      Defaults.CONCURRENCY_MODE_ORDER
+      return config?.concurrencyOrder ?: systemPropertyConfiguration?.concurrencyOrder()
+      ?: Defaults.CONCURRENCY_MODE_ORDER
    }
 
    fun specFailureFilePath(): String {

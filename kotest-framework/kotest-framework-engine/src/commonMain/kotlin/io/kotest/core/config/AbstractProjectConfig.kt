@@ -1,5 +1,6 @@
 package io.kotest.core.config
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
@@ -304,15 +305,17 @@ abstract class AbstractProjectConfig {
     * If enabled, then all failing spec names will be written to a "failure file".
     * This file can then be used by [SpecExecutionOrder.FailureFirst].
     *
-    * Note: Only has an effect on JVM.
+    * Note: Is applicable only to JVM targets.
     */
+   @JVMOnly
    open val writeSpecFailureFile: Boolean? = null
 
    /**
     * The path to write the failed spec list to, if enabled.
     *
-    * Note: Only has an effect on JVM.
+    * Note: Is applicable only to JVM targets.
     */
+   @JVMOnly
    open val specFailureFilePath: String? = null
 
    /**

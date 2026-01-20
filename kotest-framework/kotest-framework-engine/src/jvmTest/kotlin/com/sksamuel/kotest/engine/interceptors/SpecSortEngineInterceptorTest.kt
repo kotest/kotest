@@ -12,7 +12,7 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.interceptors.SpecSortEngineInterceptor
 import io.kotest.matchers.shouldBe
 
@@ -28,7 +28,7 @@ class SpecSortEngineInterceptorTest : FunSpec({
 
       var sorted = emptyList<SpecRef>()
       SpecSortEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(p).withTestSuite(
+         TestEngineContext.empty.withProjectConfig(p).withTestSuite(
             TestSuite(
                listOf(
                   SpecRef.Reference(EnabledTestConfigFlagTest::class),

@@ -7,8 +7,8 @@ import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.DumpProjectConfigInterceptor
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.config.DumpProjectConfig
+import io.kotest.engine.TestEngineContext
 import io.kotest.extensions.system.SystemOutWireListener
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldBeEmpty
@@ -26,7 +26,7 @@ class DumpConfigInterceptorTest : FunSpec({
    }
 
    context("Uses system property `$property` correctly") {
-      val engineContext = EngineContext.empty.withProjectConfig(object : AbstractProjectConfig() {
+      val testEngineContext = TestEngineContext.empty.withProjectConfig(object : AbstractProjectConfig() {
          override val globalAssertSoftly = true
          override val specExecutionOrder = SpecExecutionOrder.Annotated
       })
@@ -37,7 +37,7 @@ class DumpConfigInterceptorTest : FunSpec({
          "True",
       ) { propValue ->
          System.setProperty(property, propValue)
-         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfig.intercept(testEngineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().trim() shouldBe """
             |~~~ Kotest Configuration ~~~
             |-> Spec execution order: Annotated
@@ -47,7 +47,7 @@ class DumpConfigInterceptorTest : FunSpec({
       }
 
       test("No property set, dumps nothing") {
-         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfig.intercept(testEngineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().shouldBeEmpty()
       }
 
@@ -58,7 +58,7 @@ class DumpConfigInterceptorTest : FunSpec({
          "Anything really"
       ) { propValue ->
          System.setProperty(property, propValue)
-         DumpProjectConfigInterceptor.intercept(engineContext) { t -> EngineResult(emptyList()) }
+         DumpProjectConfig.intercept(testEngineContext) { t -> EngineResult(emptyList()) }
          sysOutListener.output().shouldBeEmpty()
       }
    }

@@ -5,17 +5,17 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.interceptor.NextSpecInterceptor
 import io.kotest.engine.spec.interceptor.SpecInterceptor
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
 /**
- * A [SpecInterceptor] that adds the [EngineContext] to the coroutine context.
+ * A [SpecInterceptor] that adds the [TestEngineContext] to the coroutine context.
  */
 internal class EngineContextInterceptor(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) : SpecInterceptor {
    override suspend fun intercept(
       spec: Spec,

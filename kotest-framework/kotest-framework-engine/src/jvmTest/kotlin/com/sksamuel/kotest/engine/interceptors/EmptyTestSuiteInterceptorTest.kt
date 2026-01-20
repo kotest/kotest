@@ -13,7 +13,7 @@ import io.kotest.engine.EngineResult
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.interceptors.EmptyTestSuiteException
 import io.kotest.engine.interceptors.EmptyTestSuiteInterceptor
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.matchers.collections.shouldHaveSize
 import kotlin.time.Duration
 
@@ -25,7 +25,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val failOnEmptyTestSuite = true
          }
-         val result = EmptyTestSuiteInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
+         val result = EmptyTestSuiteInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) {
             EngineResult.empty
          }
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(1)
@@ -46,7 +46,7 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
             override val failOnEmptyTestSuite = true
          }
          val result = EmptyTestSuiteInterceptor.intercept(
-            EngineContext.empty.withProjectConfig(c)
+            TestEngineContext.empty.withProjectConfig(c)
          ) {
             it.listener.testFinished(tc, TestResult.Success(Duration.ZERO))
             EngineResult.empty

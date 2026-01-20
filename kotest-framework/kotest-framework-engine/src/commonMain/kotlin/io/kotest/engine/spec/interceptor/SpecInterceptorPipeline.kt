@@ -5,8 +5,8 @@ import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.interceptors.toProjectContext
+import io.kotest.engine.TestEngineContext
+import io.kotest.engine.toProjectContext
 import io.kotest.engine.spec.interceptor.instance.BeforeAfterSpecCallbacksInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineDispatcherFactorySpecInterceptor
 import io.kotest.engine.spec.interceptor.instance.CoroutineScopeInterceptor
@@ -22,7 +22,7 @@ import io.kotest.engine.test.TestResult
  * Executes [SpecInterceptor]s against a given spec instance.
  */
 internal class SpecInterceptorPipeline(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) {
 
    private val logger = Logger(SpecInterceptorPipeline::class)

@@ -1,12 +1,15 @@
 package io.kotest.engine.listener
 
 import io.kotest.common.KotestInternal
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngine
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.extensions.ExtensionRegistry
+import io.kotest.engine.tags.TagExpression
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 /**
@@ -29,7 +32,7 @@ interface TestEngineListener {
     *
     * @param context the final context that will be used.
     */
-   suspend fun engineInitialized(context: EngineContext)
+   suspend fun engineInitialized(context: TestEngineInitializedContext)
 
    /**
     * Is invoked when the [TestEngine] has finished execution of all tests.
@@ -74,6 +77,16 @@ interface TestEngineListener {
 }
 
 /**
+ * Context passed to [TestEngineListener.engineInitialized].
+ */
+data class TestEngineInitializedContext(
+   val suite: TestSuite,
+   val tags: TagExpression,
+   val registry: ExtensionRegistry,
+   val projectConfig: AbstractProjectConfig?,
+)
+
+/**
  * Implementation of [TestEngineListener] that provides no-op implementations for each method.
  * This is useful for testing when you only want to override a single method.
  */
@@ -81,7 +94,7 @@ interface TestEngineListener {
 abstract class AbstractTestEngineListener : TestEngineListener {
    override suspend fun engineStarted() {}
    override suspend fun engineFinished(t: List<Throwable>) {}
-   override suspend fun engineInitialized(context: EngineContext) {}
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {}
    override suspend fun specStarted(ref: SpecRef) {}
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {}
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {}

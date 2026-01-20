@@ -1,6 +1,5 @@
 package io.kotest.engine.spec.execution
 
-import io.kotest.common.KotestInternal
 import io.kotest.common.platform
 import io.kotest.common.reflection.annotation
 import io.kotest.common.reflection.bestName
@@ -11,8 +10,8 @@ import io.kotest.core.extensions.SpecRefExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.flatMap
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.execution.enabled.EnabledOrDisabled
@@ -31,13 +30,13 @@ import kotlin.time.measureTimedValue
  *
  * Then any extensions via [ApplyExtension] annotations are registered.
  *
- * Next it invokes the appropriate lifecycle callbacks for the spec.
+ * Next, it invokes the appropriate lifecycle callbacks for the spec.
  *
- * Finally, we instantiate the spec in order to see which isolation mode it is using, and then
+ * Finally, we instantiate the spec to see which isolation mode it is using, and then
  * execute the spec using the appropriate [SpecExecutor].
  */
 internal class SpecRefExecutor(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) {
 
    private val logger = Logger(SpecRefExecutor::class)
@@ -165,15 +164,14 @@ internal class SpecRefExecutor(
  * For example, on the JVM it would take into account isolation modes, and on Wasm it will
  * detect if we have a JS hosted environment.
  */
-internal expect fun specExecutor(context: EngineContext, spec: Spec): SpecExecutor
+internal expect fun specExecutor(context: TestEngineContext, spec: Spec): SpecExecutor
 
 /**
  * Used to test a [SpecRefExecutor] from another module.
  * Should not be used by user's code and is subject to change.
  */
-@KotestInternal
-suspend fun testSpecExecutor(
-   context: EngineContext,
+internal suspend fun testSpecExecutor(
+   context: TestEngineContext,
    ref: SpecRef.Reference
 ) {
    SpecRefExecutor(context).execute(ref)

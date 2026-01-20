@@ -5,7 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.execution.testSpecExecutor
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -29,7 +29,7 @@ class SpecInitializationErrorTest : FunSpec({
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
 
       testSpecExecutor(
-         EngineContext(null, Platform.JVM).mergeListener(listener),
+         TestEngineContext(null, Platform.JVM).mergeListener(listener),
          SpecRef.Reference(SpecWithInstanceFieldError::class)
       )
 
@@ -63,7 +63,7 @@ class SpecInitializationErrorTest : FunSpec({
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
 
       testSpecExecutor(
-         EngineContext(null, Platform.JVM).mergeListener(listener),
+         TestEngineContext(null, Platform.JVM).mergeListener(listener),
          SpecRef.Reference(SpecWithInitError::class)
       )
 

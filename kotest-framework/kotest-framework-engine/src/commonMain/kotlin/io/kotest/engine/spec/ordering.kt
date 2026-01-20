@@ -1,11 +1,11 @@
 package io.kotest.engine.spec
 
+import io.kotest.common.reflection.annotation
 import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.spec.Order
 import io.kotest.core.spec.SpecExecutionOrder
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.common.reflection.annotation
 import kotlin.random.Random
 
 /**
@@ -13,12 +13,11 @@ import kotlin.random.Random
  * to delegate to a [SpecSorter] perform sorting.
  */
 internal class DefaultSpecExecutionOrderExtension(
-   private val order: SpecExecutionOrder,
    private val projectConfigResolver: ProjectConfigResolver,
 ) : SpecExecutionOrderExtension {
 
    override fun sort(specs: List<SpecRef>): List<SpecRef> {
-      return when (order) {
+      return when (projectConfigResolver.specExecutionOrder()) {
 
          SpecExecutionOrder.Undefined -> {
             checkAnnotatedStatus(specs)

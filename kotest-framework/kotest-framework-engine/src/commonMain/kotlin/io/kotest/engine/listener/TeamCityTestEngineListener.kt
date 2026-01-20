@@ -10,7 +10,6 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.teamcity.TeamCityMessageBuilder
 import io.kotest.engine.teamcity.TeamCityWriter
 import io.kotest.engine.test.TestResult
@@ -58,7 +57,7 @@ class TeamCityTestEngineListener(
       writer.outputTestReporterAttached()
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       writer = TeamCityWriter(
          prefix = prefix,
          formatting = DisplayNameFormatting(context.projectConfig),

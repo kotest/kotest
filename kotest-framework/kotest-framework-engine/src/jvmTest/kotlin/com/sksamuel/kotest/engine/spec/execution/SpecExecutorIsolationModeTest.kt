@@ -15,7 +15,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.concurrency.TestExecutionMode
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEventsTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -43,7 +43,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -81,7 +81,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -121,7 +121,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -159,7 +159,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -197,7 +197,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -237,7 +237,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -275,7 +275,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -313,7 +313,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
@@ -347,7 +347,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  EngineContext(config, Platform.JVM).withListener(
+                  TestEngineContext(config, Platform.JVM).withListener(
                      ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener))
                   )
                )
