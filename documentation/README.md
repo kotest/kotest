@@ -7,7 +7,7 @@ Use `./cut-docs.sh` to automate steps 1–4
 2. Create the directory `./versioned_docs/version-<RELEASED_VERSION>`
 3. Copy the contents of `./docs/` to the folder
 4. Copy `./sidebars.js` to `./verioned_sidebars/version-<RELEASED_VERSION>-sidebars.json` and remove `module.exports = ` from the start of the file
-5. update the current version to the next value in docusaurus.config.js after running the script
+5. update the current version to the next value in docusaurus.config.js after running the script or executing steps 1-4 manually
 6. Push/merge to master to update [kotest.io](https://kotest.io)
 7. A crawl of newly added docs will be triggered by [github action _crawl_](/.github/workflows/crawl.yaml)
    * To manually initiate crawling, go to [crawler.algolia.com](https://crawler.algolia.com/admin/crawlers?sort=status&order=ASC&limit=20)
