@@ -5,8 +5,8 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.errorCollector
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * Runs multiple assertions and throw a composite error with all failures
@@ -26,7 +26,7 @@ import kotlin.coroutines.coroutineContext
  */
 @ExperimentalKotest
 suspend fun <T> all(assertions: suspend () -> T): T {
-   if (coroutineContext[AssertionBlockContextElement] != null) { // TODO: refactor all to use errorAndAssertionsScope
+   if (currentCoroutineContext()[AssertionBlockContextElement] != null) { // TODO: refactor all to use errorAndAssertionsScope
       throw IllegalStateException("Assertion block functions one, any, and all are limited to a depth of 1")
    }
 
