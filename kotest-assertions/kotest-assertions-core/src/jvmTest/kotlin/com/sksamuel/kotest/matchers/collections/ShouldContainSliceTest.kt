@@ -10,6 +10,7 @@ class ShouldContainSliceTest : StringSpec() {
    init {
       "pass when slice is at the beginning" {
          listOf(1, 2, 3, 4, 5).shouldContainSlice(listOf(1, 2, 3))
+         arrayOf(1, 2, 3, 4, 5).shouldContainSlice(listOf(1, 2, 3))
          shouldThrow<AssertionError> {
             listOf(1, 2, 3, 4, 5).shouldNotContainSlice(listOf(1, 2, 3))
          }
@@ -28,6 +29,7 @@ class ShouldContainSliceTest : StringSpec() {
       }
       "fail when slice not found" {
          listOf(1, 2, 3, 4, 5).shouldNotContainSlice(listOf(1, 2, 4, 5))
+         arrayOf(1, 2, 3, 4, 5).shouldNotContainSlice(listOf(1, 2, 4, 5))
          val thrown = shouldThrow<AssertionError> {
             listOf(1, 2, 3, 4, 5).shouldContainSlice(listOf(1, 2, 4, 5))
          }
