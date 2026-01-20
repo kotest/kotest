@@ -1,4 +1,4 @@
-name: pr-framework
+name: pr-main
 
 on:
    pull_request:
