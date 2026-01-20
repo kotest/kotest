@@ -31,8 +31,8 @@ data class TestEngineConfig(
 /**
  * Multiplatform Kotest Test Engine.
  *
- * The scheduling of tests is delegated to a [TestSuiteScheduler] which is responsible the ordering
- * and concurrency aspect of spec execution.
+ * The scheduling of tests is delegated to a [TestSuiteScheduler] which is responsible for the concurrent dispatch
+ * of each spec in a [TestSuite].
  */
 @KotestInternal
 class TestEngine(private val config: TestEngineConfig) {

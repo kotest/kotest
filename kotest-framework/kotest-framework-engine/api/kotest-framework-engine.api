@@ -4255,6 +4255,10 @@ public final class io/kotest/engine/spec/ThreadSafeMapKt {
 	public static final fun threadSafeMap ()Ljava/util/Map;
 }
 
+public final class io/kotest/engine/spec/execution/SpecRefExecutorKt {
+	public static final fun testSpecExecutor (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public abstract interface class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
 }
 
