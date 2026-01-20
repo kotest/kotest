@@ -9,8 +9,7 @@ import io.kotest.core.extensions.SpecExecutionOrderExtension
 import io.kotest.core.log
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite
-import io.kotest.core.spec.style.scopes.TestDslState
-import io.kotest.engine.config.DumpProjectConfig
+import io.kotest.engine.config.ProjectConfigDumper
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.ProjectExtensions
@@ -60,12 +59,12 @@ class TestEngine(private val config: TestEngineConfig) {
          listener = config.listener,
       )
 
-      DumpProjectConfig.dumpConfigIfEnabled(context)
+      ProjectConfigDumper.dumpConfigIfEnabled(context)
 
       val result = invokeTestEngineListeners(context)
 
       writeFailuresIfEnabled(context)
-      return checkForDslState(checkForEmptyTestSuite(context, result))
+      return TestDslChecker.checkForDslState(EmptyTestSuiteChecker.checkForEmptyTestSuite(context, result))
    }
 
    internal suspend fun invokeTestEngineListeners(context: TestEngineContext): EngineResult {
@@ -180,24 +179,6 @@ class TestEngine(private val config: TestEngineConfig) {
       log { "Sorting specs using extensions $exts" }
       val specs = exts.fold(suite.specs) { acc, op -> op.sort(acc) }
       return TestSuite(specs)
-   }
-
-   internal fun checkForDslState(result: EngineResult): EngineResult {
-      return runCatching { TestDslState.checkState() }.fold(
-         { result },
-         { result.addError(it) },
-      )
-   }
-
-   internal fun checkForEmptyTestSuite(
-      context: TestEngineContext,
-      result: EngineResult,
-   ): EngineResult {
-      return if (context.projectConfigResolver.failOnEmptyTestSuite() && context.collector.tests.isEmpty()) {
-         result.addError(EmptyTestSuiteException())
-      } else {
-         result
-      }
    }
 }
 

@@ -5,7 +5,7 @@ import io.kotest.engine.TestEngineContext
 /**
  * Outputs the resolved project configuration to the console if enabled.
  */
-internal object DumpProjectConfig {
+internal object ProjectConfigDumper {
 
    fun dumpConfigIfEnabled(context: TestEngineContext) {
       try {

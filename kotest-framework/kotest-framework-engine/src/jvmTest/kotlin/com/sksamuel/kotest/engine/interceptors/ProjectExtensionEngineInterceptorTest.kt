@@ -5,10 +5,10 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.EngineResult
-import io.kotest.engine.TestEngineContext
-import io.kotest.engine.interceptors.ProjectExtensionEngineInterceptor
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.shouldBe
 
@@ -38,7 +38,11 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override val extensions = listOf(ext1, ext2)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) { EngineResult.empty }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec2::class))
+         .execute()
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -64,10 +68,11 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override val extensions = listOf(ext1, ext2)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty.withProjectConfig(c)) {
-         fired = true
-         EngineResult.empty
-      }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec2::class))
+         .execute()
 
       fired shouldBe true
    }
@@ -76,11 +81,10 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
 
       var fired = false
 
-      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty) {
-         fired = true
-         EngineResult.empty
-      }
-
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withSpecRefs(SpecRef.Reference(DummySpec2::class))
+         .execute()
       fired shouldBe true
    }
 
@@ -97,11 +101,16 @@ class ProjectExtensionEngineInterceptorTest : FunSpec({
          override val extensions = listOf(ext)
       }
 
-      ProjectExtensionEngineInterceptor.intercept(TestEngineContext.empty.withTags(TagExpression("foo")).withProjectConfig(c)) {
-         tags = it.tags
-         EngineResult.empty
-      }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec2::class))
+         .execute()
 
       tags.expression shouldBe "foo & bar"
    }
+})
+
+private class DummySpec2 : FunSpec({
+   test("foo") {}
 })

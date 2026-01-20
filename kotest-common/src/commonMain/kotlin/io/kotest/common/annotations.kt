@@ -28,6 +28,20 @@ annotation class DelicateKotest
 @RequiresOptIn(level = RequiresOptIn.Level.WARNING)
 annotation class KotestInternal
 
+/**
+ * Marks an element as open only for testing Kotest itself.
+ * Should not be used by end users.
+ */
+@Target(
+   AnnotationTarget.CLASS,
+   AnnotationTarget.FUNCTION,
+   AnnotationTarget.PROPERTY,
+   AnnotationTarget.CONSTRUCTOR,
+)
+@MustBeDocumented
+@Retention(value = AnnotationRetention.BINARY)
+@RequiresOptIn(level = RequiresOptIn.Level.WARNING)
+annotation class KotestTesting
 
 /**
  * Marks a Kotest feature as only available on the JVM platform.

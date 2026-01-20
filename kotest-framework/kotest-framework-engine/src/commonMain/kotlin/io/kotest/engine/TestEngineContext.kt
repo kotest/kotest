@@ -1,5 +1,6 @@
 package io.kotest.engine
 
+import io.kotest.common.KotestTesting
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.project.TestSuite
@@ -55,6 +56,30 @@ internal data class TestEngineContext internal constructor(
             projectConfig = projectConfig,
             listener = CompositeTestEngineListener(listener, collector),
             collector = collector
+         )
+      }
+
+      @KotestTesting
+      operator fun invoke(projectConfig: AbstractProjectConfig?): TestEngineContext {
+         val registry = DefaultExtensionRegistry()
+         return create(
+            suite = TestSuite.empty,
+            listener = NoopTestEngineListener,
+            tags = TagExpression.Empty,
+            registry = registry,
+            projectConfig = projectConfig,
+         )
+      }
+
+      @KotestTesting
+      operator fun invoke(projectConfig: AbstractProjectConfig?, listener: TestEngineListener): TestEngineContext {
+         val registry = DefaultExtensionRegistry()
+         return create(
+            suite = TestSuite.empty,
+            listener = listener,
+            tags = TagExpression.Empty,
+            registry = registry,
+            projectConfig = projectConfig,
          )
       }
 
