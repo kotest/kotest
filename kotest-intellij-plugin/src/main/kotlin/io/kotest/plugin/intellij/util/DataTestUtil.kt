@@ -114,8 +114,8 @@ object DataTestUtil {
     *
     * Returns null early if this is not a data test or line number cannot be determined.
     *
-    * @see <a href="https://github.com/kotest/kotest/blob/master/kotest-intellij-plugin/src/test/resources/datatestspec.kt">
-    * DataTestSpecExample for full details of the various DataTestInfo generated for different data test nesting scenarios</a>
+    * @see <a href="https://github.com/kotest/kotest/blob/263b5d4914aaa7d79c405df237e020870e3f47de/kotest-intellij-plugin/src/test/resources/data-test-tags/DataTestTagsFunSpec.kt">
+    * Example for full details of the various DataTestInfo generated for different data test nesting scenarios</a>
     *
     */
    fun dataTestInfoMaybe(isDataTest: Boolean, currentTestPsi: PsiElement): DataTestInfo? {
