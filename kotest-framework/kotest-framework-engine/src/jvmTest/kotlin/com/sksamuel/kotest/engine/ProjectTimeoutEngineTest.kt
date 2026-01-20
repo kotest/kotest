@@ -1,4 +1,4 @@
-package com.sksamuel.kotest.engine.interceptors
+package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -15,7 +15,7 @@ import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class ProjectTimeoutEngineInterceptorTest : FunSpec({
+class ProjectTimeoutEngineTest : FunSpec({
 
    test("should return ProjectTimeoutException when project times out") {
       val c = object : AbstractProjectConfig() {

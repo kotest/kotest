@@ -18,7 +18,7 @@ import io.kotest.matchers.collections.shouldHaveSize
 
 @OptIn(KotestTesting::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class EmptyTestSuiteInterceptorTest : FunSpec() {
+class EmptyTestSuiteChecker : FunSpec() {
    init {
 
       test("should error on empty test suite") {
@@ -32,9 +32,9 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
       test("should not error on non empty test suite") {
 
          val tc = TestCase(
-            EmptyTestSuiteInterceptorTest::class.toDescriptor().append("foo"),
+            EmptyTestSuiteChecker::class.toDescriptor().append("foo"),
             TestNameBuilder.builder("foo").build(),
-            EmptyTestSuiteInterceptorTest(),
+            EmptyTestSuiteChecker(),
             {},
             SourceRef.None,
             TestType.Test
@@ -43,7 +43,9 @@ class EmptyTestSuiteInterceptorTest : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val failOnEmptyTestSuite = true
          }
-         val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(TestEngineContext(c), EngineResult.empty)
+         val context = TestEngineContext(c)
+         context.listener.testStarted(tc)
+         val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(context, EngineResult.empty)
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(0)
       }
    }

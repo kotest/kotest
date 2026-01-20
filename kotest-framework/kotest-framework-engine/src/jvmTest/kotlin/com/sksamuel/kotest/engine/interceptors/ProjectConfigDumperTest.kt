@@ -15,7 +15,7 @@ import io.kotest.matchers.string.shouldBeEmpty
 
 @OptIn(KotestTesting::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class DumpConfigInterceptorTest : FunSpec({
+class ProjectConfigDumperTest : FunSpec({
 
    val property = "kotest.framework.dump.config"
 

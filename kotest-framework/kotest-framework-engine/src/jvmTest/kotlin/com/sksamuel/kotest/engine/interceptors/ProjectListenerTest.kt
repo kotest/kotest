@@ -13,7 +13,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class ProjectListenerEngineInterceptorTest : FunSpec({
+class ProjectListenerTest : FunSpec({
 
    test("should invoke beforeProject listener") {
       var fired = false
