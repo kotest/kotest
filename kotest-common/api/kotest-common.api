@@ -23,6 +23,9 @@ public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/
 public abstract interface annotation class io/kotest/common/KotestInternal : java/lang/annotation/Annotation {
 }
 
+public abstract interface annotation class io/kotest/common/KotestTesting : java/lang/annotation/Annotation {
+}
+
 public final class io/kotest/common/Platform : java/lang/Enum {
 	public static final field JS Lio/kotest/common/Platform;
 	public static final field JVM Lio/kotest/common/Platform;

@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.KotestInternal
 import io.kotest.common.env
 import io.kotest.common.reflection.bestName
 import io.kotest.core.Logger
@@ -9,9 +10,10 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.errors.ExtensionExceptionExtractor
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.names.UniqueNames
 import io.kotest.engine.test.TestResult
@@ -77,6 +79,7 @@ import kotlin.reflect.KClass
  * TestDescriptor.Type.CONTAINER that do not contain TESTs are ignored in intellij's tree output
  *
  */
+@KotestInternal
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
    val root: EngineDescriptor,
@@ -101,9 +104,9 @@ class JUnitTestEngineListener(
       listener.executionStarted(root)
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       logger.log { "Engine initialized with context $context" }
-      failOnIgnoredTests = context.projectConfigResolver.failOnIgnoredTests()
+      failOnIgnoredTests = ProjectConfigResolver(context.projectConfig, context.registry).failOnIgnoredTests()
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {

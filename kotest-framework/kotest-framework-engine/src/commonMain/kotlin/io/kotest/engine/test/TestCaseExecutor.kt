@@ -6,7 +6,7 @@ import io.kotest.common.platform
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
@@ -29,8 +29,8 @@ import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.test.interceptors.testInterceptorsForPlatform
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
-import io.kotest.engine.testInterceptorsForPlatform
 import kotlinx.coroutines.withContext
 import kotlin.time.TimeSource
 
@@ -43,14 +43,14 @@ import kotlin.time.TimeSource
 @OptIn(ExperimentalKotest::class)
 internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) {
 
    /**
     * Creates a [TestCaseExecutor] that delegates test events to the [TestEngineListener] provided
-    * by the [EngineContext].
+    * by the [TestEngineContext].
     */
-   constructor(context: EngineContext) : this(
+   constructor(context: TestEngineContext) : this(
       TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
       context
    )
@@ -71,7 +71,7 @@ internal class TestCaseExecutor(
          TestFinishedInterceptor(listener, context.testExtensions()),
          InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,
-         // the dispatcher factory should run before before/after callbacks so they are executed in the right context
+         // the dispatcher factory should run before the before/after callbacks, so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(

@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.engine.test.timeout
 
-import io.kotest.common.Platform
+import io.kotest.common.KotestTesting
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.descriptors.toDescriptor
@@ -11,7 +11,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.NoopTestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -24,6 +24,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.time.Duration.Companion.milliseconds
 
+@OptIn(KotestTesting::class)
 @Suppress("BlockingMethodInNonBlockingContext")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class TestTimeoutAfterTestListenerTest : FunSpec() {
@@ -57,7 +58,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
 
          val executor = TestCaseExecutor(
             NoopTestCaseExecutionListener,
-            EngineContext(null, Platform.JVM)
+            TestEngineContext(null)
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {
@@ -95,7 +96,7 @@ class TestTimeoutAfterTestListenerTest : FunSpec() {
 
          val executor = TestCaseExecutor(
             NoopTestCaseExecutionListener,
-            EngineContext(null, Platform.JVM)
+            TestEngineContext(null)
          )
          // needs to run on a separate thread, so we don't interrupt our own thread
          withContext(Dispatchers.IO) {

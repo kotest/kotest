@@ -5,15 +5,15 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.EngineResult
+import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
-import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.interceptors.ProjectListenerEngineInterceptor
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class ProjectListenerEngineInterceptorTest : FunSpec({
+class ProjectListenerTest : FunSpec({
 
    test("should invoke beforeProject listener") {
       var fired = false
@@ -26,9 +26,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
          override val extensions = listOf(listener)
       }
 
-      ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(c)
-      ) { EngineResult(emptyList()) }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
+         .execute()
 
       fired shouldBe true
    }
@@ -49,9 +51,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val extensions = listOf(listener1, listener2)
       }
-      ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(c)
-      ) { EngineResult(emptyList()) }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
+         .execute()
 
       fired1 shouldBe true
       fired2 shouldBe true
@@ -67,9 +71,11 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val extensions = listOf(listener)
       }
-      ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(c)
-      ) { EngineResult(emptyList()) }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
+         .execute()
 
       fired shouldBe true
    }
@@ -90,32 +96,41 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val extensions = listOf(listener1, listener2)
       }
-      ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(c)
-      ) { EngineResult(emptyList()) }
+      TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
+         .execute()
 
       fired1 shouldBe true
       fired2 shouldBe true
    }
 
    test("should return BeforeProjectListener errors wrapped in BeforeProjectListenerException") {
+
       val listener1 = object : BeforeProjectListener {
          override suspend fun beforeProject() {
             error("whack!")
          }
       }
+
       val listener2 = object : BeforeProjectListener {
          override suspend fun beforeProject() {
             error("zapp!")
          }
       }
+
       val c = object : AbstractProjectConfig() {
          override val extensions = listOf(listener1, listener2)
       }
-      val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(c)
-      ) { EngineResult(emptyList()) }
-      results.errors.filterIsInstance<ExtensionException.BeforeProjectException>().size shouldBe 2
+
+      val result = TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
+         .execute()
+
+      result.errors.filterIsInstance<ExtensionException.BeforeProjectException>().size shouldBe 2
    }
 
    test("should return AfterProjectListener errors wrapped in AfterProjectListenerException") {
@@ -132,9 +147,17 @@ class ProjectListenerEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val extensions = listOf(listener1, listener2)
       }
-      val results = ProjectListenerEngineInterceptor.intercept(
-         EngineContext.empty.withProjectConfig(c)
-      ) { EngineResult(emptyList()) }
+      val results = TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec3::class))
+         .execute()
       results.errors.filterIsInstance<ExtensionException.AfterProjectException>().size shouldBe 2
    }
 })
+
+private class DummySpec3 : FunSpec() {
+   init {
+      test("foo") { }
+   }
+}

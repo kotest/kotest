@@ -39,13 +39,6 @@ internal object AbstractProjectConfigWriter {
       projectConfig.removeTestNameWhitespace?.let { sb.buildOutput("Remove test name whitespace", it.toString()) }
       projectConfig.testNameAppendTags?.let { sb.buildOutput("Append tags to test names", it.toString()) }
 
-//   if (registry.isNotEmpty()) {
-//      sb.buildOutput("Extensions")
-//      registry.all().map(::mapClassName).forEach {
-//         sb.buildOutput(it, indentation = 1)
-//      }
-//   }
-
 //   runtimeTagExpression().expression.let { sb.buildOutput("Tags", it) }
       return sb.toString()
    }

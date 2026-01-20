@@ -5,7 +5,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isRootTest
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
@@ -24,7 +24,7 @@ import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 
 internal class InstancePerRootSpecExecutor(
-   private val ctx: EngineContext,
+   private val ctx: TestEngineContext,
 ) : SpecExecutor {
 
    private val pipeline = SpecInterceptorPipeline(ctx)

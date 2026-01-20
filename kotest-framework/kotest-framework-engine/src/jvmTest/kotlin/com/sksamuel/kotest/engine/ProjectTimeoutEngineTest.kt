@@ -1,29 +1,33 @@
-package com.sksamuel.kotest.engine.interceptors
+package com.sksamuel.kotest.engine
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.EngineResult
-import io.kotest.engine.interceptors.EngineContext
-import io.kotest.engine.interceptors.ProjectTimeoutEngineInterceptor
-import io.kotest.engine.interceptors.ProjectTimeoutException
+import io.kotest.engine.ProjectTimeoutException
+import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.milliseconds
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-class ProjectTimeoutEngineInterceptorTest : FunSpec({
+class ProjectTimeoutEngineTest : FunSpec({
 
    test("should return ProjectTimeoutException when project times out") {
       val c = object : AbstractProjectConfig() {
          override val projectTimeout = 1.milliseconds
       }
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
-         delay(1000)
-         EngineResult.empty
-      }
+
+      val result = TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec4::class))
+         .execute()
+
       result.errors.size shouldBe 1
       result.errors.first().shouldBeInstanceOf<ProjectTimeoutException>()
    }
@@ -32,10 +36,28 @@ class ProjectTimeoutEngineInterceptorTest : FunSpec({
       val c = object : AbstractProjectConfig() {
          override val projectTimeout = 100000.milliseconds
       }
-      val result = ProjectTimeoutEngineInterceptor.intercept(EngineContext.empty.withProjectConfig(c)) {
-         delay(1)
-         EngineResult.empty
-      }
+
+      val result = TestEngineLauncher()
+         .withListener(NoopTestEngineListener)
+         .withProjectConfig(c)
+         .withSpecRefs(SpecRef.Reference(DummySpec5::class))
+         .execute()
+
       result.errors.size shouldBe 0
    }
 })
+
+private class DummySpec4 : FunSpec() {
+   init {
+      test("a") {
+         delay(10.hours)
+      }
+   }
+}
+
+private class DummySpec5 : FunSpec() {
+   init {
+      test("a") {
+      }
+   }
+}

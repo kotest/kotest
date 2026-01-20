@@ -2,13 +2,13 @@ package io.kotest.engine.test
 
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.TestExecutionInterceptor
 
 internal class FailFastInterceptor(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
    private val specContext: SpecContext,
 ) : TestExecutionInterceptor {
 

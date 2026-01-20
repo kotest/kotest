@@ -21,7 +21,10 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
    describe("The DefaultSpecExecutionOrder extension should support") {
 
       it("SpecExecutionOrder.Undefined") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfigResolver()).sort(
+         val c = object : AbstractProjectConfig() {
+            override val specExecutionOrder = SpecExecutionOrder.Undefined
+         }
+         DefaultSpecExecutionOrderExtension(ProjectConfigResolver(c)).sort(
             listOf(
                SpecRef.Reference(ZSpec::class),
                SpecRef.Reference(SpecZ::class),
@@ -33,7 +36,10 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       }
 
       it("SpecExecutionOrder.Annotated") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Annotated, ProjectConfigResolver()).sort(
+         val c = object : AbstractProjectConfig() {
+            override val specExecutionOrder = SpecExecutionOrder.Annotated
+         }
+         DefaultSpecExecutionOrderExtension(ProjectConfigResolver(c)).sort(
             listOf(
                SpecRef.Reference(ASpec::class),
                SpecRef.Reference(ZSpec::class),
@@ -49,7 +55,10 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       }
 
       it("SpecExecutionOrder.Lexicographic") {
-         DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Lexicographic, ProjectConfigResolver()).sort(
+         val c = object : AbstractProjectConfig() {
+            override val specExecutionOrder = SpecExecutionOrder.Lexicographic
+         }
+         DefaultSpecExecutionOrderExtension(ProjectConfigResolver(c)).sort(
             listOf(
                SpecRef.Reference(ASpec::class),
                SpecRef.Reference(ZSpec::class),
@@ -65,9 +74,14 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
       }
 
       it("SpecExecutionOrder.Random") {
+
+         val c = object : AbstractProjectConfig() {
+            override val specExecutionOrder = SpecExecutionOrder.Random
+         }
+
          // should have all combinations since it's meant to be random
          List(10000) {
-            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, ProjectConfigResolver()).sort(
+            DefaultSpecExecutionOrderExtension(ProjectConfigResolver(c)).sort(
                listOf(
                   SpecRef.Reference(ASpec::class),
                   SpecRef.Reference(ZSpec::class),
@@ -82,6 +96,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
 
          val c = object : AbstractProjectConfig() {
             override val randomOrderSeed = 123123123L
+            override val specExecutionOrder = SpecExecutionOrder.Random
          }
 
          val specs = listOf(
@@ -91,7 +106,7 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
             SpecRef.Reference(SpecZ::class),
          )
 
-         val ext = DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Random, ProjectConfigResolver(c))
+         val ext = DefaultSpecExecutionOrderExtension(ProjectConfigResolver(c))
          ext.sort(specs) shouldBe ext.sort(specs)
       }
 
@@ -100,8 +115,11 @@ class DefaultSpecExecutionOrderExtensionTest : DescribeSpec({
             SpecRef.Reference(ASpec::class),
             SpecRef.Reference(ZSpec::class),
          )
+         val c = object : AbstractProjectConfig() {
+            override val specExecutionOrder = SpecExecutionOrder.Undefined
+         }
          shouldThrowAny {
-            DefaultSpecExecutionOrderExtension(SpecExecutionOrder.Undefined, ProjectConfigResolver()).sort(specs)
+            DefaultSpecExecutionOrderExtension(ProjectConfigResolver(c)).sort(specs)
          }
       }
 
