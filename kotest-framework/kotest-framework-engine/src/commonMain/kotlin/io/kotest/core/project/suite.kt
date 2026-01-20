@@ -7,10 +7,6 @@ import io.kotest.core.spec.SpecRef
  * All specs are represented as [SpecRef]s, which are instantiated on demand.
  */
 data class TestSuite(val specs: List<SpecRef>) {
-   init {
-      require(specs.isNotEmpty()) { "TestSuite cannot be empty" }
-   }
-
    companion object {
       val empty = TestSuite(emptyList())
    }
