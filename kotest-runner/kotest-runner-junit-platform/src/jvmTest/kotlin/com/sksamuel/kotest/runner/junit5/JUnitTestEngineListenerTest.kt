@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.common.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -12,7 +11,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.engine.TestEngineContext
+import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -365,7 +364,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       }
 
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(c))
-      listener.engineInitialized(TestEngineContext.invoke(null, Platform.JVM))
+      listener.engineInitialized(TestEngineInitializedContext.empty)
       listener.specStarted(SpecRef.Reference(MySpec::class))
       listener.testStarted(tc1)
       listener.testStarted(tc2)

@@ -7,6 +7,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngine
+import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.test.TestResult
@@ -84,7 +85,16 @@ data class TestEngineInitializedContext(
    val tags: TagExpression,
    val registry: ExtensionRegistry,
    val projectConfig: AbstractProjectConfig?,
-)
+) {
+   companion object {
+      val empty = TestEngineInitializedContext(
+         suite = TestSuite.empty,
+         tags = TagExpression.Empty,
+         registry = EmptyExtensionRegistry,
+         projectConfig = null
+      )
+   }
+}
 
 /**
  * Implementation of [TestEngineListener] that provides no-op implementations for each method.
