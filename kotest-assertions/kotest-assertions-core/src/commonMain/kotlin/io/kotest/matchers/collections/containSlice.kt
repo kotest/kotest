@@ -4,6 +4,7 @@ import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
 
 /**
@@ -18,6 +19,45 @@ import kotlin.jvm.JvmName
 @JvmName("shouldContainSlice_iterable")
 infix fun <T> Iterable<T>.shouldContainSlice(expected: Iterable<T>) =
    this.toList() should containSlice(expected.toList())
+
+/**
+ * Assert that a collection contains the given slice.
+ * For example,
+ *  listOf(1, 1, 2) shouldContainNotSlice listOf(1, 2)    // Assertion fails
+ *  listOf(1, 2, 1) shouldContainNotSlice listOf(1)       // Assertion fails
+ *  listOf(1) shouldContainNotSlice listOf(1, 2)          // Assertion passes
+ *
+ *  Note: Comparison is via the standard Java equals and hash code methods.
+ */
+@JvmName("shouldNotContainSlice_iterable")
+infix fun <T> Iterable<T>.shouldNotContainSlice(expected: Iterable<T>) =
+   this.toList() shouldNot containSlice(expected.toList())
+
+/**
+ * Assert that a collection contains the given slice.
+ * For example,
+ *  arrayOf(1, 1, 2) shouldContainSlice listOf(1, 2)    // Assertion passes
+ *  arrayOf(1, 2, 1) shouldContainSlice listOf(1)       // Assertion passes
+ *  arrayOf(1) shouldContainSlice listOf(1, 2)          // Assertion fails
+ *
+ *  Note: Comparison is via the standard Java equals and hash code methods.
+ */
+@JvmName("shouldContainSlice_array")
+infix fun <T> Array<T>.shouldContainSlice(expected: Iterable<T>) =
+   this.toList() should containSlice(expected.toList())
+
+/**
+ * Assert that a collection contains the given slice.
+ * For example,
+ *  arrayOf(1, 1, 2) shouldContainNotSlice listOf(1, 2)    // Assertion fails
+ *  arrayOf(1, 2, 1) shouldContainNotSlice listOf(1)       // Assertion fails
+ *  arrayOf(1) shouldContainNotSlice listOf(1, 2)          // Assertion passes
+ *
+ *  Note: Comparison is via the standard Java equals and hash code methods.
+ */
+@JvmName("shouldNotContainSlice_array")
+infix fun <T> Array<T>.shouldNotContainSlice(expected: Iterable<T>) =
+   this.toList() shouldNot containSlice(expected.toList())
 
 fun <T> containSlice(slice: List<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
