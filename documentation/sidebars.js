@@ -35,6 +35,7 @@ module.exports = {
      "extensions/decoroutinator",
      "extensions/instant",
      "extensions/junit_xml",
+     "extensions/koin",
      "extensions/ktor",
      "extensions/html_reporter",
      "extensions/mockserver",
