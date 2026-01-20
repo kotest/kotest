@@ -1,0 +1,144 @@
+---
+id: quickstart
+title: Quick Start
+sidebar_label: Quick Start
+---
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+**Kotest is a flexible and comprehensive testing project for Kotlin with multiplatform support.**
+
+For latest updates see [Changelog](changelog.md).
+
+Kotest is divided into three, stand-alone projects, each of which can be used independently:
+
+* [Test framework](framework/index.md)
+* [Assertions library](assertions/index.md)
+* [Property testing](proptest/index.mdx)
+
+You can decide to go _all in_ on Kotest and use all three together, or you can choose to one or more modules in conjunction with other projects.
+For example, you could use the assertion library with JUnit, or you could use the test framework with another assertion library like AssertJ.
+
+This page gives setup instructions for various combinations of projects and targets.
+
+:::info[Multiplatform Support]
+Kotest is a [multiplatform project](https://kotlinlang.org/docs/reference/multiplatform.html) and supports [all targets](https://kotlinlang.org/docs/multiplatform/supported-platforms.html#compose-multiplatform-ui-framework-stability-levels) - JVM, JS, Native, iOS and so on.
+:::
+
+## Test Framework
+
+The Kotest test framework is supported on all targets. On the JVM it builds on top of the JUnit Platform project, and on Kotlin Multiplatform, it leverages the existing Gradle Test infrastructure.
+To set up kotest as your testing framework, follow detailed instructions in the [framework documentation](framework/setup.mdx) page.
+
+## Assertions Library
+
+The core assertions library framework is supported on all targets. Extensions are supported on the platforms that are applicable to that extension.
+For example, the JDBC matchers are only provided for the JVM since JDBC is a Java library.
+
+<Tabs
+   defaultValue="JVM/Gradle"
+   values={[
+      {label: 'JVM/Gradle', value: 'JVM/Gradle'},
+      {label: 'JVM/Maven', value: 'JVM/Maven'},
+      {label: 'Multiplatform', value: 'Multiplatform'},
+   ]}>
+   <TabItem value="JVM/Gradle">
+
+Add the following dependency to your dependencies block:
+
+```kotlin
+testImplementation("io.kotest:kotest-assertions-core:$version")
+```
+
+   </TabItem>
+   <TabItem value="JVM/Maven">
+
+Add the following dependency to your build.
+
+```xml
+<dependency>
+   <groupId>io.kotest</groupId>
+   <artifactId>kotest-assertions-core-jvm</artifactId>
+   <version>${version}</version>
+   <scope>test</scope>
+</dependency>
+```
+
+   </TabItem>
+   <TabItem value="Multiplatform">
+
+Add the following dependency to your `commonTest` or target specific dependencies block:
+
+```kotlin
+implementation("io.kotest:kotest-assertions-core:$version")
+```
+
+   </TabItem>
+</Tabs>
+
+View the [assertions library documentation](assertions/index.md) for more information.
+
+## Property Testing
+
+The property test framework is supported on all targets.
+
+<Tabs
+   defaultValue="JVM/Gradle"
+   values={[
+      {label: 'JVM/Gradle', value: 'JVM/Gradle'},
+      {label: 'JVM/Maven', value: 'JVM/Maven'},
+      {label: 'Multiplatform', value: 'Multiplatform'},
+   ]}>
+   <TabItem value="JVM/Gradle">
+
+Add the following dependency to your build:
+
+```kotlin
+testImplementation("io.kotest:kotest-property:$version")
+```
+
+   </TabItem>
+   <TabItem value="JVM/Maven">
+
+
+Add the following dependency to your build.
+
+```xml
+<dependency>
+   <groupId>io.kotest</groupId>
+   <artifactId>kotest-property-jvm</artifactId>
+   <version>${version}</version>
+   <scope>test</scope>
+</dependency>
+```
+
+   </TabItem>
+   <TabItem value="Multiplatform">
+
+Add the following dependency to your `commonTest` or target specific dependencies block:
+
+```kotlin
+implementation("io.kotest:kotest-property:$version")
+```
+
+   </TabItem>
+</Tabs>
+
+View the [property testing documentation](proptest/index.mdx) for more information.
+
+
+## Snapshots
+
+Snapshots are automatically published on each commit to master. If you want to use the latest snapshot build,
+set up the dependencies in the same way described above, changing the version to the current snapshot version
+and add the following repository to your `repositories` block:
+
+```
+repositories {
+   maven("https://central.sonatype.com/repository/maven-snapshots/")
+}
+```
+
+The latest snapshot version can be found on the [GitHub README page](https://github.com/kotest/kotest/) in the badges section.
