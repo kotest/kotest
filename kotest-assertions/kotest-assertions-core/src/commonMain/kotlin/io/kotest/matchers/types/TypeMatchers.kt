@@ -1,6 +1,7 @@
 package io.kotest.matchers.types
 
 import io.kotest.assertions.print.print
+import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -36,8 +37,6 @@ inline fun <reified T : Any> instanceOf(): Matcher<Any?> = instanceOf(T::class)
  */
 inline fun <reified T : Any> beInstanceOf(): Matcher<Any?> = instanceOf<T>()
 
-
-
 /**
  * Asserts that a value is an instance of the given class.
  *
@@ -67,10 +66,13 @@ fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
  * @see instanceOf
  */
 fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
-   MatcherResult(
+   DiffableMatcherResult(
       expected.isInstance(value),
-      { "$value is of type ${value::class.print().value} but expected ${expected.print().value}" },
-      { "${value::class.print().value} should not be of type ${expected.print().value}" })
+      expected = { expected.print() },
+      actual = { value.print() },
+      failureMessageFn = { "$value is of type ${value::class.print().value} but expected ${expected.print().value}" },
+      negatedFailureMessageFn = { "${value::class.print().value} should not be of type ${expected.print().value}" }
+   )
 }
 
 /**
