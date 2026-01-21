@@ -18,10 +18,16 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
    fun testDataTestTagMaybeReturnsTagExpressionForNestedDataTests() {
       testMode = true
 
+      // StringSpec is not testes as it does not allow nesting at any level, as it does not expose containers
       val testFiles = listOf(
          "/data-test-tags/DataTestTagsFunSpec.kt",
          "/data-test-tags/DataTestTagsFreeSpec.kt",
-         "/data-test-tags/DataTestTagsBehaviorSpec.kt"
+         "/data-test-tags/DataTestTagsBehaviorSpec.kt",
+         "/data-test-tags/DataTestTagsDescribeSpec.kt",
+         "/data-test-tags/DataTestTagsExpectSpec.kt",
+         "/data-test-tags/DataTestTagsFeatureSpec.kt",
+         "/data-test-tags/DataTestTagsShouldSpec.kt",
+//         "/data-test-tags/DataTestTagsWordSpec.kt",
       )
 
       testFiles.forEach { testFile ->
