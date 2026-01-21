@@ -6,7 +6,7 @@ import kotlin.reflect.KType
 expect val reflection: Reflection
 
 /**
- * Groups together some basic platform agnostic reflection operations.
+ * Groups together some basic platform-agnostic reflection operations.
  */
 interface Reflection {
 

@@ -8,9 +8,8 @@ import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.equals.Equality
 import io.kotest.assertions.print.print
 import io.kotest.assertions.similarity.possibleMatchesDescription
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
@@ -122,28 +121,24 @@ fun <T, C : Collection<T>> containExactly(
       { "Collection should not contain exactly: ${expected.print().value}" }
 
    if (failureReason.isDisallowedIterableComparisonFailure()) {
-      MatcherResult(
-         passed,
-         failureMessage,
-         negatedFailureMessage,
-      )
+      MatcherResultBuilder.create(passed)
+         .withFailureMessage(failureMessage)
+         .withNegatedFailureMessage(negatedFailureMessage)
+         .build()
    } else if (
       actual.size > AssertionsConfig.maxCollectionEnumerateSize &&
       expected.size > AssertionsConfig.maxCollectionEnumerateSize
    ) {
-      MatcherResult(
-         passed = passed,
-         failureMessageFn = { failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)" },
-         negatedFailureMessageFn = { negatedFailureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)" },
-      )
+      MatcherResultBuilder.create(passed)
+         .withFailureMessage { failureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)" }
+         .withNegatedFailureMessage { negatedFailureMessage() + "(set the 'kotest.assertions.collection.enumerate.size' JVM property to see full output)" }
+         .build()
    } else {
-      DiffableMatcherResult(
-         passed = passed,
-         actual = { actual.print() },
-         expected = { expected.print() },
-         failureMessageFn = failureMessage,
-         negatedFailureMessageFn = negatedFailureMessage,
-      )
+      MatcherResultBuilder.create(passed)
+         .withValues(expected = { expected.print() }, actual = { actual.print() })
+         .withFailureMessage(failureMessage)
+         .withNegatedFailureMessage(negatedFailureMessage)
+         .build()
    }
 }
 

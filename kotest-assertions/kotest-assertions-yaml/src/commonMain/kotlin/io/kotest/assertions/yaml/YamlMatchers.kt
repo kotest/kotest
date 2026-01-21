@@ -3,9 +3,9 @@ package io.kotest.assertions.yaml
 import com.charleskorn.kaml.Yaml
 import com.charleskorn.kaml.YamlNode
 import io.kotest.assertions.print.print
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
@@ -73,11 +73,10 @@ fun equalYaml(
          val expectedYaml = try {
             yaml.parseToYamlNode(expected)
          } catch (ex: Exception) {
-            return@Matcher MatcherResult(
-               false,
-               { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $actual" },
-               { "expected: expected YAML to be invalid YAML: $expected" }
-            )
+            return@Matcher MatcherResultBuilder.create(false)
+               .withFailureMessage { "expected: actual YAML to be valid YAML Reason: ${ex.message} Actual: $actual" }
+               .withNegatedFailureMessage { "expected: expected YAML to be invalid YAML: $expected" }
+               .build()
          }
          equalYamlNode(expectedYaml).test(actualYaml)
       }
@@ -87,12 +86,12 @@ private fun equalYamlNode(
    expected: YamlNode,
 ): Matcher<YamlNode> =
    Matcher { value ->
-      val error = expected.equivalentContentTo(value)
-      DiffableMatcherResult(
-         error,
-         { value.contentToString().print() },
-         { expected.contentToString().print() },
-         { "$error\n" },
-         { "Expected values to not match" },
-      )
+      val passed = expected.equivalentContentTo(value)
+      MatcherResultBuilder.create(passed)
+         .withValues(
+            expected = { expected.contentToString().print() },
+            actual = { value.contentToString().print() })
+         .withFailureMessage { "$passed\n" }
+         .withNegatedFailureMessage { "Expected values to not match" }
+         .build()
    }
