@@ -3,10 +3,10 @@ package io.kotest.matchers.maps
 import io.kotest.assertions.collector.runWithMode
 import io.kotest.assertions.print.print
 import io.kotest.assertions.similarity.possibleMatchesDescription
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.errorCollector
 import io.kotest.matchers.string.Diff
 import io.kotest.matchers.string.stringify
@@ -127,13 +127,11 @@ fun <K, V> mapcontain(key: K, v: V): Matcher<Map<K, V>> = object : Matcher<Map<K
             negatedFailureMessageFn = { "Map should not contain mapping $key=$v" }
          )
 
-         key in value -> DiffableMatcherResult(
-            passed = passed,
-            expected = { v.print() },
-            actual = { value[key].print() },
-            failureMessageFn = { "Map should contain mapping $key=$v but value was different.${possibleMatches()}" },
-            negatedFailureMessageFn = { "Map should not contain mapping $key=$v" }
-         )
+         key in value -> MatcherResultBuilder.create(passed)
+            .withValues(expected = { v.print() }, actual = { value[key].print() })
+            .withFailureMessage { "Map should contain mapping $key=$v but value was different.${possibleMatches()}" }
+            .withNegatedFailureMessage { "Map should not contain mapping $key=$v" }
+            .build()
 
          else -> MatcherResult(
             passed = passed,

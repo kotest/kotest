@@ -1,9 +1,9 @@
 package io.kotest.assertions.json
 
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -22,30 +22,28 @@ fun matchJson(@Language("json") expected: String?) = object : Matcher<String?> {
       val actualJson = try {
          value?.let(pretty::parseToJsonElement)
       } catch (_: Exception) {
-         return MatcherResult(
-            false,
-            { "expected: actual json to be valid json: $value" },
-            { "expected: actual json to be invalid json: $value" }
-         )
+         return MatcherResultBuilder.create(false)
+            .withFailureMessage   { "expected: actual json to be valid json: $value" }
+            .withNegatedFailureMessage  { "expected: actual json to be invalid json: $value" }
+            .build()
       }
 
       val expectedJson = try {
          expected?.let(pretty::parseToJsonElement)
       } catch (_: Exception) {
-         return MatcherResult(
-            false,
-            { "expected: expected json to be valid json: $expected" },
-            { "expected: expected json to be invalid json: $expected" }
-         )
+         return MatcherResultBuilder.create(false)
+            .withFailureMessage { "expected: expected json to be valid json: $expected" }
+            .withNegatedFailureMessage { "expected: expected json to be invalid json: $expected" }
+            .build()
       }
 
-      return DiffableMatcherResult(
-         passed = actualJson == expectedJson,
-         actual = { StringPrint.printUnquoted(actualJson.toString()) },
-         expected = { StringPrint.printUnquoted(expectedJson.toString()) },
-         { "expected json to match, but they differed\n" },
-         { "expected not to match with: $expectedJson but match: $actualJson" },
-      )
+      return MatcherResultBuilder.create(actualJson == expectedJson)
+         .withValues(
+            actual = { StringPrint.printUnquoted(actualJson.toString()) },
+            expected = { StringPrint.printUnquoted(expectedJson.toString()) }
+         ).withFailureMessage { "expected json to match, but they differed\n" }
+         .withNegatedFailureMessage { "expected not to match with: $expectedJson but match: $actualJson" }
+         .build()
    }
 }
 
@@ -53,17 +51,15 @@ fun beValidJson() = object : Matcher<String?> {
    override fun test(value: String?): MatcherResult {
       return try {
          value?.let(pretty::parseToJsonElement)
-         MatcherResult(
-            true,
-            { "expected: actual json to be valid json: $value" },
-            { "expected: actual json to be invalid json: $value" }
-         )
+         MatcherResultBuilder.create(true)
+            .withFailureMessage { "expected: actual json to be valid json: $value" }
+            .withNegatedFailureMessage { "expected: actual json to be invalid json: $value" }
+            .build()
       } catch (_: Exception) {
-         MatcherResult(
-            false,
-            { "expected: actual json to be valid json: $value" },
-            { "expected: actual json to be invalid json: $value" }
-         )
+         MatcherResultBuilder.create(false)
+            .withFailureMessage { "expected: actual json to be valid json: $value" }
+            .withNegatedFailureMessage { "expected: actual json to be invalid json: $value" }
+            .build()
       }
    }
 }
@@ -74,17 +70,15 @@ fun beJsonType(kClass: KClass<*>) = object : Matcher<String?> {
       val element = try {
          value?.let(pretty::parseToJsonElement)
       } catch (_: Exception) {
-         return MatcherResult(
-            false,
-            { "expected: actual json to be valid json: $value" },
-            { "expected: actual json to be invalid json: $value" }
-         )
+         return MatcherResultBuilder.create(false)
+            .withFailureMessage { "expected: actual json to be valid json: $value" }
+            .withNegatedFailureMessage { "expected: actual json to be invalid json: $value" }
+            .build()
       }
-      return MatcherResult(
-         kClass.isInstance(element),
-         { "expected: $value to be valid json of type: ${kClass.simpleName}" },
-         { "expected: $value to not be of type: ${kClass.simpleName}" }
-      )
+      return MatcherResultBuilder.create(kClass.isInstance(element))
+         .withFailureMessage { "expected: $value to be valid json of type: ${kClass.simpleName}" }
+         .withNegatedFailureMessage { "expected: $value to not be of type: ${kClass.simpleName}" }
+         .build()
    }
 }
 

@@ -2,9 +2,9 @@ package io.kotest.matchers.throwable
 
 import io.kotest.assertions.print.print
 import io.kotest.common.reflection.bestName
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
@@ -19,19 +19,14 @@ infix fun Throwable.shouldNotHaveMessage(message: String): Throwable {
 }
 
 fun haveMessage(message: String) = object : Matcher<Throwable> {
-   override fun test(value: Throwable) = DiffableMatcherResult(
-      value.message?.trim() == message.trim(),
-      actual = { value.message?.trim().print() },
-      expected = { message.trim().print() },
-      failureMessageFn = {
-         "Throwable should have message:\n${message.trim().print().value}\n\nActual was:\n${
-            value.message?.trim().print().value
-         }\n"
-      },
-      negatedFailureMessageFn = {
-         "Throwable should not have message:\n${message.trim().print().value}"
-      },
-   )
+   override fun test(value: Throwable) = MatcherResultBuilder
+      .create(value.message?.trim() == message.trim())
+      .withValues(expected = { message.trim().print() }, actual = { value.message?.trim().print() })
+      .withFailureMessage {
+         "Throwable should have message:\n${message.trim().print().value}\n\n" +
+            "Actual was:\n${value.message?.trim().print().value}\n"
+      }.withNegatedFailureMessage { "Throwable should not have message:\n${message.trim().print().value}" }
+      .build()
 }
 
 infix fun Throwable.shouldHaveMessage(message: Regex): Throwable {
