@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.framework.engine
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withTests
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
@@ -35,7 +36,7 @@ class TimeoutTest : FunSpec() {
       }
 
       // tests timeouts with data testing in js
-      withData("foo", "bar") {
+      withTests("foo", "bar") {
          delay(3000)
       }
    }
