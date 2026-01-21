@@ -46,8 +46,18 @@ data class MatcherResultBuilder(
 
    fun build(): MatcherResult {
       return if (actual == null || expected == null)
-         SimpleMatcherResult(passed, failureMessageFn, negatedFailureMessageFn)
+         SimpleMatcherResult(
+            passed = passed,
+            failureMessageFn = failureMessageFn,
+            negatedFailureMessageFn = negatedFailureMessageFn
+         )
       else
-         DiffableMatcherResult(passed, expected, actual, failureMessageFn, negatedFailureMessageFn)
+         DiffableMatcherResult(
+            passed = passed,
+            actual = actual,
+            expected = expected,
+            failureMessageFn = failureMessageFn,
+            negatedFailureMessageFn = negatedFailureMessageFn
+         )
    }
 }
