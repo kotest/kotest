@@ -36,7 +36,7 @@ class TestSpec : FreeSpec({
 Any extensions registered inside a `Spec` will be used for all tests in that spec (including [test factories](../test_factories.md) and nested tests).
 
 To run an extension for every spec in the entire project, you can register the listener via [project config](../project_config.md).
-Here is an example of the previous `MyTestListener` registered at the project level so it wuld apply to all specs.
+Here is an example of the previous `MyTestListener` registered at the project level so it would apply to all specs.
 
 ```kotlin
 object ProjectConfig : AbstractProjectConfig {
