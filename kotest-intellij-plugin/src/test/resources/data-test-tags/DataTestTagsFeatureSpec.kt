@@ -1,5 +1,5 @@
 package kotest.datatesttags
-// tests in this package all have the same structure but different style (FunSpec, FreeSpec, BehaviorSpec) - keep it that way so they can all be tested at once
+// tests in this package all have the same structure but different style (FunSpec, FreeSpec, BehaviorSpec ...) - keep it that way so they can all be tested at once
 import io.kotest.core.spec.style.FeatureSpec
 import io.kotest.datatest.withFeatures
 import io.kotest.datatest.withScenarios
