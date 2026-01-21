@@ -206,10 +206,8 @@ abstract class Spec : TestConfiguration() {
     * blocked. If you are using blocking calls in a test, setting [blockingTest] on that test's config
     * allows the test engine to spool up a new thread just for that test.
     */
-   @ExperimentalKotest
    open fun testExecutionMode(): TestExecutionMode? = null
 
-   @ExperimentalKotest
    @JsName("testExecutionMode_js")
    var testExecutionMode: TestExecutionMode? = null
 
@@ -253,7 +251,6 @@ abstract class Spec : TestConfiguration() {
     * Without setting this value, the test engine will be unable to interrupt
     * threads that are blocked.
     */
-   @ExperimentalKotest
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
