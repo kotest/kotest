@@ -86,12 +86,12 @@ object DataTestUtil {
 
    private val regularContainerMethodNames = setOf(
       // used in multiple specs
-      "context", "when",
+      "context", "when", "When",
       // BehaviorSpec
       "Context", "`Context`", "`context`",
       "given", "Given", "`given`", "`Given`",
       "and", "And", "`and`", "`And`",
-      "When", "`when`", "`When`",
+      "`when`", "`When`",
       // DescribeSpec
       "describe",
       // FeatureSpec
@@ -199,8 +199,10 @@ object DataTestUtil {
             }
 
             is KtBinaryExpression -> {
-               // Handle FreeSpec style: "container name" - { ... }
-               val name = extractFreeSpecContainerName(current)
+               // Handle infix function calls:
+               // - FreeSpec style: "container name" - { ... }
+               // - WordSpec style: "container name" When { ... }
+               val name = extractBinaryExpressionContainerName(current)
                if (name != null) {
                   pathParts.add(0, name) // Add to front to maintain order from root to leaf
                }
@@ -213,22 +215,26 @@ object DataTestUtil {
    }
 
    /**
-    * Extracts the container name from a FreeSpec binary expression.
-    * For example, extracts "my container" from `"my container" - { ... }`
+    * Extracts the container name from an infix function call represented as a binary expression.
+    * Handles:
+    * - FreeSpec style: "my container" - { ... }
+    * - WordSpec style: "my container" When { ... }
     */
-   private fun extractFreeSpecContainerName(binaryExpression: KtBinaryExpression): String? {
+   private fun extractBinaryExpressionContainerName(binaryExpression: KtBinaryExpression): String? {
       val children = binaryExpression.children
       if (children.size == 3) {
          val left = children[0]
          val operator = children[1]
          val right = children[2]
-         if (left is KtStringTemplateExpression
-            && operator is KtOperationReferenceExpression
-            && operator.text == "-"
-            && right is KtLambdaExpression
-         ) {
-            // Extract the string content without quotes
-            return left.entries.joinToString("") { it.text }
+         if (left is KtStringTemplateExpression && operator is KtOperationReferenceExpression) {
+            val operatorText = operator.text
+            // Check for FreeSpec "-" or WordSpec "When"
+            if (operatorText == "-" || operatorText == "When") {
+               if (right is KtLambdaExpression) {
+                  // Extract the string content without quotes
+                  return left.entries.joinToString("") { it.text }
+               }
+            }
          }
       }
       return null

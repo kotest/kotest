@@ -27,7 +27,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
          "/data-test-tags/DataTestTagsExpectSpec.kt",
          "/data-test-tags/DataTestTagsFeatureSpec.kt",
          "/data-test-tags/DataTestTagsShouldSpec.kt",
-//         "/data-test-tags/DataTestTagsWordSpec.kt",
+         "/data-test-tags/DataTestTagsWordSpec.kt",
       )
 
       testFiles.forEach { testFile ->
