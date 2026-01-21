@@ -1,9 +1,9 @@
 package io.kotest.matchers.resource
 
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.be
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
@@ -94,11 +94,11 @@ fun matchResource(
       val trimmedExpected = if (trim) normalizedExpected.trim() else normalizedExpected
 
       return matcherProvider(trimmedExpected).test(trimmedActual).let {
-         DiffableMatcherResult(
-            passed = it.passed(),
-            actual = { StringPrint.printUnquoted(trimmedActual) },
-            expected = { StringPrint.printUnquoted(trimmedExpected) },
-            failureMessageFn = {
+         MatcherResultBuilder.create(it.passed())
+            .withValues(
+               actual = { StringPrint.printUnquoted(trimmedActual) },
+               expected = { StringPrint.printUnquoted(trimmedExpected) },
+            ).withFailureMessage {
 
                val actualFilePath = normalizedActual.writeToActualValueFile(expectedUrl)
 
@@ -107,14 +107,13 @@ fun matchResource(
             expected to match resource, but they differed
             Expected : $resourcePath
             Actual   : $actualFilePath"""
-            },
-            negatedFailureMessageFn = {
+            }
+            .withNegatedFailureMessage {
                """${it.negatedFailureMessage()}
 
             expected not to match resource, but they match
             Expected : $resourcePath"""
-            },
-         )
+            }.build()
       }
    }
 }

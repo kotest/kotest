@@ -1,9 +1,9 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
@@ -32,27 +32,23 @@ infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot si
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       return if (value.size == 1) {
-         DiffableMatcherResult(
-            passed = value.single() == t,
-            actual = { value.single().print() },
-            expected = { t.print() },
-            failureMessageFn = { "Collection should be a single element containing $t" },
-            negatedFailureMessageFn = { "Collection should not be a single element of $t" },
-         )
+         MatcherResultBuilder.create(value.single() == t)
+            .withFailureMessage { "Collection should be a single element containing $t" }
+            .withNegatedFailureMessage { "Collection should not be a single element of $t" }
+            .withValues(expected = { t.print() }, actual = { value.single().print() })
+            .build()
       } else {
-         val elementFoundAtIndexes = value.mapIndexedNotNull {
-            index, element ->
-            if(element == t) index else null
+         val elementFoundAtIndexes = value.mapIndexedNotNull { index, element ->
+            if (element == t) index else null
          }
          val foundAtMessage = {
             if (elementFoundAtIndexes.isEmpty()) "Element not found in collection"
             else "Element found at index(es): ${elementFoundAtIndexes.print().value}"
          }
-         MatcherResult(
-            passed = false,
-            failureMessageFn = { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}. ${foundAtMessage()}." },
-            negatedFailureMessageFn = { "Collection should not be a single element of $t" },
-         )
+         MatcherResultBuilder.create(false)
+            .withFailureMessage { "Collection should be a single element of $t but has ${value.size} elements: ${value.print().value}. ${foundAtMessage()}." }
+            .withNegatedFailureMessage { "Collection should not be a single element of $t" }
+            .build()
       }
    }
 }
@@ -60,7 +56,7 @@ fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collectio
 fun <T> singleElement(p: (T) -> Boolean): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {
       val indexesOfMatchingElements = value.mapIndexedNotNull { index, element ->
-         if(p(element)) index else null
+         if (p(element)) index else null
       }
       val mismatchDescription = {
          when (indexesOfMatchingElements.size) {
