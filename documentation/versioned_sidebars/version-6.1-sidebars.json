@@ -94,7 +94,6 @@
         "assertions/arrow",
         "assertions/sql-matchers",
         "assertions/konform",
-        "assertions/klock",
         "assertions/compiler",
         "assertions/field-matching",
         "assertions/jsoup",
