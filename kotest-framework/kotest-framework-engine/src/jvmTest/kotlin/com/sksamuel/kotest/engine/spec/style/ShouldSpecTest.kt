@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.spec.style
 
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.ints.shouldBeLessThan
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -41,6 +42,9 @@ class ShouldSpecTest : ShouldSpec() {
          should("ignored due to the outer context being disabled") {
             error("boom")
          }
+      }
+      should("multiple invocations root test is allowed with config").config(invocations = 3) {
+         1 + 1 shouldBe 2
       }
    }
 }
