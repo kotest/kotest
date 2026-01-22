@@ -94,7 +94,6 @@ module.exports = {
         "assertions/arrow",
         "assertions/sql-matchers",
         "assertions/konform",
-        "assertions/klock",
         "assertions/compiler",
         "assertions/field-matching",
         "assertions/jsoup",
@@ -117,6 +116,7 @@ module.exports = {
         "framework/conditional/focus_and_bang",
         "framework/conditional/xmethods",
         "framework/conditional/annotations",
+        "framework/conditional/conditional_exceptions",
         "framework/conditional/gradle"
       ]
     },

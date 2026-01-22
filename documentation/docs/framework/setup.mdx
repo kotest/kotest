@@ -84,13 +84,14 @@ A working JS project can be found here: https://github.com/kotest/kotest-example
 :::
 
 Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+Note, place the KSP plugin before the Kotest plugin in the plugins block. This restriction will be fixed in a future release.
 
 For example:
 
 ```kotlin
 plugins {
-   id("io.kotest").version("<kotest-version>")
    id("com.google.devtools.ksp").version("<ksp-version>")
+   id("io.kotest").version("<kotest-version>")
 }
 ```
 

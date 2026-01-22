@@ -34,13 +34,14 @@ the user if the matcher predicate evaluated true in _negated_ mode. Here you usu
 predicate to fail.
 
 The difference in those two messages will be clearer with an example. Let's consider writing a length matcher for
-strings, to assert that a string has a required length. We will want our syntax to be something
+String's, to assert that a string has a required length. We will want our syntax to be something
 like `str.shouldHaveLength(8)`.
 
 Then the first message should be something like `"string had length 15 but we expected length 8"`. The second message
 would need to be something like `"string should not have length 8"`
 
-First we build out our matcher type:
+First, we build out our matcher type. Note, don't create an instance of `MatcherResult` directly, instead use the
+`MatcherResultBuilder` builder function which will return an appropriate concrete type for your platform.
 
 ```kotlin
 fun haveLength(length: Int) = Matcher<String> { value ->
@@ -62,10 +63,15 @@ This matcher can then be passed to the `should` and `shouldNot` infix functions 
 "hello bar" shouldNot haveLength(3)
 ```
 
+## Click to view difference
+
+When returning a `MatcherResult` from a matcher, if you supply an expected and actual value to the
+`MatcherResultBuilder` then the failure messages will include a clickable diff inside IntelliJ.
+
 ## Extension Variants
 
 Usually, we want to define extension functions which invoke the matcher function for you and return the original value
-for chaining. This is how Kotest structures the built in matchers, and Kotest adopts a shouldXYZ naming strategy. For
+for chaining. This is how Kotest structures the built-in matchers, and Kotest adopts a shouldXYZ naming strategy. For
 example:
 
 ```kotlin

@@ -1,8 +1,8 @@
-package com.sksamuel.kotest.engine.spec.xmethods
+package com.sksamuel.kotest.engine.spec.xmethod
 
 import io.kotest.core.spec.style.DescribeSpec
 
-class DescribeSpecXTest : DescribeSpec() {
+class DescribeSpecXDisabledTest : DescribeSpec() {
 
    init {
 

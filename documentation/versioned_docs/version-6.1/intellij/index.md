@@ -10,13 +10,6 @@ Kotest offers an [IntelliJ plugin](https://github.com/kotest/kotest-intellij-plu
 
 This plugin provides run icons for each test, a tool window for test navigation, duplicated test highlighting, assertion intentions, and more.
 
-:::note
-The Intellij plugin requires Kotest 4.2 or higher and will not run common tests of a multiplatform project
-:::
-
-
-
-
 ## Gutter Icons
 
 The plugin provides gutter run icons for specs, top level tests, and nested tests.
@@ -34,11 +27,6 @@ If you execute a test, then that test and all nested tests will be executed.
 
 ![gutter_icon_picture](../images/gutter_run.png)
 
-:::note
-For Gradle based projects: to run tests with the KoTest runner ensure your project's Gradle Settings are set to run tests with IntelliJ, not Gradle:
-![gradle_settings_picture](../images/gradle-settings.png)
-:::
-
 ## Duplicated Test Highlighting
 
 You cannot have two tests with the same name. The plugin will highlight any duplicated test names as errors.
@@ -47,7 +35,7 @@ You cannot have two tests with the same name. The plugin will highlight any dupl
 
 ## Context Menu Run / Debug
 
-Right clicking on a package will allow you to run, debug or run with coverage all the tests inside that package.
+Right-clicking on a package will allow you to run, debug or run with coverage all the tests inside that package.
 
 ![run_context_menu_picture](../images/run_context_menu.png)
 

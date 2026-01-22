@@ -5,9 +5,9 @@ import io.kotest.common.KotestInternal
 /**
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
  *
- * A test case can sometimes have a prefix and/or suffix set by the spec style,
- * e.g. when using BehaviorSpec or WordSpec. Note that the prefix or suffix should include
- * any whitespace required.
+ * A test case can sometimes have a prefix and/or suffix set by the spec style.
+ * For example, when BehaviorSpec `when` or `then` is added to the test name.
+ * Note that the prefix or suffix should include any whitespace required.
  *
  * Test names can also  be prefixed with `!` or `f:` to indicate bang or focus respectively.
  *

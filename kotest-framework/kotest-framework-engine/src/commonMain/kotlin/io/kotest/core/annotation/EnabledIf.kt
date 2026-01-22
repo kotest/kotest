@@ -5,7 +5,8 @@ import kotlin.reflect.KClass
 
 /**
  * Attach to a [io.kotest.core.spec.Spec], and the referenced [Condition] will be
- * instantiated and the [condition] function invoked.
+ * instantiated and the [condition] function invoked. If this function returns true,
+ * then the spec will be executed.
  *
  * Implementations of [Condition] must be classes (not objects) and contain a no-arg constructor
  * as they will be created via reflection.
@@ -16,8 +17,8 @@ annotation class EnabledIf(val condition: KClass<out Condition>)
 
 /**
  * Attach to a [io.kotest.core.spec.Spec], and the referenced [Condition] will be
- * instantiated and the [condition] function invoked. If this function returns true, then
- * then spec will be skipped.
+ * instantiated and the [condition] function invoked. If this function returns true,
+ * then the spec will be skipped.
  *
  * Implementations of [EnabledCondition] must be classes (not objects) and contain a no-arg constructor
  * as they will be created via reflection.

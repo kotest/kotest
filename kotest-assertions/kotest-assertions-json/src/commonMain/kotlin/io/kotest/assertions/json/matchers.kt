@@ -2,9 +2,8 @@ package io.kotest.assertions.json
 
 import io.kotest.assertions.json.comparisons.compare
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
@@ -21,11 +20,10 @@ fun equalJson(
 ): Matcher<String?> =
    Matcher { actual ->
       if (actual == null) {
-         MatcherResult(
-            expected == "null",
-            { "Expected value to be equal to json '$expected', but was: null" },
-            { "Expected value to be not equal to json '$expected', but was: null" }
-         )
+         MatcherResultBuilder.create(expected == "null")
+            .withFailureMessage { "Expected value to be equal to json '$expected', but was: null" }
+            .withNegatedFailureMessage { "Expected value to be not equal to json '$expected', but was: null" }
+            .build()
       } else {
          val (expectedTree, actualTree) = parse(expected, actual)
          equalJsonTree(expectedTree, options).test(actualTree)
@@ -54,13 +52,14 @@ private fun equalJsonTree(
          options,
       )
 
-      DiffableMatcherResult(
-         passed = errors.isEmpty(),
-         actual = { StringPrint.printUnquoted(value.raw) },
-         expected = { StringPrint.printUnquoted(expected.raw) },
-         failureMessageFn = { "${errors.joinToString("\n"){it.asString()}}\n" },
-         negatedFailureMessageFn = { "Expected values to not match" },
-      )
+      MatcherResultBuilder.create(errors.isEmpty())
+         .withValues(
+            actual = { StringPrint.printUnquoted(value.raw) },
+            expected = { StringPrint.printUnquoted(expected.raw) })
+         .withFailureMessage { "${errors.joinToString("\n") { it.asString() }}\n" }
+         .withNegatedFailureMessage { "Expected values to not match" }
+         .build()
+
    }
 
 data class JsonTree(val root: JsonNode, val raw: String)
