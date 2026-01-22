@@ -149,23 +149,23 @@ include(
    ":kotest-bom",
 )
 
-/** Is the build currently running on CI. */
+/** Is the build currently running on CI? */
 private val isCI = System.getenv("CI").toBoolean()
 
-/** Is the build currently running on a github actions Linux runner. */
+/** Is the build currently running on a GitHub actions Linux runner? */
 private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
 
 private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
 
-/** we only include JVM-only modules if it's a non-CI build, or if it's master build, or if it's using a linux runner */
+/** we only include JVM-only modules if it's a non-CI build, or if it's a master build, or if it's using a linux runner */
 private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
  * assume that if it works on one JVM, then it will work on all JVMs. Worst case, is there's a bug on
- * a specific OS JVM that causes a test to fail on macos when it works on linux for example, then our
- * PR would be green, but go red on master. This is acceptable trade off given the limited availability
- * of Macos runners on github.
+ * a specific OS JVM that causes a test to fail on macOS when it works on linux, for example, then our
+ * PR would be green but go red on master. This is an acceptable trade off given the limited availability
+ * of macOS runners on GitHub.
  */
 if (shouldRunJvmOnlyModules) {
    include(
@@ -210,8 +210,8 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-single-class",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-package-recursive",
 
-
-//   ":kotest-tests:kotest-tests-js",
+      // tests specific to the JS implementations
+      ":kotest-tests:kotest-tests-js",
    )
 }
 

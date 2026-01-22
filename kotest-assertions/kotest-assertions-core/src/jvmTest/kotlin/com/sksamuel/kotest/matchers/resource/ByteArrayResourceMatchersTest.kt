@@ -4,9 +4,9 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.file.shouldExist
 import io.kotest.matchers.resource.resourceAsBytes
 import io.kotest.matchers.resource.shouldMatchResource
@@ -133,12 +133,12 @@ class ByteArrayResourceMatchersTest : ShouldSpec({
 private fun lastBytesMatch(bytes: ByteArray) = object : Matcher<ByteArray> {
    override fun test(value: ByteArray): MatcherResult {
       val last = value.last()
-      return DiffableMatcherResult(
-         passed = last == bytes.last(),
-         actual = { StringPrint.printUnquoted(last.toString()) },
-         expected = { StringPrint.printUnquoted(bytes.last().toString()) },
-         failureMessageFn = { "expected to match resource, but they differed" },
-         negatedFailureMessageFn = { "expected not to match resource, but they match" },
-      )
+      return MatcherResultBuilder.create(last == bytes.last())
+         .withValues(
+            actual = { StringPrint.printUnquoted(last.toString()) },
+            expected = { StringPrint.printUnquoted(bytes.last().toString()) }
+         ).withFailureMessage { "expected to match resource, but they differed" }
+         .withNegatedFailureMessage { "expected not to match resource, but they match" }
+         .build()
    }
 }

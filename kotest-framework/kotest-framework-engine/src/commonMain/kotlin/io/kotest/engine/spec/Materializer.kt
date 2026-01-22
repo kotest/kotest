@@ -56,6 +56,7 @@ class Materializer(
             test = rootTest.test,
             config = config,
             factoryId = rootTest.factoryId,
+            xmethod = rootTest.xmethod,
          )
       }
 

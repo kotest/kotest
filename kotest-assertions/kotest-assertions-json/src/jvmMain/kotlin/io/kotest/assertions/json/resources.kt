@@ -1,9 +1,9 @@
 package io.kotest.assertions.json
 
 import io.kotest.assertions.print.StringPrint
-import io.kotest.matchers.DiffableMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
@@ -28,12 +28,12 @@ fun matchJsonResource(resource: String) = object : Matcher<String?> {
          pretty.parseToJsonElement(it.readText())
       } ?: throw AssertionError("File should exist in resources: $resource")
 
-      return DiffableMatcherResult(
-         passed = actualJson == expectedJson,
-         actual = { StringPrint.printUnquoted(actualJson.toString()) },
-         expected = { StringPrint.printUnquoted(expectedJson.toString()) },
-         failureMessageFn = { "expected json to match, but they differed\n" },
-         negatedFailureMessageFn = { "expected not to match with: $expectedJson but match: $actualJson" },
-      )
+      return MatcherResultBuilder.create(actualJson == expectedJson)
+         .withValues(
+            expected = { StringPrint.printUnquoted(expectedJson.toString()) },
+            actual = { StringPrint.printUnquoted(actualJson.toString()) })
+         .withFailureMessage { "expected json to match, but they differed\n" }
+         .withNegatedFailureMessage { "expected not to match with: $expectedJson but match: $actualJson" }
+         .build()
    }
 }

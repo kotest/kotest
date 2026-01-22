@@ -26,21 +26,21 @@ import io.kotest.core.test.TestScope
 interface ShouldSpecRootScope : RootScope {
 
    /**
-    * Adds a top level context scope to the spec.
+    * Adds a top-level context scope to the spec.
     */
    fun context(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
       context(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
    /**
-    * Adds a top level context scope to the spec.
+    * Adds a top-level context scope to the spec.
     */
    fun fcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
       context(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
 
    /**
-    * Adds a top level context scope to the spec.
+    * Adds a top-level context scope to the spec.
     */
    fun xcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
       context(name = name, xmethod = TestXMethod.DISABLED, test = test)
@@ -59,7 +59,7 @@ interface ShouldSpecRootScope : RootScope {
    }
 
    /**
-    * Adds a top level context scope accepting config to the spec.
+    * Adds a top-level context scope accepting config to the spec.
     */
    fun context(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
       RootContainerWithConfigBuilder(
@@ -76,7 +76,7 @@ interface ShouldSpecRootScope : RootScope {
       ) { ShouldSpecContainerScope(it) }
 
    /**
-    * Adds a disabled top level context scope accepting config to the spec.
+    * Adds a disabled top-level context scope accepting config to the spec.
     */
    fun xcontext(name: String): RootContainerWithConfigBuilder<ShouldSpecContainerScope> =
       RootContainerWithConfigBuilder(
@@ -104,21 +104,21 @@ interface ShouldSpecRootScope : RootScope {
    fun xshould(name: String): RootTestWithConfigBuilder = should(name, TestXMethod.DISABLED)
 
    /**
-    * Adds a top level test, with the given name and test function, with default test config.
+    * Adds a top-level test, with the given name and test function, with default test config.
     */
    fun should(name: String, test: suspend TestScope.() -> Unit) {
       should(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
    /**
-    * Adds a focused top level test, with the given name and test function, with default test config.
+    * Adds a focused top-level test, with the given name and test function, with default test config.
     */
    fun fshould(name: String, test: suspend TestScope.() -> Unit) {
       should(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
 
    /**
-    * Adds a disabled top level test, with the given name and test function, with default test config.
+    * Adds a disabled top-level test, with the given name and test function, with default test config.
     */
    fun xshould(name: String, test: suspend TestScope.() -> Unit) {
       should(name = name, xmethod = TestXMethod.DISABLED, test = test)

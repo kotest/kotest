@@ -2,10 +2,9 @@ package io.kotest.matchers.types
 
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.neverNullMatcher
 import kotlin.reflect.KClass
-
 
 /**
  * Asserts that a value is an instance of the specified reified type.
@@ -36,8 +35,6 @@ inline fun <reified T : Any> instanceOf(): Matcher<Any?> = instanceOf(T::class)
  */
 inline fun <reified T : Any> beInstanceOf(): Matcher<Any?> = instanceOf<T>()
 
-
-
 /**
  * Asserts that a value is an instance of the given class.
  *
@@ -67,10 +64,13 @@ fun instanceOf(expected: KClass<*>): Matcher<Any?> = beInstanceOf(expected)
  * @see instanceOf
  */
 fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
-   MatcherResult(
-      expected.isInstance(value),
-      { "$value is of type ${value::class.print().value} but expected ${expected.print().value}" },
-      { "${value::class.print().value} should not be of type ${expected.print().value}" })
+   MatcherResultBuilder.create(expected.isInstance(value))
+      .withValues(
+         expected = { expected.print() },
+         actual = { value.print() }
+      ).withFailureMessage { "$value is of type ${value::class.print().value} but expected ${expected.print().value}" }
+      .withNegatedFailureMessage { "${value::class.print().value} should not be of type ${expected.print().value}" }
+      .build()
 }
 
 /**
@@ -88,10 +88,10 @@ fun beInstanceOf(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value 
  * ~~~
  */
 fun <T> beTheSameInstanceAs(ref: T): Matcher<T> = object : Matcher<T> {
-   override fun test(value: T) = MatcherResult(
-      value === ref,
-      { "$value should be the same reference as $ref" },
-      { "$value should not be the same reference as $ref" })
+   override fun test(value: T) = MatcherResultBuilder.create(value === ref)
+      .withFailureMessage { "$value should be the same reference as $ref" }
+      .withNegatedFailureMessage { "$value should not be the same reference as $ref" }
+      .build()
 }
 
 /**
@@ -121,8 +121,8 @@ inline fun <reified T : Any> beOfType(): Matcher<Any?> = beOfType(T::class)
  * @see beInstanceOf
  */
 fun beOfType(expected: KClass<*>): Matcher<Any?> = neverNullMatcher { value ->
-   MatcherResult(
-      expected == value::class,
-      { "$value should be of type ${expected.print().value}" },
-      { "$value should not be of type ${expected.print().value}" })
+   MatcherResultBuilder.create(expected == value::class)
+      .withFailureMessage{ "$value should be of type ${expected.print().value}" }
+      .withNegatedFailureMessage { "$value should not be of type ${expected.print().value}" }
+      .build()
 }

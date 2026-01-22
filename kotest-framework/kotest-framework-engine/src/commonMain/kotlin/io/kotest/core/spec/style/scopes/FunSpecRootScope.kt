@@ -59,9 +59,8 @@ interface FunSpecRootScope : RootScope {
     */
    fun xtest(name: String): RootTestWithConfigBuilder = test(name, TestXMethod.DISABLED)
 
-
    /**
-    * Adds a focused [RootTest], with the given name and with config taken from the config builder.
+    * Adds a [RootTest], with the given name and with config taken from the config builder.
     */
    fun test(name: String, test: suspend TestScope.() -> Unit) {
       test(name, TestXMethod.NONE, test)
