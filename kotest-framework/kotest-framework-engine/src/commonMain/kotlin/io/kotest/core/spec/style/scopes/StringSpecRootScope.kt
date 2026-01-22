@@ -40,33 +40,26 @@ interface StringSpecRootScope : RootScope {
       coroutineDebugProbes: Boolean? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
-      test: suspend TerminalScope.() -> Unit,
+      test: suspend TestScope.() -> Unit,
    ) {
-      RootContainerWithConfigBuilder(
+      RootTestWithConfigBuilder(
          context = this@StringSpecRootScope,
          name = TestNameBuilder.builder(this).build(),
          xmethod = TestXMethod.NONE
-      ) { StringSpecScope(it) }.config(
-         TestConfig(
-            enabled = enabled,
-            enabledIf = enabledIf,
-            enabledOrReasonIf = enabledOrReasonIf,
-            invocations = invocations,
-            timeout = timeout,
-            invocationTimeout = invocationTimeout,
-            tags = tags ?: emptySet(),
-            extensions = extensions,
-            severity = severity,
-            failfast = null,
-            assertionMode = null,
-            assertSoftly = null,
-            coroutineDebugProbes = coroutineDebugProbes,
-            coroutineTestScope = coroutineTestScope,
-            blockingTest = blockingTest,
-            retries = null,
-            retryDelay = null,
-         ),
-         test,
+      ).config(
+         enabled = enabled,
+         enabledIf = enabledIf,
+         enabledOrReasonIf = enabledOrReasonIf,
+         invocations = invocations,
+         timeout = timeout,
+         invocationTimeout = invocationTimeout,
+         tags = tags ?: emptySet(),
+         extensions = extensions,
+         severity = severity,
+         coroutineDebugProbes = coroutineDebugProbes,
+         coroutineTestScope = coroutineTestScope,
+         blockingTest = blockingTest,
+         test = test
       )
    }
 

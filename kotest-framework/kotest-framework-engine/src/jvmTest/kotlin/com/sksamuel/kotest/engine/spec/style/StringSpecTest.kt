@@ -18,6 +18,10 @@ class StringSpecTest : StringSpec() {
          "hello".length shouldBe 5
       }
 
+      "strings should support config with multiple invocations".config(invocations = 5) {
+         "hello".length shouldBe 5
+      }
+
       "an ignored string test".config(enabled = false) {
 
       }
