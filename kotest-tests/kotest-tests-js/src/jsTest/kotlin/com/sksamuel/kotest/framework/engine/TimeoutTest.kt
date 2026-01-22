@@ -1,7 +1,8 @@
-package io.kotest.engine.js
+package com.sksamuel.kotest.framework.engine
 
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.core.test.TestResult
+import io.kotest.datatest.withTests
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
@@ -24,7 +25,7 @@ class TimeoutTest : FunSpec() {
       }
 
       // the default JS timeout in Karma is 2000, but kotest should override that to the kotest default
-      // if this test passes then we know that the default has been set
+      // if this test passes, then we know that the default has been set
       test("JS engine should set default timeout on the underlying promise") {
          delay(3000)
       }
@@ -35,7 +36,7 @@ class TimeoutTest : FunSpec() {
       }
 
       // tests timeouts with data testing in js
-      withData("foo", "bar") {
+      withTests("foo", "bar") {
          delay(3000)
       }
    }

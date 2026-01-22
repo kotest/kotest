@@ -13,7 +13,7 @@ import io.kotest.engine.test.TestResult
 
 class MarkTestAsIgnored : TestCaseExtension {
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
-      return TestResult.Ignored(null)
+      return if (testCase.name.name == "should not run") TestResult.Ignored(null) else execute(testCase)
    }
 }
 

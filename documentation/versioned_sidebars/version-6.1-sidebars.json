@@ -113,10 +113,11 @@
       "collapsed": true,
       "items": [
         "framework/conditional/enabled_config_flags",
-        "framework/conditional/focus_and_bang",
-        "framework/conditional/xmethods",
-        "framework/conditional/annotations",
-        "framework/conditional/gradle"
+         "framework/conditional/focus_and_bang",
+         "framework/conditional/xmethods",
+         "framework/conditional/annotations",
+         "framework/conditional/conditional_exceptions",
+         "framework/conditional/gradle"
       ]
     },
     "framework/isolation_mode",
