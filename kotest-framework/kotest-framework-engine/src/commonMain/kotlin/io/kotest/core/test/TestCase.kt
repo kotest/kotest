@@ -6,6 +6,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.config.TestConfig
 
 /**
@@ -57,6 +58,8 @@ data class TestCase(
    val factoryId: FactoryId? = null,
    // the parent test case for this test at runtime, or null
    val parent: TestCase? = null,
+   // the state of xmethod when the test was defined
+   val xmethod: TestXMethod? = null
 )
 
 /**
