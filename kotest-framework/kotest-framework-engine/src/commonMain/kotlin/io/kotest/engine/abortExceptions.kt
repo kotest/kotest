@@ -3,7 +3,7 @@ package io.kotest.engine
 /**
  * Throw this exception to mark a test as ignored.
  *
- * This is a runtime equivalent to using the `@Ignore` annotation, which can be throw by
+ * This is a runtime equivalent to using the `@Ignore` annotation, which can be thrown by
  * arbitrary code that determines that a test should not be run.
  */
 class TestAbortedException(val reason: String?) : Throwable() {

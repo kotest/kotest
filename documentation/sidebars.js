@@ -116,6 +116,7 @@ module.exports = {
         "framework/conditional/focus_and_bang",
         "framework/conditional/xmethods",
         "framework/conditional/annotations",
+        "framework/conditional/conditional_exceptions",
         "framework/conditional/gradle"
       ]
     },
