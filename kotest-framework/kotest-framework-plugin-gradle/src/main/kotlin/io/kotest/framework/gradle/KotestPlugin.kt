@@ -136,7 +136,7 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun setEnvVar(task: Task, name: String, value: String) {
-      task.project.logger.info("Setting environment variable $name=$value for task ${task.name}")
+      task.logger.info("Setting environment variable $name=$value for task ${task.name}")
       when (task) {
          is KotlinJsTest -> task.environment(name, value)
          is KotlinNativeTest -> task.environment(name, value, false)
