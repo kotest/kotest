@@ -74,6 +74,12 @@ jobs:
             run: ./gradlew ${{ inputs.task }}
             shell: bash
 
+         -  name: Test report PR check
+            uses: mikepenz/action-junit-report@v6
+            if: always() && github.event_name == 'pull_request' # always run even if the previous step fails
+            with:
+               report_paths: '**/build/test-results/jvmTest/TEST-*.xml'
+
          -  name: Upload build reports
             if: failure()
             uses: actions/upload-artifact@v5
