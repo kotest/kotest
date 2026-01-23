@@ -307,6 +307,16 @@ class BehaviorSpecTest : BehaviorSpec() {
             }
          }
       }
+
+      given("A given") {
+         `when`("such given has some tests") {
+            then("such tests should support multiple invocations").config(invocations = 3) {
+               1 shouldBe 1
+            }
+         }
+      }
+
+
    }
 
    override suspend fun afterSpec(spec: Spec) {
