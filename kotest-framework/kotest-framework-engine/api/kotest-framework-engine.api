@@ -3002,11 +3002,6 @@ public final class io/kotest/datatest/BehaviorSpecWhenContainerScopeKt {
 	public static final fun withThenssMap (Lio/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerScope;Ljava/util/Map;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/datatest/DataTestTagKt {
-	public static final fun getDataTestTag ()Lio/kotest/core/NamedTag;
-	public static final fun getDataTestTagWithLineNumber ()Lkotlin/jvm/functions/Function1;
-}
-
 public final class io/kotest/datatest/DescribeSpecContainerScopeKt {
 	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Ljava/lang/Iterable;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun withContexts (Lio/kotest/core/spec/style/scopes/DescribeSpecContainerScope;Ljava/lang/Object;Ljava/lang/Object;[Ljava/lang/Object;Lkotlin/jvm/functions/Function3;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;

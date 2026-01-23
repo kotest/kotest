@@ -210,18 +210,11 @@ suspend fun <T> FunSpecContainerScope.withContexts(
    ts: Iterable<T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
-   val lineNumber = getDataTestCallSiteLineNumber()
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
       context(
          nameFn(t),
-         TestConfig(
-            tags = setOf(
-               DataTestTag,
-               DataTestTagWithLineNumber(
-                  lineNumber
-               )
-            )
-         )
+         dataTestTagConfig
       )
       { this.test(t) }
    }
@@ -236,18 +229,11 @@ suspend fun <T> FunSpecContainerScope.withTests(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
-   val lineNumber = getDataTestCallSiteLineNumber()
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
       test(
          nameFn(t),
-         TestConfig(
-            tags = setOf(
-               DataTestTag,
-               DataTestTagWithLineNumber(
-                  lineNumber
-               )
-            )
-         )
+         dataTestTagConfig
       ) { this.test(t) }
    }
 }
@@ -270,18 +256,11 @@ suspend fun <T> FunSpecContainerScope.withContexts(
    data: Map<String, T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
-   val lineNumber = getDataTestCallSiteLineNumber()
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
       context(
          name,
-         TestConfig(
-            tags = setOf(
-               DataTestTag,
-               DataTestTagWithLineNumber(
-                  lineNumber
-               )
-            )
-         )
+         dataTestTagConfig
       ) { this.test(t) }
    }
 }
@@ -292,18 +271,11 @@ suspend fun <T> FunSpecContainerScope.withContexts(
  */
 @JvmName("withTestsMap")
 suspend fun <T> FunSpecContainerScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
-   val lineNumber = getDataTestCallSiteLineNumber()
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
       test(
          name,
-         TestConfig(
-            tags = setOf(
-               DataTestTag,
-               DataTestTagWithLineNumber(
-                  lineNumber
-               )
-            )
-         )
+         dataTestTagConfig
       ) { this.test(t) }
    }
 }
