@@ -116,7 +116,7 @@ object DataTestUtil {
     *
     * Returns null early if this is not a data test or line number cannot be determined.
     *
-    * @see <a href="https://github.com/kotest/kotest/blob/31d5b951b1c4c77759d4008bbed06319e2370c46/kotest-intellij-plugin/src/test/resources/data-test-tags/DataTestTagsBehaviorSpec.kt">
+    * @see <a href="https://github.com/kotest/kotest/blob/081125c5f6b0a90d8201b9acea2b698a388984d6/kotest-intellij-plugin/src/test/resources/data-test-tags/DataTestTagsBehaviorSpec.kt">
     * Example for full details of the various DataTestInfo generated for different data test nesting scenarios</a>
     *
     */
