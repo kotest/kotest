@@ -24,7 +24,7 @@ object TestDslState {
    fun checkState() {
       val unfinished = started.map { "Test was not fully defined: $it" }
       if (unfinished.isNotEmpty())
-         error(unfinished.joinToString(", "))
+         throw InvalidSpecStateException(unfinished.joinToString(", "))
    }
 
    suspend fun reset() {
@@ -33,3 +33,5 @@ object TestDslState {
       }
    }
 }
+
+data class InvalidSpecStateException(val specs: String) : Exception()

@@ -1414,6 +1414,10 @@ public final class io/kotest/core/listeners/BeforeTestListener$DefaultImpls {
 	public static fun beforeTest (Lio/kotest/core/listeners/BeforeTestListener;Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract interface class io/kotest/core/listeners/ContextAwareListener {
+	public abstract fun getContext ()Ljava/lang/String;
+}
+
 public abstract interface class io/kotest/core/listeners/FinalizeSpecListener : io/kotest/core/extensions/Extension {
 	public fun finalizeSpec (Lkotlin/reflect/KClass;Ljava/util/Map;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -2510,6 +2514,17 @@ public final class io/kotest/core/spec/style/scopes/FunSpecRootScope$DefaultImpl
 	public static fun xtest (Lio/kotest/core/spec/style/scopes/FunSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
+public final class io/kotest/core/spec/style/scopes/InvalidSpecStateException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/InvalidSpecStateException;
+	public static synthetic fun copy$default (Lio/kotest/core/spec/style/scopes/InvalidSpecStateException;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/spec/style/scopes/InvalidSpecStateException;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSpecs ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class io/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder {
 	public fun <init> (Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/spec/style/scopes/RootScope;Lkotlin/jvm/functions/Function1;)V
 	public final fun config (Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;)V
@@ -3363,25 +3378,14 @@ public final class io/kotest/datatest/WordSpecWhenContainerScopeKt {
 }
 
 public final class io/kotest/engine/EngineResult {
-	public static final field Companion Lio/kotest/engine/EngineResult$Companion;
-	public fun <init> (Ljava/util/List;)V
-	public fun <init> (Ljava/util/List;Z)V
+	public fun <init> ()V
 	public final fun addError (Ljava/lang/Throwable;)Lio/kotest/engine/EngineResult;
 	public final fun addErrors (Ljava/util/List;)Lio/kotest/engine/EngineResult;
 	public final fun component1 ()Ljava/util/List;
-	public final fun component2 ()Z
-	public final fun copy (Ljava/util/List;Z)Lio/kotest/engine/EngineResult;
-	public static synthetic fun copy$default (Lio/kotest/engine/EngineResult;Ljava/util/List;ZILjava/lang/Object;)Lio/kotest/engine/EngineResult;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getErrors ()Ljava/util/List;
-	public final fun getTestFailures ()Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-	public final fun withTestFailures ()Lio/kotest/engine/EngineResult;
-}
-
-public final class io/kotest/engine/EngineResult$Companion {
-	public final fun getEmpty ()Lio/kotest/engine/EngineResult;
 }
 
 public final class io/kotest/engine/IterationSkippedException : java/lang/Throwable {
@@ -3394,10 +3398,6 @@ public final class io/kotest/engine/ResultsKt {
 	public static final fun collect (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun flatMap (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun mapError (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
-}
-
-public final class io/kotest/engine/RunPromise_jvmKt {
-	public static final fun runPromise (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class io/kotest/engine/TestAbortedException : java/lang/Throwable {
@@ -4519,6 +4519,7 @@ public abstract interface class io/kotest/engine/test/TestCaseExecutionListener 
 }
 
 public abstract interface class io/kotest/engine/test/TestResult {
+	public static final field Companion Lio/kotest/engine/test/TestResult$Companion;
 	public abstract fun getDuration-UwyO8pc ()J
 	public fun getErrorOrNull ()Ljava/lang/Throwable;
 	public fun getName ()Ljava/lang/String;
@@ -4528,6 +4529,10 @@ public abstract interface class io/kotest/engine/test/TestResult {
 	public fun isFailure ()Z
 	public fun isIgnored ()Z
 	public fun isSuccess ()Z
+}
+
+public final class io/kotest/engine/test/TestResult$Companion {
+	public final fun getIgnored ()Lio/kotest/engine/test/TestResult$Ignored;
 }
 
 public final class io/kotest/engine/test/TestResult$DefaultImpls {
@@ -4625,16 +4630,17 @@ public final class io/kotest/engine/test/TestResult$Success : io/kotest/engine/t
 
 public final class io/kotest/engine/test/TestResultBuilder {
 	public static final field Companion Lio/kotest/engine/test/TestResultBuilder$Companion;
-	public synthetic fun <init> (JLjava/lang/Throwable;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public synthetic fun <init> (JLjava/lang/Throwable;ZLjava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun build ()Lio/kotest/engine/test/TestResult;
-	public final fun copy-KLykuaI (JLjava/lang/Throwable;Ljava/lang/String;)Lio/kotest/engine/test/TestResultBuilder;
-	public static synthetic fun copy-KLykuaI$default (Lio/kotest/engine/test/TestResultBuilder;JLjava/lang/Throwable;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/test/TestResultBuilder;
+	public final fun copy-rnQQ1Ag (JLjava/lang/Throwable;ZLjava/lang/String;)Lio/kotest/engine/test/TestResultBuilder;
+	public static synthetic fun copy-rnQQ1Ag$default (Lio/kotest/engine/test/TestResultBuilder;JLjava/lang/Throwable;ZLjava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/test/TestResultBuilder;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 	public final fun withDuration-LRDsOJo (J)Lio/kotest/engine/test/TestResultBuilder;
 	public final fun withError (Ljava/lang/Throwable;)Lio/kotest/engine/test/TestResultBuilder;
 	public final fun withFailure (Ljava/lang/String;)Lio/kotest/engine/test/TestResultBuilder;
+	public final fun withIgnore ()Lio/kotest/engine/test/TestResultBuilder;
 	public final fun withIgnoreEnabled (Lio/kotest/core/test/Enabled;)Lio/kotest/engine/test/TestResultBuilder;
 	public final fun withIgnoreReason (Ljava/lang/String;)Lio/kotest/engine/test/TestResultBuilder;
 }

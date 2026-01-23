@@ -135,7 +135,7 @@ internal class SpecExtensions(
    ): Result<KClass<out Spec>> {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<FinalizeSpecListener>()
-      logger.log { Pair(kclass.bestName(), "finishSpec (${exts.size}) results:$results") }
+      logger.log { Pair(kclass.bestName(), "finishSpec (${exts.size})") }
 
       val errors = exts.mapNotNull {
          runCatching { it.finalizeSpec(kclass, results) }

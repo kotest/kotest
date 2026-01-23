@@ -1,6 +1,7 @@
 package io.kotest.core.spec
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.KotestTesting
 import io.kotest.common.reflection.bestName
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
@@ -10,7 +11,7 @@ import kotlin.reflect.KClass
  * A [SpecRef] is a reference to a spec that was detected during classpath
  * scanning or during compilation.
  *
- * On platforms that lack reflective capability, such as nodeJS, web or Kotlin/Native,
+ * On platforms that lack reflective capability, such as Node.js, web or Kotlin/Native,
  * specs are pre-constructed or constructed through a simple function. On JVM, the
  * powerful reflection support means instances can be created via the [KClass] reference.
  */
@@ -36,9 +37,9 @@ sealed interface SpecRef {
       override val fqn: String
    ) : SpecRef {
 
-      // used for testing only
+      @KotestTesting
       @KotestInternal
-      constructor(kclass: KClass<out Spec>):this(kclass, kclass.bestName())
+      constructor(kclass: KClass<out Spec>) : this(kclass, kclass.bestName())
    }
 
    /**
@@ -50,7 +51,12 @@ sealed interface SpecRef {
       val f: () -> Spec,
       override val kclass: KClass<out Spec>,
       override val fqn: String,
-   ) : SpecRef
+   ) : SpecRef {
+
+      @KotestTesting
+      @KotestInternal
+      constructor(f: () -> Spec, kclass: KClass<out Spec>) : this(f, kclass, kclass.bestName())
+   }
 }
 
 @KotestInternal
