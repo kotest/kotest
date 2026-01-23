@@ -2520,7 +2520,7 @@ public final class io/kotest/core/spec/style/scopes/InvalidSpecStateException : 
 	public final fun copy (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/InvalidSpecStateException;
 	public static synthetic fun copy$default (Lio/kotest/core/spec/style/scopes/InvalidSpecStateException;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/core/spec/style/scopes/InvalidSpecStateException;
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getSpecs ()Ljava/lang/String;
+	public final fun getMsg ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
