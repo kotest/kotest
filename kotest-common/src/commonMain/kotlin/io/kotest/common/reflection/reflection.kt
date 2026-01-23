@@ -62,10 +62,10 @@ data object IncludingSuperclasses : AnnotationSearchParameter
 fun KClass<*>.bestName(): String = reflection.fqn(this) ?: simpleName ?: this.toString()
 
 /**
- * Finds the first annotation of type T on this class, or returns null if annotations
+ * Finds the first annotation of type T on this class or returns null if annotations
  * are not supported on this platform or the annotation is missing.
  *
- * This method by default will recursively included composed annotations.
+ * This method by default will recursively include composed annotations.
  */
 inline fun <reified T : Any> KClass<*>.annotation(
    vararg parameters: AnnotationSearchParameter = arrayOf(IncludingAnnotations)
