@@ -12,6 +12,7 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
+import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -74,12 +75,19 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      kotlinx.coroutines.runBlocking {
-         TestEngineLauncher()
+      runBlocking {
+
+         val result = TestEngineLauncher()
             .withListener(listener)
             .addExtensions(root.extensions)
             .withSpecRefs(root.specs)
             .execute()
+
+         when (result.errors.size) {
+            0 -> Unit
+            1 -> throw result.errors.first()
+            else -> throw MultipleExceptions(result.errors)
+         }
       }
    }
 
@@ -164,3 +172,4 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 }
 
+internal class MultipleExceptions(val causes: List<Throwable>) : Exception(causes.first())

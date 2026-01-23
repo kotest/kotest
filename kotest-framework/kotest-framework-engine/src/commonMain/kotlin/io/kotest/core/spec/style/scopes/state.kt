@@ -34,4 +34,4 @@ object TestDslState {
    }
 }
 
-data class InvalidSpecStateException(val specs: String) : Exception()
+data class InvalidSpecStateException(val msg: String) : Exception(msg)
