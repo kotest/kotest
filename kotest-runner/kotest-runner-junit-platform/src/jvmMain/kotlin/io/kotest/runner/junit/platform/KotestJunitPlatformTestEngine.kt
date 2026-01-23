@@ -76,18 +76,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
       )
 
       runBlocking {
-
-         val result = TestEngineLauncher()
+         // the result is ignored as the junit runner will add engine errors as "dummy specs"
+         TestEngineLauncher()
             .withListener(listener)
             .addExtensions(root.extensions)
             .withSpecRefs(root.specs)
             .execute()
-
-         when (result.errors.size) {
-            0 -> Unit
-            1 -> throw result.errors.first()
-            else -> throw MultipleExceptions(result.errors)
-         }
       }
    }
 
