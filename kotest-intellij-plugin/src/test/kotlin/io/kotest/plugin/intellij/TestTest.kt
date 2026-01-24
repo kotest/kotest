@@ -11,12 +11,13 @@ class TestTest : LightJavaCodeInsightFixtureTestCase() {
    private fun createTest(
       name: String,
       parent: Test? = null,
-      prefix: String? = null
+      prefix: String? = null,
+      testNameInterpolated : Boolean = false
    ): Test {
       val factory = KtPsiFactory(project)
       val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
       return Test(
-         name = TestName(prefix = prefix, name = name, interpolated = false),
+         name = TestName(prefix = prefix, name = name, interpolated = testNameInterpolated),
          parent = parent,
          specClassName = spec,
          testType = TestType.Test,
@@ -89,5 +90,19 @@ class TestTest : LightJavaCodeInsightFixtureTestCase() {
       """.trimIndent(), parent = parent)
 
       child.path().map { it.name } shouldBe listOf("parent multiline", "child multiline")
+   }
+
+   fun `test Test constructor should override interpolated for any child of a parent that has interpolated set to true`() {
+      val grandParentNotInterpolated = createTest("grandParentNotInterpolated", parent = null, testNameInterpolated = false)
+      val parent1NotInterpolated = createTest("parent1NotInterpolated", parent = grandParentNotInterpolated, testNameInterpolated = false)
+      val parent2Interpolated = createTest("parentt2Interpolated", parent = grandParentNotInterpolated, testNameInterpolated = true)
+      val childOfParent1 = createTest("child", parent = parent1NotInterpolated, testNameInterpolated = false)
+      val childOfParent2 = createTest("child", parent = parent2Interpolated, testNameInterpolated = false)
+
+      grandParentNotInterpolated.name.interpolated shouldBe false
+      parent1NotInterpolated.name.interpolated shouldBe false
+      parent2Interpolated.name.interpolated shouldBe true
+      childOfParent1.name.interpolated shouldBe false
+      childOfParent2.name.interpolated shouldBe true
    }
 }

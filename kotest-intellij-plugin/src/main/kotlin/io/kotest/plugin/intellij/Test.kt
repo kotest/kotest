@@ -51,8 +51,9 @@ private fun String.flattenTestName() = this.trim().replace("\\s+".toRegex(), " "
 // components for the path, should not include prefixes
 data class TestPathEntry(val name: String)
 
-data class Test(
-   val name: TestName, // the name as entered by the user
+@ConsistentCopyVisibility
+data class Test private constructor(
+   val name: TestName, // the name as entered by the user, with interpolated propagated from parent
    val parent: Test?, // can be null if this is a root test
    val specClassName: KtClassOrObject, // the containing class name, which all tests must have
    val testType: TestType,
@@ -60,6 +61,26 @@ data class Test(
    val psi: PsiElement, // the canonical element that identifies this test
    val isDataTest: Boolean = false
 ) {
+   companion object {
+      operator fun invoke(
+         name: TestName,
+         parent: Test?,
+         specClassName: KtClassOrObject,
+         testType: TestType,
+         xdisabled: Boolean,
+         psi: PsiElement,
+         isDataTest: Boolean = false
+      ): Test {
+         // set interpolated to true if parent is interpolated but this name is not
+         // if this name is already interpolated then keep it as is - no need to do an object copy
+         val finalTestName = if (parent?.name?.interpolated == true && !name.interpolated) {
+            name.copy(interpolated = true)
+         } else {
+            name
+         }
+         return Test(finalTestName, parent, specClassName, testType, xdisabled, psi, isDataTest)
+      }
+   }
 
    // true if this test is not xdisabled and not disabled by a bang and not nested inside another disabled test
    val enabled: Boolean = !xdisabled && !name.bang && (parent == null || parent.enabled)
