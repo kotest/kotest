@@ -1,6 +1,7 @@
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
+import io.kotest.assertions.similarity.possibleMatchesDescription
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
@@ -62,26 +63,54 @@ infix fun <T> Array<T>.shouldNotContainSlice(expected: Iterable<T>) =
 fun <T> containSlice(slice: List<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val contains = sliceStart(value, slice.toList()) != null
-      val partialMatchesDescription = { describePartialMatchesInCollection(slice, value) }
-//      val elementsToSearchForSimilar = partialMatchesDescription
       return MatcherResult(
          contains,
-         { "List should contain slice ${slice.print().value} but was ${value.print().value}\n${partialMatchesDescription()}" },
+         { "List should contain slice ${slice.print().value} but was ${value.print().value}\n${
+            describePartialMatchesAndSimilarityInCollection(expectedSlice = slice, value = value)
+         }" },
          { "List should not contain slice ${slice.print().value}" }
       )
    }
 }
 
-internal fun<T> describePartialMatchesAndSimilarityInCollection(expectedSlice: Collection<T>, value: List<T>): SliceMatchDescription {
+internal fun<T> describePartialMatchesAndSimilarityInCollection(expectedSlice: Collection<T>, value: List<T>): String {
    val partialMatchesInCollectionDescription = describePartialMatchesInCollection(expectedSlice, value)
-   return SliceMatchDescription(
-      partialMatchesInCollectionDescription,
-      similarElementsDescription = "",
+   val expectedSliceAsList = expectedSlice.toList()
+   val unmatchedElements = partialMatchesInCollectionDescription.indexesOfUnmatchedElements.map {
+      it to expectedSliceAsList[it]
+   }
+   val elementsFoundElsewhere = unmatchedElements.mapNotNull { (index, element) ->
+      val foundAtIndex = value.indexOf(element)
+      if(foundAtIndex == -1) null else index to foundAtIndex
+   }
+   val elementsToSearchForSimilarity = unmatchedElements.filter { (index, _) ->
+      elementsFoundElsewhere.none { (foundIndex, _) -> foundIndex == index }
+   }
+   val similarElements = elementsToSearchForSimilarity.map {
+      it.first to possibleMatchesDescription(value.toSet(), it.second)
+   }.filter { it.second.isNotEmpty() }
+   return listOf(
+      partialMatchesInCollectionDescription.toString(),
+//      elementsFoundElsewhere.takeIf { it.isNotEmpty() }?.joinToString(
+//         separator = "\n",
+//         prefix = "Found exact matches for elements not in matched slice(s):\n",
+//      ) { (index, foundAtIndex) ->
+//         "Element at expected slice index [$index] ${expectedSliceAsList[index].print().value} found at actual index [$foundAtIndex]"
+//      } ?: "",
+      similarElements.takeIf { it.isNotEmpty() }?.joinToString(
+         separator = "\n",
+         prefix = "Found similar elements for elements not in matched slice(s):\n",
+         ) { (index, description) ->
+         "[$index] ${expectedSliceAsList[index].print().value} has similar element(s): $description"
+      } ?: "",
    )
+      .filter { it.isNotEmpty() }
+      .joinToString("\n")
 }
 
 internal data class SliceMatchDescription(
    val partialMatchesInCollectionDescription: PartialMatchesInCollectionDescription,
+   val exactMatchesDescription: String,
    val similarElementsDescription: String,
 )
 
