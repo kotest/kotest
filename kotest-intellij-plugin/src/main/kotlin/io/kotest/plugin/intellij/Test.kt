@@ -42,11 +42,12 @@ data class TestName(
     * Returns a flattened name that can be used for a single line ui component
     */
    fun displayName(): String {
-      val flattened = name.trim().replace("\n", "")
+      val flattened = name.flattenTestName()
       return if (prefix == null) flattened else "$prefix$flattened"
    }
 }
 
+private fun String.flattenTestName() = this.trim().replace("\\s+".toRegex(), " ")
 // components for the path, should not include prefixes
 data class TestPathEntry(val name: String)
 
@@ -94,8 +95,8 @@ data class Test private constructor(
     * The full path to this test is all parents plus this test
     */
    fun path(): List<TestPathEntry> = when (parent) {
-      null -> listOf(TestPathEntry(name.name))
-      else -> parent.path() + TestPathEntry(name.name)
+      null -> listOf(TestPathEntry(name.name.flattenTestName()))
+      else -> parent.path() + TestPathEntry(name.name.flattenTestName())
    }
 
    /**

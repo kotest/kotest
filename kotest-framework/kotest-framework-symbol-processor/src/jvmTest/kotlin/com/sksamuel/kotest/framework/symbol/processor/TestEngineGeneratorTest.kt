@@ -20,11 +20,11 @@ class TestEngineGeneratorTest : FunSpec({
       )
       val file = TestEngineGenerator(env).createFileSpec(
          specs = listOf(
-            SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec"),
-            SimpleKSClassDeclaration("com.sksamuel.b.MyTestSpec"),
-            SimpleKSClassDeclaration("com.sksamuel.c.OtherTestSpec"),
+            SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec",),
+            SimpleKSClassDeclaration("com.sksamuel.b.MyTestSpec",),
+            SimpleKSClassDeclaration("com.sksamuel.c.OtherTestSpec",),
          ),
-         configs = listOf(SimpleKSClassDeclaration("com.sksamuel.MyConfig")),
+         configs = listOf(SimpleKSClassDeclaration("com.sksamuel.MyConfig",)),
       ).toString()
 
       file shouldContain """import com.sksamuel.a.MyTestSpec as MyTestSpec0"""
@@ -48,9 +48,9 @@ class TestEngineGeneratorTest : FunSpec({
       )
       val file = TestEngineGenerator(env).createFileSpec(
          specs = listOf(
-            SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec"),
+            SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec",),
          ),
-         configs = listOf(SimpleKSClassDeclaration("com.sksamuel.MyConfig")),
+         configs = listOf(SimpleKSClassDeclaration("com.sksamuel.MyConfig",)),
       ).toString()
 
       file.shouldContain("val config = com.sksamuel.MyConfig()")
@@ -68,7 +68,7 @@ class TestEngineGeneratorTest : FunSpec({
       )
       val file = TestEngineGenerator(env).createFileSpec(
          specs = listOf(
-            SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec"),
+            SimpleKSClassDeclaration("com.sksamuel.a.MyTestSpec",),
          ),
          configs = emptyList(),
       ).toString()
