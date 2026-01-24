@@ -8,8 +8,8 @@ import com.google.devtools.ksp.processing.SymbolProcessorProvider
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.symbol.KSFile
-import com.google.devtools.ksp.symbol.KSType
 import com.google.devtools.ksp.symbol.KSVisitorVoid
+import com.google.devtools.ksp.symbol.Modifier
 
 class KotestFileVisitor : KSVisitorVoid() {
 
@@ -35,22 +35,23 @@ class KotestFileVisitor : KSVisitorVoid() {
 
    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
       super.visitClassDeclaration(classDeclaration, data)
-      val supers = classDeclaration.getAllSuperTypes().toList()
-      if (hasSpecSupertype(supers)) {
+      if (isPublic(classDeclaration) && isSpec(classDeclaration)) {
          specs.add(classDeclaration)
-      } else if (hasConfigSupertype(supers)) {
+      } else if (isConfig(classDeclaration)) {
          configs.add(classDeclaration)
       }
    }
 
-   private fun hasSpecSupertype(supertypes: Collection<KSType>): Boolean {
-      return supertypes.map { it.declaration }
+   internal fun isPublic(declaration: KSClassDeclaration): Boolean =
+      !declaration.modifiers.contains(Modifier.PRIVATE)
+
+   internal fun isSpec(declaration: KSClassDeclaration): Boolean =
+      declaration.getAllSuperTypes().map { it.declaration }
          .filterIsInstance<KSClassDeclaration>()
          .any { specTypes.contains(it.simpleName.asString()) }
-   }
 
-   private fun hasConfigSupertype(supertypes: Collection<KSType>): Boolean {
-      return supertypes.map { it.declaration }
+   internal fun isConfig(declaration: KSClassDeclaration): Boolean {
+      return declaration.getAllSuperTypes().map { it.declaration }
          .filterIsInstance<KSClassDeclaration>()
          .any { it.qualifiedName?.asString() == "io.kotest.core.config.AbstractProjectConfig" }
    }
