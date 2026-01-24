@@ -75,6 +75,7 @@ internal fun<T> describePartialMatchesInCollection(expectedSlice: Collection<T>,
       partialMatchesDescription,
       unmatchedElementsDescription,
       partialMatches,
+      indexesOfUnmatchedElements,
       )
 }
 
@@ -83,6 +84,7 @@ internal data class PartialMatchesInCollectionDescription(
    val partialMatchesDescription: String,
    val unmatchedElementsDescription: String,
    val partialMatches: List<PartialCollectionMatch>,
+   val indexesOfUnmatchedElements: List<Int>,
 ) {
    override fun toString(): String = prefixIfNotEmpty(
       listOf(partialMatchesList,
@@ -93,11 +95,6 @@ internal data class PartialMatchesInCollectionDescription(
          .joinToString("\n"),
       "\n"
    )
-
-
-   companion object {
-      val Empty = PartialMatchesInCollectionDescription("", "", "", listOf())
-   }
 }
 
 private data class SliceComparison<T>(

@@ -1307,6 +1307,14 @@ public final class io/kotest/matchers/collections/ContainOnlyKt {
 	public static final fun shouldNotContainOnly_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 }
 
+public final class io/kotest/matchers/collections/ContainSliceKt {
+	public static final fun containSlice (Ljava/util/List;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainSlice_array ([Ljava/lang/Object;Ljava/lang/Iterable;)V
+	public static final fun shouldContainSlice_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
+	public static final fun shouldNotContainSlice_array ([Ljava/lang/Object;Ljava/lang/Iterable;)V
+	public static final fun shouldNotContainSlice_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
+}
+
 public final class io/kotest/matchers/collections/DecreasingKt {
 	public static final fun beMonotonicallyDecreasing ()Lio/kotest/matchers/Matcher;
 	public static final fun beMonotonicallyDecreasingWith (Ljava/util/Comparator;)Lio/kotest/matchers/Matcher;
