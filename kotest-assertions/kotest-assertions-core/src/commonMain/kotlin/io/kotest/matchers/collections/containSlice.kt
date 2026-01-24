@@ -91,12 +91,6 @@ internal fun<T> describePartialMatchesAndSimilarityInCollection(expectedSlice: C
    }.filter { it.second.isNotEmpty() }
    return listOf(
       partialMatchesInCollectionDescription.toString(),
-//      elementsFoundElsewhere.takeIf { it.isNotEmpty() }?.joinToString(
-//         separator = "\n",
-//         prefix = "Found exact matches for elements not in matched slice(s):\n",
-//      ) { (index, foundAtIndex) ->
-//         "Element at expected slice index [$index] ${expectedSliceAsList[index].print().value} found at actual index [$foundAtIndex]"
-//      } ?: "",
       similarElements.takeIf { it.isNotEmpty() }?.joinToString(
          separator = "\n",
          prefix = "Found similar elements for elements not in matched slice(s):\n",
