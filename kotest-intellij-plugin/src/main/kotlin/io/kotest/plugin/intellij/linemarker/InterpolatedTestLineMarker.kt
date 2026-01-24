@@ -26,7 +26,7 @@ import io.kotest.plugin.intellij.Test
 class InterpolatedTestLineMarker : LineMarkerProvider {
 
    private val thisTestIsInterpolatedText = "Tests with an interpolated name cannot be run using the plugin."
-   private val parentOfTestIsInterpolatedText = "Tests contained within other that have an interpolated name cannot be run using the plugin."
+   private val parentOfTestIsInterpolatedText = "Tests contained within other tests that have an interpolated name cannot be run using the plugin."
 
    // icons list https://jetbrains.design/intellij/resources/icons_list/
    private val icon = AllIcons.RunConfigurations.TestUnknown
