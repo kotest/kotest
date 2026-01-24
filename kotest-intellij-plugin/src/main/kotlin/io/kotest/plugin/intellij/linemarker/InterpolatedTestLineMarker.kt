@@ -18,13 +18,15 @@ import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
+import io.kotest.plugin.intellij.Test
 
 /**
  * Adds an icon to the gutter for tests which have an interpolated name.
  */
 class InterpolatedTestLineMarker : LineMarkerProvider {
 
-   private val text = "Tests with an interpolated name cannot be run using the plugin."
+   private val thisTestIsInterpolatedText = "Tests with an interpolated name cannot be run using the plugin."
+   private val parentOfTestIsInterpolatedText = "Tests contained within other that have an interpolated name cannot be run using the plugin."
 
    // icons list https://jetbrains.design/intellij/resources/icons_list/
    private val icon = AllIcons.RunConfigurations.TestUnknown
@@ -55,7 +57,15 @@ class InterpolatedTestLineMarker : LineMarkerProvider {
          val ktclass = element.enclosingKtClass() ?: return null
          val style = ktclass.specStyle() ?: return null
          val test = style.test(element) ?: return null
-         if (test.name.interpolated) MainEditorLineMarkerInfo(element, text, icon) else null
+         /**
+          * It is important to do the parent check first, as in both branches `test.name.interpolated` is true
+          * given how when a [Test] is constructed `interpolated` is set to true if it has a parent with an `interpolated` name.
+          */
+         when {
+            test.parent?.name?.interpolated == true -> MainEditorLineMarkerInfo(element, parentOfTestIsInterpolatedText, icon)
+            test.name.interpolated -> MainEditorLineMarkerInfo(element, thisTestIsInterpolatedText, icon)
+            else -> null
+         }
       } catch (_: Exception) {
          null
       }
