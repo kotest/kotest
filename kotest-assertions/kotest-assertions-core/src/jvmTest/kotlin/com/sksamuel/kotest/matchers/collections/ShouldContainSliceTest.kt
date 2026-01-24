@@ -87,6 +87,38 @@ class ShouldContainSliceTest : StringSpec() {
          )
 
       }
+      "find a similar element and an exact match for elements not in slice" {
+         val thrown = shouldThrow<AssertionError> {
+            listOf(
+               sweetGreenApple,
+               sweetRedApple,
+               sweetRedCherry,
+               sweetGreenPear,
+               tartRedCherry,
+            ).shouldContainSlice(listOf(
+               sweetYellowPear,
+               sweetGreenApple,
+               sweetRedApple,
+               sweetRedCherry,
+               tartRedCherry,
+            ))
+         }
+         thrown.message.shouldContainInOrder(
+            "Slice[0] of expected with indexes: 1..3 matched a slice of actual values with indexes: 0..2",
+            "[0] Fruit(name=apple, color=green, taste=sweet) => slice 0",
+            "[1] Fruit(name=apple, color=red, taste=sweet) => slice 0",
+            "[2] Fruit(name=cherry, color=red, taste=sweet) => slice 0",
+            "Element(s) not in matched slice(s):",
+            "[4] Fruit(name=cherry, color=red, taste=tart) => Found At Index(es): [4]",
+            "Found similar elements for elements not in matched slice(s):",
+            "[0] Fruit(name=pear, color=yellow, taste=sweet) has similar element(s):",
+            "expected: Fruit(name=pear, color=yellow, taste=sweet),",
+            "but was: Fruit(name=pear, color=green, taste=sweet)",
+            "The following fields did not match:",
+            """"color" expected: <"yellow">, but was: <"green">""",
+         )
+
+      }
 
    }
 }
