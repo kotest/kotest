@@ -92,6 +92,23 @@ class StartWithEndWithTest : WordSpec() {
                "[0] 6L => Found At Index(es): [6]",
             )
          }
+         "for an element not matched as part of slice, find a similar one" {
+            val message = shouldThrow<AssertionError> {
+               listOf(sweetGreenApple, sweetRedCherry, sweetYellowPear, bitterPurplePlum) shouldStartWith
+                  listOf(sweetGreenApple, sweetRedCherry, sweetGreenPear)
+            }.message
+            message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "The following fields did not match:",
+               """"name" expected: <"pear">, but was: <"apple">""",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=pear, color=yellow, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"yellow">""",
+            )
+         }
       }
 
       "endWith" should {
