@@ -1,7 +1,6 @@
 package io.kotest.core.spec
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.KotestTesting
 import io.kotest.common.reflection.bestName
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
@@ -37,7 +36,6 @@ sealed interface SpecRef {
       override val fqn: String
    ) : SpecRef {
 
-      @KotestTesting
       @KotestInternal
       constructor(kclass: KClass<out Spec>) : this(kclass, kclass.bestName())
    }
