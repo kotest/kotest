@@ -6,7 +6,6 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import io.kotest.plugin.intellij.TestElement
-import io.kotest.plugin.intellij.psi.fqname
 import io.kotest.plugin.intellij.psi.callbacks
 import io.kotest.plugin.intellij.psi.includes
 import io.kotest.plugin.intellij.psi.specStyle
@@ -84,7 +83,7 @@ fun createTreeModel(
 
    specs.forEach { spec ->
 
-      val fqn = spec.fqname()
+      val fqn = spec.fqName
       val style = spec.specStyle()
       if (fqn != null && style != null) {
 

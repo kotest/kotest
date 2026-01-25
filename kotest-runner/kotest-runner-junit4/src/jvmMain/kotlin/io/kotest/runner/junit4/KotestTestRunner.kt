@@ -44,10 +44,11 @@ class KotestTestRunner(
             desc.addChild(
                describeTestCase(
                   rootTest,
-               formatter.format(rootTest)
+                  formatter.format(rootTest)
+               )
             )
-         )
-      }
+         }
       return desc
    }
+
 }
