@@ -24,6 +24,24 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    length=3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0)
+          }
+          "work when two elements not found" {
+             val actual = describePartialMatchesInCollection(
+                expectedSlice = listOf("orange", "apple", "banana", "blueberry"),
+                value = listOf("banana", "blueberry")
+             )
+             actual.unmatchedElementsDescription shouldBe ""
+             actual.partialMatches shouldContainExactly listOf(
+                PartialCollectionMatch(
+                   matchedElement= MatchedCollectionElement(
+                      startIndexInExpected=2,
+                      startIndexInValue=0
+                   ),
+                   length=2
+                )
+             )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0, 1)
           }
           "work when one element found in another place" {
              val actual = describePartialMatchesInCollection(
@@ -39,6 +57,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    ), length = 3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0)
           }
           "work when one element found in multiple places" {
              val actual = describePartialMatchesInCollection(
@@ -54,6 +73,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    ), length = 3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0)
           }
           "work when multiple elements found" {
              val actual = describePartialMatchesInCollection(
@@ -72,6 +92,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    ), length = 3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0, 4)
           }
           "work for complete match" {
              val expectedSlice = listOf("orange", "apple", "banana", "cherry")
@@ -80,6 +101,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                 value = expectedSlice
              )
              actual.unmatchedElementsDescription shouldBe ""
+             actual.indexesOfUnmatchedElements.shouldBeEmpty()
           }
        }
 
