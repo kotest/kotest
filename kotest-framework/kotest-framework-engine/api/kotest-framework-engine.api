@@ -1133,6 +1133,10 @@ public final class io/kotest/core/descriptors/DescriptorPathContextElement : kot
 public final class io/kotest/core/descriptors/DescriptorPathContextElement$Key : kotlin/coroutines/CoroutineContext$Key {
 }
 
+public final class io/kotest/core/descriptors/descriptors/JvmKt {
+	public static final fun toDescriptor (Ljava/lang/Class;)Lio/kotest/core/descriptors/Descriptor$SpecDescriptor;
+}
+
 public abstract interface annotation class io/kotest/core/extensions/ApplyExtension : java/lang/annotation/Annotation {
 	public abstract fun extensions ()[Ljava/lang/Class;
 }
