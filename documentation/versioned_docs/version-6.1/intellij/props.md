@@ -6,7 +6,7 @@ slug: intellij-properties.html
 
 
 
-The IntelliJ plugin now runs tests via Gradle, which means properties defined in `gradle.properties` or Gradle build files
+The IntelliJ plugin runs tests via Gradle, which means properties defined in `gradle.properties` or Gradle build files
 are automatically available.
 
 Additionally, the Kotest framework will always look for key-value pairs inside
