@@ -6,10 +6,11 @@ data class PluginDescriptor(
    val since: String, // earliest version string this is compatible with
    val until: String, // latest version string this is compatible with, can be wildcard like 202.*
    // https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties
-   val sdkVersion: String, // the version string passed to the intellij sdk gradle plugin
+   val sdkVersion: String, // the version string passed to the intellij sdk Gradle plugin, take released versions from https://www.jetbrains.com/idea/download/other.html
    val sourceFolder: String, // used as the source root for specifics of this build
    val useInstaller: Boolean, // required to be false for EAP builds
    val jdkTarget: JavaVersion,
+   val androidVersion: String,
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -34,38 +35,51 @@ val descriptors = listOf(
    PluginDescriptor(
       since = "242.*", // this version is 2024.2.x
       until = "243.*",
-      sdkVersion = "2024.2.2",
+      sdkVersion = "2024.2.6",
       sourceFolder = "IC-242",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_17,
+      androidVersion = "242.26775.15",
    ),
    PluginDescriptor(
       since = "243.*", // this version is 2024.3.x
       until = "251.*",
-      sdkVersion = "2024.3.1",
+      sdkVersion = "2024.3.7",
       sourceFolder = "IC-243",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_17,
+      androidVersion = "243.21565.214",
    ),
    PluginDescriptor(
       since = "251.*", // this version is 2025.1.x
       until = "261.*",
-      sdkVersion = "2025.1",
+      sdkVersion = "2025.1.7",
       sourceFolder = "IC-251",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "251.23774.200",
    ),
    PluginDescriptor(
       since = "252.*", // this version is 2025.2.x
-      until = "261.*",
-      sdkVersion = "2025.2",
+      until = "253.*",
+      sdkVersion = "2025.2.6.1",
       sourceFolder = "IC-252",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "252.23892.458",
+   ),
+   PluginDescriptor(
+      since = "253.*", // this version is 2025.3.x
+      until = "261.*",
+      sdkVersion = "2025.3.2",
+      sourceFolder = "IC-253",
+      useInstaller = true,
+      jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "253.28294.334",
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-253"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
@@ -128,13 +142,11 @@ intellijPlatform {
 }
 
 dependencies {
-   // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
-   testImplementation("junit:junit:4.13.2")
-
    // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
    intellijPlatform {
       // snapshots here https://www.jetbrains.com/intellij-repository/snapshots/
-      intellijIdeaCommunity(descriptor.sdkVersion) {
+      // released versions list https://www.jetbrains.com/idea/download/other.html
+      intellijIdea(descriptor.sdkVersion) {
          useInstaller = descriptor.useInstaller
       }
 
@@ -148,21 +160,32 @@ dependencies {
       bundledPlugin("com.intellij.java")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
-
-      // this is workaround for a bug in intellij itself
-      // see https://jetbrains-platform.slack.com/archives/C5U8BM1MK/p1734228390297349
-      if (descriptor.sdkVersion == "2024.3.1") {
-         bundledPlugin("com.intellij.llmInstaller")
-      }
+      plugin("org.jetbrains.android:${descriptor.androidVersion}")
 
       testFramework(TestFrameworkType.Platform)
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
+   implementation("org.jetbrains:annotations:26.0.2")
+
+   // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
+   testImplementation("junit:junit:4.13.2")
+
    // needed for the resource files which are loaded into java light tests
    testImplementation(libs.test.kotest.framework.api)
    testImplementation(libs.test.kotest.assertions.core)
 //   testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+}
+
+intellijPlatformTesting {
+   runIde {
+      register("runWithOptionalPlugins") {
+         plugins {
+            plugin("org.jetbrains.android:${descriptor.androidVersion}")
+            plugin("intellij.webp:253.28294.218")
+         }
+      }
+   }
 }
 
 configurations.runtimeOnly {
@@ -174,7 +197,7 @@ configurations.runtimeOnly {
 }
 
 // allows us to have different implementations of the same logic for different intellij versions
-// useful when we want to move from a deprecated function to a non deprecated one in a more recent intellij version
+// useful when we want to move from a deprecated function to a non-deprecated one in a more recent intellij version
 sourceSets {
    main {
       kotlin {
@@ -209,9 +232,10 @@ tasks {
 }
 
 tasks {
+   // Configures a task to print the latest EAP build
    printProductsReleases {
       channels = listOf(ProductRelease.Channel.EAP)
-      types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
+      types = listOf(IntelliJPlatformType.IntellijIdea)
       untilBuild = provider { null }
 
       doLast {
