@@ -62,14 +62,22 @@ internal fun<T> describePartialMatchesInCollection(expectedSlice: Collection<T>,
    val indexesOfUnmatchedElements = expectedSlice.indices.filter { index ->
       partialMatches.none { partialMatch -> index in partialMatch.rangeOfExpected } }
    val expectedSliceAsList = expectedSlice.toList()
-   val unmatchedElementsDescription = indexesOfUnmatchedElements.mapNotNull { index ->
-      val element = expectedSliceAsList[index]
-      val foundAtIndexes = value.withIndex().filter { it.value == element }.map { it.index }
-      if(foundAtIndexes.isEmpty())
-         null
-      else
-      "[$index] ${element.print().value} => Found At Index(es): ${foundAtIndexes.print().value}"
-   }.joinToString("\n")
+   val unmatchedElementsDescription = buildString {
+      append(
+         indexesOfUnmatchedElements.mapNotNull { index ->
+            val element = expectedSliceAsList[index]
+            val foundAtIndexes = value.withIndex().filter { it.value == element }.map { it.index }
+            if (foundAtIndexes.isEmpty())
+               null
+            else
+               "[$index] ${element.print().value} => Found At Index(es): ${foundAtIndexes.print().value}"
+         }.joinToString("\n")
+      )
+      appendPossibleMatches(
+         missing = indexesOfUnmatchedElements.map { expectedSliceAsList[it] },
+         expected = value,
+      )
+   }
    return PartialMatchesInCollectionDescription(
       partialMatchesList,
       partialMatchesDescription,
