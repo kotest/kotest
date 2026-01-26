@@ -21,7 +21,7 @@ class KotestTestRunner(
       // occur on the same thread—specifically the instrumentation thread—to ensure the accurate recording of
       // performance data and avoid race conditions. Therefore, we bounce onto a single threaded dispatcher.
       newSingleThreadContext("kotest-test-runner").use {
-         runBlocking {
+         runBlocking(it) {
             val listener = JUnitTestEngineListener(notifier)
             TestEngineLauncher()
                .withListener(listener)
