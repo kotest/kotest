@@ -189,6 +189,10 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-config-properties",
 
       ":kotest-tests:kotest-tests-htmlreporter",
+
+      // tests specific functionality of the JUnit4 runner used by Android instrumented tests
+      ":kotest-tests:kotest-tests-junit4",
+
       ":kotest-tests:kotest-tests-junitxml",
       ":kotest-tests:kotest-tests-junit-displaynameformatter",
 

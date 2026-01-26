@@ -3,13 +3,9 @@ package io.kotest.runner.junit4
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.config.SpecConfigResolver
-import io.kotest.engine.config.TestConfigResolver
-import io.kotest.engine.extensions.DefaultExtensionRegistry
-import io.kotest.engine.spec.Materializer
-import io.kotest.engine.spec.SpecInstantiator
-import io.kotest.engine.test.names.DefaultDisplayNameFormatter
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.newSingleThreadContext
 import kotlinx.coroutines.runBlocking
 import org.junit.runner.Description
 import org.junit.runner.Runner
@@ -19,36 +15,23 @@ class KotestTestRunner(
    private val clazz: Class<out Spec>
 ) : Runner() {
 
-   private val formatter = DefaultDisplayNameFormatter(ProjectConfigResolver(), TestConfigResolver())
-
+   @OptIn(DelicateCoroutinesApi::class, ExperimentalCoroutinesApi::class)
    override fun run(notifier: RunNotifier) {
-      runBlocking {
-         val listener = JUnitTestEngineListener(notifier)
-         TestEngineLauncher()
-            .withListener(listener)
-            .withSpecRefs(SpecRef.Reference(clazz.kotlin, clazz.name))
-            .execute()
+      // In Android, the TraceRunListener (and similar instrumentation tracing tools) requires operations to
+      // occur on the same thread—specifically the instrumentation thread—to ensure the accurate recording of
+      // performance data and avoid race conditions. Therefore, we bounce onto a single threaded dispatcher.
+      newSingleThreadContext("kotest-test-runner").use {
+         runBlocking {
+            val listener = JUnitTestEngineListener(notifier)
+            TestEngineLauncher()
+               .withListener(listener)
+               .withSpecRefs(SpecRef.Reference(clazz.kotlin, clazz.name))
+               .execute()
+         }
       }
    }
 
    override fun getDescription(): Description {
-      val spec = runBlocking {
-         SpecInstantiator(
-            DefaultExtensionRegistry(),
-            ProjectConfigResolver()
-         ).createAndInitializeSpec(clazz.kotlin).getOrThrow()
-      }
-      val desc = Description.createSuiteDescription(spec::class.java)
-      Materializer(SpecConfigResolver()).materialize(spec, SpecRef.Reference(clazz.kotlin, clazz.name))
-         .forEach { rootTest ->
-            desc.addChild(
-               describeTestCase(
-                  rootTest,
-                  formatter.format(rootTest)
-               )
-            )
-         }
-      return desc
+      return Description.createSuiteDescription(clazz)
    }
-
 }
