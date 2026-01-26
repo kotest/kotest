@@ -7,6 +7,7 @@ import io.kotest.matchers.collections.shouldContainOnly
 import io.kotest.matchers.collections.shouldNotContainOnly
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
 
 class ShouldContainOnlyTest : WordSpec() {
@@ -114,6 +115,24 @@ class ShouldContainOnlyTest : WordSpec() {
             shouldThrow<AssertionError> {
                actualNull.shouldNotContainOnly()
             }.shouldHaveMessage("Expecting actual not to be null")
+         }
+
+         "find similar elements if there is no exact match" {
+            val thrown = shouldThrow<AssertionError> {
+               listOf(sweetGreenApple, sweetRedCherry, sweetYellowPear) shouldContainOnly
+                  listOf(sweetGreenApple, sweetRedCherry, sweetRedApple)
+            }
+            thrown.message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=apple, color=red, taste=sweet),",
+               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"red">, but was: <"green">""",
+               "expected: Fruit(name=apple, color=red, taste=sweet),",
+               "but was: Fruit(name=cherry, color=red, taste=sweet),",
+               "The following fields did not match:",
+               """"name" expected: <"apple">, but was: <"cherry">""",
+               )
          }
       }
    }
