@@ -1,5 +1,6 @@
 package io.kotest.runner.junit4
 
+import io.kotest.core.extensions.Extension
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.TestEngineLauncher
@@ -28,8 +29,8 @@ class KotestTestRunner(
             val listener = JUnitTestEngineListener(notifier)
             TestEngineLauncher()
                .withListener(listener)
-               .addExtension(InstrumentationFilter)
-               .withSpecRefs(SpecRef.Reference(clazz.kotlin, clazz.name))
+               .addExtensions(filters())
+               .withSpecRefs(specRef(clazz))
                .execute()
          }
       }
@@ -39,3 +40,7 @@ class KotestTestRunner(
       return Description.createSuiteDescription(clazz)
    }
 }
+
+internal expect fun filters(): List<Extension>
+
+internal expect fun specRef(clazz: Class<out Spec>): SpecRef

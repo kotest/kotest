@@ -1,5 +1,6 @@
 package io.kotest.runner.junit4
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -25,7 +26,7 @@ internal class JUnitTestEngineListener(
 
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
       // there's no ignored option for suites, so we have to add it as a test
-      notifier.fireTestIgnored(Description.createTestDescription(kclass.java.name, kclass.java.simpleName))
+      notifier.fireTestIgnored(Description.createTestDescription(kclass.bestName(), kclass.simpleName ?: ""))
    }
 
    // the runner takes care of spec started/finished from the description that is returned from the JUnit4 Runner

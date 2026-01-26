@@ -1,5 +1,6 @@
 package io.kotest.runner.junit4
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
@@ -10,7 +11,7 @@ import kotlin.reflect.KClass
 @Deprecated("Use DescriptionHandler. This will be removed in 7.0")
 fun describeTestCase(testCase: TestCase, displayName: String): Description =
    Description.createTestDescription(
-      testCase.spec::class.java,
+      testCase.spec::class.bestName(),
       displayName
    )
 

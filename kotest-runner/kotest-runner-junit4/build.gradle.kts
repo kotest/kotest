@@ -13,7 +13,8 @@ kotlin {
    }
 
    sourceSets {
-      jvmMain {
+
+      val jvmCommonMain by creating {
          dependencies {
             api(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.junit4)
@@ -21,11 +22,14 @@ kotlin {
       }
 
       androidMain {
+         dependsOn(jvmCommonMain)
          dependencies {
-            api(projects.kotestFramework.kotestFrameworkEngine)
-            api(libs.junit4)
             api(libs.androidx.test.runner)
          }
+      }
+
+      jvmMain {
+         dependsOn(jvmCommonMain)
       }
 
       jvmTest {
