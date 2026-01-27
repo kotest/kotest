@@ -260,8 +260,9 @@ fun <T> DescribeSpecRootScope.withContexts(
    ts: Iterable<T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t), dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -275,8 +276,9 @@ fun <T> DescribeSpecRootScope.withDescribes(
    ts: Iterable<T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      describe(nameFn(t)) { this.test(t) }
+      describe(nameFn(t), dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -290,8 +292,9 @@ fun <T> DescribeSpecRootScope.withIts(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      it(nameFn(t)) { this.test(t) }
+      it(nameFn(t), dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -308,8 +311,9 @@ fun <T> DescribeSpecRootScope.withData(data: Map<String, T>, test: suspend Descr
  * used as the test name, and the second value passed to the test.
  */
 fun <T> DescribeSpecRootScope.withContexts(data: Map<String, T>, test: suspend DescribeSpecContainerScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name, dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -321,8 +325,9 @@ fun <T> DescribeSpecRootScope.withDescribes(
    data: Map<String, T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      describe(name) { this.test(t) }
+      describe(name, dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -331,7 +336,8 @@ fun <T> DescribeSpecRootScope.withDescribes(
  * used as the test name, and the second value passed to the test.
  */
 fun <T> DescribeSpecRootScope.withIts(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      it(name) { this.test(t) }
+      it(name, dataTestTagConfig) { this.test(t) }
    }
 }

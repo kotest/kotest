@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -39,6 +41,15 @@ class DescribeSpecContainerScope(
       context(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
+   /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun context(name: String, config: TestConfig, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      context(name = name, xmethod = TestXMethod.NONE, test = test, config = config)
+   }
+
    suspend fun fcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       context(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
@@ -53,12 +64,13 @@ class DescribeSpecContainerScope(
    private suspend fun context(
       name: String,
       xmethod: TestXMethod,
-      test: suspend DescribeSpecContainerScope.() -> Unit
+      test: suspend DescribeSpecContainerScope.() -> Unit,
+      config: TestConfig? = null
    ) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          xmethod = xmethod,
-         config = null
+         config = config
       ) { DescribeSpecContainerScope(this).test() }
    }
 
@@ -90,6 +102,15 @@ class DescribeSpecContainerScope(
       describe(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
+   /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun describe(name: String, config: TestConfig, test: suspend DescribeSpecContainerScope.() -> Unit) {
+      describe(name = name, xmethod = TestXMethod.NONE, test = test, config = config)
+   }
+
    suspend fun fdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       describe(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
@@ -104,12 +125,13 @@ class DescribeSpecContainerScope(
    private suspend fun describe(
       name: String,
       xmethod: TestXMethod,
-      test: suspend DescribeSpecContainerScope.() -> Unit
+      test: suspend DescribeSpecContainerScope.() -> Unit,
+      config: TestConfig? = null
    ) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          xmethod = xmethod,
-         config = null,
+         config = config,
       ) { DescribeSpecContainerScope(this).test() }
    }
 
@@ -166,26 +188,36 @@ class DescribeSpecContainerScope(
    }
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+      it(name = name, xmethod = TestXMethod.NONE, test = test)
+   }
+
+   /**
+    * Adds a test with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun it(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) {
+      it(name = name, xmethod = TestXMethod.NONE, test = test, config = config)
    }
 
    suspend fun fit(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.FOCUSED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+      it(name = name, xmethod = TestXMethod.FOCUSED, test = test)
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
+      it(name = name, xmethod = TestXMethod.DISABLED, test = test)
+   }
+
+   private suspend fun it(
+      name: String,
+      xmethod: TestXMethod,
+      test: suspend TestScope.() -> Unit,
+      config: TestConfig? = null
+   ) {
       registerTest(
          name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.DISABLED,
-         config = null
+         xmethod = xmethod,
+         config = config
       ) { DescribeSpecContainerScope(this).test() }
    }
 }
