@@ -25,10 +25,10 @@ kotlin {
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
 
-            // used to generate the junit-format xml reports
+            // used to generate the junit-format XML reports
             implementation(libs.xmlutil)
 
-            // used to write the xml reports to the file system
+            // used to write the XML reports to the file system
             implementation(libs.kotlinx.io.core)
          }
       }
