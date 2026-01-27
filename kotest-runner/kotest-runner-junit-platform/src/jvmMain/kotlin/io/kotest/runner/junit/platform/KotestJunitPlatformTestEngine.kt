@@ -165,5 +165,3 @@ class KotestJunitPlatformTestEngine : TestEngine {
       return request.engineFilters().all { it.toPredicate().test(this) }
    }
 }
-
-internal class MultipleExceptions(val causes: List<Throwable>) : Exception(causes.first())
