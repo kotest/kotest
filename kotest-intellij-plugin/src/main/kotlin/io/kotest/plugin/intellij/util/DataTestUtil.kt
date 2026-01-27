@@ -2,6 +2,9 @@ package io.kotest.plugin.intellij.util
 
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
+import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
+import io.kotest.plugin.intellij.psi.lambdaBody
+import io.kotest.plugin.intellij.psi.lineNumber
 import io.kotest.plugin.intellij.styles.BehaviorSpecStyle
 import io.kotest.plugin.intellij.styles.DescribeSpecStyle
 import io.kotest.plugin.intellij.styles.ExpectSpecStyle
@@ -14,10 +17,6 @@ import io.kotest.plugin.intellij.styles.StringSpecStyle
 import io.kotest.plugin.intellij.styles.WordSpecStyle
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
-import org.jetbrains.kotlin.psi.KtLambdaArgument
-import org.jetbrains.kotlin.psi.KtLambdaExpression
-import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
-import org.jetbrains.kotlin.psi.KtStringTemplateExpression
 
 /**
  * Contains information about a data test's tag expression and ancestor context path.
@@ -122,7 +121,7 @@ object DataTestUtil {
     */
    fun dataTestInfoMaybe(isDataTest: Boolean, currentTestPsi: PsiElement): DataTestInfo? {
       if (!isDataTest) return null
-      val thisLine = lineNumber(currentTestPsi) ?: return null
+      val thisLine = currentTestPsi.lineNumber() ?: return null
 
       // Check if this data test is inside a regular container
       val regularAncestorPath = findRegularAncestorPath(currentTestPsi)
@@ -225,23 +224,7 @@ object DataTestUtil {
     * - WordSpec style: "my container" When { ... }
     */
    private fun extractBinaryExpressionContainerName(binaryExpression: KtBinaryExpression): String? {
-      val children = binaryExpression.children
-      if (children.size == 3) {
-         val left = children[0]
-         val operator = children[1]
-         val right = children[2]
-         if (left is KtStringTemplateExpression && operator is KtOperationReferenceExpression) {
-            val operatorText = operator.text
-            // Check for FreeSpec "-" or WordSpec "When"
-            if (operatorText == "-" || operatorText == "When") {
-               if (right is KtLambdaExpression) {
-                  // Extract the string content without quotes
-                  return left.entries.joinToString("") { it.text }
-               }
-            }
-         }
-      }
-      return null
+      return binaryExpression.extractStringLiteralFromLhsOfInfixFunction(listOf("-", "When"))?.text
    }
 
    /**
@@ -266,7 +249,7 @@ object DataTestUtil {
       while (current != null) {
          val parent = findEnclosingDataTestPsi(current)
          if (parent != null) {
-            val parentLine = lineNumber(parent)
+            val parentLine = parent.lineNumber()
             if (parentLine != null) {
                chain.add(0, parent to parentLine) // Add to front to maintain root-first order
             }
@@ -275,18 +258,6 @@ object DataTestUtil {
       }
 
       return chain
-   }
-
-   /**
-    * Returns the 1-based line number where this test is defined in the source file.
-    * Returns null if the line number cannot be determined.
-    */
-   private fun lineNumber(psi: PsiElement): Int? {
-      val file = psi.containingFile ?: return null
-      val document = file.viewProvider.document ?: return null
-      val offset = psi.textOffset
-      // Document line numbers are 0-based, we return 1-based to match source file
-      return document.getLineNumber(offset) + 1
    }
 
    /**
@@ -315,7 +286,7 @@ object DataTestUtil {
       val siblingLines = mutableListOf<Int>()
 
       findDirectDataTestCallsIn(parentPsi) { callPsi ->
-         val line = lineNumber(callPsi)
+         val line = callPsi.lineNumber()
          if (line != null && line != thisLine) {
             siblingLines.add(line)
          }
@@ -348,25 +319,8 @@ object DataTestUtil {
     */
    private fun findLambdaBody(element: PsiElement): PsiElement? {
       return when (element) {
-         is KtCallExpression -> {
-            for (child in element.children) {
-               if (child is KtLambdaArgument) {
-                  val lambda = child.getLambdaExpression()
-                  return lambda?.bodyExpression
-               }
-            }
-            null
-         }
-
-         is KtBinaryExpression -> {
-            // FreeSpec style: "name" - { ... }
-            val children = element.children
-            if (children.size == 3 && children[2] is KtLambdaExpression) {
-               return (children[2] as KtLambdaExpression).bodyExpression
-            }
-            null
-         }
-
+         is KtCallExpression -> element.lambdaBody()
+         is KtBinaryExpression -> element.lambdaBody()
          else -> null
       }
    }
