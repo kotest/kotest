@@ -5,6 +5,7 @@ import io.kotest.plugin.intellij.run.idea.RunData
 import io.kotest.plugin.intellij.run.idea.suggestedName
 import junit.framework.TestCase
 
+@Suppress("DEPRECATION")
 class RunDataTest : TestCase() {
 
    fun `test work for packageName`() {

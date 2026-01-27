@@ -15,7 +15,7 @@ import kotlin.reflect.KClass
  * are not for the current spec are delayed until the current spec completes.
  *
  * Note: This class is not thread safe. It is up to the caller to ensure that calls
- * to the methods of this listener are strictly sequential, for example by using
+ * to the methods of this listener are strictly sequential, for example, by using
  * an instance of [ThreadSafeTestEngineListener].
  */
 @KotestInternal

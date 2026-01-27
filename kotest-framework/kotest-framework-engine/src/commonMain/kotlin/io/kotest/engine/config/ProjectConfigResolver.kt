@@ -65,7 +65,7 @@ class ProjectConfigResolver(
    }
 
    /**
-    * If returns false then private spec classes will be ignored by the test engine.
+    * If this returns false, then the test engine will ignore private spec classes.
     * Defaults to false.
     */
    fun ignorePrivateClasses(): Boolean {
@@ -164,11 +164,12 @@ class ProjectConfigResolver(
    /**
     * Returns any extensions defined at the project level.
     *
-    * That is extensions defined using the [AbstractProjectConfig.beforeProject] and
-    * [AbstractProjectConfig.afterProject] functions as well as any extensions defined
-    * by overriding the [AbstractProjectConfig.extensions] method.
+    * These are:
     *
-    * It also includes any extensions registered globally in the [ExtensionRegistry].
+    * Overrides of [AbstractProjectConfig.beforeProject] and [AbstractProjectConfig.afterProject] functions
+    * Any extensions defined by overriding the [AbstractProjectConfig.extensions].
+    * Any afterProject blocks inside specs.
+    * Any extensions registered globally in the [ExtensionRegistry].
     */
    fun extensions(): List<Extension> {
       return (config?.extensions ?: emptyList()) +

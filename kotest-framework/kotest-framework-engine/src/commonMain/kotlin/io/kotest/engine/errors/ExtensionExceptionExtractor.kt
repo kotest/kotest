@@ -1,7 +1,7 @@
 package io.kotest.engine.errors
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.listeners.ContextAwareAfterProjectListener
+import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.engine.extensions.ExtensionException
 
 /**
@@ -26,7 +26,7 @@ object ExtensionExceptionExtractor {
             is ExtensionException.AfterContainerException -> "After Container Error"
             is ExtensionException.AfterEachException -> "After Each Error"
             is ExtensionException.AfterInvocationException -> "After Invocation Error"
-            is ExtensionException.AfterProjectException if t.listener is ContextAwareAfterProjectListener -> "After Project Error: ${t.listener.context}"
+            is ExtensionException.AfterProjectException if t.listener is ContextAwareListener -> "After Project Error: ${t.listener.context}"
             is ExtensionException.AfterProjectException -> "After Project Error"
             is ExtensionException.AfterSpecException -> "After Spec Error"
             is ExtensionException.BeforeAnyException -> "Before Any Error"

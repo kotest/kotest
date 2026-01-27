@@ -57,7 +57,7 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
  * @return the return value of the supplied [block]
  */
 @Suppress("USELESS_CAST")
-inline fun <T : Any?, R> T.asClue(block: (T) -> R): R =
+inline fun <T, R> T.asClue(block: (T) -> R): R =
    withClue(
       // The cast is needed to avoid calling withClue(Any)
       when (this) {
@@ -66,3 +66,15 @@ inline fun <T : Any?, R> T.asClue(block: (T) -> R): R =
          else -> ({ this })
       } as () -> Any?,
    ) { block(this) }
+
+/**
+ * Will execute the given [action] for each element in the receiver [Iterable], with each element
+ * being used as the clue in case of an error.
+ *
+ *  @param action the code with assertions to be executed
+ */
+inline fun <T> Iterable<T>.forEachAsClue(action: (T) -> Unit) = forEach { element ->
+   element.asClue {
+      action(it)
+   }
+}

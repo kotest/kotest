@@ -12,6 +12,7 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
+import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -74,7 +75,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      kotlinx.coroutines.runBlocking {
+      runBlocking {
+         // the result is ignored as the junit runner will add engine errors as "dummy specs"
          TestEngineLauncher()
             .withListener(listener)
             .addExtensions(root.extensions)
@@ -163,4 +165,3 @@ class KotestJunitPlatformTestEngine : TestEngine {
       return request.engineFilters().all { it.toPredicate().test(this) }
    }
 }
-

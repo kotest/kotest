@@ -41,7 +41,7 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
    ): Boolean {
 
       if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
-         logger.info("Runner mode is not IDEA so this producer will not contribute")
+         logger.info("Runner mode is not LEGACY so this producer will not contribute")
          return false
       }
 
@@ -79,6 +79,10 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
       context: ConfigurationContext
    ): Boolean {
 
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
+         logger.info("Runner mode is not LEGACY so this producer will not contribute")
+         return false
+      }
       // if we have the kotest plugin, then we shouldn't use this
       if (GradleUtils.hasKotestGradlePlugin(context.module)) return false
 

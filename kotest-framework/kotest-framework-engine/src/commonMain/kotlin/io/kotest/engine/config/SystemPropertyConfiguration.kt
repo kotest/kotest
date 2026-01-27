@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.config.LogLevel
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
@@ -14,6 +15,7 @@ import kotlin.time.Duration
  *
  * Note: This function will return null on non-JVM targets.
  */
+@JVMOnly
 internal expect fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration?
 
 interface SystemPropertyConfiguration {

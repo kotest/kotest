@@ -10,243 +10,244 @@ sidebar_label: Core
 
 Matchers provided by the `kotest-assertions-core` module.
 
-| General                                 |                                                                                                  |
-|-----------------------------------------|--------------------------------------------------------------------------------------------------|
-| `obj.shouldBeEqual(other)`              | The simplest general purpose assertion that the given obj and other are both equal, to be used for primitives, short collections/maps, and short data classes                       |
-| `obj.shouldBe(other)`                   | General purpose assertion that the given obj and other are both equal, displaying differences in more detail than `shouldBeEqual`                           |
-| `obj::prop.shouldHaveValue(other)`      | General purpose assertion on a property value printing information of the property on failure.   |
-| `expr.shouldBeTrue()`                   | Convenience assertion that the expression is true. Equivalent to `expr.shouldBe(true)`           |
-| `expr.shouldBeFalse()`                  | Convenience assertion that the expression is false. Equivalent to `expr.shouldBe(false)`         |
-| `shouldThrow<T> { block }`              | General purpose construct that asserts that the block throws a `T` Throwable or a subtype of `T` |
-| `shouldThrowExactly<T> { block }`       | General purpose construct that asserts that the block throws exactly `T`                         |
-| `shouldThrowAny { block }`              | General purpose construct that asserts that the block throws a Throwable of any type             |
-| `shouldThrowMessage(message) { block }` | Verifies that a block of code throws any Throwable with given message                            |
+| General                                 |                                                                                                                                                               |
+|-----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `obj.shouldBeEqual(other)`              | The simplest general purpose assertion that the given obj and other are both equal, to be used for primitives, short collections/maps, and short data classes |
+| `obj.shouldBe(other)`                   | General purpose assertion that the given obj and other are both equal, displaying differences in more detail than `shouldBeEqual`                             |
+| `obj::prop.shouldHaveValue(other)`      | General purpose assertion on a property value printing information of the property on failure.                                                                |
+| `expr.shouldBeTrue()`                   | Convenience assertion that the expression is true. Equivalent to `expr.shouldBe(true)`                                                                        |
+| `expr.shouldBeFalse()`                  | Convenience assertion that the expression is false. Equivalent to `expr.shouldBe(false)`                                                                      |
+| `shouldThrow<T> { block }`              | General purpose construct that asserts that the block throws a `T` Throwable or a subtype of `T`                                                              |
+| `shouldThrowExactly<T> { block }`       | General purpose construct that asserts that the block throws exactly `T`                                                                                      |
+| `shouldThrowAny { block }`              | General purpose construct that asserts that the block throws a Throwable of any type                                                                          |
+| `shouldThrowMessage(message) { block }` | Verifies that a block of code throws any Throwable with given message                                                                                         |
 
-| Types                                       ||
-|---------------------------------------------| ---- |
-| `obj.shouldBeSameInstanceAs(other)`         | Compares objects by identity, that is, they are the same exact reference. |
+| Types                                       |                                                                                                                                                                                         |
+|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `obj.shouldBeSameInstanceAs(other)`         | Compares objects by identity, that is, they are the same exact reference.                                                                                                               |
 | `obj.shouldBeTypeOf<T>()`                   | Asserts that the given reference is exactly of type T. Subclass will fail. Ie, `1 should beOfType<Number>` would fail because although 1 _is_ a Number, the runtime type is not Number. |
-| `obj.shouldBeInstanceOf<T>()`               | Asserts that the given reference is of type T or a subclass of T. |
-| `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type. |
-| `obj.shouldBeNull()`                        | Asserts that a given reference is null. |
-| `obj shouldNotBeNull { block }`             | Asserts that a given reference is not null. |
+| `obj.shouldBeInstanceOf<T>()`               | Asserts that the given reference is of type T or a subclass of T.                                                                                                                       |
+| `obj.shouldHaveAnnotation(annotationClass)` | Asserts that the object has an annotation of the given type.                                                                                                                            |
+| `obj.shouldBeNull()`                        | Asserts that a given reference is null.                                                                                                                                                 |
+| `obj shouldNotBeNull { block }`             | Asserts that a given reference is not null.                                                                                                                                             |
 
 
-| Comparables                                        |                                                                                          |
-|----------------------------------------------------|------------------------------------------------------------------------------------------|
-| `comp.shouldBeLessThan(other)`                     | Uses `compareTo` to verify that `comp` is less than `other`                              |
-| `comp.shouldBeLessThanOrEqualTo(other)`            | Uses `compareTo` to verify that `comp` is less than or equal to `other`                  |
-| `comp.shouldBeAtMost(other)`                       | Uses `compareTo` to verify that `comp` is less than or equal to `other` (only `Double`)  |
-| `comp.shouldBeEqualComparingTo(other)`             | Uses `compareTo` to verify that `comp` is equal to `other`                               |
-| `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other`                      |
-| `comp.shouldBeGreaterThan(other)`                  | Uses `compareTo` to verify that `comp` is greater than `other`                           |
-| `comp.shouldBeGreaterThanOrEqualTo(other)`         | Uses `compareTo` to verify that `comp` is greater than or equal to `other`               |
-| `comp.shouldBeAtLeast(other)`                      | Uses `compareTo` to verify that `comp` is greater than or equal to `other`(only `Double`)|
-| `comp.shouldBeBetween(lower, upper)`               | Uses `compareTo` to verify that `comp` is in range `lower..upper` (inclusive, inclusive) |
+| Comparables                                        |                                                                                           |
+|----------------------------------------------------|-------------------------------------------------------------------------------------------|
+| `comp.shouldBeLessThan(other)`                     | Uses `compareTo` to verify that `comp` is less than `other`                               |
+| `comp.shouldBeLessThanOrEqualTo(other)`            | Uses `compareTo` to verify that `comp` is less than or equal to `other`                   |
+| `comp.shouldBeAtMost(other)`                       | Uses `compareTo` to verify that `comp` is less than or equal to `other` (only `Double`)   |
+| `comp.shouldBeEqualComparingTo(other)`             | Uses `compareTo` to verify that `comp` is equal to `other`                                |
+| `comp.shouldBeEqualComparingTo(other, comparator)` | Uses `comparator.compare` to verify that `comp` is equal to `other`                       |
+| `comp.shouldBeGreaterThan(other)`                  | Uses `compareTo` to verify that `comp` is greater than `other`                            |
+| `comp.shouldBeGreaterThanOrEqualTo(other)`         | Uses `compareTo` to verify that `comp` is greater than or equal to `other`                |
+| `comp.shouldBeAtLeast(other)`                      | Uses `compareTo` to verify that `comp` is greater than or equal to `other`(only `Double`) |
+| `comp.shouldBeBetween(lower, upper)`               | Uses `compareTo` to verify that `comp` is in range `lower..upper` (inclusive, inclusive)  |
 
 
 Collections: also see [inspectors](inspectors.md) which are useful ways to test multiple elements in a collection.
 
-| Collections                                     |                                                                                                                                                                                                        |
-|-------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `collection.shouldBeEmpty()`                    | Asserts that the collections has zero elements.                                                                                                                                                        |
-| `collection.shouldBeUnique()`                   | Asserts that all the elements of the collection are distinct using the natural equals of the elements.                                                                                                 |
-| `collection.shouldBeUnique(comparator)`         | Asserts that all the elements of the collection are distinct by comparing elements using the given `comparator`.                                                                                       |
-| `collection.shouldContain(element)`             | Asserts that the collection contains the given element.                                                                                                                                                |
+| Collections                                     |                                                                                                                                                                                                         |
+|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `collection.shouldBeEmpty()`                    | Asserts that the collections has zero elements.                                                                                                                                                         |
+| `collection.shouldBeUnique()`                   | Asserts that all the elements of the collection are distinct using the natural equals of the elements.                                                                                                  |
+| `collection.shouldBeUnique(comparator)`         | Asserts that all the elements of the collection are distinct by comparing elements using the given `comparator`.                                                                                        |
+| `collection.shouldContain(element)`             | Asserts that the collection contains the given element.                                                                                                                                                 |
 | `collection.shouldContainAll(e1, e2, ..., en)`  | Asserts that the collection contains all the elements listed, where order is not important. Ie, element 2 can be in the collection before element 1. The collection can contain other elements as well. |
-| `collection.shouldContainDuplicates()`          | Asserts that the collection contains at least one duplicate element.                                                                                                                                   |
-| `collection.shouldContainExactly()`             | Assert that a collection contains exactly the given values and nothing else, in order.                                                                                                                 |
-| `collection.shouldContainExactlyInAnyOrder()`   | Assert that a collection contains exactly the given values and nothing else, in _any_ order.                                                                                                           |
-| `collection.shouldContainAllInAnyOrder()`       | Assert that a collection contains all the given values, in _any_ order. It might contain other elements.                                                                                               |
-| `collection.shouldContainNoNulls()`             | Asserts that the collection contains no null elements, or is empty.                                                                                                                                    |
-| `collection.shouldContainNull()`                | Asserts that the collection contains at least one null element.                                                                                                                                        |
-| `collection.shouldContainOnlyNulls()`           | Asserts that the collection contains only null elements, or is empty.                                                                                                                                  |
-| `collection.shouldContainAllIgnoringFields()`   | Asserts that the collection contains all the elements listed ignoring one or more fields.                                                                                                              |
-| `collection.shouldHaveSingleElement(element)`   | Asserts that the collection only contains a single element and that that element is the given one.                                                                                                     |
-| `collection.shouldHaveSingleElement { block }`  | Asserts that the collection contains a single element by a given predicate.                                                                                                                            |
-| `collection.shouldHaveSize(length)`             | Asserts that the collection is exactly the given length.                                                                                                                                               |
-| `collection.shouldBeSingleton()`                | Asserts that the collection contains only one element.                                                                                                                                                 |
-| `collection.shouldBeSingleton { block }`        | Asserts that the collection contains only one element, and then runs the block with this element.                                                                                                      |
-| `collection.shouldHaveLowerBound(element)`      | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable.                                                              |
-| `collection.shouldHaveUpperBound(element)`      | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable.                                                               |
-| `collection.shouldBeSmallerThan(col)`           | Asserts that the collection is smaller than the other collection.                                                                                                                                      |
-| `collection.shouldBeLargerThan(col)`            | Asserts that the collection is larger than the other collection.                                                                                                                                       |
-| `collection.shouldBeSameSizeAs(col)`            | Asserts that the collection has the same size as the other collection.                                                                                                                                 |
-| `collection.shouldHaveAtLeastSize(n)`           | Asserts that the collection has at least size n.                                                                                                                                                       |
-| `collection.shouldHaveAtMostSize(n)`            | Asserts that the collection has at most size n.                                                                                                                                                        |
-| `list.shouldBeSorted()`                         | Asserts that the list is sorted.                                                                                                                                                                       |
-| `list.shouldBeSortedBy { transform }`           | Asserts that the list is sorted by the value after applying the transform.                                                                                                                             |
-| `list.shouldContainInOrder(other)`              | Asserts that this list contains the given list in order. Other elements may appear either side of the given list.                                                                                      |
-| `list.shouldExistInOrder({ element }, ...)`     | Asserts that this list contains elements matching the predicates in order. Other elements may appear around or between the elements matching the predicates.                                           |
-| `list.shouldHaveElementAt(index, element)`      | Asserts that this list contains the given element at the given position.                                                                                                                               |
-| `list.shouldStartWith(lst)`                     | Asserts that this list starts with the elements of the given list, in order.                                                                                                                           |
-| `list.shouldEndWith(lst)`                       | Asserts that this list ends with the elements of the given list, in order.                                                                                                                             |
-| `iterable.shouldMatchEach(assertions)`          | Iterates over this list and the assertions and asserts that each element of this list passes the associated assertion. Fails if size of the collections mismatch.                                      |
-| `iterable.shouldMatchInOrder(assertions)`       | Asserts that there is a subsequence of this iterator that matches the assertions in order, with no gaps allowed.                                                                                       |
-| `iterable.shouldMatchInOrderSubset(assertions)` | Asserts that there is a subsequence (possibly with gaps) that matches the assertions in order.                                                                                                         |
-| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection, checking by reference, not by value.                                                                                                    |
-| `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                                                           |
-| `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                                                             |
+| `collection.shouldContainDuplicates()`          | Asserts that the collection contains at least one duplicate element.                                                                                                                                    |
+| `collection.shouldContainExactly()`             | Assert that a collection contains exactly the given values and nothing else, in order.                                                                                                                  |
+| `collection.shouldContainExactlyInAnyOrder()`   | Assert that a collection contains exactly the given values and nothing else, in _any_ order.                                                                                                            |
+| `collection.shouldContainAllInAnyOrder()`       | Assert that a collection contains all the given values, in _any_ order. It might contain other elements.                                                                                                |
+| `collection.shouldContainSlice()`               | Assert that a collection cantains the given slice starting at any position - all the elements in given order without gaps. It might contain other elements before or after the slice.                   |
+| `collection.shouldContainNoNulls()`             | Asserts that the collection contains no null elements, or is empty.                                                                                                                                     |
+| `collection.shouldContainNull()`                | Asserts that the collection contains at least one null element.                                                                                                                                         |
+| `collection.shouldContainOnlyNulls()`           | Asserts that the collection contains only null elements, or is empty.                                                                                                                                   |
+| `collection.shouldContainAllIgnoringFields()`   | Asserts that the collection contains all the elements listed ignoring one or more fields.                                                                                                               |
+| `collection.shouldHaveSingleElement(element)`   | Asserts that the collection only contains a single element and that that element is the given one.                                                                                                      |
+| `collection.shouldHaveSingleElement { block }`  | Asserts that the collection contains a single element by a given predicate.                                                                                                                             |
+| `collection.shouldHaveSize(length)`             | Asserts that the collection is exactly the given length.                                                                                                                                                |
+| `collection.shouldBeSingleton()`                | Asserts that the collection contains only one element.                                                                                                                                                  |
+| `collection.shouldBeSingleton { block }`        | Asserts that the collection contains only one element, and then runs the block with this element.                                                                                                       |
+| `collection.shouldHaveLowerBound(element)`      | Asserts that the given element is smaller or equal to every element of the collection. Works only for elements that implement Comparable.                                                               |
+| `collection.shouldHaveUpperBound(element)`      | Asserts that the given element is larger or equal to every element of the collection. Works only for elements that implement Comparable.                                                                |
+| `collection.shouldBeSmallerThan(col)`           | Asserts that the collection is smaller than the other collection.                                                                                                                                       |
+| `collection.shouldBeLargerThan(col)`            | Asserts that the collection is larger than the other collection.                                                                                                                                        |
+| `collection.shouldBeSameSizeAs(col)`            | Asserts that the collection has the same size as the other collection.                                                                                                                                  |
+| `collection.shouldHaveAtLeastSize(n)`           | Asserts that the collection has at least size n.                                                                                                                                                        |
+| `collection.shouldHaveAtMostSize(n)`            | Asserts that the collection has at most size n.                                                                                                                                                         |
+| `list.shouldBeSorted()`                         | Asserts that the list is sorted.                                                                                                                                                                        |
+| `list.shouldBeSortedBy { transform }`           | Asserts that the list is sorted by the value after applying the transform.                                                                                                                              |
+| `list.shouldContainInOrder(other)`              | Asserts that this list contains the given list in order. Other elements may appear either side of the given list.                                                                                       |
+| `list.shouldExistInOrder({ element }, ...)`     | Asserts that this list contains elements matching the predicates in order. Other elements may appear around or between the elements matching the predicates.                                            |
+| `list.shouldHaveElementAt(index, element)`      | Asserts that this list contains the given element at the given position.                                                                                                                                |
+| `list.shouldStartWith(lst)`                     | Asserts that this list starts with the elements of the given list, in order.                                                                                                                            |
+| `list.shouldEndWith(lst)`                       | Asserts that this list ends with the elements of the given list, in order.                                                                                                                              |
+| `iterable.shouldMatchEach(assertions)`          | Iterates over this list and the assertions and asserts that each element of this list passes the associated assertion. Fails if size of the collections mismatch.                                       |
+| `iterable.shouldMatchInOrder(assertions)`       | Asserts that there is a subsequence of this iterator that matches the assertions in order, with no gaps allowed.                                                                                        |
+| `iterable.shouldMatchInOrderSubset(assertions)` | Asserts that there is a subsequence (possibly with gaps) that matches the assertions in order.                                                                                                          |
+| `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection, checking by reference, not by value.                                                                                                     |
+| `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                                                            |
+| `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                                                              |
 
 
-| Iterator                    ||
-|-----------------------------| ---- |
+| Iterator                    |                                                       |
+|-----------------------------|-------------------------------------------------------|
 | `iterator.shouldBeEmpty()`  | Asserts that the iterator does not have a next value. |
-| `iterator.shouldHaveNext()` | Asserts that the iterator has a next value |
+| `iterator.shouldHaveNext()` | Asserts that the iterator has a next value            |
 
-| Maps                                                                                  ||
-|---------------------------------------------------------------------------------------| ---- |
-| `map.shouldContain("key", "value")`                                                   | Asserts that the map contains the mapping "key" to "value" |
-| `map.shouldContainAll(other)`                                                         | Asserts that the map contains all the pairs from the given map. |
-| `map.shouldContainExactly(other)`                                                     | Asserts that the map contains exactly the pairs from given map, and no extra. |
-| `map.shouldContainKey(key)`                                                           | Asserts that the map contains a key called `key` with any value |
-| `map.shouldContainKeys(keys)`                                                         | Asserts that the map contains mappings for all the given keys. |
-| `map.shouldContainValue(value)`                                                       | Asserts that the map contains at least one mapping where the value is `value`. |
-| `map.shouldContainValues(values)`                                                     | Asserts that the map contains all the given values. |
-| `map.shouldBeEmpty()`                                                                 | Asserts that this map is empty. |
+| Maps                                                                                  |                                                                                                                       |
+|---------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------|
+| `map.shouldContain("key", "value")`                                                   | Asserts that the map contains the mapping "key" to "value"                                                            |
+| `map.shouldContainAll(other)`                                                         | Asserts that the map contains all the pairs from the given map.                                                       |
+| `map.shouldContainExactly(other)`                                                     | Asserts that the map contains exactly the pairs from given map, and no extra.                                         |
+| `map.shouldContainKey(key)`                                                           | Asserts that the map contains a key called `key` with any value                                                       |
+| `map.shouldContainKeys(keys)`                                                         | Asserts that the map contains mappings for all the given keys.                                                        |
+| `map.shouldContainValue(value)`                                                       | Asserts that the map contains at least one mapping where the value is `value`.                                        |
+| `map.shouldContainValues(values)`                                                     | Asserts that the map contains all the given values.                                                                   |
+| `map.shouldBeEmpty()`                                                                 | Asserts that this map is empty.                                                                                       |
 | `map.shouldMatchAll("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)`     | Asserts that all the entries in the map can be matched with the provided matchers, extra keys in the map are ignored. |
-| `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers. |
+| `map.shouldMatchExactly("k1" to {it shouldBe "v1"}, "k2" to {it shouldBe "v2"}, ...)` | Asserts that the entries in the map can be exactly matched with the provided matchers.                                |
 
-| Sets ||
-|------|----|
+| Sets            |                                                                             |
+|-----------------|-----------------------------------------------------------------------------|
 | shouldIntersect | Asserts that the set has at least one element in common with the other set. |
 
-| Strings                                     ||
-|---------------------------------------------| ---- |
-| `str.shouldBeBlank()`                       | Asserts that the string contains only whitespace, or is empty. |
-| `str.shouldBeEmpty()`                       | Asserts that the string has length zero. |
-| `str.shouldBeLowerCase()`                   | Asserts that the string is all in lower case. |
-| `str.shouldBeUpperCase()`                   | Asserts that the string is all in upper case. |
-| `str.shouldContain("substr")`               | Asserts that the string includes the given substring. The substring can be equal to the string. This matcher is case sensitive. To make this case insensitive use shouldContainIgnoringCase(). |
-| `str.shouldContain(regex)`                  | Asserts that the string includes the given regular expression. |
-| `str.shouldContainADigit()`                 | Asserts that the string contains at least one digit. |
-| `str.shouldContainIgnoringCase(substring)`  | Asserts that the string contains the substring ignoring case. |
-| `str.shouldContainOnlyDigits()`             | Asserts that the string contains only digits, or is empty. |
-| `str.shouldBeInteger([radix])`              | Asserts that the string contains an integer and returns it. |
-| `str.shouldContainOnlyOnce(substring)`      | Asserts that the string contains the substring exactly once. |
-| `str.shouldEndWith("suffix")`               | Asserts that the string ends with the given suffix. The suffix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
-| `str.shouldHaveLength(length)`              | Asserts that the string has the given length. |
-| `str.shouldHaveLineCount(count)`            | Asserts that the string contains the given number of lines. Similar to `str.split("\n").length.shouldBe(n)` |
-| `str.shouldHaveMaxLength(max)`              | Asserts that the string is no longer than the given max length. |
-| `str.shouldHaveMinLength(min)`              | Asserts that the string is no shorter than the given min length. |
-| `str.shouldHaveSameLengthAs(anotherString)` | Asserts that the string has the same length as another string. |
-| `str.shouldMatch(regex)`                    | Asserts that the string fully matches the given regex. |
+| Strings                                     |                                                                                                                                                                                                                  |
+|---------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `str.shouldBeBlank()`                       | Asserts that the string contains only whitespace, or is empty.                                                                                                                                                   |
+| `str.shouldBeEmpty()`                       | Asserts that the string has length zero.                                                                                                                                                                         |
+| `str.shouldBeLowerCase()`                   | Asserts that the string is all in lower case.                                                                                                                                                                    |
+| `str.shouldBeUpperCase()`                   | Asserts that the string is all in upper case.                                                                                                                                                                    |
+| `str.shouldContain("substr")`               | Asserts that the string includes the given substring. The substring can be equal to the string. This matcher is case sensitive. To make this case insensitive use shouldContainIgnoringCase().                   |
+| `str.shouldContain(regex)`                  | Asserts that the string includes the given regular expression.                                                                                                                                                   |
+| `str.shouldContainADigit()`                 | Asserts that the string contains at least one digit.                                                                                                                                                             |
+| `str.shouldContainIgnoringCase(substring)`  | Asserts that the string contains the substring ignoring case.                                                                                                                                                    |
+| `str.shouldContainOnlyDigits()`             | Asserts that the string contains only digits, or is empty.                                                                                                                                                       |
+| `str.shouldBeInteger([radix])`              | Asserts that the string contains an integer and returns it.                                                                                                                                                      |
+| `str.shouldContainOnlyOnce(substring)`      | Asserts that the string contains the substring exactly once.                                                                                                                                                     |
+| `str.shouldEndWith("suffix")`               | Asserts that the string ends with the given suffix. The suffix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher.   |
+| `str.shouldHaveLength(length)`              | Asserts that the string has the given length.                                                                                                                                                                    |
+| `str.shouldHaveLineCount(count)`            | Asserts that the string contains the given number of lines. Similar to `str.split("\n").length.shouldBe(n)`                                                                                                      |
+| `str.shouldHaveMaxLength(max)`              | Asserts that the string is no longer than the given max length.                                                                                                                                                  |
+| `str.shouldHaveMinLength(min)`              | Asserts that the string is no shorter than the given min length.                                                                                                                                                 |
+| `str.shouldHaveSameLengthAs(anotherString)` | Asserts that the string has the same length as another string.                                                                                                                                                   |
+| `str.shouldMatch(regex)`                    | Asserts that the string fully matches the given regex.                                                                                                                                                           |
 | `str.shouldStartWith("prefix")`             | Asserts that the string starts with the given prefix. The prefix can be equal to the string. This matcher is case sensitive. To make this case insensitive call `toLowerCase()` on the value before the matcher. |
-| `str.shouldBeEqualIgnoringCase(other)`      | Asserts that the string is equal to another string ignoring case. |
-| `str.shouldBeTruthy()`                      | Asserts that the string is truthy. Truthy is one of the followings: ["true", "yes", "y", "1"] |
-| `str.shouldBeFalsy()`                       | Asserts that the string is falsy. Falsy is one of the followings: ["false", "no", "n", "0"] |
+| `str.shouldBeEqualIgnoringCase(other)`      | Asserts that the string is equal to another string ignoring case.                                                                                                                                                |
+| `str.shouldBeTruthy()`                      | Asserts that the string is truthy. Truthy is one of the followings: ["true", "yes", "y", "1"]                                                                                                                    |
+| `str.shouldBeFalsy()`                       | Asserts that the string is falsy. Falsy is one of the followings: ["false", "no", "n", "0"]                                                                                                                      |
 
-| Integers                            ||
-|-------------------------------------| ---- |
+| Integers                            |                                                                        |
+|-------------------------------------|------------------------------------------------------------------------|
 | `int.shouldBeBetween(x, y)`         | Asserts that the integer is between x and y, inclusive on both x and y |
-| `int.shouldBeLessThan(n)`           | Asserts that the integer is less than the given value n |
-| `int.shouldBeLessThanOrEqual(n)`    | Asserts that the integer is less or equal to than the given value n |
-| `int.shouldBeAtMost(n)`             | Asserts that the integer is less or equal to than the given value n |
-| `int.shouldBeGreaterThan(n)`        | Asserts that the integer is greater than the given value n |
+| `int.shouldBeLessThan(n)`           | Asserts that the integer is less than the given value n                |
+| `int.shouldBeLessThanOrEqual(n)`    | Asserts that the integer is less or equal to than the given value n    |
+| `int.shouldBeAtMost(n)`             | Asserts that the integer is less or equal to than the given value n    |
+| `int.shouldBeGreaterThan(n)`        | Asserts that the integer is greater than the given value n             |
 | `int.shouldBeGreaterThanOrEqual(n)` | Asserts that the integer is greater than or equal to the given value n |
 | `int.shouldBeAtLeast(n)`            | Asserts that the integer is greater than or equal to the given value n |
-| `int.shouldBeEven()`                | Asserts that the integer is even. |
-| `int.shouldBeOdd()`                 | Asserts that the integer is odd. |
-| `int.shouldBeInRange(range)`        | Asserts that the integer is included in the given range. |
-| `int.shouldBeZero()`                | Asserts that the integer is zero |
+| `int.shouldBeEven()`                | Asserts that the integer is even.                                      |
+| `int.shouldBeOdd()`                 | Asserts that the integer is odd.                                       |
+| `int.shouldBeInRange(range)`        | Asserts that the integer is included in the given range.               |
+| `int.shouldBeZero()`                | Asserts that the integer is zero                                       |
 
-| Longs                                ||
-|--------------------------------------| ---- |
+| Longs                                |                                                                     |
+|--------------------------------------|---------------------------------------------------------------------|
 | `long.shouldBeBetween(x, y)`         | Asserts that the long is between x and y, inclusive on both x and y |
-| `long.shouldBeLessThan(n)`           | Asserts that the long is less than the given value n |
-| `long.shouldBeLessThanOrEqual(n)`    | Asserts that the long is less or equal to than the given value n |
-| `long.shouldBeAtMost(n)`             | Asserts that the long is less or equal to than the given value n |
-| `long.shouldBeGreaterThan(n)`        | Asserts that the long is greater than the given value n |
+| `long.shouldBeLessThan(n)`           | Asserts that the long is less than the given value n                |
+| `long.shouldBeLessThanOrEqual(n)`    | Asserts that the long is less or equal to than the given value n    |
+| `long.shouldBeAtMost(n)`             | Asserts that the long is less or equal to than the given value n    |
+| `long.shouldBeGreaterThan(n)`        | Asserts that the long is greater than the given value n             |
 | `long.shouldBeGreaterThanOrEqual(n)` | Asserts that the long is greater than or equal to the given value n |
-| `long.shouldBeAtLeast(n)`             | Asserts that the long is greater than or equal to the given value n |
-| `long.shouldBeInRange(range)`        | Asserts that the long is included in the given range. |
-| `long.shouldBeEven()`                | Asserts that the long is even. |
-| `long.shouldBeOdd()`                 | Asserts that the long is odd. |
-| `long.shouldBeZero()`                | Asserts that the long is zero |
+| `long.shouldBeAtLeast(n)`            | Asserts that the long is greater than or equal to the given value n |
+| `long.shouldBeInRange(range)`        | Asserts that the long is included in the given range.               |
+| `long.shouldBeEven()`                | Asserts that the long is even.                                      |
+| `long.shouldBeOdd()`                 | Asserts that the long is odd.                                       |
+| `long.shouldBeZero()`                | Asserts that the long is zero                                       |
 
-| Doubles or Floats                               ||
-|-------------------------------------------------| ---- |
+| Doubles or Floats                               |                                                                                                                                           |
+|-------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------|
 | `double.shouldBe(value plusOrMinus(tolerance))` | Asserts that the double is equal to the given value within a tolerance range. This is the recommended way of testing for double equality. |
-| `double.shouldBeBetween(x, y)`                  | Asserts that the double is between x and y, inclusive on both x and y |
-| `double.shouldBeLessThan(n)`                    | Asserts that the double is less than the given value n |
-| `double.shouldBeLessThanOrEqual(n)`             | Asserts that the double is less or equal to than the given value n |
-| `double.shouldBeGreaterThan(n)`                 | Asserts that the double is greater than the given value n |
-| `double.shouldBeGreaterThanOrEqual(n)`          | Asserts that the double is greater than or equal to the given value n |
-| `double.shouldBePositive()`                     | Asserts that the double is positive |
-| `double.shouldBeNegative()`                     | Asserts that the double is negative |
-| `double.shouldBePositiveInfinity()`             | Asserts that the double is positive infinity |
-| `double.shouldBeNegativeInfinity()`             | Asserts that the double is negative infinity |
-| `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN |
-| `double.shouldBeZero()`                         | Asserts that the double is zero |
+| `double.shouldBeBetween(x, y)`                  | Asserts that the double is between x and y, inclusive on both x and y                                                                     |
+| `double.shouldBeLessThan(n)`                    | Asserts that the double is less than the given value n                                                                                    |
+| `double.shouldBeLessThanOrEqual(n)`             | Asserts that the double is less or equal to than the given value n                                                                        |
+| `double.shouldBeGreaterThan(n)`                 | Asserts that the double is greater than the given value n                                                                                 |
+| `double.shouldBeGreaterThanOrEqual(n)`          | Asserts that the double is greater than or equal to the given value n                                                                     |
+| `double.shouldBePositive()`                     | Asserts that the double is positive                                                                                                       |
+| `double.shouldBeNegative()`                     | Asserts that the double is negative                                                                                                       |
+| `double.shouldBePositiveInfinity()`             | Asserts that the double is positive infinity                                                                                              |
+| `double.shouldBeNegativeInfinity()`             | Asserts that the double is negative infinity                                                                                              |
+| `double.shouldBeNaN()`                          | Asserts that the double is the Not-a-Number constant NaN                                                                                  |
+| `double.shouldBeZero()`                         | Asserts that the double is zero                                                                                                           |
 
-| BigDecimal                                          |                                                                            |
-|-----------------------------------------------------|----------------------------------------------------------------------------|
-| `bigDecimal.shouldHavePrecision(n)`                 | Asserts that the bigDecimal precision is equals than the given value n     |
-| `bigDecimal.shouldHaveScale(n)`                     | Asserts that the bigDecimal scale is equals than the given value n         |
-| `bigDecimal.shouldBePositive()`                     | Asserts that the bigDecimal is positive                                    |
-| `bigDecimal.shouldBeNegative()`                     | Asserts that the bigDecimal is negative                                    |
-| `bigDecimal.shouldNotBePositive()`                  | Asserts that the bigDecimal is not positive                                |
-| `bigDecimal.shouldNotBeNegative()`                  | Asserts that the bigDecimal is not negative                                |
-| `bigDecimal.shouldBeZero()`                         | Asserts that the bigDecimal is zero                                        |
-| `bigDecimal.shouldBeLessThan(n)`                    | Asserts that the bigDecimal is less than the given value n                 |
-| `bigDecimal.shouldBeLessThanOrEqual(n)`             | Asserts that the bigDecimal is less than or equal to n                     |
-| `bigDecimal.shouldBeAtMost(n)`                      | Asserts that the bigDecimal is less than or equal to n                     |
-| `bigDecimal.shouldBeGreaterThan(n)`                 | Asserts that the bigDecimal is greater than the given value n              |
-| `bigDecimal.shouldBeGreaterThanOrEqual(n)`          | Asserts that the bigDecimal is greater than or equals to the given value n |
-| `bigDecimal.shouldBeAtLeast(n)`                     | Asserts that the bigDecimal is greater than or equals to the given value n |
-| `bigDecimal.shouldBeInRange(r)`                     | Asserts that the bigDecimal is in the given range                          |
-| `bigDecimal.shouldBeEqualIgnoringScale(r)`          | Asserts that the bigDecimal is equal to the given value n ignoring scale   |
+| BigDecimal                                          |                                                                                   |
+|-----------------------------------------------------|-----------------------------------------------------------------------------------|
+| `bigDecimal.shouldHavePrecision(n)`                 | Asserts that the bigDecimal precision is equals than the given value n            |
+| `bigDecimal.shouldHaveScale(n)`                     | Asserts that the bigDecimal scale is equals than the given value n                |
+| `bigDecimal.shouldBePositive()`                     | Asserts that the bigDecimal is positive                                           |
+| `bigDecimal.shouldBeNegative()`                     | Asserts that the bigDecimal is negative                                           |
+| `bigDecimal.shouldNotBePositive()`                  | Asserts that the bigDecimal is not positive                                       |
+| `bigDecimal.shouldNotBeNegative()`                  | Asserts that the bigDecimal is not negative                                       |
+| `bigDecimal.shouldBeZero()`                         | Asserts that the bigDecimal is zero                                               |
+| `bigDecimal.shouldBeLessThan(n)`                    | Asserts that the bigDecimal is less than the given value n                        |
+| `bigDecimal.shouldBeLessThanOrEqual(n)`             | Asserts that the bigDecimal is less than or equal to n                            |
+| `bigDecimal.shouldBeAtMost(n)`                      | Asserts that the bigDecimal is less than or equal to n                            |
+| `bigDecimal.shouldBeGreaterThan(n)`                 | Asserts that the bigDecimal is greater than the given value n                     |
+| `bigDecimal.shouldBeGreaterThanOrEqual(n)`          | Asserts that the bigDecimal is greater than or equals to the given value n        |
+| `bigDecimal.shouldBeAtLeast(n)`                     | Asserts that the bigDecimal is greater than or equals to the given value n        |
+| `bigDecimal.shouldBeInRange(r)`                     | Asserts that the bigDecimal is in the given range                                 |
+| `bigDecimal.shouldBeEqualIgnoringScale(r)`          | Asserts that the bigDecimal is equal to the given value n ignoring scale          |
 | `bigDecimal.shouldBe(value plusOrMinus(tolerance))` | Asserts that the bigDecimal is equal to the given value within a tolerance range. |
 
-| Channels                                          ||
-|---------------------------------------------------| ---- |
-| `channel.shouldReceiveWithin(duration)`           | Asserts that the channel should receive within duration |
-| `channel.shouldReceiveNoElementsWithin(duration)` | Asserts that the channel should not receive any elements within duration |
+| Channels                                          |                                                                           |
+|---------------------------------------------------|---------------------------------------------------------------------------|
+| `channel.shouldReceiveWithin(duration)`           | Asserts that the channel should receive within duration                   |
+| `channel.shouldReceiveNoElementsWithin(duration)` | Asserts that the channel should not receive any elements within duration  |
 | `channel.shouldHaveSize(n)`                       | Asserts that the channel should receive exactly n elements before closing |
-| `channel.shouldReceiveAtLeast(n)`                 | Asserts that the channel should receive >= n elements |
-| `channel.shouldReceiveAtMost(n)`                  | Asserts that the channel should receive <=n elements before closing |
-| `channel.shouldBeClosed()`                        | Asserts that the channel is closed |
-| `channel.shouldBeOpen()`                          | Asserts that the channel is open |
-| `channel.shouldBeEmpty()`                         | Asserts that the channel is empty |
+| `channel.shouldReceiveAtLeast(n)`                 | Asserts that the channel should receive >= n elements                     |
+| `channel.shouldReceiveAtMost(n)`                  | Asserts that the channel should receive <=n elements before closing       |
+| `channel.shouldBeClosed()`                        | Asserts that the channel is closed                                        |
+| `channel.shouldBeOpen()`                          | Asserts that the channel is open                                          |
+| `channel.shouldBeEmpty()`                         | Asserts that the channel is empty                                         |
 
-| URIs                                ||
-|-------------------------------------| ---- |
-| `uri.shouldHaveAuthority(fragment)` | Asserts that the uri has the given authority. |
-| `uri.shouldHaveFragment(fragment)`  | Asserts that the uri has the given fragment. |
-| `uri.shouldHaveHost(scheme)`        | Asserts that the uri has the given hostname. |
+| URIs                                |                                                                   |
+|-------------------------------------|-------------------------------------------------------------------|
+| `uri.shouldHaveAuthority(fragment)` | Asserts that the uri has the given authority.                     |
+| `uri.shouldHaveFragment(fragment)`  | Asserts that the uri has the given fragment.                      |
+| `uri.shouldHaveHost(scheme)`        | Asserts that the uri has the given hostname.                      |
 | `uri.shouldHaveParameter(scheme)`   | Asserts that the uri's query string contains the given parameter. |
-| `uri.shouldHavePath(scheme)`        | Asserts that the uri has the given path. |
-| `uri.shouldHavePort(scheme)`        | Asserts that the uri has the given port. |
-| `uri.shouldHaveQuery(fragment)`     | Asserts that the uri has the given query. |
-| `uri.shouldHaveScheme(scheme)`      | Asserts that the uri has the given scheme. |
+| `uri.shouldHavePath(scheme)`        | Asserts that the uri has the given path.                          |
+| `uri.shouldHavePort(scheme)`        | Asserts that the uri has the given port.                          |
+| `uri.shouldHaveQuery(fragment)`     | Asserts that the uri has the given query.                         |
+| `uri.shouldHaveScheme(scheme)`      | Asserts that the uri has the given scheme.                        |
 
-| Files                                              ||
-|----------------------------------------------------| ---- |
-| `file.shouldBeAbsolute()`                          | Asserts that the file represents an absolute path. |
-| `file.shouldBeADirectory()`                        | Asserts that the file denotes a directory. |
-| `file.shouldBeAFile()`                             | Asserts that the file denotes a file. |
-| `file.shouldBeCanonical()`                         | Asserts that the file is in canonical format. |
-| `file.shouldBeEmpty()`                             | Asserts that the file exists but is empty. |
-| `file.shouldBeExecutable()`                        | Asserts that the file is executable by the current process. |
-| `file.shouldBeHidden()`                            | Asserts that the file exists on disk and is a hidden file. |
-| `file.shouldBeReadable()`                          | Asserts that the file is readable by the current process. |
-| `file.shouldBeRelative()`                          | Asserts that the file represents a relative path. |
-| `file.shouldBeSmaller(file)`                       | Asserts that this file is smaller than the given file. |
-| `file.shouldBeLarger(file)`                        | Asserts that this file is larger than the given file. |
-| `file.shouldBeWriteable()`                         | Asserts that the file is writeable by the current process. |
-| `dir.shouldBeNonEmptyDirectory()`                  | Asserts that the file is a directory and is non empty. |
-| `dir.shouldContainFile(name)`                      | Asserts that the file is a directory and that it contains a file with the given name. |
-| `dir.shouldContainNFiles(name)`                    | Asserts that the file is a directory and that it contains exactly n files. |
-| `file.shouldExist()`                               | Asserts that the file exists on disk, either a directory or as a file. |
-| `file.shouldHaveExtension(ext)`                    | Asserts that the file ends with the given extension. |
-| `file.shouldHaveFileSize(size)`                    | Asserts that the file has the given file size. |
-| `file.shouldHaveName(name)`                        | Asserts that the file's name matches the given name. |
-| `file.shouldHavePath(path)`                        | Asserts that the file's path matches the given path. |
-| `file.shouldStartWithPath(prefix)`                 | Asserts that the file's path starts with the given prefix. |
+| Files                                              |                                                                                                       |
+|----------------------------------------------------|-------------------------------------------------------------------------------------------------------|
+| `file.shouldBeAbsolute()`                          | Asserts that the file represents an absolute path.                                                    |
+| `file.shouldBeADirectory()`                        | Asserts that the file denotes a directory.                                                            |
+| `file.shouldBeAFile()`                             | Asserts that the file denotes a file.                                                                 |
+| `file.shouldBeCanonical()`                         | Asserts that the file is in canonical format.                                                         |
+| `file.shouldBeEmpty()`                             | Asserts that the file exists but is empty.                                                            |
+| `file.shouldBeExecutable()`                        | Asserts that the file is executable by the current process.                                           |
+| `file.shouldBeHidden()`                            | Asserts that the file exists on disk and is a hidden file.                                            |
+| `file.shouldBeReadable()`                          | Asserts that the file is readable by the current process.                                             |
+| `file.shouldBeRelative()`                          | Asserts that the file represents a relative path.                                                     |
+| `file.shouldBeSmaller(file)`                       | Asserts that this file is smaller than the given file.                                                |
+| `file.shouldBeLarger(file)`                        | Asserts that this file is larger than the given file.                                                 |
+| `file.shouldBeWriteable()`                         | Asserts that the file is writeable by the current process.                                            |
+| `dir.shouldBeNonEmptyDirectory()`                  | Asserts that the file is a directory and is non empty.                                                |
+| `dir.shouldContainFile(name)`                      | Asserts that the file is a directory and that it contains a file with the given name.                 |
+| `dir.shouldContainNFiles(name)`                    | Asserts that the file is a directory and that it contains exactly n files.                            |
+| `file.shouldExist()`                               | Asserts that the file exists on disk, either a directory or as a file.                                |
+| `file.shouldHaveExtension(ext)`                    | Asserts that the file ends with the given extension.                                                  |
+| `file.shouldHaveFileSize(size)`                    | Asserts that the file has the given file size.                                                        |
+| `file.shouldHaveName(name)`                        | Asserts that the file's name matches the given name.                                                  |
+| `file.shouldHavePath(path)`                        | Asserts that the file's path matches the given path.                                                  |
+| `file.shouldStartWithPath(prefix)`                 | Asserts that the file's path starts with the given prefix.                                            |
 | `dir.shouldContainFileDeep(name)`                  | Assert that file is a directory and that it or any sub directory contains a file with the given name. |
-| `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name. |
-| `file.shouldBeSymbolicLink()`                      | Asserts that the file is a symbolic link. |
-| `file.shouldHaveParent(name)`                      |  Assert that the file has a parent with the given name |
+| `dir.shouldContainFiles(name1, name2, ..., nameN)` | Asserts that the file is a directory and that it contains al files with the given name.               |
+| `file.shouldBeSymbolicLink()`                      | Asserts that the file is a symbolic link.                                                             |
+| `file.shouldHaveParent(name)`                      | Assert that the file has a parent with the given name                                                 |
 
 | Dates                                         |                                                                                         |
 |-----------------------------------------------|-----------------------------------------------------------------------------------------|
@@ -269,11 +270,11 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second.                                         |
 | `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration. |
 
-| ZonedDateTime                                                        ||
-|----------------------------------------------------------------------| ---- |
-| `zonedDateTime.shouldBeToday()`                                      | Asserts that the ZonedDateTime has the same day as the today. |
-| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)`        | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
-| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)` | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime. |
+| ZonedDateTime                                                 |                                                                                                         |
+|---------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `zonedDateTime.shouldBeToday()`                               | Asserts that the ZonedDateTime has the same day as the today.                                           |
+| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)`         | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime.                             |
 
 | OffsetDateTime                                                           |                                                                                                      |
 |--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
@@ -281,53 +282,53 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`          | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
 | `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
 
-| Times                                               ||
-|-----------------------------------------------------| ---- |
-| `time.shouldHaveSameHoursAs(otherTime)`             | Asserts that the time has the same hours as the given time. |
-| `time.shouldHaveSameMinutesAs(otherTime)`           | Asserts that the time has the same minutes as the given time. |
-| `time.shouldHaveSameSecondsAs(otherTime)`           | Asserts that the time has the same seconds as the given time. |
-| `time.shouldHaveSameNanosAs(otherTime)`             | Asserts that the time has the same nanos as the given time. |
-| `time.shouldBeBefore(otherTime)`                    | Asserts that the time is before the given time. |
-| `time.shouldBeAfter(otherTime)`                     | Asserts that the time is after the given time. |
-| `time.shouldBeBetween(firstTime, secondTime)`       | Asserts that the time is between firstTime and secondTime. |
-| `time.shouldBe(otherTime plusOrMinus 1.minutes)`    | Asserts that the time is within duration of other time. |
+| Times                                            |                                                               |
+|--------------------------------------------------|---------------------------------------------------------------|
+| `time.shouldHaveSameHoursAs(otherTime)`          | Asserts that the time has the same hours as the given time.   |
+| `time.shouldHaveSameMinutesAs(otherTime)`        | Asserts that the time has the same minutes as the given time. |
+| `time.shouldHaveSameSecondsAs(otherTime)`        | Asserts that the time has the same seconds as the given time. |
+| `time.shouldHaveSameNanosAs(otherTime)`          | Asserts that the time has the same nanos as the given time.   |
+| `time.shouldBeBefore(otherTime)`                 | Asserts that the time is before the given time.               |
+| `time.shouldBeAfter(otherTime)`                  | Asserts that the time is after the given time.                |
+| `time.shouldBeBetween(firstTime, secondTime)`    | Asserts that the time is between firstTime and secondTime.    |
+| `time.shouldBe(otherTime plusOrMinus 1.minutes)` | Asserts that the time is within duration of other time.       |
 
 
 
-| Instant                                               ||
-|-------------------------------------------------------| ---- |
-| `instant.shouldBeAfter(anotherInstant)`               | Asserts that the instant is after anotherInstant |
-| `instant.shouldBeBefore(anotherInstant)`              | Asserts that the instant is before anotherInstant |
-| `instant.shouldBeBetween(fromInstant, toInstant)`     | Asserts that the instant is between fromInstant and toInstant |
-| `instant.shouldBeCloseTo(anotherInstant, duration)`   | Asserts that the instant is close To anotherInstant in range by duration |
-| `instant.shouldBe(otherTime plusOrMinus 1.minutes)`   | Asserts that the instant is within duration of other instant. |
+| Instant                                             |                                                                          |
+|-----------------------------------------------------|--------------------------------------------------------------------------|
+| `instant.shouldBeAfter(anotherInstant)`             | Asserts that the instant is after anotherInstant                         |
+| `instant.shouldBeBefore(anotherInstant)`            | Asserts that the instant is before anotherInstant                        |
+| `instant.shouldBeBetween(fromInstant, toInstant)`   | Asserts that the instant is between fromInstant and toInstant            |
+| `instant.shouldBeCloseTo(anotherInstant, duration)` | Asserts that the instant is close To anotherInstant in range by duration |
+| `instant.shouldBe(otherTime plusOrMinus 1.minutes)` | Asserts that the instant is within duration of other instant.            |
 
-| Timestamp                                               ||
-|---------------------------------------------------------| ---- |
-| `timestamp.shouldBeAfter(anotherTimestamp)`             | Asserts that the timestamp is after anotherTimestamp |
-| `timestamp.shouldBeBefore(anotherTimestamp)`            | Asserts that the timestamp is before anotherTimestamp |
-| `timestamp.shouldBeBetween(fromTimestamp, toTimestamp)` | Asserts that the timestamp is between fromTimestamp and toTimestamp|
+| Timestamp                                               |                                                                     |
+|---------------------------------------------------------|---------------------------------------------------------------------|
+| `timestamp.shouldBeAfter(anotherTimestamp)`             | Asserts that the timestamp is after anotherTimestamp                |
+| `timestamp.shouldBeBefore(anotherTimestamp)`            | Asserts that the timestamp is before anotherTimestamp               |
+| `timestamp.shouldBeBetween(fromTimestamp, toTimestamp)` | Asserts that the timestamp is between fromTimestamp and toTimestamp |
 
 
-| Concurrent                                      ||
-|-------------------------------------------------| ---- |
-| `shouldCompleteWithin(timeout, unit, function)` | Asserts that the given function completes within the given duration. |
-| `shouldTimeout(timeout, unit, function)`        | Asserts that given function does not complete within the given duration. |
+| Concurrent                                      |                                                                                      |
+|-------------------------------------------------|--------------------------------------------------------------------------------------|
+| `shouldCompleteWithin(timeout, unit, function)` | Asserts that the given function completes within the given duration.                 |
+| `shouldTimeout(timeout, unit, function)`        | Asserts that given function does not complete within the given duration.             |
 | `shouldTimeout(duration, suspendableFunction)`  | Asserts that given suspendable function does not complete within the given duration. |
 
-| Futures                                             ||
-|-----------------------------------------------------| ---- |
-| `future.shouldBeCancelled()`                        | Asserts that the future has been cancelled. |
-| `future.shouldBeCompleted()`                        | Asserts that the future has completed. |
-| `future.shouldBeCompletedExceptionally()`           | Asserts that the the future has completed with an exception. |
+| Futures                                             |                                                                 |
+|-----------------------------------------------------|-----------------------------------------------------------------|
+| `future.shouldBeCancelled()`                        | Asserts that the future has been cancelled.                     |
+| `future.shouldBeCompleted()`                        | Asserts that the future has completed.                          |
+| `future.shouldBeCompletedExceptionally()`           | Asserts that the the future has completed with an exception.    |
 | `future.shouldCompleteExceptionallyWith(throwable)` | Asserts that the the future will complete with given exception. |
 
-| Threads                       ||
-|-------------------------------| ---- |
+| Threads                       |                                               |
+|-------------------------------|-----------------------------------------------|
 | `thread.shouldBeBlocked()`    | Asserts that the thread is currently blocked. |
-| `thread.shouldBeDaemon()`     | Asserts that the thread is a daemon thread. |
-| `thread.shouldBeAlive()`      | Asserts that the thread is alive. |
-| `thread.shouldBeTerminated()` | Asserts that the thread has been terminated. |
+| `thread.shouldBeDaemon()`     | Asserts that the thread is a daemon thread.   |
+| `thread.shouldBeAlive()`      | Asserts that the thread is alive.             |
+| `thread.shouldBeTerminated()` | Asserts that the thread has been terminated.  |
 
 | Throwables / Exceptions                    |                                                                                 |
 |--------------------------------------------|---------------------------------------------------------------------------------|
@@ -391,14 +392,14 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `ktype.shouldBeOfType<T>()`                                    | Asserts that the KType has the type T                                                                                     |
 
 
-| Statistic                                                 ||
-|-----------------------------------------------------------| --- |
-| `collection.shouldHaveMean(mean)`                         | Asserts that collection has specific mean with default precision = 4 |
-| `collection.shouldHaveMean(mean, precision)`              | Asserts that collection has specific mean with specific precision |
-| `collection.shouldHaveVariance(mean)`                     | Asserts that collection has specific variance with default precision = 4 |
-| `collection.shouldHaveVariance(mean, precision)`          | Asserts that collection has specific variance with specific precision |
+| Statistic                                                 |                                                                                    |
+|-----------------------------------------------------------|------------------------------------------------------------------------------------|
+| `collection.shouldHaveMean(mean)`                         | Asserts that collection has specific mean with default precision = 4               |
+| `collection.shouldHaveMean(mean, precision)`              | Asserts that collection has specific mean with specific precision                  |
+| `collection.shouldHaveVariance(mean)`                     | Asserts that collection has specific variance with default precision = 4           |
+| `collection.shouldHaveVariance(mean, precision)`          | Asserts that collection has specific variance with specific precision              |
 | `collection.shouldHaveStandardDeviation(mean)`            | Asserts that collection has specific standard deviation with default precision = 4 |
-| `collection.shouldHaveStandardDeviation(mean, precision)` | Asserts that collection has specific standard deviation with specific precision |
+| `collection.shouldHaveStandardDeviation(mean, precision)` | Asserts that collection has specific standard deviation with specific precision    |
 
 
 

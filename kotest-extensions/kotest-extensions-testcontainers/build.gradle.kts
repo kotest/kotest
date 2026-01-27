@@ -19,7 +19,7 @@ kotlin {
          dependencies {
             implementation(libs.testcontainers.mysql)
             implementation(libs.mysql.driver)
-            implementation("redis.clients:jedis:7.1.0")
+            implementation(libs.jedis)
          }
       }
    }
