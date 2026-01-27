@@ -1,5 +1,7 @@
 package io.kotest.framework.gradle
 
+import io.kotest.common.ExperimentalKotest
+
 open class KotestGradleExtension {
 
    /**
@@ -8,7 +10,10 @@ open class KotestGradleExtension {
    var customGradleTask = false
 
    /**
-    * Set to true and the Kotest engine will propagate ignore reasons to Gradle.
+    * Set to true, and the Kotest engine will propagate ignore reasons to Gradle.
     */
    var showIgnoreReasons = false
+
+   @ExperimentalKotest
+   var alwaysRerunTests = false
 }
