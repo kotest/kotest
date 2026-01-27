@@ -191,7 +191,6 @@ sealed interface Descriptor {
    }
 }
 
-// only for creating spec descriptors in unit tests
 @KotestInternal
 fun KClass<*>.toDescriptor() = Descriptor.SpecDescriptor(DescriptorId(bestName()))
 

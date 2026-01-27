@@ -22,7 +22,7 @@ internal class SpecRefInflator(
     * Creates an instance of the given [SpecRef], notifies users of the instantiation event
     * or instantiation failure, and returns a Result with the error or spec.
     *
-    * After this method is called the spec is sealed so no further configuration or root tests can be added.
+    * After this method is invoked, the spec is sealed, so no further configuration or root tests can be added.
     */
    internal suspend fun inflate(ref: SpecRef): Result<Spec> {
       val instance = when (ref) {
@@ -32,7 +32,12 @@ internal class SpecRefInflator(
       return instance
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
-         .onSuccess { if (it is DslDrivenSpec) it.seal() }
+         .onSuccess { spec ->
+            // any spec level AfterProjectListener extensions should now be added to the global registry
+            spec.afterProjectListeners().forEach { registry.add(it) }
+            // seal the spec to detect errors adding more root tests after execution has started
+            if (spec is DslDrivenSpec) spec.seal()
+         }
    }
 }
 

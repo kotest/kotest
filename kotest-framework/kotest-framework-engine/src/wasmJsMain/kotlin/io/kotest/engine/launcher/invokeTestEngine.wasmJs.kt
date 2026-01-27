@@ -9,16 +9,22 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.js.exitProcess
 import io.kotest.engine.js.isNodeJsRuntime
 import io.kotest.engine.js.printStderr
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.await
+import kotlinx.coroutines.promise
 import kotlin.js.Promise
 
 @Suppress("OPT_IN_USAGE")
 actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjectConfig?) {
-   val promise = TestEngineLauncher()
-      .withSpecRefs(specs)
-      .withProjectConfig(config)
-      .withTeamCityListener()
-      .promise() as Promise<JsAny?>
+   val promise: Promise<JsAny> = GlobalScope.promise {
+      TestEngineLauncher()
+         .withSpecRefs(specs)
+         .withProjectConfig(config)
+         .withTeamCityListener()
+         .execute()
+   }.catch { jsException ->
+      throw jsException.asJsException()
+   }
    val result = promise.await<EngineResult>()
    handleEngineResult(result)
 }
@@ -27,8 +33,6 @@ private fun handleEngineResult(result: EngineResult) {
    if (isNodeJsRuntime()) {
       if (result.errors.isNotEmpty()) {
          printStderr(result.errors.first().stackTraceToString())
-         exitProcess(1)
-      } else if (result.testFailures) {
          exitProcess(1)
       }
    } else {

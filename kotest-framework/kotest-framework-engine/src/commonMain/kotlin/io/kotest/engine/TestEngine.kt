@@ -90,9 +90,9 @@ class TestEngine(private val config: TestEngineConfig) {
             }
          } catch (_: TimeoutCancellationException) {
             val e = ProjectTimeoutException(timeout)
-            EngineResult(listOf(e), false)
+            EngineResult(listOf(e))
          } catch (t: Throwable) {
-            EngineResult(listOf(t), false)
+            EngineResult(listOf(t))
          }
       }
    }
@@ -101,7 +101,7 @@ class TestEngine(private val config: TestEngineConfig) {
       context: TestEngineContext,
       projectConfigResolver: ProjectConfigResolver
    ): EngineResult {
-      var result: EngineResult = EngineResult.empty
+      var result = EngineResult()
       var projectContext: ProjectContext = context.toProjectContext()
       val initial: suspend (ProjectContext) -> Unit =
          { result = executeProjectListeners(projectContext.toEngineContext(context), projectConfigResolver) }
@@ -133,9 +133,10 @@ class TestEngine(private val config: TestEngineConfig) {
 
       // if we have errors in the before project listeners, we'll not execute tests,
       // but instead immediately return those errors.
-      if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors, false)
+      if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors)
 
       val result = sortSuiteAndExecute(context)
+      logger.log { "All specs completed with errors: ${result.errors}" }
 
       val afterErrors = extensions.afterProject()
 
@@ -161,6 +162,7 @@ class TestEngine(private val config: TestEngineConfig) {
             )
          )
          TestSuiteScheduler(context).schedule(context.suite)
+         EngineResult()
       } catch (t: Throwable) {
          EngineResult(listOf(t))
       }

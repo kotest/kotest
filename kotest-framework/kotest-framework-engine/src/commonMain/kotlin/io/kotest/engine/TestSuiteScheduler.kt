@@ -32,7 +32,7 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
    private val logger = Logger(TestSuiteScheduler::class)
    private val projectConfigResolver = ProjectConfigResolver(context.projectConfig, context.registry)
 
-   suspend fun schedule(suite: TestSuite): EngineResult {
+   suspend fun schedule(suite: TestSuite) {
       logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
 
       val isolated = suite.specs.filter { it.kclass.isIsolate() }
@@ -68,8 +68,6 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
             logger.log { Pair(null, "Isolated specs have completed") }
          }
       }
-
-      return EngineResult(emptyList(), false)
    }
 
    private suspend fun schedule(

@@ -214,9 +214,9 @@ abstract class Spec : TestConfiguration() {
    internal val afterProjectListeners = mutableListOf<AfterProjectListener>()
 
    /**
-    * Returns any extensions registered via this spec that should be added to the global scope.
+    * Returns any [AfterProjectListener]s registered via this spec that should be added to the global scope.
     */
-   internal fun projectExtensions(): List<AfterProjectListener> {
+   internal fun afterProjectListeners(): List<AfterProjectListener> {
       return afterProjectListeners.toList()
    }
 
