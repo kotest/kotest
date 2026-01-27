@@ -38,23 +38,32 @@ data class GradleTestFilterBuilder(
          if (spec != null) {
             append(spec.fqName!!.asString())
          }
-         /**
-          * For data tests, we don't append the test path since names are runtime-generated.
-          * Instead, we use tag based filtering to select data tests, handled via
-          * [GradleMultiplatformJvmTestTaskRunProducer.setOrRemoveDataTestEnvVarIfNeeded] and its callers.
-          *
-          * However, if the data test is inside a regular context, we append the ancestor path
-          * so that only tests within that specific context are run.
-          */
-         if (test != null && !test.isDataTest) {
-            append(".")
-            append(test.path().joinToString(" -- ") { it.name })
-         } else if (dataTestAncestorPath != null) {
-            // Data test inside a regular context - include the ancestor path
-            append(".")
-            append(dataTestAncestorPath)
-         }
+         appendTestPath()
          append("'")
+      }
+   }
+
+   /**
+    * Appends the test path to the filter based on the test type:
+    *
+    * - **Regular test**: Append the full test path (e.g., `MySpec.context -- test name`)
+    * - **Data test inside a regular context**: Append only the ancestor path to scope the run
+    *   to that context, while tag-based filtering selects the specific data test
+    * - **Root-level data test**: No path appended; tag-based filtering handles selection
+    *
+    * see [GradleMultiplatformJvmTestTaskRunProducer.setOrRemoveDataTestEnvVarIfNeeded] for context on data test handling.
+    */
+   private fun StringBuilder.appendTestPath() {
+      when {
+         // Regular test - use full path
+         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name }
+         // Data test inside a regular context - use ancestor path to scope the run
+         dataTestAncestorPath != null -> dataTestAncestorPath
+         // Root-level data test or no test - no path needed
+         else -> null
+      }?.let {
+         append(".")
+         append(it)
       }
    }
 }
