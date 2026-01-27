@@ -67,7 +67,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
    }
 
-   private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
+   private val kotestVersion = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
 
    override fun apply(project: Project) {
 
@@ -92,6 +92,17 @@ abstract class KotestPlugin : Plugin<Project> {
       project.gradle.taskGraph.whenReady {
          decorateGradleTestTask(project, extension)
       }
+
+      // we add the engine dependency for users to simplify configuration for KMP projects
+      // if it already exists, it won't matter, Gradle will handle it
+      if (extension.autoAddEngineDependency)
+         project.afterEvaluate {
+            project.configurations.filter { it.name == "commonTestApi" }.forEach {
+               it.dependencies.add(
+                  project.dependencies.create("io.kotest:kotest-framework-engine:$kotestVersion")
+               )
+            }
+         }
    }
 
    /**
@@ -474,7 +485,7 @@ abstract class KotestPlugin : Plugin<Project> {
       // handles the case when the configuration is already created
       project.configurations.configureEach {
          if (name == configurationName) {
-            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${kotestVersion}")
          }
       }
 
@@ -482,7 +493,7 @@ abstract class KotestPlugin : Plugin<Project> {
       project.configurations.whenObjectAdded {
          if (name == configurationName) {
             // use the same version as this plugin
-            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${kotestVersion}")
          }
       }
    }

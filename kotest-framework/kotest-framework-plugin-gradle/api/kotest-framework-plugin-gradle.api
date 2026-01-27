@@ -1,7 +1,9 @@
 public class io/kotest/framework/gradle/KotestGradleExtension {
 	public fun <init> ()V
+	public final fun getAutoAddEngineDependency ()Z
 	public final fun getCustomGradleTask ()Z
 	public final fun getShowIgnoreReasons ()Z
+	public final fun setAutoAddEngineDependency (Z)V
 	public final fun setCustomGradleTask (Z)V
 	public final fun setShowIgnoreReasons (Z)V
 }
