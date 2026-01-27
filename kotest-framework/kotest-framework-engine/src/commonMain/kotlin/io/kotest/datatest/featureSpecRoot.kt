@@ -149,8 +149,9 @@ fun <T> FeatureSpecRootScope.withFeatures(
    ts: Iterable<T>,
    test: suspend FeatureSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      feature(nameFn(t)) { this.test(t) }
+      feature(nameFn(t), dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -167,7 +168,8 @@ fun <T> FeatureSpecRootScope.withData(data: Map<String, T>, test: suspend Featur
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FeatureSpecRootScope.withFeatures(data: Map<String, T>, test: suspend FeatureSpecContainerScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      feature(name) { this.test(t) }
+      feature(name, dataTestTagConfig) { this.test(t) }
    }
 }

@@ -20,6 +20,7 @@ class DataTestTagTest : FunSpec({
       DataTestTagsWordSpec::class,
       DataTestTagsShouldSpec::class,
       DataTestTagsFreeSpec::class,
+      DataTestTagsFeatureSpec::class,
    ){ testClass ->
       val capturedTests = mutableListOf<TestCase>()
 
