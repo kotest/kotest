@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
    implementation(libs.kotlin.gradle.plugin)
+   implementation(libs.android.kotlin.multiplatform.library)
    implementation(libs.devPublish.plugin)
    implementation(libs.nmcp.plugin)
 }

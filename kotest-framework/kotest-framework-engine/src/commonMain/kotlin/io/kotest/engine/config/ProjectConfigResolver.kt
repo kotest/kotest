@@ -65,7 +65,7 @@ class ProjectConfigResolver(
    }
 
    /**
-    * If returns false then private spec classes will be ignored by the test engine.
+    * If this returns false, then the test engine will ignore private spec classes.
     * Defaults to false.
     */
    fun ignorePrivateClasses(): Boolean {
