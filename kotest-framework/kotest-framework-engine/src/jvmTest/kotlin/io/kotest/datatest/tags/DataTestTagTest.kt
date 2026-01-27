@@ -18,6 +18,7 @@ class DataTestTagTest : FunSpec({
       nameFn = {"withXXX applies data test tags to generated tests for $it"},
       DataTestTagsFunSpec::class,
       DataTestTagsWordSpec::class,
+      DataTestTagsShouldSpec::class,
    ){ testClass ->
       val capturedTests = mutableListOf<TestCase>()
 

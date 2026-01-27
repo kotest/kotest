@@ -1,8 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 
 /**
  * Allows tests to be registered in the 'ShouldSpec' fashion.
@@ -33,6 +35,15 @@ interface ShouldSpecRootScope : RootScope {
    }
 
    /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   fun context(name: String, config: TestConfig, test: suspend ShouldSpecContainerScope.() -> Unit) {
+      context(name = name, xmethod = TestXMethod.NONE, test = test, config = config)
+   }
+
+   /**
     * Adds a top-level context scope to the spec.
     */
    fun fcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
@@ -49,12 +60,13 @@ interface ShouldSpecRootScope : RootScope {
    private fun context(
       name: String,
       xmethod: TestXMethod,
-      test: suspend ShouldSpecContainerScope.() -> Unit
+      test: suspend ShouldSpecContainerScope.() -> Unit,
+      config: TestConfig? = null
    ) {
       addContainer(
          testName = contextName(name),
          xmethod = xmethod,
-         config = null
+         config = config
       ) { ShouldSpecContainerScope(this).test() }
    }
 
@@ -111,6 +123,15 @@ interface ShouldSpecRootScope : RootScope {
    }
 
    /**
+    * Adds a test with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   fun should(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) {
+      should(name = name, xmethod = TestXMethod.NONE, test = test, config = config)
+   }
+
+   /**
     * Adds a focused top-level test, with the given name and test function, with default test config.
     */
    fun fshould(name: String, test: suspend TestScope.() -> Unit) {
@@ -130,11 +151,11 @@ interface ShouldSpecRootScope : RootScope {
    private fun shouldName(name: String) =
       TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
 
-   private fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
+   private fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit, config: TestConfig? = null) {
       addTest(
          testName = shouldName(name),
          xmethod = xmethod,
-         config = null,
+         config = config,
          test = test,
       )
    }
