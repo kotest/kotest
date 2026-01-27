@@ -209,8 +209,9 @@ suspend fun <T> ExpectSpecContainerScope.withContexts(
    ts: Iterable<T>,
    test: suspend ExpectSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t), dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -223,8 +224,9 @@ suspend fun <T> ExpectSpecContainerScope.withExpects(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      expect(nameFn(t)) { this.test(t) }
+      expect(nameFn(t), dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -249,8 +251,9 @@ suspend fun <T> ExpectSpecContainerScope.withContexts(
    data: Map<String, T>,
    test: suspend ExpectSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name, dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -263,7 +266,8 @@ suspend fun <T> ExpectSpecContainerScope.withExpects(
    data: Map<String, T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      expect(name) { this.test(t) }
+      expect(name, dataTestTagConfig) { this.test(t) }
    }
 }
