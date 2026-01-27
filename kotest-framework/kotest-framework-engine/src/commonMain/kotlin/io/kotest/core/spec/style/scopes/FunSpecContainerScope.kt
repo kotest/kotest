@@ -148,7 +148,7 @@ class FunSpecContainerScope(
    }
 
    /**
-    * Adds a test case to this context with config passed as a param.
+    * Adds a test case with config passed as a param.
     * Marked as internal as it should be used only by the data test registrars.
     */
    @KotestInternal

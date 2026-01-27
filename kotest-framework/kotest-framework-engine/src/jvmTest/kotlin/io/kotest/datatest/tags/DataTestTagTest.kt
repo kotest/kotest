@@ -13,11 +13,11 @@ import io.kotest.matchers.shouldNotBe
 
 class DataTestTagTest : FunSpec({
 
-   //TODO once there is support for other spec styles, add them here and remove the duplicate funSpec used to make withTests work :)
+   //TODO once there is support for other spec styles
    withTests(
       nameFn = {"withXXX applies data test tags to generated tests for $it"},
       DataTestTagsFunSpec::class,
-      DataTestTagsFunSpec::class,
+      DataTestTagsWordSpec::class,
    ){ testClass ->
       val capturedTests = mutableListOf<TestCase>()
 

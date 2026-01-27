@@ -20,7 +20,7 @@ interface FunSpecRootScope : RootScope {
    }
 
    /**
-    * Adds a container [RootTest] that uses a [FunSpecContainerScope] as the test context and with config passed as a param.
+    * Adds a test with config passed as a param.
     * Marked as internal as it should be used only by the data test registrars.
     */
    @KotestInternal
