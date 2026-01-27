@@ -51,7 +51,6 @@ sealed interface SpecRef {
       override val fqn: String,
    ) : SpecRef {
 
-      @KotestTesting
       @KotestInternal
       constructor(f: () -> Spec, kclass: KClass<out Spec>) : this(f, kclass, kclass.bestName())
    }
