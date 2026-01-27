@@ -13,11 +13,16 @@ import io.kotest.matchers.shouldNotBe
 
 class DataTestTagTest : FunSpec({
 
-   //TODO once there is support for other spec styles, add them here and remove the duplicate funSpec used to make withTests work :)
    withTests(
       nameFn = {"withXXX applies data test tags to generated tests for $it"},
       DataTestTagsFunSpec::class,
-      DataTestTagsFunSpec::class,
+      DataTestTagsWordSpec::class,
+      DataTestTagsShouldSpec::class,
+      DataTestTagsFreeSpec::class,
+      DataTestTagsFeatureSpec::class,
+      DataTestTagsExpectSpec::class,
+      DataTestTagsDescribeSpec::class,
+      DataTestTagsBehaviorSpec::class,
    ){ testClass ->
       val capturedTests = mutableListOf<TestCase>()
 
@@ -92,6 +97,40 @@ class DataTestTagTest : FunSpec({
                in listOf("thirdChildOfSecondChild1", "thirdChildOfSecondChild2") -> "kotest.data.nonJvm"
                in listOf("firstAndOnlyChildOfThirdChildOfSecondChild1", "firstAndOnlyChildOfThirdChildOfSecondChild2") -> "kotest.data.nonJvm"
                in listOf("thirdChild1", "thirdChild2") -> "kotest.data.nonJvm"
+               else -> error("Unknown test name: $testName")
+            }
+            tagNames.last() shouldBe expectedLineTag
+         }
+      }
+   }
+
+   test("withXXX applies data test tags to generated tests for StringSpec") {
+      val capturedTests = mutableListOf<TestCase>()
+
+      TestEngineLauncher()
+         .withSpecRefs(SpecRef.Reference(DataTestTagsStringSpec::class))
+         .addExtension(object : BeforeTestListener {
+            override suspend fun beforeTest(testCase: TestCase) {
+               if(testCase.config?.tags?.isNotEmpty() == true){
+                  capturedTests.add(testCase)
+               }
+            }
+         })
+         .execute()
+
+      // StringSpec only supports root-level tests, so we have 4 data tests total
+      capturedTests shouldHaveSize 4
+
+      capturedTests.forEach { testCase ->
+         testCase.config shouldNotBe null
+         val tagNames = testCase.config?.tags?.map { it.name } ?: emptyList()
+         val testName = testCase.name.name
+         assertSoftly {
+            tagNames shouldHaveSize 2
+            tagNames.first() shouldBe "kotest.data"
+            val expectedLineTag = when (testName) {
+               in listOf("test1", "test2") -> "kotest.data.nonJvm"
+               in listOf("test3", "test4") -> "kotest.data.nonJvm"
                else -> error("Unknown test name: $testName")
             }
             tagNames.last() shouldBe expectedLineTag

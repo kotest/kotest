@@ -13,7 +13,6 @@ import io.kotest.matchers.shouldNotBe
 
 class DataTestTagTest : FunSpec({
 
-   //TODO once there is support for other spec styles
    withTests(
       nameFn = {"withXXX applies data test tags to generated tests for $it"},
       DataTestTagsFunSpec::class,
@@ -98,6 +97,40 @@ class DataTestTagTest : FunSpec({
                in listOf("thirdChildOfSecondChild1", "thirdChildOfSecondChild2") -> "kotest.data.52"
                in listOf("firstAndOnlyChildOfThirdChildOfSecondChild1", "firstAndOnlyChildOfThirdChildOfSecondChild2") -> "kotest.data.53"
                in listOf("thirdChild1", "thirdChild2") -> "kotest.data.58"
+               else -> error("Unknown test name: $testName")
+            }
+            tagNames.last() shouldBe expectedLineTag
+         }
+      }
+   }
+
+   test("withXXX applies data test tags to generated tests for StringSpec") {
+      val capturedTests = mutableListOf<TestCase>()
+
+      TestEngineLauncher()
+         .withSpecRefs(SpecRef.Reference(DataTestTagsStringSpec::class))
+         .addExtension(object : BeforeTestListener {
+            override suspend fun beforeTest(testCase: TestCase) {
+               if(testCase.config?.tags?.isNotEmpty() == true){
+                  capturedTests.add(testCase)
+               }
+            }
+         })
+         .execute()
+
+      // StringSpec only supports root-level tests, so we have 4 data tests total
+      capturedTests shouldHaveSize 4
+
+      capturedTests.forEach { testCase ->
+         testCase.config shouldNotBe null
+         val tagNames = testCase.config?.tags?.map { it.name } ?: emptyList()
+         val testName = testCase.name.name
+         assertSoftly {
+            tagNames shouldHaveSize 2
+            tagNames.first() shouldBe "kotest.data"
+            val expectedLineTag = when (testName) {
+               in listOf("test1", "test2") -> "kotest.data.10"
+               in listOf("test3", "test4") -> "kotest.data.13"
                else -> error("Unknown test name: $testName")
             }
             tagNames.last() shouldBe expectedLineTag
