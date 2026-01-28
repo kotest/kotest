@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -27,6 +29,15 @@ class ShouldSpecContainerScope(
    }
 
    /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun context(name: String, config: TestConfig, test: suspend ShouldSpecContainerScope.() -> Unit) {
+      context(name, xmethod = TestXMethod.NONE, test, config)
+   }
+
+   /**
     * Adds a focused nested context scope to this scope.
     */
    suspend fun fcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
@@ -40,11 +51,11 @@ class ShouldSpecContainerScope(
       context(name, xmethod = TestXMethod.DISABLED, test)
    }
 
-   private suspend fun context(name: String, xmethod: TestXMethod, test: suspend ShouldSpecContainerScope.() -> Unit) {
+   private suspend fun context(name: String, xmethod: TestXMethod, test: suspend ShouldSpecContainerScope.() -> Unit, config: TestConfig? = null) {
       registerContainer(
          name = TestNameBuilder.builder(name).build(),
          xmethod = xmethod,
-         config = null,
+         config = config,
       ) { ShouldSpecContainerScope(this).test() }
    }
 
@@ -96,6 +107,15 @@ class ShouldSpecContainerScope(
       should(name, xmethod = TestXMethod.NONE, test)
    }
 
+   /**
+    * Adds a test with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun should(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) {
+      should(name, xmethod = TestXMethod.NONE, test, config)
+   }
+
    suspend fun fshould(name: String, test: suspend TestScope.() -> Unit) {
       should(name, xmethod = TestXMethod.FOCUSED, test)
    }
@@ -107,11 +127,11 @@ class ShouldSpecContainerScope(
    private fun shouldName(name: String) =
       TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
 
-   private suspend fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
+   private suspend fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit, config: TestConfig? = null) {
       registerTest(
          name = shouldName(name),
          xmethod = xmethod,
-         config = null,
+         config = config,
          test = test
       )
    }

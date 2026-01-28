@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -36,6 +38,14 @@ class BehaviorSpecGivenContainerScope(
    suspend fun and(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, xmethod = TestXMethod.NONE, test)
 
+   /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun and(name: String, config: TestConfig, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addAnd(name, xmethod = TestXMethod.NONE, test, config)
+
    suspend fun xand(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, xmethod = TestXMethod.DISABLED, test)
 
@@ -46,11 +56,12 @@ class BehaviorSpecGivenContainerScope(
       name: String,
       xmethod: TestXMethod,
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
+      config: TestConfig? = null
    ) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
          xmethod = xmethod,
-         config = null
+         config = config
       ) {
          BehaviorSpecGivenContainerScope(this).test()
       }
@@ -62,6 +73,14 @@ class BehaviorSpecGivenContainerScope(
    suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       addWhen(name, test, xmethod = TestXMethod.NONE)
 
+   /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun `when`(name: String, config: TestConfig, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
+      addWhen(name, test, xmethod = TestXMethod.NONE, config = config)
+
    suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       addWhen(name, test, xmethod = TestXMethod.DISABLED)
 
@@ -71,9 +90,10 @@ class BehaviorSpecGivenContainerScope(
    private suspend fun addWhen(
       name: String,
       test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
-      xmethod: TestXMethod
+      xmethod: TestXMethod,
+      config: TestConfig? = null
    ) {
-      registerContainer(TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(), xmethod = xmethod, null) {
+      registerContainer(TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(), xmethod = xmethod, config) {
          BehaviorSpecWhenContainerScope(this).test()
       }
    }
@@ -133,10 +153,24 @@ class BehaviorSpecGivenContainerScope(
 
    suspend fun Then(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xmethod = TestXMethod.NONE)
    suspend fun then(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xmethod = TestXMethod.NONE)
+
+   /**
+    * Adds a test with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun then(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) =
+      addThen(name, test, xmethod = TestXMethod.NONE, config = config)
+
    suspend fun xthen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xmethod = TestXMethod.DISABLED)
    suspend fun xThen(name: String, test: suspend TestScope.() -> Unit) = addThen(name, test, xmethod = TestXMethod.DISABLED)
 
-   private suspend fun addThen(name: String, test: suspend TestScope.() -> Unit, xmethod: TestXMethod) {
-      registerTest(TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(), xmethod = xmethod, null, test)
+   private suspend fun addThen(name: String, test: suspend TestScope.() -> Unit, xmethod: TestXMethod, config: TestConfig? = null) {
+      registerTest(
+         TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+         xmethod = xmethod,
+         config,
+         test
+      )
    }
 }
