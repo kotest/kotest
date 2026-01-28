@@ -18,7 +18,7 @@ class DataTestTagsExpectSpec : ExpectSpec({
                1 + 1 shouldBe 2
             }
             withContexts("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
-               withExpects("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
+               withExpects("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
                   1 + 1 shouldBe 2
                }
             }

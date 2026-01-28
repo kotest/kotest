@@ -18,7 +18,7 @@ class DataTestTagsShouldSpec : ShouldSpec({
                1 + 1 shouldBe 2
             }
             withData("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
-               withShoulds("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
+               withShoulds("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
                   1 + 1 shouldBe 2
                }
             }

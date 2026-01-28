@@ -18,7 +18,7 @@ class DataTestTagsBehaviorSpec : BehaviorSpec({
                1 + 1 shouldBe 2
             }
             withAnds("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
-               withThens("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
+               withThens("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
                   1 + 1 shouldBe 2
                }
             }

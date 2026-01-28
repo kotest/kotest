@@ -18,7 +18,7 @@ class DataTestTagsFreeSpec : FreeSpec({
                1 + 1 shouldBe 2
             }
             withData("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // line 20 -> kotest.data.20
-               withTests("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // line 21 -> kotest.data.21
+               withTests("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // line 21 -> kotest.data.21
                   1 + 1 shouldBe 2
                }
             }

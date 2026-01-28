@@ -18,7 +18,7 @@ class DataTestTagsDescribeSpec : DescribeSpec({
                1 + 1 shouldBe 2
             }
             withContexts("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
-               withIts("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
+               withIts("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
                   1 + 1 shouldBe 2
                }
             }

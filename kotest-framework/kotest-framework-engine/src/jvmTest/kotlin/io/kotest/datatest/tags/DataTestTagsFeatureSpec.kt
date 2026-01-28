@@ -18,7 +18,7 @@ class DataTestTagsFeatureSpec : FeatureSpec({
                1 + 1 shouldBe 2
             }
             withFeatures("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // line 20 -> kotest.data.20
-               withFeatures("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // line 21 -> kotest.data.21
+               withFeatures("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // line 21 -> kotest.data.21
                   1 + 1 shouldBe 2
                }
             }

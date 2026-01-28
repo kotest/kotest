@@ -48,7 +48,7 @@ class DataTestTagTest : FunSpec({
       //   - 2 firstChildOfChildContext (intermediate) -> each contains:
       //       - 2 firstChildOfFirstChildOfChildContext (leaf)
       //       - 2 secondChildOfFirstChildOfChildContext (intermediate) -> each contains:
-      //           - 2 firstChildOfsecondChildOfFirstChildOfChildContext (leaf)
+      //           - 2 firstChildOfSecondChildOfFirstChildOfChildContext (leaf)
       //   - 2 secondChildOfChildContext (leaf)
       // Inside context("parent context"):
       //   - 2 firstChildOfParentContext (leaf)
@@ -88,7 +88,7 @@ class DataTestTagTest : FunSpec({
                in listOf("firstChildOfChildContext1", "firstChildOfChildContext2") -> "kotest.data.16"
                in listOf("firstChildOfFirstChildOfChildContext1", "firstChildOfFirstChildOfChildContext2") -> "kotest.data.17"
                in listOf("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") -> "kotest.data.20"
-               in listOf("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") -> "kotest.data.21"
+               in listOf("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") -> "kotest.data.21"
                in listOf("secondChildOfChildContext1", "secondChildOfChildContext2") -> "kotest.data.26"
                in listOf("firstChildOfParentContext1", "firstChildOfParentContext2") -> "kotest.data.30"
                // Tests at root level (lines 36-58)

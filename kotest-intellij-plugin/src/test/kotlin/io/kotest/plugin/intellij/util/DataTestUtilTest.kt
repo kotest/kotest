@@ -67,11 +67,11 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
             ancestorTestPath shouldBe "parent context -- child context"
          }
 
-         // Data test inside secondChildOfFirstChildOfChildContext at line 21 (withTests - firstChildOfsecondChildOfFirstChildOfChildContext)
+         // Data test inside secondChildOfFirstChildOfChildContext at line 21 (withTests - firstChildOfSecondChildOfFirstChildOfChildContext)
          // Same as parent (no siblings)
-         val firstChildOfsecondChildOfFirstChildOfChildContext =
+         val firstChildOfSecondChildOfFirstChildOfChildContext =
             allDataTestCalls.find { getLineNumber(it) == 21 }.shouldNotBeNull()
-         DataTestUtil.dataTestInfoMaybe(isDataTest = true, firstChildOfsecondChildOfFirstChildOfChildContext).apply {
+         DataTestUtil.dataTestInfoMaybe(isDataTest = true, firstChildOfSecondChildOfFirstChildOfChildContext).apply {
             this.shouldNotBeNull()
             tag shouldBe "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context -- child context"

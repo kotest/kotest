@@ -18,7 +18,7 @@ class DataTestTagsFeatureSpec : FeatureSpec({
                1 + 1 shouldBe 2
             }
             withFeatures("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
-               withFeatures("firstChildOfsecondChildOfFirstChildOfChildContext1", "firstChildOfsecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
+               withFeatures("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // kotest.data.nonJvm
                   1 + 1 shouldBe 2
                }
             }
