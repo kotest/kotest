@@ -1,5 +1,6 @@
 package io.kotest.framework.gradle
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.framework.gradle.TestLauncherArgsJavaExecConfiguration.Companion.LAUNCHER_MAIN_CLASS
 import io.kotest.framework.gradle.tasks.KotestAndroidTask
 import io.kotest.framework.gradle.tasks.KotestAndroidTask.Companion.ARTIFACT_TYPE
@@ -69,6 +70,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
 
+   @OptIn(ExperimentalKotest::class)
    override fun apply(project: Project) {
 
       val extension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
@@ -83,6 +85,10 @@ abstract class KotestPlugin : Plugin<Project> {
          handleKotlinJvm(project)
       }
 
+      if (extension.alwaysRerunTests) {
+         configureAlwaysRerun(project)
+      }
+
       // configure Kotlin Android projects when it is not a multiplatform project
       handleAndroid(project, extension)
 
@@ -91,6 +97,12 @@ abstract class KotestPlugin : Plugin<Project> {
 
       project.gradle.taskGraph.whenReady {
          decorateGradleTestTask(project, extension)
+      }
+   }
+
+   private fun configureAlwaysRerun(project: Project) {
+      project.tasks.withType(AbstractTestTask::class.java).configureEach {
+         outputs.upToDateWhen { false }
       }
    }
 

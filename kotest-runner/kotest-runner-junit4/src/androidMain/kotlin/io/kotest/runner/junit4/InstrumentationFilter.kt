@@ -9,7 +9,7 @@ const val INSTRUMENTATION_INCLUDE_PATTERN_ARG = "INSTRUMENTATION_INCLUDE_PATTERN
 
 /**
  * An implementation of [TestPatternIncludeDescriptorFilter] that fetches its filter pattern
- * from Instrumentation arguments
+ * from [InstrumentationRegistry] arguments
  *
  * Android docs:
  * You can pass custom parameters (e.g., -e server_url https://api.test.com) and retrieve them within your test
