@@ -32,7 +32,7 @@ class DataTestTagsBehaviorSpec : BehaviorSpec({
       }
    }
 
-   // ancestorTestPath: null for all below as they are not wrapped in a container
+
    withData("parent1", "parent2", "parent3") { // line 36 -> kotest.data.36
       withGivens("firstChild1", "firstChild2") { // line 37 -> kotest.data.37
          1 + 1 shouldBe 2

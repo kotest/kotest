@@ -32,7 +32,7 @@ class DataTestTagsWordSpec : WordSpec({
       }
    }
 
-   // ancestorTestPath: null for all below as they are not wrapped in a container
+
    withData("parent1", "parent2", "parent3") { // kotest.data.nonJvm
       withWhens("firstChild1", "firstChild2") { // kotest.data.nonJvm
          1 + 1 shouldBe 2
