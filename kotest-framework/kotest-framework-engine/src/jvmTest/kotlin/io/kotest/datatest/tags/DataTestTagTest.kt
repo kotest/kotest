@@ -10,6 +10,11 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.engine.listener.CollectingTestEngineListener
+import io.kotest.engine.tags.TagExpression
+import io.kotest.engine.test.TestResult
+import io.kotest.matchers.collections.shouldContainAll
+import io.kotest.matchers.collections.shouldNotContainAnyOf
 
 class DataTestTagTest : FunSpec({
 
@@ -135,6 +140,60 @@ class DataTestTagTest : FunSpec({
             }
             tagNames.last() shouldBe expectedLineTag
          }
+      }
+   }
+
+   withTests(
+      nameFn = { "filtering by data test tag should run only matching tests and skip others for $it" },
+      DataTestTagsFunSpec::class,
+      DataTestTagsWordSpec::class,
+      DataTestTagsShouldSpec::class,
+      DataTestTagsFreeSpec::class,
+      DataTestTagsFeatureSpec::class,
+      DataTestTagsExpectSpec::class,
+      DataTestTagsDescribeSpec::class,
+      DataTestTagsBehaviorSpec::class,
+   ) { testClass ->
+      val listener = CollectingTestEngineListener()
+
+      // Run with tag expression that only includes tests on line 45 (and therefore their direct parents)
+      // below TagExpression is what the IJ plugin would generate, this test should ensure that no regression occurs
+      // either in our Tags api or the way we apply tags to data tests
+      TestEngineLauncher()
+         .withListener(listener)
+         .withSpecRefs(SpecRef.Reference(testClass))
+         .withTagExpression(TagExpression("(kotest.data.36 & !kotest.data.37 & !kotest.data.58 & !kotest.data.49 & !kotest.data.52 & !kotest.data.42) | kotest.data.nonJvm"))
+         .execute()
+
+      val executedTests = listener.tests.filterValues { it !is TestResult.Ignored }
+      val ignoredTests = listener.tests.filterValues { it is TestResult.Ignored }
+
+      executedTests.size shouldBe 45
+      // Not asserting on all test names that got matched, but the below names assertion should be representative of the tests that got executed and those that did not
+      assertSoftly{
+         val executedTestNames = executedTests.keys.map { it.name.name }.toSet()
+         executedTestNames shouldContainAll setOf(
+            "secondChildOfFirstChildOfSecondChild1",
+            "secondChildOfFirstChildOfSecondChild2"
+         )
+         executedTestNames shouldNotContainAnyOf setOf(
+            "secondChildOfSecondChild1",
+            "secondChildOfSecondChild2"
+         )
+      }
+
+      ignoredTests.size shouldBe listener.tests.size - 45
+      // Not asserting on all test names that got ignored, but the below names assertion should be representative of the tests that got ignored and those that did not
+      assertSoftly{
+         val ignoredTestNames = ignoredTests.keys.map { it.name.name }.toSet()
+         ignoredTestNames shouldContainAll setOf(
+            "secondChildOfSecondChild1",
+            "secondChildOfSecondChild2"
+         )
+         ignoredTestNames shouldNotContainAnyOf setOf(
+            "secondChildOfFirstChildOfSecondChild1",
+            "secondChildOfFirstChildOfSecondChild2"
+         )
       }
    }
 })
