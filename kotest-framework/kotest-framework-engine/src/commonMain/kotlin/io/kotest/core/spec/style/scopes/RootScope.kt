@@ -21,6 +21,29 @@ interface RootScope {
 /**
  * Convenience method to add a [TestType.Test] test to this [RootScope].
  */
+@Deprecated("Use addTest with TestXMethod parameter. Deprecated since 6.1. Will be removed in 7.0")
+fun RootScope.addTest(
+   testName: TestName,
+   disabled: Boolean,
+   config: TestConfig?,
+   test: suspend TestScope.() -> Unit
+) {
+   add(
+      RootTest(
+         name = testName,
+         test = test,
+         type = TestType.Test,
+         source = sourceRef(),
+         xmethod = if (disabled) TestXMethod.DISABLED else TestXMethod.NONE,
+         config = config,
+         factoryId = null,
+      )
+   )
+}
+
+/**
+ * Convenience method to add a [TestType.Test] test to this [RootScope].
+ */
 fun RootScope.addTest(
    testName: TestName,
    xmethod: TestXMethod,
