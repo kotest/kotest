@@ -1,4 +1,4 @@
-package io.kotest.engine.teamcity.names
+package io.kotest.engine.teamcity
 
 /**
  * Escapes/fixes test names that break in TeamCity formats.

@@ -54,15 +54,10 @@ class DefaultDisplayNameFormatter(
          }
       }
 
-      val name = if (projectConfigResolver.testNameAppendTags()) {
+      return if (projectConfigResolver.testNameAppendTags()) {
          return appendTagsInDisplayName(testCase, displayName)
       } else {
          displayName
-      }
-
-      return when (val parent = testCase.parent) {
-         null -> name
-         else -> if (projectConfigResolver.displayFullTestPath()) format(parent) + " " + name else name
       }
    }
 

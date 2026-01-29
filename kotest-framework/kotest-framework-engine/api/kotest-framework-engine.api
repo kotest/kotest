@@ -3483,7 +3483,6 @@ public final class io/kotest/engine/config/Defaults {
 	public static final field BLOCKING_TEST Z
 	public static final field COROUTINE_DEBUG_PROBES Z
 	public static final field COROUTINE_TEST_SCOPE Z
-	public static final field DISPLAY_FULL_TEST_PATH Z
 	public static final field DUMP_CONFIG Z
 	public static final field FAILFAST Z
 	public static final field FAIL_ON_EMPTY_TEST_SUITE Z
@@ -3540,7 +3539,6 @@ public final class io/kotest/engine/config/ProjectConfigResolver {
 	public fun <init> (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/extensions/ExtensionRegistry;)V
 	public final fun allowOutOfOrderCallbacks ()Z
 	public final fun concurrencyOrder ()Lio/kotest/engine/concurrency/ConcurrencyOrder;
-	public final fun displayFullTestPath ()Z
 	public final fun dumpConfig ()Z
 	public final fun extensions ()Ljava/util/List;
 	public final fun failOnEmptyTestSuite ()Z
@@ -4445,69 +4443,52 @@ public final class io/kotest/engine/teamcity/Locations {
 	public final fun location (Lio/kotest/core/spec/SpecRef;)Ljava/lang/String;
 }
 
-public final class io/kotest/engine/teamcity/TeamCityMessageBuilder {
-	public static final field Companion Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Companion;
+public final class io/kotest/engine/teamcity/TeamCityMessage {
+	public static final field Companion Lio/kotest/engine/teamcity/TeamCityMessage$Companion;
 	public static final field TEAM_CITY_PREFIX Ljava/lang/String;
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Z)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun actual (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun addAttribute (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public final fun actual (Ljava/lang/String;)V
+	public final fun attribute (Ljava/lang/String;Ljava/lang/String;)V
 	public final fun build ()Ljava/lang/String;
-	public final fun details (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun duration-LRDsOJo (J)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun expected (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun id (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun locationHint (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun message (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun out (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun parent (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun result (Lio/kotest/engine/test/TestResult;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun type (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun withException (Ljava/lang/Throwable;Z)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public static synthetic fun withException$default (Lio/kotest/engine/teamcity/TeamCityMessageBuilder;Ljava/lang/Throwable;ZILjava/lang/Object;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+	public final fun details (Ljava/lang/String;)Ljava/lang/Object;
+	public final fun duration-LRDsOJo (J)V
+	public final fun exception (Ljava/lang/Throwable;Z)Lio/kotest/engine/teamcity/TeamCityMessage;
+	public static synthetic fun exception$default (Lio/kotest/engine/teamcity/TeamCityMessage;Ljava/lang/Throwable;ZILjava/lang/Object;)Lio/kotest/engine/teamcity/TeamCityMessage;
+	public final fun expected (Ljava/lang/String;)V
+	public final fun message (Ljava/lang/String;)V
+	public final fun name (Ljava/lang/String;)V
+	public final fun out (Ljava/lang/String;)V
+	public final fun output ()V
+	public final fun result (Lio/kotest/engine/test/TestResult;)V
+	public final fun type (Ljava/lang/String;)V
 }
 
-public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes {
+public final class io/kotest/engine/teamcity/TeamCityMessage$Attributes {
 	public static final field ACTUAL Ljava/lang/String;
 	public static final field DETAILS Ljava/lang/String;
 	public static final field DURATION Ljava/lang/String;
-	public static final field DURATION_STRATEGY Ljava/lang/String;
 	public static final field EXPECTED Ljava/lang/String;
-	public static final field ID Ljava/lang/String;
-	public static final field INSTANCE Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Attributes;
-	public static final field LOCATION_HINT Ljava/lang/String;
+	public static final field INSTANCE Lio/kotest/engine/teamcity/TeamCityMessage$Attributes;
 	public static final field MESSAGE Ljava/lang/String;
 	public static final field NAME Ljava/lang/String;
 	public static final field OUT Ljava/lang/String;
-	public static final field PARENT_ID Ljava/lang/String;
 	public static final field RESULT_STATUS Ljava/lang/String;
 	public static final field TYPE Ljava/lang/String;
 }
 
-public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Companion {
-	public final fun testFailed (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testIgnored (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testReporterAttached (Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testSuiteFinished (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
-	public final fun testSuiteStarted (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/engine/teamcity/TeamCityMessageBuilder;
+public final class io/kotest/engine/teamcity/TeamCityMessage$Companion {
 }
 
-public final class io/kotest/engine/teamcity/TeamCityMessageBuilder$Messages {
-	public static final field INSTANCE Lio/kotest/engine/teamcity/TeamCityMessageBuilder$Messages;
+public final class io/kotest/engine/teamcity/TeamCityMessage$Types {
+	public static final field INSTANCE Lio/kotest/engine/teamcity/TeamCityMessage$Types;
 	public static final field TEST_FAILED Ljava/lang/String;
 	public static final field TEST_FINISHED Ljava/lang/String;
 	public static final field TEST_IGNORED Ljava/lang/String;
 	public static final field TEST_REPORTER_ATTACHED Ljava/lang/String;
 	public static final field TEST_STARTED Ljava/lang/String;
-	public static final field TEST_STDOUT Ljava/lang/String;
 	public static final field TEST_SUITE_FINISHED Ljava/lang/String;
 	public static final field TEST_SUITE_STARTED Ljava/lang/String;
-}
-
-public final class io/kotest/engine/teamcity/TeamCityMessageBuilder_jvmKt {
-	public static final fun handlePlatformComparisonExceptions (Lio/kotest/engine/teamcity/TeamCityMessageBuilder;Ljava/lang/Throwable;)V
 }
 
 public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : io/kotest/engine/test/TestCaseExecutionListener {
