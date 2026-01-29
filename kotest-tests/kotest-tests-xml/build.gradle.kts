@@ -13,23 +13,23 @@ kotlin {
 
    jvm()
 
-   js {
-      browser()
-      nodejs()
-   }
-
-   linuxX64()
-   mingwX64()
-
-   wasmJs {
-      browser()
-      nodejs()
-      d8()
-   }
-
-   wasmWasi {
-      nodejs()
-   }
+//   js {
+//      browser()
+//      nodejs()
+//   }
+//
+//   linuxX64()
+//   mingwX64()
+//
+//   wasmJs {
+//      browser()
+//      nodejs()
+//      d8()
+//   }
+//
+//   wasmWasi {
+//      nodejs()
+//   }
 
    sourceSets {
       commonTest {
