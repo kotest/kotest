@@ -150,6 +150,26 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
       { "${value.print().value} should not contain regex $regex" })
 }
 
+/**
+ * Verifies that the given [String] contains all the specified substrings in given order,
+ * with any characters before, after, or in between.
+ *
+ * For example, each of the following examples would pass:
+ *
+ * val value = "The quick brown fox jumps over the lazy dog"
+ * value.shouldContainInOrder("The", "quick", "fox", "jumps", "over", "dog")
+ * value.shouldContainInOrder("The quick", "fox jump", "over", "dog")
+ *
+ * Note: consecutive substrings can overlap as long as the second substring starts at a later index than the first.
+ * So the following test would pass:
+ *
+ * "sourdough bread".shouldContainInOrder("bread", "read")
+ *
+ * But the test below would fail because the second substring starts at the same index as the first:
+ *
+ * "are you ready".shouldContainInOrder("read", "ready")
+ *
+ */
 fun String?.shouldContainInOrder(vararg substrings: String): String? {
    this should containInOrder(*substrings)
    return this
