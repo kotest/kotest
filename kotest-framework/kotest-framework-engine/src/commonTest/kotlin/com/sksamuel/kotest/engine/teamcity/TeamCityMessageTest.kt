@@ -11,23 +11,23 @@ class TeamCityMessageTest : ShouldSpec({
       TeamCityMessage("testcity", TeamCityMessage.Types.TEST_STARTED) {
          name("escape brackets")
          message("expected:<[foo]> but was:<[bar]>")
-      }.build() shouldBe """testcity[testFailed name='escape brackets' message='expected:<|[foo|]> but was:<|[bar|]>' duration='67']"""
+      }.build() shouldBe """testcity[testStarted name='escape brackets' message='expected:<|[foo|]> but was:<|[bar|]>']"""
    }
 
    should("escape quotes in messages") {
       TeamCityMessage("testcity", TeamCityMessage.Types.TEST_STARTED) {
          message("foo'bar")
          duration(67.milliseconds)
-      }.build() shouldBe """testcity[testFailed name='escape quotes' message='foo|'bar' duration='67']"""
+      }.build() shouldBe """testcity[testStarted message='foo|'bar' duration='67']"""
    }
 
    should("escape quotes in names") {
       TeamCityMessage("testcity", TeamCityMessage.Types.TEST_STARTED) {
          name("isn't busy")
-      }.build() shouldBe """testcity[testFailed name='isn|'t busy' message='foo|'bar' duration='67']"""
+      }.build() shouldBe """testcity[testStarted name='isn|'t busy']"""
    }
 
-   should("escape new lines") {
+   should("escape new lines in messages") {
       TeamCityMessage("testcity", TeamCityMessage.Types.TEST_STARTED) {
          message(
             """
@@ -36,7 +36,19 @@ ewr
 ret
 """
          )
-      }.build() shouldBe """testcity[testFailed name='escape brackets' message='qweqwe|newr|nret' duration='67']"""
+      }.build() shouldBe """testcity[testStarted message='qweqwe|newr|nret']"""
+   }
+
+   should("escape new lines in names") {
+      TeamCityMessage("testcity", TeamCityMessage.Types.TEST_STARTED) {
+         name(
+            """
+qweqwe
+ewr
+ret
+"""
+         )
+      }.build() shouldBe """testcity[testStarted name='qweqwe|newr|nret']"""
    }
 
    should("support comparison values") {
@@ -45,6 +57,6 @@ ret
          message("test failed")
          actual("act")
          expected("exp")
-      }.build() shouldBe """testcity[testFailed name='support comparison values' type='comparisonFailure' message='test failed' actual='act' expected='exp' duration='44']"""
+      }.build() shouldBe """testcity[testStarted type='comparisonFailure' message='test failed' actual='act' expected='exp']"""
    }
 })
