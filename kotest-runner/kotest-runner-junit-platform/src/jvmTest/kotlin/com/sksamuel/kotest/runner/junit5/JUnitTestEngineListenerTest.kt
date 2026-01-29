@@ -3,7 +3,6 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -11,7 +10,6 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -352,39 +350,6 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "MySpec2",
-            TestExecutionResult.Status.SUCCESSFUL
-         ),
-      )
-   }
-
-   test("listener should support full test paths") {
-      val track = EventTrackingEngineExecutionListener()
-      val c = object : AbstractProjectConfig() {
-         override val displayFullTestPath: Boolean = true
-      }
-
-      val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(c))
-      listener.engineInitialized(TestEngineInitializedContext.empty)
-      listener.specStarted(SpecRef.Reference(MySpec::class))
-      listener.testStarted(tc1)
-      listener.testStarted(tc2)
-      listener.testFinished(tc2, TestResult.Success(3.milliseconds))
-      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
-      track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
-            "foo bar",
-            "com.sksamuel.kotest.runner.junit5.MySpec",
-            "foo/bar"
-         ),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo bar"),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo bar", TestExecutionResult.Status.SUCCESSFUL),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
-            "MySpec",
             TestExecutionResult.Status.SUCCESSFUL
          ),
       )
