@@ -1277,12 +1277,6 @@ public final class io/kotest/matchers/collections/ContainExactlyKt {
 	public static final fun shouldNotContainExactly_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 }
 
-public final class io/kotest/matchers/collections/ContainInOrderWithoutOverlapsKt {
-	public static final fun containInOrderWithoutOverlaps ([Ljava/lang/String;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
-	public static final fun shouldNotContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
-}
-
 public final class io/kotest/matchers/collections/ContainKt {
 	public static final fun contain (Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Lio/kotest/matchers/Matcher;
 	public static synthetic fun contain$default (Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
@@ -3314,6 +3308,12 @@ public final class io/kotest/matchers/string/CharSequencePreprocessorMatcher : i
 	public fun invertIf (Z)Lio/kotest/matchers/Matcher;
 	public fun test (Ljava/lang/CharSequence;)Lio/kotest/matchers/MatcherResult;
 	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
+public final class io/kotest/matchers/string/ContainInOrderWithoutOverlapsKt {
+	public static final fun containInOrderWithoutOverlaps ([Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
+	public static final fun shouldNotContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
 }
 
 public abstract class io/kotest/matchers/string/Diff {
