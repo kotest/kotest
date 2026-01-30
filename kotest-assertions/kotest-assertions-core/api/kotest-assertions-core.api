@@ -3316,6 +3316,12 @@ public final class io/kotest/matchers/string/CharSequencePreprocessorMatcher : i
 	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 
+public final class io/kotest/matchers/string/ContainInOrderWithoutOverlapsKt {
+	public static final fun containInOrderWithoutOverlaps ([Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
+	public static final fun shouldNotContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
+}
+
 public abstract class io/kotest/matchers/string/Diff {
 	public static final field Companion Lio/kotest/matchers/string/Diff$Companion;
 	protected final fun getIndent (I)Ljava/lang/String;
