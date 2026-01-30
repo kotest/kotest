@@ -119,7 +119,7 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       // it returns false, which is not always the case with AndroidTestRunConfiguration when the producer
       // is invoked from test result panel.
       // So here we just use either the contextModule's holder module or the configuration module.
-      return contextModule?.getModuleSystem()?.getHolderModule() ?: configuration.configurationModule.module
+      return contextModule?.getModuleSystem()?.module ?: configuration.configurationModule.module
    }
 
    /**
