@@ -21,15 +21,17 @@ import io.kotest.matchers.shouldNot
  * "sourdough bread".shouldContainInOrderWithoutOverlaps("bread", "read")
  * "superstar".shouldContainInOrderWithoutOverlaps("supers", "star")
  */
-fun String?.shouldContainInOrderWithoutOverlaps(vararg substrings: String): String? {
+fun String.shouldContainInOrderWithoutOverlaps(vararg substrings: String): String {
    this should containInOrderWithoutOverlaps(*substrings)
    return this
 }
 
-fun String?.shouldNotContainInOrderWithoutOverlaps(vararg substrings: String): String? {
+fun String.shouldNotContainInOrderWithoutOverlaps(vararg substrings: String): String {
    this shouldNot containInOrderWithoutOverlaps(*substrings)
    return this
 }
 
-fun containInOrderWithoutOverlaps(vararg substrings: String) = containInOrder(*substrings)
+fun containInOrderWithoutOverlaps(vararg substrings: String) = containSubstringsInOrder(
+   { substr -> substr.length },
+   *substrings)
 
