@@ -4,6 +4,7 @@ import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfigura
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
+import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
@@ -174,9 +175,18 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       ) { tasks ->
          logger.info("MultiplatformChooseTasks: $tasks")
 
+         val (spec, test) = testContext
+         /**
+          * For data tests, we use tag-based filtering instead of test path filtering.
+          * For non data test, we set this to null to allow [setOrRemoveDataTestEnvVarIfNeeded]
+          * to remove such env var if it was set previously.
+          */
+         val dataTestInfoMaybe = test?.dataTestInfoMaybe()
+
          val filter = GradleTestFilterBuilder.builder()
-            .withSpec(testContext.spec)
-            .withTest(testContext.test)
+            .withSpec(spec)
+            .withTest(test)
+            .withDataTestAncestorPath(dataTestInfoMaybe?.ancestorTestPath)
             .build(true)
 
          // the tasks are a list of groups that clean/test each target, eg ':cleanLinuxX64Test :linuxX64Test'
@@ -186,7 +196,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          runConfiguration.settings.taskNames = tasksWithFilter.toList()
          runConfiguration.settings.scriptParameters = if (tasks.size > 1) "--continue" else ""
 
-         setOrRemoveDataTestEnvVarIfNeeded(runConfiguration, testContext)
+         setOrRemoveDataTestEnvVarIfNeeded(runConfiguration, dataTestInfoMaybe)
          startRunnable.run()
       }
    }
@@ -198,13 +208,13 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
     * Have to rely on env vars here because Gradle system properties (-D) do not propagate to the test JVM.
     *
     * @param runConfiguration The Gradle run configuration to modify.
-    * @param testContext The test context containing [DataTestInfo].
+    * @param dataTestInfoMaybe The optional [DataTestInfo] for the test.
     */
    private fun setOrRemoveDataTestEnvVarIfNeeded(
       runConfiguration: GradleRunConfiguration,
-      testContext: TestContext
+      dataTestInfoMaybe: DataTestInfo?
    ) {
-      testContext.dataTestInfo.takeIf { it != null }
+      dataTestInfoMaybe.takeIf { it != null }
          ?.let {
             val envVars = runConfiguration.settings.env.toMutableMap()
             envVars["KOTEST_TAGS"] = it.tag
@@ -215,61 +225,4 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          runConfiguration.settings.env = envVars
       }
    }
-
-   @OptIn(KaImplementationDetail::class)
-   private fun createTestContext(element: PsiElement): TestContext? {
-
-      // we must be in a Kotest spec (class or object), and we will use the FQN of that class or object
-      // as the first part of the test filter arg
-
-      val (spec, test) = if (KaAnalysisPermissionRegistry.getInstance().isAnalysisAllowedOnEdt) {
-         val spec = element.enclosingSpec() ?: return null
-         val test = SpecStyle.findTest(element)
-         Pair(spec, test)
-      } else {
-         try {
-            KaAnalysisPermissionRegistry.getInstance().isAnalysisAllowedOnEdt = true
-            val spec = element.enclosingSpec() ?: return null
-            val test = SpecStyle.findTest(element)
-            Pair(spec, test)
-         } catch (e: Throwable) {
-            logger.warn("Failed to get spec and test in analysis mode", e)
-            return null
-         } finally {
-            KaAnalysisPermissionRegistry.getInstance().isAnalysisAllowedOnEdt = false
-         }
-      }
-
-      /**
-       * For data tests, we use tag-based filtering instead of test path filtering.
-       * For non data test, we set this to null to allow [setOrRemoveDataTestEnvVarIfNeeded]
-       * to remove such env var if it was set previously.
-       */
-      val dataTestInfoMaybe = test?.dataTestInfoMaybe()
-
-      val filter = GradleTestFilterBuilder.builder()
-         .withSpec(spec)
-         .withTest(test)
-         .withDataTestAncestorPath(dataTestInfoMaybe?.ancestorTestPath)
-         .build()
-
-      // the name will appear in two places - it will be in the run icon chooser in the gutter Run/Debug/Profile etc.,
-      // and will also be the name of the configuration in the run configs drop down
-      // kotlin.test uses 'class name.method name', so we'll do the same for consistency
-      val runName = GradleTestRunNameBuilder.builder()
-         .withSpec(spec)
-         .withTest(test)
-         .build()
-
-      return TestContext(runName, filter, dataTestInfoMaybe)
-   }
-
-   /**
-    * Contains details of the selected test context.
-    */
-   data class TestContext(
-      val runName: String,
-      val filter: String, // eg --tests "com.sksamuel.MySpec.a test"
-      val dataTestInfo: DataTestInfo? = null, // Contains tag and optional ancestor path for data tests
-   )
 }
