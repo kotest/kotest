@@ -26,7 +26,8 @@ data class GradleTestFilterBuilder(
    fun build(includeTestsFlag: Boolean): String {
       return buildString {
          if (includeTestsFlag)
-            append("--tests '")
+            append("--tests ")
+         append("'")
          if (spec != null) {
             append(spec.fqName!!.asString())
          }
