@@ -2,6 +2,7 @@ package io.kotest.datatest
 
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.stable.StableIdents
 import kotlin.jvm.JvmName
 
@@ -209,8 +210,13 @@ suspend fun <T> FunSpecContainerScope.withContexts(
    ts: Iterable<T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(
+         nameFn(t),
+         dataTestTagConfig
+      )
+      { this.test(t) }
    }
 }
 
@@ -223,8 +229,12 @@ suspend fun <T> FunSpecContainerScope.withTests(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      test(nameFn(t)) { this.test(t) }
+      test(
+         nameFn(t),
+         dataTestTagConfig
+      ) { this.test(t) }
    }
 }
 
@@ -246,8 +256,12 @@ suspend fun <T> FunSpecContainerScope.withContexts(
    data: Map<String, T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(
+         name,
+         dataTestTagConfig
+      ) { this.test(t) }
    }
 }
 
@@ -257,7 +271,11 @@ suspend fun <T> FunSpecContainerScope.withContexts(
  */
 @JvmName("withTestsMap")
 suspend fun <T> FunSpecContainerScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      test(name) { this.test(t) }
+      test(
+         name,
+         dataTestTagConfig
+      ) { this.test(t) }
    }
 }

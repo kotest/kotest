@@ -1,7 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.TestXMethod
+import io.kotest.core.test.config.TestConfig
 
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
@@ -20,6 +22,19 @@ interface FeatureSpecRootScope : RootScope {
          testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
          xmethod = TestXMethod.NONE,
          config = null
+      ) { FeatureSpecContainerScope(this).test() }
+   }
+
+   /**
+    * Adds a test case with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   fun feature(name: String, config: TestConfig, test: suspend FeatureSpecContainerScope.() -> Unit) {
+      addContainer(
+         testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
+         xmethod = TestXMethod.NONE,
+         config = config
       ) { FeatureSpecContainerScope(this).test() }
    }
 
