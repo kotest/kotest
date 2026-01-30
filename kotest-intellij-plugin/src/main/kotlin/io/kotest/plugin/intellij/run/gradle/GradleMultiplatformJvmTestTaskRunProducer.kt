@@ -1,13 +1,13 @@
 package io.kotest.plugin.intellij.run.gradle
 
+import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
-import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.psi.enclosingSpec
+import io.kotest.plugin.intellij.psi.ElementUtils
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.styles.SpecStyle
@@ -46,33 +46,39 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
     * Return false otherwise.
     */
    override fun doSetupConfigurationFromContext(
-      p0: GradleRunConfiguration,
-      p1: ConfigurationContext,
-      p2: Ref<PsiElement?>
+      configuration: GradleRunConfiguration,
+      context: ConfigurationContext,
+      ref: Ref<PsiElement?>
    ): Boolean {
 
-      if (RunnerModes.mode(p1.module) != RunnerMode.GRADLE_TEST_TASK) {
+      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_TEST_TASK) {
          logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
          return false
       }
 
       // we will always have an element when running from the gutter or directory
-      val element = p2.get() ?: return false
-      val location = p1.location ?: return false
+      val element = ref.get() ?: return false
+      val location = context.location ?: return false
 
-      val testContext = createTestContext(element)
+      val testContext = ElementUtils.findTestContext(element)
       if (testContext == null) {
          logger.info("Test context could not be resolved for $element so this producer will not contribute")
          return false
       }
 
-      p0.name = testContext.runName
-      p0.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
-      p0.settings.scriptParameters = ""
-      p0.isRunAsTest = true
+      // the name will appear in two places - it will be in the run icon chooser in the gutter Run/Debug/Profile etc.,
+      // and will also be the name of the configuration in the run configs drop down
+      // kotlin.test uses 'class name.method name', so we'll do the same for consistency
+      configuration.name = GradleTestRunNameBuilder.builder()
+         .withSpec(testContext.spec)
+         .withTest(testContext.test)
+         .build()
+      configuration.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
+      configuration.settings.scriptParameters = ""
+      configuration.isRunAsTest = true
 
-      setUniqueNameIfNeeded(p0.project, p0)
-      JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(p0, location)
+      setUniqueNameIfNeeded(configuration.project, configuration)
+      JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
       return true
    }
 
@@ -84,31 +90,47 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
     * Note: If multiple runs return true, one is selected arbitrarily.
     *
     * For example, if a user clicks on a particular run icon and then customizes that run configuration,
-    * say by adding an env variable, when they click that run icon again, we should reuse the existing configuration
-    * to preserve their customizations.
+    * when they click that run icon again, we should reuse the existing configuration to preserve their customizations.
     */
    override fun doIsConfigurationFromContext(
-      p0: GradleRunConfiguration,
-      p1: ConfigurationContext
+      configuration: GradleRunConfiguration,
+      context: ConfigurationContext
    ): Boolean {
 
-      if (RunnerModes.mode(p1.module) != RunnerMode.GRADLE_TEST_TASK) {
+      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_TEST_TASK) {
          logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
          return false
       }
 
-      val element = p1.psiLocation ?: return false
-      val testContext = createTestContext(element) ?: return false
-      logger.info("Existing configuration [${p0.name} taskNames [" + p0.settings.taskNames + "]")
+      val element = context.psiLocation ?: return false
+      val testContext = ElementUtils.findTestContext(element) ?: return false
+      logger.info("Existing configuration [${configuration.name} taskNames [" + configuration.settings.taskNames + "]")
 
       // in order for an existing Gradle configuration to be equivalent to what we are looking for, we will
       // check that the test filter matches the test clicked on.
       // we assume that the test filter is the same for all tasks (in the case of multiple tasks), and so
       // we just take the first such filter
-      val existingFilter = p0.settings.taskNames.dropWhile { !it.startsWith("--tests") }.take(2).joinToString(" ")
-      logger.info("Checking config filter [${existingFilter}] against selected test [${testContext.filter}]")
+      val filter = GradleTestFilterBuilder.builder()
+         .withSpec(testContext.spec)
+         .withTest(testContext.test)
+         .build(false)
 
-      return existingFilter == testContext.filter
+      val existingFilter = configuration.settings.taskNames
+         .dropWhile { !it.startsWith("--tests") } // find the --tests filter, drop it, take whatever is after it
+         .drop(1)
+         .take(1).joinToString(" ")
+      logger.info("Checking config filter [${existingFilter}] against selected test [${filter}]")
+
+      return existingFilter == filter
+   }
+
+   override fun isPreferredConfiguration(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
+      // if the other configuration is a Kotest Android instrumented test, that takes priority over running via Gradle
+      return when (other.configuration) {
+         // we know that a Kotest Android instrumented test configuration will be more specific than a Gradle one
+         is AndroidTestRunConfiguration -> false
+         else -> true
+      }
    }
 
    /**
@@ -131,7 +153,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       }
 
       val element = context.psiLocation ?: return
-      val testContext = createTestContext(element) ?: return
+      val testContext = ElementUtils.findTestContext(element) ?: return
 
       val runConfiguration = configuration.configuration as GradleRunConfiguration
       val dataContext = MultiplatformTestTasksChooser.createContext(context.dataContext, runConfiguration.name)
@@ -152,10 +174,15 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       ) { tasks ->
          logger.info("MultiplatformChooseTasks: $tasks")
 
+         val filter = GradleTestFilterBuilder.builder()
+            .withSpec(testContext.spec)
+            .withTest(testContext.test)
+            .build(true)
+
          // the tasks are a list of groups that clean/test each target, eg ':cleanLinuxX64Test :linuxX64Test'
          // we want to append the test filter after each of the test (not clean) tasks
-         val tasksWithFilter = tasks.flatMap { it.values }.flatMap { it.tasks + listOf(testContext.filter) }
-         logger.info("Choosen tasks with applied filters: $tasksWithFilter")
+         val tasksWithFilter = tasks.flatMap { it.values }.flatMap { it.tasks + listOf(filter) }
+         logger.info("Chosen tasks with applied filters: $tasksWithFilter")
          runConfiguration.settings.taskNames = tasksWithFilter.toList()
          runConfiguration.settings.scriptParameters = if (tasks.size > 1) "--continue" else ""
 
