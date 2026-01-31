@@ -150,13 +150,6 @@ class ProjectConfigResolver(
       return config?.writeSpecFailureFile ?: Defaults.WRITE_SPEC_FAILURE_FILE
    }
 
-   /**
-    * Returns true if the test name should be the full name including parent names.
-    */
-   fun displayFullTestPath(): Boolean {
-      return config?.displayFullTestPath ?: Defaults.DISPLAY_FULL_TEST_PATH
-   }
-
    fun allowOutOfOrderCallbacks(): Boolean {
       return config?.allowOutOfOrderCallbacks ?: Defaults.ALLOW_OUT_OF_ORDER_CALLBACKS
    }

@@ -230,24 +230,25 @@ abstract class AbstractProjectConfig {
    /**
     * Returns true if the test name should be the full name including parent names.
     */
+   @Deprecated("This option is incompatible with reporting tests. It is ignored in 6.2+ and will be removed in 7.0.")
    open val displayFullTestPath: Boolean? = null
 
    open val allowOutOfOrderCallbacks: Boolean? = null
 
    /**
-    * If set to false then private spec classes will be ignored by the test engine.
+    * If set to false, then the test engine will ignore private spec classes.
     */
    open val ignorePrivateClasses: Boolean? = null
 
    /**
     * Sets a global [EnabledIf] function that will be applied to all tests, unless overridden in
-    * in the test itself or at the spec level.
+    * the test itself or at the spec level.
     */
    open val enabledIf: EnabledIf? = null
 
    /**
     * Sets a global [EnabledOrReasonIf] function that will be applied to all tests, unless overridden in
-    * in the test itself or at the spec level.
+    * the test itself or at the spec level.
     */
    open val enabledOrReasonIf: EnabledOrReasonIf? = null
 

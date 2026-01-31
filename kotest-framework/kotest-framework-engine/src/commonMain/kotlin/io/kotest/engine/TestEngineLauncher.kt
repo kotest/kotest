@@ -3,7 +3,6 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.isIntellij
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
@@ -54,7 +53,7 @@ data class TestEngineLauncher(
     * Returns a copy of this launcher with the listener added.
     */
    fun withTeamCityListener(): TestEngineLauncher {
-      return withListener(TeamCityTestEngineListener(embedLocations = isIntellij()))
+      return withListener(TeamCityTestEngineListener())
    }
 
    /**
