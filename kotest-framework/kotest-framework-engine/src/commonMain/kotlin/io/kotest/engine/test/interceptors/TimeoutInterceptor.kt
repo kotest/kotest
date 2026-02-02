@@ -1,5 +1,7 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -50,8 +52,13 @@ internal class TimeoutInterceptor(
       logger.log { Pair(testCase.name.name, "Switching context to add timeout $timeout") }
 
       return try {
-         withAppropriateTimeout(timeout) {
-            test(testCase, scope.withCoroutineContext(coroutineContext))
+         // this will hang on wasm-wasi for reasons
+         if (platform != Platform.WasmWasi) {
+            withAppropriateTimeout(timeout) {
+               test(testCase, scope.withCoroutineContext(coroutineContext))
+            }
+         } else {
+            test(testCase, scope.withCoroutineContext(currentCoroutineContext()))
          }
       } catch (t: CancellationException) {
          if (t is RealTimeTimeoutCancellationException || t is TimeoutCancellationException) {

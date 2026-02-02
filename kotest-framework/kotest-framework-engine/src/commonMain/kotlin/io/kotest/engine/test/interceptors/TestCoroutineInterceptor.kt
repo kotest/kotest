@@ -4,15 +4,16 @@ import io.kotest.common.NonDeterministicTestVirtualTimeEnabled
 import io.kotest.common.testCoroutineSchedulerOrNull
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.coroutines.TestScopeElement
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.yield
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -43,7 +44,7 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
          if (testCase.spec.nonDeterministicTestVirtualTimeEnabled) {
             additionalContext += NonDeterministicTestVirtualTimeEnabled
          }
-         withContext(additionalContext) {
+         withContext(additionalContext + KotlinTestRunTest) {
             try {
                result.complete(test(testCase, scope.withCoroutineContext(coroutineContext)))
             } catch (e: CancellationException) {
@@ -53,6 +54,14 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
             }
          }
       }
+      yield()
       return result.await()
    }
+}
+
+internal object KotlinTestRunTest : CoroutineContext.Key<KotlinTestRunTest>, CoroutineContext.Element {
+   override val key: CoroutineContext.Key<*>
+      get() = this
+
+   override fun toString(): String = "KotlinTestRunTest"
 }
