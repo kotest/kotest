@@ -63,6 +63,13 @@ data class TestConfig(
    // when set to true, installs a coroutine debug probe for tracing coroutines when an error occurs
    val coroutineDebugProbes: Boolean? = null,
 
+   /**
+    * When set to true, tests will be executed inside a runTest block from the `kotlin.test` library.
+    *
+    * This means that Kotest will use virtual time via a Kotlin [kotlinx.coroutines.test.TestDispatcher].
+    *
+    * Note that if set, any nested tests are executed using the same test disaptcher.
+    */
    val coroutineTestScope: Boolean? = null,
 
    // When set to true, execution will switch to a dedicated thread for each test case in this spec,

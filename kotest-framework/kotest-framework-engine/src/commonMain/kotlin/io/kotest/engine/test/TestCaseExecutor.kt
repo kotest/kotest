@@ -108,7 +108,7 @@ internal class TestCaseExecutor(
          CoroutineDebugProbeInterceptor(context.testConfigResolver),
       )
 
-      val innerExecute = NextTestExecutionInterceptor { tc, scope ->
+      val base = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.name, "Executing test") }
 
          // workaround for anyone using delay in a test on wasm
@@ -119,8 +119,65 @@ internal class TestCaseExecutor(
          TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).build()
       }
 
-      return interceptors.foldRight(innerExecute) { ext, fn ->
+      return interceptors.foldRight(base) { ext, fn ->
          NextTestExecutionInterceptor { tc, tscope -> ext.intercept(tc, tscope, fn) }
       }.invoke(testCase, testScope)
    }
+}
+
+/**
+ * The [TestCoroutineScheduler] acts as the "virtual clock" for your tests, while the [TestDispatcher] is the mechanism
+ * that uses that clock to execute code.
+
+ * The scheduler is the central source of truth for virtual time in a test. It performs two critical roles:
+ * - Skips Delays: It automatically fast-forwards through delay() calls so that a test requiring a 10-second wait finishes instantly.
+ * - Orchestrates Execution: It maintains a queue of tasks and determines their execution order based on their scheduled virtual time.
+
+ * A [TestDispatcher] (like [StandardTestDispatcher]) is always linked to exactly one TestCoroutineScheduler.
+ *
+ * Task Queuing: When you launch a coroutine on a TestDispatcher, the dispatcher doesn't run the code itself.
+ * Instead, it sends the task to its linked scheduler.
+ *
+ * Clock Management: The scheduler waits for you to manually move the clock. When you call methods
+ * like `advanceUntilIdle` or `advanceTimeBy(ms)` on the scheduler, it tells the linked dispatchers to execute the
+ * tasks whose time has come.
+ *
+ * Synchronization: You can link multiple TestDispatchers to the same scheduler. This ensures that even
+ * if different parts of your code use different dispatchers (e.g., one for Main, one for IO), they all share
+ * the same virtual clock and stay in sync.
+ *
+ * Summary of Key Methods:
+ *
+ * You typically interact with the scheduler through a TestScope provided by runTest, which exposes these controls:
+ * `testScheduler.runCurrent()`: Runs tasks scheduled at the current virtual time.
+ * `testScheduler.advanceTimeBy(delay)`: Moves the clock forward and executes tasks in that window.
+ * `testScheduler.advanceUntilIdle()`: Fast-forwards until there are no more tasks left to run.
+ *
+ * Sharing a single [TestCoroutineScheduler] ensures that all your dispatchers (e.g., Main and IO)
+ * operate on the same virtual timeline. If you advance time on the scheduler, it affects every dispatcher linked to it.
+ *
+ * Manual Sharing (Passing the Scheduler):
+ * You can create a TestCoroutineScheduler explicitly and pass it to multiple dispatchers during initialization.
+ *
+ * Automatic Sharing (via Dispatchers.setMain):
+ * If you set the Main dispatcher to a [TestDispatcher] at the start of your test, any new [TestDispatcher] created
+ * afterward will automatically inherit the same scheduler.
+ *
+ * eg
+ *
+ * @Before
+ * fun setup() {
+ *     // Setting Main first establishes the shared scheduler
+ *     Dispatchers.setMain(StandardTestDispatcher())
+ * }
+ *
+ * @Test
+ * fun autoSharingTest() = runTest {
+ *     // This dispatcher will automatically use the same scheduler as `Dispatchers.Main`
+ *     val ioDispatcher = StandardTestDispatcher()
+ *     // Now both Dispatchers.Main and ioDispatcher are perfectly in sync
+ * }
+ */
+class Executor {
+
 }
