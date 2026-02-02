@@ -64,9 +64,12 @@ jobs:
       strategy:
          matrix:
             include:
-               # JVM, JS, Wasm
+               # JVM-only
                -  os: ubuntu-latest
                   args: -P"jvmOnly=true" -P"kotest_enableKotlinJs=true"
+               # Js+Wasm
+               -  os: ubuntu-latest
+                  args: -P"kotest_enableKotlinJs=true"
                # Linux+Android
                -  os: ubuntu-latest
                   args: -P"kotest_enableKotlinNative=true"
