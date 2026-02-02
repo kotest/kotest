@@ -59,6 +59,10 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
    }
 }
 
+/**
+ * We add this [CoroutineContext.Key] to the coroutine context so that we can detect when we are running
+ * inside a [runTest] block.
+ */
 internal object KotlinTestRunTest : CoroutineContext.Key<KotlinTestRunTest>, CoroutineContext.Element {
    override val key: CoroutineContext.Key<*>
       get() = this
