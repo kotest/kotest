@@ -17,7 +17,6 @@ kotlin {
       commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
    }
