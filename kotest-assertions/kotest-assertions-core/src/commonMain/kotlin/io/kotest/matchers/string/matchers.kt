@@ -180,8 +180,19 @@ fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
    return this
 }
 
-fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-   val matchOutcome = matchSubstrings(value, substrings.toList())
+internal fun interface MatchOffset {
+   operator fun invoke(value: String) : Int
+}
+
+fun containInOrder(vararg substrings: String) = containSubstringsInOrder({ 1 }, *substrings)
+
+internal fun containSubstringsInOrder(matchOffset: MatchOffset, vararg substrings: String) = neverNullMatcher<String> { value ->
+   val matchOutcome = matchSubstrings(
+      value,
+      substrings.toList(),
+      depth = 0,
+      matchOffset = matchOffset,
+      )
 
    val substringFoundEarlier = if (matchOutcome is ContainInOrderOutcome.Mismatch) {
       describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
@@ -211,15 +222,30 @@ internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty
 internal fun joinNonEmpty(separator: String, vararg values: String) =
    values.filter { it.isNotEmpty() }.joinToString(separator)
 
-internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
+internal fun matchSubstrings(
+   value: String,
+   substrings: List<String>,
+   depth: Int,
+   matchOffset: MatchOffset,
+   ): ContainInOrderOutcome = when {
    substrings.isEmpty() -> ContainInOrderOutcome.Match
    else -> {
       val currentSubstring = substrings[0]
       val matchAtIndex = value.indexOf(currentSubstring)
       when {
          matchAtIndex == -1 -> ContainInOrderOutcome.Mismatch(currentSubstring, depth)
-         currentSubstring == "" -> matchSubstrings(value, substrings.drop(1), depth + 1)
-         else -> matchSubstrings(value.substring(matchAtIndex + 1), substrings.drop(1), depth + 1)
+         currentSubstring == "" -> matchSubstrings(
+            value,
+            substrings.drop(1),
+            depth + 1,
+            matchOffset,
+            )
+         else -> matchSubstrings(
+            value.substring(matchAtIndex + matchOffset(currentSubstring)),
+            substrings.drop(1),
+            depth + 1,
+            matchOffset,
+            )
       }
    }
 }
