@@ -109,8 +109,13 @@ abstract class KotestPlugin : Plugin<Project> {
    @OptIn(ExperimentalKotlinGradlePluginApi::class)
    private fun configurePowerAssert(project: Project) {
 
+      // apply the power assert plugin, won't matter if already applied
+      project.pluginManager.apply("org.jetbrains.kotlin.plugin.power-assert")
+
+      // then configure it
       project.pluginManager.withPlugin("org.jetbrains.kotlin.plugin.power-assert") {
          project.extensions.configure(PowerAssertGradleExtension::class.java) {
+            // we can add new functions to this later without requiring users to make changes
             functions.set(listOf("io.kotest.matchers.shouldBe"))
          }
 
