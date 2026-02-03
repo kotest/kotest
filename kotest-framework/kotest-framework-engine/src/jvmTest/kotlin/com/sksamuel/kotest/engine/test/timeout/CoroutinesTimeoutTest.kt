@@ -27,18 +27,18 @@ class CoroutinesTimeoutTest : FunSpec() {
          timeout = 10.milliseconds,
          blockingTest = true
       ) {
-         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         // high value to ensure it's interrupted, a test runs forever would fail the CI
          Thread.sleep(1000000)
       }
 
       test("a testcase timeout should interrupt a suspend function").config(timeout = 10.milliseconds) {
-         // high value to ensure its interrupted, we'd notice a test that runs for 10 weeks
+         // high value to ensure it's interrupted, a test runs forever would fail the CI
          delay(1000000)
       }
 
       test("a testcase timeout should interupt a nested coroutine").config(timeout = 10.milliseconds) {
          launch {
-            // a high value to ensure its interrupted, we'd notice a test that runs forever
+            // a high value to ensure it's interrupted, we'd notice a test that runs forever
             delay(10.hours)
          }
       }
@@ -84,7 +84,7 @@ class CoroutinesTimeoutTest : FunSpec() {
          timeout = 20.milliseconds,
          invocations = 100
       ) {
-         // each of these delays is well within the 10ms invocation timeout
+         // each of these delays is well within the 10ms invocation timeout,
          // but after some iterations we should pass the 20ms timeout for all invocations value and die
          delay(1)
       }
@@ -108,7 +108,7 @@ suspend fun realTimeDelay(duration: Duration) {
 }
 
 /**
- * A Test Case extension that expects each test to fail, and will invert the test result.
+ * A Test Case extension that expects each test to fail and will invert the test result.
  */
 object ExpectFailureExtension : TestCaseExtension {
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {

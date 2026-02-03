@@ -14,7 +14,10 @@ kotlin {
 
    sourceSets {
 
+      val commonMain by getting {}
+
       val jvmCommonMain by creating {
+         dependsOn(commonMain)
          dependencies {
             api(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.junit4)
