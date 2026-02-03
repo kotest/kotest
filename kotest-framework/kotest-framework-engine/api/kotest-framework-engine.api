@@ -4518,10 +4518,6 @@ public abstract class io/kotest/engine/test/AbstractTestCaseExecutionListener : 
 	public fun testStarted (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
-public final class io/kotest/engine/test/Executor {
-	public fun <init> ()V
-}
-
 public final class io/kotest/engine/test/NoopTestCaseExecutionListener : io/kotest/engine/test/AbstractTestCaseExecutionListener {
 	public static final field INSTANCE Lio/kotest/engine/test/NoopTestCaseExecutionListener;
 }
