@@ -4,7 +4,7 @@ import io.kotest.plugin.intellij.Test
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
- * Builds the --tests filter used by gradle to run a subset of tests.
+ * Builds the --tests filter used by Gradle to run a subset of tests.
  */
 data class GradleTestFilterBuilder(
    private val spec: KtClassOrObject?,
@@ -23,9 +23,11 @@ data class GradleTestFilterBuilder(
       return copy(test = test)
    }
 
-   fun build(): String {
+   fun build(includeTestsFlag: Boolean): String {
       return buildString {
-         append("--tests '")
+         if (includeTestsFlag)
+            append("--tests ")
+         append("'")
          if (spec != null) {
             append(spec.fqName!!.asString())
          }
