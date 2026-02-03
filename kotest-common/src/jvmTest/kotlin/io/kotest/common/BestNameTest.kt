@@ -5,9 +5,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 class Foo {
-   class Bar {
-
-   }
+   class Bar
 }
 
 class BestNameTest : FunSpec() {

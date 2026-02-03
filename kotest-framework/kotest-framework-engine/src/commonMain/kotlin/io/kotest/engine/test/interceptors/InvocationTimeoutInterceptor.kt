@@ -2,13 +2,12 @@ package io.kotest.engine.test.interceptors
 
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.scopes.withCoroutineContext
 import kotlinx.coroutines.TimeoutCancellationException
-import kotlinx.coroutines.withTimeoutOrNull
 
 /**
  * Installs an invocation timeout.
@@ -23,6 +22,7 @@ internal class InvocationTimeoutInterceptor(private val testConfigResolver: Test
       test: NextTestExecutionInterceptor
    ): TestResult {
 
+      // invocation timeouts do not apply to containers
       return if (testCase.type == TestType.Container) {
          test(testCase, scope)
       } else {
@@ -32,8 +32,9 @@ internal class InvocationTimeoutInterceptor(private val testConfigResolver: Test
 
          try {
             // we use orNull because we want to disambiguate between our timeouts and user level timeouts
-            // user level timeouts will throw an exception, ours will return null
-            withTimeoutOrNull(timeout) {
+            // user level timeouts will throw an exception, ours will return null;
+            // also must take into account wall time when in virtual time dispatchers eg TestDispatcher
+            withAppropriateTimeoutOrNull(timeout) {
                test(testCase, scope.withCoroutineContext(coroutineContext))
             } ?: throw TestTimeoutException(timeout, testCase.name.name)
          } catch (t: TimeoutCancellationException) {

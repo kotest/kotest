@@ -17,6 +17,7 @@ import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
 import io.kotest.engine.test.interceptors.HandleSkippedExceptionsTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
+import io.kotest.engine.test.interceptors.KotlinTestRunTest
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
@@ -32,6 +33,7 @@ import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
 import io.kotest.engine.test.interceptors.testInterceptorsForPlatform
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 import kotlin.time.TimeSource
 
 /**
@@ -62,6 +64,7 @@ internal class TestCaseExecutor(
 
       val timeMark = TimeSource.Monotonic.markNow()
 
+      val isKotlinTestRunTest: Boolean = coroutineContext[KotlinTestRunTest] != null
       val useCoroutineTestScope = context.testConfigResolver.coroutineTestScope(testCase)
 
       val interceptors = listOfNotNull(
@@ -94,7 +97,7 @@ internal class TestCaseExecutor(
             timeMark = timeMark,
             invocationInterceptors = listOfNotNull(
                // Timeout is handled inside TestCoroutineInterceptor if it is enabled
-               if (useCoroutineTestScope)
+               if (useCoroutineTestScope && !isKotlinTestRunTest)
                   TestCoroutineInterceptor(context.testConfigResolver)
                else
                   InvocationTimeoutInterceptor(context.testConfigResolver),
@@ -105,7 +108,7 @@ internal class TestCaseExecutor(
          CoroutineDebugProbeInterceptor(context.testConfigResolver),
       )
 
-      val innerExecute = NextTestExecutionInterceptor { tc, scope ->
+      val base = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.name, "Executing test") }
 
          // workaround for anyone using delay in a test on wasm
@@ -116,7 +119,7 @@ internal class TestCaseExecutor(
          TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).build()
       }
 
-      return interceptors.foldRight(innerExecute) { ext, fn ->
+      return interceptors.foldRight(base) { ext, fn ->
          NextTestExecutionInterceptor { tc, tscope -> ext.intercept(tc, tscope, fn) }
       }.invoke(testCase, testScope)
    }

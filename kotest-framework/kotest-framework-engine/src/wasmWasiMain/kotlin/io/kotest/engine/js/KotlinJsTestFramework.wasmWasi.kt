@@ -1,4 +1,3 @@
 package io.kotest.engine.js
 
-internal actual val kotlinJsTestFramework: KotlinJsTestFramework
-   get() = TODO("Not yet implemented")
+internal actual val kotlinJsTestFramework: KotlinJsTestFramework = error("Unused on WasmWasi")

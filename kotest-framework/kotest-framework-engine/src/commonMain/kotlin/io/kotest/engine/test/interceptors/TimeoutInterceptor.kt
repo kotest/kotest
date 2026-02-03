@@ -1,5 +1,7 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -22,6 +24,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.coroutines.yield
 import kotlin.time.Duration
 import kotlin.time.TimeMark
@@ -50,8 +53,13 @@ internal class TimeoutInterceptor(
       logger.log { Pair(testCase.name.name, "Switching context to add timeout $timeout") }
 
       return try {
-         withAppropriateTimeout(timeout) {
-            test(testCase, scope.withCoroutineContext(coroutineContext))
+         // this will hang on wasm-wasi for reasons
+         if (platform != Platform.WasmWasi) {
+            withAppropriateTimeout(timeout) {
+               test(testCase, scope.withCoroutineContext(coroutineContext))
+            }
+         } else {
+            test(testCase, scope.withCoroutineContext(currentCoroutineContext()))
          }
       } catch (t: CancellationException) {
          if (t is RealTimeTimeoutCancellationException || t is TimeoutCancellationException) {
@@ -68,15 +76,29 @@ internal class TimeoutInterceptor(
 
 // The implementation copied from Turbine:
 // https://github.com/cashapp/turbine/blob/1.1.0/src/commonMain/kotlin/app/cash/turbine/channel.kt#L93
-private suspend fun <T> withAppropriateTimeout(
+internal suspend fun <T> withAppropriateTimeout(
    timeout: Duration,
    block: suspend CoroutineScope.() -> T,
 ): T {
    return if (currentCoroutineContext()[TestCoroutineScheduler] != null) {
-      // withTimeout uses virtual time, which will hang.
+      // kotlinx.coroutines.withTimeout uses virtual time, so if we try to use that as the mechanism
+      // for Kotest's own timeout when using a test coroutine scheduler (eg runTest), it'll fail
       withRealTimeTimeout(timeout, block)
    } else {
       withTimeout(timeout, block)
+   }
+}
+
+internal suspend fun <T> withAppropriateTimeoutOrNull(
+   timeout: Duration,
+   block: suspend CoroutineScope.() -> T,
+): T? {
+   return if (currentCoroutineContext()[TestCoroutineScheduler] != null) {
+      // kotlinx.coroutines.withTimeout uses virtual time, so if we try to use that as the mechanism
+      // for Kotest's own timeout when using a test coroutine scheduler (eg runTest), it'll fail
+      withRealTimeTimeoutOrNull(timeout, block)
+   } else {
+      withTimeoutOrNull(timeout, block)
    }
 }
 
@@ -102,6 +124,32 @@ private suspend fun <T> withRealTimeTimeout(
       timeoutJob.onJoin {
          blockDeferred.cancel()
          throw RealTimeTimeoutCancellationException("Timed out waiting for $timeout")
+      }
+   }
+}
+
+private suspend fun <T> withRealTimeTimeoutOrNull(
+   timeout: Duration,
+   block: suspend CoroutineScope.() -> T,
+): T? = coroutineScope {
+   val blockDeferred = async(start = CoroutineStart.UNDISPATCHED) {
+      yield()
+      block()
+   }
+
+   // Run the timeout on a scope separate from the caller. This ensures that the use of the
+   // Default dispatcher doesn't affect the use of a TestScheduler and its fake time.
+   @OptIn(DelicateCoroutinesApi::class)
+   val timeoutJob = GlobalScope.launch(Dispatchers.Default) { delay(timeout) }
+
+   select {
+      blockDeferred.onAwait { result ->
+         timeoutJob.cancel()
+         result
+      }
+      timeoutJob.onJoin {
+         blockDeferred.cancel()
+         null
       }
    }
 }
