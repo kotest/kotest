@@ -1,0 +1,8 @@
+<idea-plugin>
+
+   <extensions defaultExtensionNs="com.intellij">
+      <runConfigurationProducer
+         implementation="io.kotest.plugin.intellij.run.android.AndroidInstrumentedTestRunConfigurationProducer"/>
+   </extensions>
+
+</idea-plugin>

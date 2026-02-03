@@ -15,9 +15,11 @@
    <idea-version since-build="223.4884.69"/>
 
    <depends>org.jetbrains.kotlin</depends>
+   <depends>com.intellij.modules.platform</depends>
    <depends>com.intellij.modules.java</depends>
    <depends>org.jetbrains.plugins.gradle</depends>
    <depends optional="true" config-file="intellilang-kotlin-support.xml">org.intellij.intelliLang</depends>
+   <depends optional="true" config-file="plugin-android.xml">org.jetbrains.android</depends>
 
    <actions>
       <action id="io.kotest.actions.NextTestAction"

@@ -36,6 +36,8 @@ interface Reflection {
    fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property>
 
    fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean
+
+   fun isAbstract(kclass: KClass<*>): Boolean
 }
 
 /**

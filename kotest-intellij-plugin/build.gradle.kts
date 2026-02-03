@@ -33,24 +33,6 @@ data class PluginDescriptor(
 
 val descriptors = listOf(
    PluginDescriptor(
-      since = "242.*", // this version is 2024.2.x
-      until = "243.*",
-      sdkVersion = "2024.2.6",
-      sourceFolder = "IC-242",
-      useInstaller = true,
-      jdkTarget = JavaVersion.VERSION_17,
-      androidVersion = "242.26775.15",
-   ),
-   PluginDescriptor(
-      since = "243.*", // this version is 2024.3.x
-      until = "251.*",
-      sdkVersion = "2024.3.7",
-      sourceFolder = "IC-243",
-      useInstaller = true,
-      jdkTarget = JavaVersion.VERSION_17,
-      androidVersion = "243.21565.214",
-   ),
-   PluginDescriptor(
       since = "251.*", // this version is 2025.1.x
       until = "261.*",
       sdkVersion = "2025.1.7",
@@ -79,12 +61,12 @@ val descriptors = listOf(
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-253"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
 plugins {
-   id("org.jetbrains.intellij.platform") version "2.10.5"
+   id("org.jetbrains.intellij.platform") version "2.11.0"
    kotlin("jvm")
 }
 
@@ -166,10 +148,10 @@ dependencies {
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
-   implementation("org.jetbrains:annotations:26.0.2")
+   implementation("org.jetbrains:annotations:26.0.2-1")
 
    // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
-   testImplementation("junit:junit:4.13.2")
+   testImplementation(libs.junit4)
 
    // needed for the resource files which are loaded into java light tests
    testImplementation(libs.test.kotest.framework.api)
