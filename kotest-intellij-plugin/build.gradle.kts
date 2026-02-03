@@ -73,7 +73,7 @@ plugins {
 repositories {
    mavenCentral()
    mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots")
+   maven("https://central.sonatype.com/repository/maven-snapshots")
 
    // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
    intellijPlatform {

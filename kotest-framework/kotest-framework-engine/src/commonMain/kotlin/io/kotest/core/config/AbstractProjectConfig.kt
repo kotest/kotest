@@ -115,6 +115,12 @@ abstract class AbstractProjectConfig {
     */
    open val logLevel: LogLevel? = null
 
+   /**
+    * Configures all tests with the project to run within a `runTest` block from the `kotlin.test` library, unless
+    * overriden at the spec or test level.
+    *
+    * For full details on how this affects tests see [io.kotest.core.test.config.TestConfig.coroutineTestScope].
+    */
    open val coroutineTestScope: Boolean? = null
 
    open val dumpConfig: Boolean? = null
