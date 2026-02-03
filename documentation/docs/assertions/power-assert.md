@@ -85,7 +85,15 @@ plugins {
 }
 ```
 
-2. Configure which assertion functions should be enhanced with Power Assert, which in this case is the Kotest `shouldBe`
+2. Add the Assertions library to your dependencies:
+
+```kotlin
+dependencies {
+  testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
+}
+```
+
+3. Configure which assertion functions should be enhanced with Power Assert, which in this case is the Kotest `shouldBe`
    matchers:
 
 ```kotlin
