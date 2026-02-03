@@ -59,9 +59,9 @@ internal fun createTestTestDescriptor(
    // see https://github.com/gradle/gradle/issues/4912
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
-   // update sep 2021: gradle 7.1 seems we can use TEST for everything but CONTAINER_AND_TEST will not show without a contained test
+   // update sep 2021: Gradle 7.1 seems we can use TEST for everything but CONTAINER_AND_TEST will not show without a contained test
    // update for 5.0.0.M2 - will just dynamically add tests after they have completed, and we can see the full tree
-   // update 5.0.0.M3 - if we add dynamically afterward then the timings are all messed up, seems gradle keeps the time itself
+   // update 5.0.0.M3 - if we add dynamically afterward then the timings are all messed up, seems Gradle keeps the time itself
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = type == TestDescriptor.Type.CONTAINER
 }
