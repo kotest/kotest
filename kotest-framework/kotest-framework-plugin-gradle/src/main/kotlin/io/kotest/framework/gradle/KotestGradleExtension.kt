@@ -16,4 +16,12 @@ open class KotestGradleExtension {
 
    @ExperimentalKotest
    var alwaysRerunTests = false
+
+   /**
+    * Set to true, and the Gradle plugin will configure the Kotlin Power Assert plugin for use with the
+    * Kotest assertion framework. Will automatically add the assertions library and power assert plugin,
+    * if they are not already present.
+    */
+   @ExperimentalKotest
+   var enablePowerAssert = false
 }

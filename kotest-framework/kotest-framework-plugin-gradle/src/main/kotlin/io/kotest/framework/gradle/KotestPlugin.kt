@@ -23,6 +23,7 @@ import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
 import org.gradle.kotlin.dsl.withType
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.KotlinAndroidPluginWrapper
@@ -38,6 +39,7 @@ import org.jetbrains.kotlin.gradle.targets.js.testing.KotlinJsTest
 import org.jetbrains.kotlin.gradle.targets.jvm.tasks.KotlinJvmTest
 import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.powerassert.gradle.PowerAssertGradleExtension
 import java.util.Properties
 
 @Suppress("unused")
@@ -68,7 +70,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
    }
 
-   private val version = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
+   private val kotestVersion = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
 
    @OptIn(ExperimentalKotest::class)
    override fun apply(project: Project) {
@@ -97,6 +99,35 @@ abstract class KotestPlugin : Plugin<Project> {
 
       project.gradle.taskGraph.whenReady {
          decorateGradleTestTask(project, extension)
+      }
+
+      if (extension.enablePowerAssert) {
+         configurePowerAssert(project)
+      }
+   }
+
+   @OptIn(ExperimentalKotlinGradlePluginApi::class)
+   private fun configurePowerAssert(project: Project) {
+
+      // apply the power assert plugin, won't matter if already applied
+      project.pluginManager.apply("org.jetbrains.kotlin.plugin.power-assert")
+
+      // then configure it
+      project.pluginManager.withPlugin("org.jetbrains.kotlin.plugin.power-assert") {
+         project.extensions.configure(PowerAssertGradleExtension::class.java) {
+            // we can add new functions to this later without requiring users to make changes
+            functions.set(listOf("io.kotest.matchers.shouldBe"))
+         }
+
+         // we add the assertions library for users to simplify configuration
+         // if it already exists, it won't matter, Gradle will handle it
+         project.afterEvaluate {
+            project.configurations.filter { it.name == "commonTestApi" }.forEach {
+               it.dependencies.add(
+                  project.dependencies.create("io.kotest:kotest-assertions-core:$kotestVersion")
+               )
+            }
+         }
       }
    }
 
@@ -486,7 +517,7 @@ abstract class KotestPlugin : Plugin<Project> {
       // handles the case when the configuration is already created
       project.configurations.configureEach {
          if (name == configurationName) {
-            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${kotestVersion}")
          }
       }
 
@@ -494,7 +525,7 @@ abstract class KotestPlugin : Plugin<Project> {
       project.configurations.whenObjectAdded {
          if (name == configurationName) {
             // use the same version as this plugin
-            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${version}")
+            project.dependencies.add(configurationName, "io.kotest:kotest-framework-symbol-processor:${kotestVersion}")
          }
       }
    }

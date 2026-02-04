@@ -2,9 +2,11 @@ public class io/kotest/framework/gradle/KotestGradleExtension {
 	public fun <init> ()V
 	public final fun getAlwaysRerunTests ()Z
 	public final fun getCustomGradleTask ()Z
+	public final fun getEnablePowerAssert ()Z
 	public final fun getShowIgnoreReasons ()Z
 	public final fun setAlwaysRerunTests (Z)V
 	public final fun setCustomGradleTask (Z)V
+	public final fun setEnablePowerAssert (Z)V
 	public final fun setShowIgnoreReasons (Z)V
 }
 
