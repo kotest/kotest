@@ -26,7 +26,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> forAll(
    }
 }
 
-@JvmName("forall8")
+@JvmName("forall9")
 inline fun <A, B, C, D, E, F, G, H, I> forAll(
    table: Table9<A, B, C, D, E, F, G, H, I>,
    testfn: (A, B, C, D, E, F, G, H, I) -> Unit
@@ -67,7 +67,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> forNone(
    }
 }
 
-@JvmName("fornone8")
+@JvmName("fornone9")
 inline fun <A, B, C, D, E, F, G, H, I> forNone(
    table: Table9<A, B, C, D, E, F, G, H, I>,
    testfn: (A, B, C, D, E, F, G, H, I) -> Unit
