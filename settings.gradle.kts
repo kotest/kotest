@@ -213,13 +213,14 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class-root-test",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-single-class",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-package-recursive",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-class-wildcard-prefix",
 
       // tests specific to the JS implementations
       ":kotest-tests:kotest-tests-js",
 
       // various tests and details for generating XML reports via the Gradle tasks
       ":kotest-tests:kotest-tests-xml",
-      
+
       // tests specific to the Wasm Wasi implementations
       ":kotest-tests:kotest-tests-wasm-wasi"
    )
