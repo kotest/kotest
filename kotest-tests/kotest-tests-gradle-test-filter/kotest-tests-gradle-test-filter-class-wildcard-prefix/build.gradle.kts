@@ -18,6 +18,6 @@ kotlin {
 tasks.withType<Test>().configureEach {
    filter {
       // https://docs.gradle.org/current/javadoc/org/gradle/api/tasks/testing/TestFilter.html
-//      includeTestsMatching("*Foo")
+      includeTestsMatching("*Foo")
    }
 }

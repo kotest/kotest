@@ -27,7 +27,7 @@ internal actual fun sourceRef(): SourceRef {
          it.className.startsWith("io.kotest.engine.")
    }.firstOrNull()
 
-   // preference is given to the class name but we must try to find the enclosing spec
+   // preference is given to the class name, but we must try to find the enclosing spec
    val kclass = frame?.className?.let { fqn ->
       runCatching {
          var temp: KClass<*>? = Class.forName(fqn).kotlin
