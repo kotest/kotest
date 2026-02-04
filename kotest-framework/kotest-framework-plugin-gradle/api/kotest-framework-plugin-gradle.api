@@ -1,13 +1,10 @@
-public class io/kotest/framework/gradle/KotestGradleExtension {
+public abstract class io/kotest/framework/gradle/KotestGradleExtension {
 	public fun <init> ()V
-	public final fun getAlwaysRerunTests ()Z
-	public final fun getCustomGradleTask ()Z
-	public final fun getEnablePowerAssert ()Z
-	public final fun getShowIgnoreReasons ()Z
-	public final fun setAlwaysRerunTests (Z)V
-	public final fun setCustomGradleTask (Z)V
-	public final fun setEnablePowerAssert (Z)V
-	public final fun setShowIgnoreReasons (Z)V
+	public abstract fun getAlwaysRerunTests ()Lorg/gradle/api/provider/Property;
+	public abstract fun getCustomGradleTask ()Lorg/gradle/api/provider/Property;
+	public abstract fun getEnablePowerAssert ()Lorg/gradle/api/provider/Property;
+	public abstract fun getShowIgnoreReasons ()Lorg/gradle/api/provider/Property;
+	public abstract fun setAlwaysRerunTests (Lorg/gradle/api/provider/Property;)V
 }
 
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
