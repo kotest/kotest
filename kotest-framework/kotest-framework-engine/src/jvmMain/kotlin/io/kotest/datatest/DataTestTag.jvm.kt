@@ -1,5 +1,6 @@
 package io.kotest.datatest
 
+import io.kotest.core.source.SourceRefUtils
 import io.kotest.core.spec.Spec
 import kotlin.reflect.full.isSubclassOf
 
@@ -11,7 +12,7 @@ import kotlin.reflect.full.isSubclassOf
 internal actual fun getDataTestCallSiteLineNumber(): String {
    val stack = Thread.currentThread().stackTrace
 
-   val frame = stack.firstOrNull { element ->
+   val frame = SourceRefUtils.filteredUserFrames(stack).firstOrNull { element ->
       runCatching {
          val clazz = Class.forName(element.className)
          isSpecOrNestedInSpec(clazz)

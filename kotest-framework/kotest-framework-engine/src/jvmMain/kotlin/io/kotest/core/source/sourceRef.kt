@@ -47,6 +47,10 @@ object SourceRefUtils {
     * to find the location where the user defined the test.
     */
    internal fun firstUserFrame(stack: Array<StackTraceElement>): StackTraceElement? {
+      return filteredUserFrames(stack).firstOrNull()
+   }
+
+   internal fun filteredUserFrames(stack: Array<StackTraceElement>): List<StackTraceElement> {
       return stack.dropWhile {
          it.className.startsWith("java.") ||
             it.className.startsWith("javax.") ||
@@ -57,6 +61,6 @@ object SourceRefUtils {
             it.className.startsWith("io.kotest.core.") ||
             it.className.startsWith("io.kotest.engine.") ||
             it.className.startsWith("io.kotest.datatest.")
-      }.firstOrNull()
+      }
    }
 }
