@@ -44,8 +44,12 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     *
     * Gradle supplies a pattern string which corresponds to a well-formed regex object.
     * This can be directly usable for kotest.
+    *
+    * - org.package.Test becomes \Qorg.package.Test\E
+    * - org.package.* becomes \Qio.kotest.runner.junit.platform.\E.*
     * - A* becomes \QA\E.*
     * - A*Test becomes \QA\E.*\QTest\E
+    * - *Test becomes .*.*\QTest\E
     * - io.*.A*Test becomes \Qio.\E.*\Q.A\E.*\QTest\E
     * - io.*.A*Test.AccountDetails* becomes \Qio.\E.*\Q.A\E.*\QTest.AccountDetails\E.*
     * - io.*.A*Test.some test context* becomes \Qio.\E.*\Q.A\E.*\QTest.some test context\E.*
