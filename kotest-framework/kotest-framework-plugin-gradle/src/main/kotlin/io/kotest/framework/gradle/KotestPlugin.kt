@@ -87,7 +87,8 @@ abstract class KotestPlugin : Plugin<Project> {
          handleKotlinJvm(project)
       }
 
-      configureAlwaysRerun(project, extension)
+      // configure test tasks to always rerun when the extension property is set, this overrides gradle up-to-date checks
+      configureAlwaysRerunTestTasks(project, extension)
 
       // configure Kotlin Android projects when it is not a multiplatform project
       handleAndroid(project, extension)
@@ -130,7 +131,7 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    @OptIn(ExperimentalKotest::class)
-   private fun configureAlwaysRerun(project: Project, extension: KotestGradleExtension) {
+   private fun configureAlwaysRerunTestTasks(project: Project, extension: KotestGradleExtension) {
       project.afterEvaluate {
          if (extension.alwaysRerunTests) {
             project.tasks.withType(AbstractTestTask::class.java).configureEach {
