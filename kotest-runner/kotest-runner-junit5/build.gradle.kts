@@ -22,6 +22,7 @@ kotlin {
             api(libs.junit.platform5.engine)
             api(libs.junit.platform5.api)
             api(libs.junit.platform5.launcher)
+            api(libs.junit.jupiter5.api)
          }
       }
 
