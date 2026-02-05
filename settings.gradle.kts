@@ -193,6 +193,10 @@ if (shouldRunJvmOnlyModules) {
       // tests specific functionality of the JUnit4 runner used by Android instrumented tests
       ":kotest-tests:kotest-tests-junit4",
 
+      // tests that we add the jupiter dep to allow org.junit.jupiter.api.Test annotations for backwards compatibility
+      // we shouldn't really add it, people can add it themselves if they want the dependency, but this is a historic artifact
+      ":kotest-tests:kotest-tests-junit-jupiter",
+
       ":kotest-tests:kotest-tests-junitxml",
       ":kotest-tests:kotest-tests-junit-displaynameformatter",
 
