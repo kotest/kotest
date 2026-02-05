@@ -2,6 +2,8 @@ package io.kotest.engine.spec.execution
 
 import io.kotest.common.KotestTesting
 import io.kotest.common.platform
+import io.kotest.common.reflection.IncludingSuperclasses
+import io.kotest.common.reflection.IncludingAnnotations
 import io.kotest.common.reflection.annotation
 import io.kotest.common.reflection.bestName
 import io.kotest.common.reflection.instantiations
@@ -78,7 +80,7 @@ internal class SpecRefExecutor(
    private suspend fun applyExtensions(ref: SpecRef) {
       try {
 
-         val classes = ref.kclass.annotation<ApplyExtension>()?.extensions?.toList() ?: emptyList()
+         val classes = ref.kclass.annotation<ApplyExtension>(IncludingAnnotations, IncludingSuperclasses)?.extensions?.toList() ?: emptyList()
          val extensions = classes.map { instantiations.newInstanceNoArgConstructorOrObjectInstance(it) }
          logger.log { Pair(ref.kclass.bestName(), "Applying extensions: $extensions") }
 
