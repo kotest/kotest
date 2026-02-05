@@ -87,9 +87,7 @@ abstract class KotestPlugin : Plugin<Project> {
          handleKotlinJvm(project)
       }
 
-      if (extension.alwaysRerunTests) {
-         configureAlwaysRerun(project)
-      }
+      configureAlwaysRerun(project, extension)
 
       // configure Kotlin Android projects when it is not a multiplatform project
       handleAndroid(project, extension)
@@ -131,9 +129,14 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun configureAlwaysRerun(project: Project) {
-      project.tasks.withType(AbstractTestTask::class.java).configureEach {
-         outputs.upToDateWhen { false }
+   @OptIn(ExperimentalKotest::class)
+   private fun configureAlwaysRerun(project: Project, extension: KotestGradleExtension) {
+      project.afterEvaluate {
+         if (extension.alwaysRerunTests) {
+            project.tasks.withType(AbstractTestTask::class.java).configureEach {
+               outputs.upToDateWhen { false }
+            }
+         }
       }
    }
 
