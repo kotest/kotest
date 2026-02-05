@@ -47,10 +47,10 @@ object SourceRefUtils {
     * to find the location where the user defined the test.
     */
    internal fun firstUserFrame(stack: Array<StackTraceElement>): StackTraceElement? {
-      return filteredUserFrames(stack).firstOrNull()
+      return filteredUserFrames(stack, excludeDataTest = true).firstOrNull()
    }
 
-   internal fun filteredUserFrames(stack: Array<StackTraceElement>): List<StackTraceElement> {
+   internal fun filteredUserFrames(stack: Array<StackTraceElement>, excludeDataTest: Boolean = false): List<StackTraceElement> {
       return stack.dropWhile {
          it.className.startsWith("java.") ||
             it.className.startsWith("javax.") ||
@@ -60,7 +60,7 @@ object SourceRefUtils {
             it.className.startsWith("kotlinx.") ||
             it.className.startsWith("io.kotest.core.") ||
             it.className.startsWith("io.kotest.engine.") ||
-            it.className.startsWith("io.kotest.datatest.")
+            (excludeDataTest && it.className.startsWith("io.kotest.datatest."))
       }
    }
 }
