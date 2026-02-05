@@ -14,8 +14,89 @@ public final class io/kotest/data/ForAll10Kt {
 	public static final fun forAll ([Lio/kotest/data/Row10;Lkotlin/jvm/functions/Function11;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun forNone (Lio/kotest/data/Table10;Lkotlin/jvm/functions/Function10;)V
 	public static final fun forNone ([Lio/kotest/data/Row10;Lkotlin/jvm/functions/Function11;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun forall8 (Lio/kotest/data/Table10;Lkotlin/jvm/functions/Function10;)V
-	public static final fun fornone8 (Lio/kotest/data/Table10;Lkotlin/jvm/functions/Function10;)V
+	public static final fun forall10 (Lio/kotest/data/Table10;Lkotlin/jvm/functions/Function10;)V
+	public static final fun fornone10 (Lio/kotest/data/Table10;Lkotlin/jvm/functions/Function10;)V
+}
+
+public final class io/kotest/data/ForAll11Kt {
+	public static final fun forAll (Lio/kotest/data/Table11;Lkotlin/jvm/functions/Function11;)V
+	public static final fun forAll ([Lio/kotest/data/Row11;Lkotlin/jvm/functions/Function12;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table11;Lkotlin/jvm/functions/Function11;)V
+	public static final fun forNone ([Lio/kotest/data/Row11;Lkotlin/jvm/functions/Function12;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall11 (Lio/kotest/data/Table11;Lkotlin/jvm/functions/Function11;)V
+	public static final fun fornone11 (Lio/kotest/data/Table11;Lkotlin/jvm/functions/Function11;)V
+}
+
+public final class io/kotest/data/ForAll12Kt {
+	public static final fun forAll (Lio/kotest/data/Table12;Lkotlin/jvm/functions/Function12;)V
+	public static final fun forAll ([Lio/kotest/data/Row12;Lkotlin/jvm/functions/Function13;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table12;Lkotlin/jvm/functions/Function12;)V
+	public static final fun forNone ([Lio/kotest/data/Row12;Lkotlin/jvm/functions/Function13;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall12 (Lio/kotest/data/Table12;Lkotlin/jvm/functions/Function12;)V
+	public static final fun fornone12 (Lio/kotest/data/Table12;Lkotlin/jvm/functions/Function12;)V
+}
+
+public final class io/kotest/data/ForAll13Kt {
+	public static final fun forAll (Lio/kotest/data/Table13;Lkotlin/jvm/functions/Function13;)V
+	public static final fun forAll ([Lio/kotest/data/Row13;Lkotlin/jvm/functions/Function14;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table13;Lkotlin/jvm/functions/Function13;)V
+	public static final fun forNone ([Lio/kotest/data/Row13;Lkotlin/jvm/functions/Function14;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall13 (Lio/kotest/data/Table13;Lkotlin/jvm/functions/Function13;)V
+	public static final fun fornone13 (Lio/kotest/data/Table13;Lkotlin/jvm/functions/Function13;)V
+}
+
+public final class io/kotest/data/ForAll14Kt {
+	public static final fun forAll (Lio/kotest/data/Table14;Lkotlin/jvm/functions/Function14;)V
+	public static final fun forAll ([Lio/kotest/data/Row14;Lkotlin/jvm/functions/Function15;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table14;Lkotlin/jvm/functions/Function14;)V
+	public static final fun forNone ([Lio/kotest/data/Row14;Lkotlin/jvm/functions/Function15;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall14 (Lio/kotest/data/Table14;Lkotlin/jvm/functions/Function14;)V
+	public static final fun fornone14 (Lio/kotest/data/Table14;Lkotlin/jvm/functions/Function14;)V
+}
+
+public final class io/kotest/data/ForAll15Kt {
+	public static final fun forAll (Lio/kotest/data/Table15;Lkotlin/jvm/functions/Function15;)V
+	public static final fun forAll ([Lio/kotest/data/Row15;Lkotlin/jvm/functions/Function16;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table15;Lkotlin/jvm/functions/Function15;)V
+	public static final fun forNone ([Lio/kotest/data/Row15;Lkotlin/jvm/functions/Function16;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall15 (Lio/kotest/data/Table15;Lkotlin/jvm/functions/Function15;)V
+	public static final fun fornone15 (Lio/kotest/data/Table15;Lkotlin/jvm/functions/Function15;)V
+}
+
+public final class io/kotest/data/ForAll16Kt {
+	public static final fun forAll (Lio/kotest/data/Table16;Lkotlin/jvm/functions/Function16;)V
+	public static final fun forAll ([Lio/kotest/data/Row16;Lkotlin/jvm/functions/Function17;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table16;Lkotlin/jvm/functions/Function16;)V
+	public static final fun forNone ([Lio/kotest/data/Row16;Lkotlin/jvm/functions/Function17;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall16 (Lio/kotest/data/Table16;Lkotlin/jvm/functions/Function16;)V
+	public static final fun fornone16 (Lio/kotest/data/Table16;Lkotlin/jvm/functions/Function16;)V
+}
+
+public final class io/kotest/data/ForAll17Kt {
+	public static final fun forAll (Lio/kotest/data/Table17;Lkotlin/jvm/functions/Function17;)V
+	public static final fun forAll ([Lio/kotest/data/Row17;Lkotlin/jvm/functions/Function18;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table17;Lkotlin/jvm/functions/Function17;)V
+	public static final fun forNone ([Lio/kotest/data/Row17;Lkotlin/jvm/functions/Function18;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall17 (Lio/kotest/data/Table17;Lkotlin/jvm/functions/Function17;)V
+	public static final fun fornone17 (Lio/kotest/data/Table17;Lkotlin/jvm/functions/Function17;)V
+}
+
+public final class io/kotest/data/ForAll18Kt {
+	public static final fun forAll (Lio/kotest/data/Table18;Lkotlin/jvm/functions/Function18;)V
+	public static final fun forAll ([Lio/kotest/data/Row18;Lkotlin/jvm/functions/Function19;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table18;Lkotlin/jvm/functions/Function18;)V
+	public static final fun forNone ([Lio/kotest/data/Row18;Lkotlin/jvm/functions/Function19;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall18 (Lio/kotest/data/Table18;Lkotlin/jvm/functions/Function18;)V
+	public static final fun fornone18 (Lio/kotest/data/Table18;Lkotlin/jvm/functions/Function18;)V
+}
+
+public final class io/kotest/data/ForAll19Kt {
+	public static final fun forAll (Lio/kotest/data/Table19;Lkotlin/jvm/functions/Function19;)V
+	public static final fun forAll ([Lio/kotest/data/Row19;Lkotlin/jvm/functions/Function20;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table19;Lkotlin/jvm/functions/Function19;)V
+	public static final fun forNone ([Lio/kotest/data/Row19;Lkotlin/jvm/functions/Function20;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall19 (Lio/kotest/data/Table19;Lkotlin/jvm/functions/Function19;)V
+	public static final fun fornone19 (Lio/kotest/data/Table19;Lkotlin/jvm/functions/Function19;)V
 }
 
 public final class io/kotest/data/ForAll1Kt {
@@ -25,6 +106,33 @@ public final class io/kotest/data/ForAll1Kt {
 	public static final fun forNone ([Lio/kotest/data/Row1;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun forall1 (Lio/kotest/data/Table1;Lkotlin/jvm/functions/Function1;)V
 	public static final fun fornone1 (Lio/kotest/data/Table1;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class io/kotest/data/ForAll20Kt {
+	public static final fun forAll (Lio/kotest/data/Table20;Lkotlin/jvm/functions/Function20;)V
+	public static final fun forAll ([Lio/kotest/data/Row20;Lkotlin/jvm/functions/Function21;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table20;Lkotlin/jvm/functions/Function20;)V
+	public static final fun forNone ([Lio/kotest/data/Row20;Lkotlin/jvm/functions/Function21;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall20 (Lio/kotest/data/Table20;Lkotlin/jvm/functions/Function20;)V
+	public static final fun fornone20 (Lio/kotest/data/Table20;Lkotlin/jvm/functions/Function20;)V
+}
+
+public final class io/kotest/data/ForAll21Kt {
+	public static final fun forAll (Lio/kotest/data/Table21;Lkotlin/jvm/functions/Function21;)V
+	public static final fun forAll ([Lio/kotest/data/Row21;Lkotlin/jvm/functions/Function22;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table21;Lkotlin/jvm/functions/Function21;)V
+	public static final fun forNone ([Lio/kotest/data/Row21;Lkotlin/jvm/functions/Function22;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall21 (Lio/kotest/data/Table21;Lkotlin/jvm/functions/Function21;)V
+	public static final fun fornone21 (Lio/kotest/data/Table21;Lkotlin/jvm/functions/Function21;)V
+}
+
+public final class io/kotest/data/ForAll22Kt {
+	public static final fun forAll (Lio/kotest/data/Table22;Lkotlin/jvm/functions/Function22;)V
+	public static final fun forAll ([Lio/kotest/data/Row22;Lkotlin/jvm/functions/FunctionN;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forNone (Lio/kotest/data/Table22;Lkotlin/jvm/functions/Function22;)V
+	public static final fun forNone ([Lio/kotest/data/Row22;Lkotlin/jvm/functions/FunctionN;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun forall22 (Lio/kotest/data/Table22;Lkotlin/jvm/functions/Function22;)V
+	public static final fun fornone22 (Lio/kotest/data/Table22;Lkotlin/jvm/functions/Function22;)V
 }
 
 public final class io/kotest/data/ForAll2Kt {
@@ -95,8 +203,8 @@ public final class io/kotest/data/ForAll9Kt {
 	public static final fun forAll ([Lio/kotest/data/Row9;Lkotlin/jvm/functions/Function10;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun forNone (Lio/kotest/data/Table9;Lkotlin/jvm/functions/Function9;)V
 	public static final fun forNone ([Lio/kotest/data/Row9;Lkotlin/jvm/functions/Function10;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static final fun forall8 (Lio/kotest/data/Table9;Lkotlin/jvm/functions/Function9;)V
-	public static final fun fornone8 (Lio/kotest/data/Table9;Lkotlin/jvm/functions/Function9;)V
+	public static final fun forall9 (Lio/kotest/data/Table9;Lkotlin/jvm/functions/Function9;)V
+	public static final fun fornone9 (Lio/kotest/data/Table9;Lkotlin/jvm/functions/Function9;)V
 }
 
 public final class io/kotest/data/Headers1 {
@@ -1962,9 +2070,69 @@ public final class io/kotest/data/blocking/ForAll10Kt {
 	public static final fun forNone ([Lio/kotest/data/Row10;Lkotlin/jvm/functions/Function10;)V
 }
 
+public final class io/kotest/data/blocking/ForAll11Kt {
+	public static final fun forAll ([Lio/kotest/data/Row11;Lkotlin/jvm/functions/Function11;)V
+	public static final fun forNone ([Lio/kotest/data/Row11;Lkotlin/jvm/functions/Function11;)V
+}
+
+public final class io/kotest/data/blocking/ForAll12Kt {
+	public static final fun forAll ([Lio/kotest/data/Row12;Lkotlin/jvm/functions/Function12;)V
+	public static final fun forNone ([Lio/kotest/data/Row12;Lkotlin/jvm/functions/Function12;)V
+}
+
+public final class io/kotest/data/blocking/ForAll13Kt {
+	public static final fun forAll ([Lio/kotest/data/Row13;Lkotlin/jvm/functions/Function13;)V
+	public static final fun forNone ([Lio/kotest/data/Row13;Lkotlin/jvm/functions/Function13;)V
+}
+
+public final class io/kotest/data/blocking/ForAll14Kt {
+	public static final fun forAll ([Lio/kotest/data/Row14;Lkotlin/jvm/functions/Function14;)V
+	public static final fun forNone ([Lio/kotest/data/Row14;Lkotlin/jvm/functions/Function14;)V
+}
+
+public final class io/kotest/data/blocking/ForAll15Kt {
+	public static final fun forAll ([Lio/kotest/data/Row15;Lkotlin/jvm/functions/Function15;)V
+	public static final fun forNone ([Lio/kotest/data/Row15;Lkotlin/jvm/functions/Function15;)V
+}
+
+public final class io/kotest/data/blocking/ForAll16Kt {
+	public static final fun forAll ([Lio/kotest/data/Row16;Lkotlin/jvm/functions/Function16;)V
+	public static final fun forNone ([Lio/kotest/data/Row16;Lkotlin/jvm/functions/Function16;)V
+}
+
+public final class io/kotest/data/blocking/ForAll17Kt {
+	public static final fun forAll ([Lio/kotest/data/Row17;Lkotlin/jvm/functions/Function17;)V
+	public static final fun forNone ([Lio/kotest/data/Row17;Lkotlin/jvm/functions/Function17;)V
+}
+
+public final class io/kotest/data/blocking/ForAll18Kt {
+	public static final fun forAll ([Lio/kotest/data/Row18;Lkotlin/jvm/functions/Function18;)V
+	public static final fun forNone ([Lio/kotest/data/Row18;Lkotlin/jvm/functions/Function18;)V
+}
+
+public final class io/kotest/data/blocking/ForAll19Kt {
+	public static final fun forAll ([Lio/kotest/data/Row19;Lkotlin/jvm/functions/Function19;)V
+	public static final fun forNone ([Lio/kotest/data/Row19;Lkotlin/jvm/functions/Function19;)V
+}
+
 public final class io/kotest/data/blocking/ForAll1Kt {
 	public static final fun forAll ([Lio/kotest/data/Row1;Lkotlin/jvm/functions/Function1;)V
 	public static final fun forNone ([Lio/kotest/data/Row1;Lkotlin/jvm/functions/Function1;)V
+}
+
+public final class io/kotest/data/blocking/ForAll20Kt {
+	public static final fun forAll ([Lio/kotest/data/Row20;Lkotlin/jvm/functions/Function20;)V
+	public static final fun forNone ([Lio/kotest/data/Row20;Lkotlin/jvm/functions/Function20;)V
+}
+
+public final class io/kotest/data/blocking/ForAll21Kt {
+	public static final fun forAll ([Lio/kotest/data/Row21;Lkotlin/jvm/functions/Function21;)V
+	public static final fun forNone ([Lio/kotest/data/Row21;Lkotlin/jvm/functions/Function21;)V
+}
+
+public final class io/kotest/data/blocking/ForAll22Kt {
+	public static final fun forAll ([Lio/kotest/data/Row22;Lkotlin/jvm/functions/Function22;)V
+	public static final fun forNone ([Lio/kotest/data/Row22;Lkotlin/jvm/functions/Function22;)V
 }
 
 public final class io/kotest/data/blocking/ForAll2Kt {

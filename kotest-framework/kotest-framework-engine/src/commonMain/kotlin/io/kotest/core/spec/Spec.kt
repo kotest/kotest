@@ -255,7 +255,12 @@ abstract class Spec : TestConfiguration() {
    var blockingTest: Boolean? = null
 
    /**
-    * When set to true, tests will be executed inside a runTest block from the kotlin test library.
+    * When set to true, tests will be executed inside a `runTest` block from the `kotlin.test` library.
+    *
+    * Note that if this value is set to true at the spec level,
+    * all tests for that spec will be executed within a `runTest` block.
+    *
+    * For full details on how this affects tests see [io.kotest.core.test.config.TestConfig.coroutineTestScope].
     */
    var coroutineTestScope: Boolean? = null
 

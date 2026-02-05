@@ -51,18 +51,50 @@ This detailed output shows the values of each part of the expression, making it 
 
 ## Setup
 
-Power Assert is implemented as a Kotlin compiler plugin that's part of Kotlin 2.0+. To use it with Kotest 6.0:
+Power Assert is implemented as a Kotlin compiler plugin that's part of Kotlin 2.0+. To use with Kotest you have two
+options.
+
+### With the Gradle Plugin
+
+If using Kotest 6.2 and higher, and the Kotest Gradle plugin is enabled, then the plugin will automatically configure
+Power Assert for you if required.
+
+1. Add the Kotest Gradle plugin to your build:
+
+```kotlin
+plugins {
+  id("io.kotest") version "<kotest-version>"
+}
+```
+
+2. Configure the Kotest Gradle plugin to enable Power Assert:
+
+```kotlin
+kotest {
+  enablePowerAssert = true
+}
+```
+
+### Adding the Plugin Manually
 
 1. Add the Power Assert plugin to your build:
 
 ```kotlin
 plugins {
-  kotlin("jvm") version "2.2.0"
-  id("org.jetbrains.kotlin.plugin.power-assert") version "2.2.0"
+  id("org.jetbrains.kotlin.plugin.power-assert") version "<kotlin-version>"
 }
 ```
 
-2. Configure which assertion functions should be enhanced with Power Assert:
+2. Add the Assertions library to your dependencies:
+
+```kotlin
+dependencies {
+  testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
+}
+```
+
+3. Configure which assertion functions should be enhanced with Power Assert, which in this case is the Kotest `shouldBe`
+   matchers:
 
 ```kotlin
 powerAssert {
