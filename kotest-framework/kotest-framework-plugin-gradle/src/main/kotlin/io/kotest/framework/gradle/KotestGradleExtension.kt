@@ -1,21 +1,23 @@
 package io.kotest.framework.gradle
 
 import io.kotest.common.ExperimentalKotest
+import org.gradle.api.provider.Property
 
-open class KotestGradleExtension {
+abstract class KotestGradleExtension {
 
    /**
     * Set to true and the Gradle plugin will create "kotest" test tasks
     */
-   var customGradleTask = false
+   abstract val customGradleTask: Property<Boolean>
 
    /**
     * Set to true, and the Kotest engine will propagate ignore reasons to Gradle.
     */
-   var showIgnoreReasons = false
+   @ExperimentalKotest
+   abstract val showIgnoreReasons: Property<Boolean>
 
    @ExperimentalKotest
-   var alwaysRerunTests = false
+   abstract val alwaysRerunTests: Property<Boolean>
 
    /**
     * Set to true, and the Gradle plugin will configure the Kotlin Power Assert plugin for use with the
@@ -23,5 +25,5 @@ open class KotestGradleExtension {
     * if they are not already present.
     */
    @ExperimentalKotest
-   var enablePowerAssert = false
+   abstract val enablePowerAssert: Property<Boolean>
 }

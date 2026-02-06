@@ -76,33 +76,34 @@ abstract class KotestPlugin : Plugin<Project> {
    override fun apply(project: Project) {
 
       val extension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
-      if (extension.customGradleTask) {
+      project.afterEvaluate {
+         if (extension.customGradleTask.getOrElse(false)) {
 
-         project.tasks.register(KOTEST_TASK_NAME) {
-            group = JavaBasePlugin.VERIFICATION_GROUP
-            description = TASK_DESCRIPTION
+            project.tasks.register(KOTEST_TASK_NAME) {
+               group = JavaBasePlugin.VERIFICATION_GROUP
+               description = TASK_DESCRIPTION
+            }
+
+            // configures standalone Kotlin JVM projects
+            handleKotlinJvm(project)
+         }
+         if (extension.alwaysRerunTests.getOrElse(false)) {
+            configureAlwaysRerun(project)
          }
 
-         // configures standalone Kotlin JVM projects
-         handleKotlinJvm(project)
-      }
+         // configure Kotlin Android projects when it is not a multiplatform project
+         handleAndroid(project, extension)
 
-      if (extension.alwaysRerunTests) {
-         configureAlwaysRerun(project)
-      }
+         // configures Kotlin multiplatform projects
+         handleMultiplatform(project, extension)
 
-      // configure Kotlin Android projects when it is not a multiplatform project
-      handleAndroid(project, extension)
+         project.gradle.taskGraph.whenReady {
+            decorateGradleTestTask(project, extension)
+         }
 
-      // configures Kotlin multiplatform projects
-      handleMultiplatform(project, extension)
-
-      project.gradle.taskGraph.whenReady {
-         decorateGradleTestTask(project, extension)
-      }
-
-      if (extension.enablePowerAssert) {
-         configurePowerAssert(project)
+         if (extension.enablePowerAssert.getOrElse(false)) {
+            configurePowerAssert(project)
+         }
       }
    }
 
@@ -171,7 +172,7 @@ abstract class KotestPlugin : Plugin<Project> {
                setEnvVar(this, IDEA_ACTIVE_ENV, "true")
             }
 
-            if (extension.showIgnoreReasons) {
+            if (extension.showIgnoreReasons.getOrElse(false)) {
                setEnvVar(this, KOTEST_SHOW_IGNORE_REASONS, "true")
             }
          }
@@ -260,10 +261,8 @@ abstract class KotestPlugin : Plugin<Project> {
                      when (platformType) {
                         KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target, kotestExtension)
                         KotlinPlatformType.common -> Unit // these are not buildable targets, so we skip them
-                        KotlinPlatformType.jvm -> if (kotestExtension.customGradleTask) handleMultiplatformJvm(
-                           target,
-                           kotestExtension
-                        )
+                        KotlinPlatformType.jvm -> if (kotestExtension.customGradleTask.getOrElse(false))
+                           handleMultiplatformJvm(target, kotestExtension)
 
                         KotlinPlatformType.js -> handleJs(target, kotestExtension)
                         // some example values
@@ -306,7 +305,7 @@ abstract class KotestPlugin : Plugin<Project> {
             wireKsp(target.project, kspConfigurationName(target))
 
             // wire in the kmp test task into our kotest task
-            if (kotestExtension.customGradleTask)
+            if (kotestExtension.customGradleTask.getOrElse(false))
                target.project.tasks.getByName(KOTEST_TASK_NAME) {
                   target.project.logger.info("> Configuring kotest task for $nativeTaskName")
                   dependsOn(existing)
@@ -325,7 +324,7 @@ abstract class KotestPlugin : Plugin<Project> {
                // the kotest symbol processor to this configuration so the user doesn't have to manually
                target.project.logger.info("> Configuring kotest KSP processor for $KSP_WASM_JS_SOURCESET")
                wireKsp(target.project, KSP_WASM_JS_SOURCESET)
-               if (kotestExtension.customGradleTask)
+               if (kotestExtension.customGradleTask.getOrElse(false))
                   target.project.tasks.getByName(KOTEST_TASK_NAME) {
                      target.project.logger.info("> Configuring kotest task for $KSP_WASM_JS_SOURCESET")
                      dependsOn(target.project.tasks[WASM_JS_TEST_TASK_NAME])
@@ -354,7 +353,7 @@ abstract class KotestPlugin : Plugin<Project> {
          // the symbol processors used by the test configuration. We want to wire in
          // the kotest symbol processor to this configuration so the user doesn't have to manually
          wireKsp(target.project, KSP_JS_SOURCESET)
-         if (kotestExtension.customGradleTask)
+         if (kotestExtension.customGradleTask.getOrElse(false))
             target.project.tasks.getByName(KOTEST_TASK_NAME) {
                target.project.logger.info("> Configuring kotest task for $JS_TEST_TASK_NAME")
                dependsOn(target.project.tasks[JS_TEST_TASK_NAME])
@@ -418,7 +417,7 @@ abstract class KotestPlugin : Plugin<Project> {
          // see https://docs.gradle.org/current/userguide/isolated_projects.html
          val kotestTaskName = androidKotestTaskName(compilation)
 
-         if (kotestExtension.customGradleTask) {
+         if (kotestExtension.customGradleTask.getOrElse(false)) {
             val task = project.tasks.register(kotestTaskName, KotestAndroidTask::class) {
 
                group = JavaBasePlugin.VERIFICATION_GROUP
