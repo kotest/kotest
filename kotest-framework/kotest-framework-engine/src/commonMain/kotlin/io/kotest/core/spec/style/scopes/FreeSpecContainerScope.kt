@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
@@ -24,6 +25,19 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    }
 
    /**
+    * Creates a new container scope with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun String.minus(config: TestConfig, test: suspend FreeSpecContainerScope.() -> Unit) {
+      registerContainer(
+         name = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = config
+      ) { FreeSpecContainerScope(this).test() }
+   }
+
+   /**
     * Creates a new terminal test scope inside this spec.
     */
    suspend infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
@@ -31,6 +45,19 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
          name = TestNameBuilder.builder(this).build(),
          xmethod = TestXMethod.NONE,
          config = null
+      ) { FreeSpecTerminalScope(this).test() }
+   }
+
+   /**
+    * Creates a new terminal test scope with config passed as a param.
+    * Marked as internal as it should be used only by the data test registrars.
+    */
+   @KotestInternal
+   suspend fun String.invoke(config: TestConfig, test: suspend FreeSpecTerminalScope.() -> Unit) {
+      registerTest(
+         name = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = config
       ) { FreeSpecTerminalScope(this).test() }
    }
 
