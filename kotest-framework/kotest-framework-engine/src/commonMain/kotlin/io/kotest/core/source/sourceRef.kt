@@ -3,8 +3,8 @@ package io.kotest.core.source
 sealed interface SourceRef {
 
    /**
-    * No source information was information. For example, on platforms where
-    * reflective capabiltities don't exist.
+    * Source information was not available. For example, on platforms where
+    * stack traces are not generated.
     */
    object None : SourceRef
 
