@@ -5,7 +5,7 @@ import io.kotest.engine.config.PackageUtils
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-class CommonPrefixTest : FunSpec() {
+class PackageUtilsTest : FunSpec() {
    init {
       test("should throw exception for empty collection") {
          shouldThrow<IllegalArgumentException> {
