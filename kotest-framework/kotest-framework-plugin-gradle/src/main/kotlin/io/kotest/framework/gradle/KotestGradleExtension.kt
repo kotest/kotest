@@ -17,7 +17,7 @@ abstract class KotestGradleExtension {
    abstract val showIgnoreReasons: Property<Boolean>
 
    @ExperimentalKotest
-   abstract var alwaysRerunTests: Property<Boolean>
+   abstract val alwaysRerunTests: Property<Boolean>
 
    /**
     * Set to true, and the Gradle plugin will configure the Kotlin Power Assert plugin for use with the
