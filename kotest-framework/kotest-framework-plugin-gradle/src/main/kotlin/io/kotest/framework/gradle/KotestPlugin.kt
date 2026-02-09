@@ -77,16 +77,16 @@ abstract class KotestPlugin : Plugin<Project> {
 
       val extension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
       project.afterEvaluate {
-         if (extension.customGradleTask.getOrElse(false)) {
 
-            project.tasks.register(KOTEST_TASK_NAME) {
-               group = JavaBasePlugin.VERIFICATION_GROUP
-               description = TASK_DESCRIPTION
-            }
-
-            // configures standalone Kotlin JVM projects
-            handleKotlinJvm(project)
+         project.tasks.register(KOTEST_TASK_NAME) {
+            onlyIf { extension.customGradleTask.get() }
+            group = JavaBasePlugin.VERIFICATION_GROUP
+            description = TASK_DESCRIPTION
          }
+
+         // configures standalone Kotlin JVM projects
+         handleKotlinJvm(project, extension)
+
          if (extension.alwaysRerunTests.getOrElse(false)) {
             configureAlwaysRerun(project)
          }
@@ -198,20 +198,28 @@ abstract class KotestPlugin : Plugin<Project> {
       return props.getProperty("version")
    }
 
-   private fun handleKotlinJvm(project: Project) {
+   @Deprecated("Prefer the standard Gradle test task")
+   private fun handleKotlinJvm(project: Project, extension: KotestGradleExtension) {
       project.plugins.withType<KotlinPluginWrapper> {
          val existing = project.tasks.findByName(TEST_TASK_NAME)
          when (existing) {
             null -> project.logger.info("> No test task found in project ${project.name} - no Kotest task will be added")
-            is Test -> configureJvmTask(TEST_TASK_NAME, project, null) // no need for target name for standalone jvm
+            // no need for a target name for standalone jvm
+            is Test -> configureJvmTask(TEST_TASK_NAME, project, null, extension)
          }
       }
    }
 
-   private fun configureJvmTask(sourceSetName: String, project: Project, target: String?) {
+   private fun configureJvmTask(
+      sourceSetName: String,
+      project: Project,
+      target: String?,
+      extension: KotestGradleExtension
+   ) {
       // Gradle's best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val jvmKotest = project.tasks.register(JVM_KOTEST_NAME, KotestJvmTask::class) {
+         onlyIf { extension.customGradleTask.get() }
 
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION
@@ -251,7 +259,7 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun handleMultiplatform(project: Project, kotestExtension: KotestGradleExtension) {
+   private fun handleMultiplatform(project: Project, extension: KotestGradleExtension) {
       project.plugins.withType<KotlinMultiplatformPluginWrapper> { // this is the multiplatform plugin, not the kotlin plugin
          project.extensions.configure<KotlinMultiplatformExtension> { // this is the multiplatform extension
             this.targets
@@ -259,17 +267,17 @@ abstract class KotestPlugin : Plugin<Project> {
                   val target = this
                   if (name !in unsupportedTargets) {
                      when (platformType) {
-                        KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target, kotestExtension)
+                        KotlinPlatformType.androidJvm -> handleMultiplatformAndroid(target, extension)
                         KotlinPlatformType.common -> Unit // these are not buildable targets, so we skip them
-                        KotlinPlatformType.jvm -> if (kotestExtension.customGradleTask.getOrElse(false))
-                           handleMultiplatformJvm(target, kotestExtension)
+                        KotlinPlatformType.jvm -> if (extension.customGradleTask.getOrElse(false))
+                           handleMultiplatformJvm(target, extension)
 
-                        KotlinPlatformType.js -> handleJs(target, kotestExtension)
+                        KotlinPlatformType.js -> handleJs(target, extension)
                         // some example values
                         // Testable target: linuxX64, platformType: native, disambiguationClassifier: linuxX64
                         // Testable target: mingwX64, platformType: native, disambiguationClassifier: mingwX64
-                        KotlinPlatformType.wasm -> handleWasm(target, kotestExtension)
-                        KotlinPlatformType.native -> handleNative(target, kotestExtension)
+                        KotlinPlatformType.wasm -> handleWasm(target, extension)
+                        KotlinPlatformType.native -> handleNative(target, extension)
                      }
                   }
                }
@@ -277,11 +285,11 @@ abstract class KotestPlugin : Plugin<Project> {
       }
    }
 
-   private fun handleMultiplatformJvm(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
+   private fun handleMultiplatformJvm(target: KotlinTarget, extension: KotestGradleExtension) {
       val existing = target.project.tasks.findByName(JVM_TEST_NAME)
       when (existing) {
          null -> target.project.logger.info("> No $JVM_TEST_NAME task found in project ${target.project.name} - no $JVM_KOTEST_NAME task will be added")
-         is KotlinJvmTest -> configureJvmTask(JVM_TEST_NAME, target.project, "jvm")
+         is KotlinJvmTest -> configureJvmTask(JVM_TEST_NAME, target.project, "jvm", extension)
       }
    }
 
