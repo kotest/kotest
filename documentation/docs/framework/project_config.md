@@ -56,6 +56,10 @@ Finally, you can place your config class in any package that is common to all te
 tests located in `com.sksamuel.myproject.services`, `com.sksamuel.myproject.common`, and `com.sksamuel.myproject.data`,
 then you can place your config class in any of `com.sksamuel.myproject`, `com.sksamuel`, and `com`.
 
+:::note
+The common package search is only available in Kotest 6.2+
+:::
+
 ### Non-JVM
 
 On Kotlin native and JS platforms, the config class can be located anywhere but must still extend `AbstractProjectConfig`.
