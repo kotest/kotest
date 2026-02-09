@@ -5,41 +5,60 @@ slug: project-config.html
 
 :::warning
 This document describes project-level configuration in Kotest 6.0.
-If you were using project-level configuration in Kotest 5.x, note that the location of the project config instance must
-now be specified, otherwise it will not be picked up by the framework.
+If you were using project-level configuration in Kotest 5.x, note that the behavior has changed. Please read these docs
+carefully to ensure the config classes are picked up by the framework.
 :::
 
-Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec, or how
-test classes are created. Sometimes you may want to set this at a global level and for that you need to use
-project-level-config.
+Kotest is flexible and has many ways to configure tests, such as configuring the order of tests inside a spec or how
+test classes are created. Sometimes you may want to set this at a global level, and for that you need to use
+project wide config.
 
 Project wide configuration can be used by creating a class that extends from `AbstractProjectConfig`.
-On the JVM and JS platforms, an object is also supported if you prefer using an object to a class.
+On JVM and JS platforms, an object is also supported if you prefer using an object to a class.
 
-Any configuration set at the spec level or directly on a test will override config specified at the project level. Some
+Any configuration set at a spec level or directly on a test will override config specified at the project level. Some
 configuration options are only available at the project level because they change how the test engine runs the entire
-test suite (eg spec concurrency settings).
+test suite (for example, the max number of concurrent specs to execute wouldn't make any sense to be specified at the
+spec level).
 
 Some configuration options available in `AbstractProjectConfig` include assertions modes, timeouts, failing specs with
 ignored tests, global `AssertSoftly`, and reusable listeners or extensions and so on.
 
 ## Setup
 
-On the JVM, Kotest will inspect the classpath for a class with a specified name and package that extends `AbstractProjectConfig`.
-By default, this class should be named `io.kotest.provided.ProjectConfig` and stored in the file
-`src/test/kotlin/io/kotest/provided/ProjectConfig.kt`. If you don't want to place your class in that
-particular package, you can specify a different name using the system property `kotest.framework.config.fqn`.
+The behavior differs depending on if you are using Kotest on the JVM, or on non-JVM platforms like Kotlin native or JS.
+Always the class must extend `AbstractProjectConfig`.
 
-For example, in gradle, you would configure something like this:
+### JVM
+
+On the JVM, there are three locations that Kotest will inspect looking for a config class. These are:
+
+- a class with the fully qualified name `io.kotest.provided.ProjectConfig`
+- a class with a fully qualified name specified by the system property `kotest.framework.config.fqn`
+- a class named `ProjectConfig` that exists in any common package of all tests.
+
+Firstly, Kotest will inspect the classpath for a class at `io.kotest.provided.ProjectConfig`. If that class exists,
+it will be instantiated and used.
+
+Secondly, if the system property `kotest.framework.config.fqn` is set, then the value of that property will be used to
+locate a class with that fully qualified name. If that class exists, it will be instantiated and used. Note that in
+Gradle, you must propogate the system property to the JVM process by setting the `systemProperty` property on the Gradle
+test task. For example:
 
 ```kotlin
 tests.task {
   useJunitPlatform()
-  systemProperty("kotest.framework.config.fqn", "com.sksamuel.mypackage.WibbleConfig")
+  systemProperty("kotest.framework.config.fqn", "com.sksamuel.mypackage.MyConfigClass")
 }
 ```
 
-On native and JS platforms, the config class can be located anywhere but must still extend `AbstractProjectConfig`.
+Finally, you can place your config class in any package that is common to all tests. For example, if you have
+tests located in `com.sksamuel.myproject.services`, `com.sksamuel.myproject.common`, and `com.sksamuel.myproject.data`,
+then you can place your config class in any of `com.sksamuel.myproject`, `com.sksamuel`, and `com`.
+
+### Non-JVM
+
+On Kotlin native and JS platforms, the config class can be located anywhere but must still extend `AbstractProjectConfig`.
 
 :::caution
 You should only create a single project config class, otherwise the behavior is undefined.
@@ -50,7 +69,7 @@ If you want to have different configurations per package, see [package level con
 
 ### Assertion Mode
 
-You can ask Kotest to fail the build, or warn in std err, if a test is executed that does not use a Kotest assertion.
+You can ask Kotest to fail the build or warn in stderr, if a test is executed that does not use a Kotest assertion.
 
 To do this, set `assertionMode` to `AssertionMode.Error` or `AssertionMode.Warn` inside your config. For example.
 An alternative way to enable this is the system property `kotest.framework.assertion.mode` which will always (if
