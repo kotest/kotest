@@ -214,12 +214,11 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       runConfiguration: GradleRunConfiguration,
       dataTestInfoMaybe: DataTestInfo?
    ) {
-      dataTestInfoMaybe.takeIf { it != null }
-         ?.let {
-            val envVars = runConfiguration.settings.env.toMutableMap()
-            envVars["KOTEST_TAGS"] = it.tag
-            runConfiguration.settings.env = envVars
-         } ?: run {
+      dataTestInfoMaybe?.let {
+         val envVars = runConfiguration.settings.env.toMutableMap()
+         envVars["KOTEST_TAGS"] = it.tag
+         runConfiguration.settings.env = envVars
+      } ?: run {
          val envVars = runConfiguration.settings.env.toMutableMap()
          envVars.remove("KOTEST_TAGS")
          runConfiguration.settings.env = envVars
