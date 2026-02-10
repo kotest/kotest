@@ -2135,14 +2135,25 @@ public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/D
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun When (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun should (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun when (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
@@ -2152,14 +2163,25 @@ public final class io/kotest/core/spec/style/WordSpecKt {
 
 public final class io/kotest/core/spec/style/WordSpecTestFactoryConfiguration : io/kotest/core/factory/TestFactoryConfiguration, io/kotest/core/spec/style/scopes/WordSpecRootScope {
 	public fun <init> ()V
+	public fun When (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun should (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun when (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
@@ -2702,27 +2724,64 @@ public final class io/kotest/core/spec/style/scopes/TestWithConfigBuilder {
 	public static synthetic fun config-ZKvTVp0$default (Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Lkotlin/jvm/functions/Function1;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 }
 
+public final class io/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder {
+	public fun <init> (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Lio/kotest/core/test/config/TestConfig;
+	public final fun copy (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public static synthetic fun copy$default (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;ILjava/lang/Object;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConfig ()Lio/kotest/core/test/config/TestConfig;
+	public final fun getName ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public abstract interface class io/kotest/core/spec/style/scopes/WordSpecRootScope : io/kotest/core/spec/style/scopes/RootScope {
+	public fun When (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun config-s0vPEsQ (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public static synthetic fun config-s0vPEsQ$default (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun should (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun when (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/WordSpecRootScope$DefaultImpls {
+	public static fun When (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun When (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun config (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public static fun config-s0vPEsQ (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public static synthetic fun config-s0vPEsQ$default (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;ILjava/lang/Object;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public static fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun should (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun should (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun when (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun when (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun xshould (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun xshould (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
+	public static fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;)V
 	public static fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecRootScope;Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
@@ -2745,15 +2804,27 @@ public final class io/kotest/core/spec/style/scopes/WordSpecTerminalScope : io/k
 public final class io/kotest/core/spec/style/scopes/WordSpecWhenContainerScope : io/kotest/core/spec/style/scopes/AbstractContainerScope {
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun Should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun When (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun When (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun config (Ljava/lang/String;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;
+	public final fun config-0Nu1UfI (Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static synthetic fun config-0Nu1UfI$default (Lio/kotest/core/spec/style/scopes/WordSpecWhenContainerScope;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/Integer;Ljava/util/Set;Lkotlin/time/Duration;Ljava/util/List;Lkotlin/jvm/functions/Function1;Lkotlin/time/Duration;Lio/kotest/core/test/TestCaseSeverityLevel;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public final fun fWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun fWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun fshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun fwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun fwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
+	public final fun should (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun should (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun when (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun when (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun xWhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xWhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun xshould (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xshould (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public final fun xwhen (Lio/kotest/core/spec/style/scopes/WordSpecContextConfigBuilder;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

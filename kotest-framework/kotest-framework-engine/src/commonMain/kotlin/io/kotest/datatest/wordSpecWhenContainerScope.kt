@@ -210,7 +210,7 @@ suspend fun <T> WordSpecWhenContainerScope.withWhens(
    test: suspend WordSpecWhenContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      nameFn(t) `when` { this.test(t) }
+      nameFn(t).config() `when` { WordSpecWhenContainerScope(this).test(t) }
    }
 }
 
@@ -224,7 +224,7 @@ suspend fun <T> WordSpecWhenContainerScope.withShoulds(
    test: suspend WordSpecShouldContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      nameFn(t) should { this.test(t) }
+      nameFn(t).config() should { WordSpecShouldContainerScope(this).test(t) }
    }
 }
 
@@ -250,7 +250,7 @@ suspend fun <T> WordSpecWhenContainerScope.withWhens(
    test: suspend WordSpecWhenContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      name `when` { this.test(t) }
+      name.config() `when` { WordSpecWhenContainerScope(this).test(t) }
    }
 }
 
@@ -264,6 +264,6 @@ suspend fun <T> WordSpecWhenContainerScope.withShoulds(
    test: suspend WordSpecShouldContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      name should { this.test(t) }
+      name.config() should { WordSpecShouldContainerScope(this).test(t) }
    }
 }
