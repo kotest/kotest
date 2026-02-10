@@ -39,7 +39,7 @@ class FeatureSpecDataTest : FeatureSpec() {
       afterSpec {
          afterTestCounter shouldBe 111
          beforeAnyCounter shouldBe 111
-         beforeEachCounter shouldBe 87
+         beforeEachCounter shouldBe 36
          beforeTestCounter shouldBe 111
       }
 

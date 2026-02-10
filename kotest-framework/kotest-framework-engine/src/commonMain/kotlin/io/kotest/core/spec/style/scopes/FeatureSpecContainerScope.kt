@@ -56,15 +56,12 @@ class FeatureSpecContainerScope(
    suspend fun xfeature(name: String) =
       addFeature(name = name, xmethod = TestXMethod.DISABLED)
 
-   private suspend fun addFeature(name: String, xmethod: TestXMethod) : TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Feature: ").build()
-      TestDslState.startTest(testName)
-      return TestWithConfigBuilder(
-         name = testName,
+   private suspend fun addFeature(name: String, xmethod: TestXMethod) =
+      ContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
          context = this,
-         xmethod = TestXMethod.NONE,
-      )
-   }
+         xmethod = xmethod,
+      ) { FeatureSpecContainerScope(it) }
 
    suspend fun scenario(name: String, test: suspend TestScope.() -> Unit) {
       scenario(name = name, xmethod = TestXMethod.NONE, test = test)
