@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
@@ -72,21 +71,6 @@ interface StringSpecRootScope : RootScope {
          testName = TestNameBuilder.builder(this).build(),
          xmethod = TestXMethod.NONE,
          config = null
-      ) {
-         StringSpecScope(this).test()
-      }
-   }
-
-   /**
-    * Adds a test with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun String.invoke(config: TestConfig, test: suspend StringSpecScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
       ) {
          StringSpecScope(this).test()
       }

@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
@@ -24,38 +23,12 @@ interface FreeSpecRootScope : RootScope {
       ) { FreeSpecContainerScope(this).test() }
    }
 
-   /**
-    * Adds a container test with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun String.minus(config: TestConfig, test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
-      ) { FreeSpecContainerScope(this).test() }
-   }
-
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
       addTest(
          testName = TestNameBuilder.builder(this).build(),
          xmethod = TestXMethod.NONE,
          config = null
-      ) { FreeSpecTerminalScope(this).test() }
-   }
-
-   /**
-    * Adds a leaf test with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun String.invoke(config: TestConfig, test: suspend FreeSpecTerminalScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
       ) { FreeSpecTerminalScope(this).test() }
    }
 

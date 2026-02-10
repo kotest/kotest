@@ -1,11 +1,9 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.TestConfig
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -33,14 +31,6 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
    suspend fun and(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       and(name, xmethod = TestXMethod.NONE, test)
 
-   /**
-    * Adds a test case with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   suspend fun and(name: String, config: TestConfig, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      and(name, xmethod = TestXMethod.NONE, test, config)
-
    suspend fun fand(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       and(name, xmethod = TestXMethod.FOCUSED, test)
 
@@ -57,12 +47,11 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
       name: String,
       xmethod: TestXMethod,
       test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
-      config: TestConfig? = null
    ) {
       registerContainer(
          name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
          xmethod = xmethod,
-         config = config
+         config = null
       ) {
          BehaviorSpecWhenContainerScope(this).test()
       }
@@ -110,25 +99,17 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
    suspend fun then(name: String, test: suspend TestScope.() -> Unit) =
       then(name, test, xmethod = TestXMethod.NONE)
 
-   /**
-    * Adds a test with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   suspend fun then(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) =
-      then(name, test, xmethod = TestXMethod.NONE, config = config)
-
    suspend fun xthen(name: String, test: suspend TestScope.() -> Unit) =
       then(name, test, xmethod = TestXMethod.DISABLED)
 
    suspend fun xThen(name: String, test: suspend TestScope.() -> Unit) =
       then(name, test, xmethod = TestXMethod.DISABLED)
 
-   private suspend fun then(name: String, test: suspend TestScope.() -> Unit, xmethod: TestXMethod, config: TestConfig? = null) {
+   private suspend fun then(name: String, test: suspend TestScope.() -> Unit, xmethod: TestXMethod) {
       registerTest(
          name = TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
          xmethod = xmethod,
-         config = config,
+         config = null,
          test = test
       )
    }

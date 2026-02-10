@@ -1,10 +1,8 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.TestConfig
 
 /**
  * A context that allows root tests to be registered using the syntax:
@@ -25,15 +23,6 @@ interface DescribeSpecRootScope : RootScope {
       context(name, TestXMethod.NONE, test)
    }
 
-   /**
-    * Adds a test case with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun context(name: String, config: TestConfig, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      context(name, TestXMethod.NONE, test, config)
-   }
-
    fun fcontext(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       context(name, TestXMethod.FOCUSED, test)
    }
@@ -48,15 +37,6 @@ interface DescribeSpecRootScope : RootScope {
 
    fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
       describe(name, TestXMethod.NONE, test)
-   }
-
-   /**
-    * Adds a test case with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun describe(name: String, config: TestConfig, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      describe(name, TestXMethod.NONE, test, config)
    }
 
    fun fdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
@@ -75,15 +55,6 @@ interface DescribeSpecRootScope : RootScope {
       it(name = name, xmethod = TestXMethod.NONE, test)
    }
 
-   /**
-    * Adds a test with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun it(name: String, config: TestConfig, test: suspend TestScope.() -> Unit) {
-      it(name = name, xmethod = TestXMethod.NONE, test, config)
-   }
-
    fun fit(name: String, test: suspend TestScope.() -> Unit) {
       it(name = name, xmethod = TestXMethod.FOCUSED, test)
    }
@@ -95,13 +66,12 @@ interface DescribeSpecRootScope : RootScope {
    private fun it(
       name: String,
       xmethod: TestXMethod,
-      test: suspend TestScope.() -> Unit,
-      config: TestConfig? = null
+      test: suspend TestScope.() -> Unit
    ) {
       addTest(
          testName = TestNameBuilder.builder(name).build(),
          xmethod = xmethod,
-         config = config,
+         config = null,
          test = test
       )
    }
@@ -109,13 +79,12 @@ interface DescribeSpecRootScope : RootScope {
    private fun context(
       name: String,
       xmethod: TestXMethod,
-      test: suspend DescribeSpecContainerScope.() -> Unit,
-      config: TestConfig? = null
+      test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
       addContainer(
          TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          xmethod = xmethod,
-         config = config,
+         config = null,
       ) { DescribeSpecContainerScope(this).test() }
    }
 
@@ -144,13 +113,12 @@ interface DescribeSpecRootScope : RootScope {
    private fun describe(
       name: String,
       xmethod: TestXMethod,
-      test: suspend DescribeSpecContainerScope.() -> Unit,
-      config: TestConfig? = null
+      test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
          xmethod = xmethod,
-         config = config
+         config = null
       ) { DescribeSpecContainerScope(this).test() }
    }
 }

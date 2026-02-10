@@ -1,9 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.style.TestXMethod
-import io.kotest.core.test.config.TestConfig
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -35,18 +33,6 @@ interface BehaviorSpecRootScope : RootScope {
    )
 
    /**
-    * Adds a test case with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun given(name: String, config: TestConfig, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
-      name = name,
-      xmethod = TestXMethod.NONE,
-      test = test,
-      config = config
-   )
-
-   /**
     * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
     */
    fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
@@ -64,11 +50,11 @@ interface BehaviorSpecRootScope : RootScope {
       test = test
    )
 
-   fun addGiven(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecGivenContainerScope.() -> Unit, config: TestConfig? = null) {
+   fun addGiven(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
          xmethod = xmethod,
-         config = config
+         config = null
       ) { BehaviorSpecGivenContainerScope(this).test() }
    }
 
@@ -131,14 +117,6 @@ interface BehaviorSpecRootScope : RootScope {
       addContext(name = name, xmethod = TestXMethod.NONE, test = test)
 
    /**
-    * Adds a test case with config passed as a param.
-    * Marked as internal as it should be used only by the data test registrars.
-    */
-   @KotestInternal
-   fun context(name: String, config: TestConfig, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
-      addContext(name = name, xmethod = TestXMethod.NONE, test = test, config = config)
-
-   /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
    fun xcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
@@ -150,11 +128,11 @@ interface BehaviorSpecRootScope : RootScope {
    fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       addContext(name = name, xmethod = TestXMethod.DISABLED, test = test)
 
-   fun addContext(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecContextContainerScope.() -> Unit, config: TestConfig? = null) {
+   fun addContext(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       addContainer(
          testName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
          xmethod = xmethod,
-         config = config
+         config = null
       ) { BehaviorSpecContextContainerScope(this).test() }
    }
 }
