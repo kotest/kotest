@@ -128,7 +128,7 @@ fun <T> StringSpecRootScope.withData(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).invoke(dataTestTagConfig) { this.test(t) }
+      nameFn(t).invoke { this.test(t) }
    }
 }
 
@@ -152,7 +152,7 @@ fun <T> StringSpecRootScope.withData(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.invoke(dataTestTagConfig) { this.test(t) }
+      name.invoke { this.test(t) }
    }
 }
 

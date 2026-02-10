@@ -211,7 +211,7 @@ suspend fun <T> ShouldSpecContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t), dataTestTagConfig) { this.test(t) }
+      context(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -226,7 +226,7 @@ suspend fun <T> ShouldSpecContainerScope.withShoulds(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      should(nameFn(t), dataTestTagConfig) { this.test(t) }
+      should(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -253,7 +253,7 @@ suspend fun <T> ShouldSpecContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name, dataTestTagConfig) { this.test(t) }
+      context(name) { this.test(t) }
    }
 }
 
@@ -268,6 +268,6 @@ suspend fun <T> ShouldSpecContainerScope.withShoulds(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      should(name, dataTestTagConfig) { this.test(t) }
+      should(name) { this.test(t) }
    }
 }

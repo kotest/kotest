@@ -210,7 +210,7 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withAnds(
    test: suspend BehaviorSpecWhenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   ts.forEach { t -> and(nameFn(t), dataTestTagConfig) { this.test(t) } }
+   ts.forEach { t -> and(nameFn(t)) { this.test(t) } }
 }
 
 /**
@@ -223,7 +223,7 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withThens(
    test: suspend TestScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   ts.forEach { t -> then(nameFn(t), dataTestTagConfig) { this.test(t) } }
+   ts.forEach { t -> then(nameFn(t)) { this.test(t) } }
 }
 
 /**
@@ -248,7 +248,7 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withAnds(
    test: suspend BehaviorSpecWhenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> and(name, dataTestTagConfig) { this.test(t) } }
+   data.forEach { (name, t) -> and(name) { this.test(t) } }
 }
 
 /**
@@ -261,5 +261,5 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withThens(
    test: suspend TestScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> then(name, dataTestTagConfig) { this.test(t) } }
+   data.forEach { (name, t) -> then(name) { this.test(t) } }
 }

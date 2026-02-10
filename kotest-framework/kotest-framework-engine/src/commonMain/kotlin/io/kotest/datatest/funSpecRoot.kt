@@ -3,7 +3,6 @@ package io.kotest.datatest
 import io.kotest.core.spec.style.scopes.FunSpecContainerScope
 import io.kotest.core.spec.style.scopes.FunSpecRootScope
 import io.kotest.core.test.TestScope
-import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.stable.StableIdents
 
 /**
@@ -205,10 +204,7 @@ fun <T> FunSpecRootScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(
-         nameFn(t),
-         dataTestTagConfig
-      ) { this.test(t) }
+      context(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -224,10 +220,7 @@ fun <T> FunSpecRootScope.withTests(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      test(
-         nameFn(t),
-         dataTestTagConfig
-      ) { this.test(t) }
+      test(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -246,10 +239,7 @@ fun <T> FunSpecRootScope.withData(data: Map<String, T>, test: suspend FunSpecCon
 fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(
-         name,
-         dataTestTagConfig
-      ) { this.test(t) }
+      context(name) { this.test(t) }
    }
 }
 
@@ -260,9 +250,6 @@ fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpe
 fun <T> FunSpecRootScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      test(
-         name,
-         dataTestTagConfig
-      ) { this.test(t) }
+      test(name) { this.test(t) }
    }
 }

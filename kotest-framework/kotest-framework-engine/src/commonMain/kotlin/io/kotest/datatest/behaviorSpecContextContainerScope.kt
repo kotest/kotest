@@ -230,7 +230,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t), xmethod = TestXMethod.NONE, test = { this.test(t) }, config = dataTestTagConfig)
+      context(nameFn(t), xmethod = TestXMethod.NONE) { this.test(t) }
    }
 }
 
@@ -246,7 +246,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withGivens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      given(nameFn(t), xmethod = TestXMethod.NONE, test = { this.test(t) }, config = dataTestTagConfig)
+      given(nameFn(t), xmethod = TestXMethod.NONE) { this.test(t) }
    }
 }
 
@@ -274,7 +274,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withContexts(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> this.context(name, xmethod = TestXMethod.NONE, test = { this.test(t) }, config = dataTestTagConfig) }
+   data.forEach { (name, t) -> this.context(name, xmethod = TestXMethod.NONE) { this.test(t) } }
 }
 
 /**
@@ -288,5 +288,5 @@ suspend fun <T> BehaviorSpecContextContainerScope.withGivens(
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> given(name, xmethod = TestXMethod.NONE, test = { this.test(t) }, config = dataTestTagConfig) }
+   data.forEach { (name, t) -> given(name, xmethod = TestXMethod.NONE) { this.test(t) } }
 }

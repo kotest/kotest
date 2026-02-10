@@ -272,7 +272,7 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t), dataTestTagConfig) { this.test(t) }
+      context(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -287,7 +287,7 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      describe(nameFn(t), dataTestTagConfig) { this.test(t) }
+      describe(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -302,7 +302,7 @@ suspend fun <T> DescribeSpecContainerScope.withIts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      it(nameFn(t), dataTestTagConfig) { this.test(t) }
+      it(nameFn(t)) { this.test(t) }
    }
 }
 
@@ -329,7 +329,7 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name, dataTestTagConfig) { this.test(t) }
+      context(name) { this.test(t) }
    }
 }
 
@@ -344,7 +344,7 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      describe(name, dataTestTagConfig) { this.test(t) }
+      describe(name) { this.test(t) }
    }
 }
 
@@ -356,6 +356,6 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
 suspend fun <T> DescribeSpecContainerScope.withIts(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      it(name, dataTestTagConfig) { this.test(t) }
+      it(name) { this.test(t) }
    }
 }
