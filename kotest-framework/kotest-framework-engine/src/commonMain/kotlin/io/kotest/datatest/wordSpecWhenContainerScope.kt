@@ -211,7 +211,7 @@ suspend fun <T> WordSpecWhenContainerScope.withWhens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).config() `when` { this.test(t) }
+      nameFn(t).config(dataTestTagConfig) `when` { this.test(t) }
    }
 }
 
@@ -226,7 +226,7 @@ suspend fun <T> WordSpecWhenContainerScope.withShoulds(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).config() should { this.test(t) }
+      nameFn(t).config(dataTestTagConfig) should { this.test(t) }
    }
 }
 
@@ -253,7 +253,7 @@ suspend fun <T> WordSpecWhenContainerScope.withWhens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.config() `when` { this.test(t) }
+      name.config(dataTestTagConfig) `when` { this.test(t) }
    }
 }
 
@@ -268,6 +268,6 @@ suspend fun <T> WordSpecWhenContainerScope.withShoulds(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.config() should { this.test(t) }
+      name.config(dataTestTagConfig) should { this.test(t) }
    }
 }

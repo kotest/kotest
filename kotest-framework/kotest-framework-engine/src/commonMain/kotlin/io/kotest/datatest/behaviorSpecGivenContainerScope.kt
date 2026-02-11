@@ -296,7 +296,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   ts.forEach { t -> and(nameFn(t)).config() { this.test(t) } }
+   ts.forEach { t -> and(nameFn(t)).config(dataTestTagConfig) { this.test(t) } }
 }
 
 /**
@@ -310,7 +310,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withWhens(
    test: suspend BehaviorSpecWhenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   ts.forEach { t -> `when`(nameFn(t)).config() { this.test(t) } }
+   ts.forEach { t -> `when`(nameFn(t)).config(dataTestTagConfig) { this.test(t) } }
 }
 
 /**
@@ -324,7 +324,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withThens(
    test: suspend TestScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   ts.forEach { t -> then(nameFn(t)).config() { this.test(t) } }
+   ts.forEach { t -> then(nameFn(t)).config(dataTestTagConfig) { this.test(t) } }
 }
 
 /**
@@ -351,7 +351,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withAnds(
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> and(name).config() { this.test(t) } }
+   data.forEach { (name, t) -> and(name).config(dataTestTagConfig) { this.test(t) } }
 }
 
 /**
@@ -365,7 +365,7 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withWhens(
    test: suspend BehaviorSpecWhenContainerScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> `when`(name).config() { this.test(t) } }
+   data.forEach { (name, t) -> `when`(name).config(dataTestTagConfig) { this.test(t) } }
 }
 
 /**
@@ -379,5 +379,5 @@ suspend fun <T> BehaviorSpecGivenContainerScope.withThens(
    test: suspend TestScope.(T) -> Unit
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
-   data.forEach { (name, t) -> then(name).config() { this.test(t) } }
+   data.forEach { (name, t) -> then(name).config(dataTestTagConfig) { this.test(t) } }
 }

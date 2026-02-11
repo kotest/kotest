@@ -213,7 +213,7 @@ fun <T> WordSpecRootScope.withWhens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).config() `when` { this.test(t) }
+      nameFn(t).config(dataTestTagConfig) `when` { this.test(t) }
    }
 }
 
@@ -229,7 +229,7 @@ fun <T> WordSpecRootScope.withShoulds(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).config() should { this.test(t) }
+      nameFn(t).config(dataTestTagConfig) should { this.test(t) }
    }
 }
 
@@ -254,7 +254,7 @@ fun <T> WordSpecRootScope.withWhens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.config() `when` { this.test(t) }
+      name.config(dataTestTagConfig) `when` { this.test(t) }
    }
 }
 
@@ -268,6 +268,6 @@ fun <T> WordSpecRootScope.withShoulds(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.config() should { this.test(t) }
+      name.config(dataTestTagConfig) should { this.test(t) }
    }
 }
