@@ -213,7 +213,7 @@ fun <T> BehaviorSpecRootScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -229,7 +229,7 @@ fun <T> BehaviorSpecRootScope.withGivens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      given(nameFn(t)) { this.test(t) }
+      given(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -254,7 +254,7 @@ fun <T> BehaviorSpecRootScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -268,6 +268,6 @@ fun <T> BehaviorSpecRootScope.withGivens(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      given(name) { this.test(t) }
+      given(name).config() { this.test(t) }
    }
 }

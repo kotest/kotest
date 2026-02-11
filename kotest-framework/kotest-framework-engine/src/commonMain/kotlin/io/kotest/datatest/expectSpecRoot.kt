@@ -213,7 +213,7 @@ fun <T> ExpectSpecRootScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -229,7 +229,7 @@ fun <T> ExpectSpecRootScope.withExpects(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      expect(nameFn(t)) { this.test(t) }
+      expect(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -254,7 +254,7 @@ fun <T> ExpectSpecRootScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -268,6 +268,6 @@ fun <T> ExpectSpecRootScope.withExpects(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      expect(name) { this.test(t) }
+      expect(name).config() { this.test(t) }
    }
 }

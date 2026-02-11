@@ -151,7 +151,7 @@ fun <T> FeatureSpecRootScope.withFeatures(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      feature(nameFn(t)) { this.test(t) }
+      feature(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -170,6 +170,6 @@ fun <T> FeatureSpecRootScope.withData(data: Map<String, T>, test: suspend Featur
 fun <T> FeatureSpecRootScope.withFeatures(data: Map<String, T>, test: suspend FeatureSpecContainerScope.(T) -> Unit) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      feature(name) { this.test(t) }
+      feature(name).config() { this.test(t) }
    }
 }

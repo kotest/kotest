@@ -211,7 +211,7 @@ suspend fun <T> FreeSpecContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).minus { test(t) }
+      nameFn(t).config().minus { test(t) }
    }
 }
 
@@ -226,7 +226,7 @@ suspend fun <T> FreeSpecContainerScope.withTests(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).invoke { test(t) }
+      nameFn(t).config() { FreeSpecTerminalScope(this).test(t) }
    }
 }
 
@@ -253,7 +253,7 @@ suspend fun <T> FreeSpecContainerScope.withContexts(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.minus { test(t) }
+      name.config().minus { test(t) }
    }
 }
 
@@ -268,6 +268,6 @@ suspend fun <T> FreeSpecContainerScope.withTests(
 ) {
    val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.invoke { test(t) }
+      name.config() { FreeSpecTerminalScope(this).test(t) }
    }
 }
