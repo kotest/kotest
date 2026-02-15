@@ -11,6 +11,7 @@ object LineMarkerUtils {
 
    // icons list https://jetbrains.design/intellij/resources/icons_list/
    val runIcon = AllIcons.RunConfigurations.TestState.Run
+   val runRunIcon = AllIcons.RunConfigurations.TestState.Run_run
    val failedIcon = AllIcons.RunConfigurations.TestState.Red2
    val successIcon = AllIcons.RunConfigurations.TestState.Green2
 
@@ -54,11 +55,14 @@ object LineMarkerUtils {
       }
    }
 
-   fun determineIconFromStatus(testStatus: TestStatus): Icon =
+   fun determineIconFromStatus(
+      testStatus: TestStatus,
+      specIcon: Boolean = false
+   ): Icon =
        when (testStatus) {
          TestStatus.FAILED -> failedIcon
          TestStatus.PASSED -> successIcon
-         TestStatus.UNKNOWN -> runIcon
+         TestStatus.UNKNOWN -> runRunIcon.takeIf { specIcon } ?: runIcon
 
    }
 

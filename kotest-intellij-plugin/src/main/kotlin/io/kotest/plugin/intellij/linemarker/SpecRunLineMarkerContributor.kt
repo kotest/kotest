@@ -32,9 +32,9 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
                val fqn = spec.fqName?.asString()
                val icon = if (fqn != null) {
                   val status = LineMarkerUtils.determineSpecStatus(element, fqn)
-                  LineMarkerUtils.determineIconFromStatus(status)
+                  LineMarkerUtils.determineIconFromStatus(status, specIcon = true)
                } else {
-                  LineMarkerUtils.runIcon
+                  LineMarkerUtils.runRunIcon
                }
                return Info(
                   icon,
