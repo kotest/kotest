@@ -1,45 +1,69 @@
 package io.kotest.plugin.intellij.linemarker
 
-import com.intellij.diff.util.DiffUtil
-import com.intellij.openapi.module.ModuleUtil
-import com.intellij.psi.PsiElement
+import com.intellij.execution.TestStateStorage
+import com.intellij.execution.testframework.sm.runner.states.TestStateInfo
+import com.intellij.icons.AllIcons
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import io.kotest.plugin.intellij.existingEditor
-import io.kotest.plugin.intellij.gradle.GradleUtils
-import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
-import io.kotest.plugin.intellij.psi.isTestFile
-import io.kotest.plugin.intellij.psi.specStyle
-import io.kotest.plugin.intellij.testMode
+import io.kotest.plugin.intellij.Test
+import javax.swing.Icon
 
 object LineMarkerUtils {
 
-   fun validateElementAndReturnTestDescriptorPath(
-      element: PsiElement,
-      possibleLeafElements: List<String>,
-      requiredKotest61OrAbove: Boolean
-   ): String? {
-      if (element !is LeafPsiElement) return null
+   // icons list https://jetbrains.design/intellij/resources/icons_list/
+   val runIcon = AllIcons.RunConfigurations.TestState.Run
+   val failedIcon = AllIcons.RunConfigurations.TestState.Red2
+   val successIcon = AllIcons.RunConfigurations.TestState.Green2
 
-      if (!testMode && !ModuleUtil.hasTestSourceRoots(element.project)) return null
-      if (!testMode && !element.containingFile.isTestFile()) return null
+   fun determineTestStatus(element: LeafPsiElement, test: Test): TestStatus {
+      /**
+       * We store the test URLs in the format:
+       * java:test://<kotest>fqn/testName -- innerTestMaybe</kotest>TestDisplayName - for leaf tests
+       * java:suite://<kotest>fqn/testName -- innerTestMaybe</kotest>TestDisplayName - for container tests
+       * We need to search for keys that contain our test path, which is the part inside the kotest tags
+       */
+      val storage = TestStateStorage.getInstance(element.project)
+      val kotestPathMarker = "<kotest>${test.descriptorPath()}</kotest>"
+      val allKeys = storage.keys
+      val state = allKeys.find { key ->
+         (key.startsWith("java:test://") || key.startsWith("java:suite://")) && key.contains(kotestPathMarker)
+      }?.let { matchingKey -> storage.getState(matchingKey) } ?: return TestStatus.UNKNOWN
+      return getTestStatus(state.magnitude)
+   }
 
-      val editor = element.existingEditor() ?: return null
-      if (DiffUtil.isDiffEditor(editor)) return null
+   fun determineSpecStatus(element: LeafPsiElement, fqn: String): TestStatus {
+      /**
+       * We store the spec URLs in the format:
+       * java:suite://fqn
+       * We can search for keys that match this format and contain our spec's FQN
+       */
+      val storage = TestStateStorage.getInstance(element.project)
+      val allKeys = storage.keys
+      val state = allKeys.find { key ->
+         key == "java:suite://$fqn"
+      }?.let { matchingKey -> storage.getState(matchingKey) } ?: return TestStatus.UNKNOWN
+      return getTestStatus(state.magnitude)
+   }
 
-      if (!possibleLeafElements.contains(element.elementType.toString())) return null
-      if (requiredKotest61OrAbove) {
-         val module = ModuleUtil.findModuleForPsiElement(element) ?: return null
-         if (!GradleUtils.isKotest61OrAbove(module)) return null
+   private fun getTestStatus(magnitude: Int): TestStatus {
+      return when (magnitude) {
+         TestStateInfo.Magnitude.FAILED_INDEX.value,
+         TestStateInfo.Magnitude.ERROR_INDEX.value -> TestStatus.FAILED
+         TestStateInfo.Magnitude.PASSED_INDEX.value,
+         TestStateInfo.Magnitude.COMPLETE_INDEX.value -> TestStatus.PASSED
+         else -> TestStatus.UNKNOWN
       }
+   }
 
-      val ktclass = element.enclosingKtClassOrObject() ?: return null
-      val style = ktclass.specStyle() ?: return null
+   fun determineIconFromStatus(testStatus: TestStatus): Icon =
+       when (testStatus) {
+         TestStatus.FAILED -> failedIcon
+         TestStatus.PASSED -> successIcon
+         TestStatus.UNKNOWN -> runIcon
 
-      val test = style.test(element) ?: return null
-      if (!test.enabled) return null
-      if (test.isDataTest) return null
+   }
 
-      return test.descriptorPath()
+   enum class TestStatus {
+      PASSED, FAILED, UNKNOWN
    }
 }
 
