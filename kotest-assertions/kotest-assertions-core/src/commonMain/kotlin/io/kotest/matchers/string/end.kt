@@ -25,8 +25,7 @@ fun endWith(suffix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { v
 
    val passed = escapedValue.endsWith(escapedSuffix)
    val shortMessage = "${escapedValue.print().value} should end with ${escapedSuffix.print().value}"
-   val possibleSubmatches =
-      if (passed) "" else describePartialMatchesInStringForSuffix(escapedSuffix.toString(), escapedValue.toString()).toString()
+   val possibleSubmatches = if (passed) "" else describePartialMatchesInStringForSuffix(escapedSuffix, escapedValue).toString()
    val message = listOf(shortMessage, possibleSubmatches).filter { it.isNotEmpty() }.joinToString("\n")
    MatcherResult(
       passed,
