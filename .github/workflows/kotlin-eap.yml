@@ -58,8 +58,7 @@ jobs:
             shell: bash
             run: |
                echo "Overriding Kotlin version to: $KOTLIN_OVERRIDE_VERSION"
-               sed -i.bak "s/^kotlin = .*/kotlin = \"$KOTLIN_OVERRIDE_VERSION\"/" gradle/libs.versions.toml
-               rm -f gradle/libs.versions.toml.bak
+               sed -i "s/^kotlin = .*/kotlin = \"$KOTLIN_OVERRIDE_VERSION\"/" gradle/libs.versions.toml
 
          -  name: Setup JDK
             uses: actions/setup-java@v5
