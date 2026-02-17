@@ -15,4 +15,7 @@ internal actual fun loadSystemProperties() {
 
 // no-op when not on the JVM, so just returns the input.
 @JVMOnly
-internal actual fun resolveProjectConfig(projectConfig: AbstractProjectConfig?): AbstractProjectConfig? = projectConfig
+internal actual fun resolveProjectConfig(
+   projectConfig: AbstractProjectConfig?,
+   specFqns: Set<String>,
+): AbstractProjectConfig? = projectConfig
