@@ -6,33 +6,36 @@ import io.kotest.common.KotestInternal
 object PackageUtils {
 
    /**
-    * Returns the common prefix shared by all strings in the collection.
+    * Returns the longest common package prefix shared by all strings in the collection,
+    * where packages are separated by dots.
     *
-    * If the collection is empty, it returns an empty string.
+    * For example, given "com.example.sam" and "com.example.sap", the common package prefix
+    * is "com.example" (not "com.example.sa").
+    *
+    * If the collection is empty, it throws an [IllegalArgumentException].
     * If the collection contains only one element, returns that element.
     *
-    * @param strings the collection of strings to analyze
-    * @return the longest common prefix shared by all strings, or an empty string if none exists
+    * @param strings the collection of dot-separated package names to analyze
+    * @return the longest common package prefix shared by all strings, or an empty string if none exists
     */
    fun commonPrefix(strings: Collection<String>): String {
       require(strings.isNotEmpty())
       if (strings.size == 1) return strings.first()
 
-      val first = strings.first()
-      var prefixLength = first.length
+      val splitStrings = strings.map { it.split(".") }
+      val first = splitStrings.first()
+      val minSegments = splitStrings.minOf { it.size }
 
-      for (string in strings.drop(1)) {
-         prefixLength = minOf(prefixLength, string.length)
-         for (i in 0 until prefixLength) {
-            if (first[i] != string[i]) {
-               prefixLength = i
-               break
-            }
+      var commonCount = 0
+      for (i in 0 until minSegments) {
+         if (splitStrings.all { it[i] == first[i] }) {
+            commonCount++
+         } else {
+            break
          }
-         if (prefixLength == 0) return ""
       }
 
-      return first.substring(0, prefixLength)
+      return first.take(commonCount).joinToString(".")
    }
 
    /**

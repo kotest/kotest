@@ -51,7 +51,7 @@ object ProjectConfigLoader {
    private fun tryFromFqns(specFqns: Set<String>): AbstractProjectConfig {
       if (specFqns.isEmpty()) return sentinel
 
-      val prefix = PackageUtils.commonPrefix(specFqns).removeSuffix(".")
+      val prefix = PackageUtils.commonPrefix(specFqns)
       val packages = PackageUtils.parentPackages(prefix)
 
       for (pkg in packages) {
