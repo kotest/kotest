@@ -19,6 +19,10 @@ dependencyResolutionManagement {
    versionCatalogs {
       create("libs") {
          from(files("../gradle/libs.versions.toml"))
+         val kotlinOverrideVersion = System.getenv("KOTLIN_OVERRIDE_VERSION")
+         if (kotlinOverrideVersion != null) {
+            version("kotlin", kotlinOverrideVersion)
+         }
       }
    }
 }

@@ -39,15 +39,11 @@ dependencyResolutionManagement {
    }
 
    versionCatalogs {
-      named("libraries") {
+      create("libs") {
+         from(files("gradle/libs.versions.toml"))
          val kotlinOverrideVersion = System.getenv("KOTLIN_OVERRIDE_VERSION")
          if (kotlinOverrideVersion != null) {
-            version("kotlin-reflect", kotlinOverrideVersion)
-            version("kotlin-compiler-embeddable", kotlinOverrideVersion)
-            version("kotlin-gradle-plugin", kotlinOverrideVersion)
-            version("power-assert-plugin", kotlinOverrideVersion)
-            version("power-assert", kotlinOverrideVersion)
-            version("kotlin-serialization", kotlinOverrideVersion)
+            version("kotlin", kotlinOverrideVersion)
          }
       }
    }
