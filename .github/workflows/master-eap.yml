@@ -1,8 +1,8 @@
-name: Kotlin EAP
+name: master-eap
 
 on:
    schedule:
-      -  cron: '0 6 * * *'
+      -  cron: '0 10 * * *'
 
 permissions:
    contents: read
@@ -57,8 +57,8 @@ jobs:
          -  name: Override Kotlin version
             shell: bash
             run: |
-               echo "Overriding Kotlin version to: $KOTLIN_OVERRIDE_VERSION"
-               sed -i "s/^kotlin = .*/kotlin = \"$KOTLIN_OVERRIDE_VERSION\"/" gradle/libs.versions.toml
+               echo "Overriding Kotlin version to: $KOTLIN_VERSION"
+               sed -i "s/^kotlin = .*/kotlin = \"$KOTLIN_VERSION\"/" gradle/libs.versions.toml
 
          -  name: Setup JDK
             uses: actions/setup-java@v5
