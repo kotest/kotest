@@ -42,7 +42,7 @@ it will be instantiated and used.
 
 Secondly, if the system property `kotest.framework.config.fqn` is set, then the value of that property will be used to
 locate a class with that fully qualified name. If that class exists, it will be instantiated and used. Note that in
-Gradle, you must propogate the system property to the JVM process by setting the `systemProperty` property on the Gradle
+Gradle, you must propagate the system property to the JVM process by setting the `systemProperty` property on the Gradle
 test task. For example:
 
 ```kotlin
