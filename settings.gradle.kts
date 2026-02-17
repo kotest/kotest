@@ -38,14 +38,6 @@ dependencyResolutionManagement {
       //endregion
    }
 
-   versionCatalogs {
-      named("libs") {
-         val kotlinOverrideVersion = System.getenv("KOTLIN_OVERRIDE_VERSION")
-         if (kotlinOverrideVersion != null) {
-            version("kotlin", kotlinOverrideVersion)
-         }
-      }
-   }
 }
 
 include(

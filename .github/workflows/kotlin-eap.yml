@@ -54,6 +54,13 @@ jobs:
          -  name: Checkout the repo
             uses: actions/checkout@v5
 
+         -  name: Override Kotlin version
+            shell: bash
+            run: |
+               echo "Overriding Kotlin version to: $KOTLIN_OVERRIDE_VERSION"
+               sed -i.bak "s/^kotlin = .*/kotlin = \"$KOTLIN_OVERRIDE_VERSION\"/" gradle/libs.versions.toml
+               rm -f gradle/libs.versions.toml.bak
+
          -  name: Setup JDK
             uses: actions/setup-java@v5
             with:
