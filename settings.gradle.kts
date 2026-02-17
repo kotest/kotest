@@ -39,7 +39,7 @@ dependencyResolutionManagement {
    }
 
    versionCatalogs {
-      named("libs") {
+      named("libraries") {
          val kotlinOverrideVersion = System.getenv("KOTLIN_OVERRIDE_VERSION")
          if (kotlinOverrideVersion != null) {
             version("kotlin-reflect", kotlinOverrideVersion)
