@@ -54,7 +54,7 @@ class TestEngine(private val config: TestEngineConfig) {
          suite = suite,
          tags = tags,
          registry = config.registry,
-         projectConfig = resolveProjectConfig(config.projectConfig),
+         projectConfig = resolveProjectConfig(config.projectConfig, suite.specs.map { it.fqn }.toSet()),
          listener = config.listener,
       )
 
@@ -176,7 +176,10 @@ class TestEngine(private val config: TestEngineConfig) {
  * the given config if no other project is located.
  */
 @JVMOnly
-internal expect fun resolveProjectConfig(projectConfig: AbstractProjectConfig?): AbstractProjectConfig?
+internal expect fun resolveProjectConfig(
+   projectConfig: AbstractProjectConfig?,
+   specFqns: Set<String>,
+): AbstractProjectConfig?
 
 @JVMOnly
 internal expect fun writeFailuresIfEnabled(context: TestEngineContext)
