@@ -212,7 +212,7 @@ fun <T> FreeSpecRootScope.withContexts(
    test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      nameFn(t).minus { this.test(t) }
+      nameFn(t).config().minus { this.test(t) }
    }
 }
 
@@ -227,7 +227,7 @@ fun <T> FreeSpecRootScope.withTests(
    test: suspend FreeSpecTerminalScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      nameFn(t).invoke { this.test(t) }
+      nameFn(t).config() { FreeSpecTerminalScope(this).test(t) }
    }
 }
 
@@ -251,7 +251,7 @@ fun <T> FreeSpecRootScope.withContexts(
    test: suspend FreeSpecContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      name.minus { this.test(t) }
+      name.config().minus { this.test(t) }
    }
 }
 
@@ -264,6 +264,6 @@ fun <T> FreeSpecRootScope.withTests(
    test: suspend FreeSpecTerminalScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      name.invoke { this.test(t) }
+      name.config() { FreeSpecTerminalScope(this).test(t) }
    }
 }

@@ -43,6 +43,35 @@ class BehaviorSpecContextContainerScope(
       }
    }
 
+   suspend fun Given(name: String) =
+      addGiven(name, xmethod = TestXMethod.NONE)
+
+   suspend fun given(name: String) =
+      addGiven(name, xmethod = TestXMethod.NONE)
+
+   suspend fun fgiven(name: String) =
+      addGiven(name, xmethod = TestXMethod.FOCUSED)
+
+   suspend fun fGiven(name: String) =
+      addGiven(name, xmethod = TestXMethod.FOCUSED)
+
+   suspend fun xgiven(name: String) =
+      addGiven(name, xmethod = TestXMethod.DISABLED)
+
+   suspend fun xGiven(name: String) =
+      addGiven(name, xmethod = TestXMethod.DISABLED)
+
+   private suspend fun addGiven(
+      name: String,
+      xmethod: TestXMethod
+   ): ContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
+      return ContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
+         context = this,
+         xmethod = xmethod
+      ) { BehaviorSpecGivenContainerScope(it) }
+   }
+
    internal suspend fun context(
       name: String,
       xmethod: TestXMethod,
@@ -55,5 +84,29 @@ class BehaviorSpecContextContainerScope(
       ) {
          BehaviorSpecContextContainerScope(this).test()
       }
+   }
+
+   @Suppress("FunctionName")
+   suspend fun Context(name: String) =
+      addContext(name = name, xmethod = TestXMethod.NONE)
+
+   suspend fun context(name: String) =
+      addContext(name = name, xmethod = TestXMethod.NONE)
+
+   suspend fun xcontext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   suspend fun xContext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   private suspend fun addContext(
+      name: String,
+      xmethod: TestXMethod
+   ): ContainerWithConfigBuilder<BehaviorSpecContextContainerScope> {
+      return ContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
+         context = this,
+         xmethod = xmethod
+      ) { BehaviorSpecContextContainerScope(it) }
    }
 }

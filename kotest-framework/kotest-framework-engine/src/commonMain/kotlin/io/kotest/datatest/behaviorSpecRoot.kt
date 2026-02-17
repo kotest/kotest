@@ -212,7 +212,7 @@ fun <T> BehaviorSpecRootScope.withContexts(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -227,7 +227,7 @@ fun <T> BehaviorSpecRootScope.withGivens(
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      given(nameFn(t)) { this.test(t) }
+      given(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -251,7 +251,7 @@ fun <T> BehaviorSpecRootScope.withContexts(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -264,6 +264,6 @@ fun <T> BehaviorSpecRootScope.withGivens(
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      given(name) { this.test(t) }
+      given(name).config() { this.test(t) }
    }
 }

@@ -170,7 +170,7 @@ fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.END)
 
-      val partialMatchesDescription = describePartialMatchesInCollection(expectedSlice, value)
+      val partialMatchesDescription by lazy { describePartialMatchesInCollection(expectedSlice, value) }
 
       return MatcherResult(
          comparison.match,
