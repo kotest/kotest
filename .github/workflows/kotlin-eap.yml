@@ -1,0 +1,106 @@
+name: Kotlin EAP
+
+on:
+   schedule:
+      -  cron: '0 6 * * *'
+
+permissions:
+   contents: read
+
+env:
+   KOTLIN_OVERRIDE_VERSION: "2.3.20-Beta2"
+
+jobs:
+   check:
+      name: "Check (${{ matrix.name }})"
+      runs-on: ${{ matrix.os }}
+      continue-on-error: true
+      strategy:
+         fail-fast: false
+         matrix:
+            include:
+               # JVM-only
+               -  os: ubuntu-latest
+                  args: -P"jvmOnly=true"
+                  name: jvm
+               # Js+Wasm
+               -  os: ubuntu-latest
+                  args: -P"kotest_enableKotlinJs=true"
+                  name: js-wasm
+               # Linux+Android
+               -  os: ubuntu-latest
+                  args: -P"kotest_enableKotlinNative=true"
+                  name: linux-native
+               # Windows: MinGW
+               -  os: windows-latest
+                  args: -P"kotest_enableKotlinNative=true"
+                  name: windows-native
+               # Apple: macOS/iOS/tvOS/watchOS
+               -  os: macos-latest
+                  args: -P"kotest_enableKotlinNative=true"
+                  name: apple-native
+      steps:
+         -  name: "Set KONAN_DATA_DIR (windows)"
+            if: runner.os == 'Windows'
+            shell: cmd
+            run: |
+               echo KONAN_DATA_DIR=C:\Users\runneradmin\.konan>>%GITHUB_ENV%
+
+         -  name: "Set KONAN_DATA_DIR (bash)"
+            if: runner.os != 'Windows'
+            run: |
+               echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
+
+         -  name: Checkout the repo
+            uses: actions/checkout@v5
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v5
+            with:
+               distribution: "temurin"
+               java-version-file: .github/.java-version
+
+         -  name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v5
+            with:
+               gradle-home-cache-cleanup: true
+               cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+
+         -  name: Cache Kotlin Konan
+            uses: actions/cache@v4
+            with:
+               path: ${{ env.KONAN_DATA_DIR }}
+               key: kotlin-konan-${{ runner.os }}
+               enableCrossOsArchive: true
+               restore-keys: |
+                  kotlin-konan-
+
+         -  name: Cache Kotest user directory
+            uses: actions/cache@v4
+            with:
+               path: ~/.kotest
+               key: kotest-user-dir-${{ runner.os }}
+               enableCrossOsArchive: true
+               restore-keys: |
+                  kotest-user-dir-
+
+         -  name: Run check
+            shell: bash
+            run: >
+               ./gradlew
+               -P"kotest_enableKotlinJs=false"
+               -P"kotest_enableKotlinNative=false"
+               ${{ matrix.args }}
+               --no-configuration-cache
+               check
+
+         -  name: Upload build reports
+            if: failure()
+            uses: actions/upload-artifact@v5
+            with:
+               name: build-reports-kotlin-beta-${{ matrix.name }}-${{ github.run_id }}
+               path: |
+                  **/build/reports/
+                  **/*.hprof
+                  **/*.log
+               if-no-files-found: ignore

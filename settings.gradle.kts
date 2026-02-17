@@ -37,6 +37,21 @@ dependencyResolutionManagement {
       }
       //endregion
    }
+
+   versionCatalogs {
+      named("libs") {
+         val kotlinOverrideVersion = System.getenv("KOTLIN_OVERRIDE_VERSION")
+         if (kotlinOverrideVersion != null) {
+            // This overrides the 'my-lib' version defined in the TOML
+            version("kotlin-reflect", kotlinOverrideVersion)
+            version("kotlin-compiler-embeddable", kotlinOverrideVersion)
+            version("kotlin-gradle-plugin", kotlinOverrideVersion)
+            version("power-assert-plugin", kotlinOverrideVersion)
+            version("power-assert", kotlinOverrideVersion)
+            version("kotlin-serialization", kotlinOverrideVersion)
+         }
+      }
+   }
 }
 
 include(
