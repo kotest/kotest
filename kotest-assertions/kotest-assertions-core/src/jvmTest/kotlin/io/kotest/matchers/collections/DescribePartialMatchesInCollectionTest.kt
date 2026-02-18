@@ -2,6 +2,7 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.submatching.MatchedCollectionElement
 import io.kotest.assertions.submatching.PartialCollectionMatch
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
@@ -102,6 +103,13 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
              )
              actual.unmatchedElementsDescription shouldBe ""
              actual.indexesOfUnmatchedElements.shouldBeEmpty()
+          }
+
+          "overlapping partial matches, causing > 100% match ratio. Only use best match for any given range of expected indexes" {
+             val list = listOf("1.0.0.9/32", "1.0.0.10/32")
+             shouldNotThrowAny {
+                describePartialMatchesInCollection(listOf("1.0.0.10/32"), list)
+             }
           }
        }
 

@@ -61,7 +61,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
-      val config = ProjectConfigLoader.load()
+      val config = ProjectConfigLoader.load(root.specs.map { it.fqn }.toSet())
 
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
@@ -117,7 +117,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
-      val config = ProjectConfigLoader.load()
+      val config = ProjectConfigLoader.load(result.specs.map { it.fqn }.toSet())
 
       val formatting = DisplayNameFormatting(config)
 

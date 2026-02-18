@@ -9,27 +9,26 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)
    if (!result.passed()) {
-      when (result) {
 
-         is DiffableMatcherResult -> errorCollector.collectOrThrow(
-            AssertionErrorBuilder.create()
-               .withMessage(result.failureMessage() + "\n")
-               .withValues(
-                  expected = Expected(result.expected()),
-                  actual = Actual(result.actual())
-               ).build()
-         )
+      val error = when (result) {
 
-         is MatcherResultWithError -> {
-            val error = result.error() ?: AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
-            errorCollector.collectOrThrow(error)
-         }
+         is DiffableMatcherResult -> AssertionErrorBuilder.create()
+            .withMessage(result.failureMessage() + "\n")
+            .withValues(
+               expected = Expected(result.expected()),
+               actual = Actual(result.actual())
+            ).build()
 
-         else -> errorCollector.collectOrThrow(
-            AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
-         )
+
+         is MatcherResultWithError -> result.error() ?: AssertionErrorBuilder.create()
+            .withMessage(result.failureMessage()).build()
+
+         else -> AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
       }
+
+      errorCollector.collectOrThrow(error)
    }
+
    return t
 }
 
