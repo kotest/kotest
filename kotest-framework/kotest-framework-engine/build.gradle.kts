@@ -53,9 +53,6 @@ kotlin {
             // we use AssertionFailedError from OpenTest4J
             api(libs.opentest4j)
 
-            // used to write to the console with fancy colours!
-            api(libs.mordant)
-
             // used to install the debug probes for coroutines
             api(libs.kotlinx.coroutines.debug)
          }
