@@ -4,12 +4,16 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeGreaterThan
+import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 /**
  * Regression tests for https://github.com/kotest/kotest/issues/5147
@@ -34,38 +38,79 @@ class EventuallyRealTimeTest : FunSpec() {
    init {
       coroutineTestScope = true
 
-      test("eventually uses real time when coroutineTestScope is active and nonDeterministicTestVirtualTimeEnabled is not set") {
-         val done = AtomicBoolean(false)
+      context("when coroutineTestScope is active") {
+         test("eventually uses wall-clock for timeouts") {
+            val done = AtomicBoolean(false)
 
-         // Perform real I/O on a background thread. Thread.sleep does not advance virtual time,
-         // so this completes after ~300 ms of real (wall-clock) time.
-         val job = launch(Dispatchers.Default) {
-            Thread.sleep(300)
-            done.set(true)
+            // Perform real I/O on a background thread. Thread.sleep does not advance virtual time,
+            // so this completes after ~300 ms of real (wall-clock) time.
+            launch(Dispatchers.Default) {
+               @Suppress("BlockingMethodInNonBlockingContext")
+               Thread.sleep(300)
+               done.set(true)
+            }
+
+            // Before the fix: withTimeout(2.seconds) used virtual time. Each retry's delay(25ms)
+            // advances virtual time, so after 80 iterations (80 × 25ms = 2000ms virtual) the timeout
+            // fires. Since all 80 iterations ran in near-zero real time, the background job has not
+            // yet finished and the assertion always fails.
+            //
+            // After the fix: withNonDeterministicTimeout(2.seconds) uses real time. The retry loop
+            // still runs very quickly (delay is virtual = instant), but the 2-second real timeout
+            // keeps running. After ~300ms real time the background job finishes, done becomes true,
+            // and eventually succeeds well within the 2-second window.
+            eventually(2.seconds) {
+               done.get() shouldBe true
+            }
          }
 
-         // Before the fix: withTimeout(2.seconds) used virtual time. Each retry's delay(25ms)
-         // advances virtual time, so after 80 iterations (80 × 25ms = 2000ms virtual) the timeout
-         // fires. Since all 80 iterations ran in near-zero real time, the background job has not
-         // yet finished and the assertion always fails.
-         //
-         // After the fix: withNonDeterministicTimeout(2.seconds) uses real time. The retry loop
-         // still runs very quickly (delay is virtual = instant), but the 2-second real timeout
-         // keeps running. After ~300ms real time the background job finishes, done becomes true,
-         // and eventually succeeds well within the 2-second window.
-         eventually(2.seconds) {
-            done.get() shouldBe true
+         test("eventually uses wall-clock for each delay of failure") {
+            val done = AtomicBoolean(false)
+
+            // Perform real I/O on a background thread. Thread.sleep does not advance virtual time,
+            // so this completes after ~300 ms of real (wall-clock) time.
+            launch(Dispatchers.Default) {
+               @Suppress("BlockingMethodInNonBlockingContext")
+               Thread.sleep(300)
+               done.set(true)
+            }
+
+            // check to make sure that the retry loop is also not using virtual time
+            var iterations = 0
+
+            val config = eventuallyConfig {
+               duration = 2.seconds
+               interval = 25.milliseconds
+            }
+
+            eventually(config) {
+               iterations++
+               done.get() shouldBe true
+            }
+
+            // we should get about 300 / 25 iterations before it succeeds
+            iterations.shouldBeLessThan(20)
          }
 
-         job.cancel()
-      }
+         test("eventually uses wall-clock for initial delays") {
+            val elapsed = measureTime {
+               val config = eventuallyConfig {
+                  duration = 2.seconds
+                  initialDelay = 200.milliseconds
+               }
+               eventually(config) {
+               }
+            }
+            elapsed shouldBeGreaterThanOrEqualTo 200.milliseconds
+         }
 
-      test("eventually throws AssertionError when real-time timeout fires") {
-         shouldThrow<AssertionError> {
-            // This block always fails; the 100ms real-time timeout fires before any success.
-            // The important thing is that an AssertionError is thrown (not CancellationException).
-            eventually(100.milliseconds) {
-               "error" shouldBe "ok"
+         test("eventually throws AssertionError when real-time timeout fires") {
+            shouldThrow<AssertionError> {
+               // This block always fails; the 100ms real-time timeout fires before any success.
+               // The important thing is that an AssertionError is thrown (not CancellationException).
+               eventually(100.milliseconds) {
+                  "error" shouldBe "ok"
+               }
             }
          }
       }

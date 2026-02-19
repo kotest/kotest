@@ -4,10 +4,12 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.KotestInternal
 import io.kotest.common.NonDeterministicRealTimeTimeoutCancellationException
 import io.kotest.common.nonDeterministicTestTimeSource
-import io.kotest.common.withNonDeterministicTimeout
+import io.kotest.common.withNonVirtualTimeout
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.errorCollector
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -17,6 +19,10 @@ import kotlin.time.TimeMark
  * Runs a function [test] until it doesn't throw as long as the default duration hasn't passed.
  *
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
+ *
+ * Note: Eventually is designed to work with real-world delays, such as blocking IO calls, or Thread.sleep.
+ * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
+ * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
 suspend fun <T> eventually(
    test: suspend () -> T,
@@ -29,6 +35,10 @@ suspend fun <T> eventually(
  * Runs a function [test] until it doesn't throw as long as the specified [duration] hasn't passed.
  *
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
+ *
+ * Note: Eventually is designed to work with real-world delays, such as blocking IO calls, or Thread.sleep.
+ * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
+ * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
 suspend fun <T> eventually(
    duration: Duration,
@@ -42,6 +52,10 @@ suspend fun <T> eventually(
  * Runs a function [test] until it doesn't throw as long as the specified [durationMs] in milliseconds hasn't passed.
  *
  * To supply more options to eventually, use the overload that accepts an [EventuallyConfiguration].
+ *
+ * Note: Eventually is designed to work with real-world delays, such as blocking IO calls, or Thread.sleep.
+ * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
+ * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
 suspend fun <T> eventually(
    durationMs: Long,
@@ -52,13 +66,20 @@ suspend fun <T> eventually(
 
 /**
  * Runs a function [test] until it doesn't throw, using the supplied [config].
+ *
+ * Note: Eventually is designed to work with real-world delays, such as blocking IO calls, or Thread.sleep.
+ * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
+ * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
 suspend fun <T> eventually(
    config: EventuallyConfiguration,
    test: suspend () -> T,
 ): T {
 
-   delay(config.initialDelay)
+   // we want this to always use wall-time, so flip onto another dispatcher to ensure we're not on a test dispatcher
+   withContext(Dispatchers.Default) {
+      delay(config.initialDelay)
+   }
 
    val originalAssertionMode = errorCollector.getCollectionMode()
    errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
@@ -67,12 +88,12 @@ suspend fun <T> eventually(
    val control = EventuallyControl(config, start)
    try {
       @OptIn(KotestInternal::class)
-      return withNonDeterministicTimeout(config.duration) {
+      return withNonVirtualTimeout(config.duration) {
          runIterations(control, test, config)
       }
-   } catch (e: NonDeterministicRealTimeTimeoutCancellationException) {
+   } catch (_: NonDeterministicRealTimeTimeoutCancellationException) {
       // The real-time timeout fired (when coroutineTestScope is active without virtual time enabled).
-      // Convert to AssertionError for consistent behaviour with the virtual-time path.
+      // Convert to AssertionError for consistent behavior with the virtual-time path.
       throw AssertionErrorBuilder.create()
          .withMessage(control.buildFailureMessage())
          .build()
@@ -95,7 +116,7 @@ private suspend fun <T> runIterations(
             val notSuppressible = control.exceptionIsNotSuppressible(e)
             config.listener.invoke(control.iterations + 1, e)
             if (config.shortCircuit.invoke(e)) {
-               throw ShortCircuitControlException
+               throw ShortCircuitControlException()
             }
             if (notSuppressible) {
                throw e
@@ -105,7 +126,7 @@ private suspend fun <T> runIterations(
          control.step()
       }
    } catch (_: ShortCircuitControlException) {
-      // Short-circuited out from retries, will throw below
+      // Short-circuited out from retries will throw below
 
       // If we terminated due to an exception, we are missing an iteration in the counter
       // since the step function is not invoked when terminating early
@@ -292,8 +313,11 @@ private class EventuallyControl(
    suspend fun step() {
       lastInterval = config.intervalFn.next(++iterations)
       val delayMark = start.elapsedNow()
-      // cap the interval at remaining time
-      delay(minOf(lastInterval, config.duration - delayMark))
+      // cap the interval at the remaining time
+      // this needs to run on wall-clock time, so flip to a non-test dispatcher to be sure
+      withContext(Dispatchers.Default) {
+         delay(minOf(lastInterval, config.duration - delayMark))
+      }
       lastDelayPeriod = (start.elapsedNow() - delayMark)
    }
 
@@ -314,4 +338,4 @@ private class EventuallyControl(
    }
 }
 
-internal object ShortCircuitControlException : Throwable()
+internal class ShortCircuitControlException : Throwable()

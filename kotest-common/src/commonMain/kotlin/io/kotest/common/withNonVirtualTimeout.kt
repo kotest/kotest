@@ -18,33 +18,33 @@ import kotlinx.coroutines.yield
 import kotlin.time.Duration
 
 /**
- * Runs [block] with a timeout, using real (wall-clock) time if a [TestCoroutineScheduler] is active
- * but virtual time has not been explicitly enabled for non-deterministic functions via
- * [NonDeterministicTestVirtualTimeEnabled].
+ * Runs [block] with a timeout that never uses virtual time, even if a [TestCoroutineScheduler] is active.
  *
- * This mirrors the logic of [nonDeterministicTestTimeSource]: virtual time is only used when
- * both a [TestCoroutineScheduler] is present AND [NonDeterministicTestVirtualTimeEnabled] is in
- * the coroutine context.
+ * When a [TestCoroutineScheduler] is present, [kotlinx.coroutines.withTimeout] uses virtual time,
+ * which is not appropriate for non-deterministic functions like `eventually`, or Kotest tests that are
+ * meant to wait for real-world events. So this function detects that and then uses our own implementation.
+ *
+ * If virtual time is not present, then this function will use the regular [kotlinx.coroutines.withTimeout].
  */
 @KotestInternal
-suspend fun <T> withNonDeterministicTimeout(
+suspend fun <T> withNonVirtualTimeout(
    timeout: Duration,
    block: suspend CoroutineScope.() -> T,
 ): T {
-   val context = currentCoroutineContext()
-   return if (context[TestCoroutineScheduler] != null && context[NonDeterministicTestVirtualTimeEnabled] == null) {
-      withNonDeterministicRealTimeTimeout(timeout, block)
+   return if (currentCoroutineContext()[TestCoroutineScheduler] != null) {
+      withWallClockTimeout(timeout, block)
    } else {
       withTimeout(timeout, block)
    }
 }
 
-// The implementation is adapted from the Turbine library and kotest's TimeoutInterceptor:
+// The implementation is adapted from the Turbine library
 // https://github.com/cashapp/turbine/blob/1.1.0/src/commonMain/kotlin/app/cash/turbine/channel.kt#L93
-private suspend fun <T> withNonDeterministicRealTimeTimeout(
+private suspend fun <T> withWallClockTimeout(
    timeout: Duration,
    block: suspend CoroutineScope.() -> T,
 ): T = coroutineScope {
+
    val blockDeferred = async(start = CoroutineStart.UNDISPATCHED) {
       yield()
       block()
@@ -62,7 +62,7 @@ private suspend fun <T> withNonDeterministicRealTimeTimeout(
       }
       timeoutJob.onJoin {
          blockDeferred.cancel()
-         throw NonDeterministicRealTimeTimeoutCancellationException("eventually timed out after $timeout")
+         throw NonDeterministicRealTimeTimeoutCancellationException("Timeout after $timeout")
       }
    }
 }
