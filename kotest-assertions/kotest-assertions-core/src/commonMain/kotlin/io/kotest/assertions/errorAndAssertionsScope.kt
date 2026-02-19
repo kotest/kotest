@@ -1,10 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.ErrorCollector
-import io.kotest.matchers.assertionCounter
-import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.AbstractCoroutineContextElement
@@ -21,9 +17,9 @@ internal class AssertionBlockContextElement : AbstractCoroutineContextElement(Ke
  * [errorAndAssertionsScope] runs [block] in a "clean" scope.
  * The original error and assertion counts are stored and set to empty before the [block] is run.
  * Once the block is executed, the result [T], the [Failures], and the number of [Assertions] are stored for return.
- * The original error and assertion counts are replaced into their respective tracking systems [errorCollector] and [assertionCounter].
+ * The original error and assertion counts are replaced into their respective tracking systems [io.kotest.assertions.errorCollector] and [io.kotest.assertions.assertionCounter].
  *
- * The calling function is responsible for inserting the resultant [Failures] and [Assertions] into [errorCollector] and [assertionCounter] if appropriate.
+ * The calling function is responsible for inserting the resultant [Failures] and [Assertions] into [io.kotest.assertions.errorCollector] and [io.kotest.assertions.assertionCounter] if appropriate.
  *
  * @return The result [T] of the block function, the [Failures] that block had, and the number of [Assertions] executed.
  */

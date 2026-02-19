@@ -1,8 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.matchers.assertionCounter
-import io.kotest.matchers.errorCollector
 
 /**
  * Executes the given lambda and expects exactly one assertion to succeed.

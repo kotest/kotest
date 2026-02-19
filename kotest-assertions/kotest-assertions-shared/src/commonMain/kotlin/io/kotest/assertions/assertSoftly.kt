@@ -1,8 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
-
 inline fun <T> assertSoftly(assertions: () -> T): T {
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block

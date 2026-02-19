@@ -1,6 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.TimeoutCancellationException
 
 /**

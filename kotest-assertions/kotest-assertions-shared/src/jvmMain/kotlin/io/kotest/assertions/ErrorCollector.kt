@@ -1,6 +1,6 @@
 @file:JvmName("jvmerrorcollector")
 
-package io.kotest.matchers
+package io.kotest.assertions
 
 import kotlinx.coroutines.CopyableThreadContextElement
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -12,7 +12,7 @@ actual val errorCollector: ErrorCollector get() = threadLocalErrorCollector.get(
 /**
  * A [CoroutineContext.Element] which keeps the error collector synchronized with thread-switching coroutines.
  *
- * When using [io.kotest.assertions.withClue] or [io.kotest.assertions.assertSoftly] on the JVM without
+ * When using [io.kotest.assertions.withClue] or [assertSoftly] on the JVM without
  * the Kotest framework, this context element should be added to each top-level coroutine context, e.g. via
  * - `runBlocking(errorCollectorContextElement) { ... }`
  * - `runTest(Dispatchers.IO + errorCollectorContextElement) { ... }`

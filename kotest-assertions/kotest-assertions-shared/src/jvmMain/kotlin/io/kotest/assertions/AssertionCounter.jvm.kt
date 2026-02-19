@@ -1,4 +1,4 @@
-package io.kotest.matchers
+package io.kotest.assertions
 
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.CoroutineContext.Element
@@ -14,7 +14,7 @@ actual val assertionCounter: AssertionCounter get() = threadLocalAssertionCounte
  * - `runBlocking(assertionCounterContextElement) { ... }`
  * - `runTest(Dispatchers.IO + assertionCounterContextElement) { ... }`
  */
-val assertionCounterContextElement: CoroutineContext.Element
+val assertionCounterContextElement: Element
    get() = threadLocalAssertionCounter.asContextElement()
 
 private val threadLocalAssertionCounter: ThreadLocal<CoroutineLocalAssertionCounter> =
