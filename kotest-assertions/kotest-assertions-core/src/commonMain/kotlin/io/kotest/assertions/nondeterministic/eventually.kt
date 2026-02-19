@@ -1,11 +1,13 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.common.KotestInternal
+import io.kotest.common.NonDeterministicRealTimeTimeoutCancellationException
 import io.kotest.common.nonDeterministicTestTimeSource
+import io.kotest.common.withNonDeterministicTimeout
 import io.kotest.matchers.ErrorCollectionMode
 import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -64,9 +66,16 @@ suspend fun <T> eventually(
    val start = nonDeterministicTestTimeSource().markNow()
    val control = EventuallyControl(config, start)
    try {
-      return withTimeout(config.duration) {
+      @OptIn(KotestInternal::class)
+      return withNonDeterministicTimeout(config.duration) {
          runIterations(control, test, config)
       }
+   } catch (e: NonDeterministicRealTimeTimeoutCancellationException) {
+      // The real-time timeout fired (when coroutineTestScope is active without virtual time enabled).
+      // Convert to AssertionError for consistent behaviour with the virtual-time path.
+      throw AssertionErrorBuilder.create()
+         .withMessage(control.buildFailureMessage())
+         .build()
    } finally {
       errorCollector.setCollectionMode(originalAssertionMode)
    }
