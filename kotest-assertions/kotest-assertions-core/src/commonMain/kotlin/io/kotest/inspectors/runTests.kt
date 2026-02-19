@@ -1,7 +1,7 @@
 package io.kotest.inspectors
 
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 
 @PublishedApi
 internal inline fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {

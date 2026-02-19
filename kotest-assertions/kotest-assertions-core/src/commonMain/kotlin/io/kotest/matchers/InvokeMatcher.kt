@@ -3,7 +3,9 @@ package io.kotest.matchers
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.Expected
+import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.errorCollector
 
 fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()

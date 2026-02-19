@@ -1,7 +1,7 @@
 package io.kotest.assertions.collector
 
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.ErrorCollector
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.ErrorCollector
 
 /**
  * Runs the given [block] with the specified [mode] for error collection.

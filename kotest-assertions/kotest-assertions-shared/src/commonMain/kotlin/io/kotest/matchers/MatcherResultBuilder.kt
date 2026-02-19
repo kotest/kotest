@@ -7,6 +7,7 @@ import io.kotest.assertions.print.Printed
  * the appropriate concrete types to generate [click to see diff] links in the IDE output window
  * if expected and actual values are provided.
  *
+ * This class should be preferred over using [MatcherResult] directly.
  */
 data class MatcherResultBuilder(
    private val passed: Boolean,

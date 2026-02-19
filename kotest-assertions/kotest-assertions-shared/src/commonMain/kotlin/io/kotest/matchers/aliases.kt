@@ -1,0 +1,16 @@
+package io.kotest.matchers
+
+@Deprecated("Use io.kotest.assertions.AssertionCounter. Will be removed in a future release.")
+typealias AssertionCounter = io.kotest.assertions.AssertionCounter
+
+@Deprecated("Use io.kotest.assertions.assertionCounter. Will be removed in a future release.")
+val assertionCounter = io.kotest.assertions.assertionCounter
+
+@Deprecated("Use io.kotest.assertions.ErrorCollectionMode. Will be removed in a future release.")
+typealias ErrorCollectionMode = io.kotest.assertions.ErrorCollectionMode
+
+@Deprecated("Use io.kotest.assertions.ErrorCollector. Will be removed in a future release.")
+typealias ErrorCollector = io.kotest.assertions.ErrorCollector
+
+@Deprecated("Use io.kotest.assertions.errorCollector. Will be removed in a future release.")
+val errorCollector = io.kotest.assertions.errorCollector
