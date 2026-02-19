@@ -26,7 +26,8 @@ object RunnerModes {
       if (module == null) return null
       if (!ModuleDependencies.hasKotestEngine(module)) return null
 
-      // if we are on Kotest 6.1 or higher, and the runner is not platform, then we default to the Gradle test task
+      // if we are on Kotest 6.1 or higher, and the test runner is Gradle, then we default to the Gradle test task
+      // this doesn't require the Kotest Gradle plugin to be added for JVM.
       if (GradleUtils.isKotest61OrAbove(module) && GradleUtils.isGradleTestRunner(module)) return RunnerMode.GRADLE_TEST_TASK
 
       // if we have the Kotest Gradle plugin, then we use the Kotest task

@@ -57,9 +57,9 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       val element = ref.get() ?: return false
       val location = context.location ?: return false
 
-      val testContext = ElementUtils.findTestContext(element)
-      if (testContext == null) {
-         logger.info("Test context could not be resolved for $element so this producer will not contribute")
+      val testref = ElementUtils.findTestReference(element)
+      if (testref == null) {
+         logger.info("Test ref could not be resolved for $element so this producer will not contribute")
          return false
       }
 
@@ -67,8 +67,8 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       // and will also be the name of the configuration in the run configs drop down
       // kotlin.test uses 'class name.method name', so we'll do the same for consistency
       configuration.name = GradleTestRunNameBuilder.builder()
-         .withSpec(testContext.spec)
-         .withTest(testContext.test)
+         .withSpec(testref.spec)
+         .withTest(testref.test)
          .build()
       configuration.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
       configuration.settings.scriptParameters = ""
@@ -100,7 +100,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       }
 
       val element = context.psiLocation ?: return false
-      val testContext = ElementUtils.findTestContext(element) ?: return false
+      val testref = ElementUtils.findTestReference(element) ?: return false
       logger.info("Existing configuration [${configuration.name} taskNames [" + configuration.settings.taskNames + "]")
 
       // in order for an existing Gradle configuration to be equivalent to what we are looking for, we will
@@ -108,8 +108,8 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       // we assume that the test filter is the same for all tasks (in the case of multiple tasks), and so
       // we just take the first such filter
       val filter = GradleTestFilterBuilder.builder()
-         .withSpec(testContext.spec)
-         .withTest(testContext.test)
+         .withSpec(testref.spec)
+         .withTest(testref.test)
          .build(false)
 
       val existingFilter = configuration.settings.taskNames
@@ -150,7 +150,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       }
 
       val element = context.psiLocation ?: return
-      val testContext = ElementUtils.findTestContext(element) ?: return
+      val testContext = ElementUtils.findTestReference(element) ?: return
 
       val runConfiguration = configuration.configuration as GradleRunConfiguration
       val dataContext = MultiplatformTestTasksChooser.createContext(context.dataContext, runConfiguration.name)
