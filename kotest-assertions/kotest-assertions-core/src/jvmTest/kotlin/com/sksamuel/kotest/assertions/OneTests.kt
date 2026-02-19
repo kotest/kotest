@@ -7,8 +7,8 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.assertionCounter
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.errorCollector
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainOnlyOnce
 

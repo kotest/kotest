@@ -4,10 +4,8 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.KotestInternal
 import io.kotest.common.NonDeterministicRealTimeTimeoutCancellationException
 import io.kotest.common.nonDeterministicTestTimeSource
-import io.kotest.common.withNonVirtualTimeout
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
-import kotlinx.coroutines.Dispatchers
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
