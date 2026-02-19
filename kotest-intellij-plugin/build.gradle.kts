@@ -10,7 +10,8 @@ data class PluginDescriptor(
    val sourceFolder: String, // used as the source root for specifics of this build
    val useInstaller: Boolean, // required to be false for EAP builds
    val jdkTarget: JavaVersion,
-   val androidVersion: String,
+   val androidVersion: String, // android plugin version
+   val webpPlugin: String?, // for newwer intellij, this is no longer bundled and must be specified
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -40,6 +41,7 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "251.23774.200",
+      webpPlugin = null,
    ),
    PluginDescriptor(
       since = "252.*", // this version is 2025.2.x
@@ -49,6 +51,7 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "252.23892.458",
+      webpPlugin = null,
    ),
    PluginDescriptor(
       since = "253.*", // this version is 2025.3.x
@@ -58,10 +61,11 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "253.28294.334",
+      webpPlugin = "com.intellij.webp:253.28294.218",
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-253"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
@@ -145,7 +149,10 @@ dependencies {
       bundledPlugin("com.intellij.modules.json")
       bundledPlugin("com.intellij.properties")
       bundledPlugin("com.intellij.platform.images")
-      bundledPlugin("intellij.webp")
+      if (descriptor.webpPlugin == null)
+         bundledPlugin("intellij.webp")
+      else
+         plugin(descriptor.webpPlugin)
       bundledPlugin("org.intellij.groovy")
       bundledPlugin("org.intellij.intelliLang")
       bundledPlugin("org.jetbrains.idea.gradle.dsl")
