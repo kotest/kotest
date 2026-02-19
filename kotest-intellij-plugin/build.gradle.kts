@@ -140,8 +140,18 @@ dependencies {
       zipSigner()
 
       bundledPlugin("com.intellij.java")
+      bundledPlugin("JUnit")
+      bundledPlugin("com.intellij.gradle")
+      bundledPlugin("com.intellij.modules.json")
+      bundledPlugin("com.intellij.properties")
+      bundledPlugin("com.intellij.platform.images")
+      bundledPlugin("intellij.webp")
+      bundledPlugin("org.intellij.groovy")
+      bundledPlugin("org.intellij.intelliLang")
+      bundledPlugin("org.jetbrains.idea.gradle.dsl")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
+      bundledPlugin("org.toml.lang")
       plugin("org.jetbrains.android:${descriptor.androidVersion}")
 
       testFramework(TestFrameworkType.Platform)
