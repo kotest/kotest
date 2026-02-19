@@ -48,7 +48,7 @@ data class TestName(
 }
 
 private fun String.flattenTestName() = this.trim().replace("\\s+".toRegex(), " ")
-// components for the path, should not include prefixes
+// components for the path should not include prefixes
 data class TestPathEntry(val name: String)
 
 @ConsistentCopyVisibility
@@ -57,7 +57,7 @@ data class Test private constructor(
    val parent: Test?, // can be null if this is a root test
    val specClassName: KtClassOrObject, // the containing class name, which all tests must have
    val testType: TestType,
-   val xdisabled: Boolean, // if true then this test was defined using one of the x methods
+   val xdisabled: Boolean, // if true, then this test was defined using one of the x methods
    val psi: PsiElement, // the canonical element that identifies this test
    val isDataTest: Boolean = false
 ) {
@@ -71,8 +71,8 @@ data class Test private constructor(
          psi: PsiElement,
          isDataTest: Boolean = false
       ): Test {
-         // set interpolated to true if parent is interpolated but this name is not
-         // if this name is already interpolated then keep it as is - no need to do an object copy
+         // set interpolated to true if the parent is interpolated but this name is not
+         // if this name is already interpolated, then keep it as is - no need to do an object copy
          val finalTestName = if (parent?.name?.interpolated == true && !name.interpolated) {
             name.copy(interpolated = true)
          } else {

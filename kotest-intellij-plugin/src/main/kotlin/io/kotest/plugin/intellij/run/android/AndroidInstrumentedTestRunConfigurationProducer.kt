@@ -13,7 +13,6 @@ import com.android.tools.idea.testartifacts.instrumented.AndroidTestConfiguratio
 import com.android.tools.idea.testartifacts.instrumented.AndroidTestConfigurationProducer.Companion.OPTIONS_EP
 import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration
 import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfigurationType
-import com.android.tools.idea.testartifacts.instrumented.TestRunConfigurationOptions
 import com.android.tools.idea.testartifacts.instrumented.getOptions
 import com.android.tools.idea.util.androidFacet
 import com.intellij.execution.Location
@@ -28,7 +27,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiUtilCore
 import io.kotest.plugin.intellij.psi.ElementUtils
-import io.kotest.plugin.intellij.psi.TestContext
+import io.kotest.plugin.intellij.psi.TestReference
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.run.gradle.GradleTestFilterBuilder
@@ -36,6 +35,12 @@ import io.kotest.plugin.intellij.run.gradle.GradleTestRunNameBuilder
 import org.jetbrains.android.facet.AndroidFacet
 import org.jetbrains.android.util.AndroidUtils
 
+/**
+ * Creates run configurations for Android instrumented tests.
+ *
+ * This is based on the [com.android.tools.idea.testartifacts.instrumented.AndroidTestConfigurationProducer]
+ * implementation in the Android Studio IDE.
+ */
 class AndroidInstrumentedTestRunConfigurationProducer :
    JavaRunConfigurationProducerBase<AndroidTestRunConfiguration>() {
 
@@ -45,15 +50,7 @@ class AndroidInstrumentedTestRunConfigurationProducer :
 
    /**
     * This function is called to customize the blank [configuration] if it is applicable to the [context].
-    * If the given configuration is not something this producer is interested in, then it should return false.
-    *
-    * Receives a blank configuration of the specified type and a [context] containing information about
-    * a source code location (accessible by calling getLocation() or getPsiLocation()). The implementation
-    * needs to check whether the location is applicable to the configuration type
-    * (e.g., if it is in a file of the supported language). If it is, put the correct context-specific
-    * settings into the run configuration and return true.
-    *
-    * Return false otherwise.
+    * If the given context is not something this producer is interested in, then it should return false.
     */
    override fun setupConfigurationFromContext(
       configuration: AndroidTestRunConfiguration,
@@ -94,9 +91,11 @@ class AndroidInstrumentedTestRunConfigurationProducer :
          return false
       }
 
-      val expectedConfig = configurationFactory.createTemplateConfiguration(configuration.project)
-         as AndroidTestRunConfiguration
-
+      // we create a new throwaway configuration and configure it and use it to compare to the provided one
+      // to see if they are the same (where it matters - eg class, filter). If they are the same, then we know
+      // the provided configuration is the same as the one we would create and so should be used.
+      val expectedConfig = configurationFactory
+         .createTemplateConfiguration(configuration.project) as AndroidTestRunConfiguration
       val configurator = AndroidInstrumentedTestConfigurator.createFromContext(context) ?: return false
       if (!configurator.configure(expectedConfig, context)) return false
 
@@ -106,12 +105,16 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       }
 
       if (!configuration.EXTRA_OPTIONS.contains(getOptions("", context, OPTIONS_EP.extensionList, LOGGER))) {
+         logger.info("Existing configuration does not have same extra options")
          return false
       }
 
-      // need to compare class name and tests filter
-      logger.info("Existing configuration ${configuration.name} is not a match")
-      return false
+      if (configuration.CLASS_NAME != expectedConfig.CLASS_NAME) {
+         logger.info("Existing configuration does not have same class name")
+         return false
+      }
+
+      return true
    }
 
    override fun findModule(configuration: AndroidTestRunConfiguration, contextModule: Module?): Module? {
@@ -130,19 +133,20 @@ class AndroidInstrumentedTestRunConfigurationProducer :
     * run configuration from another producer.
     */
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
-      // We return true, because an Android instrumented test is more specific than any other we currently support.
+      // we return true, because a Kotest Android instrumented test is more specific than a normal Kotest test,
+      // and we know that only Kotest contexts will be present here.
       return true
    }
 }
 
 /**
- * A helper class responsible for configuring [AndroidTestRunConfiguration] based on given information.
+ * A helper class responsible for configuring [AndroidTestRunConfiguration]s based on given information.
  */
 data class AndroidInstrumentedTestConfigurator(
    private val facet: AndroidFacet,
    private val location: Location<PsiElement>,
    private val virtualFile: VirtualFile,
-   private val testContext: TestContext,
+   private val testReference: TestReference,
 ) {
 
    companion object {
@@ -150,24 +154,23 @@ data class AndroidInstrumentedTestConfigurator(
       private val logger = logger<AndroidInstrumentedTestConfigurator>()
 
       /**
-       * Creates a [AndroidInstrumentedTestConfigurator] from a given context.
-       * Returns null if the context is not applicable for an Android instrumentation test.
+       * Creates a [AndroidInstrumentedTestConfigurator] from a given context if the context is a
+       * Kotest spec or test, otherwise returns null.
        */
       fun createFromContext(context: ConfigurationContext): AndroidInstrumentedTestConfigurator? {
          val location = context.location ?: return null
-         val module = AndroidUtils.getAndroidModule(context) ?: return null
-         val facet = module.androidFacet ?: return null
+         val facet = AndroidUtils.getAndroidModule(context)?.androidFacet ?: return null
          val virtualFile = PsiUtilCore.getVirtualFile(location.psiElement) ?: return null
-         val testContext = ElementUtils.findTestContext(location.psiElement) ?: return null
-         val configurator = AndroidInstrumentedTestConfigurator(facet, location, virtualFile, testContext)
+         val testref = ElementUtils.findTestReference(location.psiElement) ?: return null
+         val configurator = AndroidInstrumentedTestConfigurator(facet, location, virtualFile, testref)
          logger.info("Created configurator $configurator")
          return configurator
       }
    }
 
    /**
-    * Configures a given configuration. If success, it returns true otherwise false.
-    * @param configuration a configuration instance to be configured
+    * Accepts a [AndroidTestRunConfiguration] and the current context, and if the context is applicable to
+    * instrumented tests returns true after configuring the run configuration.
     */
    fun configure(
       configuration: AndroidTestRunConfiguration,
@@ -209,43 +212,30 @@ data class AndroidInstrumentedTestConfigurator(
          configuration.deployTargetContext.targetSelectionMode = targetSelectionMode
       }
 
-      // we always use the test class type, and if it's a specific test, we'll add an ENV to filter down
+      // we always use the test class type, and if it's a specific test, we'll add an ENV filter
       configuration.TESTING_TYPE = AndroidTestRunConfiguration.TEST_CLASS
 
-      logger.info("Setting configuration.CLASS_NAME to ${testContext.spec.fqName?.asString()}")
-      configuration.CLASS_NAME = testContext.spec.fqName?.asString() ?: ""
+      logger.info("Setting configuration.CLASS_NAME to ${testReference.spec.fqName?.asString()}")
+      configuration.CLASS_NAME = testReference.spec.fqName?.asString() ?: ""
 
       val filter = GradleTestFilterBuilder.builder()
-         .withSpec(testContext.spec)
-         .withTest(testContext.test)
+         .withSpec(testReference.spec)
+         .withTest(testReference.test)
          .build(false)
 
-      configuration.EXTRA_OPTIONS =
-         getOptions(configuration.EXTRA_OPTIONS, context, listOf(kotestIncludePatternOptions(filter)), logger)
+      configuration.EXTRA_OPTIONS = getOptions(
+         existingOptions = configuration.EXTRA_OPTIONS,
+         context = context,
+         extensions = listOf(KotestInstrumentationIncludeTestRunConfigurationOptions(filter)),
+         logger = logger
+      )
 
-      // the name will appear in two places - it will be in the run icon chooser in the gutter Run/Debug/Profile etc.,
-      // and will also be the name of the configuration in the run configs drop down
-      // kotlin.test uses 'class name.method name', so we'll do the same for consistency
       configuration.name = GradleTestRunNameBuilder.builder()
-         .withSpec(testContext.spec)
-         .withTest(testContext.test)
+         .withSpec(testReference.spec)
+         .withTest(testReference.test)
          .build()
 
       return true
    }
-
-   // see example https://github.com/JetBrains/android/blob/4b00e2c1896e90c096534c857d3b65f6e00694d4/project-system-gradle/src/com/android/tools/idea/run/configuration/AndroidBaselineProfileRunConfiguration.kt#L84
-   fun kotestIncludePatternOptions(filter: String): TestRunConfigurationOptions {
-      return object : TestRunConfigurationOptions() {
-         /**
-          * Android docs:
-          * You can pass custom parameters (e.g., -e server_url https://api.test.com) and retrieve them within your test
-          * code using InstrumentationRegistry.getArguments().getString("server_url"
-          */
-         override fun getExtraOptions(context: ConfigurationContext): List<String> {
-            // should match the name used by the InstrumentationFilter in the JUnit 4 runner
-            return listOf("-e INSTRUMENTATION_INCLUDE_PATTERN $filter")
-         }
-      }
-   }
 }
+
