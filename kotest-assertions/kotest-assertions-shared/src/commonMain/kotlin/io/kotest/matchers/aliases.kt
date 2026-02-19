@@ -15,7 +15,7 @@ typealias ErrorCollectionMode = io.kotest.assertions.ErrorCollectionMode
 typealias ErrorCollector = io.kotest.assertions.ErrorCollector
 
 @Deprecated("Use io.kotest.assertions.errorCollector. Will be removed in a future release.")
-val errorCollector = io.kotest.assertions.errorCollector
+val errorCollector: ErrorCollector get() = io.kotest.assertions.errorCollector
 
 @Deprecated("Use io.kotest.assertions.BasicErrorCollector. Will be removed in a future release.")
 typealias BasicErrorCollector = BasicErrorCollector
