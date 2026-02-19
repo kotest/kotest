@@ -110,8 +110,9 @@ class AndroidInstrumentedTestRunConfigurationProducer :
 
       if (expectedConfig.EXTRA_OPTIONS.contains(KotestInstrumentationIncludeTestRunConfigurationOptions.INSTRUMENTATION_INCLUDE_PATTERN_NAME) && (configuration.EXTRA_OPTIONS != expectedConfig.EXTRA_OPTIONS)) {
          logger.info("Existing configuration does not have same filter (${configuration.EXTRA_OPTIONS} != ${expectedConfig.EXTRA_OPTIONS})")
+         return false
       }
-      
+
       return true
    }
 
