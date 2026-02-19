@@ -54,7 +54,7 @@ internal object ClassMethodNameFilterAdapter {
          ClassMethodNameFilterUtils.reset(request.postFilters())
       }
 
-      val descriptionFilter = when {
+      val descriptorFilter = when {
          nestedArgs.isEmpty() -> GradleClassMethodRegexTestFilter(regexPatterns)
          regexPatterns.isEmpty() -> NestedTestsArgDescriptorFilter(nestedArgs)
          else -> object : DescriptorFilter {
@@ -72,6 +72,6 @@ internal object ClassMethodNameFilterAdapter {
          }
       }
 
-      return listOf(descriptionFilter)
+      return listOf(descriptorFilter)
    }
 }
