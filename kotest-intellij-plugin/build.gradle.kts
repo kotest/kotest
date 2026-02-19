@@ -11,7 +11,7 @@ data class PluginDescriptor(
    val useInstaller: Boolean, // required to be false for EAP builds
    val jdkTarget: JavaVersion,
    val androidVersion: String, // android plugin version
-   val webpPlugin: String?, // for newwer intellij, this is no longer bundled and must be specified
+   val webpPlugin: String?, // for newer intellij, this is no longer bundled and must be specified
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -61,7 +61,7 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "253.28294.334",
-      webpPlugin = "com.intellij.webp:253.28294.218",
+      webpPlugin = "intellij.webp:253.28294.218",
    ),
 )
 
@@ -81,8 +81,9 @@ repositories {
 
    // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
    intellijPlatform {
-      defaultRepositories()
       jetbrainsRuntime()
+      defaultRepositories() // Includes the necessary JetBrains repositories
+      marketplace()         // Specifically enables Marketplace plugin resolution
    }
 }
 
@@ -149,16 +150,16 @@ dependencies {
       bundledPlugin("com.intellij.modules.json")
       bundledPlugin("com.intellij.properties")
       bundledPlugin("com.intellij.platform.images")
-      if (descriptor.webpPlugin == null)
-         bundledPlugin("intellij.webp")
-      else
-         plugin(descriptor.webpPlugin)
       bundledPlugin("org.intellij.groovy")
       bundledPlugin("org.intellij.intelliLang")
       bundledPlugin("org.jetbrains.idea.gradle.dsl")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
       bundledPlugin("org.toml.lang")
+      if (descriptor.webpPlugin == null)
+         bundledPlugin("intellij.webp")
+      else
+         plugin(descriptor.webpPlugin)
       plugin("org.jetbrains.android:${descriptor.androidVersion}")
 
       testFramework(TestFrameworkType.Platform)
