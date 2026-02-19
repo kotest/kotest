@@ -229,7 +229,10 @@ if (shouldRunJvmOnlyModules) {
       // various tests and details for generating XML reports via the Gradle tasks
       ":kotest-tests:kotest-tests-xml",
 
-      // tests specific to the Wasm Wasi implementations
+      // tests specific to the WasmJS engine
+      ":kotest-tests:kotest-tests-wasm-js",
+
+      // tests specific to the WasmWASI engine
       ":kotest-tests:kotest-tests-wasm-wasi"
    )
 }
