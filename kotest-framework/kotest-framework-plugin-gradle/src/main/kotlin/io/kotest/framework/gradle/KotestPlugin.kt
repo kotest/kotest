@@ -97,12 +97,14 @@ abstract class KotestPlugin : Plugin<Project> {
          // configures Kotlin multiplatform projects
          handleMultiplatform(project, extension)
 
-         project.gradle.taskGraph.whenReady {
-            decorateGradleTestTask(project, extension)
-         }
-
          if (extension.enablePowerAssert.getOrElse(false)) {
             configurePowerAssert(project)
+         }
+      }
+
+      project.gradle.taskGraph.whenReady {
+         project.tasks.withType(AbstractTestTask::class.java).configureEach {
+            decorateGradleTestTask(project, extension, this)
          }
       }
    }
@@ -143,44 +145,52 @@ abstract class KotestPlugin : Plugin<Project> {
     * of environment variables that Kotest picks up and applies via a descriptor filter.
     * This allows us to run specific tests using the regular Gradle task.
     */
-   private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension) {
-      project.tasks.withType(AbstractTestTask::class.java).configureEach {
-         doFirst {
+   @OptIn(ExperimentalKotest::class)
+   private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension, task: AbstractTestTask) {
+      task.doFirst {
 
-            val includes = when (val f = filter) {
-               is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
-               else -> f.includePatterns
-            }
+         // when running Gradle from IntelliJ, the test tasks are forked and so the idea.active system property
+         // isn't available when we're inside the engine, so we propagate an env variable to do the same thing
+         // we need to run this from doFirst, because this needs to be detected when the task starts not when its configured
+         if (System.getProperty(IDEA_ACTIVE_SYSPROP) != null) {
+            setEnvVar(task, IDEA_ACTIVE_ENV, "true")
+         }
 
-            if (includes.isNotEmpty()) {
-               val pattern = includes.joinToString(";")
-               setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
-            }
+         if (extension.showIgnoreReasons.getOrElse(false)) {
+            setEnvVar(task, KOTEST_SHOW_IGNORE_REASONS, "true")
+         }
+      }
 
-            when (this) {
-               is KotlinNativeTest -> Unit
-               // saves the user having to set this manually
-               // Caused by: java.lang.IllegalStateException: The value for task ':linuxX64Test' property 'failOnNoDiscoveredTests' is final and cannot be changed any further.
-//                  if (hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
-//                     setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
-//                  }
-            }
+      val includes = when (val f = task.filter) {
+         is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
+         else -> f.includePatterns
+      }
 
-            // when running Gradle from intellij, the test tasks are forked and so the idea.active systemm property
-            // isn't available when we're inside the engine, so we propagate an env variable to do the same thing
-            if (System.getProperty(IDEA_ACTIVE_SYSPROP) != null) {
-               setEnvVar(this, IDEA_ACTIVE_ENV, "true")
-            }
+      if (includes.isNotEmpty()) {
+         val pattern = includes.joinToString(";")
+         setEnvVar(task, KOTEST_INCLUDE_PATTERN, pattern)
+      }
 
-            if (extension.showIgnoreReasons.getOrElse(false)) {
-               setEnvVar(this, KOTEST_SHOW_IGNORE_REASONS, "true")
+      when (task) {
+         is KotlinNativeTest -> Unit
+         is KotlinJsTest -> {
+            // https://github.com/kotest/kotest/issues/5704
+            // without resetting the filters, the KotlinJsTest task will also try filtering the tests,
+            // but it is unaware of Kotest's generated tests, so we must remove the filter from its eyes
+            // this does mean that you can't combine kotlin.test tests and Kotest tests and expect
+            // to filter the kotlin.test ones
+            task.filter.excludePatterns.clear()
+            task.filter.includePatterns.clear()
+            when (val filter = task.filter) {
+               is DefaultTestFilter -> filter.commandLineIncludePatterns.clear()
             }
+            task.filter.isFailOnNoMatchingTests = false
          }
       }
    }
 
-   private fun setEnvVar(task: Task, name: String, value: String) {
-      task.logger.info("Setting environment variable $name=$value for task ${task.name}")
+   private fun setEnvVar(task: AbstractTestTask, name: String, value: String) {
+      task.logger.debug("Setting environment variable $name=$value for task ${task.name}")
       when (task) {
          is KotlinJsTest -> task.environment(name, value)
          is KotlinNativeTest -> task.environment(name, value, false)
