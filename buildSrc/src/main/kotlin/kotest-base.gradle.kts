@@ -1,5 +1,6 @@
 plugins {
    base
+   id("com.google.devtools.ksp")
 }
 
 extensions.create(KotestBuildLogicSettings.EXTENSION_NAME, KotestBuildLogicSettings::class)

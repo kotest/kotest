@@ -8,6 +8,7 @@ import kotlin.jvm.optionals.getOrElse
 
 plugins {
    id("kotlin-conventions")
+   id("io.kotest")
 }
 
 val versionCatalog: VersionCatalog = versionCatalogs.named("libs")

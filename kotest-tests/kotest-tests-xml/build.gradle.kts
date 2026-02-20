@@ -5,8 +5,8 @@ import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 plugins {
    id("kotlin-conventions")
    // using a published version
-   id("io.kotest").version("6.1.2")
-   id("com.google.devtools.ksp").version("2.3.4")
+   id("io.kotest")
+   id("com.google.devtools.ksp")
 }
 
 kotlin {
