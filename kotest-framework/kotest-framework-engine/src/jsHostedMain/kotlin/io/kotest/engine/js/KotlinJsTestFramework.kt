@@ -3,22 +3,22 @@ package io.kotest.engine.js
 /**
  * The entry point that the Kotest Test Engine can invoke to run tests on JavaScript platforms.
  *
- * Since js and wasmJs differ slightly in how they operate at runtime, the test engine invokes
+ * Since JS and WasmJS differ slightly in how they operate at runtime, the test engine invokes
  * the suite and test methods in this interface. Then at runtime, the appropriate implementation
  * of these handles the nuances of the underlying platform.
  *
  * Nesting of test suites may not be supported by TeamCity reporters of kotlin-test-js-runner.
  *
- * @see https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner
+ * @see `https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner`
  */
 internal interface KotlinJsTestFramework {
 
    /**
     * Declares a test suite.
     *
-    * Theoretically, suites may be nested and may contain tests at each level, however due to
+    * Theoretically, suites may be nested and may contain tests at each level, however, due to
     * [limitations of JS test frameworks](https://github.com/mochajs/mocha/issues/2975) supported by
-    * Kotlin's test infra, we cannot handle asynchronous invocations, therefore we limit suite to
+    * Kotlin's test infra, we cannot handle asynchronous invocations, therefore, we limit suite to
     * just specs.
     */
    fun suite(name: String, ignored: Boolean, suiteFn: () -> Unit)

@@ -4,10 +4,10 @@ package io.kotest.engine.js
  * JS [FrameworkAdapter] interface defined by the Kotlin/JS test infra.
  *
  * This is an interface implemented by the Kotlin test framework and acts as an adapter over
- * framework specific test functions at runtime.
+ * framework-specific test functions at runtime.
  *
- * In theory a js framework called wibble-test might have a function called runSuite and another
- * framework called wobble-test might have a function called suiteMe. This interface allows the Kotlin
+ * In theory a js framework called wibble-test might have a function called runSuite, and another
+ * framework called wobble-test might have a function called suiteRun. This interface allows the Kotlin
  * compiler to generate code that can work with either framework at runtime as configured in Gradle.
  *
  * This interface allows framework function invocations to be conditionally transformed as required for proper
