@@ -4,7 +4,7 @@ import arrow.core.raise.Raise
 import arrow.core.raise.recover
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
-import io.kotest.matchers.assertionCounter
+import io.kotest.assertions.assertionCounter
 
 /**
  * Verifies if a block of code will raise a specified type of [T] (or subclasses).

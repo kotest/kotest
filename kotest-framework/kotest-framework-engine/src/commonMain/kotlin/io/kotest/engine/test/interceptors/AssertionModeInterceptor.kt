@@ -7,7 +7,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import io.kotest.matchers.assertionCounter
+import io.kotest.assertions.assertionCounter
 
 /**
  * Wraps the test function checking for assertion mode,
