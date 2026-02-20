@@ -12,11 +12,10 @@ import com.intellij.testIntegration.TestFramework
 import org.jetbrains.kotlin.idea.KotlinLanguage
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.psiUtil.getChildrenOfType
 import javax.swing.Icon
 
 /**
- * Used by various test related classes in intellij, such as GradleRunConfiguration and TestFinder.
+ * Used by various test-related classes in intellij, such as GradleRunConfiguration and TestFinder.
  */
 class KotestTestFramework : TestFramework {
 
@@ -38,7 +37,7 @@ class KotestTestFramework : TestFramework {
    }
 
    /**
-    * This always returns false, because we don't want intellij adding a run icon (we use our own).
+    * This always returns false because we don't want intellij adding a run icon (we use our own).
     * This does mean that the JavaTestFinder interface will not be able to find test subjects, so
     * we need to implement that separately.
     */
@@ -70,21 +69,21 @@ class KotestTestFramework : TestFramework {
       findAfterTestBlock(clazz) ?: findAfterTestFunction(clazz)
 
    private fun findBeforeTestBlock(clazz: PsiElement): PsiElement? {
-      return clazz.getChildrenOfType<KtNameReferenceExpression>().firstOrNull { it.text == "beforeTest" }
+      return clazz.children.filterIsInstance<KtNameReferenceExpression>().firstOrNull { it.text == "beforeTest" }
    }
 
    private fun findAfterTestBlock(clazz: PsiElement): PsiElement? {
-      return clazz.getChildrenOfType<KtNameReferenceExpression>().firstOrNull { it.text == "afterTest" }
+      return clazz.children.filterIsInstance<KtNameReferenceExpression>().firstOrNull { it.text == "afterTest" }
    }
 
    private fun findBeforeTestFunction(clazz: PsiElement): PsiElement? {
-      return clazz.getChildrenOfType<KtNamedFunction>()
+      return clazz.children.filterIsInstance<KtNamedFunction>()
          .filter { it.name == "beforeTest" }
          .firstOrNull { it.valueParameters.size == 1 }
    }
 
    private fun findAfterTestFunction(clazz: PsiElement): PsiElement? {
-      return clazz.getChildrenOfType<KtNamedFunction>()
+      return clazz.children.filterIsInstance<KtNamedFunction>()
          .filter { it.name == "afterTest" }
          .firstOrNull { it.valueParameters.size == 1 }
    }
