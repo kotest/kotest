@@ -63,6 +63,15 @@ val descriptors = listOf(
       androidVersion = "253.28294.334",
       webpPlugin = "intellij.webp:253.28294.218",
    ),
+   PluginDescriptor(
+      since = "261.*", // this version is 2026.1.x
+      until = "262.*",
+      sdkVersion = "261-EAP-SNAPSHOT",
+      sourceFolder = "IC-261",
+      useInstaller = false,
+      jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "261.20869.38",
+   ),
 )
 
 val productName = System.getenv("PRODUCT_NAME") ?: "IC-253"
