@@ -9,7 +9,6 @@ import com.android.tools.idea.projectsystem.getModuleSystem
 import com.android.tools.idea.projectsystem.isContainedBy
 import com.android.tools.idea.run.AndroidRunConfigurationType
 import com.android.tools.idea.testartifacts.instrumented.AndroidRunConfigurationToken
-import com.android.tools.idea.testartifacts.instrumented.AndroidTestConfigurationProducer.Companion.LOGGER
 import com.android.tools.idea.testartifacts.instrumented.AndroidTestConfigurationProducer.Companion.OPTIONS_EP
 import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration
 import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfigurationType
@@ -59,7 +58,7 @@ class AndroidInstrumentedTestRunConfigurationProducer :
    ): Boolean {
 
       if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_TEST_TASK) {
-         logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
+         logger.debug("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
          return false
       }
 
@@ -72,8 +71,8 @@ class AndroidInstrumentedTestRunConfigurationProducer :
          return false
       }
 
-      configuration.EXTRA_OPTIONS = getOptions(configuration.EXTRA_OPTIONS, context, OPTIONS_EP.extensionList, LOGGER)
-      logger.info("Configuration ${configuration.name} setup successfully")
+      configuration.EXTRA_OPTIONS = getOptions(configuration.EXTRA_OPTIONS, context, OPTIONS_EP.extensionList, logger)
+      logger.debug("Configuration ${configuration.name} setup successfully")
       return true
    }
 
@@ -87,7 +86,7 @@ class AndroidInstrumentedTestRunConfigurationProducer :
    ): Boolean {
 
       if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_TEST_TASK) {
-         logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
+         logger.debug("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
          return false
       }
 
@@ -99,18 +98,18 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       val configurator = AndroidInstrumentedTestConfigurator.createFromContext(context) ?: return false
       if (!configurator.configure(expectedConfig, context)) return false
 
-      if (configuration.TESTING_TYPE != expectedConfig.TESTING_TYPE) {
-         logger.info("Existing configuration does not have same testing type")
-         return false
-      }
-
-      if (!configuration.EXTRA_OPTIONS.contains(getOptions("", context, OPTIONS_EP.extensionList, LOGGER))) {
-         logger.info("Existing configuration does not have same extra options")
-         return false
-      }
-
       if (configuration.CLASS_NAME != expectedConfig.CLASS_NAME) {
-         logger.info("Existing configuration does not have same class name")
+         logger.info("Existing configuration does not have same class name (${configuration.CLASS_NAME} != ${expectedConfig.CLASS_NAME})")
+         return false
+      }
+
+      if (configuration.TESTING_TYPE != expectedConfig.TESTING_TYPE) {
+         logger.info("Existing configuration does not have same testing type (${configuration.TESTING_TYPE} != ${expectedConfig.TESTING_TYPE})")
+         return false
+      }
+
+      if (expectedConfig.EXTRA_OPTIONS.contains(KotestInstrumentationIncludeTestRunConfigurationOptions.INSTRUMENTATION_INCLUDE_PATTERN_NAME) && (configuration.EXTRA_OPTIONS != expectedConfig.EXTRA_OPTIONS)) {
+         logger.info("Existing configuration does not have same filter (${configuration.EXTRA_OPTIONS} != ${expectedConfig.EXTRA_OPTIONS})")
          return false
       }
 
@@ -143,10 +142,10 @@ class AndroidInstrumentedTestRunConfigurationProducer :
  * A helper class responsible for configuring [AndroidTestRunConfiguration]s based on given information.
  */
 data class AndroidInstrumentedTestConfigurator(
-   private val facet: AndroidFacet,
-   private val location: Location<PsiElement>,
-   private val virtualFile: VirtualFile,
-   private val testReference: TestReference,
+   val facet: AndroidFacet,
+   val location: Location<PsiElement>,
+   val virtualFile: VirtualFile,
+   val testReference: TestReference,
 ) {
 
    companion object {
@@ -163,7 +162,7 @@ data class AndroidInstrumentedTestConfigurator(
          val virtualFile = PsiUtilCore.getVirtualFile(location.psiElement) ?: return null
          val testref = ElementUtils.findTestReference(location.psiElement) ?: return null
          val configurator = AndroidInstrumentedTestConfigurator(facet, location, virtualFile, testref)
-         logger.info("Created configurator $configurator")
+         logger.debug("Created configurator $configurator")
          return configurator
       }
    }
@@ -193,13 +192,13 @@ data class AndroidInstrumentedTestConfigurator(
          generatedAndroidTestSources?.containsFile(virtualFile) == false &&
          !generatedAndroidTestSources.isContainedBy(virtualFile)
       ) {
-         logger.info("virtual file $virtualFile is not an Android test source, so this producer will not contribute")
+         logger.debug("virtual file $virtualFile is not an Android test source, so this producer will not contribute")
          return false
       }
 
       // check if the current module is a valid AndroidTest module to set up the Run Configuration from
       if (AndroidRunConfigurationToken.getModuleForAndroidTestRunConfiguration(module) == null) {
-         logger.info("Module $module is not a valid AndroidTest module, so this producer will not contribute")
+         logger.debug("Module $module is not a valid AndroidTest module, so this producer will not contribute")
          return false
       }
 
@@ -208,32 +207,36 @@ data class AndroidInstrumentedTestConfigurator(
          project, AndroidTestRunConfigurationType.getInstance(), AndroidRunConfigurationType.getInstance()
       )
       if (targetSelectionMode != null) {
-         logger.info("Setting target selection mode to $targetSelectionMode")
+         logger.debug("Setting target selection mode to $targetSelectionMode")
          configuration.deployTargetContext.targetSelectionMode = targetSelectionMode
       }
 
-      // we always use the test class type, and if it's a specific test, we'll add an ENV filter
+      // we always use the test class type as our supported test mode
       configuration.TESTING_TYPE = AndroidTestRunConfiguration.TEST_CLASS
-
-      logger.info("Setting configuration.CLASS_NAME to ${testReference.spec.fqName?.asString()}")
       configuration.CLASS_NAME = testReference.spec.fqName?.asString() ?: ""
+      logger.info("Setting configuration.CLASS_NAME to ${configuration.CLASS_NAME}")
 
       val filter = GradleTestFilterBuilder.builder()
          .withSpec(testReference.spec)
          .withTest(testReference.test)
-         .build(false)
+         .build(includeTestsFlag = false)
+      logger.info("Setting configuration.EXTRA_OPTIONS to include filter $filter")
 
-      configuration.EXTRA_OPTIONS = getOptions(
-         existingOptions = configuration.EXTRA_OPTIONS,
-         context = context,
-         extensions = listOf(KotestInstrumentationIncludeTestRunConfigurationOptions(filter)),
-         logger = logger
-      )
+      // only set the test filter if this was a test and not just a spec
+      if (testReference.test != null) {
+         configuration.EXTRA_OPTIONS = getOptions(
+            existingOptions = configuration.EXTRA_OPTIONS,
+            context = context,
+            extensions = listOf(KotestInstrumentationIncludeTestRunConfigurationOptions(filter)),
+            logger = logger
+         )
+      }
 
       configuration.name = GradleTestRunNameBuilder.builder()
          .withSpec(testReference.spec)
          .withTest(testReference.test)
          .build()
+      logger.debug("Setting configuration.name to ${configuration.name}")
 
       return true
    }

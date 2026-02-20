@@ -4,13 +4,17 @@ import com.android.tools.idea.testartifacts.instrumented.TestRunConfigurationOpt
 import com.intellij.execution.actions.ConfigurationContext
 
 /**
- * [com.android.tools.idea.testartifacts.instrumented.TestRunConfigurationOptions] add extra options to a [com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration].
+ * [TestRunConfigurationOptions] adds extra options to a [com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration].
  *
- * see example https://github.com/JetBrains/android/blob/4b00e2c1896e90c096534c857d3b65f6e00694d4/project-system-gradle/src/com/android/tools/idea/run/configuration/AndroidBaselineProfileRunConfiguration.kt#L84
+ * @see `https://github.com/JetBrains/android/blob/4b00e2c1896e90c096534c857d3b65f6e00694d4/project-system-gradle/src/com/android/tools/idea/run/configuration/AndroidBaselineProfileRunConfiguration.kt#L84`
  */
 class KotestInstrumentationIncludeTestRunConfigurationOptions(
    private val filter: String
 ) : TestRunConfigurationOptions() {
+
+   companion object {
+      const val INSTRUMENTATION_INCLUDE_PATTERN_NAME = "INSTRUMENTATION_INCLUDE_PATTERN"
+   }
 
    /**
     * Android docs:
@@ -19,6 +23,6 @@ class KotestInstrumentationIncludeTestRunConfigurationOptions(
     */
    override fun getExtraOptions(context: ConfigurationContext): List<String> {
       // should match the name used by the InstrumentationFilter in the JUnit 4 runner
-      return listOf("-e INSTRUMENTATION_INCLUDE_PATTERN $filter")
+      return listOf("-e $INSTRUMENTATION_INCLUDE_PATTERN_NAME $filter")
    }
 }
