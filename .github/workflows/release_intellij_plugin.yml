@@ -8,7 +8,7 @@ jobs:
 
       strategy:
          matrix:
-            product: [ "IC-251", "IC-252", "IC-253" ]
+            product: [ "IC-251", "IC-252", "IC-253", "IC-261" ]
          max-parallel: 1
 
       runs-on: ubuntu-latest
@@ -22,6 +22,10 @@ jobs:
             with:
                java-version: "21"
                distribution: "temurin"
+
+         -  name: Override Kotlin version for IC-261
+            if: matrix.product == 'IC-261'
+            run: sed -i 's/^kotlin = .*/kotlin = "2.3.10"/' gradle/libs.versions.toml
 
          -  name: deploy to jetbrains
             run: ./gradlew --stacktrace publishPlugin
