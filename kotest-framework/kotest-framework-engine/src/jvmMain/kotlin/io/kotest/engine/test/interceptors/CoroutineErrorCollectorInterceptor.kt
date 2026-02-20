@@ -5,8 +5,8 @@ import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.engine.test.TestResult
-import io.kotest.matchers.assertionCounterContextElement
-import io.kotest.matchers.errorCollectorContextElement
+import io.kotest.assertions.assertionCounterContextElement
+import io.kotest.assertions.errorCollectorContextElement
 import kotlinx.coroutines.withContext
 
 @JVMOnly

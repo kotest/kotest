@@ -1,4 +1,5 @@
 [versions]
+gradleApi = "8.11.1"
 jedis = "7.1.0"
 kotlin = "2.2.21"
 
@@ -77,6 +78,7 @@ gradleDaemonJvm = "21"
 
 [libraries]
 
+gradle-api = { module = "dev.gradleplugins:gradle-api", version.ref = "gradleApi" }
 jedis = { module = "redis.clients:jedis", version.ref = "jedis" }
 runtime-kotest-framework-launcher = { module = "io.kotest:kotest-framework-launcher", version.ref = "runtime-kotest" } #intellij plugin
 runtime-kotest-legacy-launcher = { module = "io.kotest:kotest-launcher", version = "1.0.10" } #intellij plugin
