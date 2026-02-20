@@ -110,24 +110,12 @@ include(
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 
-   // adds support for the allure reporting framework - see more https://allurereport.org/
-   ":kotest-extensions:kotest-extensions-allure",
-   ":kotest-extensions:kotest-extensions-blockhound",
-
-   // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
-   ":kotest-extensions:kotest-extensions-decoroutinator",
-
-   // adds support for the testcontainers framework - see more https://testcontainers.com
-   ":kotest-extensions:kotest-extensions-testcontainers",
-
    // allows overriding the .now() functionality on time classes
    ":kotest-extensions:kotest-extensions-now",
 
    // extensions that adapt junit extensions into kotest extensions
    ":kotest-extensions:kotest-extensions-junit5",
 
-   // adds support for the wiremock framework - see more https://www.wiremock.io/
-   ":kotest-extensions:kotest-extensions-wiremock",
 
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
@@ -240,12 +228,25 @@ if (shouldRunJvmOnlyModules) {
  */
 if (shouldRunLinuxOnlyModules) {
    include(
+      // adds support for the allure reporting framework - see more https://allurereport.org/
+      ":kotest-extensions:kotest-extensions-allure",
+      ":kotest-extensions:kotest-extensions-blockhound",
+
+      // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
+      ":kotest-extensions:kotest-extensions-decoroutinator",
+
       // adds support for mockserver - see more https://www.mock-server.com/
       ":kotest-extensions:kotest-extensions-mockserver",
 
       ":kotest-extensions:kotest-extensions-pitest",
 
       ":kotest-extensions:kotest-extensions-spring",
+
+      // adds support for the testcontainers framework - see more https://testcontainers.com
+      ":kotest-extensions:kotest-extensions-testcontainers",
+
+      // adds support for the wiremock framework - see more https://www.wiremock.io/
+      ":kotest-extensions:kotest-extensions-wiremock",
    )
 }
 
