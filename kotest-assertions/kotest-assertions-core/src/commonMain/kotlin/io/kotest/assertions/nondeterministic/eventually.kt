@@ -1,11 +1,13 @@
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 import io.kotest.common.KotestInternal
 import io.kotest.common.NonDeterministicRealTimeTimeoutCancellationException
 import io.kotest.common.nonDeterministicTestTimeSource
-import io.kotest.assertions.ErrorCollectionMode
-import io.kotest.assertions.errorCollector
+import io.kotest.common.withNonVirtualTimeout
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import kotlin.reflect.KClass
