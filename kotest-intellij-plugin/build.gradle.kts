@@ -71,6 +71,7 @@ val descriptors = listOf(
       useInstaller = false,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "261.20869.38",
+      webpPlugin = "intellij.webp:261.21525.28",
    ),
 )
 
