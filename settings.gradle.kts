@@ -117,13 +117,6 @@ include(
    // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
    ":kotest-extensions:kotest-extensions-decoroutinator",
 
-   // adds support for mockserver - see more https://www.mock-server.com/
-   ":kotest-extensions:kotest-extensions-mockserver",
-
-   ":kotest-extensions:kotest-extensions-pitest",
-
-   ":kotest-extensions:kotest-extensions-spring",
-
    // adds support for the testcontainers framework - see more https://testcontainers.com
    ":kotest-extensions:kotest-extensions-testcontainers",
 
@@ -160,6 +153,9 @@ private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
 
 /** we only include JVM-only modules if it's a non-CI build, or if it's a master build, or if it's using a linux runner */
 private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+
+/** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
+private val shouldRunLinuxOnlyModules = !isCI || isLinuxRunner
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
@@ -234,6 +230,22 @@ if (shouldRunJvmOnlyModules) {
 
       // tests specific to the WasmWASI engine
       ":kotest-tests:kotest-tests-wasm-wasi"
+   )
+}
+
+/**
+ * These modules only require the JVM so there's no need to run them on all platforms.
+ * We skip them on non-Linux CI runners to keep cross-platform builds lean.
+ * Local (non-CI) builds always include them.
+ */
+if (shouldRunLinuxOnlyModules) {
+   include(
+      // adds support for mockserver - see more https://www.mock-server.com/
+      ":kotest-extensions:kotest-extensions-mockserver",
+
+      ":kotest-extensions:kotest-extensions-pitest",
+
+      ":kotest-extensions:kotest-extensions-spring",
    )
 }
 
