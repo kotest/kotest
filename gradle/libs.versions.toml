@@ -1,66 +1,66 @@
 [versions]
 gradleApi = "8.11.1"
-jedis = "7.2.1"
+jedis = "7.1.0"
 kotlin = "2.2.21"
 
 runtime-kotest = "4.2.0" # intellij plugin
 test-kotest = "5.9.1"# intellij plugin
 
 blockhound = "1.0.16.RELEASE"
-commons-lang3 = "3.20.0"
-gradle-test-logger-plugin = "4.0.0"
+commons-lang3 = "3.18.0"
+gradle-test-logger-plugin = "3.2.0"
 java-diff-utils = "4.16"
 jdom2 = "2.0.6.1"
 json-path = "2.10.0"
 junit4 = "4.13.2"
 
 junit-platform5 = "1.13.4"
-junit-platform6 = "6.0.3"
+junit-platform6 = "6.0.2"
 junit-jupiter5 = "5.13.4"
-junit-jupiter6 = "6.0.3"
+junit-jupiter6 = "6.0.2"
 
 jimfs = "1.3.1"
 
 kaml = "0.104.0"
 kotlinx-coroutines = "1.10.2"
-kotlinx-serialization = "1.10.0"
-ktor = "3.4.0"
+kotlinx-serialization = "1.9.0"
+ktor = "3.3.3"
 mockk = "1.14.9"
 mordant = "3.0.2"
 opentest4j = "1.3.0"
-plugin-publish = "2.0.0"
-rgxgen = "3.1"
-ksp = "2.2.21-2.0.5"
+plugin-publish = "1.3.1"
+rgxgen = "2.0"
+ksp = "2.2.0-2.0.2"
 shadowjar = "8.1.1"
 spring-boot = "2.7.18"
 spring = "5.3.39"
 
-allure-commons = "2.32.0"
+allure-commons = "2.30.0"
 allure-plugin = "3.0.1"
 
-byte-buddy = "1.18.5"
+byte-buddy = "1.17.6"
 
 dev-publish-plugin = "0.4.2"
 
-koin = "4.2.0-RC1"
-wiremock = "3.13.2"
+koin = "4.2.0-beta2"
+wiremock = "3.11.0"
 mockserver = "5.15.0"
 fuel = "2.3.1"
-konform = "0.11.1"
-arrow = "2.2.1.1"
+konform = "0.10.0"
+arrow = "2.1.2"
 testcontainers = "2.0.3"
-asm = "9.9.1"
-nmcp = "1.4.4"
+asm = "9.8"
+nmcp = "1.0.2"
 kotlin-poet = "2.2.0"
-kotlinx-io-core = "0.8.2"
+kotlinx-io-core = "0.7.0"
 xmlutil = "0.91.3"
-jetbrains-annotations = "26.0.2-1"
+
 # https://developer.android.com/kotlin/multiplatform/plugin
 agp = "8.13.2"
 
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.6.1"
-pitest = "1.22.1"
+decoroutinator = "2.5.9"
+pitest = "1.20.1"
 
 # https://developer.android.com/jetpack/androidx/versions/all-channel
 androidx-test = "1.7.0"
@@ -93,7 +93,7 @@ blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blo
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
-jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "jetbrains-annotations" }
+jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
 
 jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }
 
@@ -156,7 +156,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.12.1" }
+kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.11.0" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -164,7 +164,7 @@ kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-em
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.7.1" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
 
 pitest = { module = "org.pitest:pitest", version.ref = "pitest" }
 
@@ -178,8 +178,8 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
-hikari = { module = "com.zaxxer:HikariCP", version = "7.0.2" }
-kafka-client = { module = "org.apache.kafka:kafka-clients", version = "4.2.0" }
+hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
+kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.1" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-jdbc = { module = "org.testcontainers:testcontainers-jdbc", version.ref = "testcontainers" }
