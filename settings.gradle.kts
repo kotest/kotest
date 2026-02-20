@@ -234,7 +234,7 @@ if (shouldRunJvmOnlyModules) {
 }
 
 /**
- * These modules only require the JVM so there's no need to run them on all platforms.
+ * These modules only require the JVM, so there's no need to run them on all platforms.
  * We skip them on non-Linux CI runners to keep cross-platform builds lean.
  * Local (non-CI) builds always include them.
  */
