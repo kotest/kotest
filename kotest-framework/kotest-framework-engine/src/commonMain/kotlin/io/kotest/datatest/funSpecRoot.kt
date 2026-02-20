@@ -202,8 +202,9 @@ fun <T> FunSpecRootScope.withContexts(
    ts: Iterable<T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)).config() { this.test(t) }
+      context(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -217,8 +218,9 @@ fun <T> FunSpecRootScope.withTests(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      test(nameFn(t)).config() { this.test(t) }
+      test(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -235,8 +237,9 @@ fun <T> FunSpecRootScope.withData(data: Map<String, T>, test: suspend FunSpecCon
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name).config() { this.test(t) }
+      context(name).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -245,7 +248,8 @@ fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpe
  * used as the test name, and the second value passed to the test.
  */
 fun <T> FunSpecRootScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      test(name).config() { this.test(t) }
+      test(name).config(dataTestTagConfig) { this.test(t) }
    }
 }

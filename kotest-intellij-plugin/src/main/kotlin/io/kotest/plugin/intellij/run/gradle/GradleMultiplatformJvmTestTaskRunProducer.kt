@@ -11,6 +11,10 @@ import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.ElementUtils
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
+import io.kotest.plugin.intellij.styles.SpecStyle
+import io.kotest.plugin.intellij.util.DataTestInfo
+import org.jetbrains.kotlin.analysis.api.KaImplementationDetail
+import org.jetbrains.kotlin.analysis.api.permissions.KaAnalysisPermissionRegistry
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.kotlin.idea.gradleJava.run.MultiplatformTestTasksChooser
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestRunConfigurationProducer
@@ -171,9 +175,18 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       ) { tasks ->
          logger.info("MultiplatformChooseTasks: $tasks")
 
+         val (spec, test) = testContext
+         /**
+          * For data tests, we use tag-based filtering instead of test path filtering.
+          * For non data test, we set this to null to allow [setOrRemoveDataTestEnvVarIfNeeded]
+          * to remove such env var if it was set previously.
+          */
+         val dataTestInfoMaybe = test?.dataTestInfoMaybe()
+
          val filter = GradleTestFilterBuilder.builder()
-            .withSpec(testContext.spec)
-            .withTest(testContext.test)
+            .withSpec(spec)
+            .withTest(test)
+            .withDataTestAncestorPath(dataTestInfoMaybe?.ancestorTestPath)
             .build(true)
 
          // the tasks are a list of groups that clean/test each target, eg ':cleanLinuxX64Test :linuxX64Test'
@@ -183,8 +196,32 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          runConfiguration.settings.taskNames = tasksWithFilter.toList()
          runConfiguration.settings.scriptParameters = if (tasks.size > 1) "--continue" else ""
 
+         setOrRemoveDataTestEnvVarIfNeeded(runConfiguration, dataTestInfoMaybe)
          startRunnable.run()
       }
    }
 
+   /**
+    * Sets or removes the KOTEST_TAGS environment variable for data test filtering.
+    * If the test context has a [DataTestInfo], it sets KOTEST_TAGS to [DataTestInfo.tag].
+    * If not, it removes KOTEST_TAGS from the environment variables.
+    * Have to rely on env vars here because Gradle system properties (-D) do not propagate to the test JVM.
+    *
+    * @param runConfiguration The Gradle run configuration to modify.
+    * @param dataTestInfoMaybe The optional [DataTestInfo] for the test.
+    */
+   private fun setOrRemoveDataTestEnvVarIfNeeded(
+      runConfiguration: GradleRunConfiguration,
+      dataTestInfoMaybe: DataTestInfo?
+   ) {
+      dataTestInfoMaybe?.let {
+         val envVars = runConfiguration.settings.env.toMutableMap()
+         envVars["KOTEST_TAGS"] = it.tag
+         runConfiguration.settings.env = envVars
+      } ?: run {
+         val envVars = runConfiguration.settings.env.toMutableMap()
+         envVars.remove("KOTEST_TAGS")
+         runConfiguration.settings.env = envVars
+      }
+   }
 }

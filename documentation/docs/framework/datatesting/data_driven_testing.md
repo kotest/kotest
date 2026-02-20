@@ -168,3 +168,14 @@ you are defining a container or a leaf test.
 :::
 
 Full examples of how each of these can be used can be found in these kotest [tests](https://github.com/kotest/kotest/tree/master/kotest-framework/kotest-framework-engine/src/jvmTest/kotlin/io/kotest/datatest/styles)
+
+### Running the data tests
+The IntelliJ Plugin provides full support to run data driven tests. You can run individual data tests, from wherever in the Spec.
+If instead, for some reason, you have a need to run all data tests, whether within a single spec, or through the whole project, you can do so by using the following gradle task with env variables
+
+```shell
+# for a spec located at io.yourProject.YourSpec
+KOTEST_TAGS=kotest.data ./gradlew test --tests 'io.yourProject.YourSpec'
+# for all tests within a project
+KOTEST_TAGS=kotest.data ./gradlew test
+```

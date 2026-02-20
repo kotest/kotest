@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLam
 import io.kotest.plugin.intellij.psi.ifCallExpressionLambdaOpenBrace
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.isDataTestMethodCall
+import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -26,12 +27,7 @@ object ExpectSpecStyle : SpecStyle {
       return "expect(\"$name\") { }"
    }
 
-   override fun getDataTestMethodNames(): Set<String> =
-      setOf(
-         "withData",
-         "withContexts",
-         "withExpects"
-      )
+   override fun getDataTestMethodNames(): Set<String> = DataTestUtil.styleToDataTestMethodNames[this] ?: emptySet()
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 

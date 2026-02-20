@@ -84,7 +84,7 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          // Previously the PSI text was fetched which contains the raw text entered, not parsed string, which means it would include the backslashes as well.
          // See https://github.com/kotest/kotest/issues/3078
          Gutter("""Run name containing "escaped quotes"""", 1502),
-         Gutter("Run All Spec Tests, including data tests", 1575),
+         Gutter("Run This data test block", 1575),
       )
 
       // not sure why this works in gradle runner but not in IDE

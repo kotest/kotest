@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.psi
 
 import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtLambdaExpression
 import org.jetbrains.kotlin.psi.KtOperationReferenceExpression
 import org.jetbrains.kotlin.psi.KtStringTemplateExpression
@@ -23,3 +24,15 @@ fun KtBinaryExpression.extractStringLiteralFromLhsOfInfixFunction(names: List<St
    }
    return null
 }
+
+/**
+ * Returns the lambda body (block expression) of this binary expression, if it has one.
+ * For example, for `"name" - { body }` (FreeSpec style), returns the body block.
+ */
+fun KtBinaryExpression.lambdaBody(): KtBlockExpression? {
+   if (children.size == 3 && children[2] is KtLambdaExpression) {
+      return (children[2] as KtLambdaExpression).bodyExpression
+   }
+   return null
+}
+

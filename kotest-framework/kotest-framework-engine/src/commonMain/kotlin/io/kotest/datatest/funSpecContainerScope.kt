@@ -209,8 +209,9 @@ suspend fun <T> FunSpecContainerScope.withContexts(
    ts: Iterable<T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)).config() { this.test(t) }
+      context(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -223,8 +224,9 @@ suspend fun <T> FunSpecContainerScope.withTests(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      test(nameFn(t)).config() { this.test(t) }
+      test(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -246,8 +248,9 @@ suspend fun <T> FunSpecContainerScope.withContexts(
    data: Map<String, T>,
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name).config() { this.test(t) }
+      context(name).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -257,7 +260,8 @@ suspend fun <T> FunSpecContainerScope.withContexts(
  */
 @JvmName("withTestsMap")
 suspend fun <T> FunSpecContainerScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      test(name).config() { this.test(t) }
+      test(name).config(dataTestTagConfig) { this.test(t) }
    }
 }

@@ -35,3 +35,15 @@ fun PsiElement.findElementInRange(offsets: IntRange): PsiElement? {
  */
 fun PsiFile.elementAtLine(line: Int): PsiElement? =
    offsetForLine(line)?.let { findElementInRange(it) }
+
+/**
+ * Returns the 1-based line number where this element is defined in the source file.
+ * Returns null if the line number cannot be determined.
+ */
+fun PsiElement.lineNumber(): Int? {
+   val file = containingFile ?: return null
+   val document = PsiDocumentManager.getInstance(this.project).getDocument(file) ?: return null
+   // Document line numbers are 0-based, we return 1-based to match source file
+   return document.getLineNumber(textOffset) + 1
+}
+
