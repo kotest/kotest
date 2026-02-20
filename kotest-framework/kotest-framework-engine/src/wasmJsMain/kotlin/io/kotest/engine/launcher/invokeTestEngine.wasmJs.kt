@@ -6,9 +6,13 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.EngineResult
 import io.kotest.engine.TestEngineLauncher
+import io.kotest.engine.js.JsTestFrameworkTestEngineListener
 import io.kotest.engine.js.exitProcess
+import io.kotest.engine.js.isJavaScriptTestFrameworkAvailable
 import io.kotest.engine.js.isNodeJsRuntime
+import io.kotest.engine.js.kotlinJsTestFramework
 import io.kotest.engine.js.printStderr
+import io.kotest.engine.listener.TeamCityTestEngineListener
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.await
 import kotlinx.coroutines.promise
@@ -16,12 +20,19 @@ import kotlin.js.Promise
 
 @Suppress("OPT_IN_USAGE")
 actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjectConfig?) {
+
+   val listener = if (isJavaScriptTestFrameworkAvailable())
+      JsTestFrameworkTestEngineListener(kotlinJsTestFramework)
+   else
+      TeamCityTestEngineListener()
+
+   val launcher = TestEngineLauncher()
+      .withSpecRefs(specs)
+      .withProjectConfig(config)
+      .withListener(listener)
+
    val promise: Promise<JsAny> = GlobalScope.promise {
-      TestEngineLauncher()
-         .withSpecRefs(specs)
-         .withProjectConfig(config)
-         .withTeamCityListener()
-         .execute()
+      launcher.execute()
    }.catch { jsException ->
       throw jsException.asJsException()
    }
