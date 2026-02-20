@@ -24,15 +24,20 @@ class FailFastTest : FunSpec() {
             .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
+
+         // first context: failfast stops after "b" fails
          results["a"]?.isSuccess shouldBe true
          results["b"]?.isError shouldBe true
          results["c"]?.isIgnored shouldBe true
          results["d"]?.isIgnored shouldBe true
          results.shouldNotContainKey("e")
-         results.shouldNotContainKey("t")
-         results.shouldNotContainKey("u")
-         results.shouldNotContainKey("v")
-         results.shouldNotContainKey("w")
+
+         // second context ("context") has no failfast and is unaffected by the first context's failure
+         // its nested failfast context ("nested") runs fresh with no prior failures in its scope
+         results["t"]?.isSuccess shouldBe true
+         results["u"]?.isError shouldBe true
+         results["v"]?.isIgnored shouldBe true
+         results["w"]?.isIgnored shouldBe true
          results.shouldNotContainKey("x")
       }
 
@@ -45,15 +50,17 @@ class FailFastTest : FunSpec() {
             .execute()
 
          val results = listener.tests.mapKeys { it.key.name.name }
+
          results["a"]?.isSuccess shouldBe true
          results["b"]?.isError shouldBe true
          results["c"]?.isIgnored shouldBe true
          results["d"]?.isIgnored shouldBe true
          results.shouldNotContainKey("e")
-         results.shouldNotContainKey("t")
-         results.shouldNotContainKey("u")
-         results.shouldNotContainKey("v")
-         results.shouldNotContainKey("w")
+
+         results["t"]?.isSuccess shouldBe true
+         results["u"]?.isError shouldBe true
+         results["v"]?.isIgnored shouldBe true
+         results["w"]?.isIgnored shouldBe true
          results.shouldNotContainKey("x")
       }
 
@@ -75,6 +82,28 @@ class FailFastTest : FunSpec() {
          results["g"]?.isIgnored shouldBe true
          results["h"].shouldBeNull()
       }
+
+      // Regression test for https://github.com/kotest/kotest/issues/4944:
+      // A failfast failure inside one context must not cause sibling contexts to be skipped.
+      test("fail fast in one context should not skip sibling contexts") {
+
+         val listener = CollectingTestEngineListener()
+
+         TestEngineLauncher().withListener(listener)
+            .withSpecRefs(SpecRef.Reference(FailFastSiblingContextSpec::class))
+            .execute()
+
+         val results = listener.tests.mapKeys { it.key.name.name }
+
+         // context1: failfast stops after "b" fails
+         results["a"]?.isSuccess shouldBe true
+         results["b"]?.isError shouldBe true
+         results["c"]?.isIgnored shouldBe true
+
+         // context2: entirely independent — its failfast scope has had no failures
+         results["d"]?.isSuccess shouldBe true
+         results["e"]?.isSuccess shouldBe true
+      }
    }
 }
 
@@ -83,18 +112,18 @@ private class FailFastFunSpec() : FunSpec() {
       context("context with fail fast enabled").config(failfast = true) {
          test("a") {} // pass
          test("b") { error("boom") }
-         test("c") {} // will be skipped
-         context("d") {  // skipped
-            test("e") {} // skipped
+         test("c") {} // skipped: failfast triggered in this context
+         context("d") {  // skipped: failfast triggered in parent context
+            test("e") {} // not reached: parent skipped
          }
       }
-      context("context") { // this will run regardless because it has no fail fast setting
+      context("context") { // no failfast — runs regardless of the first context's failure
          context("nested context with fail fast enabled").config(failfast = true) {
-            test("t") {} // will be skipped because of failures higher up
-            test("u") { error("boom") } // will be skipped
-            test("v") {} // will be skipped
-            context("w") {  // skipped
-               test("x") {} // skipped
+            test("t") {} // pass: this is a fresh failfast scope with no prior failure
+            test("u") { error("boom") }
+            test("v") {} // skipped: failfast triggered in this context
+            context("w") {  // skipped: failfast triggered in parent context
+               test("x") {} // not reached: parent skipped
             }
          }
       }
@@ -106,18 +135,18 @@ private class FailFastFreeSpec() : FreeSpec() {
       "context with fail fast enabled".config(failfast = true) - {
          "a" {} // pass
          "b" { error("boom") }
-         "c" {} // will be skipped
+         "c" {} // skipped
          "d" - {  // skipped
-            "e" {} // skipped
+            "e" {} // not reached
          }
       }
-      "context" - { // this will run regardless because it has no fail fast setting
+      "context" - { // no failfast — runs regardless of the first context's failure
          "nested context with fail fast enabled".config(failfast = true) - {
-            "t" {} // will be skipped because of failures higher up
-            "u" { error("boom") } // will be skipped because of failures higher up
-            "v" {} // will be skipped
+            "t" {} // pass: fresh failfast scope
+            "u" { error("boom") }
+            "v" {} // skipped
             "w" - {  // skipped
-               "x" {} // skipped
+               "x" {} // not reached
             }
          }
       }
@@ -136,6 +165,21 @@ private class GrandfatherFailFastFreeSpec() : FreeSpec() {
          "g" - {  // should fail because c has failed
             "h" {}
          }
+      }
+   }
+}
+
+// Reproduces the sibling-context regression from https://github.com/kotest/kotest/issues/4944
+private class FailFastSiblingContextSpec : FunSpec() {
+   init {
+      context("context1").config(failfast = true) {
+         test("a") {}
+         test("b") { error("boom") }
+         test("c") {} // skipped
+      }
+      context("context2").config(failfast = true) {
+         test("d") {} // must NOT be skipped
+         test("e") {} // must NOT be skipped
       }
    }
 }
