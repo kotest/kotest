@@ -1,6 +1,7 @@
 plugins {
    id("kotest-jvm-conventions")
-   id("kotest-js-wasm-conventions")
+   id("kotest-js-conventions")
+   id("kotest-wasi-conventions")
    id("kotest-native-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
@@ -52,9 +53,6 @@ kotlin {
 
             // we use AssertionFailedError from OpenTest4J
             api(libs.opentest4j)
-
-            // used to write to the console with fancy colours!
-            api(libs.mordant)
 
             // used to install the debug probes for coroutines
             api(libs.kotlinx.coroutines.debug)

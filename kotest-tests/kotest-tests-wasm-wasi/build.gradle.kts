@@ -3,10 +3,10 @@
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 
 plugins {
-   id("kotest-js-wasm-conventions")
-   id("com.google.devtools.ksp").version("2.3.4")
+   id("kotest-wasi-conventions")
+   id("com.google.devtools.ksp").version("2.3.6")
    // the Kotest plugin must be a published version and not one in the current build
-   id("io.kotest").version("6.1.2")
+   id("io.kotest").version("6.1.3")
 }
 
 kotlin {

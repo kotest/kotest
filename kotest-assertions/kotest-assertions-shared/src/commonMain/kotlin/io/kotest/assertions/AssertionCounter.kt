@@ -1,4 +1,4 @@
-package io.kotest.matchers
+package io.kotest.assertions
 
 expect val assertionCounter: AssertionCounter
 

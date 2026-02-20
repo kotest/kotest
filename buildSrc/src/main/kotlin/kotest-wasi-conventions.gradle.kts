@@ -10,16 +10,6 @@ val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinJs.get()) {
-      js {
-         browser()
-         nodejs()
-      }
-
-      @OptIn(ExperimentalWasmDsl::class)
-      wasmJs {
-         browser()
-         nodejs()
-      }
 
       @OptIn(ExperimentalWasmDsl::class)
       wasmWasi {
@@ -32,8 +22,6 @@ kotlin {
             // many KMP functions boil down to "jvm" implementations and "other" implementations, for example
             // anything that needs reflection will be jvm only, so we create a common group for all non-jvm targets
             group("nonjvm") {
-               withJs()
-               withWasmJs()
                withWasmWasi()
             }
          }

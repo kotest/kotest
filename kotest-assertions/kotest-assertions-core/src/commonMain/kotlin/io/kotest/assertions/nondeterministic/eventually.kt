@@ -2,8 +2,8 @@ package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.common.nonDeterministicTestTimeSource
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
 import kotlin.reflect.KClass
