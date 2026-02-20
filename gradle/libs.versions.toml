@@ -15,9 +15,9 @@ json-path = "2.10.0"
 junit4 = "4.13.2"
 
 junit-platform5 = "1.13.4"
-junit-platform6 = "6.0.2"
+junit-platform6 = "6.0.3"
 junit-jupiter5 = "5.13.4"
-junit-jupiter6 = "6.0.2"
+junit-jupiter6 = "6.0.3"
 
 jimfs = "1.3.1"
 
