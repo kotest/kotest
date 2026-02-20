@@ -40,7 +40,7 @@ suspend fun <T> withNonVirtualTimeout(
 
 // The implementation is adapted from the Turbine library
 // https://github.com/cashapp/turbine/blob/1.1.0/src/commonMain/kotlin/app/cash/turbine/channel.kt#L93
-private suspend fun <T> withWallClockTimeout(
+internal suspend fun <T> withWallClockTimeout(
    timeout: Duration,
    block: suspend CoroutineScope.() -> T,
 ): T = coroutineScope {
