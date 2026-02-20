@@ -12,6 +12,7 @@ data class PluginDescriptor(
    val jdkTarget: JavaVersion,
    val androidVersion: String, // android plugin version
    val webpPlugin: String?, // for newer intellij, this is no longer bundled and must be specified
+   val extraBundledPlugins: List<String> = emptyList(), // additional bundled plugins required for this version
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -72,6 +73,8 @@ val descriptors = listOf(
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "261.20869.38",
       webpPlugin = "intellij.webp:261.21525.28",
+      // groovy-live-templates was split out of the Groovy plugin in 261
+      extraBundledPlugins = listOf("org.intellij.groovy.live.templates"),
    ),
 )
 
@@ -170,6 +173,7 @@ dependencies {
          bundledPlugin("intellij.webp")
       else
          plugin(descriptor.webpPlugin)
+      descriptor.extraBundledPlugins.forEach { bundledPlugin(it) }
       plugin("org.jetbrains.android:${descriptor.androidVersion}")
 
       testFramework(TestFrameworkType.Platform)
