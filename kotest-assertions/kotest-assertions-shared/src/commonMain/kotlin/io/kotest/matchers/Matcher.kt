@@ -153,10 +153,8 @@ data class DiffableMatcherResult internal constructor(
 data class ThrowableMatcherResult internal constructor(
    @JsName("passed_val") val passed: Boolean,
    val error: Throwable,
-   val failureMessageFn: () -> String,
-   val negatedFailureMessageFn: () -> String,
 ) : MatcherResult {
    override fun passed(): Boolean = passed
-   override fun failureMessage(): String = failureMessageFn()
-   override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+   override fun failureMessage(): String = ""
+   override fun negatedFailureMessage(): String = ""
 }

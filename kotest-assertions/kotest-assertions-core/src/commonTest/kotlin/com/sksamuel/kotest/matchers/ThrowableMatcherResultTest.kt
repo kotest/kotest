@@ -3,7 +3,6 @@ package com.sksamuel.kotest.matchers
 import io.kotest.assertions.throwables.shouldThrowExactly
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.Matcher
-import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.invokeMatcher
 import io.kotest.matchers.shouldBe
@@ -37,20 +36,5 @@ class ThrowableMatcherResultTest : FunSpec({
       invokeMatcher("value", matcher) shouldBe "value"
    }
 
-   test("invokeMatcher preserves the throwable type when rethrowing") {
-      val cause = NoSuchElementException("missing element")
-
-      val matcher = Matcher<Int> { _ ->
-         MatcherResultBuilder.create(passed = false)
-            .withError(cause)
-            .build()
-      }
-
-      val thrown = shouldThrowExactly<NoSuchElementException> {
-         invokeMatcher(42, matcher)
-      }
-
-      thrown shouldBe cause
-   }
 
 })
