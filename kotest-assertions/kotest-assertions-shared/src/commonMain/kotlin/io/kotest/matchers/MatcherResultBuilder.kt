@@ -15,6 +15,7 @@ data class MatcherResultBuilder(
    private val actual: (() -> Printed)?,
    private val failureMessageFn: () -> String,
    private val negatedFailureMessageFn: () -> String,
+   private val error: Throwable? = null,
 ) {
 
    companion object {
@@ -45,7 +46,25 @@ data class MatcherResultBuilder(
       return copy(expected = { expected }, actual = { actual })
    }
 
+   /**
+    * Attaches a [Throwable] to this result. When [build] is called, the result will be a
+    * [ThrowableMatcherResult], which causes [io.kotest.matchers.invokeMatcher] to rethrow
+    * this error directly rather than constructing a new assertion error via
+    * [io.kotest.assertions.AssertionErrorBuilder].
+    */
+   fun withError(error: Throwable): MatcherResultBuilder {
+      return copy(error = error)
+   }
+
    fun build(): MatcherResult {
+      if (error != null) {
+         return ThrowableMatcherResult(
+            passed = passed,
+            error = error,
+            failureMessageFn = failureMessageFn,
+            negatedFailureMessageFn = negatedFailureMessageFn
+         )
+      }
       return if (actual == null || expected == null)
          SimpleMatcherResult(
             passed = passed,

@@ -142,3 +142,21 @@ data class DiffableMatcherResult internal constructor(
    override fun failureMessage(): String = failureMessageFn()
    override fun negatedFailureMessage(): String = negatedFailureMessageFn()
 }
+
+/**
+ * An instance of [MatcherResult] that carries a pre-built [Throwable] to be rethrown as-is
+ * when the assertion fails, bypassing the normal [io.kotest.assertions.AssertionErrorBuilder] path.
+ *
+ * To build results, use [MatcherResultBuilder.withError].
+ */
+@ConsistentCopyVisibility
+data class ThrowableMatcherResult internal constructor(
+   @JsName("passed_val") val passed: Boolean,
+   val error: Throwable,
+   val failureMessageFn: () -> String,
+   val negatedFailureMessageFn: () -> String,
+) : MatcherResult {
+   override fun passed(): Boolean = passed
+   override fun failureMessage(): String = failureMessageFn()
+   override fun negatedFailureMessage(): String = negatedFailureMessageFn()
+}
