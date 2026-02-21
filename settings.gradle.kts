@@ -119,6 +119,7 @@ include(
 
 /** Is the build currently running on CI? */
 private val isCI = System.getenv("CI").toBoolean()
+private val isLocal = !isCI
 
 /** Is the build currently running on a GitHub actions Linux runner? */
 private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
@@ -126,10 +127,10 @@ private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
 private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
 
 /** we only include JVM-only modules if it's a non-CI build, or if it's a master build, or if it's using a linux runner */
-private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+private val shouldRunJvmOnlyModules = isLocal || isMaster || isLinuxRunner
 
 /** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
-private val shouldRunLinuxOnlyModules = !isCI || isLinuxRunner
+private val shouldRunLinuxOnlyModules = isLocal || isLinuxRunner
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
