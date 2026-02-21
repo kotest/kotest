@@ -113,6 +113,12 @@ include(
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
 
+   // shared support executing tests via JUnit Platform
+   ":kotest-runner:kotest-runner-junit-platform",
+
+   // runs tests on junit5 but also used by other modules to run kotest's own tests
+   ":kotest-runner:kotest-runner-junit5",
+
    // BOM for whole kotest project
    ":kotest-bom",
 )
@@ -242,11 +248,7 @@ if (shouldRunLinuxOnlyModules) {
       ":kotest-extensions:kotest-extensions-junit5",
 
       ":kotest-runner:kotest-runner-junit4",
-      ":kotest-runner:kotest-runner-junit5",
       ":kotest-runner:kotest-runner-junit6",
-
-      // shared support executing tests via JUnit Platform
-      ":kotest-runner:kotest-runner-junit-platform",
    )
 }
 

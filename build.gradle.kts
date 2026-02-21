@@ -82,6 +82,8 @@ dependencies {
    nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
    nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
+
+
    // Linux-only modules: only included in the build when running on a Linux runner (or locally).
    // Use findProject so this gracefully no-ops when the module is absent from settings.
    findProject(":kotest-extensions:kotest-extensions-allure")?.let { nmcpAggregation(it) }
@@ -96,10 +98,12 @@ dependencies {
    findProject(":kotest-extensions:kotest-extensions-wiremock")?.let { nmcpAggregation(it) }
 
    // Runners
-   findProject(":kotest-runner:kotest-runner-junit-platform")?.let { nmcpAggregation(it) }
    findProject(":kotest-runner:kotest-runner-junit4")?.let { nmcpAggregation(it) }
-   findProject(":kotest-runner:kotest-runner-junit5")?.let { nmcpAggregation(it) }
    findProject(":kotest-runner:kotest-runner-junit6")?.let { nmcpAggregation(it) }
+
+   // Runners
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
 
 }
 
