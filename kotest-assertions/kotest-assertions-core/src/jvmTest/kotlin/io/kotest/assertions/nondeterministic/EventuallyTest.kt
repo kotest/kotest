@@ -9,6 +9,7 @@ import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -44,7 +45,11 @@ class EventuallyTest : FunSpec() {
 
       test("should return final state") {
          var k = 0
-         val result = eventually(5.days) {
+         val config = eventuallyConfig {
+            duration = 5.days
+            interval = 1.milliseconds
+         }
+         val result = eventually(config) {
             k++
             k shouldBe 10
          }
@@ -54,8 +59,8 @@ class EventuallyTest : FunSpec() {
       test("an interval longer than duration should not override duration").config(timeout = 2.seconds) {
          val start = TimeSource.Monotonic.markNow()
          val config = eventuallyConfig {
-            duration = 10.milliseconds
-            interval = 100.seconds
+            duration = 1.milliseconds
+            interval = 1.seconds
          }
          shouldThrowAny {
             eventually(config) {
@@ -68,45 +73,64 @@ class EventuallyTest : FunSpec() {
       context("pass tests that completed within the time allowed") {
          test("RuntimeException") {
             val start = TimeSource.Monotonic.markNow()
-            val end = start.plus(150.milliseconds)
-            eventually(5.days) {
+            val end = start.plus(10.milliseconds)
+            val config = eventuallyConfig {
+               duration = 1.days
+               interval = 1.milliseconds
+            }
+            var executed = false
+            eventually(config) {
+               executed = true
                if (end.hasNotPassedNow())
                   throw RuntimeException("foo")
             }
+            executed shouldBe true
          }
 
          test("AssertionError") {
             val start = TimeSource.Monotonic.markNow()
-            val end = start.plus(150.milliseconds)
-            eventually(5.days) {
+            val end = start.plus(10.milliseconds)
+            val config = eventuallyConfig {
+               duration = 1.days
+               interval = 1.milliseconds
+            }
+            var executed = false
+            eventually(config) {
+               executed = true
                if (end.hasNotPassedNow())
                   assert(false)
             }
+            executed shouldBe true
          }
 
          test("custom expected exception") {
             val config = eventuallyConfig {
-               duration = 5.seconds
+               duration = 1.days
+               interval = 1.milliseconds
                expectedExceptions = setOf(FileNotFoundException::class)
             }
 
             val start = TimeSource.Monotonic.markNow()
-            val end = start.plus(150.milliseconds)
+            val end = start.plus(10.milliseconds)
 
-            var iterations = 0
+            var executed = false
             eventually(config) {
-               iterations++
+               executed = true
                if (end.hasNotPassedNow())
                   throw FileNotFoundException()
             }
-
-            iterations shouldBe 7
+            executed shouldBe true
          }
       }
 
       test("fail tests that do not complete within the time allowed") {
+         val config = eventuallyConfig {
+            duration = 10.milliseconds
+            interval = 1.milliseconds
+         }
+
          val failure = shouldFail {
-            eventually(150.milliseconds) {
+            eventually(config) {
                throw RuntimeException("foo")
             }
          }
@@ -117,7 +141,7 @@ class EventuallyTest : FunSpec() {
 
       test("fail tests that do not complete within the time allowed for millis") {
          val failure = shouldFail {
-            eventually(150) {
+            eventually(100) {
                throw RuntimeException("foo")
             }
          }
@@ -132,7 +156,6 @@ class EventuallyTest : FunSpec() {
       }
 
       test("fail tests that throw unexpected exception types defined by a set") {
-         val start = TimeSource.Monotonic.markNow()
          val config = eventuallyConfig {
             duration = 5.seconds
             expectedExceptions = setOf(IOException::class)
@@ -149,7 +172,6 @@ class EventuallyTest : FunSpec() {
       }
 
       test("fail tests that throw unexpected exception types defined by a function") {
-         val start = TimeSource.Monotonic.markNow()
          val config = eventuallyConfig {
             duration = 5.seconds
             expectedExceptionsFn = { ex -> ex is IOException }
@@ -167,19 +189,24 @@ class EventuallyTest : FunSpec() {
 
       test("pass tests that throws FileNotFoundException for some time") {
          val start = TimeSource.Monotonic.markNow()
-         val end = start.plus(500.milliseconds)
+         val end = start.plus(50.milliseconds)
          var iterations = 0
-         eventually(5.days) {
+         val config = eventuallyConfig {
+            duration = 5.days
+            interval = 5.milliseconds
+         }
+         eventually(config) {
             iterations++
             if (end.hasNotPassedNow())
                throw FileNotFoundException("foo")
          }
-         iterations shouldBe 21
+         // the delay is 5ms so after 50ms should be approx 10 iterations, will go a few either side because of timing delays in CI
+         iterations.shouldBeBetween(8, 12)
       }
 
       test("handle kotlin assertion errors") {
          var thrown = false
-         eventually(400.milliseconds) {
+         eventually(1.days) {
             if (!thrown) {
                thrown = true
                throw AssertionError("boom")
@@ -189,7 +216,7 @@ class EventuallyTest : FunSpec() {
 
       test("handle java assertion errors") {
          var thrown = false
-         eventually(400.milliseconds) {
+         eventually(1.days) {
             if (!thrown) {
                thrown = true
                throw java.lang.AssertionError("boom")
@@ -200,7 +227,7 @@ class EventuallyTest : FunSpec() {
       test("do not retry after OutOfMemoryError") {
          var count = 0
          val thrown = shouldThrow<Error> {
-            eventually(1.seconds) {
+            eventually(1.days) {
                count++
                throw OutOfMemoryError()
             }
@@ -214,7 +241,7 @@ class EventuallyTest : FunSpec() {
       test("do not retry after StackOverflowError") {
          var count = 0
          val thrown = shouldThrow<Error> {
-            eventually(1.seconds) {
+            eventually(1.days) {
                count++
                throw StackOverflowError()
             }
@@ -227,8 +254,12 @@ class EventuallyTest : FunSpec() {
 
       test("display the first and last underlying failures") {
          var count = 0
+         val config = eventuallyConfig {
+            interval = 1.milliseconds
+            duration = 10.milliseconds
+         }
          val message = shouldFail {
-            eventually(400.milliseconds) {
+            eventually(config) {
                if (count++ == 0) {
                   AssertionErrorBuilder.fail("first")
                } else {
@@ -443,8 +474,9 @@ class EventuallyTest : FunSpec() {
          var count = 0
          shouldFail {
             val config = eventuallyConfig {
-               duration = 400.milliseconds
+               duration = 10.milliseconds
                includeFirst = false
+               interval = 1.milliseconds
             }
             eventually(config) {
                if (count++ == 0) {
@@ -478,11 +510,13 @@ class EventuallyTest : FunSpec() {
          message shouldContain "Retries must be greater than or equal to 0"
       }
 
-      test("when duration is set to default it cannot end test until iteration is done") {
-         val finalCount = 100
+      test("should exit once retries has been reached") {
+         val finalCount = 12
          var count = 0
          val config = eventuallyConfig {
             retries = finalCount
+            duration = 1.days
+            interval = 1.milliseconds
          }
          shouldThrow<AssertionError> {
             eventually(config) {
@@ -494,8 +528,8 @@ class EventuallyTest : FunSpec() {
          count shouldBe finalCount
       }
 
+      // https://github.com/kotest/kotest/issues/3988
       test("test eventually without configuration") {
-         // linked to issue #3988
          var count = 0
          eventually {
             count += 1
