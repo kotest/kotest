@@ -51,33 +51,34 @@ data class MatcherResultBuilder(
     * [ThrowableMatcherResult], which causes [io.kotest.matchers.invokeMatcher] to rethrow
     * this error directly rather than constructing a new assertion error via
     * [io.kotest.assertions.AssertionErrorBuilder].
+    *
+    * Use this method if you are a third party library author who wants to create custom matchers
+    * that handle diffs/error messages themselves.
     */
    fun withError(error: Throwable): MatcherResultBuilder {
       return copy(error = error)
    }
 
    fun build(): MatcherResult {
-      if (error != null) {
-         return ThrowableMatcherResult(
+      return when {
+         error != null -> ThrowableMatcherResult(
             passed = passed,
             error = error,
-            failureMessageFn = failureMessageFn,
-            negatedFailureMessageFn = negatedFailureMessageFn
          )
-      }
-      return if (actual == null || expected == null)
-         SimpleMatcherResult(
+
+         actual == null || expected == null -> SimpleMatcherResult(
             passed = passed,
             failureMessageFn = failureMessageFn,
             negatedFailureMessageFn = negatedFailureMessageFn
          )
-      else
-         DiffableMatcherResult(
+
+         else -> DiffableMatcherResult(
             passed = passed,
             actual = actual,
             expected = expected,
             failureMessageFn = failureMessageFn,
             negatedFailureMessageFn = negatedFailureMessageFn
          )
+      }
    }
 }
