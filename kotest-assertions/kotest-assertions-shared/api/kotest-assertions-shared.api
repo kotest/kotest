@@ -279,13 +279,9 @@ public final class io/kotest/matchers/SimpleMatcherResult : io/kotest/matchers/M
 public final class io/kotest/matchers/ThrowableMatcherResult : io/kotest/matchers/MatcherResult {
 	public final fun component1 ()Z
 	public final fun component2 ()Ljava/lang/Throwable;
-	public final fun component3 ()Lkotlin/jvm/functions/Function0;
-	public final fun component4 ()Lkotlin/jvm/functions/Function0;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun failureMessage ()Ljava/lang/String;
 	public final fun getError ()Ljava/lang/Throwable;
-	public final fun getFailureMessageFn ()Lkotlin/jvm/functions/Function0;
-	public final fun getNegatedFailureMessageFn ()Lkotlin/jvm/functions/Function0;
 	public final fun getPassed ()Z
 	public fun hashCode ()I
 	public fun negatedFailureMessage ()Ljava/lang/String;
