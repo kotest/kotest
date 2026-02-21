@@ -82,16 +82,19 @@ dependencies {
    nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
    nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
    nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsAllure)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsBlockhound)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsDecoroutinator)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsJunit5)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsMockserver)
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsNow)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsSpring)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsPitest)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsTestcontainers)
-   nmcpAggregation(projects.kotestExtensions.kotestExtensionsWiremock)
+
+   // Linux-only modules: only included in the build when running on a Linux runner (or locally).
+   // Use findProject so this gracefully no-ops when the module is absent from settings.
+   findProject(":kotest-extensions:kotest-extensions-allure")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-blockhound")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-decoroutinator")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-mockserver")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-pitest")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-spring")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-testcontainers")?.let { nmcpAggregation(it) }
+   findProject(":kotest-extensions:kotest-extensions-wiremock")?.let { nmcpAggregation(it) }
 
    // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
