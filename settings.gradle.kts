@@ -118,6 +118,8 @@ include(
 
    // runs tests on junit5 but also used by other modules to run kotest's own tests
    ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit4",
+   ":kotest-runner:kotest-runner-junit6",
 
    // BOM for whole kotest project
    ":kotest-bom",
@@ -246,9 +248,6 @@ if (shouldRunLinuxOnlyModules) {
 
       // extensions that adapt junit extensions into kotest extensions
       ":kotest-extensions:kotest-extensions-junit5",
-
-      ":kotest-runner:kotest-runner-junit4",
-      ":kotest-runner:kotest-runner-junit6",
    )
 }
 

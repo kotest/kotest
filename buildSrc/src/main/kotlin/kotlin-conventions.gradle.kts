@@ -18,7 +18,7 @@ tasks.withType<Test>().configureEach {
    }
    outputs.upToDateWhen { false }
    testLogging {
-      events(TestLogEvent.FAILED, TestLogEvent.STANDARD_OUT, TestLogEvent.STANDARD_ERROR)
+      events(TestLogEvent.FAILED)
    }
 }
 
