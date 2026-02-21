@@ -98,12 +98,10 @@ dependencies {
    findProject(":kotest-extensions:kotest-extensions-wiremock")?.let { nmcpAggregation(it) }
 
    // Runners
-   findProject(":kotest-runner:kotest-runner-junit4")?.let { nmcpAggregation(it) }
-   findProject(":kotest-runner:kotest-runner-junit6")?.let { nmcpAggregation(it) }
-
-   // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit6)
 
 }
 
