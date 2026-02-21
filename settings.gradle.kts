@@ -110,22 +110,8 @@ include(
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 
-   // allows overriding the .now() functionality on time classes
-   ":kotest-extensions:kotest-extensions-now",
-
-   // extensions that adapt junit extensions into kotest extensions
-   ":kotest-extensions:kotest-extensions-junit5",
-
-
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
-
-   ":kotest-runner:kotest-runner-junit4",
-   ":kotest-runner:kotest-runner-junit5",
-   ":kotest-runner:kotest-runner-junit6",
-
-   // shared support executing tests via JUnit Platform
-   ":kotest-runner:kotest-runner-junit-platform",
 
    // BOM for whole kotest project
    ":kotest-bom",
@@ -247,6 +233,19 @@ if (shouldRunLinuxOnlyModules) {
 
       // adds support for the wiremock framework - see more https://www.wiremock.io/
       ":kotest-extensions:kotest-extensions-wiremock",
+
+      // allows overriding the .now() functionality on time classes
+      ":kotest-extensions:kotest-extensions-now",
+
+      // extensions that adapt junit extensions into kotest extensions
+      ":kotest-extensions:kotest-extensions-junit5",
+
+      ":kotest-runner:kotest-runner-junit4",
+      ":kotest-runner:kotest-runner-junit5",
+      ":kotest-runner:kotest-runner-junit6",
+
+      // shared support executing tests via JUnit Platform
+      ":kotest-runner:kotest-runner-junit-platform",
    )
 }
 
