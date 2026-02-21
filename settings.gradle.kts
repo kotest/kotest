@@ -110,41 +110,14 @@ include(
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 
-   // adds support for the allure reporting framework - see more https://allurereport.org/
-   ":kotest-extensions:kotest-extensions-allure",
-   ":kotest-extensions:kotest-extensions-blockhound",
-
-   // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
-   ":kotest-extensions:kotest-extensions-decoroutinator",
-
-   // adds support for mockserver - see more https://www.mock-server.com/
-   ":kotest-extensions:kotest-extensions-mockserver",
-
-   ":kotest-extensions:kotest-extensions-pitest",
-
-   ":kotest-extensions:kotest-extensions-spring",
-
-   // adds support for the testcontainers framework - see more https://testcontainers.com
-   ":kotest-extensions:kotest-extensions-testcontainers",
-
-   // allows overriding the .now() functionality on time classes
-   ":kotest-extensions:kotest-extensions-now",
-
-   // extensions that adapt junit extensions into kotest extensions
-   ":kotest-extensions:kotest-extensions-junit5",
-
-   // adds support for the wiremock framework - see more https://www.wiremock.io/
-   ":kotest-extensions:kotest-extensions-wiremock",
-
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
 
-   ":kotest-runner:kotest-runner-junit4",
-   ":kotest-runner:kotest-runner-junit5",
-   ":kotest-runner:kotest-runner-junit6",
-
    // shared support executing tests via JUnit Platform
    ":kotest-runner:kotest-runner-junit-platform",
+
+   // runs tests on junit5 but also used by other modules to run kotest's own tests
+   ":kotest-runner:kotest-runner-junit5",
 
    // BOM for whole kotest project
    ":kotest-bom",
@@ -152,6 +125,7 @@ include(
 
 /** Is the build currently running on CI? */
 private val isCI = System.getenv("CI").toBoolean()
+private val isLocal = !isCI
 
 /** Is the build currently running on a GitHub actions Linux runner? */
 private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
@@ -159,7 +133,10 @@ private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
 private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
 
 /** we only include JVM-only modules if it's a non-CI build, or if it's a master build, or if it's using a linux runner */
-private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+private val shouldRunJvmOnlyModules = isLocal || isMaster || isLinuxRunner
+
+/** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
+private val shouldRunLinuxOnlyModules = isLocal || isLinuxRunner
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
@@ -234,6 +211,44 @@ if (shouldRunJvmOnlyModules) {
 
       // tests specific to the WasmWASI engine
       ":kotest-tests:kotest-tests-wasm-wasi"
+   )
+}
+
+/**
+ * These modules only require the JVM, so there's no need to run them on all platforms.
+ * We skip them on non-Linux CI runners to keep cross-platform builds lean.
+ * Local (non-CI) builds always include them.
+ */
+if (shouldRunLinuxOnlyModules) {
+   include(
+      // adds support for the allure reporting framework - see more https://allurereport.org/
+      ":kotest-extensions:kotest-extensions-allure",
+      ":kotest-extensions:kotest-extensions-blockhound",
+
+      // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
+      ":kotest-extensions:kotest-extensions-decoroutinator",
+
+      // adds support for mockserver - see more https://www.mock-server.com/
+      ":kotest-extensions:kotest-extensions-mockserver",
+
+      ":kotest-extensions:kotest-extensions-pitest",
+
+      ":kotest-extensions:kotest-extensions-spring",
+
+      // adds support for the testcontainers framework - see more https://testcontainers.com
+      ":kotest-extensions:kotest-extensions-testcontainers",
+
+      // adds support for the wiremock framework - see more https://www.wiremock.io/
+      ":kotest-extensions:kotest-extensions-wiremock",
+
+      // allows overriding the .now() functionality on time classes
+      ":kotest-extensions:kotest-extensions-now",
+
+      // extensions that adapt junit extensions into kotest extensions
+      ":kotest-extensions:kotest-extensions-junit5",
+
+      ":kotest-runner:kotest-runner-junit4",
+      ":kotest-runner:kotest-runner-junit6",
    )
 }
 
