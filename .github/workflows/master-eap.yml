@@ -8,7 +8,7 @@ permissions:
    contents: read
 
 env:
-   KOTLIN_OVERRIDE_VERSION: "2.3.20-Beta2"
+   KOTLIN_VERSION: "2.3.20-Beta2"
 
 jobs:
    check:
