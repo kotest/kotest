@@ -832,11 +832,6 @@ public final class io/kotest/core/annotation/LinuxCondition : io/kotest/core/ann
 	public fun evaluate (Lkotlin/reflect/KClass;)Z
 }
 
-public final class io/kotest/core/annotation/LinuxOnlyGithubCondition : io/kotest/core/annotation/Condition {
-	public fun <init> ()V
-	public fun evaluate (Lkotlin/reflect/KClass;)Z
-}
-
 public final class io/kotest/core/annotation/LinuxRunnerOsCondition : io/kotest/core/annotation/Condition {
 	public fun <init> ()V
 	public fun evaluate (Lkotlin/reflect/KClass;)Z

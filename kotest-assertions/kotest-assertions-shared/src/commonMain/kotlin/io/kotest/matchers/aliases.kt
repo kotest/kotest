@@ -6,7 +6,7 @@ import io.kotest.assertions.BasicErrorCollector
 typealias AssertionCounter = io.kotest.assertions.AssertionCounter
 
 @Deprecated("Use io.kotest.assertions.assertionCounter. Will be removed in a future release.")
-val assertionCounter: AssertionCounter get() = io.kotest.assertions.assertionCounter
+val assertionCounter: io.kotest.assertions.AssertionCounter get() = io.kotest.assertions.assertionCounter
 
 @Deprecated("Use io.kotest.assertions.ErrorCollectionMode. Will be removed in a future release.")
 typealias ErrorCollectionMode = io.kotest.assertions.ErrorCollectionMode
@@ -15,7 +15,7 @@ typealias ErrorCollectionMode = io.kotest.assertions.ErrorCollectionMode
 typealias ErrorCollector = io.kotest.assertions.ErrorCollector
 
 @Deprecated("Use io.kotest.assertions.errorCollector. Will be removed in a future release.")
-val errorCollector: ErrorCollector get() = io.kotest.assertions.errorCollector
+val errorCollector: io.kotest.assertions.ErrorCollector get() = io.kotest.assertions.errorCollector
 
 @Deprecated("Use io.kotest.assertions.BasicErrorCollector. Will be removed in a future release.")
 typealias BasicErrorCollector = BasicErrorCollector
