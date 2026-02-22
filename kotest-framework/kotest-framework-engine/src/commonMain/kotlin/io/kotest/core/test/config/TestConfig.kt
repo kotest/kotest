@@ -27,17 +27,18 @@ data class TestConfig(
    val invocations: Int? = null,
 
    /**
-    * The timeout for a test case and all it's invocations. For example, if this value was set to 800ms,
-    * and invocations was 1 (which is the default and typical value), then that single invocation has
-    * the full 800ms to complete. But if invocations was 2 for example, then the 800ms would apply to
-    * the total time across both those invocations.
+    * The timeout for a test case and all it's invocations.
+    *
+    * For example, if this value was set to 800ms, and invocations were 1 (which is the default and typical value),
+    * then that single invocation has the full 800ms to complete. But if invocations were instead set to 3 then the
+    * 800ms would apply to the total time across all three invocations.
     *
     * To set a timeout per invocation see [invocationTimeout].
     */
    val timeout: Duration? = null,
 
    /**
-    * This timeout applies to individual invocations of a test case. If invocations is 1, then this
+    * This timeout applies to individual invocations of a test case. If invocations are 1, then this
     * has the same effect as timeout. To set a timeout across all invocations then see [timeout].
     */
    val invocationTimeout: Duration? = null,
@@ -108,7 +109,7 @@ data class TestConfig(
    // if left to null, then the default provided by a spec or the project config will be used
    val retries: Int? = null,
 
-   // if set to to a non null value then this is the delay between retries
+   // if set to a non-null value then this is the delay between retries
    // if left to null, then the default provided by a spec or the project config will be used
    val retryDelay: Duration? = null,
 ) {
