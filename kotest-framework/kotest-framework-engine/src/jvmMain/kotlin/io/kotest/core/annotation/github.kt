@@ -1,5 +1,6 @@
 package io.kotest.core.annotation
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
@@ -25,9 +26,10 @@ class GithubActionsCondition : Condition {
    override fun evaluate(kclass: KClass<out Spec>): Boolean = System.getenv("GITHUB_ACTIONS") == "true"
 }
 
-// used by kotest to enable tests only on linux if running in github actions
+// used by kotest to enable tests only on linux if running in GitHub actions
+@KotestInternal
 class LinuxOnlyGithubCondition : Condition {
    override fun evaluate(kclass: KClass<out Spec>): Boolean =
-      // either we're not in github actions, or we must be on linux
+      // either we're not in GitHub actions, or we must be on linux
       !GithubActionsCondition().evaluate(kclass) || LinuxRunnerOsCondition().evaluate(kclass)
 }
