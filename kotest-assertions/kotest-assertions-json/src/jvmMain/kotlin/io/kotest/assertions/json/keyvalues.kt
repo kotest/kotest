@@ -88,8 +88,23 @@ internal fun extractByPath(json: String?, path: String, tClass: Class<*>): Extra
 }
 
 internal fun removeLastPartFromPath(path: String): String {
-   val tokens = path.split(".")
-   return tokens.take(tokens.size - 1).joinToString(".")
+   var inSingleQuote = false
+   var inDoubleQuote = false
+   var bracketDepth = 0
+
+   val index = path.indexOfLast { char ->
+      when {
+         char == '\'' && !inDoubleQuote -> { inSingleQuote = !inSingleQuote; false }
+         char == '"' && !inSingleQuote -> { inDoubleQuote = !inDoubleQuote; false }
+         inSingleQuote || inDoubleQuote -> false
+         char == ']' -> { bracketDepth++; false }
+         char == '[' -> { bracketDepth--; bracketDepth == 0 }
+         char == '.' -> bracketDepth == 0
+         else -> false
+      }
+   }
+
+   return if (index != -1) path.substring(0, index) else path
 }
 
 internal sealed interface ExtractValueOutcome {
