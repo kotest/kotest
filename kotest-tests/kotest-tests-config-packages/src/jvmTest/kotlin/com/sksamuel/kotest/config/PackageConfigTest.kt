@@ -8,16 +8,23 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration.Companion.days
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class PackageConfigTest : FunSpec() {
    init {
       test("package level config should be detected") {
          val collector = CollectingTestEngineListener()
-         TestEngineLauncher()
-            .withListener(collector)
-            .withSpecRefs(SpecRef.Reference(BarTest::class))
-            .execute()
+
+         // todo I do not know why runblocking is required here, but without it, the collector results are empty
+         runBlocking {
+            TestEngineLauncher()
+               .withListener(collector)
+               .withSpecRefs(SpecRef.Reference(BarTest::class))
+               .execute()
+         }
+
          // if the package config isn't picked up, this test would not timeout
          collector.result("bar")?.errorOrNull?.message shouldBe "Test 'bar' did not complete within 22ms"
       }
@@ -26,6 +33,6 @@ class PackageConfigTest : FunSpec() {
 
 private class BarTest : FunSpec({
    test("bar") {
-      delay(10000000)
+      delay(1.days)
    }
 })
