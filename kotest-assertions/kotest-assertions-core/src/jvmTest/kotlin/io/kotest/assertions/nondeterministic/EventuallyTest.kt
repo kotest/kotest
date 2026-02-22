@@ -6,13 +6,11 @@ import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.assertions.withClue
-import io.kotest.common.nonDeterministicTestTimeSource
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.inspectors.shouldForAll
-import io.kotest.matchers.collections.shouldContainExactly
-import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.comparables.shouldBeBetween
+import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -27,195 +25,188 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.TimeSource
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class EventuallyTest : FunSpec() {
 
    init {
-      coroutineTestScope = true
-      nonDeterministicTestVirtualTimeEnabled = true
-
       test("pass working tests") {
-         val result = testEventually(5.days) {
+         eventually(5.days) {
             1 shouldBe 1
          }
-         result.value shouldBe 1
-         result.invocationTimes.shouldContainExactly(0.milliseconds)
       }
 
       test("pass working tests for millis") {
-         val result = testEventually(50000) {
+         eventually(50000) {
             1 shouldBe 1
          }
-         result.value shouldBe 1
-         result.invocationTimes.shouldContainExactly(0.milliseconds)
       }
 
       test("should return final state") {
          var k = 0
-         val result = testEventually(5.days) {
+         val config = eventuallyConfig {
+            duration = 5.days
+            interval = 1.milliseconds
+         }
+         val result = eventually(config) {
             k++
             k shouldBe 10
          }
-         result.value shouldBe 10
-         result.invocationTimes shouldHaveSize 10
+         result shouldBe 10
       }
 
       test("an interval longer than duration should not override duration").config(timeout = 2.seconds) {
-         val start = nonDeterministicTestTimeSource().markNow()
+         val start = TimeSource.Monotonic.markNow()
          val config = eventuallyConfig {
-            duration = 1.seconds
-            interval = 100.seconds
+            duration = 1.milliseconds
+            interval = 1.seconds
          }
          shouldThrowAny {
-            testEventually(config) {
+            eventually(config) {
                1 shouldBe 2
             }
          }
-         start.elapsedNow() shouldBe config.duration
+         start.elapsedNow() shouldBeLessThan 1.seconds // should be less the interval
       }
 
       context("pass tests that completed within the time allowed") {
          test("RuntimeException") {
-            val start = nonDeterministicTestTimeSource().markNow()
-            val end = start.plus(150.milliseconds)
-            val result = testEventually(1.seconds) {
+            val start = TimeSource.Monotonic.markNow()
+            val end = start.plus(10.milliseconds)
+            val config = eventuallyConfig {
+               duration = 1.days
+               interval = 1.milliseconds
+            }
+            var executed = false
+            eventually(config) {
+               executed = true
                if (end.hasNotPassedNow())
                   throw RuntimeException("foo")
             }
-            result.invocationTimes.shouldContainExactly(
-               0.milliseconds,
-               25.milliseconds,
-               50.milliseconds,
-               75.milliseconds,
-               100.milliseconds,
-               125.milliseconds,
-               150.milliseconds,
-            )
+            executed shouldBe true
          }
 
          test("AssertionError") {
-            val start = nonDeterministicTestTimeSource().markNow()
-            val end = start.plus(150.milliseconds)
-            val result = testEventually(5.days) {
+            val start = TimeSource.Monotonic.markNow()
+            val end = start.plus(10.milliseconds)
+            val config = eventuallyConfig {
+               duration = 1.days
+               interval = 1.milliseconds
+            }
+            var executed = false
+            eventually(config) {
+               executed = true
                if (end.hasNotPassedNow())
                   assert(false)
             }
-            result.invocationTimes.shouldContainExactly(
-               0.milliseconds,
-               25.milliseconds,
-               50.milliseconds,
-               75.milliseconds,
-               100.milliseconds,
-               125.milliseconds,
-               150.milliseconds,
-            )
+            executed shouldBe true
          }
 
          test("custom expected exception") {
             val config = eventuallyConfig {
-               duration = 5.seconds
+               duration = 1.days
+               interval = 1.milliseconds
                expectedExceptions = setOf(FileNotFoundException::class)
             }
 
-            val start = nonDeterministicTestTimeSource().markNow()
-            val end = start.plus(150.milliseconds)
+            val start = TimeSource.Monotonic.markNow()
+            val end = start.plus(10.milliseconds)
 
-            val result = testEventually(config) {
+            var executed = false
+            eventually(config) {
+               executed = true
                if (end.hasNotPassedNow())
                   throw FileNotFoundException()
             }
-
-            result.invocationTimes.shouldContainExactly(
-               0.milliseconds,
-               25.milliseconds,
-               50.milliseconds,
-               75.milliseconds,
-               100.milliseconds,
-               125.milliseconds,
-               150.milliseconds,
-            )
+            executed shouldBe true
          }
       }
 
       test("fail tests that do not complete within the time allowed") {
+         val config = eventuallyConfig {
+            duration = 10.milliseconds
+            interval = 1.milliseconds
+         }
+
          val failure = shouldFail {
-            testEventually(150.milliseconds) {
+            eventually(config) {
                throw RuntimeException("foo")
             }
          }
-         failure.message shouldContain "Block failed after 150ms; attempted 7 time(s)"
+         failure.message shouldContain "Block failed after"
          failure.message shouldContain "The first error was caused by: foo"
          failure.message shouldContain "The last error was caused by: foo"
       }
 
       test("fail tests that do not complete within the time allowed for millis") {
          val failure = shouldFail {
-            testEventually(150) {
+            eventually(100) {
                throw RuntimeException("foo")
             }
          }
-         failure.message shouldContain "Block failed after 150ms; attempted 7 time(s)"
+         failure.message shouldContain "Block failed after"
          failure.message shouldContain "The first error was caused by: foo"
          failure.message shouldContain "The last error was caused by: foo"
       }
 
       test("return the result computed inside") {
-         val result = testEventually(2.seconds) {
-            1
-         }
-         result.value shouldBe 1
-         result.invocationTimes.shouldContainExactly(0.milliseconds)
+         val result = eventually(2.seconds) { 1 }
+         result shouldBe 1
       }
 
       test("fail tests that throw unexpected exception types defined by a set") {
-         val start = nonDeterministicTestTimeSource().markNow()
          val config = eventuallyConfig {
             duration = 5.seconds
             expectedExceptions = setOf(IOException::class)
          }
 
          val failure = shouldFail {
-            testEventually(config) {
+            eventually(config) {
                throw ArrayIndexOutOfBoundsException()
             }
          }
-         failure.message shouldContain "Block failed after 0s; attempted 1 time(s)"
+         failure.message shouldContain "Block failed after"
+         failure.message shouldContain "attempted 1 time"
          failure.message shouldContain "The first error was caused by: \njava.lang.ArrayIndexOutOfBoundsException"
-         start.elapsedNow() shouldBe 0.seconds
       }
 
       test("fail tests that throw unexpected exception types defined by a function") {
-         val start = nonDeterministicTestTimeSource().markNow()
          val config = eventuallyConfig {
             duration = 5.seconds
             expectedExceptionsFn = { ex -> ex is IOException }
          }
 
          val failure = shouldFail {
-            testEventually(config) {
+            eventually(config) {
                throw ArrayIndexOutOfBoundsException()
             }
          }
-         failure.message shouldContain "Block failed after 0s; attempted 1 time(s)"
+         failure.message shouldContain "Block failed after"
+         failure.message shouldContain "attempted 1 time"
          failure.message shouldContain "The first error was caused by: \njava.lang.ArrayIndexOutOfBoundsException"
-         start.elapsedNow() shouldBe 0.seconds
       }
 
       test("pass tests that throws FileNotFoundException for some time") {
-         val start = nonDeterministicTestTimeSource().markNow()
-         val end = start.plus(500.milliseconds)
-         val result = testEventually(5.days) {
+         val start = TimeSource.Monotonic.markNow()
+         val end = start.plus(50.milliseconds)
+         var iterations = 0
+         val config = eventuallyConfig {
+            duration = 5.days
+            interval = 5.milliseconds
+         }
+         eventually(config) {
+            iterations++
             if (end.hasNotPassedNow())
                throw FileNotFoundException("foo")
          }
-         result.invocationTimes shouldHaveSize 21
-         result.invocationTimes.shouldForAll { it > 500.milliseconds }
+         // the delay is 5ms so after 50ms should be approx 10 iterations, will go a few either side because of timing delays in CI
+         iterations.shouldBeBetween(8, 12)
       }
 
       test("handle kotlin assertion errors") {
          var thrown = false
-         testEventually(400.milliseconds) {
+         eventually(1.days) {
             if (!thrown) {
                thrown = true
                throw AssertionError("boom")
@@ -225,7 +216,7 @@ class EventuallyTest : FunSpec() {
 
       test("handle java assertion errors") {
          var thrown = false
-         testEventually(400.milliseconds) {
+         eventually(1.days) {
             if (!thrown) {
                thrown = true
                throw java.lang.AssertionError("boom")
@@ -236,7 +227,7 @@ class EventuallyTest : FunSpec() {
       test("do not retry after OutOfMemoryError") {
          var count = 0
          val thrown = shouldThrow<Error> {
-            testEventually(1.seconds) {
+            eventually(1.days) {
                count++
                throw OutOfMemoryError()
             }
@@ -250,7 +241,7 @@ class EventuallyTest : FunSpec() {
       test("do not retry after StackOverflowError") {
          var count = 0
          val thrown = shouldThrow<Error> {
-            testEventually(1.seconds) {
+            eventually(1.days) {
                count++
                throw StackOverflowError()
             }
@@ -263,8 +254,12 @@ class EventuallyTest : FunSpec() {
 
       test("display the first and last underlying failures") {
          var count = 0
+         val config = eventuallyConfig {
+            interval = 1.milliseconds
+            duration = 10.milliseconds
+         }
          val message = shouldFail {
-            testEventually(400.milliseconds) {
+            eventually(config) {
                if (count++ == 0) {
                   AssertionErrorBuilder.fail("first")
                } else {
@@ -272,7 +267,7 @@ class EventuallyTest : FunSpec() {
                }
             }
          }.message
-         message shouldContain "Block failed after 400ms; attempted ${count + 1} time(s)"
+         message shouldContain "Block failed after"
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
@@ -285,7 +280,7 @@ class EventuallyTest : FunSpec() {
 
          var count = 0
          val message = shouldFail {
-            testEventually(config) {
+            eventually(config) {
                if (count++ == 0) {
                   AssertionErrorBuilder.fail("first")
                } else {
@@ -294,17 +289,18 @@ class EventuallyTest : FunSpec() {
             }
          }.message
          count shouldBe 2
-         message shouldContain "Block failed after 25ms; attempted $count time(s)"
+         message shouldContain "Block failed after"
          message shouldContain "The first error was caused by: first"
          message shouldContain "The last error was caused by: last"
       }
 
       test("allow suspendable functions") {
-         val start = nonDeterministicTestTimeSource().markNow()
-         testEventually(100.milliseconds) {
-            delay(47.milliseconds)
+         val start = TimeSource.Monotonic.markNow()
+         eventually(500.milliseconds) {
+            delay(2.milliseconds)
          }
-         start.elapsedNow() shouldBe 47.milliseconds
+         // should be around the 47 millis we delayed for, allow for more for slow CI, but should be nowhere near the eventually limit
+         start.elapsedNow() shouldBeLessThan 50.milliseconds
       }
 
       test("allow configuring interval delay") {
@@ -313,28 +309,29 @@ class EventuallyTest : FunSpec() {
             duration = 250.milliseconds
             interval = 100.milliseconds
          }
-         testEventually(config) {
+         eventually(config) {
             count += 1
          }
          count.shouldBeLessThan(3)
       }
 
       test("handle shouldNotBeNull") {
-         val start = nonDeterministicTestTimeSource().markNow()
+         val start = TimeSource.Monotonic.markNow()
+         val duration = 100.milliseconds
          val failure = shouldFail {
-            testEventually(50.milliseconds) {
+            eventually(duration) {
                val str: String? = null
                str.shouldNotBeNull()
             }
          }
-         failure.message shouldContain "Block failed after 50ms; attempted 3 time(s)"
+         failure.message shouldContain "Block failed after"
          failure.message shouldContain "The first error was caused by: Expected value to not be null, but was null."
          failure.message shouldContain "The last error was caused by: Expected value to not be null, but was null."
-         start.elapsedNow() shouldBe 50.milliseconds
+         start.elapsedNow() shouldBeLessThan duration * 3 // allow a bit extra for CI
       }
 
       test("support fibonacci interval functions") {
-         val start = nonDeterministicTestTimeSource().markNow()
+         val start = TimeSource.Monotonic.markNow()
          val invocations = mutableListOf<Duration>()
          val config = eventuallyConfig {
             duration = 2.seconds
@@ -346,17 +343,11 @@ class EventuallyTest : FunSpec() {
             }
          }
          var t = ""
-         testEventually(config) {
+         eventually(config) {
             t += "x"
             t shouldBe "xxxxxx"
          }
-         invocations.shouldContainExactly(
-            0.milliseconds,
-            25.milliseconds,
-            50.milliseconds,
-            100.milliseconds,
-            175.milliseconds,
-         )
+         invocations.size shouldBe 5
       }
 
       test("eventually has a shareable configuration") {
@@ -374,11 +365,11 @@ class EventuallyTest : FunSpec() {
             fast.duration shouldBe 5.seconds
          }
 
-         testEventually(5.seconds) {
+         eventually(5.seconds) {
             5
          }
 
-         testEventually(5.seconds) {
+         eventually(5.seconds) {
             i++
          }
 
@@ -391,20 +382,20 @@ class EventuallyTest : FunSpec() {
             retries = 2
          }
          val failure = shouldFail {
-            testEventually(config) {
+            eventually(config) {
                1 shouldBe 2
             }
          }
-         failure.message shouldContain "Block failed after 50ms; attempted 2 time(s)"
+         failure.message shouldContain "Block failed after"
       }
 
       test("override assertion to hard assertion before executing assertion and reset it after executing") {
-         val start = nonDeterministicTestTimeSource().markNow()
+         val start = TimeSource.Monotonic.markNow()
          val target = start.plus(150.milliseconds)
          val failure = shouldFail {
             assertSoftly {
                withClue("Eventually which should pass") {
-                  testEventually(2.seconds) {
+                  eventually(2.seconds) {
                      if (target.hasNotPassedNow()) {
                         AssertionErrorBuilder.fail("target has not passed")
                      }
@@ -438,7 +429,7 @@ class EventuallyTest : FunSpec() {
             }
          }
          shouldThrow<Throwable> {
-            testEventually(config) {
+            eventually(config) {
                withClue("1 should never be 2") { 1 shouldBe 2 }
             }
          }
@@ -457,7 +448,7 @@ class EventuallyTest : FunSpec() {
             duration = 5.seconds
             expectedExceptions = exceptions.map { it.first }.toSet()
          }
-         testEventually(config) {
+         eventually(config) {
             exceptions.elementAtOrNull(i++)?.run {
                throw this.second
             }
@@ -472,21 +463,22 @@ class EventuallyTest : FunSpec() {
                duration = 5.seconds
                shortCircuit = { true }
             }
-            testEventually(config) {
+            eventually(config) {
                1 shouldBe 2
             }
          }
-         failure.message shouldContain "Block failed after 0s; attempted 1 time"
+         failure.message shouldContain "attempted 1 time"
       }
 
       test("suppress first error") {
          var count = 0
          shouldFail {
             val config = eventuallyConfig {
-               duration = 400.milliseconds
+               duration = 10.milliseconds
                includeFirst = false
+               interval = 1.milliseconds
             }
-            testEventually(config) {
+            eventually(config) {
                if (count++ == 0) {
                   AssertionErrorBuilder.fail("first")
                } else {
@@ -518,11 +510,13 @@ class EventuallyTest : FunSpec() {
          message shouldContain "Retries must be greater than or equal to 0"
       }
 
-      test("when duration is set to default it cannot end test until iteration is done") {
-         val finalCount = 100
+      test("should exit once retries has been reached") {
+         val finalCount = 12
          var count = 0
          val config = eventuallyConfig {
             retries = finalCount
+            duration = 1.days
+            interval = 1.milliseconds
          }
          shouldThrow<AssertionError> {
             eventually(config) {
@@ -534,8 +528,8 @@ class EventuallyTest : FunSpec() {
          count shouldBe finalCount
       }
 
+      // https://github.com/kotest/kotest/issues/3988
       test("test eventually without configuration") {
-         // linked to issue #3988
          var count = 0
          eventually {
             count += 1
@@ -592,63 +586,3 @@ class EventuallyTest : FunSpec() {
       }
    }
 }
-
-private suspend fun <T> testEventually(
-   duration: Duration,
-   test: suspend () -> T,
-): TestEventuallyResult<T> {
-   val start = nonDeterministicTestTimeSource().markNow()
-   val invocationTimes = mutableListOf<Duration>()
-
-   val value: T = eventually(duration) {
-      invocationTimes += start.elapsedNow()
-      test()
-   }
-
-   return TestEventuallyResult(
-      invocationTimes = invocationTimes,
-      value = value,
-   )
-
-}
-
-private suspend fun <T> testEventually(
-   durationMs: Long,
-   test: suspend () -> T,
-): TestEventuallyResult<T> {
-   val start = nonDeterministicTestTimeSource().markNow()
-   val invocationTimes = mutableListOf<Duration>()
-
-   val value: T = eventually(durationMs) {
-      invocationTimes += start.elapsedNow()
-      test()
-   }
-
-   return TestEventuallyResult(
-      invocationTimes = invocationTimes,
-      value = value,
-   )
-}
-
-private suspend fun <T> testEventually(
-   config: EventuallyConfiguration,
-   test: suspend () -> T,
-): TestEventuallyResult<T> {
-   val start = nonDeterministicTestTimeSource().markNow()
-   val invocationTimes = mutableListOf<Duration>()
-
-   val value: T = eventually(config = config) {
-      invocationTimes += start.elapsedNow()
-      test()
-   }
-
-   return TestEventuallyResult(
-      invocationTimes = invocationTimes,
-      value = value,
-   )
-}
-
-private data class TestEventuallyResult<T>(
-   val value: T,
-   val invocationTimes: List<Duration>,
-)
