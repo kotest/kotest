@@ -109,7 +109,7 @@ data class TestConfig(
    // if left to null, then the default provided by a spec or the project config will be used
    val retries: Int? = null,
 
-   // if set to a non-null value then this is the delay between retries
+   // if set to a non-null value, then this is the delay between retries
    // if left to null, then the default provided by a spec or the project config will be used
    val retryDelay: Duration? = null,
 ) {
