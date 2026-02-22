@@ -7,10 +7,12 @@ class VersionParserTest {
 
    @Test
    fun happyPath() {
-      VersionParser.parse("6.1.0") shouldBe Version(6, 1)
-      VersionParser.parse("6.1") shouldBe Version(6, 1)
-      VersionParser.parse("6.1.0-LOCAL") shouldBe Version(6, 1)
-      VersionParser.parse("6.1.0.123-SNAPSHOT") shouldBe Version(6, 1)
+      VersionParser.parse("6.1.0") shouldBe Version(6, 1, 0)
+      VersionParser.parse("6.1") shouldBe Version(6, 1, 0)
+      VersionParser.parse("6.1.3") shouldBe Version(6, 1, 3)
+      VersionParser.parse("12.34.45") shouldBe Version(12, 34, 45)
+      VersionParser.parse("6.1.0-LOCAL") shouldBe Version(6, 1, 0)
+      VersionParser.parse("6.1.0.123-SNAPSHOT") shouldBe Version(6, 1, 0)
    }
 
    @Test

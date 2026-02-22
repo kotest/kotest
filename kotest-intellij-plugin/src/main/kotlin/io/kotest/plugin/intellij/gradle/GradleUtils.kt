@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.gradle
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import io.kotest.plugin.intellij.run.gradle.GradleTaskNamesBuilder
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
@@ -69,20 +70,34 @@ internal object GradleUtils {
     * Returns the version of Kotest defined for this module or null if Kotest is a dependency.
     * Uses the engine module as the source of truth for the version.
     */
-   fun getKotestVersion(module: Module?): Version? {
-      if (module == null) return null
-
-      val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(module.project)
+   fun getKotestVersion(project: Project): Version? {
+      val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
       val dependency = libraryTable.libraries.find { it.name?.contains("io.kotest:kotest-framework-engine") ?: false }
 
       val version = dependency?.name?.substringAfterLast(":") ?: return null
       return VersionParser.parse(version)
    }
 
-   fun isKotest61OrAbove(module: Module?): Boolean {
-      if (module == null) return false
-      val version = getKotestVersion(module) ?: return false
+   fun isKotest61OrAbove(project: Project?): Boolean {
+      if (project == null) return false
+      val version = getKotestVersion(project) ?: return false
       return (version.major == 6 && version.minor > 0) || version.major > 6
+   }
+
+   fun isKotest614OrAbove(project: Project?): Boolean {
+      if (project == null) return false
+      val version = getKotestVersion(project) ?: return false
+      return isKotest614OrAbove(version)
+   }
+
+   internal fun isKotest614OrAbove(version: Version): Boolean {
+      return when {
+         version.major >= 7 -> true
+         version.major < 6 -> false
+         version.minor >= 2 -> true
+         version.minor == 0 -> false
+         else -> version.patch >= 4
+      }
    }
 
    fun runner(module: Module?): TestRunner? {
