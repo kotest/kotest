@@ -110,22 +110,16 @@ include(
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 
-   // allows overriding the .now() functionality on time classes
-   ":kotest-extensions:kotest-extensions-now",
-
-   // extensions that adapt junit extensions into kotest extensions
-   ":kotest-extensions:kotest-extensions-junit5",
-
-
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
 
-   ":kotest-runner:kotest-runner-junit4",
-   ":kotest-runner:kotest-runner-junit5",
-   ":kotest-runner:kotest-runner-junit6",
-
    // shared support executing tests via JUnit Platform
    ":kotest-runner:kotest-runner-junit-platform",
+
+   // runs tests on junit5 but also used by other modules to run kotest's own tests
+   ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit4",
+   ":kotest-runner:kotest-runner-junit6",
 
    // BOM for whole kotest project
    ":kotest-bom",
@@ -133,6 +127,7 @@ include(
 
 /** Is the build currently running on CI? */
 private val isCI = System.getenv("CI").toBoolean()
+private val isLocal = !isCI
 
 /** Is the build currently running on a GitHub actions Linux runner? */
 private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
@@ -140,10 +135,10 @@ private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
 private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
 
 /** we only include JVM-only modules if it's a non-CI build, or if it's a master build, or if it's using a linux runner */
-private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+private val shouldRunJvmOnlyModules = isLocal || isMaster || isLinuxRunner
 
 /** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
-private val shouldRunLinuxOnlyModules = !isCI || isLinuxRunner
+private val shouldRunLinuxOnlyModules = isLocal || isLinuxRunner
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
@@ -247,6 +242,12 @@ if (shouldRunLinuxOnlyModules) {
 
       // adds support for the wiremock framework - see more https://www.wiremock.io/
       ":kotest-extensions:kotest-extensions-wiremock",
+
+      // allows overriding the .now() functionality on time classes
+      ":kotest-extensions:kotest-extensions-now",
+
+      // extensions that adapt junit extensions into kotest extensions
+      ":kotest-extensions:kotest-extensions-junit5",
    )
 }
 

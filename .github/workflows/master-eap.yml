@@ -3,12 +3,14 @@ name: master-eap
 on:
    schedule:
       -  cron: '0 10 * * *'
+   workflow_dispatch:
+
 
 permissions:
    contents: read
 
 env:
-   KOTLIN_OVERRIDE_VERSION: "2.3.20-Beta2"
+   KOTLIN_VERSION: "2.3.20-Beta2"
 
 jobs:
    check:
@@ -16,7 +18,6 @@ jobs:
       runs-on: ${{ matrix.os }}
       continue-on-error: true
       strategy:
-         fail-fast: false
          matrix:
             include:
                # JVM-only
