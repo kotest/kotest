@@ -1,5 +1,6 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.common.env
 import io.kotest.common.isIntellij
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
@@ -14,6 +15,9 @@ import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
+
+internal const val TRUNCATE_TEST_NAMES_ENV = "KOTEST_TRUNCATE_TEST_NAMES"
+internal const val MAX_TRUNCATED_NAME_LENGTH = 64
 
 /**
  * Finds and returns the [org.junit.platform.engine.TestDescriptor] corresponding to the
@@ -77,8 +81,13 @@ internal fun createTestDescriptorWithMethodSource(
       id = id,
       displayName = if (isIntellij())
          LocationEmbedder.embeddedTestName(testCase.descriptor, formatter.format(testCase))
-      else
-         formatter.format(testCase),
+      else {
+         val name = formatter.format(testCase)
+         if (type == TestDescriptor.Type.CONTAINER && env(TRUNCATE_TEST_NAMES_ENV) == "true")
+            truncateTestName(name)
+         else
+            name
+      },
       type = type,
       // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
       // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
@@ -97,3 +106,7 @@ internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = Me
    /* className = */ kclass.java.name,
    /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
 )
+
+internal fun truncateTestName(name: String): String =
+   if (name.length <= MAX_TRUNCATED_NAME_LENGTH) name
+   else name.take(MAX_TRUNCATED_NAME_LENGTH - 3) + "..."
