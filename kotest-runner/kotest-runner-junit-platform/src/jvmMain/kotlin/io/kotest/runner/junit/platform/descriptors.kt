@@ -17,7 +17,7 @@ import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 
 internal const val TRUNCATE_TEST_NAMES_ENV = "KOTEST_TRUNCATE_TEST_NAMES"
-internal const val MAX_TRUNCATED_NAME_LENGTH = 64
+internal const val MAX_TRUNCATED_NAME_LENGTH = 48
 
 /**
  * Finds and returns the [org.junit.platform.engine.TestDescriptor] corresponding to the
