@@ -4,18 +4,15 @@ plugins {
 }
 
 kotlin {
-
    sourceSets {
-
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.mockserver.netty)
             api(libs.mockserver.client.java)
          }
       }
-
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(libs.fuel)
