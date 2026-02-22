@@ -242,13 +242,15 @@ public final class io/kotest/matchers/MatcherResult$Companion {
 
 public final class io/kotest/matchers/MatcherResultBuilder {
 	public static final field Companion Lio/kotest/matchers/MatcherResultBuilder$Companion;
-	public fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun build ()Lio/kotest/matchers/MatcherResult;
-	public final fun copy (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResultBuilder;
-	public static synthetic fun copy$default (Lio/kotest/matchers/MatcherResultBuilder;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/matchers/MatcherResultBuilder;
+	public final fun copy (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResultBuilder;
+	public static synthetic fun copy$default (Lio/kotest/matchers/MatcherResultBuilder;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/matchers/MatcherResultBuilder;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public final fun withError (Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResultBuilder;
 	public final fun withFailureMessage (Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResultBuilder;
 	public final fun withNegatedFailureMessage (Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResultBuilder;
 	public final fun withValues (Lio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;)Lio/kotest/matchers/MatcherResultBuilder;
@@ -267,6 +269,19 @@ public final class io/kotest/matchers/SimpleMatcherResult : io/kotest/matchers/M
 	public fun failureMessage ()Ljava/lang/String;
 	public final fun getFailureMessageFn ()Lkotlin/jvm/functions/Function0;
 	public final fun getNegatedFailureMessageFn ()Lkotlin/jvm/functions/Function0;
+	public final fun getPassed ()Z
+	public fun hashCode ()I
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/ThrowableMatcherResult : io/kotest/matchers/MatcherResult {
+	public final fun component1 ()Z
+	public final fun component2 ()Ljava/lang/Throwable;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureMessage ()Ljava/lang/String;
+	public final fun getError ()Ljava/lang/Throwable;
 	public final fun getPassed ()Z
 	public fun hashCode ()I
 	public fun negatedFailureMessage ()Ljava/lang/String;
