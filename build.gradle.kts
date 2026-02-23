@@ -76,13 +76,11 @@ dependencies {
    nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
 
    // Property
-   nmcpAggregation(projects.kotestProperty)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyArrow)
-//   nmcpAggregation(projects.kotestProperty.kotestPropertyArrowOptics)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyDatetime)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyLifecycle)
-   nmcpAggregation(projects.kotestProperty.kotestPropertyPermutations)
-
+   findProject(":kotest-property")?.let { nmcpAggregation(it) }
+   findProject(":kotest-property:kotest-property-arrow")?.let { nmcpAggregation(it) }
+   findProject(":kotest-property:kotest-property-datetime")?.let { nmcpAggregation(it) }
+   findProject(":kotest-property:kotest-property-lifecycle")?.let { nmcpAggregation(it) }
+   findProject(":kotest-property:kotest-property-permutations")?.let { nmcpAggregation(it) }
 
    // Linux-only modules: only included in the build when running on a Linux runner (or locally).
    // Use findProject so this gracefully no-ops when the module is absent from settings.
