@@ -55,7 +55,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     * - io.*.A*Test.some test context* becomes \Qio.\E.*\Q.A\E.*\QTest.some test context\E.*
     */
    private fun match(pattern: String, descriptor: Descriptor): Boolean {
-      val path = descriptor.dotSeparatedFullPath().value.normalizeDescriptorPath()
+      val path = descriptor.dotSeparatedFullPath().value
       val regexPattern = "^(.*)$pattern".toRegex() // matches pattern exactly
       val laxRegexPattern = "^(.*)$pattern(.*)$".toRegex() // matches pattern that can be followed by others
       val packagePath = descriptor.spec().id.value.split(".").dropLast(1).joinToString(".") // io.kotest
@@ -113,13 +113,6 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     * The other problem is that also means we can't have "." in the test / context path because Gradle doesn't
     * like it and will not even give us any candidate classes.
     */
-   /**
-    * Strips newlines and trims surrounding whitespace from a descriptor path so that
-    * it can be matched against a normalized Gradle filter pattern.
-    */
-   private fun String.normalizeDescriptorPath(): String =
-      replace("\r\n", " ").replace("\n", " ").replace("\r", " ").trim()
-
    private fun Descriptor.dotSeparatedFullPath(): DescriptorPath = when (this) {
       is Descriptor.SpecDescriptor -> DescriptorPath(this.id.value)
       is Descriptor.TestDescriptor -> when (this.parent) {
