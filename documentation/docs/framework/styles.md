@@ -16,16 +16,17 @@ All allow the same types of configuration &mdash; threads, tags, etc &mdash;
 it is simply a matter of preference how you structure your tests.
 
 
-| Test Style                                     | Inspired By                     |
-|------------------------------------------------|---------------------------------|
-| [Fun Spec](#fun-spec)                          | ScalaTest                       |
-| [Describe Spec](#describe-spec)                | Javascript frameworks and RSpec |
-| [Should Spec](#should-spec)                    | A Kotest original               |
-| [Behavior Spec](#behavior-spec)                | BDD frameworks                  |
-| [Free Spec](#free-spec)                        | ScalaTest                       |
-| [Word Spec](#word-spec)                        | ScalaTest                       |
-| [Feature Spec](#feature-spec)                  | Cucumber                        |
-| [Expect Spec](#expect-spec)                    | A Kotest original               |
+| Test Style                      | Inspired By                      |
+|---------------------------------|----------------------------------|
+| [Behavior Spec](#behavior-spec) | Gherkin and other BDD frameworks |
+| [Describe Spec](#describe-spec) | Javascript frameworks and RSpec  |
+| [Expect Spec](#expect-spec)     | A Kotest original                |
+| [Feature Spec](#feature-spec)   | Cucumber                         |
+| [Fun Spec](#fun-spec)           | ScalaTest                        |
+| [Free Spec](#free-spec)         | ScalaTest                        |
+| [Should Spec](#should-spec)     | A Kotest original                |
+| [String Spec](#string-spec)     | A Kotest original                        |
+| [Word Spec](#word-spec)         | ScalaTest                        |
 
 :::tip
 Some teams prefer to mandate usage of a single style, others mix and match. There is no right or wrong - do whatever
@@ -285,10 +286,41 @@ class MyTests : WordSpec({
 
 ## Free Spec
 
-`FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus) for outer tests, and just the test name for the final test:
+`FreeSpec` allows you to nest arbitrary levels of depth using the keyword `-` (minus) for outer tests (containers), and
+just the test name for the final test:
 
 ```kotlin
 class MyTests : FreeSpec({
+    "String.length" - {
+        "should return the length of the string" {
+            "sammy".length shouldBe 5
+            "".length shouldBe 0
+        }
+    }
+    "containers can be nested as deep as you want" - {
+        "and so we nest another container" - {
+            "yet another container" - {
+                "finally an inner test" {
+                    1 + 1 shouldBe 2
+                }
+            }
+        }
+    }
+})
+```
+
+:::caution
+The innermost test must not use the `-` (minus) keyword after the test name.
+:::
+
+
+
+## String Spec
+
+`StringSpec` supports root tests by using a String followed by the test block.
+
+```kotlin
+class MyTests : StringSpec({
     "String.length" - {
         "should return the length of the string" {
             "sammy".length shouldBe 5
@@ -307,10 +339,9 @@ class MyTests : FreeSpec({
 })
 ```
 
-:::caution
-The innermost test must not use the `-` (minus) keyword after the test name.
+:::note
+We recommend using `FreeSpec` instead since it offers the same syntax of `StringSpec` but with nesting capabilities.
 :::
-
 
 
 ## Feature Spec
