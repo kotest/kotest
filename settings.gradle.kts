@@ -124,6 +124,8 @@ private val shouldRunJvmOnlyModules = isLocal || isMaster || isLinuxRunner
 /** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
 private val shouldRunLinuxOnlyModules = isLocal || isLinuxRunner
 
+private val shouldRunPropertyTestModules = isLocal || isMaster || System.getenv("RUN_PROPERTY_TESTS").toBoolean()
+
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
  * assume that if it works on one JVM, then it will work on all JVMs. Worst case, is there's a bug on
@@ -235,7 +237,7 @@ if (shouldRunLinuxOnlyModules) {
    )
 }
 
-if (Ci.shouldRunPropertyTestModules) {
+if (shouldRunPropertyTestModules) {
    include(
       // base classes for property testing, plus std lib generators
       ":kotest-property",
