@@ -201,38 +201,41 @@ class AndroidInstrumentedTestRunConfigurationProducerTest : BasePlatformTestCase
    }
 
    /**
-    * Configures the test module so that [io.kotest.plugin.intellij.run.RunnerModes.mode] returns
+    * Configures the test fixture so that
+    * [io.kotest.plugin.intellij.run.android.AndroidInstrumentedTestRunConfigurationProducer.isEnabled]
+    * returns true and [io.kotest.plugin.intellij.run.RunnerModes.mode] returns
     * [io.kotest.plugin.intellij.run.RunnerMode.GRADLE_TEST_TASK].
     *
-    * Three conditions must all be satisfied:
-    * 1. [io.kotest.plugin.intellij.dependencies.ModuleDependencies.hasKotestEngine]: a module-level
-    *    library whose name contains "kotest-framework-engine" must exist in the order entries.
-    * 2. [io.kotest.plugin.intellij.gradle.GradleUtils.isKotest61OrAbove]: a project-level library
-    *    named "io.kotest:kotest-framework-engine-jvm:<version>" must exist so the version can be parsed.
-    * 3. [io.kotest.plugin.intellij.gradle.GradleUtils.isGradleTestRunner]: In IntelliJ 2025.1,
-    *    [org.jetbrains.plugins.gradle.settings.GradleProjectSettings.getTestRunner] returns
-    *    [TestRunner.PLATFORM] when the module's external project path is null, so we must link the
-    *    module to a Gradle project with [TestRunner.GRADLE].
+    * [io.kotest.plugin.intellij.gradle.GradleUtils.isKotest614OrAbove] has two paths:
+    * 1. **Library table (this test)**: a project-level library named
+    *    `io.kotest:kotest-framework-engine-jvm:<version>` is present and its version is ≥ 6.1.4.
+    * 2. **Source-project detection (real IntelliJ)**: when developing Kotest itself, no versioned
+    *    library entry exists; instead [com.intellij.openapi.module.ModuleManager] finds a module
+    *    whose name contains "kotest-framework-engine" and returns true automatically.
+    *
+    * Light fixture tests do not permit adding modules, so we exercise path 1 here by seeding a
+    * version ≥ 6.1.4 into the project library table.
     *
     * Guards against duplicate creation since [BasePlatformTestCase] reuses the same project
     * across all tests in the class.
     */
    private fun setupKotestGradleTestTaskMode() {
-      // 1. hasKotestEngine: add a module-level library named "kotest-framework-engine-jvm"
+      // hasKotestEngine: add a module-level library named "kotest-framework-engine-jvm"
       ModuleRootModificationUtil.updateModel(myFixture.module) { model ->
          if (model.moduleLibraryTable.getLibraryByName("kotest-framework-engine-jvm") == null) {
             model.moduleLibraryTable.createLibrary("kotest-framework-engine-jvm")
          }
       }
       WriteAction.runAndWait<Exception> {
-         // 2. isKotest61OrAbove: add a project-level library with version in its name
-         val libName = "io.kotest:kotest-framework-engine-jvm:6.1.3"
+         // isKotest614OrAbove (and isKotest61OrAbove): add a project-level library whose name
+         // encodes the version. Must be ≥ 6.1.4 so the Android producer's isEnabled check passes.
+         val libName = "io.kotest:kotest-framework-engine-jvm:6.1.4"
          val libraryTable = LibraryTablesRegistrar.getInstance().getLibraryTable(project)
          if (libraryTable.getLibraryByName(libName) == null) {
             libraryTable.createLibrary(libName)
          }
 
-         // 3. isGradleTestRunner: In IntelliJ 2025.1, getTestRunner(project, null) returns PLATFORM.
+         // isGradleTestRunner: In IntelliJ 2025.1, getTestRunner(project, null) returns PLATFORM.
          // We link the module's external project path to a GradleProjectSettings with GRADLE runner.
          val projectPath = project.basePath ?: error("project.basePath is null")
          ExternalSystemModulePropertyManager.getInstance(myFixture.module).setLinkedProjectPath(projectPath)
