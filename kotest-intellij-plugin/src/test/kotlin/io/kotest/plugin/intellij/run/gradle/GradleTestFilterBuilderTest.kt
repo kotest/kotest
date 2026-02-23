@@ -136,4 +136,58 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
          .build(false) shouldBe "'MyTestClass.it'\\''s '\\''special'\\'''"
    }
 
+   fun testNewlineInTestNameIsStripped() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "line one\nline two", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.line one line two'"
+   }
+
+   fun testCRLFInTestNameIsStripped() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "line one\r\nline two", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.line one line two'"
+   }
+
+   fun testWhitespaceInTestNameIsTrimmed() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "  foo  ", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.foo'"
+   }
+
 }

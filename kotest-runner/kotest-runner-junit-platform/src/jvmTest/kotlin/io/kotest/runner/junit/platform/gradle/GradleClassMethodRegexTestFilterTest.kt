@@ -144,6 +144,39 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
+   context("test names with newlines or surrounding whitespace are normalized before matching") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val fqcn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      test("descriptor with newline in test name matches normalized pattern") {
+         val testWithNewline = spec.append("line one\nline two")
+         val filter = "$fqcn\\Q.line one line two\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithNewline) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("descriptor with CRLF in test name matches normalized pattern") {
+         val testWithCrlf = spec.append("line one\r\nline two")
+         val filter = "$fqcn\\Q.line one line two\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithCrlf) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("descriptor with leading and trailing whitespace matches trimmed pattern") {
+         val testWithSpaces = spec.append("  foo  ")
+         val filter = "$fqcn\\Q.foo\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithSpaces) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("descriptor with newline in test name does not match unrelated pattern") {
+         val testWithNewline = spec.append("line one\nline two")
+         val filter = "$fqcn\\Q.something else\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithNewline) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
+
    // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
    test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
