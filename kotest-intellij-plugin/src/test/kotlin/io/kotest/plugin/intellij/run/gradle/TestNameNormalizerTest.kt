@@ -57,8 +57,9 @@ class TestNameNormalizerTest {
 
    @Test
    fun `normalizeAndEscape escapes multiple single quotes`() {
-      TestNameNormalizer.normalizeAndEscape("it's 'special'") shouldBe "it'\\''s '\\''special'\\'''"
+      TestNameNormalizer.normalizeAndEscape("it's 'special'") shouldBe "it'\\''s '\\''special'\\''"
    }
+
 
    @Test
    fun `normalizeAndEscape normalizes newlines before escaping`() {
