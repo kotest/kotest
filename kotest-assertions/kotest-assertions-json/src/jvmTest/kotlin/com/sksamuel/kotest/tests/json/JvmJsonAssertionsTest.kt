@@ -48,6 +48,7 @@ class JvmJsonAssertionsTest : StringSpec({
       json.shouldContainJsonKey("$.store.book[1].price")
 
       json.shouldNotContainJsonKey("$.store.table")
+      json.shouldNotContainJsonKey("$.store['location.buildings[2]'].type")
 
       shouldThrow<AssertionError> {
          json.shouldContainJsonKey("$.store.table")
