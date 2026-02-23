@@ -144,6 +144,36 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
+   context("test names with carriage returns or surrounding whitespace are normalized before matching") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val fqcn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      // Note: DescriptorId forbids \n, so only \r (bare carriage return) can appear in test names.
+      // The Gradle plugin normalizes \r to a space when building the --tests filter, so we
+      // need to do the same when matching incoming descriptors at runtime.
+
+      test("descriptor with carriage return in test name matches normalized pattern") {
+         val testWithCr = spec.append("line one\rline two")
+         val filter = "$fqcn\\Q.line one line two\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithCr) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("descriptor with leading and trailing whitespace matches trimmed pattern") {
+         val testWithSpaces = spec.append("  foo  ")
+         val filter = "$fqcn\\Q.foo\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithSpaces) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("descriptor with carriage return in test name does not match unrelated pattern") {
+         val testWithCr = spec.append("line one\rline two")
+         val filter = "$fqcn\\Q.something else\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(testWithCr) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
+
    // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
    test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()

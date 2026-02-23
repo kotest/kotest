@@ -9,6 +9,13 @@ import io.kotest.engine.extensions.filter.DescriptorFilterResult
 import io.kotest.engine.extensions.filter.INCLUDE_PATTERN_ENV
 
 /**
+ * Strips newlines and trims surrounding whitespace from a test name so that
+ * it can be matched against a normalized Gradle filter pattern.
+ */
+private fun String.normalizeTestName(): String =
+   replace("\r\n", " ").replace("\n", " ").replace("\r", " ").trim()
+
+/**
  * An implementation of [DescriptorFilter] that supports nested test names.
  */
 internal class NestedTestsArgDescriptorFilter(private val args: Set<NestedTestArg>) : DescriptorFilter {
@@ -32,6 +39,15 @@ internal class NestedTestsArgDescriptorFilter(private val args: Set<NestedTestAr
       logger.log { Pair(descriptor.toString(), "Testing $arg against $descriptor") }
       val spec: Descriptor = Descriptor.SpecDescriptor(DescriptorId(arg.packageName + "." + arg.className))
       val tests = arg.contexts.fold(spec) { acc, op -> acc.append(op) }
-      return descriptor.hasSharedPath(tests)
+      return descriptor.normalized().hasSharedPath(tests)
+   }
+
+   /**
+    * Returns a copy of this descriptor with newlines stripped and surrounding whitespace trimmed
+    * from each id, so it can be matched against a normalized Gradle filter pattern.
+    */
+   private fun Descriptor.normalized(): Descriptor = when (this) {
+      is Descriptor.SpecDescriptor -> Descriptor.SpecDescriptor(DescriptorId(this.id.value.normalizeTestName()))
+      is Descriptor.TestDescriptor -> Descriptor.TestDescriptor(this.parent.normalized(), DescriptorId(this.id.value.normalizeTestName()))
    }
 }

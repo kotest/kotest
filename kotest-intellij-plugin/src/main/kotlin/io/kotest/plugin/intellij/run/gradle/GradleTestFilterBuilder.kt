@@ -33,21 +33,9 @@ data class GradleTestFilterBuilder(
          }
          if (test != null) {
             append(".")
-            append(test.path().joinToString(" -- ") { it.name.escapeSingleQuotes() })
+            append(test.path().joinToString(" -- ") { TestNameNormalizer.normalizeAndEscape(it.name) })
          }
          append("'")
       }
    }
 }
-
-/**
- * Escapes single quotes for use inside a single-quoted shell argument.
- *
- * A single quote cannot appear inside a single-quoted string, so we close the
- * quoted string, emit a backslash-escaped single quote, then reopen the quoted
- * string: `'` → `'\''`.
- *
- * For example, the test name `it's a test` becomes `it'\''s a test`, which
- * when wrapped in outer single quotes produces `'it'\''s a test'`.
- */
-private fun String.escapeSingleQuotes(): String = replace("'", "'\\''")

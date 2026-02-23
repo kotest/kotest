@@ -40,4 +40,24 @@ class NestedTestsArgDescriptorFilterTest : FunSpec({
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(test3) shouldBe DescriptorFilterResult.Exclude(null)
       NestedTestsArgDescriptorFilter(setOf(args1)).filter(test4) shouldBe DescriptorFilterResult.Exclude(null)
    }
+
+   test("normalize carriage return in descriptor test name") {
+      val spec = NestedTestsArgDescriptorFilterTest::class.toDescriptor()
+      // descriptor has a raw \r; the Gradle --tests arg has been normalized (\r -> space)
+      // Note: \n is rejected by DescriptorId validation, but \r is allowed
+      val test1 = spec.append("a\rb")
+      val test2 = test1.append("c")
+      val args = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.gradle.NestedTestsArgDescriptorFilterTest.a b -- c\\E")!!
+      NestedTestsArgDescriptorFilter(setOf(args)).filter(test1) shouldBe DescriptorFilterResult.Include
+      NestedTestsArgDescriptorFilter(setOf(args)).filter(test2) shouldBe DescriptorFilterResult.Include
+   }
+
+   test("normalize surrounding whitespace in descriptor test name") {
+      val spec = NestedTestsArgDescriptorFilterTest::class.toDescriptor()
+      val test1 = spec.append("  a  ")
+      val test2 = test1.append("b")
+      val args = NestedTestsArgParser.parse("\\Qio.kotest.runner.junit.platform.gradle.NestedTestsArgDescriptorFilterTest.a -- b\\E")!!
+      NestedTestsArgDescriptorFilter(setOf(args)).filter(test1) shouldBe DescriptorFilterResult.Include
+      NestedTestsArgDescriptorFilter(setOf(args)).filter(test2) shouldBe DescriptorFilterResult.Include
+   }
 })
