@@ -38,8 +38,6 @@ object Defaults {
 
    val DUPLICATE_TEST_NAME_MODE = DuplicateTestNameMode.Warn
 
-   const val DISPLAY_FULL_TEST_PATH = false
-
    val TEST_CASE_SEVERITY_LEVEL = TestCaseSeverityLevel.NORMAL
 
    const val COROUTINE_DEBUG_PROBES = false

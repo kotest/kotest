@@ -6,10 +6,13 @@ data class PluginDescriptor(
    val since: String, // earliest version string this is compatible with
    val until: String, // latest version string this is compatible with, can be wildcard like 202.*
    // https://github.com/JetBrains/gradle-intellij-plugin#intellij-platform-properties
-   val sdkVersion: String, // the version string passed to the intellij sdk gradle plugin
+   val sdkVersion: String, // the version string passed to the intellij sdk Gradle plugin, take released versions from https://www.jetbrains.com/idea/download/other.html
    val sourceFolder: String, // used as the source root for specifics of this build
    val useInstaller: Boolean, // required to be false for EAP builds
    val jdkTarget: JavaVersion,
+   val androidVersion: String, // android plugin version
+   val webpPlugin: String?, // for newer intellij, this is no longer bundled and must be specified
+   val extraBundledPlugins: List<String> = emptyList(), // additional bundled plugins required for this version
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -32,57 +35,68 @@ data class PluginDescriptor(
 
 val descriptors = listOf(
    PluginDescriptor(
-      since = "242.*", // this version is 2024.2.x
-      until = "243.*",
-      sdkVersion = "2024.2.2",
-      sourceFolder = "IC-242",
-      useInstaller = true,
-      jdkTarget = JavaVersion.VERSION_17,
-   ),
-   PluginDescriptor(
-      since = "243.*", // this version is 2024.3.x
-      until = "251.*",
-      sdkVersion = "2024.3.1",
-      sourceFolder = "IC-243",
-      useInstaller = true,
-      jdkTarget = JavaVersion.VERSION_17,
-   ),
-   PluginDescriptor(
       since = "251.*", // this version is 2025.1.x
       until = "261.*",
-      sdkVersion = "2025.1",
+      sdkVersion = "2025.1.7",
       sourceFolder = "IC-251",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "251.23774.200",
+      webpPlugin = null,
    ),
    PluginDescriptor(
       since = "252.*", // this version is 2025.2.x
-      until = "261.*",
-      sdkVersion = "2025.2",
+      until = "253.*",
+      sdkVersion = "2025.2.6.1",
       sourceFolder = "IC-252",
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "252.23892.458",
+      webpPlugin = null,
+   ),
+   PluginDescriptor(
+      since = "253.*", // this version is 2025.3.x
+      until = "261.*",
+      sdkVersion = "2025.3.2",
+      sourceFolder = "IC-253",
+      useInstaller = true,
+      jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "253.28294.334",
+      webpPlugin = "intellij.webp:253.28294.218",
+   ),
+   PluginDescriptor(
+      since = "261.*", // this version is 2026.1.x
+      until = "262.*",
+      sdkVersion = "261-EAP-SNAPSHOT",
+      sourceFolder = "IC-261",
+      useInstaller = false,
+      jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "261.20869.38",
+      webpPlugin = "intellij.webp:261.21525.28",
+      // groovy-live-templates was split out of the Groovy plugin in 261
+      extraBundledPlugins = listOf("org.intellij.groovy.live.templates"),
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-252"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-253"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
 plugins {
-   id("org.jetbrains.intellij.platform") version "2.10.5"
+   id("org.jetbrains.intellij.platform") version "2.11.0"
    kotlin("jvm")
 }
 
 repositories {
    mavenCentral()
    mavenLocal()
-   maven("https://oss.sonatype.org/content/repositories/snapshots")
+   maven("https://central.sonatype.com/repository/maven-snapshots")
 
    // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
    intellijPlatform {
-      defaultRepositories()
       jetbrainsRuntime()
+      defaultRepositories() // Includes the necessary JetBrains repositories
+      marketplace()         // Specifically enables Marketplace plugin resolution
    }
 }
 
@@ -128,13 +142,11 @@ intellijPlatform {
 }
 
 dependencies {
-   // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
-   testImplementation("junit:junit:4.13.2")
-
    // IntelliJ Platform Gradle Plugin Dependencies Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-dependencies-extension.html
    intellijPlatform {
       // snapshots here https://www.jetbrains.com/intellij-repository/snapshots/
-      intellijIdeaCommunity(descriptor.sdkVersion) {
+      // released versions list https://www.jetbrains.com/idea/download/other.html
+      intellijIdea(descriptor.sdkVersion) {
          useInstaller = descriptor.useInstaller
       }
 
@@ -146,23 +158,48 @@ dependencies {
       zipSigner()
 
       bundledPlugin("com.intellij.java")
+      bundledPlugin("JUnit")
+      bundledPlugin("com.intellij.gradle")
+      bundledPlugin("com.intellij.modules.json")
+      bundledPlugin("com.intellij.properties")
+      bundledPlugin("com.intellij.platform.images")
+      bundledPlugin("org.intellij.groovy")
+      bundledPlugin("org.intellij.intelliLang")
+      bundledPlugin("org.jetbrains.idea.gradle.dsl")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
-
-      // this is workaround for a bug in intellij itself
-      // see https://jetbrains-platform.slack.com/archives/C5U8BM1MK/p1734228390297349
-      if (descriptor.sdkVersion == "2024.3.1") {
-         bundledPlugin("com.intellij.llmInstaller")
-      }
+      bundledPlugin("org.toml.lang")
+      if (descriptor.webpPlugin == null)
+         bundledPlugin("intellij.webp")
+      else
+         plugin(descriptor.webpPlugin)
+      descriptor.extraBundledPlugins.forEach { bundledPlugin(it) }
+      plugin("org.jetbrains.android:${descriptor.androidVersion}")
 
       testFramework(TestFrameworkType.Platform)
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
+   implementation("org.jetbrains:annotations:26.0.2-1")
+
+   // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
+   testImplementation(libs.junit4)
+
    // needed for the resource files which are loaded into java light tests
    testImplementation(libs.test.kotest.framework.api)
    testImplementation(libs.test.kotest.assertions.core)
 //   testRuntimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
+}
+
+intellijPlatformTesting {
+   runIde {
+      register("runWithOptionalPlugins") {
+         plugins {
+            plugin("org.jetbrains.android:${descriptor.androidVersion}")
+            plugin("intellij.webp:253.28294.218")
+         }
+      }
+   }
 }
 
 configurations.runtimeOnly {
@@ -174,7 +211,7 @@ configurations.runtimeOnly {
 }
 
 // allows us to have different implementations of the same logic for different intellij versions
-// useful when we want to move from a deprecated function to a non deprecated one in a more recent intellij version
+// useful when we want to move from a deprecated function to a non-deprecated one in a more recent intellij version
 sourceSets {
    main {
       kotlin {
@@ -209,9 +246,10 @@ tasks {
 }
 
 tasks {
+   // Configures a task to print the latest EAP build
    printProductsReleases {
       channels = listOf(ProductRelease.Channel.EAP)
-      types = listOf(IntelliJPlatformType.IntellijIdeaCommunity)
+      types = listOf(IntelliJPlatformType.IntellijIdea)
       untilBuild = provider { null }
 
       doLast {

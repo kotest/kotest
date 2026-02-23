@@ -27,20 +27,23 @@ class ContainerTimeoutOverriddenMainDispatcherTest : FunSpec({
    beforeSpec { Dispatchers.setMain(dispatcher) }
    afterSpec { Dispatchers.resetMain() }
 
-   context("container with timeout").config(timeout = 2000.milliseconds) {
+   context("container with timeout").config(timeout = 100000.milliseconds) {
       test("test with delay") {
-         // It will crash if the Main dispatcher wasn't set before
+         // flips this test to use the dispatcher we installed on Dispatchers.Main earlier
          withContext(Dispatchers.Main) {
-            delay(100.hours) // Virtual time shouldn't exceed timeout
+            // since we have a test dispatcher, a delay here should be instantly advanced,
+            // and the Kotest timeout (which is wall time) shouldn't be hit
+            delay(100.hours)
          }
 
          dispatcher.scheduler shouldBe testCoroutineScheduler
       }
 
-      xtest("test exceeding invocation timeout").config(
+      test("test exceeding invocation timeout").config(
          invocationTimeout = 1000.milliseconds,
          extensions = listOf(ExpectFailureExtension),
       ) {
+         // since this is not a virtual time timeout, the Kotest wall clock timeout should be hit
          realTimeDelay(1.minutes)
       }
    }

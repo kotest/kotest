@@ -1,22 +1,51 @@
 plugins {
    id("kotest-jvm-conventions")
+   id("kotest-android-conventions")
    id("kotest-publishing-conventions")
 }
 
 kotlin {
+
+   androidLibrary {
+      namespace = "io.kotest.runner.junit4"
+      compileSdk = 34
+      withHostTestBuilder {}
+   }
+
    sourceSets {
-      jvmMain {
+
+      val commonMain by getting {}
+
+      val jvmCommonMain by creating {
+         dependsOn(commonMain)
          dependencies {
             api(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.junit4)
-            api(libs.kotlinx.coroutines.core)
          }
+      }
+
+      androidMain {
+         dependsOn(jvmCommonMain)
+         dependencies {
+            api(libs.androidx.test.runner)
+         }
+      }
+
+      jvmMain {
+         dependsOn(jvmCommonMain)
       }
 
       jvmTest {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
-            implementation(libs.junit.platform5.testkit)
+         }
+      }
+
+      val androidHostTest by getting {
+         dependencies {
+            implementation(projects.kotestAssertions.kotestAssertionsCore)
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
+            implementation(libs.mockk)
          }
       }
    }

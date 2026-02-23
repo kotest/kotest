@@ -3,7 +3,6 @@
 package io.kotest.engine
 
 import io.kotest.common.KotestInternal
-import io.kotest.common.isIntellij
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
@@ -54,7 +53,7 @@ data class TestEngineLauncher(
     * Returns a copy of this launcher with the listener added.
     */
    fun withTeamCityListener(): TestEngineLauncher {
-      return withListener(TeamCityTestEngineListener(embedLocations = isIntellij()))
+      return withListener(TeamCityTestEngineListener())
    }
 
    /**
@@ -147,20 +146,6 @@ data class TestEngineLauncher(
    suspend fun execute(): EngineResult {
       logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
-      return engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-   }
-
-   /**
-    * Launch the [TestEngine] created from this builder using a JavaScript promise.
-    * This method will throw on JVM or native.
-    *
-    * @return the promise that will resolve to an [EngineResult] when the tests have completed.
-    */
-   fun promise(): Any { // will be a Promise<EngineResult> on JS, but an error on other platforms
-      logger.log { "Launching Test Engine in Javascript promise" }
-      return runPromise {
-         val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-      }
+      return engine.execute(TestSuite(refs))
    }
 }

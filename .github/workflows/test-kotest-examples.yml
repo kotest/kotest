@@ -171,6 +171,7 @@ jobs:
                - kotest-multiplatform
                - kotest-native
                - kotest-spring-webflux
+               - kotest-spring-data
                - kotest-wasm
       steps:
          - name: Checkout kotest-examples

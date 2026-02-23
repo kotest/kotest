@@ -1,7 +1,10 @@
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
@@ -26,6 +29,13 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       ) { filters ->
          GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe DescriptorFilterResult.Include
       }
+   }
+
+   test("wildcard prefix") {
+      val foo = Descriptor.SpecDescriptor(DescriptorId("org.package.Foo"))
+      val bar = Descriptor.SpecDescriptor(DescriptorId("org.package.Bar"))
+      GradleClassMethodRegexTestFilter(setOf(".*.*\\QFoo\\E")).filter(foo) shouldBe DescriptorFilterResult.Include
+      GradleClassMethodRegexTestFilter(setOf(".*.*\\QFoo\\E")).filter(bar) shouldBe DescriptorFilterResult.Exclude(null)
    }
 
    context("exclude classes") {
@@ -134,7 +144,8 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
-   test("!is true when KOTEST_INCLUDE_PATTERN is set") {
+   // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
+   test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val container = spec.append("a context")
       val test = container.append("nested test")

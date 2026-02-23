@@ -1,5 +1,7 @@
 package io.kotest.core.spec
 
+import io.kotest.common.SoftDeprecated
+
 enum class IsolationMode {
 
    /**
@@ -44,7 +46,7 @@ enum class IsolationMode {
     * ```
     *
     */
-   @Deprecated("The semantics of instance per leaf are inconsistent and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests.")
+   @SoftDeprecated("The semantics of instance per leaf are inconsistent and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests.")
    InstancePerTest,
 
    /**
@@ -75,6 +77,6 @@ enum class IsolationMode {
     * c
     * ```
     */
-   @Deprecated("The semantics of instance per leaf are inconsistent and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests.")
+   @SoftDeprecated("The semantics of instance per leaf are inconsistent and this mode should be avoided. InstancePerRoot is recommended if you want to isolate your tests.")
    InstancePerLeaf
 }

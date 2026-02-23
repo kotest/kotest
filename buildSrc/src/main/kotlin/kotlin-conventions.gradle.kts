@@ -1,3 +1,4 @@
+import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.tasks.KotlinTest
 import utils.SystemPropertiesArgumentProvider
@@ -14,6 +15,10 @@ tasks.withType<Test>().configureEach {
    jvmArgumentProviders += SystemPropertiesArgumentProvider(kotestSystemProps)
    filter {
       isFailOnNoMatchingTests = false
+   }
+   outputs.upToDateWhen { false }
+   testLogging {
+      events(TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
    }
 }
 

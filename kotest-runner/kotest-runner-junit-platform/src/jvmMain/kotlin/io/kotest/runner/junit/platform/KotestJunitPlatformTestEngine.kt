@@ -12,6 +12,7 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
+import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -60,7 +61,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
-      val config = ProjectConfigLoader.load()
+      val config = ProjectConfigLoader.load(root.specs.map { it.fqn }.toSet())
 
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
@@ -74,7 +75,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      kotlinx.coroutines.runBlocking {
+      runBlocking {
+         // the result is ignored as the junit runner will add engine errors as "dummy specs"
          TestEngineLauncher()
             .withListener(listener)
             .addExtensions(root.extensions)
@@ -115,7 +117,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
-      val config = ProjectConfigLoader.load()
+      val config = ProjectConfigLoader.load(result.specs.map { it.fqn }.toSet())
 
       val formatting = DisplayNameFormatting(config)
 
@@ -163,4 +165,3 @@ class KotestJunitPlatformTestEngine : TestEngine {
       return request.engineFilters().all { it.toPredicate().test(this) }
    }
 }
-

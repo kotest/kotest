@@ -39,6 +39,7 @@ public final class io/kotest/assertions/AssertionsConfigSystemProperties {
 
 public final class io/kotest/assertions/CluesKt {
 	public static final fun asClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun forEachAsClue (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)V
 	public static final fun withClue (Ljava/lang/Object;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 	public static final fun withClue (Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
@@ -1305,6 +1306,14 @@ public final class io/kotest/matchers/collections/ContainOnlyKt {
 	public static final fun shouldNotContainOnly ([Ljava/lang/Object;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainOnly_array ([Ljava/lang/Object;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainOnly_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
+}
+
+public final class io/kotest/matchers/collections/ContainSliceKt {
+	public static final fun containSlice (Ljava/util/List;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainSlice_array ([Ljava/lang/Object;Ljava/lang/Iterable;)V
+	public static final fun shouldContainSlice_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
+	public static final fun shouldNotContainSlice_array ([Ljava/lang/Object;Ljava/lang/Iterable;)V
+	public static final fun shouldNotContainSlice_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 }
 
 public final class io/kotest/matchers/collections/DecreasingKt {
@@ -3299,6 +3308,12 @@ public final class io/kotest/matchers/string/CharSequencePreprocessorMatcher : i
 	public fun invertIf (Z)Lio/kotest/matchers/Matcher;
 	public fun test (Ljava/lang/CharSequence;)Lio/kotest/matchers/MatcherResult;
 	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
+public final class io/kotest/matchers/string/ContainInOrderWithoutOverlapsKt {
+	public static final fun containInOrderWithoutOverlaps ([Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
+	public static final fun shouldNotContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
 }
 
 public abstract class io/kotest/matchers/string/Diff {

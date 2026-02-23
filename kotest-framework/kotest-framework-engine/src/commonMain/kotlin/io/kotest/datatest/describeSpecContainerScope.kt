@@ -271,7 +271,7 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -285,7 +285,7 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      describe(nameFn(t)) { this.test(t) }
+      describe(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -299,7 +299,7 @@ suspend fun <T> DescribeSpecContainerScope.withIts(
    test: suspend TestScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      it(nameFn(t)) { this.test(t) }
+      it(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -325,7 +325,7 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -339,7 +339,7 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      describe(name) { this.test(t) }
+      describe(name).config() { this.test(t) }
    }
 }
 
@@ -350,6 +350,6 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
 @JvmName("withItsMap")
 suspend fun <T> DescribeSpecContainerScope.withIts(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
    data.forEach { (name, t) ->
-      it(name) { this.test(t) }
+      it(name).config() { this.test(t) }
    }
 }

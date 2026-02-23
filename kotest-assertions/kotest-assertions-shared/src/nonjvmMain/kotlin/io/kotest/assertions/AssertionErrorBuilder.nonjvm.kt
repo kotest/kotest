@@ -1,7 +1,5 @@
 package io.kotest.assertions
 
-import io.kotest.matchers.clueContextAsString
-
 actual fun createAssertionError(
    message: String?,
    cause: Throwable?,

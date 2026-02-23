@@ -1,27 +1,15 @@
 package io.kotest.engine
 
-import io.kotest.engine.extensions.ExtensionException
-
-data class EngineResult(
-   val errors: List<Throwable>, // these are errors during engine processing, not test failures
-   val testFailures: Boolean,
+@ConsistentCopyVisibility
+data class EngineResult internal constructor(
+   val errors: List<Throwable>, // these are errors at the project level, not test failures
 ) {
 
-   constructor(errors: List<Throwable>) : this(errors, false)
+   constructor() : this(emptyList())
 
-   companion object {
-      val empty = EngineResult(emptyList(), false)
-   }
+   fun addError(error: Throwable): EngineResult = addErrors(listOf(error))
 
-   fun addError(t: Throwable): EngineResult {
-      return copy(errors = this.errors + t)
-   }
-
-   fun addErrors(errors: List<ExtensionException.AfterProjectException>): EngineResult {
+   fun addErrors(errors: List<Throwable>): EngineResult {
       return copy(errors = this.errors + errors)
-   }
-
-   fun withTestFailures(): EngineResult {
-      return copy(testFailures = true)
    }
 }

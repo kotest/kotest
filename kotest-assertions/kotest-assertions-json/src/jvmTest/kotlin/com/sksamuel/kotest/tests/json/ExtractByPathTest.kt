@@ -68,6 +68,11 @@ class ExtractByPathTest : WordSpec() {
             removeLastPartFromPath("$.regime.temperature.unit") shouldBe "$.regime.temperature"
             removeLastPartFromPath("$.regime.temperature") shouldBe "$.regime"
             removeLastPartFromPath("$.regime") shouldBe "$"
+
+            removeLastPartFromPath("$.stores['buildings[1].location'].type.code") shouldBe "$.stores['buildings[1].location'].type"
+            removeLastPartFromPath("$.stores['buildings[1].location'].type") shouldBe "$.stores['buildings[1].location']"
+            removeLastPartFromPath("$.stores['buildings[1].location']") shouldBe "$.stores"
+            removeLastPartFromPath("$.stores") shouldBe "$"
          }
       }
 

@@ -6,11 +6,12 @@ import kotlin.time.Duration
 data class TestResultBuilder(
    private val duration: Duration,
    private val error: Throwable?,
+   private val ignored: Boolean,
    private val ignoreReason: String?,
 ) {
 
    companion object {
-      fun builder(): TestResultBuilder = TestResultBuilder(Duration.ZERO, null, null)
+      fun builder(): TestResultBuilder = TestResultBuilder(Duration.ZERO, null, false, null)
    }
 
    fun withDuration(duration: Duration) = copy(duration = duration)
@@ -31,17 +32,19 @@ data class TestResultBuilder(
     * Sets the reason for ignoring the test. If this is set then the built result will be
     * [TestResult.Ignored] regardless of any other properties.
     */
-   fun withIgnoreReason(ignoreReason: String) = copy(ignoreReason = ignoreReason)
+   fun withIgnoreReason(ignoreReason: String?) = copy(ignored = true, ignoreReason = ignoreReason)
 
    /**
     * Sets the reason for ignoring the test. If this is set then the built result will be
     * [TestResult.Ignored] regardless of any other properties.
     */
-   fun withIgnoreEnabled(enabled: Enabled) = copy(ignoreReason = enabled.reason)
+   fun withIgnoreEnabled(enabled: Enabled) = copy(ignored = true, ignoreReason = enabled.reason)
+
+   fun withIgnore() = copy(ignored = true)
 
    fun build(): TestResult {
       return when {
-         ignoreReason != null -> TestResult.Ignored(ignoreReason)
+         ignored -> TestResult.Ignored(ignoreReason)
          error == null -> TestResult.Success(duration)
          error is AssertionError -> TestResult.Failure(duration, error)
          else -> TestResult.Error(duration, error)

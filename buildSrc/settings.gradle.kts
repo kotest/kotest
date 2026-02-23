@@ -4,6 +4,7 @@ pluginManagement {
    repositories {
       mavenCentral()
       gradlePluginPortal()
+      maven("https://maven.google.com")
    }
 }
 
@@ -13,10 +14,16 @@ dependencyResolutionManagement {
    repositories {
       mavenCentral()
       gradlePluginPortal()
+      maven("https://maven.google.com")
    }
    versionCatalogs {
+      defaultLibrariesExtensionName.set("defaultLibs")
       create("libs") {
          from(files("../gradle/libs.versions.toml"))
+         val kotlinOverrideVersion = System.getenv("KOTLIN_VERSION")
+         if (kotlinOverrideVersion != null) {
+            version("kotlin", kotlinOverrideVersion)
+         }
       }
    }
 }

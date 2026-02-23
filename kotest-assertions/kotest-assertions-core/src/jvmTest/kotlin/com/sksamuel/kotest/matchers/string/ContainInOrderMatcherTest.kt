@@ -61,6 +61,14 @@ class ContainInOrderMatcherTest : FreeSpec() {
             }.message.shouldContain("""Did not match substring[2]: <"red">""")
          }
 
+         "should pass for overlapping substrings when second one occurs later" {
+            "sourdough bread".shouldContainInOrder("bread", "read")
+         }
+
+         "should fail for overlapping substrings when second one begins at same index" {
+            "are you ready".shouldNotContainInOrder("read", "ready")
+         }
+
          "should find first mismatch before its expected place" {
             val message = shouldThrowAny {
                "The quick brown fox jumps over the lazy dog".shouldContainInOrder(

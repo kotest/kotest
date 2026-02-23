@@ -22,6 +22,7 @@ kotlin {
             api(libs.junit.platform5.engine)
             api(libs.junit.platform5.api)
             api(libs.junit.platform5.launcher)
+            api(libs.junit.jupiter5.api)
          }
       }
 
@@ -30,7 +31,7 @@ kotlin {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.junit.platform5.testkit)
             implementation(libs.mockk)
-            implementation("dev.gradleplugins:gradle-api:8.4")
+            implementation(libs.gradle.api)
          }
       }
 

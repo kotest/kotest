@@ -5,9 +5,9 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ProjectExtension
-import io.kotest.core.extensions.SpecExecutionOrderExtension
-import io.kotest.core.log
+import io.kotest.core.project.FilterAbstractSpecsTransformer
 import io.kotest.core.project.ProjectContext
+import io.kotest.core.project.SortSpecsTransformer
 import io.kotest.core.project.TestSuite
 import io.kotest.engine.config.ProjectConfigDumper
 import io.kotest.engine.config.ProjectConfigResolver
@@ -15,7 +15,6 @@ import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.extensions.ProjectExtensions
 import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
-import io.kotest.engine.spec.DefaultSpecExecutionOrderExtension
 import io.kotest.engine.tags.TagExpression
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
@@ -55,7 +54,7 @@ class TestEngine(private val config: TestEngineConfig) {
          suite = suite,
          tags = tags,
          registry = config.registry,
-         projectConfig = resolveProjectConfig(config.projectConfig),
+         projectConfig = resolveProjectConfig(config.projectConfig, suite.specs.map { it.fqn }.toSet()),
          listener = config.listener,
       )
 
@@ -90,9 +89,9 @@ class TestEngine(private val config: TestEngineConfig) {
             }
          } catch (_: TimeoutCancellationException) {
             val e = ProjectTimeoutException(timeout)
-            EngineResult(listOf(e), false)
+            EngineResult(listOf(e))
          } catch (t: Throwable) {
-            EngineResult(listOf(t), false)
+            EngineResult(listOf(t))
          }
       }
    }
@@ -101,7 +100,7 @@ class TestEngine(private val config: TestEngineConfig) {
       context: TestEngineContext,
       projectConfigResolver: ProjectConfigResolver
    ): EngineResult {
-      var result: EngineResult = EngineResult.empty
+      var result = EngineResult()
       var projectContext: ProjectContext = context.toProjectContext()
       val initial: suspend (ProjectContext) -> Unit =
          { result = executeProjectListeners(projectContext.toEngineContext(context), projectConfigResolver) }
@@ -133,9 +132,10 @@ class TestEngine(private val config: TestEngineConfig) {
 
       // if we have errors in the before project listeners, we'll not execute tests,
       // but instead immediately return those errors.
-      if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors, false)
+      if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors)
 
-      val result = sortSuiteAndExecute(context)
+      val result = executeSuite(context)
+      logger.log { "All specs completed with errors: ${result.errors}" }
 
       val afterErrors = extensions.afterProject()
 
@@ -144,9 +144,12 @@ class TestEngine(private val config: TestEngineConfig) {
       return result.addErrors(afterErrors)
    }
 
-   internal suspend fun sortSuiteAndExecute(context: TestEngineContext): EngineResult {
-      val withSortedSuite = context.copy(suite = sortTestSuite(context.suite, context.projectConfigResolver))
-      return execute(withSortedSuite)
+   internal suspend fun executeSuite(context: TestEngineContext): EngineResult {
+      val suite = listOf(
+         FilterAbstractSpecsTransformer,
+         SortSpecsTransformer(context.projectConfigResolver)
+      ).fold(context.suite) { suite, transformer -> transformer.transform(suite) }
+      return execute(context.copy(suite = suite))
    }
 
    internal suspend fun execute(context: TestEngineContext): EngineResult {
@@ -161,24 +164,10 @@ class TestEngine(private val config: TestEngineConfig) {
             )
          )
          TestSuiteScheduler(context).schedule(context.suite)
+         EngineResult()
       } catch (t: Throwable) {
          EngineResult(listOf(t))
       }
-   }
-
-   /**
-    * Returns an updated [TestSuite] with specs sorted according to registered [SpecExecutionOrderExtension]s
-    * or falling back to the [DefaultSpecExecutionOrderExtension].
-    */
-   internal fun sortTestSuite(suite: TestSuite, projectConfigResolver: ProjectConfigResolver): TestSuite {
-
-      val exts = projectConfigResolver.extensions().filterIsInstance<SpecExecutionOrderExtension>().ifEmpty {
-         listOf(DefaultSpecExecutionOrderExtension(projectConfigResolver))
-      }
-
-      log { "Sorting specs using extensions $exts" }
-      val specs = exts.fold(suite.specs) { acc, op -> op.sort(acc) }
-      return TestSuite(specs)
    }
 }
 
@@ -187,7 +176,10 @@ class TestEngine(private val config: TestEngineConfig) {
  * the given config if no other project is located.
  */
 @JVMOnly
-internal expect fun resolveProjectConfig(projectConfig: AbstractProjectConfig?): AbstractProjectConfig?
+internal expect fun resolveProjectConfig(
+   projectConfig: AbstractProjectConfig?,
+   specFqns: Set<String>,
+): AbstractProjectConfig?
 
 @JVMOnly
 internal expect fun writeFailuresIfEnabled(context: TestEngineContext)

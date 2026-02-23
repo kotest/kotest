@@ -83,7 +83,7 @@ fun <T> Optional<T>.shouldBePresent(): T {
 }
 
 /**
- * Verifies t hat this Optional contains no value
+ * Verifies that this Optional contains no value
  */
 fun <T> Optional<T>.shouldNotBePresent() = this shouldNot bePresent()
 
