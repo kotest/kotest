@@ -4,6 +4,7 @@ public abstract class io/kotest/framework/gradle/KotestGradleExtension {
 	public abstract fun getCustomGradleTask ()Lorg/gradle/api/provider/Property;
 	public abstract fun getEnablePowerAssert ()Lorg/gradle/api/provider/Property;
 	public abstract fun getShowIgnoreReasons ()Lorg/gradle/api/provider/Property;
+	public abstract fun getTruncateTestNamesInGradle ()Lorg/gradle/api/provider/Property;
 }
 
 public abstract class io/kotest/framework/gradle/KotestPlugin : org/gradle/api/Plugin {
