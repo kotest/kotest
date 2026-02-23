@@ -8,7 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.DisplayNameFormatting
-import io.kotest.extensions.system.withEnvironment
+import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.platform.engine.TestDescriptor
@@ -122,7 +122,7 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
       }
 
       test("CONTAINER display name is truncated when env var is set") {
-         withEnvironment(TRUNCATE_TEST_NAMES_ENV, "true") {
+         withSystemProperty(TRUNCATE_TEST_NAMES_ENV, "true") {
             val descriptor = createTestDescriptorWithMethodSource(
                root = root,
                testCase = longNameTestCase,
@@ -143,7 +143,7 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
             TestType.Test,
             parent = longNameTestCase,
          )
-         withEnvironment(TRUNCATE_TEST_NAMES_ENV, "true") {
+         withSystemProperty(TRUNCATE_TEST_NAMES_ENV, "true") {
             val descriptor = createTestDescriptorWithMethodSource(
                root = root,
                testCase = longLeafTestCase,
@@ -155,7 +155,7 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
       }
 
       test("short CONTAINER display name is not truncated even when env var is set") {
-         withEnvironment(TRUNCATE_TEST_NAMES_ENV, "true") {
+         withSystemProperty(TRUNCATE_TEST_NAMES_ENV, "true") {
             val descriptor = createTestDescriptorWithMethodSource(
                root = root,
                testCase = containerTestCase,
@@ -169,4 +169,3 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
 })
 
 private class DummySpec : FunSpec({})
-

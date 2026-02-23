@@ -1,6 +1,5 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.common.env
 import io.kotest.common.isIntellij
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
@@ -83,7 +82,7 @@ internal fun createTestDescriptorWithMethodSource(
          LocationEmbedder.embeddedTestName(testCase.descriptor, formatter.format(testCase))
       else {
          val name = formatter.format(testCase)
-         if (type == TestDescriptor.Type.CONTAINER && env(TRUNCATE_TEST_NAMES_ENV) == "true")
+         if (type == TestDescriptor.Type.CONTAINER && isTruncateTestNamesEnabled())
             truncateTestName(name)
          else
             name
@@ -106,6 +105,17 @@ internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = Me
    /* className = */ kclass.java.name,
    /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
 )
+
+/**
+ * Returns true if test name truncation is enabled.
+ *
+ * Checks both the JVM system property and the environment variable with the same key
+ * ([TRUNCATE_TEST_NAMES_ENV]) so that the feature can be activated via either mechanism.
+ * System properties are checked first because they work on all platforms (including Windows,
+ * where modifying environment variables at runtime is unreliable).
+ */
+internal fun isTruncateTestNamesEnabled(): Boolean =
+   System.getProperty(TRUNCATE_TEST_NAMES_ENV) == "true" || System.getenv(TRUNCATE_TEST_NAMES_ENV) == "true"
 
 internal fun truncateTestName(name: String): String =
    if (name.length <= MAX_TRUNCATED_NAME_LENGTH) name
