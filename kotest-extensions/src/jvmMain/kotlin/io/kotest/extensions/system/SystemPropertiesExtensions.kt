@@ -8,7 +8,7 @@ import io.kotest.extensions.system.OverrideMode.SetOrError
 import java.util.Properties
 
 /**
- * Changes System Properties with chosen key and value
+ * Changes System Properties with a given key and value
  *
  * This is a helper function for code that uses System Properties. It changes the specific [key] from [System.getProperties]
  * with the specified [value], only during the execution of [block].
@@ -26,7 +26,7 @@ inline fun <T> withSystemProperty(key: String, value: String?, mode: OverrideMod
 }
 
 /**
- * Changes System Properties with chosen key and value
+ * Changes System Properties with a given key and value
  *
  * This is a helper function for code that uses System Properties. It changes the specific key from [System.getProperties]
  * with the specified value, only during the execution of [block].

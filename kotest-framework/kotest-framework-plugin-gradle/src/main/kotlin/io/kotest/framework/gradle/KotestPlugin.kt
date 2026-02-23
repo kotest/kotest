@@ -65,6 +65,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
       internal const val KOTEST_INCLUDE_PATTERN = "KOTEST_INCLUDE_PATTERN"
       internal const val KOTEST_SHOW_IGNORE_REASONS = "KOTEST_SHOW_IGNORE_REASONS"
+      internal const val KOTEST_TRUNCATE_TEST_NAMES = "KOTEST_TRUNCATE_TEST_NAMES"
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
@@ -158,6 +159,10 @@ abstract class KotestPlugin : Plugin<Project> {
 
          if (extension.showIgnoreReasons.getOrElse(false)) {
             setEnvVar(task, KOTEST_SHOW_IGNORE_REASONS, "true")
+         }
+
+         if (extension.truncateTestNamesInGradle.getOrElse(false)) {
+            setEnvVar(task, KOTEST_TRUNCATE_TEST_NAMES, "true")
          }
       }
 

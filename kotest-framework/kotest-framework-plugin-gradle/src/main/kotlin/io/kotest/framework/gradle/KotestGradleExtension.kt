@@ -26,4 +26,12 @@ abstract class KotestGradleExtension {
     */
    @ExperimentalKotest
    abstract val enablePowerAssert: Property<Boolean>
+
+   /**
+    * Set to true, and Kotest will truncate container (parent) test display names when running via Gradle.
+    * This can help avoid excessively long file paths in test reports when Gradle generates a directory
+    * for every level of the test hierarchy (Gradle 9.3+).
+    * Spec names (class names) are never truncated.
+    */
+   abstract val truncateTestNamesInGradle: Property<Boolean>
 }
