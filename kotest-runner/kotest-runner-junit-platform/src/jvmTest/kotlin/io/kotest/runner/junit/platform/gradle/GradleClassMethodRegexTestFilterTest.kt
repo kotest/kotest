@@ -144,22 +144,19 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
-   context("test names with newlines or surrounding whitespace are normalized before matching") {
+   context("test names with carriage returns or surrounding whitespace are normalized before matching") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val fqcn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
 
-      test("descriptor with newline in test name matches normalized pattern") {
-         val testWithNewline = spec.append("line one\nline two")
-         val filter = "$fqcn\\Q.line one line two\\E"
-         GradleClassMethodRegexTestFilter(setOf(filter))
-            .filter(testWithNewline) shouldBe DescriptorFilterResult.Include
-      }
+      // Note: DescriptorId forbids \n, so only \r (bare carriage return) can appear in test names.
+      // The Gradle plugin normalizes \r to a space when building the --tests filter, so we
+      // need to do the same when matching incoming descriptors at runtime.
 
-      test("descriptor with CRLF in test name matches normalized pattern") {
-         val testWithCrlf = spec.append("line one\r\nline two")
+      test("descriptor with carriage return in test name matches normalized pattern") {
+         val testWithCr = spec.append("line one\rline two")
          val filter = "$fqcn\\Q.line one line two\\E"
          GradleClassMethodRegexTestFilter(setOf(filter))
-            .filter(testWithCrlf) shouldBe DescriptorFilterResult.Include
+            .filter(testWithCr) shouldBe DescriptorFilterResult.Include
       }
 
       test("descriptor with leading and trailing whitespace matches trimmed pattern") {
@@ -169,11 +166,11 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
             .filter(testWithSpaces) shouldBe DescriptorFilterResult.Include
       }
 
-      test("descriptor with newline in test name does not match unrelated pattern") {
-         val testWithNewline = spec.append("line one\nline two")
+      test("descriptor with carriage return in test name does not match unrelated pattern") {
+         val testWithCr = spec.append("line one\rline two")
          val filter = "$fqcn\\Q.something else\\E"
          GradleClassMethodRegexTestFilter(setOf(filter))
-            .filter(testWithNewline) shouldBe DescriptorFilterResult.Exclude(null)
+            .filter(testWithCr) shouldBe DescriptorFilterResult.Exclude(null)
       }
    }
 

@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform.gradle
 import io.kotest.common.env
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.DescriptorId
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
@@ -55,7 +56,7 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     * - io.*.A*Test.some test context* becomes \Qio.\E.*\Q.A\E.*\QTest.some test context\E.*
     */
    private fun match(pattern: String, descriptor: Descriptor): Boolean {
-      val path = descriptor.dotSeparatedFullPath().value.normalizeDescriptorPath()
+      val path = descriptor.withNormalizedIds().dotSeparatedFullPath().value
       val regexPattern = "^(.*)$pattern".toRegex() // matches pattern exactly
       val laxRegexPattern = "^(.*)$pattern(.*)$".toRegex() // matches pattern that can be followed by others
       val packagePath = descriptor.spec().id.value.split(".").dropLast(1).joinToString(".") // io.kotest
@@ -103,6 +104,22 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
    }
 
    /**
+    * Returns a copy of this descriptor with carriage returns replaced by spaces and surrounding
+    * whitespace trimmed from each test id, so the resulting path can be matched against a normalized
+    * Gradle filter pattern.
+    *
+    * Note: [DescriptorId] already forbids `\n`, so only `\r` and surrounding whitespace need
+    * to be handled here. Spec ids (class FQNs) are left unchanged.
+    */
+   private fun Descriptor.withNormalizedIds(): Descriptor = when (this) {
+      is Descriptor.SpecDescriptor -> this
+      is Descriptor.TestDescriptor -> Descriptor.TestDescriptor(
+         this.parent.withNormalizedIds(),
+         DescriptorId(this.id.value.replace("\r", " ").trim())
+      )
+   }
+
+   /**
     * Returns a gradle-compatible dot-separated full path of the given descriptor.
     * i.e. io.package.MyTest.given something -- should do something
     *
@@ -113,13 +130,6 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     * The other problem is that also means we can't have "." in the test / context path because Gradle doesn't
     * like it and will not even give us any candidate classes.
     */
-   /**
-    * Strips newlines and trims surrounding whitespace from a descriptor path so that
-    * it can be matched against a normalized Gradle filter pattern.
-    */
-   private fun String.normalizeDescriptorPath(): String =
-      replace("\r\n", " ").replace("\n", " ").replace("\r", " ").trim()
-
    private fun Descriptor.dotSeparatedFullPath(): DescriptorPath = when (this) {
       is Descriptor.SpecDescriptor -> DescriptorPath(this.id.value)
       is Descriptor.TestDescriptor -> when (this.parent) {
