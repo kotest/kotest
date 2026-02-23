@@ -8,6 +8,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.DisplayNameFormatting
+import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.platform.engine.TestDescriptor
@@ -98,7 +99,73 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
       methodSource.className shouldBe DummySpec::class.qualifiedName
       methodSource.methodName shouldBe "container test"
    }
+
+   context("display name truncation") {
+
+      val longNameTestCase = TestCase(
+         DummySpec::class.toDescriptor().append("a".repeat(MAX_TRUNCATED_NAME_LENGTH + 10)),
+         TestNameBuilder.builder("a".repeat(MAX_TRUNCATED_NAME_LENGTH + 10)).build(),
+         DummySpec(),
+         { },
+         SourceRef.None,
+         TestType.Container,
+      )
+
+      test("CONTAINER display name is not truncated when env var is not set") {
+         val descriptor = createTestDescriptorWithMethodSource(
+            root = root,
+            testCase = longNameTestCase,
+            type = TestDescriptor.Type.CONTAINER,
+            formatter = DisplayNameFormatting(null),
+         )
+         descriptor.displayName shouldBe "a".repeat(MAX_TRUNCATED_NAME_LENGTH + 10)
+      }
+
+      test("CONTAINER display name is truncated when env var is set") {
+         withSystemProperty(TRUNCATE_TEST_NAMES_ENV, "true") {
+            val descriptor = createTestDescriptorWithMethodSource(
+               root = root,
+               testCase = longNameTestCase,
+               type = TestDescriptor.Type.CONTAINER,
+               formatter = DisplayNameFormatting(null),
+            )
+            descriptor.displayName shouldBe "a".repeat(MAX_TRUNCATED_NAME_LENGTH - 3) + "..."
+         }
+      }
+
+      test("TEST (leaf) display name is never truncated even when env var is set") {
+         val longLeafTestCase = TestCase(
+            longNameTestCase.descriptor.append("leaf"),
+            TestNameBuilder.builder("a".repeat(MAX_TRUNCATED_NAME_LENGTH + 10)).build(),
+            longNameTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Test,
+            parent = longNameTestCase,
+         )
+         withSystemProperty(TRUNCATE_TEST_NAMES_ENV, "true") {
+            val descriptor = createTestDescriptorWithMethodSource(
+               root = root,
+               testCase = longLeafTestCase,
+               type = TestDescriptor.Type.TEST,
+               formatter = DisplayNameFormatting(null),
+            )
+            descriptor.displayName shouldBe "a".repeat(MAX_TRUNCATED_NAME_LENGTH + 10)
+         }
+      }
+
+      test("short CONTAINER display name is not truncated even when env var is set") {
+         withSystemProperty(TRUNCATE_TEST_NAMES_ENV, "true") {
+            val descriptor = createTestDescriptorWithMethodSource(
+               root = root,
+               testCase = containerTestCase,
+               type = TestDescriptor.Type.CONTAINER,
+               formatter = DisplayNameFormatting(null),
+            )
+            descriptor.displayName shouldBe "container test"
+         }
+      }
+   }
 })
 
 private class DummySpec : FunSpec({})
-

@@ -21,10 +21,12 @@ import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.execution.junit.JavaRunConfigurationProducerBase
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Ref
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiElement
 import com.intellij.psi.util.PsiUtilCore
+import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.ElementUtils
 import io.kotest.plugin.intellij.psi.TestReference
 import io.kotest.plugin.intellij.run.RunnerMode
@@ -57,8 +59,8 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       sourceElementRef: Ref<PsiElement>
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_TEST_TASK) {
-         logger.debug("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
+      if (!isEnabled(context.module?.project)) {
+         logger.debug("This producer is not enabled for this project, so it will not contribute")
          return false
       }
 
@@ -85,8 +87,8 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       context: ConfigurationContext
    ): Boolean {
 
-      if (RunnerModes.mode(context.module) != RunnerMode.GRADLE_TEST_TASK) {
-         logger.debug("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
+      if (!isEnabled(context.module?.project)) {
+         logger.debug("This producer is not enabled for this module, so it will not contribute")
          return false
       }
 
@@ -134,14 +136,30 @@ class AndroidInstrumentedTestRunConfigurationProducer :
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
       // we return true, because a Kotest Android instrumented test is more specific than a normal Kotest test,
       // and we know that only Kotest contexts will be present here.
+
+      if (!isEnabled(self.configuration.project)) {
+         logger.debug("This producer is not enabled for this module, so it will not contribute")
+         return false
+      }
+
       return true
+   }
+
+   /**
+    * Returns true if this run producer should be enabled for the current project.
+    *
+    * To be enabled, it requires Kotest 6.1.4 or higher, since that's when the InstrumentationFilter
+    * was added, needed for individual tests.
+    */
+   internal fun isEnabled(project: Project?): Boolean {
+      return GradleUtils.isKotest614OrAbove(project)
    }
 }
 
 /**
  * A helper class responsible for configuring [AndroidTestRunConfiguration]s based on given information.
  */
-data class AndroidInstrumentedTestConfigurator(
+internal data class AndroidInstrumentedTestConfigurator(
    val facet: AndroidFacet,
    val location: Location<PsiElement>,
    val virtualFile: VirtualFile,
@@ -171,7 +189,7 @@ data class AndroidInstrumentedTestConfigurator(
     * Accepts a [AndroidTestRunConfiguration] and the current context, and if the context is applicable to
     * instrumented tests returns true after configuring the run configuration.
     */
-   fun configure(
+   internal fun configure(
       configuration: AndroidTestRunConfiguration,
       context: ConfigurationContext,
    ): Boolean {
