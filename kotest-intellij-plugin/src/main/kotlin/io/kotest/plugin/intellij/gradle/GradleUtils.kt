@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.gradle
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.module.Module
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import io.kotest.plugin.intellij.run.gradle.GradleTaskNamesBuilder
@@ -86,8 +87,23 @@ internal object GradleUtils {
 
    fun isKotest614OrAbove(project: Project?): Boolean {
       if (project == null) return false
+      // When developing Kotest itself, the engine exists as a source module rather than a
+      // packaged library, so no versioned entry is present in the library table. Detect this
+      // by checking whether any module in the project has "kotest-framework-engine" in its name.
+      if (isKotestSourceProject(project)) return true
       val version = getKotestVersion(project) ?: return false
       return isKotest614OrAbove(version)
+   }
+
+   /**
+    * Returns true if the project is the Kotest source project itself, where the engine is built
+    * from source and therefore has no versioned library entry in the project library table.
+    * Detected by the presence of a module whose name contains "kotest-framework-engine".
+    */
+   private fun isKotestSourceProject(project: Project): Boolean {
+      return ModuleManager.getInstance(project).modules.any { module ->
+         module.name.contains("kotest-framework-engine")
+      }
    }
 
    internal fun isKotest614OrAbove(version: Version): Boolean {
