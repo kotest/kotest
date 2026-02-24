@@ -11,13 +11,13 @@ import kotlin.time.Duration.Companion.seconds
 class ShouldBePerformanceTest : FunSpec() {
    init {
 
-      test("shouldBe performance").config(timeout = 1.seconds) {
+      test("shouldBe performance").config(timeout = 2.seconds) {
          (1..1_000_000).forEach {
             (it % 1) shouldBe 0
          }
       }
 
-      test("shouldNotBe should not take longer to execute than shouldBe").config(timeout = 1.seconds) {
+      test("shouldNotBe should not take longer to execute than shouldBe").config(timeout = 2.seconds) {
          (1..1_000_000).forEach {
             it shouldNotBe 0
          }

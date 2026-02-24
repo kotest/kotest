@@ -3,27 +3,32 @@ package com.sksamuel.kotest.matchers.result
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.result.*
+import io.kotest.matchers.result.AnyError
+import io.kotest.matchers.result.FailureMatcher
+import io.kotest.matchers.result.FailureTypeMatcher
+import io.kotest.matchers.result.shouldBeFailure
+import io.kotest.matchers.result.shouldNotBeFailure
 import io.kotest.matchers.shouldBe
 import kotlin.Result.Companion.failure
 import kotlin.Result.Companion.success
 
+@Suppress("DEPRECATION")
 class FailureMatchersTest : FunSpec({
   context("Matcher") {
-    val matcher = FailureMatcher(DummyException2)
+    val matcher = FailureMatcher(DummyException2())
 
     test("Passes on same failure") {
-      matcher.test(failure<String>(DummyException2)).passed() shouldBe true
+      matcher.test(failure<String>(DummyException2())).passed() shouldBe true
     }
 
     test("Passes on any failure if expected type is AnyError") {
       val matcher = FailureMatcher(AnyError)
-      matcher.test(failure<String>(DummyException2)).passed() shouldBe true
+      matcher.test(failure<String>(DummyException2())).passed() shouldBe true
     }
 
     test("Passes on any failure if expected is left blank") {
       val matcher = FailureMatcher()
-      matcher.test(failure<String>(DummyException2)).passed() shouldBe true
+      matcher.test(failure<String>(DummyException2())).passed() shouldBe true
     }
 
     test("Fails on success") {
@@ -34,7 +39,7 @@ class FailureMatchersTest : FunSpec({
     }
 
     test("Fails on different exception") {
-      assertSoftly(matcher.test(failure<String>(DummyException3))) {
+      assertSoftly(matcher.test(failure<String>(DummyException3()))) {
         passed() shouldBe false
         failureMessage() shouldBe "Result should be Failure(DummyException2) but was Failure(DummyException3)"
       }
@@ -52,7 +57,7 @@ class FailureMatchersTest : FunSpec({
     }
 
     test("Fails on different type") {
-      assertSoftly(matcher.test(failure<String>(DummyException3))) {
+      assertSoftly(matcher.test(failure<String>(DummyException3()))) {
         passed() shouldBe false
         failureMessage() shouldBe "Result should be a failure of type ${DummyException2::class} but was ${DummyException3::class}"
       }
@@ -62,18 +67,18 @@ class FailureMatchersTest : FunSpec({
   context("Extensions") {
     test("Should not be failure") {
       success("abc").shouldNotBeFailure()
-      shouldThrowAny { failure<String>(DummyException2).shouldNotBeFailure() }
+      shouldThrowAny { failure<String>(DummyException2()).shouldNotBeFailure() }
     }
 
     test("Should be failure") {
-      failure<String>(DummyException2).shouldBeFailure()
+      failure<String>(DummyException2()).shouldBeFailure()
       shouldThrowAny { success("abc").shouldBeFailure() }
     }
 
     test("Should be failure with target") {
-      failure<String>(DummyException2) shouldBeFailure DummyException2
-      shouldThrowAny { failure<String>(DummyException2) shouldBeFailure DummyException3 }
-      shouldThrowAny { success("ABC") shouldBeFailure DummyException2 }
+      failure<String>(DummyException2()) shouldBeFailure DummyException2()
+      shouldThrowAny { failure<String>(DummyException2()) shouldBeFailure DummyException3() }
+      shouldThrowAny { success("ABC") shouldBeFailure DummyException2() }
     }
 
     context("Should be failure with target block") {
@@ -93,7 +98,7 @@ class FailureMatchersTest : FunSpec({
         var callsToBlock = 0
         val block: () -> Unit = { callsToBlock++ }
 
-        failure<String>(DummyException2) shouldBeFailure {
+        failure<String>(DummyException2()) shouldBeFailure {
           block()
         }
 
@@ -104,26 +109,26 @@ class FailureMatchersTest : FunSpec({
         var throwableInBlock: Throwable? = null
         val block: (Throwable) -> Unit = { throwableInBlock = it }
 
-        failure<String>(DummyException2) shouldBeFailure {
+        failure<String>(DummyException2()) shouldBeFailure {
           block(it)
         }
 
-        throwableInBlock shouldBe DummyException2
+        throwableInBlock shouldBe DummyException2()
       }
     }
 
     test("Should be failure with reified type") {
-      failure<String>(DummyException2).shouldBeFailure<DummyException2>()
-      shouldThrowAny { failure<String>(DummyException2).shouldBeFailure<DummyException3>() }
+      failure<String>(DummyException2()).shouldBeFailure<DummyException2>()
+      shouldThrowAny { failure<String>(DummyException2()).shouldBeFailure<DummyException3>() }
       shouldThrowAny { success("abc").shouldBeFailure<DummyException2>() }
     }
   }
 })
 
-private object DummyException2 : Exception() {
+private class DummyException2 : Exception() {
   override fun toString() = "DummyException2"
 }
 
-private object DummyException3 : Exception() {
+private class DummyException3 : Exception() {
   override fun toString() = "DummyException3"
 }
