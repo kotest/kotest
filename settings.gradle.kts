@@ -118,7 +118,7 @@ include(
 
    // runs tests on junit5 but also used by other modules to run kotest's own tests
    ":kotest-runner:kotest-runner-junit5",
-   ":kotest-runner:kotest-runner-junit4",
+//   ":kotest-runner:kotest-runner-junit4",
    ":kotest-runner:kotest-runner-junit6",
 
    // BOM for whole kotest project
@@ -174,7 +174,7 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-htmlreporter",
 
       // tests specific functionality of the JUnit4 runner used by Android instrumented tests
-      ":kotest-tests:kotest-tests-junit4",
+//      ":kotest-tests:kotest-tests-junit4",
 
       // tests that we add the jupiter dep to allow org.junit.jupiter.api.Test annotations for backwards compatibility
       // we shouldn't really add it, people can add it themselves if they want the dependency, but this is a historic artifact
