@@ -59,8 +59,14 @@ abstract class TimerService : BuildService<BuildServiceParameters.None>, Operati
    }
 }
 
-project.afterEvaluate {
-   val serviceProvider = gradle.sharedServices.registerIfAbsent("taskTimer", TimerService::class) {}
-   val registry = project.extensions.getByType<BuildEventsListenerRegistry>()
-   registry.onTaskCompletion(serviceProvider)
+// Inject the registry as a property
+val listenerRegistry = objects.newInstance(RegistryWrapper::class.java).registry
+
+// Define a simple wrapper to facilitate injection in the script
+interface RegistryWrapper {
+   @get:Inject
+   val registry: BuildEventsListenerRegistry
 }
+
+val serviceProvider = gradle.sharedServices.registerIfAbsent("taskTimer", TimerService::class) {}
+listenerRegistry.onTaskCompletion(serviceProvider)
