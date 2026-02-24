@@ -106,10 +106,10 @@ dependencies {
 }
 
 // TODO remember to remove Debug: log junit4 publications to diagnose
-project(":kotest-runner:kotest-runner-junit4").afterEvaluate {
-   val pubs = extensions.findByType<PublishingExtension>()?.publications?.map { "${it.name} (${it::class.simpleName})" }
-   logger.lifecycle("[kotest-debug] junit4 publications: $pubs")
-}
+//project(":kotest-runner:kotest-runner-junit4").afterEvaluate {
+//   val pubs = extensions.findByType<PublishingExtension>()?.publications?.map { "${it.name} (${it::class.simpleName})" }
+//   logger.lifecycle("[kotest-debug] junit4 publications: $pubs")
+//}
 
 configureGradleDaemonJvm(
    project = project,

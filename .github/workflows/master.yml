@@ -72,7 +72,7 @@ jobs:
             -P"kotest_enableKotlinNative=false"
             ${{ matrix.args }}
             --no-configuration-cache
-            check
             --info
+            check
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
