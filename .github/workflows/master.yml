@@ -40,9 +40,9 @@ jobs:
       strategy:
          matrix:
             include:
-               # KMP+JVM
+               # KMP+JVM+Android
                -  os: ubuntu-latest
-                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm,kotestGradlePluginPluginMarkerMaven"
+                  args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm,android,kotestGradlePluginPluginMarkerMaven"
                # JS+Wasm
 #               -  os: ubuntu-latest
 #                  args: >-
