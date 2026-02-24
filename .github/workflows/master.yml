@@ -72,3 +72,4 @@ jobs:
             check
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
+         run_property_tests: true

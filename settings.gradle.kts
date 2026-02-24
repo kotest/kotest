@@ -9,7 +9,7 @@ pluginManagement {
 }
 
 plugins {
-   id("com.gradle.develocity") version "3.17.5"
+   id("com.gradle.develocity") version "4.3.2"
    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -88,22 +88,6 @@ include(
    // assertions for the konform validation library
    ":kotest-assertions:kotest-assertions-konform",
 
-   // base classes for property testing, plus std lib generators
-   ":kotest-property",
-
-   // contains arbs for kotlinx datetime
-   ":kotest-property:kotest-property-datetime",
-
-   // contains  extensions for property testing that build on the kotest test framework
-   // the new 6.0+ permutations based DSL for property testing
-   ":kotest-property:kotest-property-permutations",
-
-   // contains extensions for property testing that build on the kotest test framework
-   ":kotest-property:kotest-property-lifecycle",
-
-   ":kotest-property:kotest-property-arrow",
-//   ":kotest-property:kotest-property-arrow-optics",
-
    // contains some common extensions not worth making a module for
    ":kotest-extensions",
 
@@ -139,6 +123,8 @@ private val shouldRunJvmOnlyModules = isLocal || isMaster || isLinuxRunner
 
 /** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
 private val shouldRunLinuxOnlyModules = isLocal || isLinuxRunner
+
+private val shouldRunPropertyTestModules = isLocal || isMaster || System.getenv("RUN_PROPERTY_TESTS").toBoolean()
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
@@ -248,6 +234,26 @@ if (shouldRunLinuxOnlyModules) {
 
       // extensions that adapt junit extensions into kotest extensions
       ":kotest-extensions:kotest-extensions-junit5",
+   )
+}
+
+if (shouldRunPropertyTestModules) {
+   include(
+      // base classes for property testing, plus std lib generators
+      ":kotest-property",
+
+      // contains arbs for kotlinx datetime
+      ":kotest-property:kotest-property-datetime",
+
+      // contains  extensions for property testing that build on the kotest test framework
+      // the new 6.0+ permutations based DSL for property testing
+      ":kotest-property:kotest-property-permutations",
+
+      // contains extensions for property testing that build on the kotest test framework
+      ":kotest-property:kotest-property-lifecycle",
+
+      ":kotest-property:kotest-property-arrow",
+//   ":kotest-property:kotest-property-arrow-optics",
    )
 }
 

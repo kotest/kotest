@@ -18,6 +18,7 @@ jobs:
       outputs:
          run_docs: ${{ steps.check_files.outputs.run_docs }}
          run_tests: ${{ steps.check_files.outputs.run_tests }}
+         run_property_tests: ${{ steps.check_files.outputs.run_property_tests }}
       steps:
          -  name: Checkout code
             uses: actions/checkout@v5
@@ -29,6 +30,7 @@ jobs:
             run: |
                echo "run_docs=false" >> $GITHUB_OUTPUT
                echo "run_tests=false" >> $GITHUB_OUTPUT
+               echo "run_property_tests=false" >> $GITHUB_OUTPUT
 
                echo "=============== list modified files ==============="
                git diff --name-only HEAD^ HEAD
@@ -44,6 +46,10 @@ jobs:
                  else
                    echo "This modified file is under the 'documentation' folder. Will run docs workflow."
                    echo "run_docs=true" >> $GITHUB_OUTPUT
+                 fi
+                 if [[ $file == kotest-property/* ]]; then
+                   echo "This modified file is in a property test module. Will run property tests."
+                   echo "run_property_tests=true" >> $GITHUB_OUTPUT
                  fi
                done < files.txt
 
@@ -90,6 +96,7 @@ jobs:
             --no-configuration-cache
             check
          runs-on: ${{ matrix.os }}
+         run_property_tests: ${{ needs.determine-workflows-to-run.outputs.run_property_tests == 'true' }}
 
    validate-docs:
       needs: [ determine-workflows-to-run ]

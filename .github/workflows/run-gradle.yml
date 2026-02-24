@@ -16,6 +16,11 @@ on:
             description: "The Gradle task to run"
             required: true
             type: string
+         run_property_tests:
+            description: "Whether to run property tests"
+            required: false
+            type: boolean
+            default: false
 
 permissions:
    contents: read
@@ -93,6 +98,7 @@ jobs:
 
 env:
    RELEASE_VERSION: ${{ github.event.inputs.version }}
+   RUN_PROPERTY_TESTS: ${{ inputs.run_property_tests }}
    ORG_GRADLE_PROJECT_signingKey: ${{ secrets.SIGNING_KEY }}
    ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.SIGNING_PASSWORD }}
    ORG_GRADLE_PROJECT_Kotest_GradleBuildCache_user: ${{ secrets.GRADLE_BUILD_CACHE_USER }}
