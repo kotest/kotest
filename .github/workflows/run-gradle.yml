@@ -69,7 +69,7 @@ jobs:
                restore-keys: |
                   kotest-user-dir-
 
-         -  name: Run tests
+         -  name: Gradle ${{ inputs.task }}
             run: ./gradlew ${{ inputs.task }}
             shell: bash
 
