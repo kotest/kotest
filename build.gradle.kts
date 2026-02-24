@@ -33,10 +33,6 @@ nmcpAggregation {
    }
 }
 
-// Debug: log CI environment to help diagnose publication/aggregation issues
-logger.lifecycle("[kotest-debug] CI=${System.getenv("CI")} RUNNER_OS=${System.getenv("RUNNER_OS")} isRelease=${Ci.isRelease} publishVersion=${Ci.publishVersion} shouldAddLinuxTargets=${Ci.shouldAddLinuxTargets}")
-logger.lifecycle("[kotest-debug] enabledPublicationNamePrefixes=${kotestSettings.enabledPublicationNamePrefixes.get()}")
-
 val publishToAppropriateCentralRepository by tasks.registering {
    group = "publishing"
    if (Ci.isRelease) {
@@ -103,7 +99,7 @@ dependencies {
 
    // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
-   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+   // nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit6)
 

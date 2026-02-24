@@ -73,5 +73,6 @@ jobs:
             ${{ matrix.args }}
             --no-configuration-cache
             check
-            publishToAppropriateCentralRepository --info
+            --info
+            publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
