@@ -11,6 +11,7 @@ class MultipleMatcherResult(private val results: List<MatcherResult>) : MatcherR
    }
 
    override fun failureMessage(): String {
+      if (results.count { !it.passed() } == 1) return results.first { !it.passed() }.failureMessage()
       return buildString {
          appendLine("Matcher failed due to:")
          results.forEachIndexed { index, value ->
@@ -20,6 +21,7 @@ class MultipleMatcherResult(private val results: List<MatcherResult>) : MatcherR
    }
 
    override fun negatedFailureMessage(): String {
+      if (results.count { !it.passed() } == 1) return results.first { !it.passed() }.negatedFailureMessage()
       return buildString {
          appendLine("Matcher failed due to:")
          results.forEachIndexed { index, value ->

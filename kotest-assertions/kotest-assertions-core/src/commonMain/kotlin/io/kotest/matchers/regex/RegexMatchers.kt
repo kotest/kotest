@@ -118,7 +118,7 @@ fun haveSameRegexOptionsMatcher(options: Set<RegexOption>) = object : Matcher<Re
       return MatcherResult(
          value.options == options,
          { "Regex should have options $options but has options ${value.options}" },
-         { "Regex should not have pattern ${value.options}" }
+         { "Regex should not have options ${value.options}" }
       )
    }
 }
