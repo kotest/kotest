@@ -26,15 +26,13 @@ jobs:
       steps:
          -  name: "Set KONAN_DATA_DIR (windows)" # This sets the path to a folder named .konan in the user's home directory
             if: runner.os == 'Windows'
-            shell: cmd
+            shell: powershell
             run: |
-               echo ${{ github.workspace }}
                "KONAN_DATA_DIR=${{ github.workspace }}\.konan" >> $env:GITHUB_ENV
 
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
             run: |
-               echo ${{ github.workspace }}
                echo "KONAN_DATA_DIR=${{ github.workspace }}/.konan" >> $GITHUB_ENV
 
          -  name: Checkout the repo
