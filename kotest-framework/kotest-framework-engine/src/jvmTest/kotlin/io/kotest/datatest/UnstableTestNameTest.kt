@@ -77,6 +77,8 @@ class UnstableTestNameTest : FunSpec() {
 private class NonDataClassesTest : DescribeSpec() {
    init {
 
+      duplicateTestNameMode = DuplicateTestNameMode.Silent
+
       withData(
          NotADataClass(1),
          NotADataClass(2),

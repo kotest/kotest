@@ -1,11 +1,13 @@
 package com.sksamuel.kotest.engine.spec.duplicatedname
 
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 
 abstract class DescribeSpecDuplicateTestNameModeInfoTest(iso: IsolationMode) : DescribeSpec() {
    init {
+      duplicateTestNameMode = DuplicateTestNameMode.Silent
       isolationMode = iso
       describe("foo") {
          it("woo") {}
