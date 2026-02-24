@@ -59,6 +59,8 @@ abstract class TimerService : BuildService<BuildServiceParameters.None>, Operati
    }
 }
 
-val serviceProvider = gradle.sharedServices.registerIfAbsent("taskTimer", TimerService::class) {}
-val registry = project.extensions.getByType<BuildEventsListenerRegistry>()
-registry.onTaskCompletion(serviceProvider)
+project.afterEvaluate {
+   val serviceProvider = gradle.sharedServices.registerIfAbsent("taskTimer", TimerService::class) {}
+   val registry = project.extensions.getByType<BuildEventsListenerRegistry>()
+   registry.onTaskCompletion(serviceProvider)
+}
