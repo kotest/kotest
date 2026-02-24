@@ -34,8 +34,8 @@ jobs:
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
             run: |
-               echo $HOME
-               echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
+               echo ${{ github.workspace }}
+               echo "KONAN_DATA_DIR=${{ github.workspace }}/.konan" >> $GITHUB_ENV
 
          -  name: Checkout the repo
             uses: actions/checkout@v6
