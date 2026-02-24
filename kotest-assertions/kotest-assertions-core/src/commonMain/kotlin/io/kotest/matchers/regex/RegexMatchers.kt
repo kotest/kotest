@@ -31,7 +31,10 @@ infix fun Regex.shouldEqualRegex(anotherRegex: Regex): Regex {
  * @see [shouldBeRegex]
  * @see [beRegex]
  * */
-@Deprecated("Use `shouldNotEqualRegex` instead. Deprecated in 6.0", ReplaceWith("this shouldNotEqualRegex anotherRegex"))
+@Deprecated(
+   "Use `shouldNotEqualRegex` instead. Deprecated in 6.0",
+   ReplaceWith("this shouldNotEqualRegex anotherRegex")
+)
 infix fun Regex.shouldNotBeRegex(anotherRegex: Regex): Regex = shouldEqualRegex(anotherRegex)
 
 /**
@@ -49,12 +52,9 @@ fun beRegex(regex: Regex) = areEqualRegexMatcher(regex)
 
 fun areEqualRegexMatcher(regex: Regex) = object : Matcher<Regex> {
    override fun test(value: Regex): MatcherResult {
-      val patternMatchingResult = haveSamePatternMatcher(regex.pattern).test(value)
-      val optionMatchingResult = haveSameRegexOptionsMatcher(regex.options).test(value)
-      return MatcherResult(
-         patternMatchingResult.passed() && optionMatchingResult.passed(),
-         { "Regex should have pattern ${regex.pattern} and regex options ${regex.options}, but has pattern ${value.pattern} and regex options ${value.options}." },
-         { "Regex should not have pattern ${value.pattern} and regex options ${value.options}." }
+      return MatcherResult.multiple(
+         haveSamePatternMatcher(regex.pattern).test(value),
+         haveSameRegexOptionsMatcher(regex.options).test(value)
       )
    }
 }
