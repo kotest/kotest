@@ -28,11 +28,13 @@ jobs:
             if: runner.os == 'Windows'
             shell: cmd
             run: |
+               echo ${{ github.workspace }}
                "KONAN_DATA_DIR=${{ github.workspace }}\.konan" >> $env:GITHUB_ENV
 
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
             run: |
+               echo $HOME
                echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
 
          -  name: Checkout the repo
