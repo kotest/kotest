@@ -33,6 +33,10 @@ nmcpAggregation {
    }
 }
 
+// Debug: log CI environment to help diagnose publication/aggregation issues
+logger.lifecycle("[kotest-debug] CI=${System.getenv("CI")} RUNNER_OS=${System.getenv("RUNNER_OS")} isRelease=${Ci.isRelease} publishVersion=${Ci.publishVersion} shouldAddLinuxTargets=${Ci.shouldAddLinuxTargets}")
+logger.lifecycle("[kotest-debug] enabledPublicationNamePrefixes=${kotestSettings.enabledPublicationNamePrefixes.get()}")
+
 val publishToAppropriateCentralRepository by tasks.registering {
    group = "publishing"
    if (Ci.isRelease) {
@@ -103,6 +107,12 @@ dependencies {
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit6)
 
+}
+
+// Debug: log junit4 publications to diagnose nmcp resolve m2 hang
+project(":kotest-runner:kotest-runner-junit4").afterEvaluate {
+   val pubs = extensions.findByType<PublishingExtension>()?.publications?.map { "${it.name} (${it::class.simpleName})" }
+   logger.lifecycle("[kotest-debug] junit4 publications: $pubs")
 }
 
 configureGradleDaemonJvm(
