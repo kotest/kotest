@@ -24,11 +24,11 @@ jobs:
    gradle:
       runs-on: ${{ inputs.runs-on }}
       steps:
-         -  name: "Set KONAN_DATA_DIR (windows)"
+         -  name: "Set KONAN_DATA_DIR (windows)" # This sets the path to a folder named .konan in the user's home directory
             if: runner.os == 'Windows'
             shell: cmd
             run: |
-               echo KONAN_DATA_DIR=C:\Users\runneradmin\.konan>>%GITHUB_ENV%
+               "KONAN_DATA_DIR=${{ github.workspace }}\.konan" >> $env:GITHUB_ENV
 
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
@@ -36,7 +36,7 @@ jobs:
                echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
 
          -  name: Checkout the repo
-            uses: actions/checkout@v5
+            uses: actions/checkout@v6
             with:
                ref: ${{ github.event.inputs.ref }}
 
@@ -49,11 +49,10 @@ jobs:
          -  name: Setup Gradle
             uses: gradle/actions/setup-gradle@v5
             with:
-               gradle-home-cache-cleanup: true
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
 
          -  name: Cache Kotlin Konan
-            uses: actions/cache@v4
+            uses: actions/cache@v5
             with:
                path: ${{ env.KONAN_DATA_DIR }}
                key: kotlin-konan-${{ runner.os }}
@@ -62,7 +61,7 @@ jobs:
                   kotlin-konan-
 
          -  name: Cache Kotest user directory
-            uses: actions/cache@v4
+            uses: actions/cache@v5
             with:
                path: ~/.kotest
                key: kotest-user-dir-${{ runner.os }}
