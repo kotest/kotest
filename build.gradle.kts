@@ -99,7 +99,7 @@ dependencies {
 
    // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
-//   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit6)
 
