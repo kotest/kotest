@@ -99,17 +99,11 @@ dependencies {
 
    // Runners
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunitPlatform)
-   // nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
+   nmcpAggregation(projects.kotestRunner.kotestRunnerJunit4)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit5)
    nmcpAggregation(projects.kotestRunner.kotestRunnerJunit6)
 
 }
-
-// TODO remember to remove Debug: log junit4 publications to diagnose
-//project(":kotest-runner:kotest-runner-junit4").afterEvaluate {
-//   val pubs = extensions.findByType<PublishingExtension>()?.publications?.map { "${it.name} (${it::class.simpleName})" }
-//   logger.lifecycle("[kotest-debug] junit4 publications: $pubs")
-//}
 
 configureGradleDaemonJvm(
    project = project,
