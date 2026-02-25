@@ -6,15 +6,12 @@ import io.kotest.assertions.json.shouldNotContainJsonKeyValue
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import org.intellij.lang.annotations.Language
 
-//TODO alfonsoristorato: circle back to this once pipeline is green
-//@EnabledIf(LinuxOnlyGithubCondition::class)
-@Ignored
+@EnabledIf(LinuxOnlyGithubCondition::class)
 class ContainJsonKeyValueTest : StringSpec({
    @Language("JSON")
    val json = """
@@ -85,7 +82,7 @@ class ContainJsonKeyValueTest : StringSpec({
    "Failure message states if key is missing, shows element is not json array" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.bicycle[0].color", "V2")
-      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store'>."
+      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>."
    }
 
    "Failure message states if key is missing, shows json array index out of bounds when array is empty" {
