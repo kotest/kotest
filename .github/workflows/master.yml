@@ -44,15 +44,15 @@ jobs:
                -  os: ubuntu-latest
                   args: -P"kotest_enabledPublicationNamePrefixes=KotlinMultiplatform,jvm,kotestGradlePluginPluginMarkerMaven"
                # JS+Wasm
-#               -  os: ubuntu-latest
-#                  args: >-
-#                     -P"kotest_enableKotlinJs=true"
-#                     -P"kotest_enabledPublicationNamePrefixes=js,wasm"
+               -  os: ubuntu-latest
+                  args: >-
+                     -P"kotest_enableKotlinJs=true"
+                     -P"kotest_enabledPublicationNamePrefixes=js,wasm"
                # Linux+Android
-#               -  os: ubuntu-latest
-#                  args: >-
-#                     -P"kotest_enableKotlinNative=true"
-#                     -P"kotest_enabledPublicationNamePrefixes=linux,android"
+               -  os: ubuntu-latest
+                  args: >-
+                     -P"kotest_enableKotlinNative=true"
+                     -P"kotest_enabledPublicationNamePrefixes=linux,android"
                # Windows: MinGW
                -  os: windows-latest
                   args: >-
@@ -72,7 +72,6 @@ jobs:
             -P"kotest_enableKotlinNative=false"
             ${{ matrix.args }}
             --no-configuration-cache
-            --info
             check
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
