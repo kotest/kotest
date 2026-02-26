@@ -238,6 +238,7 @@ public abstract interface class io/kotest/matchers/MatcherResult {
 
 public final class io/kotest/matchers/MatcherResult$Companion {
 	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResult;
+	public final fun multiple ([Lio/kotest/matchers/MatcherResult;)Lio/kotest/matchers/MultipleMatcherResult;
 }
 
 public final class io/kotest/matchers/MatcherResultBuilder {
@@ -257,6 +258,13 @@ public final class io/kotest/matchers/MatcherResultBuilder {
 
 public final class io/kotest/matchers/MatcherResultBuilder$Companion {
 	public final fun create (Z)Lio/kotest/matchers/MatcherResultBuilder;
+}
+
+public final class io/kotest/matchers/MultipleMatcherResult : io/kotest/matchers/MatcherResult {
+	public fun <init> (Ljava/util/List;)V
+	public fun failureMessage ()Ljava/lang/String;
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
 }
 
 public final class io/kotest/matchers/SimpleMatcherResult : io/kotest/matchers/MatcherResult {
