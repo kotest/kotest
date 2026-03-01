@@ -4,8 +4,8 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
-import io.kotest.matchers.assertionCounter
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.errorCollector
 
 /**
  * Verifies that a block of code throws any [Throwable]

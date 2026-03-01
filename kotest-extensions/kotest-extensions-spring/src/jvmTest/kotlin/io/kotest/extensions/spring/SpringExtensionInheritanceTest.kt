@@ -16,6 +16,7 @@ import org.springframework.test.context.ContextConfiguration
 @ApplyExtension(SpringExtension::class)
 open class BaseSpringSpec : DescribeSpec()
 
+@Suppress("ANNOTATION_WILL_BE_APPLIED_ALSO_TO_PROPERTY_OR_FIELD")
 class SpringExtensionInheritanceTest(
    @Autowired private val service: UserService
 ) : BaseSpringSpec() {

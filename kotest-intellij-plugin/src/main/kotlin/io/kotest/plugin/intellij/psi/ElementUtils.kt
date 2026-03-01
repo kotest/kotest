@@ -14,19 +14,21 @@ object ElementUtils {
    private val logger = logger<ElementUtils>()
 
    /**
-    * Given a [PsiElement] returns the [TestContext] that maps to the location of that element,
+    * Given a [PsiElement] this returns the [TestReference] that maps to the location of that element,
     * or returns null if the given element does not map to a Kotest spec or test.
     */
-   fun findTestContext(element: PsiElement): TestContext? {
+   fun findTestReference(element: PsiElement): TestReference? {
       return AnalysisUtils.withEdtSafeAnalysis {
          element.enclosingSpec()?.let { spec ->
             val test = SpecStyle.findTest(element)
-            TestContext(spec, test).also {
-               logger.info("Test context for $element is $it")
-            }
+            TestReference(spec, test)
+               .also { logger.info("TestReference for $element is $it") }
          }
       }
    }
 }
 
-data class TestContext(val spec: KtClassOrObject, val test: Test?)
+/**
+ * Contains a reference to the spec PSI and details of the test context if applicable.
+ */
+data class TestReference(val spec: KtClassOrObject, val test: Test?)

@@ -3,6 +3,7 @@ package io.kotest.raceConditions
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.collections.shouldContainExactlyInAnyOrder
 import io.kotest.raceConditions.ParallelRunner.Companion.runInParallel
 import io.mockk.clearAllMocks
@@ -15,9 +16,9 @@ import java.time.LocalDateTime
 class ParallelRunnerTest: StringSpec() {
    init {
       /*
-      A typical race condition - two tasks mutate shared state without synchronization
+      A typical race condition - two tasks mutate a shared state without synchronization
        */
-      "two tasks share one mutable state, both make the same decision at the same time" {
+      "two tasks share one mutable state, both make the same decision at the same time".config(TestConfig(retries = 3)) {
          val box = Box(maxCapacity = 2)
          box.addItem("apple")
          runInParallel({ runner: ParallelRunner ->
@@ -39,7 +40,7 @@ class ParallelRunnerTest: StringSpec() {
          box.items() shouldContainExactlyInAnyOrder listOf("apple", "banana", "orange")
       }
 
-      "demo for mockkStatic".config(enabled = true) {
+      "demo for mockkStatic".config(TestConfig(retries = 3)) {
          runInParallel({ runner: ParallelRunner ->
             timedPrint("Before mock on same thread: ${LocalDateTime.now()}")
             runner.await()
@@ -64,7 +65,7 @@ Time: 2022-04-27T12:34:56, Thread: 50, After mock on same thread: 2022-04-27T12:
           */
       }
 
-      "demo for mockkStatic - can remock".config(enabled = true) {
+      "demo for mockkStatic - can remock".config(TestConfig(retries = 3)) {
          runInParallel({ runner: ParallelRunner ->
             mockkStatic(LocalDateTime::class)
             val localTime = LocalDateTime.of(2022, 4, 27, 12, 34, 56)

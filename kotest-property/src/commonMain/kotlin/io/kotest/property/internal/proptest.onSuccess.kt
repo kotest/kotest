@@ -17,6 +17,6 @@ internal suspend fun PropertyContext.onSuccess(
    outputStatistics(this, args, true)
    outputClassifications(args, config, random.seed)
    checkMinSuccess(config, random.seed)
-   if (args > 1) checkMaxDiscards()
+   checkMaxDiscards()
    clearFailedSeed()
 }

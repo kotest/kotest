@@ -10,7 +10,9 @@ data class PluginDescriptor(
    val sourceFolder: String, // used as the source root for specifics of this build
    val useInstaller: Boolean, // required to be false for EAP builds
    val jdkTarget: JavaVersion,
-   val androidVersion: String,
+   val androidVersion: String, // android plugin version
+   val webpPlugin: String?, // for newer intellij, this is no longer bundled and must be specified
+   val extraBundledPlugins: List<String> = emptyList(), // additional bundled plugins required for this version
 )
 
 // https://jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html
@@ -40,6 +42,7 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "251.23774.200",
+      webpPlugin = null,
    ),
    PluginDescriptor(
       since = "252.*", // this version is 2025.2.x
@@ -49,6 +52,7 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "252.23892.458",
+      webpPlugin = null,
    ),
    PluginDescriptor(
       since = "253.*", // this version is 2025.3.x
@@ -58,10 +62,23 @@ val descriptors = listOf(
       useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "253.28294.334",
+      webpPlugin = "intellij.webp:253.28294.218",
+   ),
+   PluginDescriptor(
+      since = "261.*", // this version is 2026.1.x
+      until = "262.*",
+      sdkVersion = "261-EAP-SNAPSHOT",
+      sourceFolder = "IC-261",
+      useInstaller = false,
+      jdkTarget = JavaVersion.VERSION_21,
+      androidVersion = "261.20869.38",
+      webpPlugin = "intellij.webp:261.21525.28",
+      // groovy-live-templates was split out of the Groovy plugin in 261
+      extraBundledPlugins = listOf("org.intellij.groovy.live.templates"),
    ),
 )
 
-val productName = System.getenv("PRODUCT_NAME") ?: "IC-251"
+val productName = System.getenv("PRODUCT_NAME") ?: "IC-253"
 val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == productName }
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
@@ -77,8 +94,9 @@ repositories {
 
    // IntelliJ Platform Gradle Plugin Repositories Extension - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-repositories-extension.html
    intellijPlatform {
-      defaultRepositories()
       jetbrainsRuntime()
+      defaultRepositories() // Includes the necessary JetBrains repositories
+      marketplace()         // Specifically enables Marketplace plugin resolution
    }
 }
 
@@ -140,8 +158,22 @@ dependencies {
       zipSigner()
 
       bundledPlugin("com.intellij.java")
+      bundledPlugin("JUnit")
+      bundledPlugin("com.intellij.gradle")
+      bundledPlugin("com.intellij.modules.json")
+      bundledPlugin("com.intellij.properties")
+      bundledPlugin("com.intellij.platform.images")
+      bundledPlugin("org.intellij.groovy")
+      bundledPlugin("org.intellij.intelliLang")
+      bundledPlugin("org.jetbrains.idea.gradle.dsl")
       bundledPlugin("org.jetbrains.kotlin")
       bundledPlugin("org.jetbrains.plugins.gradle")
+      bundledPlugin("org.toml.lang")
+      if (descriptor.webpPlugin == null)
+         bundledPlugin("intellij.webp")
+      else
+         plugin(descriptor.webpPlugin)
+      descriptor.extraBundledPlugins.forEach { bundledPlugin(it) }
       plugin("org.jetbrains.android:${descriptor.androidVersion}")
 
       testFramework(TestFrameworkType.Platform)

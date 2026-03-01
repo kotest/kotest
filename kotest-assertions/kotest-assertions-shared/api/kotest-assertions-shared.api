@@ -13,6 +13,24 @@ public final class io/kotest/assertions/AssertSoftlyKt {
 	public static final fun assertSoftly (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
 }
 
+public abstract interface class io/kotest/assertions/AssertionCounter {
+	public abstract fun get ()I
+	public fun getAndReset ()I
+	public abstract fun inc ()V
+	public fun inc (I)V
+	public abstract fun reset ()V
+}
+
+public final class io/kotest/assertions/AssertionCounter$DefaultImpls {
+	public static fun getAndReset (Lio/kotest/assertions/AssertionCounter;)I
+	public static fun inc (Lio/kotest/assertions/AssertionCounter;I)V
+}
+
+public final class io/kotest/assertions/AssertionCounter_jvmKt {
+	public static final fun getAssertionCounter ()Lio/kotest/assertions/AssertionCounter;
+	public static final fun getAssertionCounterContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
+}
+
 public final class io/kotest/assertions/AssertionErrorBuilder {
 	public static final field Companion Lio/kotest/assertions/AssertionErrorBuilder$Companion;
 	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)V
@@ -38,16 +56,63 @@ public final class io/kotest/assertions/AssertionErrorBuilder_jvmKt {
 	public static final fun intellijFormattedComparison (Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/String;
 }
 
+public class io/kotest/assertions/BasicErrorCollector : io/kotest/assertions/ErrorCollector {
+	public fun <init> ()V
+	public fun clear ()V
+	public fun clueContext ()Ljava/util/List;
+	public fun errors ()Ljava/util/List;
+	protected final fun getClues ()Ljava/util/List;
+	public fun getCollectionMode ()Lio/kotest/assertions/ErrorCollectionMode;
+	public fun getDepth ()I
+	protected final fun getFailures ()Ljava/util/List;
+	protected final fun getMode ()Lio/kotest/assertions/ErrorCollectionMode;
+	public fun getSubject ()Lio/kotest/assertions/print/Printed;
+	public fun popClue ()V
+	public fun pushClue (Lkotlin/jvm/functions/Function0;)V
+	public fun pushError (Ljava/lang/Throwable;)V
+	public fun setCollectionMode (Lio/kotest/assertions/ErrorCollectionMode;)V
+	public fun setDepth (I)V
+	protected final fun setMode (Lio/kotest/assertions/ErrorCollectionMode;)V
+	public fun setSubject (Lio/kotest/assertions/print/Printed;)V
+}
+
 public final class io/kotest/assertions/CollectorKt {
-	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
-	public static final fun collectOrThrow (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
-	public static final fun pushErrorAndMaybeThrow (Lio/kotest/matchers/ErrorCollector;Ljava/lang/Throwable;)V
-	public static final fun pushErrors (Lio/kotest/matchers/ErrorCollector;Ljava/util/Collection;)V
-	public static final fun throwCollectedErrors (Lio/kotest/matchers/ErrorCollector;)V
+	public static final fun collectOrThrow (Lio/kotest/assertions/ErrorCollector;Ljava/lang/Throwable;)V
+	public static final fun collectOrThrow (Lio/kotest/assertions/ErrorCollector;Ljava/util/Collection;)V
+	public static final fun pushErrorAndMaybeThrow (Lio/kotest/assertions/ErrorCollector;Ljava/lang/Throwable;)V
+	public static final fun pushErrors (Lio/kotest/assertions/ErrorCollector;Ljava/util/Collection;)V
+	public static final fun throwCollectedErrors (Lio/kotest/assertions/ErrorCollector;)V
 }
 
 public final class io/kotest/assertions/Collector_jvmKt {
-	public static final fun collectErrors (Lio/kotest/matchers/ErrorCollector;)Ljava/lang/AssertionError;
+	public static final fun collectErrors (Lio/kotest/assertions/ErrorCollector;)Ljava/lang/AssertionError;
+}
+
+public final class io/kotest/assertions/ErrorCollectionMode : java/lang/Enum {
+	public static final field Hard Lio/kotest/assertions/ErrorCollectionMode;
+	public static final field Soft Lio/kotest/assertions/ErrorCollectionMode;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/ErrorCollectionMode;
+	public static fun values ()[Lio/kotest/assertions/ErrorCollectionMode;
+}
+
+public abstract interface class io/kotest/assertions/ErrorCollector {
+	public abstract fun clear ()V
+	public abstract fun clueContext ()Ljava/util/List;
+	public abstract fun errors ()Ljava/util/List;
+	public abstract fun getCollectionMode ()Lio/kotest/assertions/ErrorCollectionMode;
+	public abstract fun getDepth ()I
+	public abstract fun getSubject ()Lio/kotest/assertions/print/Printed;
+	public abstract fun popClue ()V
+	public abstract fun pushClue (Lkotlin/jvm/functions/Function0;)V
+	public abstract fun pushError (Ljava/lang/Throwable;)V
+	public abstract fun setCollectionMode (Lio/kotest/assertions/ErrorCollectionMode;)V
+	public abstract fun setDepth (I)V
+	public abstract fun setSubject (Lio/kotest/assertions/print/Printed;)V
+}
+
+public final class io/kotest/assertions/ErrorCollectorKt {
+	public static final fun clueContextAsString ()Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/Expected {
@@ -93,6 +158,11 @@ public final class io/kotest/assertions/MultiAssertionErrorBuilder$Companion {
 	public final fun create (Ljava/util/List;)Lio/kotest/assertions/MultiAssertionErrorBuilder;
 }
 
+public final class io/kotest/assertions/jvmerrorcollector {
+	public static final fun getErrorCollector ()Lio/kotest/assertions/ErrorCollector;
+	public static final fun getErrorCollectorContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
+}
+
 public final class io/kotest/assertions/print/Printed {
 	public fun <init> (Ljava/lang/String;)V
 	public fun <init> (Ljava/lang/String;Lkotlin/reflect/KClass;)V
@@ -107,42 +177,13 @@ public final class io/kotest/assertions/print/Printed {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface class io/kotest/matchers/AssertionCounter {
-	public abstract fun get ()I
-	public fun getAndReset ()I
-	public abstract fun inc ()V
-	public fun inc (I)V
-	public abstract fun reset ()V
+public final class io/kotest/matchers/AliasesKt {
+	public static final fun getAssertionCounter ()Lio/kotest/assertions/AssertionCounter;
+	public static final fun getErrorCollector ()Lio/kotest/assertions/ErrorCollector;
 }
 
-public final class io/kotest/matchers/AssertionCounter$DefaultImpls {
-	public static fun getAndReset (Lio/kotest/matchers/AssertionCounter;)I
-	public static fun inc (Lio/kotest/matchers/AssertionCounter;I)V
-}
-
-public final class io/kotest/matchers/AssertionCounter_jvmKt {
-	public static final fun getAssertionCounter ()Lio/kotest/matchers/AssertionCounter;
-	public static final fun getAssertionCounterContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
-}
-
-public class io/kotest/matchers/BasicErrorCollector : io/kotest/matchers/ErrorCollector {
-	public fun <init> ()V
-	public fun clear ()V
-	public fun clueContext ()Ljava/util/List;
-	public fun errors ()Ljava/util/List;
-	protected final fun getClues ()Ljava/util/List;
-	public fun getCollectionMode ()Lio/kotest/matchers/ErrorCollectionMode;
-	public fun getDepth ()I
-	protected final fun getFailures ()Ljava/util/List;
-	protected final fun getMode ()Lio/kotest/matchers/ErrorCollectionMode;
-	public fun getSubject ()Lio/kotest/assertions/print/Printed;
-	public fun popClue ()V
-	public fun pushClue (Lkotlin/jvm/functions/Function0;)V
-	public fun pushError (Ljava/lang/Throwable;)V
-	public fun setCollectionMode (Lio/kotest/matchers/ErrorCollectionMode;)V
-	public fun setDepth (I)V
-	protected final fun setMode (Lio/kotest/matchers/ErrorCollectionMode;)V
-	public fun setSubject (Lio/kotest/assertions/print/Printed;)V
+public final class io/kotest/matchers/Aliases_jvmKt {
+	public static final fun getErrorCollectorContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
 }
 
 public final class io/kotest/matchers/DiffableMatcherResult : io/kotest/matchers/MatcherResult {
@@ -162,33 +203,6 @@ public final class io/kotest/matchers/DiffableMatcherResult : io/kotest/matchers
 	public fun negatedFailureMessage ()Ljava/lang/String;
 	public fun passed ()Z
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/matchers/ErrorCollectionMode : java/lang/Enum {
-	public static final field Hard Lio/kotest/matchers/ErrorCollectionMode;
-	public static final field Soft Lio/kotest/matchers/ErrorCollectionMode;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/ErrorCollectionMode;
-	public static fun values ()[Lio/kotest/matchers/ErrorCollectionMode;
-}
-
-public abstract interface class io/kotest/matchers/ErrorCollector {
-	public abstract fun clear ()V
-	public abstract fun clueContext ()Ljava/util/List;
-	public abstract fun errors ()Ljava/util/List;
-	public abstract fun getCollectionMode ()Lio/kotest/matchers/ErrorCollectionMode;
-	public abstract fun getDepth ()I
-	public abstract fun getSubject ()Lio/kotest/assertions/print/Printed;
-	public abstract fun popClue ()V
-	public abstract fun pushClue (Lkotlin/jvm/functions/Function0;)V
-	public abstract fun pushError (Ljava/lang/Throwable;)V
-	public abstract fun setCollectionMode (Lio/kotest/matchers/ErrorCollectionMode;)V
-	public abstract fun setDepth (I)V
-	public abstract fun setSubject (Lio/kotest/assertions/print/Printed;)V
-}
-
-public final class io/kotest/matchers/ErrorCollectorKt {
-	public static final fun clueContextAsString ()Ljava/lang/String;
 }
 
 public abstract interface class io/kotest/matchers/Matcher {
@@ -228,13 +242,15 @@ public final class io/kotest/matchers/MatcherResult$Companion {
 
 public final class io/kotest/matchers/MatcherResultBuilder {
 	public static final field Companion Lio/kotest/matchers/MatcherResultBuilder$Companion;
-	public fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)V
+	public fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun build ()Lio/kotest/matchers/MatcherResult;
-	public final fun copy (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResultBuilder;
-	public static synthetic fun copy$default (Lio/kotest/matchers/MatcherResultBuilder;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/matchers/MatcherResultBuilder;
+	public final fun copy (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResultBuilder;
+	public static synthetic fun copy$default (Lio/kotest/matchers/MatcherResultBuilder;ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/matchers/MatcherResultBuilder;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+	public final fun withError (Ljava/lang/Throwable;)Lio/kotest/matchers/MatcherResultBuilder;
 	public final fun withFailureMessage (Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResultBuilder;
 	public final fun withNegatedFailureMessage (Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResultBuilder;
 	public final fun withValues (Lio/kotest/assertions/print/Printed;Lio/kotest/assertions/print/Printed;)Lio/kotest/matchers/MatcherResultBuilder;
@@ -260,8 +276,16 @@ public final class io/kotest/matchers/SimpleMatcherResult : io/kotest/matchers/M
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/matchers/jvmerrorcollector {
-	public static final fun getErrorCollector ()Lio/kotest/matchers/ErrorCollector;
-	public static final fun getErrorCollectorContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
+public final class io/kotest/matchers/ThrowableMatcherResult : io/kotest/matchers/MatcherResult {
+	public final fun component1 ()Z
+	public final fun component2 ()Ljava/lang/Throwable;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun failureMessage ()Ljava/lang/String;
+	public final fun getError ()Ljava/lang/Throwable;
+	public final fun getPassed ()Z
+	public fun hashCode ()I
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
+	public fun toString ()Ljava/lang/String;
 }
 

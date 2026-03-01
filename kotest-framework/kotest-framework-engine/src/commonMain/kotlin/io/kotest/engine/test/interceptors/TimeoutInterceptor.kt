@@ -81,7 +81,7 @@ internal suspend fun <T> withAppropriateTimeout(
    block: suspend CoroutineScope.() -> T,
 ): T {
    return if (currentCoroutineContext()[TestCoroutineScheduler] != null) {
-      // kotlinx.coroutines.withTimeout uses virtual time, so if we try to use that as the mechanism
+      // `kotlinx.coroutines.withTimeout` uses virtual time, so if we try to use that as the mechanism
       // for Kotest's own timeout when using a test coroutine scheduler (eg runTest), it'll fail
       withRealTimeTimeout(timeout, block)
    } else {

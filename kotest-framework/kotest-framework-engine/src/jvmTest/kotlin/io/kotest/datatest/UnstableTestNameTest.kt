@@ -5,6 +5,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
@@ -43,6 +44,7 @@ class UnstableTestNameTest : FunSpec() {
 
             val config = object : AbstractProjectConfig() {
                override val isolationMode: IsolationMode = isolationMode
+               override val duplicateTestNameMode = DuplicateTestNameMode.Silent
             }
 
             TestEngineLauncher()
@@ -74,6 +76,8 @@ class UnstableTestNameTest : FunSpec() {
 
 private class NonDataClassesTest : DescribeSpec() {
    init {
+
+      duplicateTestNameMode = DuplicateTestNameMode.Silent
 
       withData(
          NotADataClass(1),
