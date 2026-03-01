@@ -16,6 +16,11 @@ on:
             description: "The Gradle task to run"
             required: true
             type: string
+         cache-read-only:
+            description: "Whether to write to the Gradle build cache"
+            required: false
+            type: boolean
+            default: true
 
 permissions:
    contents: read
@@ -24,19 +29,19 @@ jobs:
    gradle:
       runs-on: ${{ inputs.runs-on }}
       steps:
-         -  name: "Set KONAN_DATA_DIR (windows)"
+         -  name: "Set KONAN_DATA_DIR (windows)" # This sets the path to a folder named .konan in the user's home directory
             if: runner.os == 'Windows'
-            shell: cmd
+            shell: powershell
             run: |
-               echo KONAN_DATA_DIR=C:\Users\runneradmin\.konan>>%GITHUB_ENV%
+               "KONAN_DATA_DIR=${{ github.workspace }}\.konan" >> $env:GITHUB_ENV
 
          -  name: "Set KONAN_DATA_DIR (bash)"
             if: runner.os != 'Windows'
             run: |
-               echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
+               echo "KONAN_DATA_DIR=${{ github.workspace }}/.konan" >> $GITHUB_ENV
 
          -  name: Checkout the repo
-            uses: actions/checkout@v5
+            uses: actions/checkout@v6
             with:
                ref: ${{ github.event.inputs.ref }}
 
@@ -49,11 +54,11 @@ jobs:
          -  name: Setup Gradle
             uses: gradle/actions/setup-gradle@v5
             with:
-               gradle-home-cache-cleanup: true
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+               cache-read-only: ${{ inputs.cache-read-only }}
 
          -  name: Cache Kotlin Konan
-            uses: actions/cache@v4
+            uses: actions/cache@v5
             with:
                path: ${{ env.KONAN_DATA_DIR }}
                key: kotlin-konan-${{ runner.os }}
@@ -62,7 +67,7 @@ jobs:
                   kotlin-konan-
 
          -  name: Cache Kotest user directory
-            uses: actions/cache@v4
+            uses: actions/cache@v5
             with:
                path: ~/.kotest
                key: kotest-user-dir-${{ runner.os }}
@@ -70,7 +75,7 @@ jobs:
                restore-keys: |
                   kotest-user-dir-
 
-         -  name: Run tests
+         -  name: Gradle ${{ inputs.task }}
             run: ./gradlew ${{ inputs.task }}
             shell: bash
 

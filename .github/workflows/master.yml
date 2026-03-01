@@ -31,6 +31,9 @@ jobs:
          runs-on: ubuntu-latest
          ref: ${{ inputs.ref }}
          task: apiCheck
+         # only this step writes to the Gradle cache, otherwise we keep making almost identical caches which blows up our 10gb limit,
+         # see https://github.com/gradle/actions/blob/main/docs/setup-gradle.md#select-which-jobs-should-write-to-the-cache
+         cache-read-only: false
 
    build-primary:
       needs: validate-api

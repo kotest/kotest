@@ -82,7 +82,7 @@ class ContainJsonKeyValueTest : StringSpec({
    "Failure message states if key is missing, shows element is not json array" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.bicycle[0].color", "V2")
-      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store'>."
+      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>."
    }
 
    "Failure message states if key is missing, shows json array index out of bounds when array is empty" {
