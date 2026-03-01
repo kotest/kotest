@@ -6,6 +6,7 @@ import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.libraries.LibraryTablesRegistrar
 import io.kotest.plugin.intellij.run.gradle.GradleTaskNamesBuilder
+import io.kotest.plugin.intellij.testModeKotestVersion610AndAbove
 import org.jetbrains.plugins.gradle.execution.build.CachedModuleDataFinder
 import org.jetbrains.plugins.gradle.service.project.GradleTasksIndices
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings
@@ -81,6 +82,9 @@ internal object GradleUtils {
 
    fun isKotest61OrAbove(project: Project?): Boolean {
       if (project == null) return false
+      // When developing Kotest itself, we have not way of determining the version
+      // so we can set this bool to force the plugin to treat it as 6.1 or above
+      if(testModeKotestVersion610AndAbove) return true
       val version = getKotestVersion(project) ?: return false
       return (version.major == 6 && version.minor > 0) || version.major > 6
    }
