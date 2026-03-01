@@ -8,5 +8,6 @@ object Constants {
    const val FRAMEWORK_ID = "ioKotest"
 }
 
-// flip this bit in tests
+// flip the below in tests, according to use cases
 var testMode = false
+var testModeKotestVersion610AndAbove = false

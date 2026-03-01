@@ -6,6 +6,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.testMode
+import io.kotest.plugin.intellij.testModeKotestVersion610AndAbove
 import java.nio.file.Paths
 import java.util.Date
 
@@ -19,6 +20,7 @@ class FeatureSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
    override fun setUp() {
       super.setUp()
       testMode = true
+      testModeKotestVersion610AndAbove = true
    }
 
    override fun tearDown() {

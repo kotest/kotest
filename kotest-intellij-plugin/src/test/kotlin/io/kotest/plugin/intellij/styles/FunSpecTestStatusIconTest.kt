@@ -6,6 +6,7 @@ import com.intellij.icons.AllIcons
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.testMode
+import io.kotest.plugin.intellij.testModeKotestVersion610AndAbove
 import java.nio.file.Paths
 import java.util.Date
 
@@ -19,6 +20,7 @@ class FunSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
    override fun setUp() {
       super.setUp()
       testMode = true
+      testModeKotestVersion610AndAbove = true
    }
 
    override fun tearDown() {
@@ -106,6 +108,46 @@ class FunSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run FunSpecExampleTest"
+   }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "io.kotest.samples.gradle.FunSpecExampleTest"
+
+      // failing test: test("a test") - without kotest tags
+      val url = "java:test://$specFqn/a test"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 1 is "a test"
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[1].tooltipText shouldBe "Run a test"
+   }
+
+   fun testIconShowsPassedForPassedContainerTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "io.kotest.samples.gradle.FunSpecExampleTest"
+
+      // passing container: context("some context") - without kotest tags
+      val url = "java:suite://$specFqn/some context"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 5 is "some context"
+      gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[5].tooltipText shouldBe "Run some context"
    }
 }
 
