@@ -1,5 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -26,7 +27,13 @@ internal interface SpecInterceptor {
  */
 @OptIn(ExperimentalAtomicApi::class)
 internal data class SpecContext(
+   // Set when a test fails and failfast is configured at the spec or project level (no enclosing
+   // context with config.failfast=true). All subsequent tests with failfast enabled are skipped.
    var testFailed: Boolean = false,
+   // The set of context descriptors whose failfast scope has been triggered by a test failure.
+   // Used when failfast is configured at the context level rather than the spec level, so that
+   // only tests within the failing context are skipped, not sibling contexts.
+   val failedScopes: MutableSet<Descriptor.TestDescriptor> = mutableSetOf(),
 ) {
    companion object {
       fun create() = SpecContext()
