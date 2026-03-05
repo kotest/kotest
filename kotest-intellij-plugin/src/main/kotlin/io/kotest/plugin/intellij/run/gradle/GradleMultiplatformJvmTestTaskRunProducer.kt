@@ -1,6 +1,5 @@
 package io.kotest.plugin.intellij.run.gradle
 
-import com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
@@ -123,11 +122,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
 
    override fun isPreferredConfiguration(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
       // if the other configuration is a Kotest Android instrumented test, that takes priority over running via Gradle
-      return when (other.configuration) {
-         // we know that a Kotest Android instrumented test configuration will be more specific than a Gradle one
-         is AndroidTestRunConfiguration -> false
-         else -> true
-      }
+      return other.configuration::class.java.name != "com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration"
    }
 
    /**
