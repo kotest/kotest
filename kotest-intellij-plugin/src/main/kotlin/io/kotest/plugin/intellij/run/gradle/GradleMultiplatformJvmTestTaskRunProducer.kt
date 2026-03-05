@@ -122,7 +122,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
 
    override fun isPreferredConfiguration(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
       // if the other configuration is a Kotest Android instrumented test, that takes priority over running via Gradle
-      return other.configuration::class.java.name == "com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration"
+      return other.configuration::class.java.name != "com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration"
    }
 
    /**
