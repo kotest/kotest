@@ -10,8 +10,11 @@ val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinNative.get()) {
 
-      linuxX64()
-      linuxArm64()
+      // we only want to run linux on linux if its CI, macos will support this and waste time running it as well
+      if (Ci.shouldAddLinuxTargets) {
+         linuxX64()
+         linuxArm64()
+      }
 
       macosX64()
       macosArm64()

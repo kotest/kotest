@@ -30,15 +30,20 @@ object Ci {
 
    /** Is the build currently running on CI. */
    private val isCI = System.getenv("CI").toBoolean()
+   private val isLocal = !isCI
 
    /** Is the git branch master */
    private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
+
+   /** Is the build currently running on a GitHub actions Linux runner? */
+   private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
 
    /**
     * We only include watchos, tvsos and ios builds if it's a non-CI build or if it's master build
     * due to the limited availability of the github macos runners
     */
-   val shouldRunWatchTvIosModules = !isCI || isMaster
+   val shouldRunWatchTvIosModules = isLocal || isMaster
+   val shouldAddLinuxTargets = isLocal || isLinuxRunner
 
    /**
     * Property to flag the build as JVM only, can be used to run checks on local machine much faster.
