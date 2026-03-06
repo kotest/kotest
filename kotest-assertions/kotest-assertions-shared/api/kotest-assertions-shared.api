@@ -186,6 +186,18 @@ public final class io/kotest/matchers/Aliases_jvmKt {
 	public static final fun getErrorCollectorContextElement ()Lkotlin/coroutines/CoroutineContext$Element;
 }
 
+public abstract interface class io/kotest/matchers/AssertionCounter : io/kotest/assertions/AssertionCounter {
+}
+
+public final class io/kotest/matchers/AssertionCounter$DefaultImpls {
+	public static fun getAndReset (Lio/kotest/matchers/AssertionCounter;)I
+	public static fun inc (Lio/kotest/matchers/AssertionCounter;I)V
+}
+
+public class io/kotest/matchers/BasicErrorCollector : io/kotest/assertions/BasicErrorCollector {
+	public fun <init> ()V
+}
+
 public final class io/kotest/matchers/DiffableMatcherResult : io/kotest/matchers/MatcherResult {
 	public final fun component1 ()Z
 	public final fun component2 ()Lkotlin/jvm/functions/Function0;
@@ -203,6 +215,9 @@ public final class io/kotest/matchers/DiffableMatcherResult : io/kotest/matchers
 	public fun negatedFailureMessage ()Ljava/lang/String;
 	public fun passed ()Z
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class io/kotest/matchers/ErrorCollector : io/kotest/assertions/ErrorCollector {
 }
 
 public abstract interface class io/kotest/matchers/Matcher {
