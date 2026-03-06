@@ -1,6 +1,9 @@
 package io.kotest.matchers.string
 
-fun allIndexesOf(value: String, substring: String): List<Int> {
+internal fun allIndexesOfSubstrings(value: String, substrings: List<String>) =
+   substrings.map { substring -> allIndexesOf(value, substring) }
+
+internal fun allIndexesOf(value: String, substring: String): List<Int> {
    val indexes = mutableListOf<Int>()
    var index = value.indexOf(substring)
    while (index >= 0 && indexes.size < 100) {
