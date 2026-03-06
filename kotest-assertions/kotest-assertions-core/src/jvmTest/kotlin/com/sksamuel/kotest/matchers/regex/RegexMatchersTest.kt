@@ -46,14 +46,14 @@ class RegexMatchersTest : FreeSpec() {
          }.message shouldBe """Matcher failed due to:
 0) Regex should have pattern b*.js but has pattern a*.js
 1) Regex should have options [IGNORE_CASE] but has options []
-"""
+""".trim()
 
          shouldThrow<AssertionError> {
             "a*.js".toRegex(IGNORE_CASE) shouldNotEqualRegex "a*.js".toRegex(IGNORE_CASE)
          }.message shouldBe """Matcher failed due to:
 0) Regex should not have pattern a*.js
 1) Regex should not have options [IGNORE_CASE]
-"""
+""".trim()
       }
 
       "assert regex is of given pattern" {
