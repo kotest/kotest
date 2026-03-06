@@ -131,7 +131,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    private fun configureAlwaysRerun(project: Project, alwaysRerunTests: Property<Boolean>) {
       project.tasks.withType(AbstractTestTask::class.java).configureEach {
-         outputs.upToDateWhen { !alwaysRerunTests.get() }
+         outputs.upToDateWhen { !alwaysRerunTests.getOrElse(false) }
       }
    }
 
