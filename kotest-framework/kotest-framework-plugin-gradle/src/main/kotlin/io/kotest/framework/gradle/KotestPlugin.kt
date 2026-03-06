@@ -228,7 +228,7 @@ abstract class KotestPlugin : Plugin<Project> {
       // Gradle's best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val jvmKotest = project.tasks.register(JVM_KOTEST_NAME, KotestJvmTask::class) {
-         onlyIf { extension.customGradleTask.get() }
+         onlyIf { extension.customGradleTask.getOrElse(false) }
 
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION
