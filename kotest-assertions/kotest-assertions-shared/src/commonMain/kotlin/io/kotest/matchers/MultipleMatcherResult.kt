@@ -11,22 +11,24 @@ class MultipleMatcherResult(private val results: List<MatcherResult>) : MatcherR
    }
 
    override fun failureMessage(): String {
+      // when there's only one, just output it directly
       if (results.count { !it.passed() } == 1) return results.first { !it.passed() }.failureMessage()
       return buildString {
          appendLine("Matcher failed due to:")
-         results.forEachIndexed { index, value ->
+         results.filterNot { it.passed() }.forEachIndexed { index, value ->
             appendLine("$index) ${value.failureMessage()}")
          }
-      }
+      }.trim()
    }
 
    override fun negatedFailureMessage(): String {
+      // when there's only one, just output it directly
       if (results.count { !it.passed() } == 1) return results.first { !it.passed() }.negatedFailureMessage()
       return buildString {
          appendLine("Matcher failed due to:")
-         results.forEachIndexed { index, value ->
+         results.filter { it.passed() }.forEachIndexed { index, value ->
             appendLine("$index) ${value.negatedFailureMessage()}")
          }
-      }
+      }.trim()
    }
 }
