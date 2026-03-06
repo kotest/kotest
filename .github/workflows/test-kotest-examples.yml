@@ -168,11 +168,13 @@ jobs:
                - kotest-android
                - kotest-javascript
                - kotest-jvm
+               - kotest-maven
                - kotest-multiplatform
                - kotest-native
                - kotest-spring-webflux
                - kotest-spring-data
                - kotest-wasm
+               - kotest-gradle-retry
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v6
