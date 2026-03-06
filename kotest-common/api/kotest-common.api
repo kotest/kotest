@@ -41,6 +41,10 @@ public final class io/kotest/common/Platform_jvmKt {
 	public static final fun getPlatform ()Lio/kotest/common/Platform;
 }
 
+public final class io/kotest/common/PowerSetIndexesKt {
+	public static final fun powerSetIndexes (I)Lkotlin/sequences/Sequence;
+}
+
 public abstract interface annotation class io/kotest/common/SoftDeprecated : java/lang/annotation/Annotation {
 	public abstract fun message ()Ljava/lang/String;
 }
