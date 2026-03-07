@@ -1,11 +1,8 @@
 name: test-kotest-examples
 
 on:
-#   temp disabled while testing maven
-# schedule:
-#    - cron: '0 6 * * *'
- pull_request:
-
+   schedule:
+      - cron: '0 6 * * *'
 
 permissions:
    contents: read
