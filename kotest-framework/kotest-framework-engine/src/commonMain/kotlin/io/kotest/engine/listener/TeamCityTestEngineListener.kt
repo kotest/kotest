@@ -10,6 +10,7 @@ import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.teamcity.TeamCityMessage
 import io.kotest.engine.teamcity.TeamCityPathRenderer
+import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
@@ -64,6 +65,7 @@ class TeamCityTestEngineListener(
    override suspend fun specStarted(ref: SpecRef) {
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_SUITE_STARTED) {
          name(renderer.testPath(ref))
+         locationHint(Locations.location(ref))
       }.output()
    }
 
@@ -91,12 +93,14 @@ class TeamCityTestEngineListener(
       if (testCase.type == TestType.Test)
          TeamCityMessage(prefix, TeamCityMessage.Types.TEST_STARTED) {
             name(renderer.testPath(testCase))
+            locationHint(Locations.location(testCase.source))
          }.output()
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_IGNORED) {
          name(testCase.descriptor.path().value)
+         locationHint(Locations.location(testCase.source))
          message(reason)
          result(TestResult.Ignored(reason))
       }.output()
