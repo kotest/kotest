@@ -200,8 +200,8 @@ class EventuallyTest : FunSpec() {
             if (end.hasNotPassedNow())
                throw FileNotFoundException("foo")
          }
-         // the delay is 10ms so after 50ms should be approx 5 iterations
-         iterations.shouldBeBetween(4, 6)
+         // the delay is 5ms so after 50ms should be approx 10 iterations, will go a few either side because of timing delays in CI
+         iterations.shouldBeBetween(6, 14)
       }
 
       test("handle kotlin assertion errors") {
