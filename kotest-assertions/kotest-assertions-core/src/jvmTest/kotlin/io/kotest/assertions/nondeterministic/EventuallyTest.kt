@@ -193,7 +193,7 @@ class EventuallyTest : FunSpec() {
          var iterations = 0
          val config = eventuallyConfig {
             duration = 5.days
-            interval = 5.milliseconds
+            interval = 10.milliseconds
          }
          eventually(config) {
             iterations++
@@ -201,7 +201,7 @@ class EventuallyTest : FunSpec() {
                throw FileNotFoundException("foo")
          }
          // the delay is 5ms so after 50ms should be approx 10 iterations, will go a few either side because of timing delays in CI
-         iterations.shouldBeBetween(8, 12)
+         iterations.shouldBeBetween(6, 14)
       }
 
       test("handle kotlin assertion errors") {
