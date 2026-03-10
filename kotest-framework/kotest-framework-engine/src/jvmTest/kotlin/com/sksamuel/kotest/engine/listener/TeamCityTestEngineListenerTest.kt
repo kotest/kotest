@@ -67,8 +67,8 @@ class TeamCityTestEngineListenerTest : FunSpec() {
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
@@ -92,8 +92,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' message='boom' result_status='Error']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='653' result_status='Error']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
@@ -117,8 +117,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' message='don|'t like it' result_status='Ignored']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' locationHint='kotest://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
       }
@@ -141,8 +141,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ Exception']
 a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ Exception']
@@ -169,8 +169,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest ⇢ Exception']
 a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest ⇢ Exception']
@@ -207,8 +207,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' message='well this is a' result_status='Error']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Error']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
@@ -233,8 +233,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(listOf(Exception("big whoop")))
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='555' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 a[testStarted name='Exception']
@@ -261,8 +261,8 @@ a[testFinished name='Exception']
             listener.engineFinished(listOf(Exception("big whoop"), Exception("big whoop 2")))
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='555' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 a[testStarted name='Exception']
@@ -295,9 +295,9 @@ a[testFinished name='Exception']
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
       }
@@ -323,8 +323,8 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             listener.engineFinished(emptyList())
          }
          output shouldBe """a[enteredTheMatrix]
-a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
-a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c']
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c' locationHint='kotest://foo.bar.Test:17']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c' duration='124' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """

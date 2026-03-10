@@ -93,9 +93,7 @@ function Home() {
          <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                <p className={clsx(styles.heroSlogan)}>
-                  Kotest is a flexible and elegant <strong>multiplatform</strong> test framework
-                  for <strong>Kotlin</strong> with extensive <strong>assertions</strong> and integrated <strong>property
-                  testing</strong>
+                  Kotest is a <strong>multiplatform</strong> Kotlin testing framework featuring powerful <strong>assertions</strong>, <strong>property</strong> testing, and multiple expressive <strong>styles</strong> for any project.
                </p>
                <div className={styles.buttons}>
                   <Link

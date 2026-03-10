@@ -158,7 +158,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.11.0" }
+kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.12.1" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
