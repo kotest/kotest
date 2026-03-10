@@ -86,19 +86,6 @@ interface StringSpecRootScope : RootScope {
          StringSpecScope(this).test()
       }
    }
-
-   /**
-    * Adds a String Spec test using the supplied [TestConfig].
-    */
-   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config,
-      ) {
-         StringSpecScope(this).test()
-      }
-   }
 }
 
 /**
