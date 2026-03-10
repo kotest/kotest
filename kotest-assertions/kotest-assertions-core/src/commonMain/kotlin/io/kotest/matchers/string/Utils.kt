@@ -1,6 +1,7 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.AssertionsConfig
+import io.kotest.assertions.print.print
 import io.kotest.common.withNonVirtualTimeout
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
@@ -24,7 +25,7 @@ internal suspend fun describeBestFitForSubstringsInOrder(
       if (bestFit == substrings.indices.toList() )
          BestFitForSubstringsInOrderOutcome.Success
       else
-         BestFitForSubstringsInOrderOutcome.Failure("best fit for substrings in order is: ${bestFit.joinToString(", ")}")
+         BestFitForSubstringsInOrderOutcome.Failure("The best fit is the subset with the following indexes: ${bestFit.print().value}.")
    }
 }
 
