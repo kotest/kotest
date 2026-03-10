@@ -1,8 +1,6 @@
 name: master-eap
 
 on:
-#   to remove after testing
-   pull_request:
    schedule:
       -  cron: '0 10 * * *'
    workflow_dispatch:
