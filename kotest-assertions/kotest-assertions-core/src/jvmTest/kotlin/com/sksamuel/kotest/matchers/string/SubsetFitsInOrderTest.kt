@@ -14,6 +14,22 @@ class SubsetFitsInOrderTest : StringSpec() {
             )
             subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe true
        }
+      "returns true when multiple matches per substring and an increasing sequence is found" {
+         val indexesOfMatches = listOf(
+            listOf(10, 15, 20,),
+            listOf(8, 16, 24,),
+            listOf(6, 12, 18, ),
+         )
+         subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe true
+      }
+      "returns false when multiple matches per substring and an increasing sequence cannot be found" {
+         val indexesOfMatches = listOf(
+            listOf(10, 15, 20,),
+            listOf(8, 16, 24,),
+            listOf(6, 12, 16, ),
+         )
+         subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe false
+      }
 
    }
 }
