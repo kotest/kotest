@@ -1,6 +1,8 @@
 name: master-eap
 
 on:
+#   to remove after testing
+   pull_request:
    schedule:
       -  cron: '0 10 * * *'
    workflow_dispatch:
@@ -55,7 +57,14 @@ jobs:
          -  name: Checkout the repo
             uses: actions/checkout@v5
 
-         -  name: Override Kotlin version
+         -  name: Override Kotlin version (macOS)
+            if: matrix.name == 'apple-native'
+            run: |
+               echo "Overriding Kotlin version to: $KOTLIN_VERSION"
+               sed -i '' 's/^kotlin = .*/kotlin = "'"$KOTLIN_VERSION"'"/' gradle/libs.versions.toml
+
+         -  name: Override Kotlin version (Linux/Windows)
+            if: matrix.name != 'apple-native'
             shell: bash
             run: |
                echo "Overriding Kotlin version to: $KOTLIN_VERSION"
