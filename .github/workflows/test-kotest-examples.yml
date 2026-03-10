@@ -1,8 +1,8 @@
 name: test-kotest-examples
 
 on:
- schedule:
-    - cron: '0 6 * * *'
+   schedule:
+      - cron: '0 6 * * *'
 
 permissions:
    contents: read
@@ -210,10 +210,16 @@ jobs:
            uses: gradle/actions/setup-gradle@v5
 
          - name: Run tests
+           if: matrix.project != 'kotest-maven'
            working-directory: kotest-examples/${{ matrix.project }}
            env:
               KOTEST_VERSION: ${{ needs.publish-local-linux.outputs.kotest-version }}
            run: ./gradlew check
+
+         - name: Run tests
+           if: matrix.project == 'kotest-maven'
+           working-directory: kotest-examples/${{ matrix.project }}
+           run: mvn -B test -Dkotest.version=${{ needs.publish-local-linux.outputs.kotest-version }}
 
          - name: Upload test reports
            if: failure()
