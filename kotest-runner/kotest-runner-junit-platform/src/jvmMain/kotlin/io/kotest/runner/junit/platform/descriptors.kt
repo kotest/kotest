@@ -15,6 +15,9 @@ import org.junit.platform.engine.support.descriptor.MethodSource
 import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 
+internal const val TRUNCATE_TEST_NAMES_ENV = "KOTEST_TRUNCATE_TEST_NAMES"
+internal const val MAX_TRUNCATED_NAME_LENGTH = 48
+
 /**
  * Finds and returns the [org.junit.platform.engine.TestDescriptor] corresponding to the
  * given [Descriptor.SpecDescriptor] that was previously added to the engine.
@@ -77,8 +80,13 @@ internal fun createTestDescriptorWithMethodSource(
       id = id,
       displayName = if (isIntellij())
          LocationEmbedder.embeddedTestName(testCase.descriptor, formatter.format(testCase))
-      else
-         formatter.format(testCase),
+      else {
+         val name = formatter.format(testCase)
+         if (type == TestDescriptor.Type.CONTAINER && isTruncateTestNamesEnabled())
+            truncateTestName(name)
+         else
+            name
+      },
       type = type,
       // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
       // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
@@ -97,3 +105,18 @@ internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = Me
    /* className = */ kclass.java.name,
    /* methodName = */ id.segments.filter { it.type == Segment.Test.value }.joinToString("/") { it.value }
 )
+
+/**
+ * Returns true if test name truncation is enabled.
+ *
+ * Checks both the JVM system property and the environment variable with the same key
+ * ([TRUNCATE_TEST_NAMES_ENV]) so that the feature can be activated via either mechanism.
+ * System properties are checked first because they work on all platforms (including Windows,
+ * where modifying environment variables at runtime is unreliable).
+ */
+internal fun isTruncateTestNamesEnabled(): Boolean =
+   System.getProperty(TRUNCATE_TEST_NAMES_ENV) == "true" || System.getenv(TRUNCATE_TEST_NAMES_ENV) == "true"
+
+internal fun truncateTestName(name: String): String =
+   if (name.length <= MAX_TRUNCATED_NAME_LENGTH) name
+   else name.take(MAX_TRUNCATED_NAME_LENGTH - 3) + "..."

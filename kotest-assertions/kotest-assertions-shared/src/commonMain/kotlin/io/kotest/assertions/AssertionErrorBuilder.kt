@@ -1,7 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
-import io.kotest.matchers.errorCollector
 
 /**
  * Use this object to create exceptions on a target platform.

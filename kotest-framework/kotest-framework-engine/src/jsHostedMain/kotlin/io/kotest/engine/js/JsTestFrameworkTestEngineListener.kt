@@ -11,17 +11,13 @@ import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.promise
 import kotlin.reflect.KClass
 
 /**
  * An implementation of [TestEngineListener] that will wait for a spec to be completed, before then emitting
  * all events through a [KotlinJsTestFramework].
  */
-@OptIn(DelicateCoroutinesApi::class)
 internal class JsTestFrameworkTestEngineListener(
    private val framework: KotlinJsTestFramework,
 ) : TestEngineListener {
@@ -38,7 +34,7 @@ internal class JsTestFrameworkTestEngineListener(
       // The downside is that we get an extra node in the output (todo, perhaps the IDE plugin can hide this?)
       kotlinJsTestFramework.suite("Kotest", false) {
          kotlinJsTestFramework.test("Executor", false) {
-            GlobalScope.promise {
+            promise {
                channel.receive() // will suspend this placeholder test until the first real test releases us
             }
          }
@@ -97,7 +93,7 @@ internal class JsTestFrameworkTestEngineListener(
       if (node.children.isEmpty()) { // no children mean a leaf test
          logger.log { Pair(node.name, "Outputting test node ${node.result}") }
          framework.test(testNameEscape(node.name), node.result.isIgnored) {
-            GlobalScope.promise {
+            promise {
                // this releases any previous test
                channel.send(Unit)
                // will suspend until the next test releases us
@@ -120,7 +116,7 @@ internal class JsTestFrameworkTestEngineListener(
    }
 }
 
-private data class NodeProxy(
+internal data class NodeProxy(
    val name: String,
    var result: TestResult,
    val children: MutableList<NodeProxy>,

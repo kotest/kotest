@@ -6,9 +6,9 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.Expected
 import io.kotest.assertions.print.print
 import io.kotest.common.reflection.bestName
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.assertionCounter
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.assertionCounter
+import io.kotest.assertions.errorCollector
 
 /**
  * Verifies if a block of code throws a Throwable of type [T] or subtypes

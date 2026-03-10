@@ -9,12 +9,12 @@ import io.kotest.framework.gradle.tasks.KotestJvmTask
 import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.Task
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.Directory
 import org.gradle.api.internal.tasks.testing.filter.DefaultTestFilter
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.AbstractTestTask
@@ -65,9 +65,12 @@ abstract class KotestPlugin : Plugin<Project> {
 
       internal const val KOTEST_INCLUDE_PATTERN = "KOTEST_INCLUDE_PATTERN"
       internal const val KOTEST_SHOW_IGNORE_REASONS = "KOTEST_SHOW_IGNORE_REASONS"
+      internal const val KOTEST_TRUNCATE_TEST_NAMES = "KOTEST_TRUNCATE_TEST_NAMES"
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
+
+      const val POWER_ASSERT_PLUGIN_ID = "org.jetbrains.kotlin.plugin.power-assert"
    }
 
    private val kotestVersion = System.getenv("KOTEST_DEV_KSP_VERSION") ?: version()
@@ -76,65 +79,59 @@ abstract class KotestPlugin : Plugin<Project> {
    override fun apply(project: Project) {
 
       val extension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
-      project.afterEvaluate {
 
-         project.tasks.register(KOTEST_TASK_NAME) {
-            onlyIf { extension.customGradleTask.get() }
-            group = JavaBasePlugin.VERIFICATION_GROUP
-            description = TASK_DESCRIPTION
-         }
+      project.tasks.register(KOTEST_TASK_NAME) {
+         onlyIf { extension.customGradleTask.get() }
+         group = JavaBasePlugin.VERIFICATION_GROUP
+         description = TASK_DESCRIPTION
+      }
 
-         // configures standalone Kotlin JVM projects
-         handleKotlinJvm(project, extension)
+      // configures standalone Kotlin JVM projects
+      handleKotlinJvm(project, extension)
 
-         if (extension.alwaysRerunTests.getOrElse(false)) {
-            configureAlwaysRerun(project)
-         }
+      configureAlwaysRerun(project, extension.alwaysRerunTests)
 
-         // configure Kotlin Android projects when it is not a multiplatform project
-         handleAndroid(project, extension)
+      // configure Kotlin Android projects when it is not a multiplatform project
+      handleAndroid(project, extension)
 
-         // configures Kotlin multiplatform projects
-         handleMultiplatform(project, extension)
+      // configures Kotlin multiplatform projects
+      handleMultiplatform(project, extension)
 
-         project.gradle.taskGraph.whenReady {
-            decorateGradleTestTask(project, extension)
-         }
+      configurePowerAssert(project, extension.enablePowerAssert)
 
-         if (extension.enablePowerAssert.getOrElse(false)) {
-            configurePowerAssert(project)
+      project.gradle.taskGraph.whenReady {
+         project.tasks.withType(AbstractTestTask::class.java).configureEach {
+            decorateGradleTestTask(project, extension, this)
          }
       }
    }
 
    @OptIn(ExperimentalKotlinGradlePluginApi::class)
-   private fun configurePowerAssert(project: Project) {
+   private fun configurePowerAssert(project: Project, enablePowerAssert: Property<Boolean>) {
 
       // apply the power assert plugin, won't matter if already applied
-      project.pluginManager.apply("org.jetbrains.kotlin.plugin.power-assert")
+      project.pluginManager.apply(POWER_ASSERT_PLUGIN_ID)
 
       // then configure it
-      project.pluginManager.withPlugin("org.jetbrains.kotlin.plugin.power-assert") {
+      project.pluginManager.withPlugin(POWER_ASSERT_PLUGIN_ID) {
          project.extensions.configure(PowerAssertGradleExtension::class.java) {
             // we can add new functions to this later without requiring users to make changes
-            functions.set(listOf("io.kotest.matchers.shouldBe"))
+            functions.map { it + "io.kotest.matchers.shouldBe" }
          }
 
          // we add the assertions library for users to simplify configuration
          // if it already exists, it won't matter, Gradle will handle it
-         project.afterEvaluate {
-            project.configurations.filter { it.name == "commonTestApi" }.forEach {
-               it.dependencies.add(
-                  project.dependencies.create("io.kotest:kotest-assertions-core:$kotestVersion")
-               )
-            }
+         project.configurations.filter { it.name == "commonTestApi" }.forEach {
+            it.dependencies.add(
+               project.dependencies.create("io.kotest:kotest-assertions-core:$kotestVersion")
+            )
          }
       }
    }
 
-   private fun configureAlwaysRerun(project: Project) {
+   private fun configureAlwaysRerun(project: Project, alwaysRerunTests: Property<Boolean>) {
       project.tasks.withType(AbstractTestTask::class.java).configureEach {
-         outputs.upToDateWhen { false }
+         outputs.upToDateWhen { !alwaysRerunTests.getOrElse(false) }
       }
    }
 
@@ -143,44 +140,56 @@ abstract class KotestPlugin : Plugin<Project> {
     * of environment variables that Kotest picks up and applies via a descriptor filter.
     * This allows us to run specific tests using the regular Gradle task.
     */
-   private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension) {
-      project.tasks.withType(AbstractTestTask::class.java).configureEach {
-         doFirst {
+   @OptIn(ExperimentalKotest::class)
+   private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension, task: AbstractTestTask) {
+      task.doFirst {
 
-            val includes = when (val f = filter) {
-               is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
-               else -> f.includePatterns
-            }
+         // when running Gradle from IntelliJ, the test tasks are forked and so the idea.active system property
+         // isn't available when we're inside the engine, so we propagate an env variable to do the same thing
+         // we need to run this from doFirst, because this needs to be detected when the task starts not when its configured
+         if (System.getProperty(IDEA_ACTIVE_SYSPROP) != null) {
+            setEnvVar(task, IDEA_ACTIVE_ENV, "true")
+         }
 
-            if (includes.isNotEmpty()) {
-               val pattern = includes.joinToString(";")
-               setEnvVar(this, KOTEST_INCLUDE_PATTERN, pattern)
-            }
+         if (extension.showIgnoreReasons.getOrElse(false)) {
+            setEnvVar(task, KOTEST_SHOW_IGNORE_REASONS, "true")
+         }
 
-            when (this) {
-               is KotlinNativeTest -> Unit
-               // saves the user having to set this manually
-               // Caused by: java.lang.IllegalStateException: The value for task ':linuxX64Test' property 'failOnNoDiscoveredTests' is final and cannot be changed any further.
-//                  if (hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
-//                     setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
-//                  }
-            }
+         if (extension.truncateTestNamesInGradle.getOrElse(false)) {
+            setEnvVar(task, KOTEST_TRUNCATE_TEST_NAMES, "true")
+         }
+      }
 
-            // when running Gradle from intellij, the test tasks are forked and so the idea.active systemm property
-            // isn't available when we're inside the engine, so we propagate an env variable to do the same thing
-            if (System.getProperty(IDEA_ACTIVE_SYSPROP) != null) {
-               setEnvVar(this, IDEA_ACTIVE_ENV, "true")
-            }
+      val includes = when (val f = task.filter) {
+         is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
+         else -> f.includePatterns
+      }
 
-            if (extension.showIgnoreReasons.getOrElse(false)) {
-               setEnvVar(this, KOTEST_SHOW_IGNORE_REASONS, "true")
+      if (includes.isNotEmpty()) {
+         val pattern = includes.joinToString(";")
+         setEnvVar(task, KOTEST_INCLUDE_PATTERN, pattern)
+      }
+
+      when (task) {
+         is KotlinNativeTest -> Unit
+         is KotlinJsTest -> {
+            // https://github.com/kotest/kotest/issues/5704
+            // without resetting the filters, the KotlinJsTest task will also try filtering the tests,
+            // but it is unaware of Kotest's generated tests, so we must remove the filter from its eyes
+            // this does mean that you can't combine kotlin.test tests and Kotest tests and expect
+            // to filter the kotlin.test ones
+            task.filter.excludePatterns.clear()
+            task.filter.includePatterns.clear()
+            when (val filter = task.filter) {
+               is DefaultTestFilter -> filter.commandLineIncludePatterns.clear()
             }
+            task.filter.isFailOnNoMatchingTests = false
          }
       }
    }
 
-   private fun setEnvVar(task: Task, name: String, value: String) {
-      task.logger.info("Setting environment variable $name=$value for task ${task.name}")
+   private fun setEnvVar(task: AbstractTestTask, name: String, value: String) {
+      task.logger.debug("Setting environment variable $name=$value for task ${task.name}")
       when (task) {
          is KotlinJsTest -> task.environment(name, value)
          is KotlinNativeTest -> task.environment(name, value, false)
@@ -219,7 +228,7 @@ abstract class KotestPlugin : Plugin<Project> {
       // Gradle's best practice is to only apply to this project, and users add the plugin to each subproject
       // see https://docs.gradle.org/current/userguide/isolated_projects.html
       val jvmKotest = project.tasks.register(JVM_KOTEST_NAME, KotestJvmTask::class) {
-         onlyIf { extension.customGradleTask.get() }
+         onlyIf { extension.customGradleTask.getOrElse(false) }
 
          group = JavaBasePlugin.VERIFICATION_GROUP
          description = TASK_DESCRIPTION

@@ -31,7 +31,7 @@ kotlin {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.junit.platform5.testkit)
             implementation(libs.mockk)
-            implementation("dev.gradleplugins:gradle-api:8.4")
+            implementation(libs.gradle.api)
          }
       }
 

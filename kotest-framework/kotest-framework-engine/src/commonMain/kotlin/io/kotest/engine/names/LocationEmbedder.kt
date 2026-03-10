@@ -23,7 +23,6 @@ object LocationEmbedder {
     * the package name. Therefore, we must replace periods.
     */
    fun embeddedTestName(descriptor: Descriptor, formattedName: String): String {
-      // https://www.ascii-code.com/
 // todo native support     return OPEN_TAG + descriptor.path().value.replace(' ', '\u00A0').replace('.', '!') + CLOSE_TAG + formattedName
       return OPEN_TAG + descriptor.path().value + CLOSE_TAG + formattedName
    }

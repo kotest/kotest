@@ -47,7 +47,7 @@ internal object AbstractProjectConfigWriter {
       if (indentation == 0) {
          append("-> ")
       } else {
-         (0 until indentation).forEach { i ->
+         (0..indentation).forEach { i ->
             append("  ")
          }
          append("- ")

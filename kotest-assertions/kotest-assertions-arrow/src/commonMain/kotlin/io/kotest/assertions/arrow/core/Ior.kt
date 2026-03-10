@@ -11,7 +11,7 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.assertionCounter
+import io.kotest.assertions.assertionCounter
 import io.kotest.matchers.should
 
 /**

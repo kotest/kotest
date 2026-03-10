@@ -7,7 +7,7 @@ import arrow.core.identity
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
-import io.kotest.matchers.assertionCounter
+import io.kotest.assertions.assertionCounter
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 

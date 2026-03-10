@@ -58,7 +58,7 @@ data class GradleTestFilterBuilder(
    private fun StringBuilder.appendTestPath() {
       when {
          // Regular test - use full path
-         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name }
+         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name.escapeSingleQuotes() }
          // Data test inside a regular context - use ancestor path to scope the run
          dataTestAncestorPath != null -> dataTestAncestorPath
          // Root-level data test or no test - no path needed
@@ -69,3 +69,15 @@ data class GradleTestFilterBuilder(
       }
    }
 }
+
+/**
+ * Escapes single quotes for use inside a single-quoted shell argument.
+ *
+ * A single quote cannot appear inside a single-quoted string, so we close the
+ * quoted string, emit a backslash-escaped single quote, then reopen the quoted
+ * string: `'` → `'\''`.
+ *
+ * For example, the test name `it's a test` becomes `it'\''s a test`, which
+ * when wrapped in outer single quotes produces `'it'\''s a test'`.
+ */
+private fun String.escapeSingleQuotes(): String = replace("'", "'\\''")

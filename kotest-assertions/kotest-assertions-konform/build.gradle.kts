@@ -4,24 +4,16 @@ plugins {
 }
 
 kotlin {
-
    sourceSets {
-
-      val commonMain by getting {
+      commonMain {
          dependencies {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.konform)
          }
       }
-
-      val commonTest by getting {
+      commonTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
-         }
-      }
-
-      val jvmTest by getting {
-         dependencies {
          }
       }
    }

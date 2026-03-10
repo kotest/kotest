@@ -44,6 +44,10 @@ public final class io/kotest/runner/junit4/KotestTestRunner : org/junit/runner/R
 	public fun run (Lorg/junit/runner/notification/RunNotifier;)V
 }
 
+public final class io/kotest/runner/junit4/RulesKt {
+	public static final fun withRule (Lio/kotest/core/test/TestScope;Lorg/junit/rules/TestRule;Lkotlin/jvm/functions/Function2;)V
+}
+
 public abstract class io/kotest/runner/junit4/ShouldSpec : io/kotest/core/spec/style/ShouldSpec {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V

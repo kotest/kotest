@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.engine.extensions.spec.afterspec
 
+import io.kotest.core.Tag
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.TagExtension
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.spec.IsolationMode
@@ -16,6 +18,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.tags.TagExpression
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
@@ -128,6 +131,21 @@ class AfterSpecListenerTest : FunSpec() {
             listener.specs.values.first().isError.shouldBeTrue()
             listener.specs.values.first().errorOrNull!!.message shouldBe "java.lang.IllegalStateException: zam!"
          }
+      }
+
+      test("AfterSpecListener should NOT be triggered when spec is excluded by tag filtering") {
+         counter.set(0)
+
+         val c = object : AbstractProjectConfig() {
+            override val extensions = listOf(AfterSpecTagExcludeExtension, CountingfterSpecListener)
+         }
+
+         TestEngineLauncher().withListener(NoopTestEngineListener)
+            .withSpecRefs(SpecRef.Reference((TagExcludedAfterSpecSpec::class)))
+            .withProjectConfig(c)
+            .execute()
+
+         counter.get() shouldBe 0
       }
 
       context("afterSpec should be invoked once per spec instance created by the isolation mode") {
@@ -251,5 +269,33 @@ private class NestedSpec : FunSpec() {
          test("b1") {}
          test("b2") {}
       }
+   }
+}
+
+private object AfterSpecExcludedTag : Tag()
+
+private object AfterSpecTagExcludeExtension : TagExtension {
+   override fun tags(): TagExpression = TagExpression.exclude(AfterSpecExcludedTag)
+}
+
+// This spec is tagged with the excluded tag, so its afterSpec callbacks should never fire (issue #5169)
+private class TagExcludedAfterSpecSpec : FunSpec() {
+
+   override suspend fun afterSpec(spec: Spec) {
+      counter.incrementAndGet()
+   }
+
+   override val extensions: List<Extension> = listOf(object : AfterSpecListener {
+      override suspend fun afterSpec(spec: Spec) {
+         counter.incrementAndGet()
+      }
+   })
+
+   init {
+      tags(AfterSpecExcludedTag)
+
+      afterSpec { counter.incrementAndGet() }
+
+      test("foo") {}
    }
 }

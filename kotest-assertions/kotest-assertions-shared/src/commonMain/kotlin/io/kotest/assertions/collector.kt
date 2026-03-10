@@ -3,9 +3,6 @@ package io.kotest.assertions
 import io.kotest.assertions.print.Printed
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.stacktrace.stacktraces
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.ErrorCollector
-import io.kotest.matchers.errorCollector
 
 /**
  * Throws all errors currently collected in the [ErrorCollector].
@@ -33,7 +30,7 @@ internal fun List<Throwable>.toAssertionError(depth: Int, subject: Printed?): As
 }
 
 /**
- * Pushes the provided [error] onto the [errorCollector] and throws if the configured collection mode is [ErrorCollectionMode.Hard]
+ * Pushes the provided [error] onto the [io.kotest.assertions.errorCollector] and throws if the configured collection mode is [ErrorCollectionMode.Hard]
  */
 @ExperimentalKotest
 fun ErrorCollector.pushErrorAndMaybeThrow(error: Throwable) {
@@ -45,8 +42,8 @@ fun ErrorCollector.pushErrorAndMaybeThrow(error: Throwable) {
 }
 
 /**
- * If we are in "soft assertion mode" will add this throwable to the
- * list of throwables for the current execution. Otherwise will
+ * If we are in "soft" assertion mode, will add this throwable to the
+ * list of throwables for the current execution. Otherwise, it will
  * throw immediately.
  */
 fun ErrorCollector.collectOrThrow(error: Throwable) {

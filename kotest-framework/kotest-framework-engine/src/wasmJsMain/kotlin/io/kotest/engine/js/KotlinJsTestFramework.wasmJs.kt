@@ -2,6 +2,12 @@ package io.kotest.engine.js
 
 import kotlin.js.Promise
 
+/**
+ * An implementation of [KotlinJsTestFramework] for Kotlin/WasmJS that outputs directly to
+ * Jasmine-compatible test/suite methods.
+ *
+ * This implementation handles nuances in the way WasmJS handles exceptions thrown in tests.
+ */
 @OptIn(ExperimentalWasmJsInterop::class)
 internal actual val kotlinJsTestFramework: KotlinJsTestFramework = object : KotlinJsTestFramework {
    override fun suite(name: String, ignored: Boolean, suiteFn: () -> Unit) {

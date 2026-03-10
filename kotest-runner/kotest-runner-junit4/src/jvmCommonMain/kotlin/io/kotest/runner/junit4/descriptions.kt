@@ -8,7 +8,7 @@ import io.kotest.engine.test.names.DefaultDisplayNameFormatter
 import org.junit.runner.Description
 import kotlin.reflect.KClass
 
-@Deprecated("Use DescriptionHandler. This will be removed in 7.0")
+@Deprecated("Use Descriptions. This will be removed in 7.0")
 fun describeTestCase(testCase: TestCase, displayName: String): Description =
    Description.createTestDescription(
       testCase.spec::class.bestName(),

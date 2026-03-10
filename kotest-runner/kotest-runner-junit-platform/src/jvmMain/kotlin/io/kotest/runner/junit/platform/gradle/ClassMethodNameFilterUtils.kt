@@ -13,7 +13,7 @@ import java.util.regex.Pattern
  * [org.gradle.api.internal.tasks.testing.junitplatform.ClassMethodNameFilter] which is an
  * implementation of PostDiscoveryFilter. It is also used by the test retry plugin.
  *
- * But ClassMethodNameFilter, as the name implies, only handles clases and methods.
+ * But ClassMethodNameFilter, as the name implies, only handles classes and methods.
  * Kotest is more advanced, and JUnit5 Platform allows for hierarchical tests, so this is a limitation
  * of Gradle not implementing the spec fully. See https://github.com/gradle/gradle/issues/4912
  *

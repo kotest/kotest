@@ -5,13 +5,13 @@ plugins {
 
 kotlin {
    sourceSets {
-      val jvmMain by getting {
+      jvmMain {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             api(libs.wiremock)
          }
       }
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(libs.fuel)
          }
