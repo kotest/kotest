@@ -1,8 +1,11 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.AssertionsConfig
+import io.kotest.common.withNonVirtualTimeout
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Duration.Companion.milliseconds
 
-internal fun describeBestFitForSubstringsInOrder(
+internal suspend fun describeBestFitForSubstringsInOrder(
    value: String,
    substrings: List<String>,
 ) : BestFitForSubstringsInOrderOutcome = when {
@@ -13,7 +16,11 @@ internal fun describeBestFitForSubstringsInOrder(
    substrings.any { it.length > AssertionsConfig.maxSubstringSize.value } ->
       BestFitForSubstringsInOrderOutcome.Ineligible("at least one substring length exceeds maximum allowed (${AssertionsConfig.maxSubstringSize.value})")
    else -> {
-      val bestFit = findBestFitForSubstringsInOrder(value, substrings)
+      val bestFit = try {
+         findBestFitForSubstringsInOrder(value, substrings)
+      } catch (_: CancellationException) {
+         return BestFitForSubstringsInOrderOutcome.TimedOut
+      }
       if (bestFit == substrings.indices.toList() )
          BestFitForSubstringsInOrderOutcome.Success
       else
@@ -25,16 +32,19 @@ sealed interface BestFitForSubstringsInOrderOutcome {
    object Success : BestFitForSubstringsInOrderOutcome
    data class Failure(val description: String) : BestFitForSubstringsInOrderOutcome
    data class Ineligible(val reason: String) : BestFitForSubstringsInOrderOutcome
+   object TimedOut : BestFitForSubstringsInOrderOutcome
 }
 
-internal fun findBestFitForSubstringsInOrder(
+internal suspend fun findBestFitForSubstringsInOrder(
    value: String,
    substrings: List<String>,
 ) : List<Int> {
-   val indexesOfMatches = allIndexesOfSubstrings(value, substrings)
-   return powerSetIndexes(substrings.size)
-      .firstOrNull { subset -> subsetFitsInOrder(indexesOfMatches, subset) }
-      ?: emptyList()
+   return withNonVirtualTimeout(AssertionsConfig.maxSubstringSearchDurationInMs.value.milliseconds) {
+      val indexesOfMatches = allIndexesOfSubstrings(value, substrings)
+      return@withNonVirtualTimeout powerSetIndexes(substrings.size)
+         .firstOrNull { subset -> subsetFitsInOrder(indexesOfMatches, subset) }
+         ?: emptyList()
+   }
 }
 
 internal fun allIndexesOfSubstrings(value: String, substrings: List<String>) =
