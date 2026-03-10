@@ -30,6 +30,30 @@ class SubsetFitsInOrderTest : StringSpec() {
          )
          subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe false
       }
+      "returns false when first substring has no matches" {
+         val indexesOfMatches = listOf(
+            emptyList(),
+            listOf(8, 16, 24,),
+            listOf(6, 12, 16, ),
+         )
+         subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe false
+      }
+       "returns false when substring in the middle has no matches" {
+          val indexesOfMatches = listOf(
+             listOf(10, 15, 20,),
+             emptyList(),
+             listOf(6, 12, 16, ),
+          )
+          subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe false
+       }
+       "returns false when last substring has no matches" {
+          val indexesOfMatches = listOf(
+             listOf(10, 15, 20,),
+             listOf(8, 16, 24,),
+             emptyList(),
+          )
+          subsetFitsInOrder(indexesOfMatches, listOf(0, 1, 2)) shouldBe false
+       }
 
    }
 }

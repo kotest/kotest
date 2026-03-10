@@ -62,6 +62,15 @@ object AssertionsConfig {
    val enabledSubmatchesInStrings: EnvironmentConfigValue<Boolean> =
       EnvironmentConfigValue("kotest.assertions.string.submatching.enabled", true, String::toBoolean)
 
+   val maxSubstringCount: EnvironmentConfigValue<Int> =
+      EnvironmentConfigValue("kotest.assertions.string.substring.max.count", 64, String::toInt)
+
+   val maxSubstringSize: EnvironmentConfigValue<Int> =
+      EnvironmentConfigValue("kotest.assertions.string.substring.max.size", 128, String::toInt)
+
+   val maxSubstringSearchDurationInMs: EnvironmentConfigValue<Long> =
+      EnvironmentConfigValue("kotest.assertions.string.substring.max.durationInMs", 1000L, String::toLong)
+
 }
 
 class EnvironmentConfigValue<T>(

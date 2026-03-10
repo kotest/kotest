@@ -1,5 +1,42 @@
 package io.kotest.matchers.string
 
+import io.kotest.assertions.AssertionsConfig
+
+internal fun describeBestFitForSubstringsInOrder(
+   value: String,
+   substrings: List<String>,
+) : BestFitForSubstringsInOrderOutcome = when {
+   value.length > AssertionsConfig.maxValueSubmatchingSize.value ->
+      BestFitForSubstringsInOrderOutcome.Ineligible("value length (${value.length}) exceeds maximum allowed (${AssertionsConfig.maxValueSubmatchingSize.value})")
+   substrings.size > AssertionsConfig.maxSubstringCount.value ->
+      BestFitForSubstringsInOrderOutcome.Ineligible("substring count (${substrings.size}) exceeds maximum allowed (${AssertionsConfig.maxSubstringCount.value})")
+   substrings.any { it.length > AssertionsConfig.maxSubstringSize.value } ->
+      BestFitForSubstringsInOrderOutcome.Ineligible("at least one substring length exceeds maximum allowed (${AssertionsConfig.maxSubstringSize.value})")
+   else -> {
+      val bestFit = findBestFitForSubstringsInOrder(value, substrings)
+      if (bestFit == substrings.indices.toList() )
+         BestFitForSubstringsInOrderOutcome.Success
+      else
+         BestFitForSubstringsInOrderOutcome.Failure("best fit for substrings in order is: ${bestFit.joinToString(", ")}")
+   }
+}
+
+sealed interface BestFitForSubstringsInOrderOutcome {
+   object Success : BestFitForSubstringsInOrderOutcome
+   data class Failure(val description: String) : BestFitForSubstringsInOrderOutcome
+   data class Ineligible(val reason: String) : BestFitForSubstringsInOrderOutcome
+}
+
+internal fun findBestFitForSubstringsInOrder(
+   value: String,
+   substrings: List<String>,
+) : List<Int> {
+   val indexesOfMatches = allIndexesOfSubstrings(value, substrings)
+   return powerSetIndexes(substrings.size)
+      .firstOrNull { subset -> subsetFitsInOrder(indexesOfMatches, subset) }
+      ?: emptyList()
+}
+
 internal fun allIndexesOfSubstrings(value: String, substrings: List<String>) =
    substrings.map { substring -> allIndexesOf(value, substring) }
 
@@ -35,8 +72,8 @@ internal fun powerSetIndexes(size: Int): Sequence<List<Int>> = sequence {
 }
 
 internal fun subsetFitsInOrder(indexesOfMatches: List<List<Int>>, subset: List<Int>) : Boolean {
-   var nextIndex = indexesOfMatches[subset[0]][0] + 1
-   (1 until subset.size).forEach { i ->
+   var nextIndex = -1
+   (0 until subset.size).forEach { i ->
       val nextIndexes = indexesOfMatches[subset[i]]
       val nextIndexInSubset = nextIndexes.firstOrNull { it >= nextIndex } ?: return false
       nextIndex = nextIndexInSubset + 1
