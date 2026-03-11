@@ -93,7 +93,7 @@ function Home() {
          <header className={clsx('hero hero--primary', styles.heroBanner)}>
             <div className="container">
                <p className={clsx(styles.heroSlogan)}>
-                  Kotest is a <strong>multiplatform</strong> Kotlin test framework with powerful <strong>assertions</strong>, <strong>property</strong> testing, and expressive <strong>styles</strong>.
+                  Kotest is a <strong>multiplatform</strong> Kotlin test framework with powerful <strong>assertions</strong>, integrated <strong>property</strong> testing, and multiple expressive <strong>styles</strong>.
                </p>
                <div className={styles.buttons}>
                   <Link
@@ -134,10 +134,10 @@ function Home() {
 
                      &nbsp;
 
-                     <a href="https://oss.sonatype.org/content/repositories/snapshots/io/kotest/">
+                     <a href="https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml">
                         <img
-                           src="https://img.shields.io/nexus/snapshots/https/s01.oss.sonatype.org/io.kotest/kotest-framework-api.svg?label=latest%20snapshot&style=for-the-badge"
-                           alt="version badge"/>
+                           src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml"
+                           alt="link"/>
                      </a>
 
                      &nbsp;
