@@ -136,7 +136,7 @@ function Home() {
 
                      <a href="https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-framework-engine/maven-metadata.xml">
                         <img
-                           src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml"
+                           src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-framework-engine%2Fmaven-metadata.xml&style=for-the-badge"
                            alt="link"/>
                      </a>
 
