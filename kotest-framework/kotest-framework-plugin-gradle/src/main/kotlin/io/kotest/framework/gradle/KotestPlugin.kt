@@ -97,7 +97,9 @@ abstract class KotestPlugin : Plugin<Project> {
       // configures Kotlin multiplatform projects
       handleMultiplatform(project, extension)
 
-      configurePowerAssert(project, extension.enablePowerAssert)
+      project.afterEvaluate {
+         configurePowerAssert(project, extension.enablePowerAssert)
+      }
 
       project.gradle.taskGraph.whenReady {
          project.tasks.withType(AbstractTestTask::class.java).configureEach {
@@ -108,6 +110,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    @OptIn(ExperimentalKotlinGradlePluginApi::class)
    private fun configurePowerAssert(project: Project, enablePowerAssert: Property<Boolean>) {
+      if (!enablePowerAssert.getOrElse(false)) return
 
       // apply the power assert plugin, won't matter if already applied
       project.pluginManager.apply(POWER_ASSERT_PLUGIN_ID)
@@ -121,7 +124,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // we add the assertions library for users to simplify configuration
          // if it already exists, it won't matter, Gradle will handle it
-         project.configurations.filter { it.name == "commonTestApi" }.forEach {
+         project.configurations.filter { it.name == "commonTestImplementation" }.forEach {
             it.dependencies.add(
                project.dependencies.create("io.kotest:kotest-assertions-core:$kotestVersion")
             )
