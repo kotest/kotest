@@ -41,25 +41,41 @@ internal object DataClassEq : Eq<Any> {
 
       context.push(actual, expected)
       try {
-         val differences = dataClassDiff(makeComparable(actual), makeComparable(expected), context = context)
-         return if (differences == null || differences.differences.isEmpty()) {
+         return if (testByEquals(actual, expected)) {
             EqResult.Success
          } else {
-            val detailedDiffMsg = runCatching {
-               formatDifferences(differences) + "\n\n"
-            }.getOrElse { "" }
 
-            EqResult.Failure {
-               AssertionErrorBuilder.create()
-                  .withMessage(detailedDiffMsg)
-                  .withValues(Expected(expected.print()), Actual(actual.print()))
-                  .build()
+            runCatching {
+               val differences = dataClassDiff(actual, expected, context = context)
+               if (differences == null || differences.differences.isEmpty()) {
+                  EqResult.Success
+               } else {
+                  val detailedDiffMsg = runCatching {
+                     formatDifferences(differences) + "\n\n"
+                  }.getOrNull() ?: ""
+
+                  EqResult.Failure {
+                     AssertionErrorBuilder.create()
+                        .withMessage(detailedDiffMsg)
+                        .withValues(Expected(expected.print()), Actual(actual.print()))
+                        .build()
+                  }
+               }
+            }.getOrElse {
+               EqResult.Failure {
+                  AssertionErrorBuilder.create()
+                     .withMessage("Error: ${it.message}")
+                     .withValues(Expected(expected.print()), Actual(actual.print()))
+                     .build()
+               }
             }
          }
       } finally {
          context.pop()
       }
    }
+
+   private fun testByEquals(a: Any?, b: Any?): Boolean = makeComparable(a) == makeComparable(b)
 
    private fun dataClassDiff(actual: Any?, expected: Any?, depth: Int = 0, context: EqContext): DataClassDifference? {
       require(actual != null && expected != null) { "Actual and expected values cannot be null in a data class comparison" }
