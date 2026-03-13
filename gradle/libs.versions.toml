@@ -37,7 +37,7 @@ spring-boot = "2.7.18"
 spring = "5.3.39"
 
 allure-commons = "2.30.0"
-allure-plugin = "3.0.1"
+allure-plugin = "3.0.2"
 
 byte-buddy = "1.17.6"
 
@@ -158,7 +158,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.11.0" }
+kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.12.1" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -196,7 +196,7 @@ xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.3" }
+kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.4" }
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "dev-publish-plugin" }
 nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }

@@ -1,5 +1,6 @@
 package io.kotest.matchers
 
+@Suppress("DEPRECATION")
 @Deprecated("Use io.kotest.assertions.NoopErrorCollector. Will be removed in a future release.")
 val NoopErrorCollector = io.kotest.assertions.NoopErrorCollector
 

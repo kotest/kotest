@@ -135,5 +135,4 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
          .withTest(test)
          .build(false) shouldBe "'MyTestClass.it'\\''s '\\''special'\\'''"
    }
-
 }

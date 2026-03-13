@@ -14,13 +14,14 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
 
       val error = when (result) {
 
+         is ThrowableMatcherResult -> result.error
+
          is DiffableMatcherResult -> AssertionErrorBuilder.create()
             .withMessage(result.failureMessage() + "\n")
             .withValues(
                expected = Expected(result.expected()),
                actual = Actual(result.actual())
             ).build()
-
 
          is MatcherResultWithError -> result.error() ?: AssertionErrorBuilder.create()
             .withMessage(result.failureMessage()).build()

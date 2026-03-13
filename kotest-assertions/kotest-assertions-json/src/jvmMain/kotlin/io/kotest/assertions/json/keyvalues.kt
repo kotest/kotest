@@ -135,7 +135,10 @@ internal fun findValidSubPath(json: String?, path: String): JsonSubPathSearchOut
             }
          }
 
-         subPath = removeLastPartFromPath(subPath)
+         subPath = when (val shorterPath = removeLastPartFromPath(subPath)) {
+            subPath -> break
+            else -> shorterPath
+         }
       }
    }
    return JsonSubPathNotFound

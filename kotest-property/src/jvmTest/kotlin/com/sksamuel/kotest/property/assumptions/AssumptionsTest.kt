@@ -48,9 +48,11 @@ class AssumptionsTest : FunSpec() {
          timeout = 5.seconds,
          blockingTest = true
       ) {
-         checkAll(10, Arb.positiveInt()) {
-            assume(false)
-            yield()
+         shouldThrow<MaxDiscardPercentageException> {
+            checkAll(10, Arb.positiveInt()) {
+               assume(false)
+               yield()
+            }
          }
       }
 
@@ -58,9 +60,11 @@ class AssumptionsTest : FunSpec() {
          timeout = 5.seconds,
          blockingTest = true
       ) {
-         checkAll(10, Arb.positiveInt()) {
-            assume(false)
-            yield()
+         shouldThrow<MaxDiscardPercentageException> {
+            checkAll(10, Arb.positiveInt()) {
+               assume(false)
+               yield()
+            }
          }
       }
 
@@ -115,6 +119,26 @@ class AssumptionsTest : FunSpec() {
          // this will pass because we upped the discard percentage
          checkAll(PropTestConfig(maxDiscardPercentage = 50), Arb.int(0..3), Arb.int(0..3)) { a, b ->
             withAssumptions(a != b) {
+            }
+         }
+      }
+
+      test("assumptions should fail if too many are discarded for single arbitrary") {
+         // with a single arbitrary, assume() should still enforce max discard percentage:
+         // keeping only a == 0 from Arb.int(0..4) gives ~80% discard rate, exceeding the default 20%
+         shouldThrow<MaxDiscardPercentageException> {
+            checkAll(PropTestConfig(), Arb.int(0..4)) { a ->
+               withAssumptions(a == 0) {
+               }
+            }
+         }
+      }
+
+      test("assumptions should honour maxDiscardPercentage config for single arbitrary") {
+         // this will pass because we upped the discard percentage:
+         // keeping only a > 0 from Arb.int(0..3) gives ~25% discard rate, below 50%
+         checkAll(PropTestConfig(maxDiscardPercentage = 50), Arb.int(0..3)) { a ->
+            withAssumptions(a > 0) {
             }
          }
       }

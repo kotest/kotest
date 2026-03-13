@@ -101,7 +101,7 @@ jobs:
                ref: ${{ inputs.ref }}
          -  uses: actions/setup-node@v6
             with:
-               node-version: '18.4.0'
+               node-version: '20'
          -  name: Build static docusaurus pages
             run: |
                npm --prefix documentation ci

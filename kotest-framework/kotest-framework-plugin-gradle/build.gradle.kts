@@ -39,7 +39,7 @@ dependencies {
 //   testLogging {
 //      showExceptions = true
 //      showStandardStreams = true
-//      events = setOf(FAILED, SKIPPED, STANDARD_ERROR, STANDARD_OUT)
+//      events = setOf(FAILED)
 //      exceptionFormat = TestExceptionFormat.FULL
 //   }
 //}

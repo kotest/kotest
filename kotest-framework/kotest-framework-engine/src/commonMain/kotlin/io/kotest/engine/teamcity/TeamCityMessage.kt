@@ -50,6 +50,7 @@ class TeamCityMessage(
       const val DETAILS = "details"
       const val MESSAGE = "message"
       const val RESULT_STATUS = "result_status"
+      const val LOCATION_HINT = "locationHint"
    }
 
    object Types {
@@ -132,6 +133,10 @@ class TeamCityMessage(
    private fun escapeColonsIn(value: String) = when (escapeColons) {
       true -> value.replace(":", "\u02D0")
       false -> value
+   }
+
+   fun locationHint(value: String?) {
+      if (value != null) attribute(Attributes.LOCATION_HINT, value)
    }
 
    fun duration(duration: Duration) =
