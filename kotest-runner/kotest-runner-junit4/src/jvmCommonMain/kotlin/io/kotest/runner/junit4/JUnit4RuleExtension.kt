@@ -4,11 +4,13 @@ import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.runBlocking
-import org.junit.Rule
 import org.junit.rules.MethodRule
 import org.junit.rules.TestRule
 import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.Statement
+import java.lang.reflect.Field
+import java.lang.reflect.Method
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
@@ -28,11 +30,11 @@ internal object JUnit4RuleExtension : TestCaseExtension {
       execute: suspend (TestCase) -> TestResult
    ): TestResult {
       val spec = testCase.spec
-      val testRules = collectTestRules(spec)
+      val testRules = testRules(classFor(spec::class))
       // Exclude rules already captured as TestRule to avoid double-application.
       // Identity comparison (===) is used because a rule implementing both interfaces
       // would be the same instance in both lists.
-      val methodRules = collectMethodRules(spec).filter { rule -> testRules.none { it === rule } }
+      val methodRules = methodRules(classFor(spec::class)).filter { rule -> testRules.none { it === rule } }
 
       if (testRules.isEmpty() && methodRules.isEmpty()) return execute(testCase)
 
@@ -65,35 +67,53 @@ internal object JUnit4RuleExtension : TestCaseExtension {
 
 /**
  * Traverses [target]'s entire class hierarchy collecting values from
- * [@Rule][org.junit.Rule]-annotated fields and zero-arg methods, filtered by [transform].
+ * [@Rule][org.junit.Rule]-annotated fields and zero-arg methods.
  *
- * Accepts [targetClass] as a parameter so callers in platform source sets supply the
- * [Class] (via `target.javaClass`) without this function needing `.java` or `.javaClass`.
- *
- * Both `@field:Rule` (backing field) and `@get:Rule` (getter method) Kotlin
+ *  Both `@field:Rule` (backing field) and `@get:Rule` (getter method) Kotlin
  * annotation targeting are handled, as is plain Java `@Rule` on fields.
  */
-internal fun <T> collectAnnotatedRules(target: Any, targetClass: Class<*>, transform: (Any?) -> T?): List<T> {
-   val results = mutableListOf<T>()
-   var klass: Class<*>? = targetClass
-   while (klass != null) {
-      for (field in klass.declaredFields) {
-         if (field.annotations.any { it is Rule }) {
-            field.isAccessible = true
-            transform(field.get(target))?.let { results.add(it) }
-         }
-      }
-      for (method in klass.declaredMethods) {
-         if (method.annotations.any { it is Rule } && method.parameterCount == 0) {
-            method.isAccessible = true
-            transform(method.invoke(target))?.let { results.add(it) }
-         }
-      }
-      klass = klass.superclass
-   }
-   return results
+internal fun testRules(target: Class<*>): List<TestRule> {
+   val results = collectFieldRules(target).mapNotNull { it as? TestRule } +
+      collectMethodRules(target).mapNotNull { it as? TestRule }
+   val supe = target.superclass
+   return if (supe == null) results else results + testRules(supe)
 }
 
-internal expect fun collectTestRules(target: Any): List<TestRule>
-internal expect fun collectMethodRules(target: Any): List<MethodRule>
+/**
+ * Traverses [target]'s entire class hierarchy collecting values from
+ * [@Rule][org.junit.Rule]-annotated fields and zero-arg methods.
+ *
+ *  Both `@field:Rule` (backing field) and `@get:Rule` (getter method) Kotlin
+ * annotation targeting are handled, as is plain Java `@Rule` on fields.
+ */
+internal fun methodRules(target: Class<*>): List<MethodRule> {
+   val results = collectFieldRules(target).mapNotNull { it as? MethodRule } +
+      collectMethodRules(target).mapNotNull { it as? MethodRule }
+   val supe = target.superclass
+   return if (supe == null) results else results + methodRules(supe)
+}
+
+internal fun collectFieldRules(target: Class<*>): List<Any> {
+   return fields(target).mapNotNull { field ->
+      if (hasRule(field.annotations)) {
+         field.isAccessible = true
+         field.get(target)
+      } else null
+   }
+}
+
+internal fun collectMethodRules(target: Class<*>): List<Any> {
+   return methods(target).mapNotNull { method ->
+      if (hasRule(method.annotations) && method.parameterCount == 0) {
+         method.isAccessible = true
+         method.invoke(target)
+      } else null
+   }
+}
+
+internal expect fun hasRule(annotations: Array<Annotation>): Boolean
+internal expect fun classFor(target: KClass<*>): Class<*>
+internal expect fun fields(target: Class<*>): List<Field>
+internal expect fun methods(target: Class<*>): List<Method>
+
 internal expect fun syntheticFrameworkMethod(target: Any): FrameworkMethod
