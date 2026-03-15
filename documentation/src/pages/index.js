@@ -21,7 +21,7 @@ const features = [
       ),
    },
    {
-      title: 'Assertions Library',
+      title: 'Powerful Assertions',
       imageUrl: 'img/undraw_docusaurus_tree.svg',
       description: (
          <>
@@ -55,7 +55,20 @@ const features = [
 
             <br/><br/>
 
-            <a href="/docs/proptest/property-based-testing.html">Read more</a>
+            <a href="/docs/proptesframeworkt/property-based-testing.html">Read more</a>
+         </>
+      ),
+   },
+   {
+      title: 'Multiplatform Support',
+      imageUrl: 'img/undraw_docusaurus_react.svg',
+      description: (
+         <>
+            Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm (JS and WasmWasi), Android unit tests, Android instrumented tests.
+            <br/><br/>
+            Native, JS and Wasm support uses the existing Kotlin Gradle tasks for seamless integration into the Kotlin ecosystem.
+            <br/><br/>
+            <a href="/docs/framework/framework.html">Read more</a>
          </>
       ),
    },
