@@ -9,7 +9,7 @@ import styles from './styles.module.css';
 const features = [
    {
       title: 'Test Framework',
-      imageUrl: 'img/undraw_docusaurus_mountain.svg',
+      imageUrl: 'img/index_graphic_test_framework.png',
       description: (
          <>
             The Kotest test framework supports multiple test styles all with unlimited nesting, natural language test names, and automatic coroutine support at every level.
