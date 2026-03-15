@@ -67,6 +67,19 @@ const features = [
          </>
       ),
    },
+   {
+      title: 'Third Party Extensions',
+      imageUrl: 'img/index_graphic_kmp.png',
+      description: (
+         <>
+            Many projects in the Kotlin and JVM ecosystem have Kotest integration available, such as Spring, Koin, Test Containers, Blockhound, Micronaut and more.
+            <br/><br/>
+            It is easy to add your own integration using Kotest's extension extensibility model.
+            <br/><br/>
+            <a href="/docs/extensions/extensions.html">Read more</a>
+         </>
+      ),
+   },
 ];
 
 function Feature({imageUrl, title, description}) {
