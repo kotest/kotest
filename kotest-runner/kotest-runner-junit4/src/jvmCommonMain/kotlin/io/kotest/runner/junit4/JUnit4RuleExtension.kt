@@ -30,11 +30,11 @@ internal object JUnit4RuleExtension : TestCaseExtension {
       execute: suspend (TestCase) -> TestResult
    ): TestResult {
       val spec = testCase.spec
-      val testRules = testRules(classFor(spec::class))
+      val testRules = testRules(classFor(spec::class), spec)
       // Exclude rules already captured as TestRule to avoid double-application.
       // Identity comparison (===) is used because a rule implementing both interfaces
       // would be the same instance in both lists.
-      val methodRules = methodRules(classFor(spec::class)).filter { rule -> testRules.none { it === rule } }
+      val methodRules = methodRules(classFor(spec::class), spec).filter { rule -> testRules.none { it === rule } }
 
       if (testRules.isEmpty() && methodRules.isEmpty()) return execute(testCase)
 
@@ -72,11 +72,11 @@ internal object JUnit4RuleExtension : TestCaseExtension {
  *  Both `@field:Rule` (backing field) and `@get:Rule` (getter method) Kotlin
  * annotation targeting are handled, as is plain Java `@Rule` on fields.
  */
-internal fun testRules(target: Class<*>): List<TestRule> {
-   val results = collectFieldRules(target).mapNotNull { it as? TestRule } +
-      collectMethodRules(target).mapNotNull { it as? TestRule }
+internal fun testRules(target: Class<*>, instance: Any): List<TestRule> {
+   val results = collectFieldRules(target, instance).mapNotNull { it as? TestRule } +
+      collectMethodRules(target, instance).mapNotNull { it as? TestRule }
    val supe = target.superclass
-   return if (supe == null) results else results + testRules(supe)
+   return if (supe == null) results else results + testRules(supe, instance)
 }
 
 /**
@@ -86,27 +86,27 @@ internal fun testRules(target: Class<*>): List<TestRule> {
  *  Both `@field:Rule` (backing field) and `@get:Rule` (getter method) Kotlin
  * annotation targeting are handled, as is plain Java `@Rule` on fields.
  */
-internal fun methodRules(target: Class<*>): List<MethodRule> {
-   val results = collectFieldRules(target).mapNotNull { it as? MethodRule } +
-      collectMethodRules(target).mapNotNull { it as? MethodRule }
+internal fun methodRules(target: Class<*>, instance: Any): List<MethodRule> {
+   val results = collectFieldRules(target, instance).mapNotNull { it as? MethodRule } +
+      collectMethodRules(target, instance).mapNotNull { it as? MethodRule }
    val supe = target.superclass
-   return if (supe == null) results else results + methodRules(supe)
+   return if (supe == null) results else results + methodRules(supe, instance)
 }
 
-internal fun collectFieldRules(target: Class<*>): List<Any> {
+internal fun collectFieldRules(target: Class<*>, instance: Any): List<Any> {
    return fields(target).mapNotNull { field ->
       if (hasRule(field.annotations)) {
          field.isAccessible = true
-         field.get(target)
+         field.get(instance)
       } else null
    }
 }
 
-internal fun collectMethodRules(target: Class<*>): List<Any> {
+internal fun collectMethodRules(target: Class<*>, instance: Any): List<Any> {
    return methods(target).mapNotNull { method ->
       if (hasRule(method.annotations) && method.parameterCount == 0) {
          method.isAccessible = true
-         method.invoke(target)
+         method.invoke(instance)
       } else null
    }
 }
