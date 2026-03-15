@@ -25,16 +25,11 @@ const features = [
       imageUrl: 'img/index_graphic_assertions.png',
       description: (
          <>
-            The Kotest assertions library is a Kotlin-first multiplatform assertions library with over 300 rich
-            assertions.
-
+            The Kotest assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic syntax.
             <br/><br/>
-
-            It comes equipped with collection inspectors, non-determistic test helpers, soft assertions, modules for
-            arrow, json, kotlinx-datetime and much more.
-
+            It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, and extension modules for
+            Arrow, JSON, kotlinx-datetime and much more.
             <br/><br/>
-
             <a href="/docs/assertions/assertions.html">Read more</a>
          </>
       ),
