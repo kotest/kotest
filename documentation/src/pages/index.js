@@ -27,7 +27,7 @@ const features = [
          <>
             The assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic Kotlin syntax.
             <br/><br/>
-            It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, and extensions for
+            It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, support for power-assertion and extensions for
             Arrow, JSON, kotlinx-datetime and more.
             <br/><br/>
             <a href="/docs/assertions/assertions.html">Read more</a>
