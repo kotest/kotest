@@ -12,9 +12,9 @@ const features = [
       imageUrl: 'img/index_graphic_test_framework.png',
       description: (
          <>
-            The Kotest test framework supports multiple test styles all with unlimited nesting, natural language test names, and automatic coroutine support at every level.
+            The Kotest test framework supports multiple test styles with unlimited nesting, natural language test names, and coroutine support at every level.
             <br/><br/>
-            The ready to go DSL provides out of the box support for parameterized tests, data-driven testing, conditional evaluation, test lifecycle callbacks, extensive parallelism and more.
+            The out of the box DSL provides support for parameterized tests, data-driven testing, conditional evaluation, test lifecycle callbacks, extensive parallelism and more.
             <br/><br/>
             <a href="/docs/framework/framework.html">Read more</a>
          </>
@@ -25,10 +25,10 @@ const features = [
       imageUrl: 'img/index_graphic_assertions.png',
       description: (
          <>
-            The assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic syntax.
+            The assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic Kotlin syntax.
             <br/><br/>
-            It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, and extension modules for
-            Arrow, JSON, kotlinx-datetime and much more.
+            It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, and extensions for
+            Arrow, JSON, kotlinx-datetime and more.
             <br/><br/>
             <a href="/docs/assertions/assertions.html">Read more</a>
          </>
@@ -54,9 +54,9 @@ const features = [
       imageUrl: 'img/index_graphic_kmp.png',
       description: (
          <>
-            Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm (JS and WasmWasi), Android unit tests, Android instrumented tests.
+            Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm, and Android unit and instrumented tests.
             <br/><br/>
-            Native, JS and Wasm support uses the existing Kotlin Gradle tasks for seamless integration into the Kotlin ecosystem.
+            Multiplatform support leverages the existing Kotlin Gradle tasks for seamless integration into the Kotlin ecosystem.
             <br/><br/>
             <a href="/docs/framework/framework.html">Read more</a>
          </>
@@ -69,7 +69,7 @@ const features = [
          <>
             Many projects in the Kotlin and JVM ecosystem have Kotest integration available, such as Spring, Koin, Test Containers, Blockhound, Micronaut and more.
             <br/><br/>
-            It is easy to add your own integration using Kotest's extension extensibility model.
+            It is easy to add your own integration using Kotest's extensive extensibility model.
             <br/><br/>
             <a href="/docs/extensions/extensions.html">Read more</a>
          </>
