@@ -12,17 +12,10 @@ const features = [
       imageUrl: 'img/undraw_docusaurus_mountain.svg',
       description: (
          <>
-            The Kotest test framework enables test to be laid out in a fluid way and execute them on JVM, Javascript,
-            or native platforms.
-
+            The Kotest test framework supports multiple test styles all with unlimited nesting, natural language test names, and automatic coroutine support at every level.
             <br/><br/>
-
-            With built in coroutine support at every level, the ability to use functions as test lifecycle callbacks,
-            extensive extension points,
-            advanced conditional evaluation, powerful data driven testing, and more.
-
+            The ready to go DSL provides out of the box support for parameterized tests, data-driven testing, conditional evaluation, test lifecycle callbacks, extensive parallelism and more.
             <br/><br/>
-
             <a href="/docs/framework/framework.html">Read more</a>
          </>
       ),
