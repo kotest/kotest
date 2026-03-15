@@ -17,7 +17,7 @@ After [configuring](https://gradle-pitest-plugin.solidsoft.info/) Pitest,
 add the `io.kotest:kotest-extensions-pitest` module to your dependencies as well:
 
 ```kotlin
-    testImplementation("io.kotest:kotest-extensions-pitest:<version>")
+    pitest("io.kotest:kotest-extensions-pitest:<version>")
 ```
 
 :::note
