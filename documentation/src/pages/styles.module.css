@@ -37,6 +37,10 @@
    width: 200px;
 }
 
+.feature h3 {
+   text-align: center;
+}
+
 .heroSlogan {
    font-size: clamp(1.6rem, 5vw, 3.75rem);
    line-height: 1.2;
