@@ -22,7 +22,7 @@ const features = [
    },
    {
       title: 'Powerful Assertions',
-      imageUrl: 'img/undraw_docusaurus_tree.svg',
+      imageUrl: 'img/index_graphic_assertions.png',
       description: (
          <>
             The Kotest assertions library is a Kotlin-first multiplatform assertions library with over 300 rich
