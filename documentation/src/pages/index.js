@@ -56,7 +56,7 @@ const features = [
    },
    {
       title: 'Multiplatform Support',
-      imageUrl: 'img/undraw_docusaurus_react.svg',
+      imageUrl: 'img/index_graphic_kmp.png',
       description: (
          <>
             Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm (JS and WasmWasi), Android unit tests, Android instrumented tests.
