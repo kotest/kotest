@@ -25,7 +25,7 @@ const features = [
       imageUrl: 'img/index_graphic_assertions.png',
       description: (
          <>
-            The Kotest assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic syntax.
+            The assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic syntax.
             <br/><br/>
             It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, and extension modules for
             Arrow, JSON, kotlinx-datetime and much more.
@@ -39,17 +39,12 @@ const features = [
       imageUrl: 'img/index_graphic_property_testing.png',
       description: (
          <>
-            The Kotest property testing module is an advanced multiplatform property test library with over 50 built in
-            generators.
-
+            The property testing module uses Kotlin's powerful DSL support to create succinent and powerful property
+            based tests.
             <br/><br/>
-
-            It supports failure shrinking, the ability to easily create and compose new generators; both exhaustive and
-            arbitrary checks,
-            repeatable random seeds, coverage metrics, and more.
-
+            It supports generating values for over 100 types, failure shrinking, compose and extend generators,
+            exhaustive checks, repeatable random seeds, coverage metrics, and more.
             <br/><br/>
-
             <a href="/docs/proptesframeworkt/property-based-testing.html">Read more</a>
          </>
       ),
@@ -170,7 +165,7 @@ function Home() {
                            alt="stack overflow"/>
                      </a>
                   </div>
-                  <div className="row">
+                  <div className={clsx('row', styles.featuresRow)}>
                      {features.map((props, idx) => (
                         <Feature key={idx} {...props} />
                      ))}
