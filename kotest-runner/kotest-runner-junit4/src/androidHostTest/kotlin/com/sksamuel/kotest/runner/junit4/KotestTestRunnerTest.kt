@@ -4,11 +4,15 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit4.KotestTestRunner
 import kotlinx.coroutines.delay
+import org.junit.Rule
 import org.junit.runner.Description
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.RunNotifier
+import org.junit.rules.TestRule
+import org.junit.runners.model.Statement
 import kotlin.random.Random
 
 class KotestTestRunnerTest : FunSpec({
@@ -27,7 +31,40 @@ class KotestTestRunnerTest : FunSpec({
       KotestTestRunner(DummySpec::class.java).run(listener)
       threads.shouldHaveSize(1)
    }
+
+   test("should apply @Rule annotated TestRule before and after each test") {
+      RuleTracker.invocations.clear()
+      KotestTestRunner(SpecWithTrackedRule::class.java).run(RunNotifier())
+      RuleTracker.invocations shouldBe listOf(
+         "before: rule test one",
+         "after: rule test one",
+         "before: rule test two",
+         "after: rule test two",
+      )
+   }
 })
+
+private object RuleTracker {
+   val invocations = mutableListOf<String>()
+}
+
+private class SpecWithTrackedRule : FunSpec() {
+   @get:Rule
+   val rule: TestRule = TestRule { base, description ->
+      object : Statement() {
+         override fun evaluate() {
+            RuleTracker.invocations.add("before: ${description.methodName}")
+            base.evaluate()
+            RuleTracker.invocations.add("after: ${description.methodName}")
+         }
+      }
+   }
+
+   init {
+      test("rule test one") { /* noop */ }
+      test("rule test two") { /* noop */ }
+   }
+}
 
 private class DummySpec : FreeSpec() {
    init {
