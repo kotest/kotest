@@ -96,19 +96,20 @@ internal object DataClassEq : Eq<Any> {
       reflection.primaryConstructorMembers(expected::class).mapNotNull { prop ->
          val actualPropertyValue = prop.call(actual)
          val expectedPropertyValue = prop.call(expected)
-         if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue))
-            dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
-               Pair(prop, diff)
-            }
-         else {
-            val result = EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
-            when (result) {
-               is EqResult.Failure -> {
+         val result = EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
+         when (result) {
+            is EqResult.Failure -> {
+               if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue)) {
+                  dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
+                     Pair(prop, diff)
+                  }
+               }
+               else {
                   val error = result.error()
                   Pair(prop, StandardDifference(error))
                }
-               EqResult.Success -> null
             }
+            EqResult.Success -> null
          }
       }
 
