@@ -41,6 +41,10 @@
    text-align: center;
 }
 
+.featuresRow {
+   justify-content: center;
+}
+
 .heroSlogan {
    font-size: clamp(1.6rem, 5vw, 3.75rem);
    line-height: 1.2;
