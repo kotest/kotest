@@ -8,10 +8,10 @@ import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit4.KotestTestRunner
 import kotlinx.coroutines.delay
 import org.junit.Rule
+import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.RunNotifier
-import org.junit.rules.TestRule
 import org.junit.runners.model.Statement
 import kotlin.random.Random
 
@@ -49,20 +49,28 @@ private object RuleTracker {
 }
 
 private class SpecWithTrackedRule : FunSpec() {
+
    @get:Rule
-   val rule: TestRule = TestRule { base, description ->
-      object : Statement() {
+   val rule: TestRule = MyTestRule()
+
+   init {
+      test("rule test one") { /* noop */ }
+      test("rule test two") { /* noop */ }
+   }
+}
+
+class MyTestRule : TestRule {
+   override fun apply(
+      base: Statement,
+      description: Description
+   ): Statement {
+      return object : Statement() {
          override fun evaluate() {
             RuleTracker.invocations.add("before: ${description.methodName}")
             base.evaluate()
             RuleTracker.invocations.add("after: ${description.methodName}")
          }
       }
-   }
-
-   init {
-      test("rule test one") { /* noop */ }
-      test("rule test two") { /* noop */ }
    }
 }
 
