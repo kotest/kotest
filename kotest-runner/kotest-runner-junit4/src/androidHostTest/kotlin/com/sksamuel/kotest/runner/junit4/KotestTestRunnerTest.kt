@@ -8,10 +8,12 @@ import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit4.KotestTestRunner
 import kotlinx.coroutines.delay
 import org.junit.Rule
+import org.junit.rules.MethodRule
 import org.junit.rules.TestRule
 import org.junit.runner.Description
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.RunNotifier
+import org.junit.runners.model.FrameworkMethod
 import org.junit.runners.model.Statement
 import kotlin.random.Random
 
@@ -30,6 +32,19 @@ class KotestTestRunnerTest : FunSpec({
       })
       KotestTestRunner(DummySpec::class.java).run(listener)
       threads.shouldHaveSize(1)
+   }
+
+   test("should apply @Rule annotated MethodRule before and after each test") {
+      RuleTracker.invocations.clear()
+      KotestTestRunner(SpecWithTrackedMethodRule::class.java).run(RunNotifier())
+      // MethodRule receives a synthetic FrameworkMethod wrapping Object.toString(),
+      // so method.name is "toString" rather than the Kotest test name.
+      RuleTracker.invocations shouldBe listOf(
+         "before: toString",
+         "after: toString",
+         "before: toString",
+         "after: toString",
+      )
    }
 
    test("should apply @Rule annotated TestRule before and after each test") {
@@ -69,6 +84,29 @@ class MyTestRule : TestRule {
             RuleTracker.invocations.add("before: ${description.methodName}")
             base.evaluate()
             RuleTracker.invocations.add("after: ${description.methodName}")
+         }
+      }
+   }
+}
+
+private class SpecWithTrackedMethodRule : FunSpec() {
+
+   @get:Rule
+   val rule: MethodRule = MyMethodRule()
+
+   init {
+      test("method rule test one") { /* noop */ }
+      test("method rule test two") { /* noop */ }
+   }
+}
+
+class MyMethodRule : MethodRule {
+   override fun apply(base: Statement, method: FrameworkMethod, target: Any): Statement {
+      return object : Statement() {
+         override fun evaluate() {
+            RuleTracker.invocations.add("before: ${method.name}")
+            base.evaluate()
+            RuleTracker.invocations.add("after: ${method.name}")
          }
       }
    }
