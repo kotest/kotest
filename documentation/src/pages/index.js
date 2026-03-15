@@ -41,7 +41,7 @@ const features = [
    },
    {
       title: 'Property Testing',
-      imageUrl: 'img/undraw_docusaurus_react.svg',
+      imageUrl: 'img/index_graphic_property_testing.png',
       description: (
          <>
             The Kotest property testing module is an advanced multiplatform property test library with over 50 built in
