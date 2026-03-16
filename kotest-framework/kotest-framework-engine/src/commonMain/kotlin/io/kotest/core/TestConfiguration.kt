@@ -281,19 +281,6 @@ abstract class TestConfiguration : Extendable() {
       })
    }
 
-   /**
-    * Registers a callback to be executed once per spec class after all tests in the spec have completed.
-    * Unlike [afterSpec], this callback is invoked only once regardless of the number of spec instances created,
-    * and receives the full map of test results.
-    */
-   open fun finalizeSpec(f: FinalizeSpec) {
-      extension(object : FinalizeSpecListener {
-         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
-            f(kclass, results)
-         }
-      })
-   }
-
    fun aroundTest(aroundTestFn: AroundTestFn) {
       this@TestConfiguration.extension(object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
