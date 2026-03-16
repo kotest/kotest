@@ -9,6 +9,7 @@ import io.kotest.core.extensions.Extension
 import io.kotest.core.factory.FactoryId
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.AfterSpecListener
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.names.DuplicateTestNameMode
@@ -28,6 +29,7 @@ import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.CoroutineScope
 import kotlin.js.JsName
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
@@ -361,6 +363,15 @@ abstract class Spec : TestConfiguration() {
          override suspend fun afterSpec(spec: Spec) {
             if (spec::class == this@Spec::class)
                f(spec)
+         }
+      })
+   }
+
+   final override fun finalizeSpec(f: FinalizeSpec) {
+      extension(object : FinalizeSpecListener {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+            if (kclass == this@Spec::class)
+               f(kclass, results)
          }
       })
    }
