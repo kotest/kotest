@@ -41,9 +41,12 @@ import org.jetbrains.kotlin.gradle.targets.native.tasks.KotlinNativeTest
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.powerassert.gradle.PowerAssertGradleExtension
 import java.util.Properties
+import org.gradle.api.logging.Logging
 
 @Suppress("unused")
 abstract class KotestPlugin : Plugin<Project> {
+
+   private val logger = Logging.getLogger(KotestPlugin::class.java)
 
    companion object {
       internal const val TASK_DESCRIPTION = "Runs kotest tests"
@@ -181,12 +184,19 @@ abstract class KotestPlugin : Plugin<Project> {
             // but it is unaware of Kotest's generated tests, so we must remove the filter from its eyes
             // this does mean that you can't combine kotlin.test tests and Kotest tests and expect
             // to filter the kotlin.test ones
+            val cmdLinePatternsBefore = (task.filter as? DefaultTestFilter)?.commandLineIncludePatterns ?: emptyList<String>()
+            logger.info("KotlinJsTest [${task.name}] filters before reset: excludePatterns=${task.filter.excludePatterns}, includePatterns=${task.filter.includePatterns}, commandLineIncludePatterns=$cmdLinePatternsBefore")
             task.filter.excludePatterns.clear()
             task.filter.includePatterns.clear()
             when (val filter = task.filter) {
                is DefaultTestFilter -> filter.commandLineIncludePatterns.clear()
             }
             task.filter.isFailOnNoMatchingTests = false
+            if (task.hasProperty("failOnNoDiscoveredTests")) {
+               task.setProperty("failOnNoDiscoveredTests", false)
+            }
+            val cmdLinePatternsAfter = (task.filter as? DefaultTestFilter)?.commandLineIncludePatterns ?: emptyList<String>()
+            logger.info("KotlinJsTest [${task.name}] filters after reset: excludePatterns=${task.filter.excludePatterns}, includePatterns=${task.filter.includePatterns}, commandLineIncludePatterns=$cmdLinePatternsAfter")
          }
       }
    }
