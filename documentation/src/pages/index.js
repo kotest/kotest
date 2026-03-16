@@ -9,60 +9,69 @@ import styles from './styles.module.css';
 const features = [
    {
       title: 'Test Framework',
-      imageUrl: 'img/undraw_docusaurus_mountain.svg',
+      imageUrl: 'img/index_graphic_test_framework.png',
       description: (
          <>
-            The Kotest test framework enables test to be laid out in a fluid way and execute them on JVM, Javascript,
-            or native platforms.
-
+            The Kotest test framework supports multiple test styles with unlimited nesting, natural language test names, and coroutine support at every level.
             <br/><br/>
-
-            With built in coroutine support at every level, the ability to use functions as test lifecycle callbacks,
-            extensive extension points,
-            advanced conditional evaluation, powerful data driven testing, and more.
-
+            The out of the box DSL provides support for parameterized tests, data-driven testing, conditional evaluation, test lifecycle callbacks, extensive parallelism and more.
             <br/><br/>
-
             <a href="/docs/framework/framework.html">Read more</a>
          </>
       ),
    },
    {
-      title: 'Assertions Library',
-      imageUrl: 'img/undraw_docusaurus_tree.svg',
+      title: 'Multiplatform Support',
+      imageUrl: 'img/index_graphic_kmp.png',
       description: (
          <>
-            The Kotest assertions library is a Kotlin-first multiplatform assertions library with over 300 rich
-            assertions.
-
+            Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm, and Android unit and instrumented tests.
             <br/><br/>
-
-            It comes equipped with collection inspectors, non-determistic test helpers, soft assertions, modules for
-            arrow, json, kotlinx-datetime and much more.
-
+            Multiplatform support leverages the existing Kotlin Gradle tasks for seamless integration into the Kotlin ecosystem.
             <br/><br/>
-
+            <a href="/docs/framework/framework.html">Read more</a>
+         </>
+      ),
+   },
+   {
+      title: 'Powerful Assertions',
+      imageUrl: 'img/index_graphic_assertions.png',
+      description: (
+         <>
+            The assertions library provides over 350 rich assertions to verify code state with fluent, expressive, and idiomatic Kotlin syntax.
+            <br/><br/>
+            It comes equipped with collection inspectors, non-determistic utilities, grouped assertion support, support for power-assertion and extensions for
+            Arrow, JSON, kotlinx-datetime and more.
+            <br/><br/>
             <a href="/docs/assertions/assertions.html">Read more</a>
          </>
       ),
    },
    {
       title: 'Property Testing',
-      imageUrl: 'img/undraw_docusaurus_react.svg',
+      imageUrl: 'img/index_graphic_property_testing.png',
       description: (
          <>
-            The Kotest property testing module is an advanced multiplatform property test library with over 50 built in
-            generators.
-
+            The property testing module uses Kotlin's powerful DSL support to create succinent and powerful property
+            based tests.
             <br/><br/>
-
-            It supports failure shrinking, the ability to easily create and compose new generators; both exhaustive and
-            arbitrary checks,
-            repeatable random seeds, coverage metrics, and more.
-
+            It supports generating values for over 100 types, failure shrinking, compose and extend generators,
+            exhaustive checks, repeatable random seeds, coverage metrics, and more.
             <br/><br/>
-
-            <a href="/docs/proptest/property-based-testing.html">Read more</a>
+            <a href="/docs/proptesframeworkt/property-based-testing.html">Read more</a>
+         </>
+      ),
+   },
+   {
+      title: 'Third Party Extensions',
+      imageUrl: 'img/index_graphic_extensions.png',
+      description: (
+         <>
+            Many projects in the Kotlin and JVM ecosystem have Kotest integration available, such as Spring, Koin, Test Containers, Blockhound, Micronaut and more.
+            <br/><br/>
+            It is easy to add your own integration using Kotest's extensive extensibility model.
+            <br/><br/>
+            <a href="/docs/extensions/extensions.html">Read more</a>
          </>
       ),
    },
@@ -156,7 +165,7 @@ function Home() {
                            alt="stack overflow"/>
                      </a>
                   </div>
-                  <div className="row">
+                  <div className={clsx('row', styles.featuresRow)}>
                      {features.map((props, idx) => (
                         <Feature key={idx} {...props} />
                      ))}
