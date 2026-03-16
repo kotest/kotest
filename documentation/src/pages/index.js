@@ -21,6 +21,19 @@ const features = [
       ),
    },
    {
+      title: 'Multiplatform Support',
+      imageUrl: 'img/index_graphic_kmp.png',
+      description: (
+         <>
+            Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm, and Android unit and instrumented tests.
+            <br/><br/>
+            Multiplatform support leverages the existing Kotlin Gradle tasks for seamless integration into the Kotlin ecosystem.
+            <br/><br/>
+            <a href="/docs/framework/framework.html">Read more</a>
+         </>
+      ),
+   },
+   {
       title: 'Powerful Assertions',
       imageUrl: 'img/index_graphic_assertions.png',
       description: (
@@ -46,19 +59,6 @@ const features = [
             exhaustive checks, repeatable random seeds, coverage metrics, and more.
             <br/><br/>
             <a href="/docs/proptesframeworkt/property-based-testing.html">Read more</a>
-         </>
-      ),
-   },
-   {
-      title: 'Multiplatform Support',
-      imageUrl: 'img/index_graphic_kmp.png',
-      description: (
-         <>
-            Kotest is fully multiplatform with support for JVM, JS, Native (Linux, Windows, iOS, macOS, tvOS, watchOS), Wasm, and Android unit and instrumented tests.
-            <br/><br/>
-            Multiplatform support leverages the existing Kotlin Gradle tasks for seamless integration into the Kotlin ecosystem.
-            <br/><br/>
-            <a href="/docs/framework/framework.html">Read more</a>
          </>
       ),
    },
