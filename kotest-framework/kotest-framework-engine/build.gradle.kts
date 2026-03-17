@@ -7,6 +7,9 @@ plugins {
    id("kotest-watchos-device-conventions")
    id("kotest-publishing-conventions")
    alias(libs.plugins.kotlin.serialization)
+   id("com.google.devtools.ksp").version("2.3.4")
+   // the Kotest plugin must be a published version and not one in the current build
+   id("io.kotest").version("6.1.2")
 }
 
 kotlin {
@@ -72,12 +75,6 @@ kotlin {
             implementation(projects.kotestProperty)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.mockk)
-         }
-      }
-
-      jsTest {
-         dependencies {
-            implementation(kotlin("test"))
          }
       }
 

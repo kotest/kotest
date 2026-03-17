@@ -9,11 +9,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.test.TestResultBuilder
-import kotlinx.coroutines.test.runTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import io.kotest.matchers.shouldBe
 
 /**
  * A recording fake of [KotlinJsTestFramework] that captures suite and test registrations.
@@ -72,241 +68,206 @@ private fun nestedTestCase(specFqn: String, contextName: String, testName: Strin
    TestType.Test,
 )
 
-class JsTestFrameworkTestEngineListenerTest {
+class JsTestFrameworkTestEngineListenerTest : FunSpec({
 
-   // --- engineStarted ---
+   context("engineStarted") {
 
-   @Test
-   fun engineStartedRegistersAnchorSuiteNamedKotestEngine() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      listener.engineStarted()
-      assertEquals(1, fw.suites.size)
-      assertEquals("Kotest Engine", fw.suites[0].name)
-      assertFalse(fw.suites[0].ignored)
+      test("registers an anchor suite named 'Kotest Engine'") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         listener.engineStarted()
+         fw.suites.size shouldBe 1
+         fw.suites[0].name shouldBe "Kotest Engine"
+         fw.suites[0].ignored shouldBe false
+      }
+
+      test("registers an 'Executor' test inside the anchor suite") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         listener.engineStarted()
+         fw.suites[0].tests.size shouldBe 1
+         fw.suites[0].tests[0].name shouldBe "Executor"
+         fw.suites[0].tests[0].ignored shouldBe false
+      }
    }
 
-   @Test
-   fun engineStartedRegistersAnchorTestNamedExecutorInsideAnchorSuite() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      listener.engineStarted()
-      assertEquals(1, fw.suites[0].tests.size)
-      assertEquals("Executor", fw.suites[0].tests[0].name)
-      assertFalse(fw.suites[0].tests[0].ignored)
+   context("specIgnored") {
+
+      test("registers a single ignored suite") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         listener.specIgnored(DummySpec::class, "disabled")
+         fw.suites.size shouldBe 1
+         fw.suites[0].ignored shouldBe true
+      }
+
+      test("replaces dots in the class name with spaces") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         listener.specIgnored(DummySpec::class, null)
+         fw.suites[0].name.contains('.') shouldBe false
+      }
+
+      test("registers no tests inside the ignored suite") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         listener.specIgnored(DummySpec::class, null)
+         fw.suites[0].tests.size shouldBe 0
+      }
    }
 
-   // --- specIgnored ---
+   context("specFinished") {
 
-   @Test
-   fun specIgnoredRegistersASingleIgnoredSuite() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      listener.specIgnored(DummySpec::class, "disabled")
-      assertEquals(1, fw.suites.size)
-      assertTrue(fw.suites[0].ignored)
+      test("does nothing when specStarted was never called") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         listener.specFinished(specRef("com.example.MySpec"), TestResultBuilder.builder().build())
+         fw.suites.size shouldBe 0
+      }
+
+      test("uses the spec fqn as the suite name") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySuite")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySuite", "a test")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites.size shouldBe 1
+         fw.suites[0].name shouldBe "com.example.MySuite"
+         fw.suites[0].ignored shouldBe false
+      }
+
+      test("strips the spec fqn prefix and spec delimiter from test names") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "my test")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].name shouldBe "my test"
+      }
+
+      test("replaces dots in test names with spaces") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "test.with.dots")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].name shouldBe "test with dots"
+      }
+
+      test("uses the » delimiter for nested test names") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = nestedTestCase("com.example.MySpec", "my context", "my test")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].name shouldBe "my context » my test"
+      }
+
+      test("tests appear in registration order") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc1 = rootTestCase("com.example.MySpec", "first")
+         val tc2 = rootTestCase("com.example.MySpec", "second")
+         val tc3 = rootTestCase("com.example.MySpec", "third")
+         listener.testStarted(tc1)
+         listener.testStarted(tc2)
+         listener.testStarted(tc3)
+         listener.testFinished(tc1, TestResultBuilder.builder().build())
+         listener.testFinished(tc2, TestResultBuilder.builder().build())
+         listener.testFinished(tc3, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].name shouldBe "first"
+         fw.suites[0].tests[1].name shouldBe "second"
+         fw.suites[0].tests[2].name shouldBe "third"
+      }
+
+      test("ignored tests are registered with ignored=true") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "skipped test")
+         listener.testIgnored(tc, "just because")
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].ignored shouldBe true
+      }
+
+      test("passing tests are registered with ignored=false") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "passing test")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].ignored shouldBe false
+      }
+
+      test("a test finished with an error is registered with ignored=false") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "failing test")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().withError(RuntimeException("boom")).build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         // a failing test must not be marked ignored — Mocha needs to execute it so the failure is reported
+         fw.suites[0].tests[0].ignored shouldBe false
+      }
+
+      test("a spec with no tests registers an empty suite") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         // no testStarted calls
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         // early return only fires when specStarted was never called; an empty list still produces a suite
+         fw.suites.size shouldBe 1
+         fw.suites[0].tests.size shouldBe 0
+      }
    }
 
-   @Test
-   fun specIgnoredReplacesDotsinClassNameWithSpaces() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      listener.specIgnored(DummySpec::class, null)
-      assertFalse(fw.suites[0].name.contains('.'))
+   context("testIgnored") {
+
+      test("does not crash when specStarted was never called") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val tc = rootTestCase("com.example.MySpec", "orphan test")
+         listener.testIgnored(tc, null)
+         fw.suites.size shouldBe 0
+      }
    }
 
-   @Test
-   fun specIgnoredSuiteContainsNoTests() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      listener.specIgnored(DummySpec::class, null)
-      assertEquals(0, fw.suites[0].tests.size)
+   context("testFinished") {
+
+      test("overwrites the proxy result so the final state is reflected at specFinished") {
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "a test")
+         listener.testStarted(tc)
+         // overwrite the initial Success proxy with an Ignored result
+         listener.testFinished(tc, TestResultBuilder.builder().withIgnoreReason("late ignore").build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+         fw.suites[0].tests[0].ignored shouldBe true
+      }
    }
-
-   // --- specFinished: no prior specStarted ---
-
-   @Test
-   fun specFinishedDoesNothingWhenSpecStartedWasNeverCalled() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      listener.specFinished(specRef("com.example.MySpec"), TestResultBuilder.builder().build())
-      assertEquals(0, fw.suites.size)
-   }
-
-   // --- specFinished: suite naming ---
-
-   @Test
-   fun specFinishedUsesSpecFqnAsSuiteName() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySuite")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySuite", "a test")
-      listener.testStarted(tc)
-      listener.testFinished(tc, TestResultBuilder.builder().build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertEquals(1, fw.suites.size)
-      assertEquals("com.example.MySuite", fw.suites[0].name)
-      assertFalse(fw.suites[0].ignored)
-   }
-
-   // --- specFinished: test name stripping ---
-
-   @Test
-   fun testNamesHaveSpecFqnPrefixAndSpecDelimiterStripped() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySpec", "my test")
-      listener.testStarted(tc)
-      listener.testFinished(tc, TestResultBuilder.builder().build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertEquals("my test", fw.suites[0].tests[0].name)
-   }
-
-   // --- specFinished: dot escaping ---
-
-   @Test
-   fun dotsInTestNamesAreReplacedWithSpaces() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySpec", "test.with.dots")
-      listener.testStarted(tc)
-      listener.testFinished(tc, TestResultBuilder.builder().build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertEquals("test with dots", fw.suites[0].tests[0].name)
-   }
-
-   // --- specFinished: nested test delimiter ---
-
-   @Test
-   fun nestedTestNamesUseChevronDelimiter() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = nestedTestCase("com.example.MySpec", "my context", "my test")
-      listener.testStarted(tc)
-      listener.testFinished(tc, TestResultBuilder.builder().build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertEquals("my context » my test", fw.suites[0].tests[0].name)
-   }
-
-   // --- specFinished: registration order ---
-
-   @Test
-   fun testsAppearInRegistrationOrder() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc1 = rootTestCase("com.example.MySpec", "first")
-      val tc2 = rootTestCase("com.example.MySpec", "second")
-      val tc3 = rootTestCase("com.example.MySpec", "third")
-      listener.testStarted(tc1)
-      listener.testStarted(tc2)
-      listener.testStarted(tc3)
-      listener.testFinished(tc1, TestResultBuilder.builder().build())
-      listener.testFinished(tc2, TestResultBuilder.builder().build())
-      listener.testFinished(tc3, TestResultBuilder.builder().build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertEquals("first", fw.suites[0].tests[0].name)
-      assertEquals("second", fw.suites[0].tests[1].name)
-      assertEquals("third", fw.suites[0].tests[2].name)
-   }
-
-   // --- specFinished: ignored tests ---
-
-   @Test
-   fun ignoredTestsAreRegisteredWithIgnoredTrue() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySpec", "skipped test")
-      listener.testIgnored(tc, "just because")
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertTrue(fw.suites[0].tests[0].ignored)
-   }
-
-   // --- specFinished: passing tests ---
-
-   @Test
-   fun passingTestsAreRegisteredWithIgnoredFalse() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySpec", "passing test")
-      listener.testStarted(tc)
-      listener.testFinished(tc, TestResultBuilder.builder().build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      assertFalse(fw.suites[0].tests[0].ignored)
-   }
-
-   // --- specFinished: error result ---
-
-   @Test
-   fun testFinishedWithErrorRegistersTestAsNotIgnored() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySpec", "failing test")
-      listener.testStarted(tc)
-      listener.testFinished(tc, TestResultBuilder.builder().withError(RuntimeException("boom")).build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      // A failing test must not be ignored — Mocha needs to execute it so the failure is reported
-      assertFalse(fw.suites[0].tests[0].ignored)
-   }
-
-   // --- specFinished: empty spec ---
-
-   @Test
-   fun specWithNoTestsRegistersAnEmptySuiteWhenSpecStartedWasCalled() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      // no testStarted calls — spec has no tests
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      // specFinished only skips when specStarted was never called (proxies entry is null)
-      // when specStarted was called, an empty suite is registered
-      assertEquals(1, fw.suites.size)
-      assertEquals(0, fw.suites[0].tests.size)
-   }
-
-
-   // --- testIgnored without specStarted ---
-
-   @Test
-   fun testIgnoredWithoutPriorSpecStartedDoesNotCrash() = runTest {
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val tc = rootTestCase("com.example.MySpec", "orphan test")
-      // Should silently do nothing — no entry in proxies for this spec
-      listener.testIgnored(tc, null)
-      assertEquals(0, fw.suites.size)
-   }
-
-   // --- testFinished updates proxy result ---
-
-   @Test
-   fun testFinishedUpdatesProxyResultFromSuccessToIgnored() = runTest {
-      // testStarted registers a Success proxy; testFinished should overwrite with Ignored
-      val fw = RecordingFramework()
-      val listener = JsTestFrameworkTestEngineListener(fw)
-      val ref = specRef("com.example.MySpec")
-      listener.specStarted(ref)
-      val tc = rootTestCase("com.example.MySpec", "a test")
-      listener.testStarted(tc)
-      // Overwrite with an ignored result via testFinished
-      listener.testFinished(tc, TestResultBuilder.builder().withIgnoreReason("late ignore").build())
-      listener.specFinished(ref, TestResultBuilder.builder().build())
-      // The final proxy result should be ignored, so it's registered with ignored=true
-      assertTrue(fw.suites[0].tests[0].ignored)
-   }
-}
+})
