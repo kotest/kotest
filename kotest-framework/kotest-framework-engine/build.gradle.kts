@@ -75,6 +75,12 @@ kotlin {
          }
       }
 
+      jsTest {
+         dependencies {
+            implementation(kotlin("test"))
+         }
+      }
+
       tvosMain {
          dependencies {
             // used to write to the console with fancy colours!

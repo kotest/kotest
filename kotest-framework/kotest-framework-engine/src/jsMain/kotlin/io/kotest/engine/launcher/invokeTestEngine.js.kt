@@ -12,7 +12,6 @@ import io.kotest.engine.listener.TeamCityTestEngineListener
 import kotlinx.coroutines.DelicateCoroutinesApi
 
 @OptIn(DelicateCoroutinesApi::class)
-@Suppress("UNCHECKED_CAST", "unused")
 actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjectConfig?) {
 
    val listener = if (isJavaScriptTestFrameworkAvailable())

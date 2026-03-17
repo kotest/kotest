@@ -1,3 +1,6 @@
+public final class io/kotest/core/Logger$Companion {
+}
+
 public final class io/kotest/core/LoggerKt {
 	public static final fun isLoggingEnabled ()Z
 }
