@@ -10,7 +10,7 @@ import kotlin.reflect.KVisibility
  * when [io.kotest.engine.config.ProjectConfigResolver.ignorePrivateClasses] returns true.
  *
  * Since visibility modifiers are only available via reflection on the JVM,
- * this is a JVM only interceptor.
+ * this is a JVM-only interceptor.
  */
 @JVMOnly
 internal class ClassVisibilitySpecRefEnabledExtension(
