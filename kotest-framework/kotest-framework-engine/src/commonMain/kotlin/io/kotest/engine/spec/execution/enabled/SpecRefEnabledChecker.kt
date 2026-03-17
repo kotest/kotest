@@ -11,7 +11,7 @@ import io.kotest.engine.config.ProjectConfigResolver
  *
  * This means certain callbacks can be avoided when a spec is not even needed.
  */
-class SpecRefEnabledChecker(
+internal class SpecRefEnabledChecker(
    projectConfigResolver: ProjectConfigResolver
 ) {
 
@@ -51,7 +51,8 @@ sealed interface EnabledOrDisabled {
 }
 
 /**
- * Returns a list of platform specific [SpecRefEnabledExtension]s such as the class vvisibility check on the JVM
+ * Returns a list of platform specific [SpecRefEnabledExtension]s,
+ * for example, the class visibility check on the JVM.
  */
 internal expect fun platformSpecRefEnabledExtensions(
    projectConfigResolver: ProjectConfigResolver

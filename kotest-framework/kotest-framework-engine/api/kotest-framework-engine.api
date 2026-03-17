@@ -4406,11 +4406,6 @@ public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Ena
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class io/kotest/engine/spec/execution/enabled/SpecRefEnabledChecker {
-	public fun <init> (Lio/kotest/engine/config/ProjectConfigResolver;)V
-	public final fun isEnabled (Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled;
-}
-
 public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
 }
 
