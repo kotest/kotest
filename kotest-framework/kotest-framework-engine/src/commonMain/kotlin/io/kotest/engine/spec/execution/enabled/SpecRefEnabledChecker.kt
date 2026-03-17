@@ -45,7 +45,7 @@ internal interface SpecRefEnabledExtension {
    fun isEnabled(ref: SpecRef): EnabledOrDisabled
 }
 
-sealed interface EnabledOrDisabled {
+internal sealed interface EnabledOrDisabled {
    data object Enabled : EnabledOrDisabled
    data class Disabled(val reason: String?) : EnabledOrDisabled
 }
