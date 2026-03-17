@@ -17,6 +17,10 @@ internal fun isLoggingEnabled() =
 @KotestInternal
 class Logger(private val kclass: KClass<*>) {
 
+   companion object {
+      inline operator fun <reified T> invoke() = Logger(T::class)
+   }
+
    @OverloadResolutionByLambdaReturnType
    fun log(f: () -> Pair<String?, String>) {
       log(null) {
