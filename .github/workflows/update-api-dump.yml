@@ -1,0 +1,59 @@
+name: Update API Dump
+
+on:
+   workflow_run:
+      workflows: ["pr-main"]
+      types: [completed]
+
+permissions:
+   contents: write
+
+jobs:
+   update-api-dump:
+      name: Update API Dump
+      # Only run when pr-main failed, for same-repo PRs (not forks)
+      if: >-
+         github.event.workflow_run.conclusion == 'failure' &&
+         github.event.workflow_run.event == 'pull_request' &&
+         github.event.workflow_run.head_repository.full_name == github.repository
+      runs-on: ubuntu-latest
+      steps:
+         -  name: Checkout PR branch
+            uses: actions/checkout@v5
+            with:
+               ref: ${{ github.event.workflow_run.head_branch }}
+               token: ${{ secrets.GITHUB_TOKEN }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v5
+            with:
+               distribution: "temurin"
+               java-version-file: .github/.java-version
+
+         -  name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v5
+            with:
+               cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+               cache-read-only: true
+
+         -  name: Check if apiCheck fails
+            id: api-check
+            run: ./gradlew apiCheck --continue
+            continue-on-error: true
+
+         -  name: Run apiDump
+            if: steps.api-check.outcome == 'failure'
+            run: ./gradlew apiDump
+
+         -  name: Commit and push updated API dumps
+            if: steps.api-check.outcome == 'failure'
+            run: |
+               git config user.name "github-actions[bot]"
+               git config user.email "github-actions[bot]@users.noreply.github.com"
+               if git diff --quiet -- '**/*.api'; then
+                 echo "No .api file changes after apiDump — failure was not API-related"
+                 exit 0
+               fi
+               git add '**/*.api'
+               git commit -m "chore: update API dumps"
+               git push
