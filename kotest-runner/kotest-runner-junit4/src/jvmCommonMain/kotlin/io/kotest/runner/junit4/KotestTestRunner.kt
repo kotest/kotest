@@ -30,6 +30,7 @@ class KotestTestRunner(
             TestEngineLauncher()
                .withListener(listener)
                .addExtensions(filters())
+               .addExtension(JUnit4RuleExtension)
                .withSpecRefs(specRef(clazz))
                .execute()
          }

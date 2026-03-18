@@ -34,12 +34,21 @@
 
 .featureImage {
    height: 200px;
-   width: 200px;
+   width: auto;
+   object-fit: contain;
+}
+
+.feature h3 {
+   text-align: center;
+}
+
+.featuresRow {
+   justify-content: center;
 }
 
 .heroSlogan {
-   font-size: 3em;
-   line-height: normal;
+   font-size: clamp(1.6rem, 5vw, 3.75rem);
+   line-height: 1.2;
    color: var(--ifm-color-white) !important;
 }
 
