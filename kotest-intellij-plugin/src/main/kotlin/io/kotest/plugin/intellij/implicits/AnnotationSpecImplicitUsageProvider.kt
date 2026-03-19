@@ -3,7 +3,10 @@ package io.kotest.plugin.intellij.implicits
 import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.isContainedInSpecificSpec
+import org.jetbrains.kotlin.analysis.api.analyze
+import org.jetbrains.kotlin.analysis.api.types.symbol
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.psi.KtAnnotationEntry
 import org.jetbrains.kotlin.psi.KtClass
 import org.jetbrains.kotlin.psi.KtNamedFunction
 
@@ -23,14 +26,23 @@ class AnnotationSpecImplicitUsageProvider : ImplicitUsageProvider {
 
    private val annotationSpecFqn = FqName("io.kotest.core.spec.style.AnnotationSpec")
 
-   private val lifecycleAnnotationNames = setOf(
-      "Test",
-      "BeforeEach", "Before",
-      "BeforeAll", "BeforeClass",
-      "AfterEach", "After",
-      "AfterAll", "AfterClass",
-      "Ignore",
+   private val lifecycleAnnotationFqns = setOf(
+      FqName("io.kotest.core.spec.style.AnnotationSpec.Test"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.BeforeEach"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.Before"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.BeforeAll"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.BeforeClass"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.AfterEach"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.After"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.AfterAll"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.AfterClass"),
+      FqName("io.kotest.core.spec.style.AnnotationSpec.Ignore"),
    )
+
+   private val nestedAnnotationFqn = FqName("io.kotest.core.spec.style.AnnotationSpec.Nested")
+
+   // Short names for quick pre-filtering before expensive FQN resolution
+   private val lifecycleAnnotationShortNames = lifecycleAnnotationFqns.map { it.shortName().asString() }.toSet()
 
    override fun isImplicitWrite(element: PsiElement): Boolean = false
    override fun isImplicitRead(element: PsiElement): Boolean = false
@@ -44,14 +56,30 @@ class AnnotationSpecImplicitUsageProvider : ImplicitUsageProvider {
    }
 
    private fun isAnnotationSpecFunction(function: KtNamedFunction): Boolean {
-      val annotationNames = function.annotationEntries.mapNotNull { it.shortName?.asString() }
-      if (annotationNames.none { it in lifecycleAnnotationNames }) return false
+      val candidates = function.annotationEntries.filter {
+         it.shortName?.asString() in lifecycleAnnotationShortNames
+      }
+      if (candidates.isEmpty()) return false
+      if (candidates.none { isAnnotationWithFqn(it, lifecycleAnnotationFqns) }) return false
       return function.isContainedInSpecificSpec(annotationSpecFqn)
    }
 
    private fun isNestedAnnotationSpecClass(ktClass: KtClass): Boolean {
-      val hasNested = ktClass.annotationEntries.any { it.shortName?.asString() == "Nested" }
-      if (!hasNested) return false
+      val candidates = ktClass.annotationEntries.filter { it.shortName?.asString() == "Nested" }
+      if (candidates.isEmpty()) return false
+      if (candidates.none { isAnnotationWithFqn(it, setOf(nestedAnnotationFqn)) }) return false
       return ktClass.isContainedInSpecificSpec(annotationSpecFqn)
+   }
+
+   private fun isAnnotationWithFqn(entry: KtAnnotationEntry, fqns: Set<FqName>): Boolean {
+      val typeRef = entry.typeReference ?: return false
+      return try {
+         analyze(entry) {
+            val fqn = typeRef.type.symbol?.classId?.asSingleFqName() ?: return@analyze false
+            fqn in fqns
+         }
+      } catch (_: Exception) {
+         false
+      }
    }
 }
