@@ -25,7 +25,7 @@ it is simply a matter of preference how you structure your tests.
 | [Fun Spec](#fun-spec)           | ScalaTest                        |
 | [Free Spec](#free-spec)         | ScalaTest                        |
 | [Should Spec](#should-spec)     | A Kotest original                |
-| [String Spec](#string-spec)     | A Kotest original                        |
+| [String Spec](#string-spec)     | A Kotest original                |
 | [Word Spec](#word-spec)         | ScalaTest                        |
 
 :::tip

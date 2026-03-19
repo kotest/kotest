@@ -1,11 +1,10 @@
 package io.kotest.engine.js
 
 import io.kotest.common.reflection.bestName
-import io.kotest.core.Logger
 import io.kotest.core.descriptors.DescriptorId
+import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
-import io.kotest.core.spec.name
 import io.kotest.core.test.TestCase
 import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
@@ -22,20 +21,25 @@ internal class JsTestFrameworkTestEngineListener(
    private val framework: KotlinJsTestFramework,
 ) : TestEngineListener {
 
-   private val logger = Logger(JsTestFrameworkTestEngineListener::class)
-   private val nodes = mutableMapOf<DescriptorId, NodeProxy>()
+   companion object {
+      const val TEST_DELIMITER = " » "
+      const val SPEC_DELIMITER = "/"
+   }
 
-   // hold up mocha from exiting before our tests are registered
-   private val channel = Channel<Unit>(100)
+   // a multimap of completed tests for a given spec
+   private val proxies = mutableMapOf<DescriptorId, MutableList<TestProxy>>()
+
+   // hold up mocha from exiting until a real test is registered
+   private val channel = Channel<Unit>(1)
 
    override suspend fun engineStarted() {
       // we have to launch the engine inside a test and return a promise, so mocha will wait for the engine to finish
       // otherwise our engine is running in a coroutine and mocha will have exited before we start emitting tests
       // The downside is that we get an extra node in the output (todo, perhaps the IDE plugin can hide this?)
-      kotlinJsTestFramework.suite("Kotest", false) {
-         kotlinJsTestFramework.test("Executor", false) {
+      framework.suite("Kotest Engine", false) {
+         framework.test("Executor", false) {
             promise {
-               channel.receive() // will suspend this placeholder test until the first real test releases us
+               channel.receive() // will suspend this anchor test until the first real test is registered
             }
          }
       }
@@ -44,80 +48,84 @@ internal class JsTestFrameworkTestEngineListener(
    override suspend fun engineInitialized(context: TestEngineInitializedContext) {}
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      // close out the last test and exit
+      // close out the final test
       channel.send(Unit)
    }
 
    override suspend fun specStarted(ref: SpecRef) {
-      createNode(ref.descriptor().id, ref.name())
+      proxies[ref.descriptor().id] = mutableListOf()
    }
 
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
-      // for ignored specs we can just output immediately as nothing else will be happpening
-      outputNode(NodeProxy(kclass.bestName(), TestResult.Ignored(reason), mutableListOf()))
+      // for ignored specs we can just output immediately as nothing else will be happening
+      framework.suite(testNameEscape(kclass.bestName()), true) { }
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      val node = getNode(ref.descriptor().id)
-      node.result = result
-      outputNode(node)
-   }
 
-   override suspend fun testStarted(testCase: TestCase) {
-      val node = createNode(testCase.descriptor.id, testCase.name.name)
-      val parent = getNode(testCase.descriptor.parent.id)
-      parent.children.add(node)
-   }
+      // if this spec had no tests, we just skip it
+      val tests = proxies[ref.descriptor().id] ?: return
 
-   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      val node = createNode(testCase.descriptor.id, testCase.name.name)
-      node.result = TestResult.Ignored(reason)
-      val parent = getNode(testCase.descriptor.parent.id)
-      parent.children.add(node)
-   }
+      // now we can output all the tests we collected during the spec run
+      // All tests are output at a single level as the kotlin.test apparatus doesn't support nested tests.
+      // (If we try to use nested output, then every suite goes to the top level rather than properly nesting.)
 
-   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      val node = getNode(testCase.descriptor.id)
-      node.result = result
-   }
+      framework.suite(ref.fqn, false) {
+         tests.forEachIndexed { index, proxy ->
 
-   private fun getNode(id: DescriptorId): NodeProxy = nodes[id] ?: error("Node for $id not found")
+            // we have to escape the actual test name (but not the FQN) to remove any periods.
+            // if the test name contains the FQN, then only the substring after the FQN is displayed,
+            // regardless of where it appears in the test name.
 
-   private fun createNode(id: DescriptorId, name: String): NodeProxy {
-      val node = NodeProxy(name, TestResultBuilder.builder().build(), mutableListOf())
-      nodes[id] = node
-      return node
-   }
+            // remove fqn plus the spec delimiter
+            val escapedName = testNameEscape(proxy.name.removePrefix(ref.fqn).removePrefix(SPEC_DELIMITER))
 
-   private fun outputNode(node: NodeProxy) {
-      if (node.children.isEmpty()) { // no children mean a leaf test
-         logger.log { Pair(node.name, "Outputting test node ${node.result}") }
-         framework.test(testNameEscape(node.name), node.result.isIgnored) {
-            promise {
-               // this releases any previous test
-               channel.send(Unit)
-               // will suspend until the next test releases us
-               channel.receive()
-               node.result.errorOrNull?.let { throw it }
-            }
-         }
-      } else {
-         logger.log { Pair(node.name, "Outputting suite node ${node.result}") }
-         framework.suite(testNameEscape(node.name), node.result.isIgnored) {
-            node.children.forEach { outputNode(it) }
-            // errors cannot be thrown in a suite, so we'll add a placeholder test and throw inside that
-            node.result.errorOrNull?.let { t ->
-               framework.test(t::class.bestName(), false) {
-                  throw t
+            framework.test(escapedName, proxy.result.isIgnored) {
+               promise {
+
+                  // this promise will wait until we are released so that mocha sticks around
+                  // we only need one receive call per spec
+                  if (index == 0) channel.receive()
+
+                  // just returning without an error is enough to mark as success in jasmine style frameworks
+                  proxy.result.errorOrNull?.let { throw it }
                }
             }
          }
       }
+
+      // now that this spec is queued up at mocha, we can release the previous one
+      channel.send(Unit)
+
+      // remove the proxies for this spec as we don't need them anymore
+      proxies.remove(ref.descriptor().id)
    }
+
+   override suspend fun testStarted(testCase: TestCase) {
+      // we register the proxy when the test starts, so that the output is in registration order
+      val path = renderTestPath(testCase)
+      val proxy = TestProxy(path, TestResultBuilder.builder().build())
+      proxies[testCase.descriptor.spec().id]?.add(proxy)
+   }
+
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+      val path = renderTestPath(testCase)
+      val proxy = TestProxy(path, TestResultBuilder.builder().withIgnoreReason(reason).build())
+      proxies[testCase.descriptor.spec().id]?.add(proxy)
+   }
+
+   override suspend fun testFinished(testCase: TestCase, result: TestResult) {
+      // now we update the proxy with the actual result
+      val path = renderTestPath(testCase)
+      proxies[testCase.descriptor.spec().id]?.find { it.name == path }?.result = result
+   }
+
+   // since the kotlin.test apparatus doesn't like nested JS tests, we flatten using >> to indicate nesting
+   private fun renderTestPath(testCase: TestCase): String =
+      DescriptorPaths.render(testCase.descriptor, SPEC_DELIMITER, TEST_DELIMITER).value
 }
 
-internal data class NodeProxy(
+internal data class TestProxy(
    val name: String,
    var result: TestResult,
-   val children: MutableList<NodeProxy>,
 )

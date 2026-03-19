@@ -88,7 +88,7 @@ class AllureWriter {
       allure.stopTestCase(uuid)
       allure.updateTestCase(uuid) {
          it.status = status
-         it.statusDetails = details.orElseGet { null }
+         it.statusDetails = details.orElse(null)
          testCase.descriptor.parents().forEach { d ->
             it.steps.add(
                StepResult()
