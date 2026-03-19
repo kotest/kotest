@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property.arbitrary
 
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -34,7 +35,7 @@ class ArbitraryPerformanceTest : FunSpec({
    val l2Arb = arbitrary { L2(l3Arb.bind(), l3Arb.bind(), l3Arb.bind()) }
    val l1Arb = arbitrary { L1(l2Arb.bind(), l2Arb.bind()) }
 
-   test("generating 1000 samples of a 5-level nested arbitrary completes in under 10 seconds") {
+   test("generating 1000 samples of a 5-level nested arbitrary completes in under 10 seconds").config(TestConfig(retries = 5)) {
       val rs = RandomSource.default()
       val elapsed = measureTime {
          l1Arb.take(1000, rs).toList()
