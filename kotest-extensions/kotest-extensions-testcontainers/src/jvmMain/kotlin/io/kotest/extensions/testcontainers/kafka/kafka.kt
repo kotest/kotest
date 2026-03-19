@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers.kafka
 
 import org.apache.kafka.clients.CommonClientConfigs

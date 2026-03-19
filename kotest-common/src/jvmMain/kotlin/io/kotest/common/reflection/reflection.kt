@@ -65,6 +65,12 @@ object JvmReflection : Reflection {
       false
    }
 
+   override fun isAbstract(kclass: KClass<*>): Boolean = try {
+      kclass.isAbstract
+   } catch (_: Throwable) {
+      false
+   }
+
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = kclass.isSubclassOf(Enum::class)
 
    override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> {

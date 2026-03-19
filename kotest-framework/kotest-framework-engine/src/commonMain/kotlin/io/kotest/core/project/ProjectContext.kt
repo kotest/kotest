@@ -1,11 +1,14 @@
 package io.kotest.core.project
 
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.test.TestScope
+import io.kotest.engine.tags.TagExpression
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Public context object used by [io.kotest.core.extensions.ProjectExtension]s.
+ */
 data class ProjectContext(val suite: TestSuite, val tags: TagExpression, val projectConfig: AbstractProjectConfig?) {
    constructor(projectConfig: AbstractProjectConfig?) : this(TestSuite.empty, TagExpression.Empty, projectConfig)
 }

@@ -7,11 +7,8 @@ import io.kotest.assertions.print.print
 
 object ArrayEq : Eq<Array<*>> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
+   override fun equals(actual: Array<*>, expected: Array<*>, context: EqContext): EqResult {
 
-   override fun equals(actual: Array<*>, expected: Array<*>, strictNumberEq: Boolean, context: EqContext): Throwable? {
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
       val elementDifferAtIndex = mutableListOf<Int>()
@@ -31,11 +28,17 @@ object ArrayEq : Eq<Array<*>> {
          return true
       }
 
-      fun equalXorDisallowed(signal: Throwable?): Throwable? = signal?.let {
-         if (it.message?.startsWith(DISALLOWED) == true) {
-            setDisallowedState(it.message!!)
-            AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
-         } else it
+      fun equalXorDisallowed(result: EqResult): Throwable? {
+         return when (result) {
+            is EqResult.Failure -> {
+               val e = result.error()
+               if (e.message?.startsWith(DISALLOWED) == true) {
+                  setDisallowedState(e.message!!)
+                  AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
+               } else e
+            }
+            EqResult.Success -> null
+         }
       }
 
       var index = 0
@@ -54,7 +57,7 @@ object ArrayEq : Eq<Array<*>> {
                nestedIterator(b, expected)?.let { setDisallowedState(it) } == true ->
                   AssertionErrorBuilder.create().withMessage(nestedIteratorError!!).build()
 
-               else -> equalXorDisallowed(EqCompare.compare(a, b, strictNumberEq, context))
+               else -> equalXorDisallowed(EqCompare.compare(a, b, context))
             }
             if (!accrueDetails) break
             if (t != null) elementDifferAtIndex.add(index)
@@ -76,12 +79,19 @@ object ArrayEq : Eq<Array<*>> {
          }
       }.toString()
 
-      return nestedIteratorError?.let { AssertionErrorBuilder.create().withMessage(it).build() }
-         ?: if (detailErrorMessage.isNotBlank()) {
+      if (nestedIteratorError != null) {
+         return EqResult.Failure {
+            AssertionErrorBuilder.create().withMessage(nestedIteratorError).build()
+         }
+      }
+
+      return if (detailErrorMessage.isNotBlank()) {
+         EqResult.Failure {
             AssertionErrorBuilder.create().withMessage(detailErrorMessage)
                .withValues(Expected(expected.print()), Actual(actual.print()))
                .build()
-         } else null
+         }
+      } else EqResult.Success
    }
 
    const val TRIGGER = "Disallowed"

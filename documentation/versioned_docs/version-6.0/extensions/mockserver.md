@@ -13,8 +13,7 @@ Requires the `io.kotest:kotest-extensions-mockserver` module to be added to your
 :::
 
 :::note
-Since Kotest 6.0, all extensions are published under the `io.kotest` group once again, with version cadence tied to
-main Kotest releases.
+Since Kotest 6.0, all extensions are published under the `io.kotest` group, with version cadence tied to main Kotest releases.
 :::
 
 
@@ -25,7 +24,7 @@ main Kotest releases.
 
 Mockserver allows us to define an in process HTTP server which is hard coded for routes that we want to test against.
 
-To use in Kotest, we attach an instance of `MockServerListener` to the spec under test, and Kotest will control
+To use in Kotest, we install an instance of `MockServerExtension` in the spec under test, and Kotest will control
 the lifecycle automatically.
 
 Then it is a matter of using `MockServerClient` to wire in our responses.
@@ -37,7 +36,7 @@ class MyMockServerTest : FunSpec() {
   init {
 
       // this attaches the server to the lifeycle of the spec
-      extension(MockServerListener(1080))
+      install(MockServerExtension(1080))
 
       // we can use the client to create routes. Here we are setting them up
       // before each test by using the beforeTest callback.
@@ -77,4 +76,37 @@ In the above example, we are of course just testing the mock itself, but it show
 you may have an API client that you want to test, so you would configure the API routes using mock server, and then invoke methods
 on your API client, ensuring it handles the responses correctly.
 
+## Dynamic Ports
 
+When using the `MockServerExtension`, you can specify one or more ports if you wish to hardcore them. Otherwise, you can
+not specify them at all, and Kotest will automatically allocate a free port for the server to run on. Then, you can use
+the returned server instance from the install function to retrieve the allocated port.
+
+Here is an example of using dynamic ports:
+
+```kotlin
+class MyMockServerTest : FunSpec() {
+  init {
+
+    val server = install(MockServerExtension())
+
+    beforeTest {
+      MockServerClient("localhost", server.port).`when`(
+        HttpRequest.request()
+          .withMethod("GET")
+          .withPath("/v")
+      ).respond(
+        HttpResponse.response()
+          .withStatusCode(200)
+      )
+    }
+
+    test("test /health returns 200") {
+
+      val client = HttpClient(CIO)
+      val resp = client.post<io.ktor.client.statement.HttpResponse>("http://localhost:${healthcheck.port}/health")
+      resp.shouldHaveStatus(HttpStatusCode.OK)
+    }
+  }
+}
+```

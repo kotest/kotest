@@ -1,15 +1,15 @@
 package io.kotest.engine.test
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.Platform
 import io.kotest.common.platform
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.test.interceptors.AssertionModeInterceptor
-import io.kotest.engine.test.interceptors.BeforeSpecListenerInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDebugProbeInterceptor
 import io.kotest.engine.test.interceptors.CoroutineDispatcherFactoryTestInterceptor
 import io.kotest.engine.test.interceptors.CoroutineLoggingInterceptor
@@ -17,6 +17,7 @@ import io.kotest.engine.test.interceptors.DescriptorPathContextInterceptor
 import io.kotest.engine.test.interceptors.HandleSkippedExceptionsTestInterceptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
 import io.kotest.engine.test.interceptors.InvocationTimeoutInterceptor
+import io.kotest.engine.test.interceptors.KotlinTestRunTest
 import io.kotest.engine.test.interceptors.LifecycleInterceptor
 import io.kotest.engine.test.interceptors.NextTestExecutionInterceptor
 import io.kotest.engine.test.interceptors.SoftAssertInterceptor
@@ -29,9 +30,10 @@ import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.test.interceptors.testInterceptorsForPlatform
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
-import io.kotest.engine.testInterceptorsForPlatform
 import kotlinx.coroutines.withContext
+import kotlin.coroutines.coroutineContext
 import kotlin.time.TimeSource
 
 /**
@@ -40,16 +42,17 @@ import kotlin.time.TimeSource
  * Uses a [TestCaseExecutionListener] to notify callers of events in the test lifecycle.
  *
  */
+@OptIn(ExperimentalKotest::class)
 internal class TestCaseExecutor(
    private val listener: TestCaseExecutionListener,
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) {
 
    /**
     * Creates a [TestCaseExecutor] that delegates test events to the [TestEngineListener] provided
-    * by the [EngineContext].
+    * by the [TestEngineContext].
     */
-   constructor(context: EngineContext) : this(
+   constructor(context: TestEngineContext) : this(
       TestCaseExecutionListenerToTestEngineListenerAdapter(context.listener),
       context
    )
@@ -61,6 +64,7 @@ internal class TestCaseExecutor(
 
       val timeMark = TimeSource.Monotonic.markNow()
 
+      val isKotlinTestRunTest: Boolean = coroutineContext[KotlinTestRunTest] != null
       val useCoroutineTestScope = context.testConfigResolver.coroutineTestScope(testCase)
 
       val interceptors = listOfNotNull(
@@ -70,7 +74,7 @@ internal class TestCaseExecutor(
          TestFinishedInterceptor(listener, context.testExtensions()),
          InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,
-         // the dispatcher factory should run before before/after callbacks so they are executed in the right context
+         // the dispatcher factory should run before the before/after callbacks, so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
          if (platform == Platform.JVM) coroutineErrorCollectorInterceptor() else null,
          TestEnabledCheckInterceptor(
@@ -78,8 +82,6 @@ internal class TestCaseExecutor(
             context.specConfigResolver,
             context.testConfigResolver
          ),
-         // should run after TestEnabledCheckInterceptor so that it is skipped if the test is disabled
-         BeforeSpecListenerInterceptor(context.specExtensions(), specContext),
          TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.testExtensions()),
          AssertionModeInterceptor(context.testConfigResolver),
@@ -95,7 +97,7 @@ internal class TestCaseExecutor(
             timeMark = timeMark,
             invocationInterceptors = listOfNotNull(
                // Timeout is handled inside TestCoroutineInterceptor if it is enabled
-               if (useCoroutineTestScope)
+               if (useCoroutineTestScope && !isKotlinTestRunTest)
                   TestCoroutineInterceptor(context.testConfigResolver)
                else
                   InvocationTimeoutInterceptor(context.testConfigResolver),
@@ -106,7 +108,7 @@ internal class TestCaseExecutor(
          CoroutineDebugProbeInterceptor(context.testConfigResolver),
       )
 
-      val innerExecute = NextTestExecutionInterceptor { tc, scope ->
+      val base = NextTestExecutionInterceptor { tc, scope ->
          logger.log { Pair(testCase.name.name, "Executing test") }
 
          // workaround for anyone using delay in a test on wasm
@@ -117,7 +119,7 @@ internal class TestCaseExecutor(
          TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).build()
       }
 
-      return interceptors.foldRight(innerExecute) { ext, fn ->
+      return interceptors.foldRight(base) { ext, fn ->
          NextTestExecutionInterceptor { tc, tscope -> ext.intercept(tc, tscope, fn) }
       }.invoke(testCase, testScope)
    }

@@ -5,6 +5,7 @@ import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
@@ -31,9 +32,9 @@ class SpecExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(SpecInterceptSingleInstance::class)
+            .withSpecRefs(SpecRef.Reference(SpecInterceptSingleInstance::class))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          count shouldBe 1
       }
@@ -53,9 +54,9 @@ class SpecExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(SpecInterceptInstancePerRoot::class)
+            .withSpecRefs(SpecRef.Reference(SpecInterceptInstancePerRoot::class))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          count shouldBe 2
       }
@@ -73,9 +74,9 @@ class SpecExtensionTest : FunSpec() {
          val collecting = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collecting)
-            .withClasses(SpecInterceptInstancePerRoot::class)
+            .withSpecRefs(SpecRef.Reference(SpecInterceptInstancePerRoot::class))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          collecting.tests.shouldBeEmpty()
       }

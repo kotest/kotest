@@ -1,6 +1,7 @@
 package io.kotest.engine.spec.interceptor.instance
 
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.config.ProjectConfigResolver
@@ -19,6 +20,7 @@ internal class ProjectConfigResolverSpecInterceptor(
 
    override suspend fun intercept(
       spec: Spec,
+      ref: SpecRef,
       next: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       return withContext(ProjectConfigResolverContextElement(projectConfigResolver)) {

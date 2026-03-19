@@ -32,7 +32,7 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
 
          val root = EngineDescriptorBuilder
             .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-            .withSpecs(listOf(JUnitTestRunnerListenerTest::class))
+            .withSpecs(listOf(SpecRef.Reference(JUnitTestRunnerListenerTest::class)))
             .build()
 
          val finished = mutableMapOf<String, TestExecutionResult.Status>()
@@ -42,10 +42,10 @@ class JUnitTestRunnerListenerTest : DescribeSpec({
                finished[testDescriptor.displayName] = testExecutionResult.status
             }
 
-            override fun reportingEntryPublished(testDescriptor: TestDescriptor?, entry: ReportEntry?) {}
-            override fun executionSkipped(testDescriptor: TestDescriptor?, reason: String?) {}
-            override fun executionStarted(testDescriptor: TestDescriptor?) {}
-            override fun dynamicTestRegistered(testDescriptor: TestDescriptor?) {}
+            override fun reportingEntryPublished(testDescriptor: TestDescriptor, entry: ReportEntry) {}
+            override fun executionSkipped(testDescriptor: TestDescriptor, reason: String) {}
+            override fun executionStarted(testDescriptor: TestDescriptor) {}
+            override fun dynamicTestRegistered(testDescriptor: TestDescriptor) {}
          }
 
          val test1 = TestCase(

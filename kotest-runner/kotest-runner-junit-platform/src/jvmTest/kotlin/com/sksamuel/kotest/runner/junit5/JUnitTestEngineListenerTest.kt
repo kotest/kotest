@@ -1,10 +1,8 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.common.Platform
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
-import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -12,7 +10,6 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -33,7 +30,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
    val root = EngineDescriptorBuilder
       .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-      .withSpecs(listOf(MySpec::class))
+      .withSpecs(listOf(SpecRef.Reference(MySpec::class)))
       .build()
 
    val tc1 = TestCase(
@@ -93,10 +90,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
       listener.specIgnored(MySpec::class, "disabled foo")
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped(
-            "MySpec",
-            "disabled foo"
-         )
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("MySpec", "")
       )
    }
 
@@ -159,7 +153,7 @@ class JUnitTestEngineListenerTest : FunSpec({
             "com.sksamuel.kotest.runner.junit5.MySpec",
             "foo"
          ),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", "secret!"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("foo", ""),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "MySpec",
             TestExecutionResult.Status.SUCCESSFUL
@@ -240,7 +234,7 @@ class JUnitTestEngineListenerTest : FunSpec({
             "com.sksamuel.kotest.runner.junit5.MySpec",
             "foo/bar"
          ),
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", "secret!"),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("bar", ""),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "MySpec",
@@ -283,7 +277,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       val root2 = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(MySpec::class, MySpec2::class))
+         .withSpecs(listOf(SpecRef.Reference(MySpec::class), SpecRef.Reference(MySpec2::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
@@ -331,7 +325,7 @@ class JUnitTestEngineListenerTest : FunSpec({
 
       val root2 = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(MySpec::class, MySpec2::class))
+         .withSpecs(listOf(SpecRef.Reference(MySpec::class), SpecRef.Reference(MySpec2::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
@@ -345,7 +339,7 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.specFinished(SpecRef.Reference(MySpec2::class), TestResult.Success(0.seconds))
 
       track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("MySpec", null),
+         EventTrackingEngineExecutionListener.Event.ExecutionSkipped("MySpec", ""),
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("MySpec2"),
          EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
             "baz",
@@ -356,39 +350,6 @@ class JUnitTestEngineListenerTest : FunSpec({
          EventTrackingEngineExecutionListener.Event.ExecutionFinished("baz", TestExecutionResult.Status.SUCCESSFUL),
          EventTrackingEngineExecutionListener.Event.ExecutionFinished(
             "MySpec2",
-            TestExecutionResult.Status.SUCCESSFUL
-         ),
-      )
-   }
-
-   test("listener should support full test paths") {
-      val track = EventTrackingEngineExecutionListener()
-      val c = object : AbstractProjectConfig() {
-         override val displayFullTestPath: Boolean = true
-      }
-
-      val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(c))
-      listener.engineInitialized(EngineContext.invoke(null, Platform.JVM))
-      listener.specStarted(SpecRef.Reference(MySpec::class))
-      listener.testStarted(tc1)
-      listener.testStarted(tc2)
-      listener.testFinished(tc2, TestResult.Success(3.milliseconds))
-      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
-      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
-      track.events shouldBe listOf(
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("MySpec"),
-         EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
-         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
-            "foo bar",
-            "com.sksamuel.kotest.runner.junit5.MySpec",
-            "foo/bar"
-         ),
-         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo bar"),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo bar", TestExecutionResult.Status.SUCCESSFUL),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
-         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
-            "MySpec",
             TestExecutionResult.Status.SUCCESSFUL
          ),
       )
@@ -412,7 +373,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
    sealed interface Event {
       data class TestCaseRegistered(val descriptor: String, val className: String, val methodName: String) : Event
       data class TestRegistered(val descriptor: String, val type: TestDescriptor.Type) : Event
-      data class ExecutionSkipped(val descriptor: String, val reason: String?) : Event
+      data class ExecutionSkipped(val descriptor: String, val reason: String) : Event
       data class ExecutionStarted(val descriptor: String) : Event
       data class ExecutionFinished(val descriptor: String, val status: TestExecutionResult.Status) : Event
    }
@@ -428,7 +389,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
       }
    }
 
-   override fun executionSkipped(testDescriptor: TestDescriptor, reason: String?) {
+   override fun executionSkipped(testDescriptor: TestDescriptor, reason: String) {
       events.add(Event.ExecutionSkipped(testDescriptor.displayName, reason))
    }
 
@@ -440,7 +401,7 @@ class EventTrackingEngineExecutionListener : EngineExecutionListener {
       events.add(Event.ExecutionFinished(testDescriptor.displayName, testExecutionResult.status))
    }
 
-   override fun reportingEntryPublished(testDescriptor: TestDescriptor?, entry: ReportEntry?) {
+   override fun reportingEntryPublished(testDescriptor: TestDescriptor, entry: ReportEntry) {
       error("Unused")
    }
 }

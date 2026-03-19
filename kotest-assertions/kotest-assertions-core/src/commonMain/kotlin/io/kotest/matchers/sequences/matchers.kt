@@ -3,6 +3,8 @@
 package io.kotest.matchers.sequences
 
 import io.kotest.assertions.eq.EqCompare
+import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
@@ -23,6 +25,12 @@ Sequence<T>.count() may run through the whole sequence (sequences from `generate
 For now, the documentation should mention that infinite sequences will cause these matchers never to halt.
 */
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
 fun <T> Sequence<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
@@ -70,7 +78,14 @@ fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matche
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldContainNoNulls() = this should containNoNulls()
+
 fun <T> Sequence<T>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
 fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
@@ -120,7 +135,8 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       consumedActualValues.add(actualElement)
       val expectedElement = expectedIterator.next()
       consumedExpectedValues.add(expectedElement)
-      if (EqCompare.compare(actualElement.value, expectedElement.value, false) != null) {
+      val result = EqCompare.compare(actualElement.value, expectedElement.value, EqContext(false))
+      if (result is EqResult.Failure) {
          failDetails =
             "\nExpected ${expectedElement.printValue()} at index ${expectedElement.index} but found ${actualElement.printValue()}."
          passed = false
@@ -209,8 +225,20 @@ fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher<C> {
    override fun test(value: C): MatcherResult {
       val elementBelowLowerBound = value.withIndex().firstOrNull { it.value < t }
@@ -225,11 +253,17 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
+
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
    val delegate = beUniqueByEquals<T>("Sequence")
-
    override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
@@ -241,10 +275,30 @@ fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted()
+
 fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorted()
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> beSorted(): Matcher<Sequence<T>> = sorted()
+
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
       val valueAsList = value.toList()
@@ -298,22 +352,38 @@ infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot sing
 
 fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
-      var failureMessage: String? = null
+
+      val negatedFailureMessageFn = "Sequence should not have a single element of $expectedElement."
       val iterator = value.iterator()
-      var actualElement: T?
       if (!iterator.hasNext()) {
-         failureMessage = "Sequence should have a single element of $expectedElement but is empty."
-      } else if (EqCompare.compare(iterator.next().also { actualElement = it }, expectedElement, false) != null) {
-         failureMessage =
-            "Sequence should have a single element of $expectedElement but has $actualElement as first element."
-      } else if (iterator.hasNext()) {
-         failureMessage = "Sequence should have a single element of $expectedElement but has more than one element."
+         return MatcherResult(
+            passed = false,
+            failureMessageFn = { "Sequence should have a single element of $expectedElement but is empty." },
+            negatedFailureMessageFn = { negatedFailureMessageFn }
+         )
       }
-      return MatcherResult(
-         failureMessage == null,
-         { failureMessage ?: "" },
-         { "Sequence should not have a single element of $expectedElement." }
-      )
+
+      val actualElement = iterator.next()
+      val result = EqCompare.compare(actualElement, expectedElement, EqContext(false))
+      return if (iterator.hasNext()) {
+         return MatcherResult(
+            passed = false,
+            failureMessageFn = { "Sequence should have a single element of $expectedElement but has more than one element." },
+            negatedFailureMessageFn = { negatedFailureMessageFn }
+         )
+      } else if (result is EqResult.Success) {
+         MatcherResult(
+            true,
+            { "Sequence should have a single element of $expectedElement." },
+            { negatedFailureMessageFn }
+         )
+      } else {
+         MatcherResult(
+            passed = false,
+            failureMessageFn = { "Sequence should have a single element of $expectedElement but has $actualElement as first element." },
+            negatedFailureMessageFn = { negatedFailureMessageFn },
+         )
+      }
    }
 }
 
@@ -468,15 +538,20 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
          remaining.remove(iter.next())
       }
 
-      val failure =
-         { "Sequence should contain all of ${ts.print().value} but was missing ${remaining.print().value}" }
+      val failure = { "Sequence should contain all of ${ts.print().value} but was missing ${remaining.print().value}" }
       val negFailure = { "Sequence should not contain all of ${ts.print().value}" }
-
       return MatcherResult(remaining.isEmpty(), failure, negFailure)
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> Sequence<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
+
 infix fun <T> Sequence<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
 fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) =
    toList().shouldMatchEach(expected.toList(), asserter)

@@ -3,6 +3,7 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.names.TestName
 import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.RootTest
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
@@ -20,6 +21,7 @@ interface RootScope {
 /**
  * Convenience method to add a [TestType.Test] test to this [RootScope].
  */
+@Deprecated("Use addTest with TestXMethod parameter. Deprecated since 6.1. Will be removed in 7.0")
 fun RootScope.addTest(
    testName: TestName,
    disabled: Boolean,
@@ -32,7 +34,7 @@ fun RootScope.addTest(
          test = test,
          type = TestType.Test,
          source = sourceRef(),
-         disabled = disabled,
+         xmethod = if (disabled) TestXMethod.DISABLED else TestXMethod.NONE,
          config = config,
          factoryId = null,
       )
@@ -40,11 +42,33 @@ fun RootScope.addTest(
 }
 
 /**
- * Convenience method to add a [TestType.Container] test to this [RootScope].
+ * Convenience method to add a [TestType.Test] test to this [RootScope].
+ */
+fun RootScope.addTest(
+   testName: TestName,
+   xmethod: TestXMethod,
+   config: TestConfig?,
+   test: suspend TestScope.() -> Unit
+) {
+   add(
+      RootTest(
+         name = testName,
+         test = test,
+         type = TestType.Test,
+         source = sourceRef(),
+         xmethod = xmethod,
+         config = config,
+         factoryId = null,
+      )
+   )
+}
+
+/**
+ * Convenience method to add a root test of type [TestType.Container] test to this [RootScope].
  */
 fun RootScope.addContainer(
    testName: TestName,
-   disabled: Boolean,
+   xmethod: TestXMethod,
    config: TestConfig?,
    test: suspend TestScope.() -> Unit
 ) {
@@ -54,7 +78,7 @@ fun RootScope.addContainer(
          test = test,
          type = TestType.Container,
          source = sourceRef(),
-         disabled = disabled,
+         xmethod = xmethod,
          config = config,
          factoryId = null,
       )

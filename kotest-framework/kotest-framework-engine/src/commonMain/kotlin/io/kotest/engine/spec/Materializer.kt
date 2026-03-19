@@ -1,9 +1,11 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.descriptor
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
@@ -31,7 +33,7 @@ class Materializer(
     * Will adjust names to be unique based on the duplicateTestNameMode setting in either
     * the spec or project configuration.
     */
-   fun materialize(spec: Spec): List<TestCase> {
+   fun materialize(spec: Spec, ref: SpecRef): List<TestCase> {
 
       val handler = DuplicateTestNameHandler()
       val mode = specConfigResolver.duplicateTestNameMode(spec)
@@ -41,12 +43,12 @@ class Materializer(
          val unique = handler.unique(mode, rootTest.name)
          val resolvedName = rootTest.name.copy(name = unique)
 
-         val config = if (rootTest.disabled == true)
+         val config = if (rootTest.xmethod == TestXMethod.DISABLED)
             (rootTest.config ?: TestConfig()).withXDisabled()
          else rootTest.config
 
          TestCase(
-            descriptor = spec::class.toDescriptor().append(resolvedName.name),
+            descriptor = ref.descriptor().append(resolvedName.name),
             name = resolvedName,
             spec = spec,
             type = rootTest.type,
@@ -54,6 +56,7 @@ class Materializer(
             test = rootTest.test,
             config = config,
             factoryId = rootTest.factoryId,
+            xmethod = rootTest.xmethod,
          )
       }
 
@@ -69,7 +72,7 @@ class Materializer(
     */
    fun materialize(nested: NestedTest, parent: TestCase): TestCase {
 
-      val config = if (nested.disabled)
+      val config = if (nested.xmethod == TestXMethod.DISABLED)
          (nested.config ?: TestConfig()).withXDisabled()
       else nested.config
 
@@ -85,5 +88,4 @@ class Materializer(
          parent = parent,
       )
    }
-
 }

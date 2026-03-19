@@ -1,11 +1,16 @@
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.descriptors.Descriptor
+import io.kotest.core.descriptors.DescriptorId
+import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
-import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.INCLUDE_PATTERN_ENV
+import io.kotest.extensions.system.withEnvironment
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -24,6 +29,13 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       ) { filters ->
          GradleClassMethodRegexTestFilter(filters).filter(spec) shouldBe DescriptorFilterResult.Include
       }
+   }
+
+   test("wildcard prefix") {
+      val foo = Descriptor.SpecDescriptor(DescriptorId("org.package.Foo"))
+      val bar = Descriptor.SpecDescriptor(DescriptorId("org.package.Bar"))
+      GradleClassMethodRegexTestFilter(setOf(".*.*\\QFoo\\E")).filter(foo) shouldBe DescriptorFilterResult.Include
+      GradleClassMethodRegexTestFilter(setOf(".*.*\\QFoo\\E")).filter(bar) shouldBe DescriptorFilterResult.Exclude(null)
    }
 
    context("exclude classes") {
@@ -102,6 +114,43 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       ) { filter ->
          GradleClassMethodRegexTestFilter(setOf(filter))
             .filter(test) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
+
+   context("nested tests should be included when filtering to parent context without wildcard") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val container = spec.append("a context")
+      val nestedTest = container.append("nested test")
+      val fqn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      test("nested test should be INCLUDED when filtering to parent context") {
+         // This is the exact pattern gradle would generate for --tests 'FQN.a context'
+         val filter = "$fqn\\Q.a context\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(nestedTest) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("parent context should be INCLUDED when filtering to it") {
+         val filter = "$fqn\\Q.a context\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(container) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("deeply nested test should be INCLUDED when filtering to grandparent context") {
+         val deeplyNestedTest = nestedTest.append("deeply nested")
+         val filter = "$fqn\\Q.a context\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter))
+            .filter(deeplyNestedTest) shouldBe DescriptorFilterResult.Include
+      }
+   }
+
+   // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
+   test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val container = spec.append("a context")
+      val test = container.append("nested test")
+      withEnvironment(INCLUDE_PATTERN_ENV, "foo") {
+         GradleClassMethodRegexTestFilter(setOf("io.nothing")).filter(test) shouldBe DescriptorFilterResult.Include
       }
    }
 })

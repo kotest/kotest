@@ -69,6 +69,9 @@ class FunSpecTest : FunSpec() {
       xcontext("a disabled context!") {
          error("boom")
       }
+      test("multiple invocations root test is allowed with config").config(invocations = 3) {
+         1 + 1 shouldBe 2
+      }
    }
 
    override suspend fun afterSpec(spec: Spec) {

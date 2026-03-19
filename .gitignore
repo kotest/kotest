@@ -1,4 +1,15 @@
+# Compiled class file
 *.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+.idea
+.gradle
+out
+build
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -6,8 +17,13 @@
 # Package Files #
 *.jar
 *.war
+*.nar
 *.ear
+*.zip
+*.tar.gz
+*.rar
 
+sandbox/
 .allure
 
 *.iml
@@ -51,5 +67,6 @@ node_modules/
 
 .docusaurus
 .DS_Store
+.intellijPlatform
 yarn.lock
 CLAUDE.md

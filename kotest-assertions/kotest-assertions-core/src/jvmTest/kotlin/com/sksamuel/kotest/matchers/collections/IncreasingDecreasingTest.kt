@@ -35,6 +35,10 @@ class IncreasingDecreasingTest : WordSpec() {
 
    init {
       "shouldBeIncreasing" should {
+         "test that an array is monotonically increasing" {
+            arrayOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
+            arrayOf(6, 5).shouldNotBeMonotonicallyIncreasing()
+         }
          "test that a list is monotonically increasing" {
             listOf(1, 2, 2, 3) shouldBe monotonicallyIncreasing<Int>()
             listOf(6, 5) shouldNotBe monotonicallyIncreasing<Int>()
@@ -44,6 +48,11 @@ class IncreasingDecreasingTest : WordSpec() {
          "test that a sequence is monotonically increasing" {
             sequenceOf(1, 2, 2, 3).shouldBeMonotonicallyIncreasing()
             sequenceOf(6, 5).shouldNotBeMonotonicallyIncreasing()
+         }
+         "test that an array is monotonically increasing according to comparator" {
+            val comparator = Comparator(desc)
+            arrayOf(3, 2, 2, 1).shouldBeMonotonicallyIncreasingWith(comparator)
+            arrayOf(5, 6).shouldNotBeMonotonicallyIncreasingWith(comparator)
          }
          "test that a list is monotonically increasing according to comparator" {
             val comparator = Comparator(desc)
@@ -70,6 +79,12 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasing()
             sequenceOf(6, 5).shouldNotBeStrictlyIncreasing()
          }
+         "test that an array is strictly increasing according to comparator" {
+            val comparator = Comparator(asc)
+            arrayOf(1, 2, 3).shouldBeStrictlyIncreasingWith(comparator)
+            arrayOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasingWith(comparator)
+            arrayOf(6, 5).shouldNotBeStrictlyIncreasingWith(comparator)
+         }
          "test that a list is strictly increasing according to comparator" {
             val comparator = Comparator(asc)
             listOf(1, 2, 3) shouldBe strictlyIncreasingWith(comparator)
@@ -85,9 +100,21 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(1, 2, 2, 3).shouldNotBeStrictlyIncreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeStrictlyIncreasingWith(comparator)
          }
+         "pass for empty collections" {
+            emptyList<Int>().shouldBeMonotonicallyIncreasing()
+            emptyList<Int>().shouldBeStrictlyIncreasing()
+            emptyArray<Int>().shouldBeMonotonicallyIncreasing()
+            emptyArray<Int>().shouldBeStrictlyIncreasing()
+            emptySet<Int>().shouldBeMonotonicallyIncreasing()
+            emptySet<Int>().shouldBeStrictlyIncreasing()
+         }
       }
 
       "shouldBeDecreasing" should {
+         "test that an array is monotonically decreasing" {
+            arrayOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
+            arrayOf(5, 6).shouldNotBeMonotonicallyDecreasing()
+         }
          "test that a list is monotonically decreasing" {
             listOf(3, 2, 2, -4) shouldBe monotonicallyDecreasing<Int>()
             listOf(5, 6) shouldNotBe monotonicallyDecreasing<Int>()
@@ -97,6 +124,11 @@ class IncreasingDecreasingTest : WordSpec() {
          "test that a sequence is monotonically decreasing" {
             sequenceOf(3, 2, 2, -4).shouldBeMonotonicallyDecreasing()
             sequenceOf(5, 6).shouldNotBeMonotonicallyDecreasing()
+         }
+         "test that an array is monotonically decreasing according to comparator" {
+            val comparator = Comparator(desc)
+            arrayOf(-4, 2, 2, 3).shouldBeMonotonicallyDecreasingWith(comparator)
+            arrayOf(6, 5).shouldNotBeMonotonicallyDecreasingWith(comparator)
          }
          "test that a list is monotonically decreasing according to comparator" {
             val comparator = Comparator(desc)
@@ -110,6 +142,11 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(-4, 2, 2, 3).shouldBeMonotonicallyDecreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeMonotonicallyDecreasingWith(comparator)
          }
+         "test that an array is strictly decreasing" {
+            arrayOf(3, 2, -4).shouldBeStrictlyDecreasing()
+            arrayOf(3, 2, 2, -4).shouldNotBeStrictlyDecreasing()
+            arrayOf(5, 6).shouldNotBeStrictlyDecreasing()
+         }
          "test that a list is strictly decreasing" {
             listOf(3, 2, -4) shouldBe strictlyDecreasing<Int>()
             listOf(3, 2, 2, -4) shouldNotBe strictlyDecreasing<Int>()
@@ -122,6 +159,12 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(3, 2, -4).shouldBeStrictlyDecreasing()
             sequenceOf(3, 2, 2, -4).shouldNotBeStrictlyDecreasing()
             sequenceOf(5, 6).shouldNotBeStrictlyDecreasing()
+         }
+         "test that an array is strictly decreasing according to comparator" {
+            val comparator = Comparator(desc)
+            arrayOf(-4, 2, 3).shouldBeStrictlyDecreasingWith(comparator)
+            arrayOf(-4, 2, 2, 3).shouldNotBeStrictlyDecreasingWith(comparator)
+            arrayOf(6, 5).shouldNotBeStrictlyDecreasingWith(comparator)
          }
          "test that a list is strictly decreasing according to comparator" {
             val comparator = Comparator(desc)
@@ -137,6 +180,14 @@ class IncreasingDecreasingTest : WordSpec() {
             sequenceOf(-4, 2, 3).shouldBeStrictlyDecreasingWith(comparator)
             sequenceOf(-4, 2, 2, 3).shouldNotBeStrictlyDecreasingWith(comparator)
             sequenceOf(6, 5).shouldNotBeStrictlyDecreasingWith(comparator)
+         }
+         "pass for empty collections" {
+            emptyList<Int>().shouldBeMonotonicallyDecreasing()
+            emptyList<Int>().shouldBeStrictlyDecreasing()
+            emptyArray<Int>().shouldBeMonotonicallyDecreasing()
+            emptyArray<Int>().shouldBeStrictlyDecreasing()
+            emptySet<Int>().shouldBeMonotonicallyDecreasing()
+            emptySet<Int>().shouldBeStrictlyDecreasing()
          }
       }
    }

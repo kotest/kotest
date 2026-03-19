@@ -7,9 +7,16 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
+* [Setting up Kotest on KMP 2025](https://alyssoncirilo.com/blog/kotest-kmp-setup)
+* [Property-based testing with Kotlin and Kotest: the Christmas edition (2025)](https://xebia.com/blog/property-based-testing-with-kotlin-and-kotest-the-christmas-edition)
+* [Kotest : Modern Testing in Kotlin: Test Styles, Mocking and Writing Tests on Android (2025)](https://proandroiddev.com/kotest-modern-testing-in-kotlin-test-styles-mocking-and-writing-tests-on-android-857a1f0beed6)
+* [Kotest Cookbook (2025)](https://github.com/kotest/kotest-cookbook)
 * [Kotlin Testing Toolkit: Kotest, MockK, and Writing Fluent Tests (2025)](https://jamshidbekboynazarov.medium.com/kotlin-testing-toolkit-kotest-mockk-and-writing-fluent-tests-f73a1240c9b7)
 * [Kotest: The Kotlin Testing Framework You Will Love (2025)](https://softwaremill.com/kotest-the-kotlin-testing-framework-you-will-love/)
+* [API integration testing with Kotest + SpringBootTest + Testcontainers](https://tech.codmon.com/entry/2025/05/01/094107)
+* [I Don’t Always Test My Code… But When I Do, I Do It in Prod (or With Kotest) (2025)](https://levelup.gitconnected.com/i-dont-always-test-my-code-but-when-i-do-i-do-it-in-prod-or-with-kotest-80bbcea1fa23)
 * [Automated Screenshot Taking in Android using Kotest and Ktor (2025)](https://dev.to/leocolman/automated-screenshot-taking-in-android-using-kotest-and-ktor-o71)
+* [Testing Jetpack Compose UIs with Kotest: A Beginner’s Guide to Writing Clean and Idiomatic Tests in Kotlin (2025)](https://medium.com/@kashifakhtar/testing-jetpack-compose-uis-with-kotest-a-beginners-guide-to-writing-clean-and-idiomatic-tests-in-e628963e5245)
 * [Matchers For Ranges](https://github.com/AlexCue987/talking-the-talk/blob/main/kotest/RANGES.md)
 * [Getting started with Kotest (2024)](https://www.waldo.com/blog/kotest-get-started)
 * [Match Temporal Types With Tolerance (2024)](https://github.com/AlexCue987/talking-the-talk/blob/main/kotest/TEMPORAL-INTERVALS.md)

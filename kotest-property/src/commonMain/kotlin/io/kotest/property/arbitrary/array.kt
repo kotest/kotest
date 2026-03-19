@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
+import io.kotest.property.PropertyTesting
 
 internal inline fun <P, A> Arb.Companion.toPrimitiveArray(
    generateArrayLength: Gen<Int>,
@@ -15,7 +16,7 @@ internal inline fun <P, A> Arb.Companion.toPrimitiveArray(
 
 inline fun <reified A> Arb.Companion.array(
    gen: Gen<A>,
-   range: IntRange = 0..100,
+   range: IntRange = PropertyTesting.defaultCollectionsRange,
    crossinline toArray: Collection<A>.() -> Array<A> = { this.toTypedArray() }
 ): Arb<Array<A>> {
    check(!range.isEmpty())

@@ -9,6 +9,7 @@ import io.kotest.assertions.print.Printed
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.submatching.StringPartialMatch
 import io.kotest.common.sysprop
+import io.kotest.matchers.string.StringPreprocessor
 
 /**
  * An [Eq] implementation for String's that generates diffs for errors when the string inputs
@@ -24,36 +25,45 @@ import io.kotest.common.sysprop
  */
 object StringEq : Eq<String> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: String, expected: String, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
+   override fun equals(actual: String, expected: String, context: EqContext): EqResult {
 
-   override fun equals(actual: String, expected: String, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      val t = StringPartialMatch(expected, actual)
+      val actualEscaped = StringPreprocessor.process(actual)
+      val expectedEscaped = StringPreprocessor.process(expected)
+
+      val t = StringPartialMatch(expectedEscaped, actualEscaped)
+
       return when {
-         actual == expected -> null
+         actualEscaped == expectedEscaped -> EqResult.Success
 
-         equalIgnoringWhitespace(actual, expected) -> AssertionErrorBuilder.create()
-            .withMessage("(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n")
-            .withValues(
-               expected = Expected(Printed(escapeLineBreaks(expected))),
-               actual = Actual(Printed(escapeLineBreaks(actual)))
-            ).build()
+         equalIgnoringWhitespace(actualEscaped, expectedEscaped) -> EqResult.Failure {
+            AssertionErrorBuilder.create()
+               .withMessage("(contents match, but line-breaks differ; output has been escaped to show line-breaks)\n")
+               .withValues(
+                  expected = Expected(Printed(escapeLineBreaks(expectedEscaped))),
+                  actual = Actual(Printed(escapeLineBreaks(actualEscaped)))
+               ).build()
+         }
 
-         useDiff(expected, actual) -> diff(expected, actual)
+         useDiff(expectedEscaped, actualEscaped) -> EqResult.Failure {
+            diff(expectedEscaped, actualEscaped)
+         }
 
-         t.matched -> AssertionErrorBuilder.create()
-            .withMessage("Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n")
-            .withValues(
-               expected = Expected(StringPrint.printUnquoted(expected)),
-               actual = Actual(StringPrint.printUnquoted(actual))
-            ).build()
+         t.matched -> EqResult.Failure {
+            AssertionErrorBuilder.create()
+               .withMessage("Contents did not match exactly, but found the following partial match(es):\n${t.descriptionString}\n")
+               .withValues(
+                  expected = Expected(StringPrint.printUnquoted(expectedEscaped)),
+                  actual = Actual(StringPrint.printUnquoted(actualEscaped))
+               ).build()
+         }
 
-         else -> AssertionErrorBuilder.create()
-            .withValues(
-               expected = Expected(StringPrint.printUnquoted(expected)),
-               actual = Actual(StringPrint.printUnquoted(actual))
-            ).build()
+         else -> EqResult.Failure {
+            AssertionErrorBuilder.create()
+               .withValues(
+                  expected = Expected(StringPrint.printUnquoted(expectedEscaped)),
+                  actual = Actual(StringPrint.printUnquoted(actualEscaped))
+               ).build()
+         }
       }
    }
 

@@ -13,7 +13,7 @@ class TestScopeElement(val testScope: TestScope) : CoroutineContext.Element {
 }
 
 /**
- * Returns the kotlin.test [TestScope] associated with this Kotest test.
+ * Returns the `kotlin.test` [TestScope] associated with this Kotest test.
  *
  * This element is available when coroutineTestScope is set to true.
  */

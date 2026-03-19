@@ -4,6 +4,7 @@ import io.kotest.assertions.asClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.datatest.withData
 import io.kotest.engine.TestEngineLauncher
@@ -30,8 +31,8 @@ class ContainerTimeoutTest : FunSpec() {
             TestEngineLauncher()
                .withListener(collector)
                .withProjectConfig(c)
-               .withClasses(NestedTimeout::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference(NestedTimeout::class))
+               .execute()
 
             collector.names.shouldContainExactly("a")
 

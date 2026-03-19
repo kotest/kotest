@@ -15,7 +15,7 @@ enum class DuplicateTestNameMode {
    Error,
 
    /**
-    * Outputs a warning on a duplicated test name, and renames the test without failing.
+    * Outputs a warning on a duplicated test name and renames the test without failing.
     * The name is prepended with a counter, so a duplicated test `foo` would become `(1) foo`.
     */
    Warn,

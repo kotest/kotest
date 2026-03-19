@@ -2,11 +2,11 @@
 
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
-import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.engine.interceptors.EngineContext
 import kotlin.reflect.KClass
 
 /**
@@ -15,9 +15,10 @@ import kotlin.reflect.KClass
  * are not for the current spec are delayed until the current spec completes.
  *
  * Note: This class is not thread safe. It is up to the caller to ensure that calls
- * to the methods of this listener are strictly sequential, for example by using
+ * to the methods of this listener are strictly sequential, for example, by using
  * an instance of [ThreadSafeTestEngineListener].
  */
+@KotestInternal
 class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngineListener {
 
    private var runningSpec: String? = null
@@ -37,7 +38,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       listener.engineStarted()
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       listener.engineInitialized(context)
    }
 
@@ -47,7 +48,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
 
    override suspend fun specStarted(ref: SpecRef) {
       if (runningSpec == null) {
-         runningSpec = ref.kclass.toDescriptor().path().value
+         runningSpec = ref.descriptor().path().value
          listener.specStarted(ref)
       } else {
          queue {
@@ -57,7 +58,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      if (runningSpec == ref.kclass.toDescriptor().path().value) {
+      if (runningSpec == ref.descriptor().path().value) {
          listener.specFinished(ref, result)
          runningSpec = null
          replay()
@@ -73,7 +74,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
          listener.testStarted(testCase)
       } else {
          queue {
@@ -83,7 +84,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
          listener.testFinished(testCase, result)
       } else {
          queue {
@@ -93,7 +94,7 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
-      if (runningSpec == testCase.spec::class.toDescriptor().path().value) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
          listener.testIgnored(testCase, reason)
       } else {
          queue {

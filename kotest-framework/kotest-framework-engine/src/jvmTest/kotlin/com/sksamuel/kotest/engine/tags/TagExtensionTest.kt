@@ -5,9 +5,10 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.TagExtension
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.tags.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import io.kotest.extensions.system.OverrideMode
@@ -30,9 +31,9 @@ class TagExtensionTest : StringSpec() {
 
             val collector = CollectingTestEngineListener()
             TestEngineLauncher().withListener(collector)
-               .withClasses(TestWithTags::class)
+               .withSpecRefs(SpecRef.Reference(TestWithTags::class))
                .withProjectConfig(c)
-               .launch()
+               .execute()
 
             collector.tests.mapKeys { it.key.name.name }.mapValues { it.value.reasonOrNull } shouldBe
                mapOf(

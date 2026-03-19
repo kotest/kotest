@@ -1,0 +1,40 @@
+package io.kotest.engine.spec.interceptor.instance
+
+import io.kotest.core.project.ProjectContext
+import io.kotest.core.project.ProjectContextElement
+import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
+import io.kotest.core.test.TestCase
+import io.kotest.engine.TestEngineContext
+import io.kotest.engine.spec.interceptor.NextSpecInterceptor
+import io.kotest.engine.spec.interceptor.SpecInterceptor
+import io.kotest.engine.test.TestResult
+import kotlinx.coroutines.withContext
+import kotlin.coroutines.AbstractCoroutineContextElement
+import kotlin.coroutines.CoroutineContext
+
+/**
+ * A [SpecInterceptor] that adds the [ProjectContext] to the coroutine context.
+ */
+internal class ProjectContextInterceptor(
+   private val context: ProjectContext,
+) : SpecInterceptor {
+   override suspend fun intercept(
+      spec: Spec,
+      ref: SpecRef,
+      next: NextSpecInterceptor,
+   ): Result<Map<TestCase, TestResult>> {
+      return withContext(ProjectContextElement(context)) {
+         next.invoke(spec)
+      }
+   }
+}
+
+internal val CoroutineContext.projectContext: ProjectContext
+   get() = get(ProjectContextElement)?.projectContext
+      ?: error("engineContext is not injected into this CoroutineContext")
+
+internal data class ProjectContextElement(val context: TestEngineContext) :
+   AbstractCoroutineContextElement(ProjectContextElement) {
+   companion object Key : CoroutineContext.Key<ProjectContextElement>
+}

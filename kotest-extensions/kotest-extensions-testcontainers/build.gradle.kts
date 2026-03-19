@@ -19,6 +19,7 @@ kotlin {
          dependencies {
             implementation(libs.testcontainers.mysql)
             implementation(libs.mysql.driver)
+            implementation(libs.jedis)
          }
       }
    }

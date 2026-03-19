@@ -4,8 +4,8 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.spec.Spec
 import io.kotest.property.AfterPropertyContextElement
 import io.kotest.property.BeforePropertyContextElement
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.coroutineContext
 
 interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
 
@@ -14,8 +14,8 @@ interface BeforeAndAfterPropertyTestInterceptExtension : SpecExtension {
 
    /** See [SpecExtension.intercept]. */
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
-      val before = coroutineContext[BeforePropertyContextElement]?.before
-      val after = coroutineContext[AfterPropertyContextElement]?.after
+      val before = currentCoroutineContext()[BeforePropertyContextElement]?.before
+      val after = currentCoroutineContext()[AfterPropertyContextElement]?.after
       withContext(AfterPropertyContextElement {
          after?.invoke()
          afterProperty()

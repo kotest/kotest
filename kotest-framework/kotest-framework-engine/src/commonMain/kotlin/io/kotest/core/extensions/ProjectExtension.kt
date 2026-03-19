@@ -12,7 +12,8 @@ interface ProjectExtension : Extension {
     * the project to be executed, otherwise not calling [callback] will skip
     * the entire project.
     *
-    * Implementations can modify the [ProjectContext] and changes will be reflected downstream.
+    * Implementations can modify the [ProjectContext] by passing an updated object into the callback,
+    * and changes will be reflected downstream.
     */
    suspend fun interceptProject(context: ProjectContext, callback: suspend (ProjectContext) -> Unit)
 }

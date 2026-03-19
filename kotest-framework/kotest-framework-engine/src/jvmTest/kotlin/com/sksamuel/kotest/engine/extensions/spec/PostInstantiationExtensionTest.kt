@@ -1,14 +1,17 @@
 package com.sksamuel.kotest.engine.extensions.spec
 
+import io.kotest.common.KotestTesting
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.PostInstantiationExtension
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.matchers.shouldBe
 
+@OptIn(KotestTesting::class)
 @Isolate
 class PostInstantiationExtensionTest : FunSpec() {
    init {
@@ -22,9 +25,9 @@ class PostInstantiationExtensionTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(MySpec::class)
+            .withSpecRefs(SpecRef.Reference(MySpec::class))
             .withProjectConfig(p)
-            .launch()
+            .execute()
 
          a shouldBe "foo"
       }

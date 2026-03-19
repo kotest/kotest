@@ -6,6 +6,7 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ProjectExtension
 import io.kotest.core.project.ProjectContext
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.AbstractTestEngineListener
@@ -31,7 +32,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
       }
    }
 
-   test("ProjectExtension errors should be propogated to the test engine") {
+   test("ProjectExtension errors should be propagated to the test engine") {
 
       val errors = mutableListOf<Throwable>()
 
@@ -47,9 +48,9 @@ class ProjectExtensionEngineResultTest : FunSpec({
 
       TestEngineLauncher()
          .withListener(listener)
-         .withClasses(PassingProjectTest::class)
+         .withSpecRefs(SpecRef.Reference(PassingProjectTest::class))
          .withProjectConfig(c)
-         .launch()
+         .execute()
 
       (events + errors.map { it.message }).toSet() shouldBe setOf("hello q", "mon capitaine!")
    }

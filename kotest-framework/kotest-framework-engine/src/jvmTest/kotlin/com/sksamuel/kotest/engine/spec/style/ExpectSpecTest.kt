@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.style
 
 import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.matchers.shouldBe
 
 class ExpectSpecTest : ExpectSpec() {
    init {
@@ -36,6 +37,9 @@ class ExpectSpecTest : ExpectSpec() {
       }
       xcontext("should be ignored 2") {
          error("Boom")
+      }
+      expect("multiple invocations root test is allowed with config").config(invocations = 3) {
+         1 + 1 shouldBe 2
       }
    }
 }

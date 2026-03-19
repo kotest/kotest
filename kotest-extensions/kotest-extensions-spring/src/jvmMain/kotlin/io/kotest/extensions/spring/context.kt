@@ -2,10 +2,10 @@
 
 package io.kotest.extensions.spring
 
+import kotlinx.coroutines.currentCoroutineContext
 import org.springframework.test.context.TestContextManager
 import kotlin.coroutines.AbstractCoroutineContextElement
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 class SpringTestContextCoroutineContextElement(val value: TestContextManager) : AbstractCoroutineContextElement(Key) {
    companion object Key : CoroutineContext.Key<SpringTestContextCoroutineContextElement>
@@ -26,5 +26,5 @@ enum class SpringTestLifecycleMode {
  * Returns the [TestContextManager] from a test or spec.
  */
 suspend fun testContextManager(): TestContextManager =
-   coroutineContext[SpringTestContextCoroutineContextElement]?.value
+   currentCoroutineContext()[SpringTestContextCoroutineContextElement]?.value
       ?: error("No TestContextManager defined in this coroutine context")

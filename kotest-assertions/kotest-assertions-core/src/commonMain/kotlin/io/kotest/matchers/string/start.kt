@@ -20,17 +20,22 @@ infix fun <A : CharSequence?> A.shouldNotStartWith(prefix: CharSequence): A {
 }
 
 fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { value ->
-   val ok = value.startsWith(prefix)
-   var msg = "${value.print().value} should start with ${prefix.print().value}"
-   val notmsg = "${value.print().value} should not start with ${prefix.print().value}"
+
+   val escapedValue = StringPreprocessor.process(value)
+   val escapedPrefix = StringPreprocessor.process(prefix)
+
+   val ok = escapedValue.startsWith(escapedPrefix)
+   var msg = "${escapedValue.print().value} should start with ${escapedPrefix.print().value}"
+   val notmsg = "${escapedValue.print().value} should not start with ${escapedPrefix.print().value}"
    if (!ok) {
-      for (k in 0 until min(value.length, prefix.length)) {
-         if (value[k] != prefix[k]) {
+      for (k in 0 until min(escapedValue.length, escapedPrefix.length)) {
+         if (escapedValue[k] != escapedPrefix[k]) {
             msg = "$msg (diverged at index $k)"
             break
          }
       }
-      val partialMismatches = describePartialMatchesInStringForPrefix(prefix.toString(), value.toString()).toString()
+      val partialMismatches =
+         describePartialMatchesInStringForPrefix(escapedPrefix.toString(), escapedValue.toString()).toString()
       if (partialMismatches.isNotEmpty()) {
          msg = "$msg\n$partialMismatches"
       }
@@ -38,7 +43,8 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
    MatcherResult(
       ok,
       { msg },
-      { notmsg })
+      { notmsg }
+   )
 }
 
 infix fun <A : CharSequence?> A.shouldStartWith(regex: Regex): A {
@@ -47,7 +53,8 @@ infix fun <A : CharSequence?> A.shouldStartWith(regex: Regex): A {
 }
 
 fun startWith(regex: Regex): Matcher<CharSequence?> = neverNullMatcher { value ->
-   val ok = regex.matchesAt(value, 0)
+   val escapedValue = StringPreprocessor.process(value)
+   val ok = regex.matchesAt(escapedValue, 0)
    MatcherResult(
       ok,
       { "${value.print().value} should start with regex ${regex.pattern}" },

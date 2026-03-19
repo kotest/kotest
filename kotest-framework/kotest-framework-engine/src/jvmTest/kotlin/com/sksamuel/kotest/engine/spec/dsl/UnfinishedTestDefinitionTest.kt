@@ -1,7 +1,9 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
+import io.kotest.common.KotestTesting
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FeatureSpec
@@ -13,6 +15,7 @@ import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forAtLeastOne
 import io.kotest.matchers.string.shouldContain
 
+@OptIn(KotestTesting::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class UnfinishedTestDefinitionTest : FunSpec() {
    init {
@@ -23,43 +26,43 @@ class UnfinishedTestDefinitionTest : FunSpec() {
 
       test("fun spec") {
          val result = TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(FunSpecUnfinishedTestDefinitionTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(FunSpecUnfinishedTestDefinitionTest::class))
+            .execute()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished test") }
       }
 
       test("fun spec with override") {
          val result = TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(FunSpecUnfinishedTestWithDuplicatedLeafNamesDefinitionTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(FunSpecUnfinishedTestWithDuplicatedLeafNamesDefinitionTest::class))
+            .execute()
          result.errors.forAtLeastOne { it.message!!.shouldContain("abc") }
       }
 
       test("describe spec") {
          val result = TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(DescribeSpecUnfinishedTestDefinitionTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(DescribeSpecUnfinishedTestDefinitionTest::class))
+            .execute()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished it") }
       }
 
       test("should spec") {
          val result = TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(ShouldSpecUnfinishedTestDefinitionTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(ShouldSpecUnfinishedTestDefinitionTest::class))
+            .execute()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished should") }
       }
 
       test("feature spec") {
          val result = TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(FeatureSpecUnfinishedTestDefinitionTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(FeatureSpecUnfinishedTestDefinitionTest::class))
+            .execute()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished scenario") }
       }
 
       test("expect spec") {
          val result = TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(ExpectSpecUnfinishedTestDefinitionTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(ExpectSpecUnfinishedTestDefinitionTest::class))
+            .execute()
          result.errors.forAtLeastOne { it.message!!.shouldContain("unfinished expect") }
       }
    }

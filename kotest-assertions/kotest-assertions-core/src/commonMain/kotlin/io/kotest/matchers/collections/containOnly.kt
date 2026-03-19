@@ -119,6 +119,7 @@ fun <T, C : Collection<T>> containOnly(
          appendLine()
          appendMissingAndExtra(missingSet, notExpectedSet)
          appendLine()
+         appendPossibleMatches(missingSet, expectedSet)
       }
    }
 

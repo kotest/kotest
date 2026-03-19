@@ -2,17 +2,16 @@
 
 package io.kotest.engine
 
-import io.kotest.common.Platform
+import io.kotest.common.KotestInternal
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
 import io.kotest.core.project.TestSuite
-import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
-import io.kotest.engine.extensions.IncludeTestPatternDescriptorFilter
-import io.kotest.engine.extensions.SpecifiedTagsTagExtension
+import io.kotest.engine.extensions.filter.IncludePatternEnvDescriptorFilter
+import io.kotest.engine.extensions.tags.SpecifiedTagsTagExtension
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.ConsoleTestEngineListener
@@ -22,18 +21,14 @@ import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.tags.TagExpression
-import kotlin.reflect.KClass
 
 /**
  * A builder class for creating and executing tests via a [TestEngine].
  *
- * Entry point for tests generated through the compiler plugins, and so the
- * public api cannot have breaking changes.
- *
- * @param platform specifies the platform which the tests will be running on.
+ * This API is considered internal and should be used by other Kotest components only.
  */
+@KotestInternal
 data class TestEngineLauncher(
-   private val platform: Platform,
    private val listeners: List<TestEngineListener>,
    private val config: AbstractProjectConfig?,
    private val refs: List<SpecRef>,
@@ -46,7 +41,6 @@ data class TestEngineLauncher(
    private val logger = Logger(TestEngineLauncher::class)
 
    constructor() : this(
-      Platform.JVM,
       listOf(),
       null,
       emptyList(),
@@ -86,10 +80,6 @@ data class TestEngineLauncher(
       return withListener(NoopTestEngineListener)
    }
 
-   fun withClasses(vararg specs: KClass<out Spec>): TestEngineLauncher = withClasses(specs.toList())
-   fun withClasses(specs: List<KClass<out Spec>>): TestEngineLauncher =
-      withSpecRefs(specs.map { SpecRef.Reference(it) })
-
    fun withSpecRefs(vararg refs: SpecRef): TestEngineLauncher = withSpecRefs(refs.toList())
    fun withSpecRefs(refs: List<SpecRef>): TestEngineLauncher {
       return copy(refs = this.refs + refs)
@@ -126,44 +116,7 @@ data class TestEngineLauncher(
       return this
    }
 
-   /**
-    * Convenience function to be called by the compiler plugin to set up the JS platform.
-    */
-   fun withJs(): TestEngineLauncher = withPlatform(Platform.JS)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the WASM platform.
-    */
-   fun withWasmJs(): TestEngineLauncher = withPlatform(Platform.WasmJs)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the WASM platform.
-    */
-   fun withWasmWasi(): TestEngineLauncher = withPlatform(Platform.WasmWasi)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the Native platform.
-    */
-   fun withNative(): TestEngineLauncher = withPlatform(Platform.Native)
-
-   /**
-    * Convenience function to be called by the compiler plugin to set up the JVM platform.
-    */
-   fun withJvm(): TestEngineLauncher = withPlatform(Platform.JVM)
-
-   /**
-    * Returns a copy of this launcher with the given [platform] set.
-    *
-    * This will override the current platform.
-    */
-   fun withPlatform(platform: Platform): TestEngineLauncher {
-      return copy(platform = platform).withListeners(platform.listeners())
-   }
-
    private fun toConfig(): TestEngineConfig {
-
-      // if the engine was configured with explicit tags, we register those via a tag extension
-      tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
       val safeListener = ThreadSafeTestEngineListener( // to avoid race conditions with concurrent spec execution
          PinnedSpecTestEngineListener( // to ensure we don't interleave output in TCSM which requires sequential outputs
@@ -172,14 +125,15 @@ data class TestEngineLauncher(
       )
 
       // add in extensions that are enabled by default
-      registry.add(IncludeTestPatternDescriptorFilter)
+      registry.add(IncludePatternEnvDescriptorFilter)
+
+      // if the engine was configured with explicit tags, we register those via a tag extension
+      tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
 
       return TestEngineConfig(
          listener = safeListener,
-         interceptors = testEngineInterceptorsForPlatform(),
          projectConfig = config,
          tagExpression,
-         platform,
          registry,
       )
    }
@@ -189,39 +143,9 @@ data class TestEngineLauncher(
     *
     * @return the [EngineResult] containing the results of the test execution.
     */
-   suspend fun async(): EngineResult {
+   suspend fun execute(): EngineResult {
       logger.log { "Launching Test Engine" }
       val engine = TestEngine(toConfig())
-      return engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-   }
-
-   /**
-    * Launch the [TestEngine] created from this builder and block the thread until execution has completed.
-    * This method will throw on JS.
-    *
-    * @return the [EngineResult] containing the results of the test execution.
-    */
-   fun launch(): EngineResult {
-      logger.log { "Launching Test Engine" }
-      return runBlocking {
-         val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-      }
-   }
-
-   /**
-    * Launch the [TestEngine] created from this builder using a Javascript promise.
-    * This method will throw on JVM or native.
-    *
-    * @return the promise that will resolve to an [EngineResult] when the tests have completed.
-    */
-   fun promise(): Any { // will be a Promise<EngineResult> on JS, but an error on other platforms
-      logger.log { "Launching Test Engine in Javascript promise" }
-      return runPromise {
-         val engine = TestEngine(toConfig())
-         engine.execute(TestSuite(refs)).copy(testFailures = collecting.errors)
-      }
+      return engine.execute(TestSuite(refs))
    }
 }
-
-internal expect fun Platform.listeners(): List<TestEngineListener>

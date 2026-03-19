@@ -1,5 +1,6 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.common.TestNameContextElement
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
@@ -9,6 +10,7 @@ import kotlinx.coroutines.withContext
 /**
  * Puts the test name into the coroutine context.
  */
+@OptIn(ExperimentalKotest::class)
 internal object TestNameContextInterceptor : TestExecutionInterceptor {
    override suspend fun intercept(
       testCase: TestCase,

@@ -19,13 +19,18 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> forAll(
    val paramH = params.getOrElse(7) { "h" }
    val paramI = params.getOrElse(8) { "i" }
    val paramJ = params.getOrElse(9) { "j" }
-   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forAll { A, B, C, D, E, F, G, H, I, J ->
+   table(
+      headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ),
+      *rows
+   ).forAll { A, B, C, D, E, F, G, H, I, J ->
       testfn(A, B, C, D, E, F, G, H, I, J)
    }
 }
-@JvmName("forall8")
+
+@JvmName("forall10")
 inline fun <A, B, C, D, E, F, G, H, I, J> forAll(table: Table10<A, B, C, D, E, F, G, H, I, J>, testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit) =
    table.forAll(testfn)
+
 inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forAll(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -37,6 +42,7 @@ inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.
    }
    collector.assertAll()
 }
+
 suspend fun <A, B, C, D, E, F, G, H, I, J> forNone(
    vararg rows: Row10<A, B, C, D, E, F, G, H, I, J>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J) -> Unit
@@ -52,13 +58,18 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> forNone(
    val paramH = params.getOrElse(7) { "h" }
    val paramI = params.getOrElse(8) { "i" }
    val paramJ = params.getOrElse(9) { "j" }
-   table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ), *rows).forNone { A, B, C, D, E, F, G, H, I, J ->
+   table(
+      headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH, paramI, paramJ),
+      *rows
+   ).forNone { A, B, C, D, E, F, G, H, I, J ->
       testfn(A, B, C, D, E, F, G, H, I, J)
    }
 }
-@JvmName("fornone8")
+
+@JvmName("fornone10")
 inline fun <A, B, C, D, E, F, G, H, I, J> forNone(table: Table10<A, B, C, D, E, F, G, H, I, J>, testfn: (A, B, C, D, E, F, G, H, I, J) -> Unit) =
    table.forNone(testfn)
+
 inline fun <A, B, C, D, E, F, G, H, I, J> Table10<A, B, C, D, E, F, G, H, I, J>.forNone(fn: (A, B, C, D, E, F, G, H, I, J) -> Unit) {
    for (row in rows) {
       try {

@@ -54,22 +54,17 @@ class DefaultDisplayNameFormatter(
          }
       }
 
-      val name = if (projectConfigResolver.testNameAppendTags()) {
+      return if (projectConfigResolver.testNameAppendTags()) {
          return appendTagsInDisplayName(testCase, displayName)
       } else {
          displayName
-      }
-
-      return when (val parent = testCase.parent) {
-         null -> name
-         else -> if (projectConfigResolver.displayFullTestPath()) format(parent) + " " + name else name
       }
    }
 
    /**
     * Returns a formatted display name for this spec class.
     *
-    * If the spec has been annotated with [DisplayName] (on supported platforms), then that will be used,
+    * If the spec has been annotated with [DisplayName] (on supported platforms), then that will be used;
     * otherwise the default is to use the class name.
     */
    override fun format(kclass: KClass<*>): String {

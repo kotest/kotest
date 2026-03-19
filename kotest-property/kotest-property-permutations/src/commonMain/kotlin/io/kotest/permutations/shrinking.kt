@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.permutations
 
 import io.kotest.assertions.print.print
+import io.kotest.common.ExperimentalKotest
 import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
 import io.kotest.permutations.delegates.GenDelegate

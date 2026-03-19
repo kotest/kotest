@@ -5,6 +5,7 @@ import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.project.ProjectContext
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
@@ -19,9 +20,9 @@ class LifecycleOrderTest : FunSpec() {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(LifecycleTests::class)
+            .withSpecRefs(SpecRef.Reference(LifecycleTests::class))
             .addExtensions(LifecycleExtension("engine"))
-            .launch()
+            .execute()
          collector.names shouldBe listOf("foo", "bar")
          LifecycleExtension.state shouldBe listOf(
             Triple("engine", Type.PROJECT, Phase.ENTRY),

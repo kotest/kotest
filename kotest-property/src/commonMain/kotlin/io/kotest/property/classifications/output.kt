@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.property.classifications
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.property.PropTestConfig
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyResult

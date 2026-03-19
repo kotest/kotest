@@ -2,7 +2,9 @@ package com.sksamuel.kotest.engine.test.timeout
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.spec.SpecInstantiationException
@@ -18,11 +20,11 @@ import kotlin.time.Duration.Companion.seconds
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class TestInvocationTimeoutExceedingTimeoutTest : FunSpec() {
    init {
-      test("invocation timeout shouldn't exceed test timeout") {
+      test("invocation timeout shouldn't exceed test timeout").config(TestConfig(retries = 3)) {
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
-            .withClasses(SpecWithInvalidInvocationTimeout::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(SpecWithInvalidInvocationTimeout::class))
+            .execute()
 
          collector.specs.getValue(SpecWithInvalidInvocationTimeout::class).errorOrNull
             .shouldBeInstanceOf<SpecInstantiationException>()

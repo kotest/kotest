@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.property.internal
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
 import io.kotest.property.checkMaxDiscards
@@ -14,6 +17,6 @@ internal suspend fun PropertyContext.onSuccess(
    outputStatistics(this, args, true)
    outputClassifications(args, config, random.seed)
    checkMinSuccess(config, random.seed)
-   if (args > 1) checkMaxDiscards()
+   checkMaxDiscards()
    clearFailedSeed()
 }

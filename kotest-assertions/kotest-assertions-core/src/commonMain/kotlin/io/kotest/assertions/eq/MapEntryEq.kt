@@ -10,16 +10,17 @@ import io.kotest.assertions.print.print
  * It uses an [EqCompare] function to compare the keys and values of the entries.
  */
 internal object MapEntryEq : Eq<Map.Entry<*, *>> {
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
 
-   override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      val compareKey = EqCompare.compare(actual.key, expected.key, strictNumberEq, context)
-      val compareValue = EqCompare.compare(actual.value, expected.value, strictNumberEq, context)
-      return if (compareKey == null && compareValue == null)
-         null
+   override fun equals(actual: Map.Entry<*, *>, expected: Map.Entry<*, *>, context: EqContext): EqResult {
+      val compareKey = EqCompare.compare(actual.key, expected.key, context)
+      val compareValue = EqCompare.compare(actual.value, expected.value, context)
+      return if (compareKey is EqResult.Success && compareValue is EqResult.Success)
+         EqResult.Success
       else
-         AssertionErrorBuilder.create().withValues(Expected(expected.print()), Actual(actual.print())).build()
+         EqResult.Failure {
+            AssertionErrorBuilder.create()
+               .withValues(Expected(expected.print()), Actual(actual.print()))
+               .build()
+         }
    }
 }

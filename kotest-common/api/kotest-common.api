@@ -13,10 +13,17 @@ public final class io/kotest/common/EnvKt {
 public abstract interface annotation class io/kotest/common/ExperimentalKotest : java/lang/annotation/Annotation {
 }
 
+public final class io/kotest/common/IntellijKt {
+	public static final fun isIntellij ()Z
+}
+
 public abstract interface annotation class io/kotest/common/JVMOnly : java/lang/annotation/Annotation {
 }
 
 public abstract interface annotation class io/kotest/common/KotestInternal : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class io/kotest/common/KotestTesting : java/lang/annotation/Annotation {
 }
 
 public final class io/kotest/common/Platform : java/lang/Enum {
@@ -32,6 +39,10 @@ public final class io/kotest/common/Platform : java/lang/Enum {
 
 public final class io/kotest/common/Platform_jvmKt {
 	public static final fun getPlatform ()Lio/kotest/common/Platform;
+}
+
+public final class io/kotest/common/PowerSetIndexesKt {
+	public static final fun powerSetIndexes (I)Lkotlin/sequences/Sequence;
 }
 
 public abstract interface annotation class io/kotest/common/SoftDeprecated : java/lang/annotation/Annotation {
@@ -80,6 +91,7 @@ public final class io/kotest/common/reflection/JvmReflection : io/kotest/common/
 	public static final field INSTANCE Lio/kotest/common/reflection/JvmReflection;
 	public fun annotations (Lkotlin/reflect/KClass;Ljava/util/Set;)Ljava/util/List;
 	public fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
+	public fun isAbstract (Lkotlin/reflect/KClass;)Z
 	public fun isDataClass (Lkotlin/reflect/KClass;)Z
 	public fun isEnumClass (Lkotlin/reflect/KClass;)Z
 	public fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;
@@ -103,6 +115,7 @@ public final class io/kotest/common/reflection/Property {
 public abstract interface class io/kotest/common/reflection/Reflection {
 	public abstract fun annotations (Lkotlin/reflect/KClass;Ljava/util/Set;)Ljava/util/List;
 	public abstract fun fqn (Lkotlin/reflect/KClass;)Ljava/lang/String;
+	public abstract fun isAbstract (Lkotlin/reflect/KClass;)Z
 	public abstract fun isDataClass (Lkotlin/reflect/KClass;)Z
 	public abstract fun isEnumClass (Lkotlin/reflect/KClass;)Z
 	public abstract fun primaryConstructorMembers (Lkotlin/reflect/KClass;)Ljava/util/List;

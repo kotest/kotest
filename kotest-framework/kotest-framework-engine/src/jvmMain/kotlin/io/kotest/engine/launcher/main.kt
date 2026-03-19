@@ -2,9 +2,10 @@ package io.kotest.engine.launcher
 
 import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.cli.parseArgs
-import io.kotest.engine.extensions.IncludeDescriptorFilter
+import io.kotest.engine.extensions.filter.IncludeDescriptorFilter
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.LoggingTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
@@ -89,15 +90,17 @@ fun main(args: Array<String>) {
    // this is used so we can see if any test failed and so exit with a non-zero code
    val collector = CollectingTestEngineListener()
 
-   val result = TestEngineLauncher()
-      .withListener(collector)
-      .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
-      .withListener(consoleListener)
-      .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_ROOT_TEST_REPORTS_DIR, launcherArgs))
-      .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_MODULE_TEST_REPORTS_DIR, launcherArgs))
-      .withClasses(classes)
-      .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
-      .launch()
+   val result = kotlinx.coroutines.runBlocking {
+      TestEngineLauncher()
+         .withListener(collector)
+         .withListener(LoggingTestEngineListener) // we use this to write to the kotest log file if enabled
+         .withListener(consoleListener)
+         .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_ROOT_TEST_REPORTS_DIR, launcherArgs))
+         .withListener(buildJunitXmlTestEngineListener(LauncherArgs.ARG_MODULE_TEST_REPORTS_DIR, launcherArgs))
+         .withSpecRefs(classes.map { SpecRef.Reference(it, it.java.name) })
+         .addExtensions(listOfNotNull(descriptorFilter, descriptorFilterKotest5))
+         .execute()
+   }
 
    if (result.errors.isNotEmpty())
       println("Test suite had errors")

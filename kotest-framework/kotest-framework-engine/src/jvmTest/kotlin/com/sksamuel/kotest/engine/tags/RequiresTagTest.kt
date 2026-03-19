@@ -5,6 +5,7 @@ import io.kotest.engine.tags.TagExpression
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -25,8 +26,8 @@ class RequiresTagTest : FunSpec({
          TestEngineLauncher()
             .withListener(collector)
             .withTagExpression(TagExpression("Foo"))
-            .withClasses(TaggedSpec::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((TaggedSpec::class)))
+            .execute()
 
          collector
             .specs[TaggedSpec::class].shouldNotBeNull()
@@ -39,14 +40,14 @@ class RequiresTagTest : FunSpec({
          val collector = CollectingTestEngineListener()
 
          TestEngineLauncher().withListener(collector)
-            .withClasses(TaggedSpec::class)
+            .withSpecRefs(SpecRef.Reference((TaggedSpec::class)))
             .withTagExpression(TagExpression("UnrelatedTag"))
-            .launch()
+            .execute()
 
          assertSoftly(collector.specs[TaggedSpec::class]) {
             shouldNotBeNull()
             isIgnored.shouldBeTrue()
-            reasonOrNull shouldBe "Disabled by @RequiresTag"
+            reasonOrNull shouldBe "Disabled by @RequiresTag (Foo)"
          }
       }
    }
@@ -57,9 +58,9 @@ class RequiresTagTest : FunSpec({
 
          TestEngineLauncher()
             .withListener(collector)
-            .withClasses(TaggedSpec::class)
+            .withSpecRefs(SpecRef.Reference((TaggedSpec::class)))
             .withTagExpression(TagExpression.Empty)
-            .launch()
+            .execute()
 
          collector
             .specs[TaggedSpec::class].shouldNotBeNull()

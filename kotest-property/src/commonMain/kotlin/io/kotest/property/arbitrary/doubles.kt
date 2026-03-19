@@ -7,8 +7,6 @@ import kotlin.math.absoluteValue
 
 private val numericEdgeCases = listOf(-1.0, -Double.MIN_VALUE, -0.0, 0.0, Double.MIN_VALUE, 1.0)
 
-private val nonFiniteEdgeCases = listOf(Double.NEGATIVE_INFINITY, Double.NaN, Double.POSITIVE_INFINITY)
-
 object DoubleShrinker : Shrinker<Double> {
    private val pattern = Regex("""([+-]|)([0-9]*)(\.[0-9]*|)(e[+-]?[0-9]+|)""", RegexOption.IGNORE_CASE)
 
@@ -48,15 +46,15 @@ object DoubleShrinker : Shrinker<Double> {
  * The numeric edge cases are [min], -1.0, -[Double.MIN_VALUE], -0.0, 0.0, [Double.MIN_VALUE], 1.0 and [max]
  * which are only included if they are in the provided range.
  * The non-finite edge cases are [Double.NEGATIVE_INFINITY], [Double.POSITIVE_INFINITY] and [Double.NaN]
- * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
+ * which are only included if they are in the provided range and includeNaNs flag is true.
  *
  * @see numericDouble to only produce numeric [Double]s
  */
 fun Arb.Companion.double(
    min: Double = -Double.MAX_VALUE,
    max: Double = Double.MAX_VALUE,
-   includeNonFiniteEdgeCases: Boolean = true
-): Arb<Double> = double(min..max, includeNonFiniteEdgeCases)
+   includeNaNs: Boolean = true
+): Arb<Double> = double(min..max, includeNaNs)
 
 /**
  * Returns an [Arb] that produces [Double]s in [range].
@@ -64,13 +62,16 @@ fun Arb.Companion.double(
  * 0.0, [Double.MIN_VALUE], 1.0 and [ClosedFloatingPointRange.endInclusive]
  * which are only included if they are in the provided range.
  * The non-finite edge cases are [Double.NEGATIVE_INFINITY], [Double.POSITIVE_INFINITY] and [Double.NaN]
- * which are only included if they are in the provided range and includeNonFiniteEdgeCases flag is true.
+ * which are only included if they are in the provided range and includeNaNs flag is true.
  */
 fun Arb.Companion.double(
    range: ClosedFloatingPointRange<Double> = -Double.MAX_VALUE..Double.MAX_VALUE,
-   includeNonFiniteEdgeCases: Boolean = true
+   includeNaNs: Boolean = true
 ): Arb<Double> = arbitrary(
-   (numericEdgeCases.filter { it in range } + listOf(range.start, range.endInclusive)).distinct() + getNonFiniteEdgeCases(range, includeNonFiniteEdgeCases),
+   (numericEdgeCases.filter { it in range } + listOf(
+      range.start,
+      range.endInclusive
+   )).distinct() + getNonFiniteEdgeCases(range, includeNaNs),
    DoubleShrinker
 ) {
    it.random.nextDouble(range.start, range.endInclusive)
@@ -80,17 +81,23 @@ fun Arb.Companion.double(
  * Returns an [Arb] that produces positive [Double]s from [Double.MIN_VALUE] to [max] (inclusive).
  * The numeric edge cases are [Double.MIN_VALUE], 1.0 and [max] which are only included if they are in the provided range.
  * The non-finite edge case is [Double.POSITIVE_INFINITY]
- * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
+ * which is only included if is in the provided range and includeNaNs flag is true.
  */
-fun Arb.Companion.positiveDouble(max: Double = Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(Double.MIN_VALUE, max, includeNonFiniteEdgeCases)
+fun Arb.Companion.positiveDouble(
+   max: Double = Double.MAX_VALUE,
+   includeNaNs: Boolean = true
+): Arb<Double> = double(Double.MIN_VALUE, max, includeNaNs)
 
 /**
  * Returns an [Arb] that produces negative [Double]s from [min] to -[Double.MIN_VALUE] (inclusive).
  * The numeric edge cases are [min], -1.0 and -[Double.MIN_VALUE] which are only included if they are in the provided range.
  * The non-finite edge case is [Double.NEGATIVE_INFINITY]
- * which is only included if is in the provided range and includeNonFiniteEdgeCases flag is true.
+ * which is only included if is in the provided range and includeNaNs flag is true.
  */
-fun Arb.Companion.negativeDouble(min: Double = -Double.MAX_VALUE, includeNonFiniteEdgeCases: Boolean = true): Arb<Double> = double(min, -Double.MIN_VALUE, includeNonFiniteEdgeCases)
+fun Arb.Companion.negativeDouble(
+   min: Double = -Double.MAX_VALUE,
+   includeNaNs: Boolean = true
+): Arb<Double> = double(min, -Double.MIN_VALUE, includeNaNs)
 
 /**
  * Returns an [Arb] that produces numeric [Double]s from [min] to [max] (inclusive).
@@ -113,11 +120,12 @@ fun Arb.Companion.numericDouble(
 fun Arb.Companion.doubleArray(length: Gen<Int>, content: Arb<Double>): Arb<DoubleArray> =
    toPrimitiveArray(length, content, Collection<Double>::toDoubleArray)
 
-private fun getNonFiniteEdgeCases(range: ClosedFloatingPointRange<Double>, includeNonFiniteEdgeCases: Boolean) : List<Double> {
-   return if (includeNonFiniteEdgeCases) {
-      if (range == -Double.MAX_VALUE..Double.MAX_VALUE) nonFiniteEdgeCases
-      else if (range.start == -Double.MAX_VALUE) nonFiniteEdgeCases.filter { it <= range.endInclusive }
-      else if (range.endInclusive == Double.MAX_VALUE) nonFiniteEdgeCases.filter { it >= range.start }
-      else emptyList()
+private fun getNonFiniteEdgeCases(range: ClosedFloatingPointRange<Double>, includeNaNs: Boolean): List<Double> {
+   return if (includeNaNs) {
+      buildList {
+         add(Double.NaN)
+         if (range.start == Double.NEGATIVE_INFINITY) add(Double.NEGATIVE_INFINITY)
+         if (range.endInclusive == Double.POSITIVE_INFINITY) add(Double.POSITIVE_INFINITY)
+      }
    } else emptyList()
 }

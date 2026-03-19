@@ -6,21 +6,45 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeStrictlyIncreasing(): I {
    toList().shouldBeStrictlyIncreasing()
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing(): Array<T> {
    asList().shouldBeStrictlyIncreasing()
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> Sequence<T>.shouldBeStrictlyIncreasing(): Sequence<T> {
    asIterable().shouldBeStrictlyIncreasing()
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> List<T>.shouldBeStrictlyIncreasing(): List<T> {
    this should beStrictlyIncreasing()
    return this
@@ -51,16 +75,34 @@ fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeMonotonicallyIncreasing(): I 
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyIncreasing(): Array<T> {
    asList().shouldBeMonotonicallyIncreasing()
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> Sequence<T>.shouldBeMonotonicallyIncreasing(): Sequence<T> {
    asIterable().shouldBeMonotonicallyIncreasing()
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyIncreasing(): List<T> {
    this should beMonotonicallyIncreasing()
    return this
@@ -86,21 +128,45 @@ fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing(): List<T> {
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this should beMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T> Sequence<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
    asIterable().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T, I : Iterable<T>> I.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T> Array<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
@@ -126,21 +192,45 @@ infix fun <T> Sequence<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Com
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this should beStrictlyIncreasingWith(comparator)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T, I : Iterable<T>> I.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldBeStrictlyIncreasingWith(comparator)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeStrictlyIncreasingWith(comparator)
    return this
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 infix fun <T> Sequence<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
    asIterable().shouldBeStrictlyIncreasingWith(comparator)
    return this
@@ -166,15 +256,40 @@ infix fun <T> Sequence<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparat
    return this
 }
 
-
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> beStrictlyIncreasing(): Matcher<List<T>> = strictlyIncreasing()
+
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> strictlyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       return testStrictlyIncreasingWith(value) { a, b -> a.compareTo(b) }
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> beStrictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = strictlyIncreasingWith(comparator)
+
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> strictlyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       return testStrictlyIncreasingWith(value, comparator)
@@ -199,6 +314,12 @@ private fun <T> testStrictlyIncreasingWith(value: List<T>, comparator: Comparato
    )
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T : Comparable<T>> beMonotonicallyIncreasing(): Matcher<List<T>> = monotonicallyIncreasing()
 fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
@@ -206,9 +327,21 @@ fun <T : Comparable<T>> monotonicallyIncreasing(): Matcher<List<T>> = object : M
    }
 }
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> beMonotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> =
    monotonicallyIncreasingWith(comparator)
 
+/**
+ * Note that if `this` is empty, this assertion will pass.
+ * because there are no elements in it that _do not_ fail the test.
+ *
+ * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
+ */
 fun <T> monotonicallyIncreasingWith(comparator: Comparator<in T>): Matcher<List<T>> = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       return testMonotonicallyIncreasingWith(value, comparator)

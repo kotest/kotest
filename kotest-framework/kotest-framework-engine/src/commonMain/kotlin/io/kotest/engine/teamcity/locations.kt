@@ -1,8 +1,8 @@
 package io.kotest.engine.teamcity
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.source.SourceRef
 import io.kotest.core.spec.SpecRef
-import io.kotest.common.reflection.bestName
 
 /**
  * Generates the location hint for a given class or source reference used by TeamCity service messages.

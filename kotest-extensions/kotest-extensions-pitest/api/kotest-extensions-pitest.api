@@ -22,7 +22,7 @@ public final class io/kotest/extensions/pitest/KotestUnit : org/pitest/testapi/T
 	public fun <init> (Lkotlin/reflect/KClass;)V
 	public fun execute (Lorg/pitest/testapi/ResultCollector;)V
 	public fun getDescription ()Lorg/pitest/testapi/Description;
-	public final fun getKlass ()Lkotlin/reflect/KClass;
+	public final fun getKclass ()Lkotlin/reflect/KClass;
 }
 
 public final class io/kotest/extensions/pitest/KotestUnitFinder : org/pitest/testapi/TestUnitFinder {

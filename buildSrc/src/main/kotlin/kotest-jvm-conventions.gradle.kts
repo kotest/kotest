@@ -10,16 +10,33 @@ plugins {
    id("kotlin-conventions")
 }
 
+val versionCatalog: VersionCatalog = versionCatalogs.named("libs")
+
+fun findJvmVersion(name: String): Provider<JavaLanguageVersion> = provider {
+   val version = versionCatalog.findVersion(name)
+      .getOrElse { error("Missing '$name' version in libs.versions.toml") }
+   JavaLanguageVersion.of(version.requiredVersion)
+}
+
+/** The minimum Java version that Kotest supports. */
+val jvmMinTargetVersion: Provider<JavaLanguageVersion> = findJvmVersion("jvmMinTarget")
+
+/** The maximum Java version that Kotest supports. */
+val jvmMaxTargetVersion: Provider<JavaLanguageVersion> = findJvmVersion("jvmMaxTarget")
+
+/** The Java version used for compilation. */
+val jvmCompilerVersion: Provider<JavaLanguageVersion> = findJvmVersion("jvmCompiler")
+
 kotlin {
    jvm {
-      // Use a 'release' version Java launcher for the main tests,
+      // Use a 'release' version Java launcher for the main tests
       // to ensure that Kotest can actually be used with the 'release' version.
       testRuns.named(DEFAULT_TEST_RUN_NAME) {
          executionTask.configure {
             javaLauncher = javaToolchains.launcherFor { languageVersion = jvmMinTargetVersion }
          }
       }
-      // Use the 'max' version, to ensure that Kotest works with the latest Java version.
+      // Use the 'max' version to ensure that Kotest works with the latest Java version.
       val maxJdk by testRuns.creating {
          executionTask.configure {
             javaLauncher = javaToolchains.launcherFor { languageVersion = jvmMaxTargetVersion }
@@ -29,6 +46,7 @@ kotlin {
          dependsOn(maxJdk.executionTask)
       }
    }
+   jvmToolchain { languageVersion = jvmCompilerVersion }
    sourceSets {
       jvmTest {
          dependencies {
@@ -37,32 +55,6 @@ kotlin {
       }
    }
 }
-
-
-val versionCatalog: VersionCatalog = versionCatalogs.named("libs")
-fun VersionCatalog.findJvmVersion(name: String): Provider<JavaLanguageVersion> = provider {
-   val version = versionCatalog.findVersion(name)
-      .getOrElse { error("Missing '$name' version in libs.versions.toml") }
-   JavaLanguageVersion.of(version.requiredVersion)
-}
-
-
-/** The minimum Java version that Kotest supports. */
-val jvmMinTargetVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmMinTarget")
-
-/** The maximum Java version that Kotest supports. */
-val jvmMaxTargetVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmMaxTarget")
-
-/** The Java version used for compilation. */
-val jvmCompilerVersion: Provider<JavaLanguageVersion> = versionCatalog.findJvmVersion("jvmCompiler")
-
-
-//region configure Java compiler
-kotlin {
-   jvmToolchain { languageVersion = jvmCompilerVersion }
-}
-//endregion
-
 
 //region Configure Java target version
 tasks.withType<KotlinJvmCompile>().configureEach {

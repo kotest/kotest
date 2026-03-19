@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.matchers.string
 
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
@@ -52,6 +53,11 @@ class StartWithTest : FreeSpec() {
             val cs2: CharSequence? = "hello"
             val a2 = cs2.shouldStartWith("h")
             a2 shouldBe "hello"
+         }
+         "handle windows line endings when mapFileEndingsToUnix is set to true" {
+            AssertionsConfig.mapFileEndingsToUnix.withValue(true) {
+               "hello\r\nworld\r\nfoo" shouldStartWith "hello\nworld"
+            }
          }
          "should show divergence in error message" {
             val message = shouldThrow<AssertionError> {

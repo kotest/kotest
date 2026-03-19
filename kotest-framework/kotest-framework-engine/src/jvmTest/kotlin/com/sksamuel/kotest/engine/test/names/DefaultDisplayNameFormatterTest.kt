@@ -20,6 +20,7 @@ import io.kotest.engine.config.IncludeTestScopeAffixes
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.core.descriptors.toDescriptor
+import io.kotest.core.spec.SpecRef
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.test.names.DefaultDisplayNameFormatter
@@ -34,32 +35,6 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
 
       test("@DisplayName should be used for spec name") {
          DefaultDisplayNameFormatter().format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
-      }
-
-      test("test name should use full path option") {
-
-         val c = object : AbstractProjectConfig() {
-            override val displayFullTestPath = true
-         }
-
-         val tc1 = TestCase(
-            SpecWithDisplayName::class.toDescriptor().append("test"),
-            TestNameBuilder.builder("test").build(),
-            SpecWithDisplayName(),
-            {},
-            SourceRef.None,
-            TestType.Test,
-         )
-         val tc2 = TestCase(
-            SpecWithDisplayName::class.toDescriptor().append("test2"),
-            TestNameBuilder.builder("test2").build(),
-            SpecWithDisplayName(),
-            {},
-            SourceRef.None,
-            TestType.Test,
-            parent = tc1
-         )
-         DefaultDisplayNameFormatter(ProjectConfigResolver(c), TestConfigResolver(c)).format(tc2) shouldBe "test test2"
       }
 
       test("tags should be appended from config when configuration is set") {
@@ -190,9 +165,9 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
             TestEngineLauncher()
                .withListener(collector)
                .withProjectConfig(c)
-               .withClasses(TaggedSpec::class)
+               .withSpecRefs(SpecRef.Reference(TaggedSpec::class))
                .withTagExpression(TagExpression.Empty)
-               .launch()
+               .execute()
          }
 
          assertSoftly(report) {

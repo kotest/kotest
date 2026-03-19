@@ -4,7 +4,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
@@ -22,7 +22,7 @@ import kotlinx.coroutines.withContext
 /**
  * Executor for specs that uses the spec seed instance for all tests.
  */
-internal class SingleInstanceSpecExecutor(private val context: EngineContext) : SpecExecutor {
+internal class SingleInstanceSpecExecutor(private val context: TestEngineContext) : SpecExecutor {
 
    private val pipeline = SpecInterceptorPipeline(context)
    private val results = TestResults()
@@ -32,22 +32,22 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
       return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
          val specContext = SpecContext.create()
-         pipeline.execute(seed, specContext) { spec ->
-            launchRootTests(spec, specContext)
+         pipeline.execute(seed, ref) { spec ->
+            launchRootTests(spec, specContext, ref)
             Result.success(results.toMap())
          }.map { results.toMap() } // we only use the test results if the pipeline completes successfully
       }
    }
 
-   private suspend fun launchRootTests(spec: Spec, specContext: SpecContext) {
+   private suspend fun launchRootTests(spec: Spec, specContext: SpecContext, ref: SpecRef) {
 
-      val rootTests = materializer.materialize(spec)
+      val rootTests = materializer.materialize(spec, ref)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(spec).concurrency
       val semaphore = Semaphore(concurrency)
 
-      // all root test coroutines are launched immediately,
+      // all root test coroutines are launched immediately;
       // the semaphore will control how many can actually run concurrently
       coroutineScope { // will wait for all tests to complete
          rootTests.forEach { root ->
@@ -62,7 +62,7 @@ internal class SingleInstanceSpecExecutor(private val context: EngineContext) : 
 
    /**
     * Executes the given [TestCase] using a [io.kotest.engine.test.TestCaseExecutor].
-    * Logs the results in the results tree.
+    * Logs the results in the result tree.
     *
     * @return the result of this single test.
     */

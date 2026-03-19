@@ -2,8 +2,10 @@ package com.sksamuel.kotest.assertions.print
 
 import io.kotest.assertions.EnvironmentConfigValue
 import io.kotest.assertions.print.ListPrint
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 class ListPrintTest : FunSpec({
    context("when a collection size limit has been set") {
@@ -66,6 +68,58 @@ class ListPrintTest : FunSpec({
                "g"
             ),
          ).value shouldBe """["a", "b", "c", "d", "e", "f", "g"]"""
+      }
+   }
+
+   context("cycle detection") {
+      test("should handle direct self-referential list without StackOverflowError") {
+         val cyclicList = mutableListOf<Any?>()
+         cyclicList.add(cyclicList)
+
+         shouldNotThrowAny {
+            val printed = ListPrint<Any?>().print(cyclicList).value
+            printed shouldContain "(this ArrayList)"
+         }
+      }
+
+      test("should handle indirect cyclic lists without StackOverflowError") {
+         val list1 = mutableListOf<Any?>()
+         val list2 = mutableListOf<Any?>()
+         list1.add(list2)
+         list2.add(list1)
+
+         shouldNotThrowAny {
+            val printed = ListPrint<Any?>().print(list1).value
+            printed shouldContain "(this ArrayList)"
+         }
+      }
+
+      test("should handle deeply nested cyclic structures") {
+         val list1 = mutableListOf<Any?>()
+         val list2 = mutableListOf<Any?>()
+         val list3 = mutableListOf<Any?>()
+         list1.add(list2)
+         list2.add(list3)
+         list3.add(list1) // Creates a cycle: list1 -> list2 -> list3 -> list1
+
+         shouldNotThrowAny {
+            val printed = ListPrint<Any?>().print(list1).value
+            printed shouldContain "(this ArrayList)"
+         }
+      }
+
+      test("should handle unequal indirect cyclic lists without StackOverflowError") {
+         val list1 = mutableListOf<Any?>()
+         val list2 = mutableListOf<Any?>()
+         list1.add(list2)
+         list1.add("extra")
+         list2.add(list1)
+
+         shouldNotThrowAny {
+            val printed = ListPrint<Any?>().print(list1).value
+            printed shouldContain "(this ArrayList)"
+            printed shouldContain "extra"
+         }
       }
    }
 })

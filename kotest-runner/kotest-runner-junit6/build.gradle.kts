@@ -1,10 +1,17 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+import utils.jdkRelease
+
 plugins {
    id("kotest-jvm-conventions")
    id("kotest-publishing-conventions")
 }
 
-kotlin {
+// note: JUnit6 has a minimum JDK version of 17
 
+kotlin {
+   jvm()
+   jvmToolchain { languageVersion = JavaLanguageVersion.of(17) }
    sourceSets {
 
       commonMain {
@@ -28,12 +35,23 @@ kotlin {
 
       jvmTest {
          dependencies {
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(libs.junit.platform6.testkit)
             implementation(libs.mockk)
-            implementation("dev.gradleplugins:gradle-api:8.4")
          }
       }
-
    }
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+   compilerOptions {
+      jdkRelease(providers.provider { JavaLanguageVersion.of(17) })
+      jvmTarget.set(JvmTarget.JVM_17)
+   }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+   options.release.set(17)
 }

@@ -1,8 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.common.ExperimentalKotest
-import io.kotest.matchers.assertionCounter
-import io.kotest.matchers.errorCollector
 
 /**
  * Runs multiple assertions and expects at least one to succeed, will suppress all exceptions otherwise.

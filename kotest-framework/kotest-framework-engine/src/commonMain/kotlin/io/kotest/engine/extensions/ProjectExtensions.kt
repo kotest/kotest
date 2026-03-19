@@ -9,6 +9,9 @@ internal class ProjectExtensions(private val projectConfigResolver: ProjectConfi
 
    private val logger = Logger(ProjectExtensions::class)
 
+   /**
+    * Executes all [BeforeProjectListener]s, returning any exceptions that occur.
+    */
    suspend fun beforeProject(): List<ExtensionException.BeforeProjectException> {
       val extensions = projectConfigResolver.extensions().filterIsInstance<BeforeProjectListener>()
       logger.log { Pair(null, "Invoking ${extensions.size} BeforeProjectListeners") }
@@ -22,6 +25,9 @@ internal class ProjectExtensions(private val projectConfigResolver: ProjectConfi
       }
    }
 
+   /**
+    * Executes all [AfterProjectListener]s, returning any exceptions that occur.
+    */
    suspend fun afterProject(): List<ExtensionException.AfterProjectException> {
       val extensions = projectConfigResolver.extensions().filterIsInstance<AfterProjectListener>()
       logger.log { Pair(null, "Invoking ${extensions.size} AfterProjectListeners") }

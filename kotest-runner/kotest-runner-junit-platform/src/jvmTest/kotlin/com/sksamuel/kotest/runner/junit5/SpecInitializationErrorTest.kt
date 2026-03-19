@@ -1,11 +1,10 @@
 package com.sksamuel.kotest.runner.junit5
 
-import io.kotest.common.Platform
+import io.kotest.common.KotestTesting
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.spec.execution.testSpecExecutor
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -15,6 +14,7 @@ import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.TestExecutionResult
 import org.junit.platform.engine.UniqueId
 
+@OptIn(KotestTesting::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecInitializationErrorTest : FunSpec({
 
@@ -22,16 +22,13 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(SpecWithInstanceFieldError::class))
+         .withSpecs(listOf(SpecRef.Reference(SpecWithInstanceFieldError::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
 
-      testSpecExecutor(
-         EngineContext(null, Platform.JVM).mergeListener(listener),
-         SpecRef.Reference(SpecWithInstanceFieldError::class)
-      )
+      testSpecExecutor(null, listener, SpecRef.Reference(SpecWithInstanceFieldError::class))
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("SpecWithInstanceFieldError"),
@@ -56,16 +53,13 @@ class SpecInitializationErrorTest : FunSpec({
 
       val root = EngineDescriptorBuilder
          .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
-         .withSpecs(listOf(SpecWithInitError::class))
+         .withSpecs(listOf(SpecRef.Reference(SpecWithInitError::class)))
          .build()
 
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
 
-      testSpecExecutor(
-         EngineContext(null, Platform.JVM).mergeListener(listener),
-         SpecRef.Reference(SpecWithInitError::class)
-      )
+      testSpecExecutor(null, listener, SpecRef.Reference(SpecWithInitError::class))
 
       track.events shouldBe listOf(
          EventTrackingEngineExecutionListener.Event.ExecutionStarted("SpecWithInitError"),

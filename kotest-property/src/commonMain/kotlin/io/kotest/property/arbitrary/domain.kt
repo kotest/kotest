@@ -13,9 +13,7 @@ fun Arb.Companion.domain(
    labelArb: Arb<String> = _labelArb
 ): Arb<String> = arbitrary { rs ->
    val amountOfLabels = rs.random.nextInt(1, 4)
-
-   val labels = labelArb.take(amountOfLabels).joinToString(separator = ".", postfix = ".")
-
+   val labels = labelArb.take(amountOfLabels, rs).joinToString(separator = ".", postfix = ".")
    labels + tlds.random(rs.random)
 }
 

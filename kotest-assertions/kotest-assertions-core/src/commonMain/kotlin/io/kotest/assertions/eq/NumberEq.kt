@@ -11,15 +11,13 @@ import io.kotest.assertions.print.print
  */
 object NumberEq : Eq<Number> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean): Throwable? =
-      equals(actual, expected, strictNumberEq, EqContext())
-
-   override fun equals(actual: Number, expected: Number, strictNumberEq: Boolean, context: EqContext): Throwable? {
-      return if (compare(actual, expected, strictNumberEq)) null
-      else AssertionErrorBuilder.create()
-         .withValues(Expected(expected.print()), Actual(actual.print()))
-         .build()
+   override fun equals(actual: Number, expected: Number, context: EqContext): EqResult {
+      return if (compare(actual, expected, context.strictNumberEq)) EqResult.Success
+      else EqResult.Failure {
+         AssertionErrorBuilder.create()
+            .withValues(Expected(expected.print()), Actual(actual.print()))
+            .build()
+      }
    }
 
    private fun compare(a: Number, b: Number, strictNumberEq: Boolean): Boolean {

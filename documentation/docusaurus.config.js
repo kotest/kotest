@@ -5,6 +5,9 @@ module.exports = {
    baseUrl: '/',
    onBrokenLinks: 'throw',
    onBrokenMarkdownLinks: 'throw',
+   markdown: {
+      format: 'detect',
+   },
    favicon: 'img/favicon.ico',
    organizationName: 'kotest', // Usually your GitHub org/user name.
    projectName: 'kotest.io', // Usually your repo name.
@@ -135,8 +138,8 @@ module.exports = {
       },
       prism: {
          additionalLanguages: ['kotlin', 'groovy'],
-         theme: require('prism-react-renderer/themes/github'),
-         darkTheme: require('prism-react-renderer/themes/dracula'),
+         theme: require('prism-react-renderer').themes.github,
+         darkTheme: require('prism-react-renderer').themes.dracula,
       },
    },
    presets: [
@@ -146,15 +149,10 @@ module.exports = {
             theme: {
                customCss: [require.resolve('./src/css/custom.css')],
             },
-            googleAnalytics: {
-               trackingID: 'UA-177425497-1',
-               // Optional fields.
-               anonymizeIP: true, // Should IPs be anonymized?
-            },
             docs: {
                versions: {
                   current: {
-                     label: `6.1 🚧`,
+                     label: `6.2 🚧`,
                   },
                },
                sidebarPath: require.resolve('./sidebars.js'),

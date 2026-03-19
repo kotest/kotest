@@ -51,7 +51,7 @@ class DoubleExactlyTest : FreeSpec() {
             }
 
             "should not be exactly NaN when NaN equality is disabled" {
-               withSystemProperty(AssertionsConfigSystemProperties.DISABLE_NA_NEQUALITY, "true") {
+               withSystemProperty(AssertionsConfigSystemProperties.DISABLE_NAN_NEQUALITY, "true") {
                   Double.NaN shouldNotMatchExactly Double.NaN
                }
             }
@@ -63,8 +63,8 @@ class DoubleExactlyTest : FreeSpec() {
             }
 
             "should not be exactly infinity" {
-               Double.Companion.NaN shouldNotMatchExactly Double.Companion.POSITIVE_INFINITY
-               Double.Companion.NaN shouldNotMatchExactly Double.Companion.NEGATIVE_INFINITY
+               Double.NaN shouldNotMatchExactly Double.POSITIVE_INFINITY
+               Double.NaN shouldNotMatchExactly Double.NEGATIVE_INFINITY
             }
          }
 
@@ -72,7 +72,7 @@ class DoubleExactlyTest : FreeSpec() {
 
             "Should be exactly" - {
                "Itself" {
-                  Double.Companion.POSITIVE_INFINITY shouldExactlyMatch Double.Companion.POSITIVE_INFINITY
+                  Double.POSITIVE_INFINITY shouldExactlyMatch Double.POSITIVE_INFINITY
                }
             }
 
@@ -85,8 +85,8 @@ class DoubleExactlyTest : FreeSpec() {
                }
 
                "Any other non-numeric double" {
-                  Double.Companion.POSITIVE_INFINITY shouldNotMatchExactly Double.Companion.NEGATIVE_INFINITY
-                  Double.Companion.POSITIVE_INFINITY shouldNotMatchExactly Double.Companion.NaN
+                  Double.POSITIVE_INFINITY shouldNotMatchExactly Double.NEGATIVE_INFINITY
+                  Double.POSITIVE_INFINITY shouldNotMatchExactly Double.NaN
                }
             }
 
@@ -96,7 +96,7 @@ class DoubleExactlyTest : FreeSpec() {
 
             "Should be exactly" - {
                "Itself" {
-                  Double.Companion.NEGATIVE_INFINITY shouldExactlyMatch Double.Companion.NEGATIVE_INFINITY
+                  Double.NEGATIVE_INFINITY shouldExactlyMatch Double.NEGATIVE_INFINITY
                }
             }
 
@@ -109,8 +109,8 @@ class DoubleExactlyTest : FreeSpec() {
                }
 
                "Any other non-numeric double" {
-                  Double.Companion.NEGATIVE_INFINITY shouldNotMatchExactly Double.Companion.POSITIVE_INFINITY
-                  Double.Companion.NEGATIVE_INFINITY shouldNotMatchExactly Double.Companion.NaN
+                  Double.NEGATIVE_INFINITY shouldNotMatchExactly Double.POSITIVE_INFINITY
+                  Double.NEGATIVE_INFINITY shouldNotMatchExactly Double.NaN
                }
             }
          }

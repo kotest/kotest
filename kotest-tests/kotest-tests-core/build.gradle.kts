@@ -3,14 +3,13 @@ plugins {
 }
 
 kotlin {
-
    sourceSets {
-      val jvmTest by getting {
+      jvmTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             // We want to test that JAXBElement is compared properly
-            implementation("javax.xml.bind:jaxb-api:2.3.1")
+            implementation(libs.jaxb.api)
          }
       }
    }

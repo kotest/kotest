@@ -8,17 +8,18 @@ sidebar_label: Advanced Extensions
 This table lists more advanced extensions that can be used to hook into the Engine itself to:
 
   * intercept tests, skipping them, and modify test results
-  * intercept specs specs skipping them if required
-  * post process spec instances after instantiation
+  * intercept specs skipping them if required
+  * post-process spec instances after instantiation
   * modify the coroutine context used by specs and tests
   * apply custom instantiation logic
   * filter specs and tests
   * adjust test output
 
+and so on
 
 | Extension                     | Description                                                                                                                                |
 |-------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| ConstructorExtension          | Provides custom logic to instantiate spec classes. An example is the Spring extension constructor extension which autowire's spring beans. |
+| ConstructorExtension          | Provides custom logic to instantiate spec classes. An example is the Spring extension constructor extension which autowire's Spring beans. |
 | TestCaseExtension             | Intercepts calls to a test, can skip a test, override the test result, and modify the coroutine context.                                   |
 | SpecExtension                 | Intercepts calls to a spec, can skip a spec, and modify the coroutine context.                                                             |
 | SpecRefExtension              | Intercepts calls to a spec before it is instantiated. Can skip instantiation.                                                              |
@@ -31,7 +32,5 @@ This table lists more advanced extensions that can be used to hook into the Engi
 | InstantiationListener         | Is notified when a spec is successfully instantiated.                                                                                      |
 | PostInstantiationExtension    | Intercepts specs when they are instantiated, can replace the spec instance and modify coroutine context.                                   |
 | IgnoredSpecListener           | Is notified when a spec is skipped.                                                                                                        |
-| SpecFilter                    | Can provide custom logic to skip a spec.                                                                                                   |
-| TestFilter                    | Can provide custom logic to skip a test.                                                                                                   |
 | IgnoredTestListener           | Is notified when a test is skipped.                                                                                                        |
 

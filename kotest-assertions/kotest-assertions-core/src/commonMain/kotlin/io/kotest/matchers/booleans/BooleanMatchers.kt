@@ -105,15 +105,69 @@ fun Boolean?.shouldNotBeFalse(): Boolean? {
 }
 
 /**
- * Match that verifies a given [Boolean] is `true`.
+ * Matcher that verifies a given [Boolean]? is true.
+ *
+ * This is the matcher form used with `should`/`shouldNot`. It is functionally
+ * equivalent to calling [Boolean?.shouldBeTrue] and the opposite of
+ * [Boolean?.shouldNotBeTrue].
+ *
+ * ```
+ * true.should(beTrue())          // passes
+ * false.shouldNot(beTrue())      // passes
+ * false.should(beTrue())         // fails
+ * null.shouldNot(beTrue())       // passes (null is not true)
+ * null.should(beTrue())          // fails
+ * ```
+ *
+ * @see beFalse
+ * @see beBoolean
+ * @see Boolean?.shouldBeTrue
+ * @see Boolean?.shouldNotBeTrue
  */
 fun beTrue() = beBoolean(true)
 
 /**
- * Match that verifies a given [Boolean] is `false`.
+ * Matcher that verifies a given [Boolean] is false.
+ *
+ * This is the matcher form used with `should`/`shouldNot`. It is functionally
+ * equivalent to calling [Boolean?.shouldBeFalse] and the opposite of
+ * [Boolean?.shouldNotBeFalse].
+ *
+ * ```
+ * false.should(beFalse())        // passes
+ * true.shouldNot(beFalse())      // passes
+ * true.should(beFalse())         // fails
+ * null.shouldNot(beFalse())      // passes (null is not false)
+ * null.should(beFalse())         // fails
+ * ```
+ *
+ * @see beTrue
+ * @see beBoolean
+ * @see Boolean?.shouldBeFalse
+ * @see Boolean?.shouldNotBeFalse
  */
 fun beFalse() = beBoolean(false)
 
+/**
+ * Creates a matcher that verifies a [Boolean] is equal to [expected].
+ *
+ * Use this when you need to pass the expected boolean value dynamically; for
+ * convenience, prefer [beTrue] and [beFalse] for the common cases.
+ *
+ * ```
+ * val expected = computeFlag()
+ * flag.should(beBoolean(expected))
+ *
+ * beBoolean(true)  // same as beTrue()
+ * beBoolean(false) // same as beFalse()
+ * ```
+ *
+ * @param expected the boolean value the actual should equal.
+ * @return a [Matcher] that asserts the subject equals [expected].
+ *
+ * @see beTrue
+ * @see beFalse
+ */
 fun beBoolean(expected: Boolean) = object : Matcher<Boolean?> {
    override fun test(value: Boolean?) = MatcherResult(
       value == expected,

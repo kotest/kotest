@@ -8,7 +8,7 @@ import io.kotest.extensions.system.OverrideMode.SetOrError
 import java.lang.reflect.Field
 
 /**
- * Modifies System Environment with chosen key and value
+ * Modifies System Environment with a chosen key and value
  *
  * This is a helper function for code that uses Environment Variables. It changes the specific [key] from [System.getenv]
  * with the specified [value], only during the execution of [block].
@@ -27,7 +27,7 @@ inline fun <T> withEnvironment(key: String, value: String?, mode: OverrideMode =
 }
 
 /**
- * Modifies System Environment with chosen key and value
+ * Modifies System Environment with a chosen key and value
  *
  * This is a helper function for code that uses Environment Variables. It changes the specific key from [System.getenv]
  * with the specified value, only during the execution of [block].
@@ -104,8 +104,8 @@ private fun getCaseInsensitiveEnvironment(): MutableMap<String, String>? {
 
    return try {
       processEnvironmentClass.getDeclaredField("theCaseInsensitiveEnvironment").asAccessible().get(null) as MutableMap<String, String>?
-   } catch (e: NoSuchFieldException) {
-      // Only available in Windows, ok to return null if it's not found
+   } catch (_: NoSuchFieldException) {
+      // Only available on Windows, OK to return null if it's not found
       null
    }
 }
@@ -153,7 +153,7 @@ class SystemEnvironmentTestListener(environment: Map<String, String?>, mode: Ove
     * This is a Listener for code that uses Environment Variables. It changes the specific keys from [System.getenv]
     * with the specified values, only during the execution of a test.
     *
-    * To do this, this listener uses a trick that makes the System Environment editable, and changes the keys. Any previous
+    * To do this, this listener uses a trick that makes the System Environment editable and changes the keys. Any previous
     * environment (anything not overridden) will also be in the environment. If the chosen key is in the environment,
     * it will be changed according to [mode]. If the chosen key is not in the environment, it will be included.
     *
@@ -170,7 +170,7 @@ class SystemEnvironmentTestListener(environment: Map<String, String?>, mode: Ove
     * This is a Listener for code that uses Environment Variables. It changes the specific keys from [System.getenv]
     * with the specified values, only during the execution of a test.
     *
-    * To do this, this listener uses a trick that makes the System Environment editable, and changes the keys. Any previous
+    * To do this, this listener uses a trick that makes the System Environment editable and changes the keys. Any previous
     * environment (anything not overridden) will also be in the environment. If the chosen key is in the environment,
     * it will be changed according to [mode]. If the chosen key is not in the environment, it will be included.
     *
@@ -196,7 +196,7 @@ class SystemEnvironmentTestListener(environment: Map<String, String?>, mode: Ove
  * This is a Listener for code that uses Environment Variables. It changes the specific keys from [System.getenv]
  * with the specified values, during the execution of the project.
  *
- * To do this, this listener uses a trick that makes the System Environment editable, and changes the keys. Any previous
+ * To do this, this listener uses a trick that makes the System Environment editable and changes the keys. Any previous
  * environment (anything not overridden) will also be in the environment. If the chosen key is in the environment,
  * it will be changed according to [mode]. If the chosen key is not in the environment, it will be included.
  *
@@ -215,7 +215,7 @@ class SystemEnvironmentProjectListener(environment: Map<String, String?>, mode: 
     * This is a Listener for code that uses Environment Variables. It changes the specific keys from [System.getenv]
     * with the specified values, during the execution of the project.
     *
-    * To do this, this listener uses a trick that makes the System Environment editable, and changes the keys. Any previous
+    * To do this, this listener uses a trick that makes the System Environment editable and changes the keys. Any previous
     * environment (anything not overridden) will also be in the environment. If the chosen key is in the environment,
     * it will be changed according to [mode]. If the chosen key is not in the environment, it will be included.
     *
@@ -232,7 +232,7 @@ class SystemEnvironmentProjectListener(environment: Map<String, String?>, mode: 
     * This is a Listener for code that uses Environment Variables. It changes the specific keys from [System.getenv]
     * with the specified values, during the execution of the project.
     *
-    * To do this, this listener uses a trick that makes the System Environment editable, and changes the keys. Any previous
+    * To do this, this listener uses a trick that makes the System Environment editable and changes the keys. Any previous
     * environment (anything not overridden) will also be in the environment. If the chosen key is in the environment,
     * it will be changed according to [mode]. If the chosen key is not in the environment, it will be included.
     *

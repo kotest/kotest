@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.property.seed
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.descriptors.DescriptorPathContextElement
 import io.kotest.property.PropTestConfig

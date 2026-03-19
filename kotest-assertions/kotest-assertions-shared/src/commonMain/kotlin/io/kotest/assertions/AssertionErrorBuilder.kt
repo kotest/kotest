@@ -1,7 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
-import io.kotest.matchers.errorCollector
 
 /**
  * Use this object to create exceptions on a target platform.
@@ -92,12 +91,12 @@ expect fun createAssertionError(
 
 /**
  * Represents the expected value in an assertion error.
- * This is used to to help avoid mixing expected and actual values.
+ * This is used to help avoid mixing expected and actual values.
  */
 data class Expected(val value: Printed)
 
 /**
  * Represents the actual value in an assertion error.
- * This is used to to help avoid mixing expected and actual values.
+ * This is used to help avoid mixing expected and actual values.
  */
 data class Actual(val value: Printed)

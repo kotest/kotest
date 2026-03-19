@@ -1,0 +1,52 @@
+package io.kotest.assertions.eq
+
+import io.kotest.assertions.AssertionsConfig
+import kotlin.reflect.KClass
+
+/**
+ * The [DefaultEqResolver] is the standard implementation of [EqResolver].
+ * In the future we may support users registering their own custom implementation.
+ *
+ * This resolver allows registration of custom [Eq] implementations for specific types, which
+ * this resolver will then delegate to if both the LHS and RHS have the same type, and there is a custom
+ * [Eq] instance available for that type.
+ */
+@Suppress("DEPRECATION")
+object DefaultEqResolver {
+
+   private val customEqInstances = mutableMapOf<KClass<*>, Eq<*>>()
+
+   fun <T : Any> register(type: KClass<T>, eq: Eq<T>) {
+      customEqInstances[type] = eq
+   }
+
+   fun <T : Any> unregister(type: KClass<T>) {
+      customEqInstances.remove(type)
+   }
+
+   /**
+    * Returns the [Eq] to use for comparison for the given values.
+    * If both values are nullable, then [NullEq] will be returned.
+    */
+   fun resolve(actual: Any?, expected: Any?): Eq<out Any?> {
+      // if we have null and non-null, usually that's a failure, but people can override equals to allow it
+      return when {
+         actual == null || expected == null -> NullEq
+         actual::class == expected::class && customEqInstances.contains(actual::class) -> customEqInstances[actual::class]!!
+         actual is Map<*, *> && expected is Map<*, *> -> MapEq
+         actual is Map.Entry<*, *> && expected is Map.Entry<*, *> -> MapEntryEq
+         actual is Regex && expected is Regex -> RegexEq
+         actual is String && expected is String -> StringEq
+         actual is Number && expected is Number -> NumberEq
+         actual is Collection<*> && expected is Collection<*> -> CollectionEq
+         actual is Array<*> && expected is Array<*> -> ArrayEq
+         actual is Sequence<*> || expected is Sequence<*> -> SequenceEq
+         actual is Throwable && expected is Throwable -> ThrowableEq
+         shouldShowDataClassDiff(actual, expected) -> DataClassEq
+         else -> DefaultEq
+      }
+   }
+
+   private fun <T> shouldShowDataClassDiff(actual: T, expected: T) =
+      AssertionsConfig.showDataClassDiff && isDataClassInstance(actual) && isDataClassInstance(expected)
+}

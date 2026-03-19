@@ -1,6 +1,9 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.property
 
 import io.kotest.common.DelicateKotest
+import io.kotest.common.ExperimentalKotest
 import io.kotest.property.statistics.Label
 import kotlin.math.roundToInt
 import io.kotest.property.arbitrary.drop as unboundDrop

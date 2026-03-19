@@ -8,7 +8,6 @@ import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.AnnotationSpec
 import io.kotest.core.test.TestCase
-import io.kotest.core.test.TestCaseOrder
 import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
@@ -73,13 +72,11 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
       counterAfterAll.incrementAndGet()
    }
 
-
    // Testing depends on method discovery happening in this order, verifying the assertions in the order tests are declared
    @Test
    fun test1() {
       counterBeforeAll.get() shouldBe 2 // Both BeforeSpec should be executed once
       counterBeforeEach.get() shouldBe 3 // All 3 BeforeTest should be executed once
-
 
       // No tests finished executing yet, both should be 0
       counterAfterAll.get() shouldBe 0
@@ -105,19 +102,16 @@ class AnnotationSpecBeforeAfterTest : AnnotationSpec() {
    }
 
    override fun isolationMode() = IsolationMode.SingleInstance
-
-   override fun testCaseOrder() = TestCaseOrder.Sequential
-
 }
 
 object AssertionListener : TestListener {
    override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
       if (kclass == AnnotationSpecBeforeAfterTest::class) {
 
-         AnnotationSpecBeforeAfterTest.counterBeforeEach.get() shouldBe 6
+         AnnotationSpecBeforeAfterTest.counterBeforeEach.get() shouldBe 9
          AnnotationSpecBeforeAfterTest.counterBeforeAll.get() shouldBe 2
 
-         AnnotationSpecBeforeAfterTest.counterAfterEach.get() shouldBe 6
+         AnnotationSpecBeforeAfterTest.counterAfterEach.get() shouldBe 9
          AnnotationSpecBeforeAfterTest.counterAfterAll.get() shouldBe 2
       }
    }

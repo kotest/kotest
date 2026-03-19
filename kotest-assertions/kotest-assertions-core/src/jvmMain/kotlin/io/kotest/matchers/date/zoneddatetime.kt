@@ -47,7 +47,7 @@ fun ZonedDateTime.shouldBeToday() = this should beInTodayZDT()
  * ```
  */
 fun ZonedDateTime.atSameZone() = object : Matcher<ZonedDateTime> {
-  override fun test(value: ZonedDateTime): MatcherResult = be(withZoneSameInstant(value.zone)).test(value)
+   override fun test(value: ZonedDateTime): MatcherResult = be(withZoneSameInstant(value.zone)).test(value)
 }
 
 

@@ -11,19 +11,21 @@ import io.kotest.core.extensions.install
 import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
+import io.kotest.datatest.withTests
 import io.kotest.engine.TestEngineLauncher
-import io.kotest.engine.extensions.ExtensionException.BeforeSpecException
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.types.shouldBeInstanceOf
 import java.util.concurrent.atomic.AtomicInteger
 
+@Suppress("DEPRECATION")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 @Isolate
 class BeforeSpecListenerTest : FunSpec() {
@@ -36,14 +38,14 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener registered in project config should be triggered for a spec with tests") {
 
          val c = object : AbstractProjectConfig() {
-            override val extensions = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(CountingBeforeSpecListener)
          }
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecTests::class)))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -55,8 +57,8 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecOverrideMethodTests::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((BeforeSpecOverrideMethodTests::class)))
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -68,8 +70,8 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineTest::class)))
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -81,12 +83,12 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineOrderFunSpecTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineOrderFunSpecTest::class)))
+            .execute()
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineOrderDescribeSpecTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineOrderDescribeSpecTest::class)))
+            .execute()
 
          a shouldBe "spectest1test2spectestinner"
       }
@@ -95,8 +97,8 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecInlineWithTestInterceptor::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((BeforeSpecInlineWithTestInterceptor::class)))
+            .execute()
 
          b shouldBe "beforeSpecintercepttest"
       }
@@ -105,8 +107,8 @@ class BeforeSpecListenerTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(BeforeSpecByReturningExtensionsTest::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((BeforeSpecByReturningExtensionsTest::class)))
+            .execute()
 
          listener.specs.size shouldBe 1
          listener.tests.size shouldBe 2
@@ -117,13 +119,13 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener should NOT be triggered for a spec without tests") {
 
          val c = object : AbstractProjectConfig() {
-            override val extensions = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(CountingBeforeSpecListener)
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(BeforeSpecNoTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecNoTests::class)))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -131,13 +133,13 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener should NOT be triggered for a spec without tests and handle errors in the listener") {
 
          val c = object : AbstractProjectConfig() {
-            override val extensions = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(CountingBeforeSpecListener)
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(BeforeSpecErrorNoTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecErrorNoTests::class)))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
@@ -145,54 +147,84 @@ class BeforeSpecListenerTest : FunSpec() {
       test("BeforeSpecListener should NOT be triggered for a spec with only ignored tests") {
 
          val c = object : AbstractProjectConfig() {
-            override val extensions = listOf(MyBeforeSpecListener)
+            override val extensions = listOf(CountingBeforeSpecListener)
          }
 
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(BeforeSpecDisabledOnlyTests::class)
+            .withSpecRefs(SpecRef.Reference((BeforeSpecDisabledOnlyTests::class)))
             .withProjectConfig(c)
-            .launch()
+            .execute()
 
          counter.get() shouldBe 0
       }
 
-      context("BeforeSpecListener error with SingleInstance should fail the spec; mark first test as error and the rest as ignored") {
-         val listener = CollectingTestEngineListener()
-         val config = object : AbstractProjectConfig() {
-            override val isolationMode = IsolationMode.SingleInstance
+      context("beforeSpec function overrides with error should mark the spec as failed") {
+         withTests(
+            IsolationMode.SingleInstance,
+            IsolationMode.InstancePerRoot,
+            IsolationMode.InstancePerTest,
+            IsolationMode.InstancePerLeaf,
+         ) { isolationMode ->
+            val listener = CollectingTestEngineListener()
+            val config = object : AbstractProjectConfig() {
+               override val isolationMode = isolationMode
+            }
+            TestEngineLauncher().withListener(listener)
+               .withProjectConfig(config)
+               .withSpecRefs(SpecRef.Reference((BeforeSpecFunctionOverrideWithError::class)))
+               .execute()
+            listener.specs.size shouldBe 1
+            listener.specs.values.first().isError.shouldBeTrue()
+            listener.specs.values.first().errorOrNull!!.message shouldBe "java.lang.IllegalStateException: boom"
          }
-         TestEngineLauncher().withListener(listener)
-            .withProjectConfig(config)
-            .withClasses(BeforeSpecFunctionOverrideWithError::class)
-            .launch()
-         listener.specs.size shouldBe 1
-         listener.tests.size shouldBe 3
-         listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
-         listener.result("foo2")!!.isIgnored shouldBe true
-         listener.result("foo3")!!.isIgnored shouldBe true
       }
 
-      context("BeforeSpecListener error with InstancePerRoot should fail the spec; mark all instances as failed") {
-         val listener = CollectingTestEngineListener()
-         val config = object : AbstractProjectConfig() {
-            override val isolationMode = IsolationMode.InstancePerRoot
+      context("beforeSpec inline with error should mark the spec as failed") {
+         withTests(
+            IsolationMode.SingleInstance,
+            IsolationMode.InstancePerRoot,
+            IsolationMode.InstancePerTest,
+            IsolationMode.InstancePerLeaf,
+         ) { isolationMode ->
+            val listener = CollectingTestEngineListener()
+            val config = object : AbstractProjectConfig() {
+               override val isolationMode = isolationMode
+            }
+            TestEngineLauncher().withListener(listener)
+               .withProjectConfig(config)
+               .withSpecRefs(SpecRef.Reference((BeforeSpecInlineWithError::class)))
+               .execute()
+            listener.specs.size shouldBe 1
+            listener.specs.values.first().isError.shouldBeTrue()
+            listener.specs.values.first().errorOrNull!!.message shouldBe "java.lang.IllegalStateException: SPLOOSH!"
          }
-         TestEngineLauncher().withListener(listener)
-            .withProjectConfig(config)
-            .withClasses(BeforeSpecFunctionOverrideWithError::class)
-            .launch()
-         listener.specs.size shouldBe 1
-         listener.tests.size shouldBe 3
-         listener.result("foo1")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
-         listener.result("foo2")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
-         listener.result("foo3")!!.errorOrNull.shouldBeInstanceOf<BeforeSpecException>()
+      }
+
+      context("beforeSpec should be invoked once per spec instance created by the isolation mode") {
+         withTests(
+            Pair(IsolationMode.SingleInstance, 1),
+            Pair(IsolationMode.InstancePerRoot, 2),
+            Pair(IsolationMode.InstancePerTest, 6),
+            Pair(IsolationMode.InstancePerLeaf, 4),
+         ) { (isolationMode, instances) ->
+            val listener = CollectingTestEngineListener()
+            val config = object : AbstractProjectConfig() {
+               override val isolationMode = isolationMode
+               override val extensions = listOf(CountingBeforeSpecListener)
+            }
+            TestEngineLauncher().withListener(listener)
+               .withProjectConfig(config)
+               .withSpecRefs(SpecRef.Reference((NestedSpec::class)))
+               .execute()
+            counter.get() shouldBe instances
+         }
       }
    }
 }
 
 private val counter = AtomicInteger(0)
 
-private object MyBeforeSpecListener : BeforeSpecListener {
+private object CountingBeforeSpecListener : BeforeSpecListener {
    override suspend fun beforeSpec(spec: Spec) {
       counter.incrementAndGet()
    }
@@ -223,7 +255,6 @@ private class BeforeSpecInlineTest : FunSpec() {
       test("foo2") {}
    }
 }
-
 
 private var a = ""
 
@@ -264,7 +295,7 @@ private class BeforeSpecInlineOrderDescribeSpecTest : DescribeSpec() {
 
 private class BeforeSpecByReturningExtensionsTest : FunSpec() {
 
-   override val extensions: List<Extension> = listOf(MyBeforeSpecListener)
+   override val extensions: List<Extension> = listOf(CountingBeforeSpecListener)
 
    init {
       test("foo1") {}
@@ -306,6 +337,15 @@ private class BeforeSpecErrorInstancePerRoot : DescribeSpec({
    }
 })
 
+private class BeforeSpecInlineWithError : FunSpec() {
+   init {
+      beforeSpec { error("SPLOOSH!") }
+      test("foo1") {}
+      test("foo2") {}
+      test("foo3") {}
+   }
+}
+
 private class BeforeSpecFunctionOverrideWithError : FunSpec() {
 
    override suspend fun beforeSpec(spec: Spec) {
@@ -316,5 +356,18 @@ private class BeforeSpecFunctionOverrideWithError : FunSpec() {
       test("foo1") {}
       test("foo2") {}
       test("foo3") {}
+   }
+}
+
+private class NestedSpec : FunSpec() {
+   init {
+      context("a") {
+         test("a1") {}
+         test("a2") {}
+      }
+      context("b") {
+         test("b1") {}
+         test("b2") {}
+      }
    }
 }

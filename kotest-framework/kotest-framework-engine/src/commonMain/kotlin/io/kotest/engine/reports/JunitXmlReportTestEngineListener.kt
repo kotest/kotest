@@ -3,7 +3,7 @@ package io.kotest.engine.reports
 import io.kotest.common.reflection.bestName
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestResult
 import kotlinx.io.buffered
@@ -30,7 +30,7 @@ class JunitXmlReportTestEngineListener(
 
    override suspend fun engineStarted() {}
 
-   override suspend fun engineInitialized(context: EngineContext) {}
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {}
 
    override suspend fun engineFinished(t: List<Throwable>) {}
 

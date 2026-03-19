@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="LanguageInjectionConfiguration">
+   <injection language="JSONPath" injector-id="kotlin">
+      <display-name>JsonPath (io.kotest.assertions.json)</display-name>
+         <place><![CDATA[kotlinParameter().ofFunction(0, kotlinFunction().withName("shouldContainJsonKey").definedInPackage("io.kotest.assertions.json"))]]></place>
+         <place><![CDATA[kotlinParameter().ofFunction(0, kotlinFunction().withName("shouldNotContainJsonKey").definedInPackage("io.kotest.assertions.json"))]]></place>
+         <place><![CDATA[kotlinParameter().ofFunction(0, kotlinFunction().withName("containJsonKey").definedInPackage("io.kotest.assertions.json"))]]></place>
+
+         <place><![CDATA[kotlinParameter().ofFunction(0, kotlinFunction().withName("shouldContainJsonKeyValue").definedInPackage("io.kotest.assertions.json"))]]></place>
+         <place><![CDATA[kotlinParameter().ofFunction(0, kotlinFunction().withName("shouldNotContainJsonKeyValue").definedInPackage("io.kotest.assertions.json"))]]></place>
+         <place><![CDATA[kotlinParameter().ofFunction(0, kotlinFunction().withName("containJsonKeyValue").definedInPackage("io.kotest.assertions.json"))]]></place>
+   </injection>
+</component>

@@ -118,6 +118,10 @@ class BoundsTest : WordSpec() {
             shouldThrowAny { 1..3 shouldHaveUpperBound 2 }
                .shouldHaveMessage(msg("Range"))
          }
+
+         "pass for empty collection" {
+            emptyList<Int>().shouldHaveUpperBound(0)
+         }
       }
 
       "haveLowerBound" should {
@@ -229,6 +233,10 @@ class BoundsTest : WordSpec() {
          "fail for Range" {
             shouldThrowAny { 1..3 shouldHaveLowerBound 2 }
                .shouldHaveMessage(msg("Range"))
+         }
+
+         "pass for empty collection" {
+            emptyList<Int>().shouldHaveUpperBound(0)
          }
       }
    }

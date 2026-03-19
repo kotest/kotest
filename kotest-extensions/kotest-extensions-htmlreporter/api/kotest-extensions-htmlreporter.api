@@ -1,7 +1,7 @@
 public final class io/kotest/extensions/htmlreporter/HtmlReporter : io/kotest/core/listeners/ProjectListener {
-	public static final field BuildDirKey Ljava/lang/String;
+	public static final field BUILD_DIR_KEY Ljava/lang/String;
 	public static final field Companion Lio/kotest/extensions/htmlreporter/HtmlReporter$Companion;
-	public static final field DefaultResultsLocation Ljava/lang/String;
+	public static final field DEFAULT_RESULTS_LOCATION Ljava/lang/String;
 	public fun <init> ()V
 	public fun <init> (Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -15,14 +15,11 @@ public final class io/kotest/extensions/htmlreporter/HtmlReporter$Companion {
 public final class io/kotest/extensions/htmlreporter/HtmlWriter {
 	public static final field Companion Lio/kotest/extensions/htmlreporter/HtmlWriter$Companion;
 	public static final field classTitle Ljava/lang/String;
-	public static final field defaultStylesPath Ljava/lang/String;
 	public static final field homeAnchorHref Ljava/lang/String;
 	public static final field summaryTitle Ljava/lang/String;
 	public fun <init> (Ljava/nio/file/Path;)V
 	public final fun buildClassDocument (Lio/kotest/extensions/htmlreporter/TestClassInfo;Ljava/lang/String;Ljava/lang/String;)Lorg/jdom2/Document;
-	public static synthetic fun buildClassDocument$default (Lio/kotest/extensions/htmlreporter/HtmlWriter;Lio/kotest/extensions/htmlreporter/TestClassInfo;Ljava/lang/String;Ljava/lang/String;ILjava/lang/Object;)Lorg/jdom2/Document;
 	public final fun buildSummaryDocument (Ljava/util/List;Ljava/lang/String;)Lorg/jdom2/Document;
-	public static synthetic fun buildSummaryDocument$default (Lio/kotest/extensions/htmlreporter/HtmlWriter;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lorg/jdom2/Document;
 }
 
 public final class io/kotest/extensions/htmlreporter/HtmlWriter$Companion {

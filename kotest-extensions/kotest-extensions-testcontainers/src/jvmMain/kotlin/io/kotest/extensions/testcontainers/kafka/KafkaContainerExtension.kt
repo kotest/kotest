@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers.kafka
 
 import io.kotest.extensions.testcontainers.AbstractContainerExtension

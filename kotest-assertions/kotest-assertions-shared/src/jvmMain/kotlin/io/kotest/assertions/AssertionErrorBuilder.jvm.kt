@@ -1,7 +1,6 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
-import io.kotest.matchers.clueContextAsString
 import org.opentest4j.AssertionFailedError
 
 /**

@@ -1,13 +1,13 @@
 package io.kotest.matchers.equality
 
 import io.kotest.assertions.eq.EqCompare
+import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.matchers.types.shouldBeInstanceOf
-import io.kotest.matchers.types.shouldBeSameInstanceAs
 import kotlin.reflect.KProperty
 import kotlin.reflect.KProperty1
 import kotlin.reflect.KVisibility
@@ -452,8 +452,11 @@ private fun <T, V> checkEqualityOfFields(fields: List<KProperty<*>>, value: T, o
    requireNotNull(other)
    val equalityChecker: (actual: Any?, expected: Any?, propertyName: String) -> String? =
       { actual, expected, propertyName ->
-         val isEqual = EqCompare.compare(actual, expected, false) == null
-         if (isEqual) null else "$propertyName: ${actual.print().value} != ${expected.print().value}"
+         val result = EqCompare.compare(actual, expected, EqContext(false))
+         when (result) {
+            is EqResult.Failure -> "$propertyName: ${actual.print().value} != ${expected.print().value}"
+            EqResult.Success -> null
+         }
       }
    return when (value::class == other::class) {
       true -> fields.mapNotNull {
@@ -520,11 +523,12 @@ internal fun <T> checkEqualityOfFieldsRecursively(
          }
 
          else -> {
-            val throwable = EqCompare.compare(actual, expected, false)
-            if (throwable != null) {
-               "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
-            } else {
-               null
+            when (val result = EqCompare.compare(actual, expected, EqContext(false))) {
+               is EqResult.Failure -> {
+                  val throwable = result.error()
+                  "$heading\n${"\t".repeat(level + 1)}${throwable.message}"
+               }
+               EqResult.Success -> null
             }
          }
       }

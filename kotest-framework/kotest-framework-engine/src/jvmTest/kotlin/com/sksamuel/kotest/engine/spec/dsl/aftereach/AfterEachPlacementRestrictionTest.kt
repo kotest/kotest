@@ -4,6 +4,7 @@ import io.kotest.core.annotation.Description
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.InvalidDslException
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.ExpectSpec
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -22,8 +23,8 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
       test("FunSpec") {
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(FunSpecWithAfterEach::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((FunSpecWithAfterEach::class)))
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -32,8 +33,8 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(ShouldSpecWithAfterEach::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((ShouldSpecWithAfterEach::class)))
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -42,8 +43,8 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(ExpectSpecWithAfterEach::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((ExpectSpecWithAfterEach::class)))
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -52,8 +53,8 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(WordSpecWithAfterEach::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((WordSpecWithAfterEach::class)))
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }
@@ -62,8 +63,8 @@ class AfterEachPlacementRestrictionTest : FunSpec() {
 
          val listener = CollectingTestEngineListener()
          TestEngineLauncher().withListener(listener)
-            .withClasses(FreeSpecWithAfterEach::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference((FreeSpecWithAfterEach::class)))
+            .execute()
          listener.result("foo1")!!.isSuccess.shouldBeTrue()
          listener.result("foo2")!!.errorOrNull!!.shouldBeInstanceOf<InvalidDslException>()
       }

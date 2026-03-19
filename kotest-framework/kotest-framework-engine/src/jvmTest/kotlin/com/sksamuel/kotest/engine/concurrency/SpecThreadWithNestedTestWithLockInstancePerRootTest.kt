@@ -29,8 +29,6 @@ class SpecThreadWithNestedTestWithLockInstancePerRootTest : FunSpec({
       locks.add(outerContextLock)
 
       test("test should lock object") {
-         println(Thread.currentThread().name)
-
          locks.add(innerLock)
          locks.add(outerContextLock)
 
@@ -45,8 +43,6 @@ class SpecThreadWithNestedTestWithLockInstancePerRootTest : FunSpec({
       }
 
       test("lock should be unlocked") {
-         println(Thread.currentThread().name)
-
          locks.add(innerLock)
          locks.add(outerContextLock)
          Thread.sleep(300)
@@ -60,7 +56,6 @@ class SpecThreadWithNestedTestWithLockInstancePerRootTest : FunSpec({
       locks.add(innerLock)
       locks.add(outerContextLock)
       test("test should lock object") {
-         println(Thread.currentThread().name)
 
          locks.add(innerLock)
          locks.add(outerContextLock)
@@ -76,8 +71,6 @@ class SpecThreadWithNestedTestWithLockInstancePerRootTest : FunSpec({
       }
 
       test("lock should be unlocked") {
-         println(Thread.currentThread().name)
-
          locks.add(innerLock)
          locks.add(outerContextLock)
          Thread.sleep(300)

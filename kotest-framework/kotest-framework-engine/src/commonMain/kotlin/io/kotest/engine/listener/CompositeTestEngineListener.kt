@@ -1,8 +1,8 @@
 package io.kotest.engine.listener
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.interceptors.EngineContext
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -10,6 +10,7 @@ import kotlin.reflect.KClass
  * A [TestEngineListener] that wraps one or more other test engine listeners,
  * forwarding calls to all listeners.
  */
+@KotestInternal
 class CompositeTestEngineListener(private val listeners: List<TestEngineListener>) : TestEngineListener {
 
    constructor(vararg listeners: TestEngineListener) : this(listeners.toList())
@@ -22,12 +23,13 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
       listeners.forEach { it.engineStarted() }
    }
 
-   override suspend fun engineInitialized(context: EngineContext) {
+   override suspend fun engineInitialized(context: TestEngineInitializedContext) {
       listeners.forEach { it.engineInitialized(context) }
    }
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      listeners.forEach { it.engineFinished(t) }
+      // some listeners swallow std out, so we need to ensure that start/finish events happen in FILO style
+      listeners.reversed().forEach { it.engineFinished(t) }
    }
 
    override suspend fun testStarted(testCase: TestCase) {
@@ -35,7 +37,8 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      listeners.forEach { it.testFinished(testCase, result) }
+      // some listeners swallow std out, so we need to ensure that start/finish events happen in FILO style
+      listeners.reversed().forEach { it.testFinished(testCase, result) }
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
@@ -47,7 +50,8 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      listeners.forEach { it.specFinished(ref, result) }
+      // some listeners swallow std out, so we need to ensure that start/finish events happen in FILO style
+      listeners.reversed().forEach { it.specFinished(ref, result) }
    }
 
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {

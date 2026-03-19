@@ -13,42 +13,42 @@ class MatchSubstringsTest : StringSpec() {
 
    init {
       "matchSubstrings returns Match if not substrings" {
-         matchSubstrings(value, listOf()) shouldBe ContainInOrderOutcome.Match
+         matchSubstrings(value, listOf(), 0, { 1 },) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if one substring matches" {
          words.forEach { substring ->
-            matchSubstrings(value, listOf(substring)) shouldBe ContainInOrderOutcome.Match
+            matchSubstrings(value, listOf(substring), 0, { 1 },) shouldBe ContainInOrderOutcome.Match
          }
       }
       "matchSubstrings returns Match if all even substrings match" {
          val evenWords = words.filterIndexed { index, _ -> index % 2 == 0 }
-         matchSubstrings(value, evenWords) shouldBe ContainInOrderOutcome.Match
+         matchSubstrings(value, evenWords, 0, { 1 },) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all even substrings match, including lots of empty strings" {
          val sparseWords = words.flatMap { word -> listOf("", word, "") }
-         matchSubstrings(value, sparseWords) shouldBe ContainInOrderOutcome.Match
+         matchSubstrings(value, sparseWords, 0, { 1 },) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all odd substrings match" {
          val oddWords = words.filterIndexed { index, _ -> index % 2 == 1 }
-         matchSubstrings(value, oddWords) shouldBe ContainInOrderOutcome.Match
+         matchSubstrings(value, oddWords, 0, { 1 },) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all substrings match" {
-         matchSubstrings(value, words) shouldBe ContainInOrderOutcome.Match
+         matchSubstrings(value, words, 0, { 1 },) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns Match if all substrings match without gaps between them" {
-         matchSubstrings("1234567890", listOf("1", "23", "456", "789", "0")) shouldBe ContainInOrderOutcome.Match
+         matchSubstrings("1234567890", listOf("1", "23", "456", "789", "0"), 0, { 1 },) shouldBe ContainInOrderOutcome.Match
       }
       "matchSubstrings returns mismatch on every substring" {
          words.indices.toList().forAll { index ->
             val tokenNotInValue = "green"
-            matchSubstrings(value, replaceWord(words, tokenNotInValue, index)) shouldBe ContainInOrderOutcome.Mismatch(
+            matchSubstrings(value, replaceWord(words, tokenNotInValue, index), 0, { 1 },) shouldBe ContainInOrderOutcome.Mismatch(
                tokenNotInValue, index
             )
          }
       }
       "matchSubstrings returns mismatch if every substring matches but not in order" {
          words.indices.drop(1).toList().forAll { index ->
-            matchSubstrings(value, swapWordWithPrevious(words, index)) shouldBe
+            matchSubstrings(value, swapWordWithPrevious(words, index), 0, { 1 }) shouldBe
                ContainInOrderOutcome.Mismatch(words[index - 1], index)
          }
       }

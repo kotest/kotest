@@ -5,7 +5,7 @@ slug: similarity.html
 ---
 
 If kotest fails to match a `String` or an instance of a data class, it may try to find something similar. 
-For instance, in the following example two fields out of three match, so kotest considers `sweetGreenApple` to be 66.6% similar to sweetRedApple:
+For instance, in the following example two fields out of three match, so kotest considers `sweetGreenApple` to be 66.6% similar to `sweetRedApple`:
 
 ```kotlin
 listOf(sweetGreenApple, sweetGreenPear) shouldContain (sweetRedApple)
@@ -36,12 +36,19 @@ Match[0]= ++++++++++++-----
 
 By default, searching for similar strings is only enabled when both expected and actuals strings' lengthes are between 8 and 1024. 
 <br/>
+
 If we need to consider shorter or longer expected values, we can change configuration values named `minSubstringSubmatchingSize` and `maxSubtringSubmatchingSize`.
+
 <br/>
+
 Likewise, should we need to consider shorter or longer actual values, we can change configuration values named `minValueSubmatchingSize` and `maxValueSubmatchingSize`.
+
 <br/>
 <br/>
+
 By default, possible matches that are less than 66% similar are dismissed, and that default can be changed via `similarityThresholdInPercentForStrings` value in configuration.
+
 <br/>
 <br/>
+
 To disable searching for similar strings altogether, set `enabledSubmatchesInStrings` to `false` in configuration.

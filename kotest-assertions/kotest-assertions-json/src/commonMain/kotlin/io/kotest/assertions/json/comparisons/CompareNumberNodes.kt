@@ -7,10 +7,10 @@ internal fun compareNumberNodes(
   path: List<String>,
   expected: JsonNode.NumberNode,
   actual: JsonNode.NumberNode
-): JsonError? {
+): List<JsonError> {
 
    return when {
-      expected.lenientEquals(actual) -> null
-      else -> JsonError.UnequalValues(path, expected.content, actual.content)
+      expected.lenientEquals(actual) -> emptyList()
+      else -> listOf(JsonError.UnequalValues(path, expected.content, actual.content))
    }
 }

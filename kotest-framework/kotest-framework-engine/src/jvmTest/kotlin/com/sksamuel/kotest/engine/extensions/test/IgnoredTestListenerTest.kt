@@ -3,6 +3,7 @@ package com.sksamuel.kotest.engine.extensions.test
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.listeners.IgnoredTestListener
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
@@ -25,9 +26,9 @@ class IgnoredTestListenerTest : FunSpec({
    test("ignored listener should be fired for all combinations of ingored tests") {
       TestEngineLauncher()
          .withListener(NoopTestEngineListener)
-         .withClasses(IgnoredTests::class)
+         .withSpecRefs(SpecRef.Reference(IgnoredTests::class))
          .addExtensions(ignoredTestListener)
-         .launch()
+         .execute()
       ignoredTests shouldBe setOf(
          "should be ignored by failfast strategy",
          "should be disabled by enabled flag in config",

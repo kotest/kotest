@@ -8,8 +8,11 @@ data class Fruit(
 
 val sweetGreenApple = Fruit("apple", "green", "sweet")
 val sweetRedApple = Fruit("apple", "red", "sweet")
+val sweetRedCherry = Fruit("cherry", "red", "sweet")
 val sweetGreenPear = Fruit("pear", "green", "sweet")
+val sweetYellowPear = Fruit("pear", "yellow", "sweet")
 val sourYellowLemon = Fruit("lemon", "yellow", "sour")
+val sourYellowCherry = Fruit("cherry", "yellow", "sour")
 val tartRedCherry = Fruit("cherry", "red", "tart")
 val bitterPurplePlum = Fruit("plum", "purple", "bitter")
 

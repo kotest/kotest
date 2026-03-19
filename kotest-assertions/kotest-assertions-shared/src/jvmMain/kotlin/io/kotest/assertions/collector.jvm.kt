@@ -1,11 +1,10 @@
 package io.kotest.assertions
 
 import io.kotest.assertions.print.Printed
-import io.kotest.matchers.ErrorCollector
 
 actual fun ErrorCollector.collectErrors(): AssertionError? {
    fun prefixWithSubjectInformation(e: AssertionError, subject: Printed): AssertionError {
-      // we are just adapting the original exception to add a subject information, so we don't need to
+      // we are just adapting the original exception to add subject information, so we don't need to
       // worry about comparison values because they will be in the original message
       return AssertionErrorBuilder.create()
          .withMessage("The following assertion for ${subject.value} failed:\n" + e.message)

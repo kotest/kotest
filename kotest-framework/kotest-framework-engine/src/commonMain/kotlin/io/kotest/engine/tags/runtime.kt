@@ -2,7 +2,7 @@ package io.kotest.engine.tags
 
 import io.kotest.core.extensions.TagExtension
 import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.extensions.SystemPropertyOrEnvTagExtension
+import io.kotest.engine.extensions.tags.SystemPropertyOrEnvTagExtension
 
 /**
  * Returns the runtime [TagExpression]'s by invoking [TagExtension]s registered globally.

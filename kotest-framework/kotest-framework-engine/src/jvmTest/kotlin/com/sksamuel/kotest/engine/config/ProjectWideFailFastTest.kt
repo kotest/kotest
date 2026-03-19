@@ -1,12 +1,14 @@
 package com.sksamuel.kotest.engine.config
 
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.runBlocking
 
 class ProjectWideFailFastTest : FunSpec() {
    init {
@@ -16,10 +18,13 @@ class ProjectWideFailFastTest : FunSpec() {
       }
 
       val listener = CollectingTestEngineListener()
-      TestEngineLauncher().withListener(listener)
-         .withProjectConfig(c)
-         .withClasses(A::class, B::class)
-         .launch()
+      runBlocking {
+         TestEngineLauncher().withListener(listener)
+            .withProjectConfig(c)
+            .withSpecRefs(SpecRef.Reference(A::class), SpecRef.Reference(B::class))
+            .execute()
+      }
+
       listener.result("a").shouldNotBeNull().isError.shouldBeTrue()
       listener.names shouldBe listOf("a", "b")
    }

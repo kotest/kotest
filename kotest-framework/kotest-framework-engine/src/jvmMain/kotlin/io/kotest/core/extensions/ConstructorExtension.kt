@@ -10,8 +10,11 @@ import kotlin.reflect.KClass
  * If you wish to use non-zero arg primary constructors, this function can
  * be implemented with logic on how to instantiate a test class.
  *
- * One common usecase is to instantiate classes that are being autowired
+ * One common use case is to instantiate classes that are being autowired
  * by a dependency injection framework.
+ *
+ * If there are multiple implementations of this extension, the order is undefined,
+ * and the first extension to return a non-null spec will be used.
  */
 interface ConstructorExtension : Extension {
 
@@ -23,8 +26,8 @@ interface ConstructorExtension : Extension {
     * extension (or if no more extensions, then back to the Engine).
     *
     * By overriding this function, extensions are able to customize
-    * the way classes are created, to support things like constructors
-    * with parameters, or classes that require special initization logic.
+    * the way classes are created to support things like constructors
+    * with parameters or classes that require special initization logic.
     */
    fun <T : Spec> instantiate(clazz: KClass<T>): Spec?
 }

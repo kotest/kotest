@@ -9,7 +9,7 @@ import io.kotest.assertions.print.print
 import io.kotest.common.KotestInternal
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.ComparisonMatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
@@ -61,13 +61,11 @@ fun <T, C: Class<out T>> containJsonKeyValue(path: String, t: T, tClass: C) = ob
           is ExtractedValue<*> -> {
              val actualValue = actualKeyValue.value
              val passed = t == actualValue
-             return ComparisonMatcherResult(
-                passed = passed,
-                expected = t.print(),
-                actual = actualValue.print(),
-                failureMessageFn = { "Value mismatch at '$path'" },
-                negatedFailureMessageFn = { "$sub should not contain the element $path = $t" }
-             )
+             return MatcherResultBuilder.create(passed)
+                .withValues(expected = { t.print() }, actual = { actualValue.print() })
+                .withFailureMessage { "Value mismatch at '$path'" }
+                .withNegatedFailureMessage { "$sub should not contain the element $path = $t" }
+                .build()
           }
           is JsonPathNotFound -> {
              val subPathDescription = findValidSubPath(value, path).description()
@@ -90,8 +88,23 @@ internal fun extractByPath(json: String?, path: String, tClass: Class<*>): Extra
 }
 
 internal fun removeLastPartFromPath(path: String): String {
-   val tokens = path.split(".")
-   return tokens.take(tokens.size - 1).joinToString(".")
+   var inSingleQuote = false
+   var inDoubleQuote = false
+   var bracketDepth = 0
+
+   val index = path.indexOfLast { char ->
+      when {
+         char == '\'' && !inDoubleQuote -> { inSingleQuote = !inSingleQuote; false }
+         char == '"' && !inSingleQuote -> { inDoubleQuote = !inDoubleQuote; false }
+         inSingleQuote || inDoubleQuote -> false
+         char == ']' -> { bracketDepth++; false }
+         char == '[' -> { bracketDepth--; bracketDepth == 0 }
+         char == '.' -> bracketDepth == 0
+         else -> false
+      }
+   }
+
+   return if (index != -1) path.substring(0, index) else path
 }
 
 internal sealed interface ExtractValueOutcome {
@@ -122,7 +135,10 @@ internal fun findValidSubPath(json: String?, path: String): JsonSubPathSearchOut
             }
          }
 
-         subPath = removeLastPartFromPath(subPath)
+         subPath = when (val shorterPath = removeLastPartFromPath(subPath)) {
+            subPath -> break
+            else -> shorterPath
+         }
       }
    }
    return JsonSubPathNotFound

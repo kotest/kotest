@@ -14,17 +14,18 @@ import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseOrder
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.DefaultTestConfig
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.engine.coroutines.CoroutineDispatcherFactory
+import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.CoroutineScope
 import kotlin.js.JsName
 import kotlin.time.Duration
@@ -205,19 +206,17 @@ abstract class Spec : TestConfiguration() {
     * blocked. If you are using blocking calls in a test, setting [blockingTest] on that test's config
     * allows the test engine to spool up a new thread just for that test.
     */
-   @ExperimentalKotest
    open fun testExecutionMode(): TestExecutionMode? = null
 
-   @ExperimentalKotest
    @JsName("testExecutionMode_js")
    var testExecutionMode: TestExecutionMode? = null
 
    internal val afterProjectListeners = mutableListOf<AfterProjectListener>()
 
    /**
-    * Returns any extensions registered via this spec that should be added to the global scope.
+    * Returns any [AfterProjectListener]s registered via this spec that should be added to the global scope.
     */
-   internal fun projectExtensions(): List<AfterProjectListener> {
+   internal fun afterProjectListeners(): List<AfterProjectListener> {
       return afterProjectListeners.toList()
    }
 
@@ -252,12 +251,16 @@ abstract class Spec : TestConfiguration() {
     * Without setting this value, the test engine will be unable to interrupt
     * threads that are blocked.
     */
-   @ExperimentalKotest
    @JsName("blockingTest_js")
    var blockingTest: Boolean? = null
 
    /**
-    * When set to true, tests will be executed inside a runTest block from the kotlin test library.
+    * When set to true, tests will be executed inside a `runTest` block from the `kotlin.test` library.
+    *
+    * Note that if this value is set to true at the spec level,
+    * all tests for that spec will be executed within a `runTest` block.
+    *
+    * For full details on how this affects tests see [io.kotest.core.test.config.TestConfig.coroutineTestScope].
     */
    var coroutineTestScope: Boolean? = null
 
@@ -400,12 +403,13 @@ abstract class Spec : TestConfiguration() {
  * A [RootTest] is a defined test that has not yet been materialized at runtime.
  * The materialization process turns a root test into a test case.
  */
+@KotestInternal
 data class RootTest(
    val name: TestName,
    val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
-   val disabled: Boolean?, // if the test is explicitly disabled, say through an annotation or method name
+   val xmethod: TestXMethod,
    val config: TestConfig?, // if specified by the test, may be null if no config is set using the spec DSL
    val factoryId: FactoryId?, // if this root test was added from a factory
 )

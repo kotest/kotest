@@ -3,8 +3,8 @@ package io.kotest.core.test
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * A test in Kotest is simply a function `suspend TestScope.() -> Unit`
@@ -46,8 +46,7 @@ class DefaultTestScope(
 
    companion object {
       suspend operator fun invoke(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
-         val cc = coroutineContext
-         return DefaultTestScope(testCase, cc, onRegister)
+         return DefaultTestScope(testCase, currentCoroutineContext(), onRegister)
       }
    }
 }

@@ -85,8 +85,43 @@ kotest.proptest.default.shrinking.bound=500
 ```
 
 ## Shrinking for custom generators
-[Custom generators](customgens.md) do not have a Shrinker defined by Kotest.
-Instead, custom Shrinkers can be implemented.
+
+The shrinking behaviour of a custom generator depends on **how it was built**.
+
+### Arb.bind — full shrinking (recommended)
+
+When you build a custom `Arb` using `Arb.bind`, Kotest automatically combines the shrinkers of each
+component arbitrary. All fields are shrunk independently, giving the best chance of finding a minimal
+failing case with no extra effort:
+
+```kotlin
+data class Person(val name: String, val age: Int, val shoeSize: Double)
+
+val personArb = Arb.bind(nameArb, ageArb, shoeSizeArb, ::Person)
+// On failure, name, age and shoeSize are each shrunk independently.
+```
+
+### flatMap — partial shrinking
+
+When you compose arbitraries using `flatMap`, only the shrinker of the outermost arbitrary applies.
+Inner values are held fixed while the outer value is shrunk, so you typically see only one field shrunk
+toward its minimum:
+
+```kotlin
+val personArb = nameArb.flatMap { name ->
+   ageArb.flatMap { age ->
+      shoeSizeArb.map { shoeSize -> Person(name, age, shoeSize) }
+   }
+}
+// On failure, only shoeSize (the innermost mapped value) tends to be shrunk.
+```
+
+### arbitrary builder DSL — no automatic shrinking
+
+Generators created with the `arbitrary { }` builder do not automatically compose shrinkers from inner
+arbitraries. Without an explicit `Shrinker`, no shrinking will occur on failure.
+
+Instead, custom shrinkers can be implemented and passed to `arbitrary`.
 Below is an example where the Shrinker returns coordinates that are next to the value itself.
 
 ```kotlin

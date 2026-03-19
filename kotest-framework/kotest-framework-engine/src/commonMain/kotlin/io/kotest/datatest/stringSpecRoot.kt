@@ -127,7 +127,7 @@ fun <T> StringSpecRootScope.withData(
    test: suspend StringSpecScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      nameFn(t).invoke { this.test(t) }
+      nameFn(t).config() { StringSpecScope(this).test(t) }
    }
 }
 
@@ -150,7 +150,7 @@ fun <T> StringSpecRootScope.withData(
    test: suspend StringSpecScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      name.invoke { this.test(t) }
+      name.config() { StringSpecScope(this).test(t) }
    }
 }
 

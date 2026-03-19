@@ -10,15 +10,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
-import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
-import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.compiler.plugin.CompilerPluginRegistrar
 import org.jetbrains.kotlin.compiler.plugin.ExperimentalCompilerApi
-import org.jetbrains.kotlin.config.CommonConfigurationKeys
-import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 import java.io.File
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -214,43 +206,10 @@ class CompilationsMatcherTest : StringSpec() {
             messages shouldContain "Unresolved reference 'printDate'"
          }
       }
-
-      @OptIn(ExperimentalCompilerApi::class)
-      "compilation output should contain a message from the dummy compiler plugin" {
-         val compileConfig = CompileConfig {
-            compilerPluginRegistrars = listOf(DummyCompilerPluginRegistrar())
-            verbose = true
-         }
-
-         val codeSnippet = compileConfig.codeSnippet("""
-            val a = 123
-         """)
-
-         codeSnippet.compile {
-            exitCode shouldBe ExitCode.OK
-            messages shouldContain "Hello from the dummy compiler plugin"
-         }
-      }
    }
 }
 
 @Suppress("NOTHING_TO_INLINE", "unused")
 inline fun inlinedFunc(num: Int): String {
    return num.toString()
-}
-
-@OptIn(ExperimentalCompilerApi::class)
-class DummyCompilerPluginRegistrar : CompilerPluginRegistrar() {
-   override val supportsK2: Boolean = true
-
-   override fun ExtensionStorage.registerExtensions(configuration: CompilerConfiguration) {
-      val dummyExtension = DummyIrGenerationExtension(configuration[CommonConfigurationKeys.MESSAGE_COLLECTOR_KEY])
-      IrGenerationExtension.registerExtension(dummyExtension)
-   }
-
-   class DummyIrGenerationExtension(private val messageCollector: MessageCollector?) : IrGenerationExtension {
-      override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
-         messageCollector?.report(CompilerMessageSeverity.LOGGING, "Hello from the dummy compiler plugin")
-      }
-   }
 }

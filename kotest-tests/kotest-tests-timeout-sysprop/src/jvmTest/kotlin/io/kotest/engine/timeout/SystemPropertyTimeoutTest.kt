@@ -2,6 +2,7 @@ package io.kotest.engine.timeout
 
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.TestEngineLauncher
@@ -19,8 +20,8 @@ class SystemPropertyTimeoutTest : FunSpec() {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher()
                .withListener(collector)
-               .withClasses(TimeoutTest::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference(TimeoutTest::class))
+               .execute()
             collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
          }
       }
@@ -30,8 +31,8 @@ class SystemPropertyTimeoutTest : FunSpec() {
             val collector = CollectingTestEngineListener()
             TestEngineLauncher()
                .withListener(collector)
-               .withClasses(TimeoutTest::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference(TimeoutTest::class))
+               .execute()
             collector.tests.mapKeys { it.key.name.name }["a"]?.isError shouldBe true
          }
       }

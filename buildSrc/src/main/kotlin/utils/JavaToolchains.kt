@@ -16,7 +16,7 @@ internal fun Provider<JavaLanguageVersion>.jvmTarget(): Provider<JvmTarget> =
 internal fun Provider<JavaLanguageVersion>.asInt(): Provider<Int> =
    map { it.asInt() }
 
-internal fun KotlinJvmCompilerOptions.jdkRelease(version: Provider<JavaLanguageVersion>) {
+fun KotlinJvmCompilerOptions.jdkRelease(version: Provider<JavaLanguageVersion>) {
    freeCompilerArgs.add(version.map {
       "-Xjdk-release=${it.jvmTarget().target}"
    })

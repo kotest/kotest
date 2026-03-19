@@ -4,8 +4,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.core.descriptors.toDescriptor
-import io.kotest.engine.extensions.DescriptorFilterResult
-import io.kotest.engine.extensions.IncludeDescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
+import io.kotest.engine.extensions.filter.IncludeDescriptorFilter
 import io.kotest.matchers.shouldBe
 
 class IncludeDescriptorFilterTest : FunSpec() {

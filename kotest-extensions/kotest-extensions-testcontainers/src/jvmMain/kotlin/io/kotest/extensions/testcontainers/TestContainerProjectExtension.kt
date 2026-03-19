@@ -2,6 +2,7 @@ package io.kotest.extensions.testcontainers
 
 import io.kotest.core.extensions.MountableExtension
 import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.extensions.testcontainers.options.ContainerExtensionConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.testcontainers.containers.GenericContainer
@@ -19,6 +20,7 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class TestContainerProjectExtension<T : GenericContainer<*>>(
    private val container: T,
+   private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
 ) : MountableExtension<T, T>, AfterProjectListener {
 
    private val ref = AtomicReference<T>(null)
@@ -30,6 +32,7 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
       if (t == null) {
          configure(container)
          container.start()
+         container.followOutput(config.logConsumer)
          ref.set(container)
       }
       lock.unlock()

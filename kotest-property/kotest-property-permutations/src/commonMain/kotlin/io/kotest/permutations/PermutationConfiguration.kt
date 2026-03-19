@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.permutations
 
 import io.kotest.common.ExperimentalKotest

@@ -8,7 +8,7 @@ import io.kotest.core.test.TestScope
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.errorCollector
 
 /**
  * Executes the test with assertSoftly if [assertSoftly] is enabled for this test or container.

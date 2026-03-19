@@ -2,6 +2,7 @@ package io.kotest.property.internal
 
 import io.kotest.assertions.print.print
 import io.kotest.common.stacktrace.stacktraces
+import io.kotest.engine.IterationSkippedException
 import io.kotest.property.PropertyContext
 import io.kotest.property.PropertyTesting
 import io.kotest.property.RTree
@@ -83,6 +84,11 @@ suspend fun <A> doStep(
             test(candidate)
             if (PropertyTesting.shouldPrintShrinkSteps)
                sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
+         } catch (_: IterationSkippedException) {
+            // A skipped iteration (from assume()) is not a failure — the shrunk value does not
+            // satisfy the precondition so it is not a valid counterexample. Treat it as a pass.
+            if (PropertyTesting.shouldPrintShrinkSteps)
+               sb.append("Shrink #${counter.count}: ${candidate.print().value} skip\n")
          } catch (t: Throwable) {
             if (PropertyTesting.shouldPrintShrinkSteps)
                sb.append("Shrink #${counter.count}: ${candidate.print().value} fail\n")

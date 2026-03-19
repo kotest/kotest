@@ -20,6 +20,7 @@ import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -45,7 +46,7 @@ interface ContainerScope : TestScope {
 
    suspend fun registerTest(
       name: TestName,
-      disabled: Boolean,
+      xmethod: TestXMethod,
       config: TestConfig?,
       type: TestType,
       test: suspend TestScope.() -> Unit,
@@ -53,7 +54,7 @@ interface ContainerScope : TestScope {
       registerTestCase(
          NestedTest(
             name = name,
-            disabled = disabled,
+            xmethod = xmethod,
             config = config,
             test = test,
             type = type,
@@ -64,20 +65,20 @@ interface ContainerScope : TestScope {
 
    suspend fun registerContainer(
       name: TestName,
-      disabled: Boolean,
+      xmethod: TestXMethod,
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name = name, disabled = disabled, config = config, type = TestType.Container, test = test)
+      registerTest(name = name, xmethod = xmethod, config = config, type = TestType.Container, test = test)
    }
 
    suspend fun registerTest(
       name: TestName,
-      disabled: Boolean,
+      xmethod: TestXMethod,
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name = name, disabled = disabled, config = config, type = TestType.Test, test = test)
+      registerTest(name = name, xmethod = xmethod, config = config, type = TestType.Test, test = test)
    }
 
    private fun appendExtension(extension: Extension) {

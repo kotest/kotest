@@ -24,11 +24,11 @@ import kotlin.time.Duration
  *
  * For spec level equivalent, see [SpecConfigResolver].
  *
- *  Order of precedence for each setting from highest priority to lowest:
+ *  Order of precedence for each setting from the highest priority to the lowest:
  *
- * - project level defaults from [io.kotest.core.config.AbstractProjectConfig]
- * - system property overrides
- * - kotest defaults
+ * - Project level defaults from [io.kotest.core.config.AbstractProjectConfig]
+ * - System Property overrides
+ * - Kotest defaults
  */
 class ProjectConfigResolver(
    private val config: AbstractProjectConfig?,
@@ -65,7 +65,7 @@ class ProjectConfigResolver(
    }
 
    /**
-    * If returns false then private spec classes will be ignored by the test engine.
+    * If this returns false, then the test engine will ignore private spec classes.
     * Defaults to false.
     */
    fun ignorePrivateClasses(): Boolean {
@@ -130,18 +130,16 @@ class ProjectConfigResolver(
     * Returns the [SpecExecutionOrder] to use, unless overridden by registered [SpecExecutionOrderExtension]s.
     */
    fun specExecutionOrder(): SpecExecutionOrder {
-      return config?.specExecutionOrder ?:
-      systemPropertyConfiguration?.specExecutionOrder() ?:
-      Defaults.SPEC_EXECUTION_ORDER
+      return config?.specExecutionOrder ?: systemPropertyConfiguration?.specExecutionOrder()
+      ?: Defaults.SPEC_EXECUTION_ORDER
    }
 
    /**
     * Returns the [ConcurrencyOrder] to use.
     */
    fun concurrencyOrder(): ConcurrencyOrder {
-      return config?.concurrencyOrder ?:
-      systemPropertyConfiguration?.concurrencyOrder() ?:
-      Defaults.CONCURRENCY_MODE_ORDER
+      return config?.concurrencyOrder ?: systemPropertyConfiguration?.concurrencyOrder()
+      ?: Defaults.CONCURRENCY_MODE_ORDER
    }
 
    fun specFailureFilePath(): String {
@@ -152,13 +150,6 @@ class ProjectConfigResolver(
       return config?.writeSpecFailureFile ?: Defaults.WRITE_SPEC_FAILURE_FILE
    }
 
-   /**
-    * Returns true if the test name should be the full name including parent names.
-    */
-   fun displayFullTestPath(): Boolean {
-      return config?.displayFullTestPath ?: Defaults.DISPLAY_FULL_TEST_PATH
-   }
-
    fun allowOutOfOrderCallbacks(): Boolean {
       return config?.allowOutOfOrderCallbacks ?: Defaults.ALLOW_OUT_OF_ORDER_CALLBACKS
    }
@@ -166,11 +157,12 @@ class ProjectConfigResolver(
    /**
     * Returns any extensions defined at the project level.
     *
-    * That is extensions defined using the [AbstractProjectConfig.beforeProject] and
-    * [AbstractProjectConfig.afterProject] functions as well as any extensions defined
-    * by overriding the [AbstractProjectConfig.extensions] method.
+    * These are:
     *
-    * It also includes any extensions registered globally in the [ExtensionRegistry].
+    * Overrides of [AbstractProjectConfig.beforeProject] and [AbstractProjectConfig.afterProject] functions
+    * Any extensions defined by overriding the [AbstractProjectConfig.extensions].
+    * Any afterProject blocks inside specs.
+    * Any extensions registered globally in the [ExtensionRegistry].
     */
    fun extensions(): List<Extension> {
       return (config?.extensions ?: emptyList()) +

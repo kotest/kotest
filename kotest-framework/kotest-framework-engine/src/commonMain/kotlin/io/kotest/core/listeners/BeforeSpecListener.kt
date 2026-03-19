@@ -14,7 +14,7 @@ interface BeforeSpecListener : Extension {
     *
     * Any errors in this listener will be propagated to the engine and further execution, including
     * [AfterSpecListener]s will be skipped. If you wish have before/after control even in the
-    * case of exceptions, then consider using the [io.kotest.engine.spec.interceptor.SpecInterceptor].
+    * case of exceptions, then consider using the [io.kotest.core.extensions.SpecExtension].
     *
     * If a spec is instantiated multiple times - for example, if
     * [io.kotest.core.spec.IsolationMode.InstancePerRoot] isolation mode is used,

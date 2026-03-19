@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.tags
 
 import io.kotest.core.Tag
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.TestEngineLauncher
@@ -15,8 +16,8 @@ class BehaviorSpecTagTest : FunSpec() {
          withSystemProperty("kotest.tags", "!MyTagABC") {
             TestEngineLauncher()
                .withListener(listener)
-               .withClasses(ThenTagTest::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference((ThenTagTest::class)))
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isSuccess shouldBe true
          listener.tests.toList().first { it.first.name.name == "b" }.second.isSuccess shouldBe true
@@ -29,8 +30,8 @@ class BehaviorSpecTagTest : FunSpec() {
          withSystemProperty("kotest.tags", "MyTagABC") {
             TestEngineLauncher()
                .withListener(listener)
-               .withClasses(GivenTagTest::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference((GivenTagTest::class)))
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isSuccess shouldBe true
          listener.tests.toList().first { it.first.name.name == "b" }.second.isSuccess shouldBe true
@@ -43,8 +44,8 @@ class BehaviorSpecTagTest : FunSpec() {
          withSystemProperty("kotest.tags", "!MyTagABC") {
             TestEngineLauncher()
                .withListener(listener)
-               .withClasses(GivenTagTest::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference((GivenTagTest::class)))
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isIgnored shouldBe true
          listener.tests.toList().first { it.first.name.name == "d" }.second.isSuccess shouldBe true
@@ -57,8 +58,8 @@ class BehaviorSpecTagTest : FunSpec() {
          withSystemProperty("kotest.tags", "!MyTagABC") {
             TestEngineLauncher()
                .withListener(listener)
-               .withClasses(WhenTagTest::class)
-               .launch()
+               .withSpecRefs(SpecRef.Reference((WhenTagTest::class)))
+               .execute()
          }
          listener.tests.toList().first { it.first.name.name == "a" }.second.isSuccess shouldBe true
          listener.tests.toList().first { it.first.name.name == "b" }.second.isIgnored shouldBe true

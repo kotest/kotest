@@ -1,5 +1,6 @@
 package io.kotest.core.config
 
+import io.kotest.common.JVMOnly
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.BeforeProjectListener
@@ -114,6 +115,12 @@ abstract class AbstractProjectConfig {
     */
    open val logLevel: LogLevel? = null
 
+   /**
+    * Configures all tests with the project to run within a `runTest` block from the `kotlin.test` library, unless
+    * overriden at the spec or test level.
+    *
+    * For full details on how this affects tests see [io.kotest.core.test.config.TestConfig.coroutineTestScope].
+    */
    open val coroutineTestScope: Boolean? = null
 
    open val dumpConfig: Boolean? = null
@@ -168,7 +175,7 @@ abstract class AbstractProjectConfig {
    open val testCaseOrder: TestCaseOrder? = null
 
    /**
-    * Sets the seed that is used when randomizing specs and tests.
+    * Sets the seed used when randomizing specs and tests.
     */
    open val randomOrderSeed: Long? = null
 
@@ -229,24 +236,25 @@ abstract class AbstractProjectConfig {
    /**
     * Returns true if the test name should be the full name including parent names.
     */
+   @Deprecated("This option is incompatible with reporting tests. It is ignored in 6.2+ and will be removed in 7.0.")
    open val displayFullTestPath: Boolean? = null
 
    open val allowOutOfOrderCallbacks: Boolean? = null
 
    /**
-    * If set to false then private spec classes will be ignored by the test engine.
+    * If set to false, then the test engine will ignore private spec classes.
     */
    open val ignorePrivateClasses: Boolean? = null
 
    /**
     * Sets a global [EnabledIf] function that will be applied to all tests, unless overridden in
-    * in the test itself or at the spec level.
+    * the test itself or at the spec level.
     */
    open val enabledIf: EnabledIf? = null
 
    /**
     * Sets a global [EnabledOrReasonIf] function that will be applied to all tests, unless overridden in
-    * in the test itself or at the spec level.
+    * the test itself or at the spec level.
     */
    open val enabledOrReasonIf: EnabledOrReasonIf? = null
 
@@ -304,15 +312,17 @@ abstract class AbstractProjectConfig {
     * If enabled, then all failing spec names will be written to a "failure file".
     * This file can then be used by [SpecExecutionOrder.FailureFirst].
     *
-    * Note: Only has an effect on JVM.
+    * Note: Is applicable only to JVM targets.
     */
+   @JVMOnly
    open val writeSpecFailureFile: Boolean? = null
 
    /**
     * The path to write the failed spec list to, if enabled.
     *
-    * Note: Only has an effect on JVM.
+    * Note: Is applicable only to JVM targets.
     */
+   @JVMOnly
    open val specFailureFilePath: String? = null
 
    /**

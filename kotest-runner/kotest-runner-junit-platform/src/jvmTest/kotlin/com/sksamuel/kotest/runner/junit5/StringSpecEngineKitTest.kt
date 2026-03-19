@@ -102,19 +102,15 @@ class StringSpecEngineKitTest : FunSpec({
          .selectors(selectClass(StringSpecExceptionInBeforeSpecOverride::class.java))
          .configurationParameter("allow_private", "true")
          .execute()
-         .allEvents().apply {
-            count() shouldBe 12L
+         .allEvents()
+         .apply {
+            count() shouldBe 7L
             started().shouldHaveNames(
                KotestJunitPlatformTestEngine.ENGINE_NAME,
                "StringSpecExceptionInBeforeSpecOverride",
-               "a failing test",
                "Before Spec Error",
             )
-            skipped().shouldHaveNames(
-               "a passing test",
-            )
             failed().shouldHaveNames(
-               "a failing test",
                "Before Spec Error",
                "StringSpecExceptionInBeforeSpecOverride",
             )
@@ -122,14 +118,11 @@ class StringSpecEngineKitTest : FunSpec({
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
-               "a failing test",
                "Before Spec Error",
                "StringSpecExceptionInBeforeSpecOverride",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
-               "a failing test",
-               "a passing test",
                "Before Spec Error",
             )
          }
@@ -145,14 +138,9 @@ class StringSpecEngineKitTest : FunSpec({
             started().shouldHaveNames(
                KotestJunitPlatformTestEngine.ENGINE_NAME,
                "StringSpecExceptionInBeforeSpecFunction",
-               "a failing test",
                "Before Spec Error",
             )
-            skipped().shouldHaveNames(
-               "a passing test",
-            )
             failed().shouldHaveNames(
-               "a failing test",
                "Before Spec Error",
                "StringSpecExceptionInBeforeSpecFunction",
             )
@@ -160,14 +148,11 @@ class StringSpecEngineKitTest : FunSpec({
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             finished().shouldHaveNames(
-               "a failing test",
                "Before Spec Error",
                "StringSpecExceptionInBeforeSpecFunction",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
-               "a failing test",
-               "a passing test",
                "Before Spec Error",
             )
          }
@@ -443,7 +428,7 @@ class StringSpecEngineKitTest : FunSpec({
          }
    }
 
-   test("exception in beforeSpec with isolation mode") {
+   test("exception in beforeSpec with InstancePerRoot isolation mode") {
       EngineTestKit
          .engine(KotestJunitPlatformTestEngine.ENGINE_ID)
          .selectors(selectClass(StringSpecExceptionInBeforeSpecForInstancePerRoot::class.java))
@@ -453,28 +438,20 @@ class StringSpecEngineKitTest : FunSpec({
             started().shouldHaveNames(
                KotestJunitPlatformTestEngine.ENGINE_NAME,
                "StringSpecExceptionInBeforeSpecForInstancePerRoot",
-               "a failing test",
-               "a passing test",
                "Before Spec Error"
             )
             skipped().shouldBeEmpty()
             failed().shouldHaveNames(
-               "a failing test",
-               "a passing test",
                "Before Spec Error",
                "StringSpecExceptionInBeforeSpecForInstancePerRoot",
             )
             succeeded().shouldHaveNames("Kotest")
             finished().shouldHaveNames(
-               "a failing test",
-               "a passing test",
                "Before Spec Error",
                "StringSpecExceptionInBeforeSpecForInstancePerRoot",
                KotestJunitPlatformTestEngine.ENGINE_NAME,
             )
             dynamicallyRegistered().shouldHaveNames(
-               "a failing test",
-               "a passing test",
                "Before Spec Error",
             )
          }

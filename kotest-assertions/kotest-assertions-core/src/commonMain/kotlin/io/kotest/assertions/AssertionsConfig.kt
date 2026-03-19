@@ -5,9 +5,8 @@ import io.kotest.common.syspropOrEnv
 
 object AssertionsConfigSystemProperties {
    const val DISABLE_NAN_NEQUALITY = "kotest.assertions.nan.equality.disable"
-   @Deprecated("Use correct spelling")
-   const val DISABLE_NA_NEQUALITY = DISABLE_NAN_NEQUALITY
    const val COLLECTIONS_PRINT_SIZE = "kotest.assertions.collection.print.size"
+   const val MAP_FILE_ENDINGS_TO_UNIX = "kotest.assertions.string.map.file.endings.unix"
 }
 
 object AssertionsConfig {
@@ -36,6 +35,9 @@ object AssertionsConfig {
    val maxCollectionPrintSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue(AssertionsConfigSystemProperties.COLLECTIONS_PRINT_SIZE, 20, String::toInt)
 
+   val mapFileEndingsToUnix: EnvironmentConfigValue<Boolean> =
+      EnvironmentConfigValue(AssertionsConfigSystemProperties.MAP_FILE_ENDINGS_TO_UNIX, false, String::toBoolean)
+
    val maxSimilarityPrintSize: EnvironmentConfigValue<Int> =
       EnvironmentConfigValue("kotest.assertions.similarity.print.size", 5, String::toInt)
 
@@ -63,20 +65,30 @@ object AssertionsConfig {
 }
 
 class EnvironmentConfigValue<T>(
-   private val name: String,
-   private val defaultValue: T,
-   val converter: (String) -> T
+   val name: String,
+   var value: T,
 ) {
 
-   val value: T = loadValue()
-
-   private fun loadValue(): T {
-      val loaded = syspropOrEnv(name) ?: return defaultValue
-      try {
-         return converter(loaded)
-      } catch (e: Exception) {
-         throw KotestConfigurationException("Could not load sysprop or envvar from $name: $e", e)
+   companion object {
+      operator fun <T> invoke(name: String, defaultValue: T, converter: (String) -> T): EnvironmentConfigValue<T> {
+         val loaded = syspropOrEnv(name)?.let { converter(it) } ?: defaultValue
+         try {
+            return EnvironmentConfigValue(name, loaded)
+         } catch (e: Exception) {
+            throw KotestConfigurationException("Could not load sysprop or envvar from $name: $e", e)
+         }
       }
+   }
+
+   /**
+    * Executes the given [block] with the value of this [io.kotest.assertions.EnvironmentConfigValue] set
+    * to the [newValue] and then resets afterward. Not concurrent safe. Designed for testing.
+    */
+   fun withValue(newValue: T, block: () -> Unit) {
+      val oldValue = value
+      value = newValue
+      block()
+      value = oldValue
    }
 }
 

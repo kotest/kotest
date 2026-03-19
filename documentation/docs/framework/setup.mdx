@@ -8,10 +8,10 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 
-The Kotest test framework is supported on JVM, Javascript, Native and Wasm.
+The Kotest test framework is supported on all targets, including JVM, JavaScript, Native and Wasm.
 To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
 
-:::caution
+:::caution[Migrating to Kotest 6]
 The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin but a simplified setup.
 Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
 :::
@@ -19,6 +19,11 @@ Please see the rest of this page for details on how to configure Kotest for KMP 
 :::tip
 When running the Gradle test task, Gradle will cache the output and report no tests executed if no source code has changed.
 See the section on rerunning tests for details on how to disable this behaviour.
+:::
+
+:::info[Install the IntelliJ Plugin]
+Kotest provides an IntelliJ plugin for enhanced UX, including the ability to run individual tests, tool windows to show
+test layouts, and jump to source.
 :::
 
 <Tabs
@@ -33,33 +38,16 @@ values={[
 ]}>
 <TabItem value="JVM">
 
-:::tip
+:::tip[Example Project]
 A working project with JVM support can be found here:
 https://github.com/kotest/kotest-examples
 :::
 
-Kotest on the JVM has two ways for running tests. One uses the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest), which provides detailed test output in the console, and a rich experience in Intellij (in conjuction with the Intellij Kotest plugin).
-The other option uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin which is ubiquitous in the JVM ecosystem but lacks some features of the Kotest gradle plugin.
+Kotest on the JVM builds atop of the [JUnit
+Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) project which is widely
+supported in the JVM ecosystem.
 
-To use the Kotest gradle plugin, add the following to your `build.gradle.kts` file:
-
-```kotlin
-plugins {
-   id("io.kotest") version "<kotest-version>"
-}
-```
-
-Add the following dependency to your build:
-
-```kotlin
-dependencies {
-   testImplementation("io.kotest:kotest-framework-engine:<kotest-version>")
-}
-```
-
-And then execute the `jvmKotest` task in gradle, or run tests directly from the IDE.
-
-To use the JUnit Platform plugin, add the following to your `build.gradle.kts` file:
+To use the JUnit Platform support, first configure Gradle to use JUnit platform support:
 
 ```kotlin
 tasks.withType<Test>().configureEach {
@@ -67,7 +55,7 @@ tasks.withType<Test>().configureEach {
 }
 ```
 
-Add the following dependency to your build:
+Andd then add the following dependency to your build:
 
 ```kotlin
 dependencies {
@@ -77,21 +65,33 @@ dependencies {
 
 And then execute the `test` task in gradle, or run tests directly from the IDE.
 
-   </TabItem>
-   <TabItem value="JS">
-
-:::tip
-A working JS project can be found here: https://github.com/kotest/kotest-examples
-:::
-
-Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+For enhanced support for jump-to-source and re-running failed tests from the test results tree, add the
+[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to to your build.
 
 For example:
 
 ```kotlin
 plugins {
-   id("io.kotest") version "<kotest-version>"
-   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
+   id("io.kotest").version("<kotest-version>")
+}
+```
+
+   </TabItem>
+   <TabItem value="JS">
+
+:::tip[Example Project]
+A working JS project can be found here: https://github.com/kotest/kotest-examples
+:::
+
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+Note, place the KSP plugin before the Kotest plugin in the plugins block. This restriction will be fixed in a future release.
+
+For example:
+
+```kotlin
+plugins {
+   id("com.google.devtools.ksp").version("<ksp-version>")
+   id("io.kotest").version("<kotest-version>")
 }
 ```
 
@@ -121,7 +121,7 @@ based configuration will not work as Kotlin does not expose annotations at runti
    </TabItem>
    <TabItem value="WasmJS">
 
-:::tip
+:::tip[Example Project]
 A working WasmJS project can be found here: https://github.com/kotest/kotest-examples
 :::
 
@@ -131,8 +131,8 @@ For example:
 
 ```kotlin
 plugins {
-   id("io.kotest") version "<kotest-version>"
-   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
+   id("io.kotest").version("<kotest-version>")
+   id("com.google.devtools.ksp").version("<ksp-version>")
 }
 ```
 
@@ -162,8 +162,8 @@ based configuration will not work as Kotlin does not expose annotations at runti
    </TabItem>
    <TabItem value="Native">
 
-:::tip
-A working native project with linux, windows and macos configured, with unit and data driven test examples, can be found here:
+:::tip[Example Project]
+A working native project with Linux, Windows and MacOS targets configured, with unit and data driven test examples, can be found here:
 https://github.com/kotest/kotest-examples
 :::
 
@@ -173,8 +173,8 @@ For example:
 
 ```kotlin
 plugins {
-   id("io.kotest") version "<kotest-version>"
-   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
+   id("io.kotest").version("<kotest-version>")
+   id("com.google.devtools.ksp").version("<ksp-version>")
 }
 ```
 

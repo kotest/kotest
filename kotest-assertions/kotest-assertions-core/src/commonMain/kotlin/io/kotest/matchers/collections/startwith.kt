@@ -62,19 +62,28 @@ internal fun<T> describePartialMatchesInCollection(expectedSlice: Collection<T>,
    val indexesOfUnmatchedElements = expectedSlice.indices.filter { index ->
       partialMatches.none { partialMatch -> index in partialMatch.rangeOfExpected } }
    val expectedSliceAsList = expectedSlice.toList()
-   val unmatchedElementsDescription = indexesOfUnmatchedElements.mapNotNull { index ->
-      val element = expectedSliceAsList[index]
-      val foundAtIndexes = value.withIndex().filter { it.value == element }.map { it.index }
-      if(foundAtIndexes.isEmpty())
-         null
-      else
-      "[$index] ${element.print().value} => Found At Index(es): ${foundAtIndexes.print().value}"
-   }.joinToString("\n")
+   val unmatchedElementsDescription = buildString {
+      append(
+         indexesOfUnmatchedElements.mapNotNull { index ->
+            val element = expectedSliceAsList[index]
+            val foundAtIndexes = value.withIndex().filter { it.value == element }.map { it.index }
+            if (foundAtIndexes.isEmpty())
+               null
+            else
+               "[$index] ${element.print().value} => Found At Index(es): ${foundAtIndexes.print().value}"
+         }.joinToString("\n")
+      )
+      appendPossibleMatches(
+         missing = indexesOfUnmatchedElements.map { expectedSliceAsList[it] },
+         expected = value,
+      )
+   }
    return PartialMatchesInCollectionDescription(
       partialMatchesList,
       partialMatchesDescription,
       unmatchedElementsDescription,
       partialMatches,
+      indexesOfUnmatchedElements,
       )
 }
 
@@ -83,6 +92,7 @@ internal data class PartialMatchesInCollectionDescription(
    val partialMatchesDescription: String,
    val unmatchedElementsDescription: String,
    val partialMatches: List<PartialCollectionMatch>,
+   val indexesOfUnmatchedElements: List<Int>,
 ) {
    override fun toString(): String = prefixIfNotEmpty(
       listOf(partialMatchesList,
@@ -93,11 +103,6 @@ internal data class PartialMatchesInCollectionDescription(
          .joinToString("\n"),
       "\n"
    )
-
-
-   companion object {
-      val Empty = PartialMatchesInCollectionDescription("", "", "", listOf())
-   }
 }
 
 private data class SliceComparison<T>(
@@ -165,7 +170,7 @@ fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    override fun test(value: List<T>): MatcherResult {
       val comparison = SliceComparison.of(expectedSlice.toList(), value, SliceComparison.Companion.SliceType.END)
 
-      val partialMatchesDescription = describePartialMatchesInCollection(expectedSlice, value)
+      val partialMatchesDescription by lazy { describePartialMatchesInCollection(expectedSlice, value) }
 
       return MatcherResult(
          comparison.match,

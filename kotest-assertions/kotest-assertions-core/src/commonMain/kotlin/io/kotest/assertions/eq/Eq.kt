@@ -5,17 +5,37 @@ package io.kotest.assertions.eq
  * not equal, or null if they are equal.
  *
  * This equality typeclass is at the heart of the shouldBe matcher.
- *
  */
 interface Eq<T> {
 
-   @Deprecated("Use the overload with one more parameter of type EqContext.")
-   fun equals(actual: T, expected: T, strictNumberEq: Boolean): Throwable?
+   /**
+    * @param context extra context used during comparison such as cyclic references and strict mode. See [EqContext].
+    */
+   fun equals(actual: T, expected: T, context: EqContext): EqResult
+}
+
+sealed interface EqResult {
+
+   data object Success : EqResult
 
    /**
-    * @param strictNumberEq used by number types to determine if they should be compared using == or by converting to the larger type.
-    * @param context tracks visited object pairs to prevent infinite recursion on cyclic references
+    * Wraps a failure generating function in an [EqResult].
+    *
+    * Should be used when we know an [Eq] has failed, and the error message is being lazily
+    * generated so it can be avoided when the comparison is inverted.
     */
-   fun equals(actual: T, expected: T, strictNumberEq: Boolean, context: EqContext = EqContext()): Throwable? =
-      equals(actual, expected, strictNumberEq)
+   data class Failure(val error: () -> Throwable) : EqResult
+
+   companion object {
+
+      /**
+       * Wraps a Throwable in an [EqResult].
+       *
+       * Should be used when we have already generated a Throwable, or null, and we want the appropriate
+       * [EqResult] type.
+       */
+      fun wrap(t: Throwable?): EqResult {
+         return if (t == null) Success else Failure { t }
+      }
+   }
 }

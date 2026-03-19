@@ -1,9 +1,10 @@
 package io.kotest.core.spec
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Tag
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.ContextAwareAfterProjectListener
+import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.core.spec.style.scopes.RootScope
 import kotlin.js.JsName
 
@@ -55,7 +56,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
     * Includes the tests from the given [TestFactory] in this spec or factory, with the given
-    * prefixed added to each of the test's name.
+    * prefixed added to each of the test's names.
     */
    fun include(prefix: String, factory: TestFactory) {
       val renamed = factory.tests.map { test ->
@@ -72,7 +73,13 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * it with project configuration.
     */
    fun afterProject(f: AfterProject) {
-      afterProjectListeners.add(ContextAwareAfterProjectListener(this::class.simpleName, f))
+      afterProjectListeners.add(object : AfterProjectListener, ContextAwareListener {
+         override suspend fun afterProject() {
+            f()
+         }
+
+         override val context: String = this@DslDrivenSpec::class.bestName()
+      })
    }
 }
 

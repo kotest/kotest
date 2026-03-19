@@ -7,7 +7,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
-import io.kotest.engine.interceptors.EngineContext
+import io.kotest.engine.TestEngineContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
@@ -21,19 +21,19 @@ import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 /**
  * Implementation of [SpecExecutor] that executes each [TestCase] in a fresh instance
  * of the [Spec] class.
  *
  * This differs from the [InstancePerLeafSpecExecutor] in that
- * every single test, whether of type [TestType.Test] or [TestType.Container], will be
+ * every single test, whether of type Test or Container, will be
  * executed separately. Branch tests will ultimately be executed once as a standalone
  * test, and also as part of the "path" to any nested tests.
  *
@@ -66,7 +66,7 @@ import kotlin.coroutines.coroutineContext
 @Suppress("DEPRECATION")
 @Deprecated("The semantics of instance per leaf are confusing and this mode should be avoided")
 internal class InstancePerTestSpecExecutor(
-   private val context: EngineContext,
+   private val context: TestEngineContext,
 ) : SpecExecutor {
 
    private val logger = Logger(InstancePerTestSpecExecutor::class)
@@ -102,7 +102,7 @@ internal class InstancePerTestSpecExecutor(
          // seed instance (for the first test), or in a fresh instance (for the rest).
 
          val specContext = SpecContext.create()
-         pipeline.execute(seed, specContext) {
+         pipeline.execute(seed, ref) {
             launchRootTests(seed, ref, specContext)
             Result.success(results.toMap())
          }.map { results.toMap() }
@@ -111,13 +111,13 @@ internal class InstancePerTestSpecExecutor(
 
    private suspend fun launchRootTests(seed: Spec, ref: SpecRef, specContext: SpecContext) {
 
-      val rootTests = materializer.materialize(seed)
+      val rootTests = materializer.materialize(seed, ref)
 
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(seed).concurrency
       val semaphore = Semaphore(concurrency)
 
-      // all root test coroutines are launched immediately,
+      // all root test coroutines are launched immediately;
       // the semaphore will control how many can actually run concurrently
 
       coroutineScope { // will wait for all tests to complete
@@ -156,12 +156,12 @@ internal class InstancePerTestSpecExecutor(
       val spec = inflator.inflate(ref).getOrThrow()
 
       // we need to find the same root test but in the newly created spec
-      val root = materializer.materialize(spec).first { it.descriptor.isPrefixOf(testCase.descriptor) }
+      val root = materializer.materialize(spec, ref).first { it.descriptor.isPrefixOf(testCase.descriptor) }
       logger.log { "Located root for target $root" }
 
       // we switch to a new coroutine for each spec instance
       withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
-         pipeline.execute(spec, specContext) {
+         pipeline.execute(spec, ref) {
             val result = executeTest(root, testCase.descriptor, specContext, ref)
             Result.success(mapOf(testCase to result))
          }
@@ -192,7 +192,7 @@ internal class InstancePerTestSpecExecutor(
             target = target,
             specContext = specContext,
             ref = ref,
-            coroutineContext = coroutineContext,
+            coroutineContext = currentCoroutineContext(),
          ),
          specContext = specContext
       )

@@ -10,11 +10,12 @@ import io.kotest.core.listeners.BeforeSpecListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.PrepareSpecListener
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 import kotlin.reflect.KClass
 
@@ -35,8 +36,8 @@ class AnnotationExtensionTest : FunSpec() {
 
       test("a spec annotated with ApplyExtension should have that extension applied") {
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(MyAnnotatedSpec1::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(MyAnnotatedSpec1::class))
+            .execute()
          instantiations.shouldBe(1)
          beforeSpec.shouldBe(1)
          afterSpec.shouldBe(1)
@@ -49,8 +50,8 @@ class AnnotationExtensionTest : FunSpec() {
 
       test("a spec annotated with multiple ApplyExtension's should have all extensions applied") {
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(MyAnnotatedSpec2::class)
-            .launch()
+            .withSpecRefs(SpecRef.Reference(MyAnnotatedSpec2::class))
+            .execute()
          instantiations.shouldBe(2)
          beforeSpec.shouldBe(2)
          afterSpec.shouldBe(2)
@@ -63,8 +64,10 @@ class AnnotationExtensionTest : FunSpec() {
 
       test("ApplyExtension should only apply to the spec they are annotating") {
          TestEngineLauncher().withListener(NoopTestEngineListener)
-            .withClasses(MyAnnotatedSpec1::class, NotAnnotatedSpec::class)
-            .launch()
+            .withSpecRefs(
+               SpecRef.Reference(MyAnnotatedSpec1::class),
+               SpecRef.Reference(NotAnnotatedSpec::class)
+            ).execute()
          instantiations.shouldBe(1)
          beforeSpec.shouldBe(1)
          afterSpec.shouldBe(1)

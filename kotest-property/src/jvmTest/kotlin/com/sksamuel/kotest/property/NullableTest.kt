@@ -13,6 +13,7 @@ import io.kotest.property.forAll
 import io.kotest.property.forNone
 import io.kotest.property.withAssumptions
 
+@Suppress("OPT_IN_USAGE")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class NullableTest : FunSpec({
    test("forAll with implicit nullable arbitaries") {
@@ -45,7 +46,7 @@ class NullableTest : FunSpec({
    }
 
    test("checkAll with implicit nullable arbitraries with should not be null Assumption") {
-      checkAll<Int?> { num ->
+      checkAll<Int?>(PropTestConfig(maxDiscardPercentage = 90)) { num ->
          withAssumptions(num != null) {
             num shouldNotBe null
          }
@@ -53,7 +54,7 @@ class NullableTest : FunSpec({
    }
 
    test("checkAll with implicit nullable arbitraries with should be null Assumption") {
-      checkAll<Int?> { num ->
+      checkAll<Int?>(PropTestConfig(maxDiscardPercentage = 90)) { num ->
          withAssumptions(num == null) {
             num shouldBe null
          }

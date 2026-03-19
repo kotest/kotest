@@ -2,6 +2,7 @@
 
 package io.kotest.matchers.collections
 
+import io.kotest.assertions.similarity.possibleMatchesDescription
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.neverNullMatcher
@@ -46,7 +47,20 @@ fun <T, C : Collection<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neve
    val comparison = UnorderedCollectionsDifference.matchIgnoringMissingElements(expectedAsList, actualAsList)
    MatcherResult(
       comparison.isMatch(),
-      { "Collection should contain the values of $expectedAsList in any order, but was $actualAsList.${comparison}" },
+      {
+         val possibleMatches = comparison.missingElements
+            .map { possibleMatchesDescription(value.toSet(), it) }
+            .filter { it.isNotEmpty() }
+            .joinToString("\n")
+
+         buildString {
+            append("Collection should contain the values of $expectedAsList in any order, but was $actualAsList.${comparison}")
+            if(possibleMatches.isNotEmpty()) {
+               appendLine()
+               append("Possible matches for unexpected elements:\n$possibleMatches")
+            }
+         }
+      },
       { "Collection should not contain the values of $expectedAsList in any order" }
    )
 }

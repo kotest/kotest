@@ -5,6 +5,7 @@ import io.kotest.core.listeners.AfterProjectListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runInterruptible
 import org.testcontainers.containers.ComposeContainer
+import java.io.File
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 
@@ -20,6 +21,13 @@ import java.util.concurrent.locks.ReentrantLock
 class ComposeContainerProjectExtension(
    private val container: ComposeContainer,
 ) : MountableExtension<ComposeContainer, ComposeContainer>, AfterProjectListener {
+
+   companion object {
+      fun fromResource(resource: String): ComposeContainerProjectExtension {
+         val file = this::class.java.classLoader.getResource(resource) ?: error("Resource not found: $resource")
+         return ComposeContainerProjectExtension(ComposeContainer(File(file.path)))
+      }
+   }
 
    private val ref = AtomicReference<ComposeContainer>(null)
    private val lock = ReentrantLock()

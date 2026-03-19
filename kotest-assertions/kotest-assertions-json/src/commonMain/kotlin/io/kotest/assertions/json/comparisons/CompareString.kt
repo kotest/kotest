@@ -14,7 +14,7 @@ internal fun compareString(
    expected: JsonNode.StringNode,
    actual: JsonNode,
    options: CompareJsonOptions
-): JsonError? {
+): List<JsonError> {
    return when {
       actual is JsonNode.StringNode -> compareStrings(path, expected.value, actual.value)
       options.typeCoercion.isEnabled() -> when {
@@ -25,9 +25,9 @@ internal fun compareString(
             actual
          )
 
-         else -> JsonError.IncompatibleTypes(path, expected, actual)
+         else -> listOf(JsonError.IncompatibleTypes(path, expected, actual))
       }
 
-      else -> JsonError.IncompatibleTypes(path, expected, actual)
+      else -> listOf(JsonError.IncompatibleTypes(path, expected, actual))
    }
 }

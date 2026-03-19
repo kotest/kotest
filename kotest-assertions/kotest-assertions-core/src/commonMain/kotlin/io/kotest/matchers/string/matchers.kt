@@ -4,9 +4,9 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.StringPrint
 import io.kotest.assertions.print.print
 import io.kotest.assertions.submatching.describePartialMatchesInStringForSlice
-import io.kotest.matchers.ComparisonMatcherResult
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
@@ -28,7 +28,7 @@ fun containOnlyDigits() = neverNullMatcher<String> { value ->
    val firstNonDigit = value.toCharArray().withIndex().firstOrNull { it.value !in '0'..'9' }
    MatcherResult(
       firstNonDigit == null,
-      { "${value.print().value} should contain only digits, but contained ${firstNonDigit?.let { it.value.print().value }} at index ${firstNonDigit?.index}" },
+      { "${value.print().value} should contain only digits, but contained ${firstNonDigit?.value?.print()?.value} at index ${firstNonDigit?.index}" },
       { "${value.print().value} should not contain only digits" })
 }
 
@@ -150,6 +150,26 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
       { "${value.print().value} should not contain regex $regex" })
 }
 
+/**
+ * Verifies that the given [String] contains all the specified substrings in given order,
+ * with any characters before, after, or in between.
+ *
+ * For example, each of the following examples would pass:
+ *
+ * val value = "The quick brown fox jumps over the lazy dog"
+ * value.shouldContainInOrder("The", "quick", "fox", "jumps", "over", "dog")
+ * value.shouldContainInOrder("The quick", "fox jump", "over", "dog")
+ *
+ * Note: consecutive substrings can overlap as long as the second substring starts at a later index than the first.
+ * So the following test would pass:
+ *
+ * "sourdough bread".shouldContainInOrder("bread", "read")
+ *
+ * But the test below would fail because the second substring starts at the same index as the first:
+ *
+ * "are you ready".shouldContainInOrder("read", "ready")
+ *
+ */
 fun String?.shouldContainInOrder(vararg substrings: String): String? {
    this should containInOrder(*substrings)
    return this
@@ -160,8 +180,19 @@ fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
    return this
 }
 
-fun containInOrder(vararg substrings: String) = neverNullMatcher<String> { value ->
-   val matchOutcome = matchSubstrings(value, substrings.toList())
+internal fun interface MatchOffset {
+   operator fun invoke(value: String) : Int
+}
+
+fun containInOrder(vararg substrings: String) = containSubstringsInOrder({ 1 }, *substrings)
+
+internal fun containSubstringsInOrder(matchOffset: MatchOffset, vararg substrings: String) = neverNullMatcher<String> { value ->
+   val matchOutcome = matchSubstrings(
+      value,
+      substrings.toList(),
+      depth = 0,
+      matchOffset = matchOffset,
+      )
 
    val substringFoundEarlier = if (matchOutcome is ContainInOrderOutcome.Mismatch) {
       describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
@@ -191,15 +222,30 @@ internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty
 internal fun joinNonEmpty(separator: String, vararg values: String) =
    values.filter { it.isNotEmpty() }.joinToString(separator)
 
-internal fun matchSubstrings(value: String, substrings: List<String>, depth: Int = 0): ContainInOrderOutcome = when {
+internal fun matchSubstrings(
+   value: String,
+   substrings: List<String>,
+   depth: Int,
+   matchOffset: MatchOffset,
+   ): ContainInOrderOutcome = when {
    substrings.isEmpty() -> ContainInOrderOutcome.Match
    else -> {
       val currentSubstring = substrings[0]
       val matchAtIndex = value.indexOf(currentSubstring)
       when {
          matchAtIndex == -1 -> ContainInOrderOutcome.Mismatch(currentSubstring, depth)
-         currentSubstring == "" -> matchSubstrings(value, substrings.drop(1), depth + 1)
-         else -> matchSubstrings(value.substring(matchAtIndex + 1), substrings.drop(1), depth + 1)
+         currentSubstring == "" -> matchSubstrings(
+            value,
+            substrings.drop(1),
+            depth + 1,
+            matchOffset,
+            )
+         else -> matchSubstrings(
+            value.substring(matchAtIndex + matchOffset(currentSubstring)),
+            substrings.drop(1),
+            depth + 1,
+            matchOffset,
+            )
       }
    }
 }
@@ -249,13 +295,11 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
       "${value.print().value} should include substring ${substr.print().value}",
       describePartialMatchesInStringForSlice(substr, value).toString(),
    )
-   ComparisonMatcherResult(
-      passed = passed,
-      actual = StringPrint.printUnquoted(value),
-      expected = StringPrint.printUnquoted(substr),
-      failureMessageFn = { differencesDescription.filter { it.isNotEmpty() }.joinToString("\n") },
-      negatedFailureMessageFn = { "${value.print().value} should not include substring ${substr.print().value}" }
-   )
+   MatcherResultBuilder.create(passed)
+      .withValues(expected = { StringPrint.printUnquoted(substr) }, actual = { StringPrint.printUnquoted(value) })
+      .withFailureMessage { differencesDescription.filter { it.isNotEmpty() }.joinToString("\n") }
+      .withNegatedFailureMessage { "${value.print().value} should not include substring ${substr.print().value}" }
+      .build()
 }
 
 /**

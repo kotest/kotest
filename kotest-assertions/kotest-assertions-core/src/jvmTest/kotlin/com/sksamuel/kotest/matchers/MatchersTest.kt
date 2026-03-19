@@ -50,7 +50,7 @@ class MatchersTest : FreeSpec({
 
       "should support matching non null with null" {
          shouldThrow<AssertionError> {
-            val name: String = "nullornot"
+            val name = "nullornot"
             name shouldBe null
          }
          shouldThrow<AssertionError> {
@@ -147,7 +147,7 @@ class MatchersTest : FreeSpec({
             l.add(l)
             l shouldBe emptyList()
          }.message shouldBe """Unexpected elements from index 0
-                                                              |expected:<[]> but was:<[[(this Collection)]]>""".trimMargin()
+                                                              |expected:<[]> but was:<[(this ArrayList)]>""".trimMargin()
       }
    }
 

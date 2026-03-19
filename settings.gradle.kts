@@ -15,7 +15,7 @@ plugins {
 
 @Suppress("UnstableApiUsage")
 dependencyResolutionManagement {
-   repositoriesMode = RepositoriesMode.PREFER_SETTINGS
+   repositoriesMode = RepositoriesMode.PREFER_PROJECT
 
    repositories {
       google()
@@ -36,9 +36,8 @@ dependencyResolutionManagement {
          content { includeModule("com.yarnpkg", "yarn") }
       }
       //endregion
-
-      mavenLocal()
    }
+
 }
 
 include(
@@ -57,6 +56,9 @@ include(
    // generates KMP tests
    ":kotest-framework:kotest-framework-symbol-processor",
 
+   ":kotest-intellij-plugin",
+
+   // the older kotest 4.x era data/table testing, now pulled out into a legacy module
    ":kotest-assertions:kotest-assertions-table",
 
    // provides the base Matcher and assertion counters which are used by the engine to track assertion usage
@@ -108,68 +110,50 @@ include(
    ":kotest-extensions:kotest-extensions-htmlreporter",
    ":kotest-extensions:kotest-extensions-junitxml",
 
-   // adds support for the allure reporting framework - see more https://allurereport.org/
-   ":kotest-extensions:kotest-extensions-allure",
-   ":kotest-extensions:kotest-extensions-blockhound",
-
-   // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
-   ":kotest-extensions:kotest-extensions-decoroutinator",
-
-   // adds support for mockserver - see more https://www.mock-server.com/
-   ":kotest-extensions:kotest-extensions-mockserver",
-
-   ":kotest-extensions:kotest-extensions-pitest",
-
-   ":kotest-extensions:kotest-extensions-spring",
-
-   // adds support for the testcontainers framework - see more https://testcontainers.com
-   ":kotest-extensions:kotest-extensions-testcontainers",
-
-   // allows overriding the .now() functionality on time classes
-   ":kotest-extensions:kotest-extensions-now",
-
-   // extensions that adapt junit extensions into kotest extensions
-   ":kotest-extensions:kotest-extensions-junit5",
-
-   // adds support for the wiremock framework - see more https://www.wiremock.io/
-   ":kotest-extensions:kotest-extensions-wiremock",
-
    // adds support for the koin DI framework - see more https://insert-koin.io/
    ":kotest-extensions:kotest-extensions-koin",
 
-   ":kotest-runner:kotest-runner-junit4",
-   ":kotest-runner:kotest-runner-junit5",
-//   ":kotest-runner:kotest-runner-junit6",
-
-   // shared support executing tests via junit platform
+   // shared support executing tests via JUnit Platform
    ":kotest-runner:kotest-runner-junit-platform",
+
+   // runs tests on junit5 but also used by other modules to run kotest's own tests
+   ":kotest-runner:kotest-runner-junit5",
+   ":kotest-runner:kotest-runner-junit4",
+   ":kotest-runner:kotest-runner-junit6",
 
    // BOM for whole kotest project
    ":kotest-bom",
 )
 
-/** Is the build currently running on CI. */
+/** Is the build currently running on CI? */
 private val isCI = System.getenv("CI").toBoolean()
+private val isLocal = !isCI
 
-/** Is the build currently running on a github actions Linux runner. */
+/** Is the build currently running on a GitHub actions Linux runner? */
 private val isLinuxRunner = System.getenv("RUNNER_OS") == "Linux"
 
 private val isMaster = System.getenv("GITHUB_REF_NAME") == "master"
 
-/** we only include JVM-only modules if it's a non-CI build, or if it's master build, or if it's using a linux runner */
-private val shouldRunJvmOnlyModules = !isCI || isMaster || isLinuxRunner
+/** we only include JVM-only modules if it's a non-CI build, or if it's a master build, or if it's using a linux runner */
+private val shouldRunJvmOnlyModules = isLocal || isMaster || isLinuxRunner
+
+/** we only include Linux-only modules if it's a non-CI build or if it's using a linux runner */
+private val shouldRunLinuxOnlyModules = isLocal || isLinuxRunner
 
 /**
  * These modules only have JVM source sets. We don't need to run them on all OSes for PRs as we can
  * assume that if it works on one JVM, then it will work on all JVMs. Worst case, is there's a bug on
- * a specific OS JVM that causes a test to fail on macos when it works on linux for example, then our
- * PR would be green, but go red on master. This is acceptable trade off given the limited availability
- * of Macos runners on github.
+ * a specific OS JVM that causes a test to fail on macOS when it works on linux, for example, then our
+ * PR would be green but go red on master. This is an acceptable trade off given the limited availability
+ * of macOS runners on GitHub.
  */
 if (shouldRunJvmOnlyModules) {
    include(
 
       ":kotest-tests:kotest-tests-core",
+
+      // tests for Java APIs added in JDK21
+      ":kotest-tests:kotest-tests-assertions-java21",
 
       // defines the order of callbacks
       ":kotest-tests:kotest-tests-callback-order",
@@ -178,6 +162,9 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-concurrency-specs",
 
       ":kotest-tests:kotest-tests-config-project",
+
+      // tests that we can lookup a project config by putting it on a common package path
+      ":kotest-tests:kotest-tests-config-project-prefix",
       ":kotest-tests:kotest-tests-config-classname",
       ":kotest-tests:kotest-tests-config-packages",
 
@@ -185,6 +172,14 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-config-properties",
 
       ":kotest-tests:kotest-tests-htmlreporter",
+
+      // tests specific functionality of the JUnit4 runner used by Android instrumented tests
+      ":kotest-tests:kotest-tests-junit4",
+
+      // tests that we add the jupiter dep to allow org.junit.jupiter.api.Test annotations for backwards compatibility
+      // we shouldn't really add it, people can add it themselves if they want the dependency, but this is a historic artifact
+      ":kotest-tests:kotest-tests-junit-jupiter",
+
       ":kotest-tests:kotest-tests-junitxml",
       ":kotest-tests:kotest-tests-junit-displaynameformatter",
 
@@ -199,7 +194,60 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-timeout-project",
       ":kotest-tests:kotest-tests-timeout-sysprop",
       ":kotest-tests:kotest-tests-test-parallelism",
-//   ":kotest-tests:kotest-tests-js",
+
+      // tests various forms of the Gradle --tests filter
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class-root-test",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-single-class",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-package-recursive",
+      ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-class-wildcard-prefix",
+
+      // tests specific to the JS implementations
+      ":kotest-tests:kotest-tests-js",
+
+      // various tests and details for generating XML reports via the Gradle tasks
+      ":kotest-tests:kotest-tests-xml",
+
+      // tests specific to the WasmJS engine
+      ":kotest-tests:kotest-tests-wasm-js",
+
+      // tests specific to the WasmWASI engine
+      ":kotest-tests:kotest-tests-wasm-wasi"
+   )
+}
+
+/**
+ * These modules only require the JVM, so there's no need to run them on all platforms.
+ * We skip them on non-Linux CI runners to keep cross-platform builds lean.
+ * Local (non-CI) builds always include them.
+ */
+if (shouldRunLinuxOnlyModules) {
+   include(
+      // adds support for the allure reporting framework - see more https://allurereport.org/
+      ":kotest-extensions:kotest-extensions-allure",
+      ":kotest-extensions:kotest-extensions-blockhound",
+
+      // adds support for coroutine decoroutinator - see more https://github.com/Anamorphosee/stacktrace-decoroutinator
+      ":kotest-extensions:kotest-extensions-decoroutinator",
+
+      // adds support for mockserver - see more https://www.mock-server.com/
+      ":kotest-extensions:kotest-extensions-mockserver",
+
+      ":kotest-extensions:kotest-extensions-pitest",
+
+      ":kotest-extensions:kotest-extensions-spring",
+
+      // adds support for the testcontainers framework - see more https://testcontainers.com
+      ":kotest-extensions:kotest-extensions-testcontainers",
+
+      // adds support for the wiremock framework - see more https://www.wiremock.io/
+      ":kotest-extensions:kotest-extensions-wiremock",
+
+      // allows overriding the .now() functionality on time classes
+      ":kotest-extensions:kotest-extensions-now",
+
+      // extensions that adapt junit extensions into kotest extensions
+      ":kotest-extensions:kotest-extensions-junit5",
    )
 }
 

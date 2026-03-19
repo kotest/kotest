@@ -35,7 +35,7 @@ module.exports = {
      "extensions/decoroutinator",
      "extensions/instant",
      "extensions/junit_xml",
-     // "extensions/koin",
+     "extensions/koin",
      "extensions/ktor",
      "extensions/html_reporter",
      "extensions/mockserver",
@@ -48,13 +48,14 @@ module.exports = {
   "assertions": [
     "assertions/index",
     "assertions/matchers",
+    "assertions/shouldbe",
     "assertions/custom_matchers",
     "assertions/composed_matchers",
     "assertions/exceptions",
     "assertions/similarity",
+    "assertions/power-assert",
     "assertions/clues",
     "assertions/soft_assertions",
-    "assertions/power-assert",
     {
       "type": "category",
       "label": "Non-deterministic Testing",
@@ -93,7 +94,6 @@ module.exports = {
         "assertions/arrow",
         "assertions/sql-matchers",
         "assertions/konform",
-        "assertions/klock",
         "assertions/compiler",
         "assertions/field-matching",
         "assertions/jsoup",
@@ -116,6 +116,7 @@ module.exports = {
         "framework/conditional/focus_and_bang",
         "framework/conditional/xmethods",
         "framework/conditional/annotations",
+        "framework/conditional/conditional_exceptions",
         "framework/conditional/gradle"
       ]
     },

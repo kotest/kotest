@@ -19,12 +19,12 @@ object TestDslState {
 
    /**
     * Will throw an exception if we had a test that was not constructed properly (looks
-    * for any test where we invoked .config but did not pass in a test lambda afterwards).
+    * for any test where we invoked .config but did not pass in a test lambda afterward).
     */
    fun checkState() {
       val unfinished = started.map { "Test was not fully defined: $it" }
       if (unfinished.isNotEmpty())
-         error(unfinished.joinToString(", "))
+         throw InvalidSpecStateException(unfinished.joinToString(", "))
    }
 
    suspend fun reset() {
@@ -33,3 +33,5 @@ object TestDslState {
       }
    }
 }
+
+data class InvalidSpecStateException(val msg: String) : Exception(msg)

@@ -4,11 +4,13 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.config.TestConfig
 import kotlin.coroutines.CoroutineContext
 import kotlin.time.Duration
 
@@ -43,20 +45,20 @@ interface StringSpecRootScope : RootScope {
       RootTestWithConfigBuilder(
          context = this@StringSpecRootScope,
          name = TestNameBuilder.builder(this).build(),
-         xdisabled = false
+         xmethod = TestXMethod.NONE
       ).config(
          enabled = enabled,
-         invocations = invocations,
-         tags = tags,
-         timeout = timeout,
-         extensions = extensions,
          enabledIf = enabledIf,
-         invocationTimeout = invocationTimeout,
-         severity = severity,
          enabledOrReasonIf = enabledOrReasonIf,
+         invocations = invocations,
+         timeout = timeout,
+         invocationTimeout = invocationTimeout,
+         tags = tags ?: emptySet(),
+         extensions = extensions,
+         severity = severity,
          coroutineDebugProbes = coroutineDebugProbes,
-         blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
+         blockingTest = blockingTest,
          test = test
       )
    }
@@ -67,10 +69,23 @@ interface StringSpecRootScope : RootScope {
    operator fun String.invoke(test: suspend StringSpecScope.() -> Unit) {
       addTest(
          testName = TestNameBuilder.builder(this).build(),
-         disabled = false,
-         config = null
+         xmethod = TestXMethod.NONE,
+         config = null,
       ) {
-         StringSpecScope(this.coroutineContext, testCase).test()
+         StringSpecScope(this).test()
+      }
+   }
+
+   /**
+    * Adds a String Spec test using the supplied [TestConfig].
+    */
+   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit) {
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = config,
+      ) {
+         StringSpecScope(this).test()
       }
    }
 }
@@ -80,6 +95,8 @@ interface StringSpecRootScope : RootScope {
  */
 @KotestTestScope
 class StringSpecScope(
-   override val coroutineContext: CoroutineContext,
-   override val testCase: TestCase,
-) : TerminalScope()
+   testScope: TestScope
+) : TerminalScope() {
+   override val testCase: TestCase = testScope.testCase
+   override val coroutineContext: CoroutineContext = testScope.coroutineContext
+}

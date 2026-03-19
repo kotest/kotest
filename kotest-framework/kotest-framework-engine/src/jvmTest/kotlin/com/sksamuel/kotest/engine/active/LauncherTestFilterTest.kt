@@ -2,8 +2,9 @@ package com.sksamuel.kotest.engine.active
 
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.descriptors.Descriptor
-import io.kotest.engine.extensions.DescriptorFilter
-import io.kotest.engine.extensions.DescriptorFilterResult
+import io.kotest.core.spec.SpecRef
+import io.kotest.engine.extensions.filter.DescriptorFilter
+import io.kotest.engine.extensions.filter.DescriptorFilterResult
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineLauncher
@@ -34,9 +35,9 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(MyTestClass::class)
+            .withSpecRefs(SpecRef.Reference(MyTestClass::class))
             .addExtensions(filter)
-            .launch()
+            .execute()
       }
 
       test("filter with test path added via launcher should filter test cases") {
@@ -55,9 +56,9 @@ class LauncherTestFilterTest : FunSpec() {
          }
 
          TestEngineLauncher().withListener(listener)
-            .withClasses(MyTestClass::class)
+            .withSpecRefs(SpecRef.Reference(MyTestClass::class))
             .addExtensions(filter)
-            .launch()
+            .execute()
       }
    }
 }

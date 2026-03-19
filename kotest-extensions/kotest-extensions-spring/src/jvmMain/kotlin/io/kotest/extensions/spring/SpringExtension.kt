@@ -41,7 +41,11 @@ class SpringLeafTestExtension : SpringExtension(SpringTestLifecycleMode.Test)
  */
 open class SpringExtension(
    private val mode: SpringTestLifecycleMode = SpringTestLifecycleMode.Test
-) : ConstructorExtension, SpecExtension, TestCaseExtension, BeforeTestListener, AfterTestListener {
+) : ConstructorExtension,
+   SpecExtension,
+   TestCaseExtension,
+   BeforeTestListener,
+   AfterTestListener {
 
    private val logger = Logger(SpringExtension::class)
 
@@ -53,6 +57,8 @@ open class SpringExtension(
       val manager = getTestContextManager(clazz)
       val context = manager.testContext.applicationContext
 
+      println("Creating nstance of $clazz")
+
       logger.log { Pair(clazz.simpleName, "Spring extension will try to create autowired instance") }
       return context.autowireCapableBeanFactory.autowire(
          clazz.java,
@@ -62,10 +68,18 @@ open class SpringExtension(
 
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
       SpringJavaCompatibility.checkForSafeClassName(spec::class)
+
       val manager = getTestContextManager(spec::class)
+
+      // the spring docs state this method should be called immediately after instantiation of the test class
+      // or as soon after instantiation as possible. We want to run it during the interception phase, and not
+      // in the instantiate phase, so that anyone who registers the spring extension through a spec property override
+      // still gets this called (which is needed to wire in late init dependencies); eg, people not using the
+      // ApplyExtension annotation won't have any specs instantiated via the constructor extension
+      manager.prepareTestInstance(spec)
+
       withContext(SpringTestContextCoroutineContextElement(manager)) {
          testContextManager().beforeTestClass()
-         testContextManager().prepareTestInstance(spec)
          execute(spec)
          testContextManager().afterTestClass()
       }
@@ -73,27 +87,31 @@ open class SpringExtension(
 
    override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult {
       val methodName = SpringJavaCompatibility.methodHandle(testCase)
-      if (testCase.isApplicable()) {
-         testContextManager().beforeTestExecution(testCase.spec, methodName)
+      return if (testCase.isApplicable()) {
+         // the spring docs state that beforeTestMethod must be called immediately prior to framework-specific before lifecycle callbacks
+         testContextManager().beforeTestMethod(testCase.spec, methodName)
+         val result = execute(testCase)
+         // the spring docs state that afterTestMethod must be called immediately after framework-specific after lifecycle callbacks
+         testContextManager().afterTestMethod(testCase.spec, methodName, null as Throwable?)
+         result
+      } else {
+         execute(testCase)
       }
-      val result = execute(testCase)
-      if (testCase.isApplicable()) {
-         testContextManager().afterTestExecution(testCase.spec, methodName, null as Throwable?)
-      }
-      return result
    }
 
    override suspend fun beforeAny(testCase: TestCase) {
       if (testCase.isApplicable()) {
          val methodName = SpringJavaCompatibility.methodHandle(testCase)
-         testContextManager().beforeTestMethod(testCase.spec, methodName)
+         // the Spring docs state that beforeTestExecution must be called after framework-specific before lifecycle callbacks
+         testContextManager().beforeTestExecution(testCase.spec, methodName)
       }
    }
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
       if (testCase.isApplicable()) {
          val methodName = SpringJavaCompatibility.methodHandle(testCase)
-         testContextManager().afterTestMethod(testCase.spec, methodName, null as Throwable?)
+         // the spring docs state that afterTestExecution must be called before framework-specific after lifecycle callbacks
+         testContextManager().afterTestExecution(testCase.spec, methodName, null as Throwable?)
       }
    }
 

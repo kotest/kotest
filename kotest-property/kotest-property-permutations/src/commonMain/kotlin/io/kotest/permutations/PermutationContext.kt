@@ -1,5 +1,8 @@
+@file:OptIn(ExperimentalKotest::class)
+
 package io.kotest.permutations
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.permutations.constraints.Constraints
 import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.statistics.StatisticsReporter

@@ -12,6 +12,7 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
+import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
@@ -27,7 +28,7 @@ import kotlin.reflect.KClass
  */
 class KotestJunitPlatformTestEngine : TestEngine {
 
-   private val logger = Logger(KotestJunitPlatformTestEngine::class)
+   private val logger = Logger<KotestJunitPlatformTestEngine>()
 
    companion object {
       const val ENGINE_ID = "kotest"
@@ -52,7 +53,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
+      // specifically; the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
       // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
@@ -60,7 +61,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
-      val config = ProjectConfigLoader.load()
+      val config = ProjectConfigLoader.load(root.specs.map { it.fqn }.toSet())
 
       val listener = ThreadSafeTestEngineListener(
          PinnedSpecTestEngineListener(
@@ -74,21 +75,23 @@ class KotestJunitPlatformTestEngine : TestEngine {
          )
       )
 
-      TestEngineLauncher()
-         .withJvm()
-         .withListener(listener)
-         .addExtensions(root.extensions)
-         .withClasses(root.classes)
-         .launch()
+      runBlocking {
+         // the result is ignored as the junit runner will add engine errors as "dummy specs"
+         TestEngineLauncher()
+            .withListener(listener)
+            .addExtensions(root.extensions)
+            .withSpecRefs(root.specs)
+            .execute()
+      }
    }
 
    /**
     * gradlew --tests rules:
-    * Classname: adds classname selector and ClassMethodNameFilter post discovery filter
-    * Classname.method: adds classname selector and ClassMethodNameFilter post discovery filter
+    * Classname: adds classname selector and ClassMethodNameFilter post-discovery filter
+    * Classname.method: adds classname selector and ClassMethodNameFilter post-discovery filter
     * org.Classname: doesn't seem to invoke the discover or execute methods.
     *
-    * filter in gradle test block:
+    * filter in Gradle test block:
     * includeTestsMatching("*Test") - class selectors and ClassMethodNameFilter with pattern
     * includeTestsMatching("*Test") AND includeTestsMatching("org.gradle.internal.*") - class selectors and ClassMethodNameFilter with two patterns
     */
@@ -106,15 +109,15 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val result = Discovery.discover(uniqueId, request)
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized
-      // so we'll force the loading here as well. Ideally, this would all be taken care of in in the engine and junit shouldn't need to know
+      // specifically; the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
+      // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
       KotestPropertiesLoader.loadAndApplySystemPropsFile()
 
       // we need to load this here as well so we can configure the formatter
       // todo update display name formatter to be a builder that accepts config, so we can push the config part to runtime and remove the dependency here entirely, then project config loader can go internal
-      val config = ProjectConfigLoader.load()
+      val config = ProjectConfigLoader.load(result.specs.map { it.fqn }.toSet())
 
       val formatting = DisplayNameFormatting(config)
 
@@ -125,7 +128,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .build()
 
       logger.log { "JUnit discovery completed [descriptor=$engine]" }
-      logger.log { "Final specs [${engine.classes.joinToString(", ")}]" }
+      logger.log { "Final specs [${engine.specs.joinToString(", ")}]" }
       return engine
    }
 
@@ -134,7 +137,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     */
    @Suppress("UNCHECKED_CAST")
    private fun configurationParameterExtensions(request: EngineDiscoveryRequest): List<Extension> {
-      return request.configurationParameters.get("kotest.extensions").orElseGet { "" }
+      return request.configurationParameters.get("kotest.extensions").orElse("")
          .split(',')
          .map { it.trim() }
          .filter { it.isNotBlank() }
@@ -156,10 +159,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
-    * If we are excluded from the engines then we do not run discovery.
+    * If we are excluded from the engines, then we do not run discovery.
     */
    private fun isEngineIncluded(request: EngineDiscoveryRequest): Boolean {
       return request.engineFilters().all { it.toPredicate().test(this) }
    }
 }
-
