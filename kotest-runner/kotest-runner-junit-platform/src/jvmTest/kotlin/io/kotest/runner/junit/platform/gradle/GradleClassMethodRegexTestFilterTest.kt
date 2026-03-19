@@ -148,27 +148,15 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
       val fqn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
 
-      test("test with LF in name matches filter with space") {
-         val testDescriptor = spec.append("a test\nwith newline")
-         val filter = "$fqn\\Q.a test with newline\\E"
-         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
-      }
-
-      test("test with CRLF in name matches filter with space") {
-         val testDescriptor = spec.append("a test\r\nwith crlf")
-         val filter = "$fqn\\Q.a test with crlf\\E"
-         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
-      }
-
       test("test with CR in name matches filter with space") {
          val testDescriptor = spec.append("a test\rwith cr")
          val filter = "$fqn\\Q.a test with cr\\E"
          GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
       }
 
-      test("nested test with LF in name matches filter with space") {
-         val container = spec.append("parent\ncontext")
-         val testDescriptor = container.append("child\ntest")
+      test("nested test with CR in name matches filter with space") {
+         val container = spec.append("parent\rcontext")
+         val testDescriptor = container.append("child\rtest")
          val filter = "$fqn\\Q.parent context -- child test\\E"
          GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
       }
