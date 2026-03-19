@@ -28,7 +28,7 @@ import kotlin.reflect.KClass
  */
 class KotestJunitPlatformTestEngine : TestEngine {
 
-   private val logger = Logger(KotestJunitPlatformTestEngine::class)
+   private val logger = Logger<KotestJunitPlatformTestEngine>()
 
    companion object {
       const val ENGINE_ID = "kotest"
@@ -53,7 +53,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
+      // specifically; the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
       // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
@@ -109,7 +109,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val result = Discovery.discover(uniqueId, request)
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
+      // specifically; the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
       // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
@@ -137,7 +137,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     */
    @Suppress("UNCHECKED_CAST")
    private fun configurationParameterExtensions(request: EngineDiscoveryRequest): List<Extension> {
-      return request.configurationParameters.get("kotest.extensions").orElseGet { "" }
+      return request.configurationParameters.get("kotest.extensions").orElse("")
          .split(',')
          .map { it.trim() }
          .filter { it.isNotBlank() }

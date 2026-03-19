@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.teamcity
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.SourceRef
@@ -12,10 +13,13 @@ import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
 
 class TeamCityPathRendererTest : FreeSpec() {
+
+   private val fqn = TeamCityPathRendererTest::class.bestName()
+
    init {
       "render spec ref " {
          TeamCityPathRenderer(DisplayNameFormatting(null))
-            .testPath(SpecRef.Reference(TeamCityPathRendererTest::class)) shouldBe "com.sksamuel.kotest.engine.teamcity.TeamCityPathRendererTest"
+            .testPath(SpecRef.Reference(TeamCityPathRendererTest::class)) shouldBe fqn
       }
       "render root tests should include class" {
          val tc = TestCase(
@@ -28,7 +32,7 @@ class TeamCityPathRendererTest : FreeSpec() {
          )
          val renderer = TeamCityPathRenderer(DisplayNameFormatting(null))
          renderer.testPath(SpecRef.Reference(TeamCityPathRendererTest::class))
-         renderer.testPath(tc) shouldBe "com.sksamuel.kotest.engine.teamcity.TeamCityPathRendererTest.foo"
+         renderer.testPath(tc) shouldBe "$fqn.foo"
       }
       "render nested tests should be flattened" {
          val parent = TestCase(
@@ -51,7 +55,7 @@ class TeamCityPathRendererTest : FreeSpec() {
          )
          val renderer = TeamCityPathRenderer(DisplayNameFormatting(null))
          renderer.testPath(SpecRef.Reference(TeamCityPathRendererTest::class))
-         renderer.testPath(tc) shouldBe "com.sksamuel.kotest.engine.teamcity.TeamCityPathRendererTest.foo ⇢ bar"
+         renderer.testPath(tc) shouldBe "$fqn.foo ⇢ bar"
       }
       "periods should be relaced in test names" {
          val parent = TestCase(
@@ -74,7 +78,7 @@ class TeamCityPathRendererTest : FreeSpec() {
          )
          val renderer = TeamCityPathRenderer(DisplayNameFormatting(null))
          renderer.testPath(SpecRef.Reference(TeamCityPathRendererTest::class))
-         renderer.testPath(tc) shouldBe "com.sksamuel.kotest.engine.teamcity.TeamCityPathRendererTest.foo bar ⇢ boo far"
+         renderer.testPath(tc) shouldBe "$fqn.foo bar ⇢ boo far"
       }
    }
 }

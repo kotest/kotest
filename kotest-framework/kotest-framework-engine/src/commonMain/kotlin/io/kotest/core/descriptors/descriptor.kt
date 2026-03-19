@@ -43,7 +43,8 @@ sealed interface Descriptor {
    ) : Descriptor {
 
       /**
-       * Returns the root test for this [TestDescriptor]. If this descriptor is already a root test, then returns this.
+       * Returns the root test for this [TestDescriptor].
+       * If this descriptor is already a root test, then returns this.
        */
       fun root(): TestDescriptor = when (parent) {
          is SpecDescriptor -> this
