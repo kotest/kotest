@@ -15,6 +15,9 @@ internal fun isLoggingEnabled() =
    syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 @KotestInternal
+data class LogLine(val context: String?, val message: String)
+
+@KotestInternal
 class Logger(private val kclass: KClass<*>) {
 
    companion object {
@@ -22,12 +25,21 @@ class Logger(private val kclass: KClass<*>) {
    }
 
    @OverloadResolutionByLambdaReturnType
+   @JvmName("logpair")
    fun log(f: () -> Pair<String?, String>) {
+      log {
+         val (context, message) = f()
+         LogLine(context, message)
+      }
+   }
+
+   @OverloadResolutionByLambdaReturnType
+   fun log(f: () -> LogLine) {
       log(null) {
-         val (testName, message) = f()
+         val (context, message) = f()
          listOf(
             (kclass.simpleName ?: "").padEnd(60, ' '),
-            (testName ?: "").padEnd(70, ' ').take(70),
+            (context ?: "").padEnd(70, ' ').take(70),
             message
          ).joinToString("  ")
       }
@@ -35,7 +47,7 @@ class Logger(private val kclass: KClass<*>) {
 
    @OverloadResolutionByLambdaReturnType
    @JvmName("logsimple")
-   fun log(f: () -> String): Unit = log { Pair(null, f()) }
+   fun log(f: () -> String): Unit = log { LogLine(null, f()) }
 }
 
 @KotestInternal
