@@ -1,0 +1,80 @@
+name: Update API Dump
+
+on:
+   workflow_run:
+      workflows: ["pr-main"]
+      types: [completed]
+
+permissions:
+   contents: write
+   actions: read
+
+concurrency:
+   group: "api-dump-${{ github.event.workflow_run.head_branch }}"
+   cancel-in-progress: true
+
+jobs:
+   check-api-failure:
+      name: Check if validate-api failed
+      # Only run when pr-main failed, for same-repo PRs (not forks)
+      if: >-
+         github.event.workflow_run.conclusion == 'failure' &&
+         github.event.workflow_run.event == 'pull_request' &&
+         github.event.workflow_run.head_repository.full_name == github.repository
+      runs-on: ubuntu-latest
+      outputs:
+         api-failed: ${{ steps.check.outputs.api-failed }}
+      steps:
+         -  name: Check if validate-api job failed
+            id: check
+            env:
+               GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            run: |
+               conclusion=$(gh api \
+                 repos/${{ github.repository }}/actions/runs/${{ github.event.workflow_run.id }}/jobs \
+                 --jq '.jobs[] | select(.name == "Validate API / gradle") | .conclusion')
+               echo "Validate API conclusion: $conclusion"
+               if [ "$conclusion" = "failure" ]; then
+                 echo "api-failed=true" >> "$GITHUB_OUTPUT"
+               else
+                 echo "api-failed=false" >> "$GITHUB_OUTPUT"
+               fi
+
+   update-api-dump:
+      name: Update API Dump
+      needs: check-api-failure
+      if: needs.check-api-failure.outputs.api-failed == 'true'
+      runs-on: ubuntu-latest
+      steps:
+         -  name: Checkout PR branch
+            uses: actions/checkout@v5
+            with:
+               ref: ${{ github.event.workflow_run.head_branch }}
+               token: ${{ secrets.GITHUB_TOKEN }}
+
+         -  name: Setup JDK
+            uses: actions/setup-java@v5
+            with:
+               distribution: "temurin"
+               java-version-file: .github/.java-version
+
+         -  name: Setup Gradle
+            uses: gradle/actions/setup-gradle@v5
+            with:
+               cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
+               cache-read-only: true
+
+         -  name: Run apiDump
+            run: ./gradlew apiDump
+
+         -  name: Commit and push updated API dumps
+            run: |
+               git config user.name "github-actions[bot]"
+               git config user.email "github-actions[bot]@users.noreply.github.com"
+               if git diff --name-only | grep -q '\.api$'; then
+                 git diff --name-only | grep '\.api$' | xargs git add
+                 git commit -m "chore: update API dumps"
+                 git push
+               else
+                 echo "No .api file changes after apiDump"
+               fi
