@@ -9,7 +9,7 @@ package io.kotest.engine.js
  *
  * Nesting of test suites may not be supported by TeamCity reporters of kotlin-test-js-runner.
  *
- * @see `https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner`
+ * See https://github.com/JetBrains/kotlin/tree/v1.9.23/libraries/tools/kotlin-test-js-runner
  */
 internal interface KotlinJsTestFramework {
 
