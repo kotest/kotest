@@ -59,6 +59,7 @@ object ProjectConfigLoader {
          logger.log { "Searching for project config at $configFqn" }
          val kclass = runCatching { Class.forName(configFqn).kotlin }.getOrNull()
          if (kclass != null) {
+            logger.log { "Project config discovered at $kclass, will load" }
             @Suppress("UNCHECKED_CAST")
             return instantiateOrObject(kclass as KClass<out AbstractProjectConfig>).getOrThrow()
          }

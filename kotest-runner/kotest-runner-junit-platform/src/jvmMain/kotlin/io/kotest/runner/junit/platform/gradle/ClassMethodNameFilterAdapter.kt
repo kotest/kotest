@@ -33,7 +33,9 @@ internal object ClassMethodNameFilterAdapter {
     * If no post-filters are present, this will return an empty list.
     */
    internal fun adapt(request: EngineDiscoveryRequest): List<DescriptorFilter> {
+
       val patterns = ClassMethodNameFilterUtils.extractIncludePatterns(request.postFilters())
+      logger.log { "ClassMethodNameFilter patterns [$patterns]" }
       if (patterns.isEmpty()) {
          return emptyList()
       }
@@ -49,6 +51,8 @@ internal object ClassMethodNameFilterAdapter {
             regexPatterns.add(filter)
          }
       }
+
+      logger.log { "nestedArgs patterns [${nestedArgs.joinToString(", ")}] regexPatterns [${regexPatterns.joinToString(", ")}]" }
 
       if (nestedArgs.isNotEmpty()) {
          // HACK since we have a tests filter with a nested test name, we will clear the list of post-filters

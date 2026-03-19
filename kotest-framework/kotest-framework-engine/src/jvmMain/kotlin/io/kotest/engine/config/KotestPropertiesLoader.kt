@@ -26,8 +26,10 @@ object KotestPropertiesLoader {
       val filename = systemPropsFilename()
       logger.log { "Loading kotest properties from $filename" }
       loadSystemProps(filename).forEach { (key, value) ->
-         if (key != null && value != null)
+         if (key != null && value != null) {
+            logger.log { "Setting system property $key=$value" }
             System.setProperty(key.toString(), value.toString())
+         }
       }
    }
 

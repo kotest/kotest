@@ -1,6 +1,7 @@
 package io.kotest.core
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.reflection.bestName
 import io.kotest.common.syspropOrEnv
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
@@ -11,11 +12,16 @@ import kotlin.time.TimeSource
 val start by lazy { TimeSource.Monotonic.markNow() }
 
 @PublishedApi
-internal fun isLoggingEnabled() =
-   syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
+internal fun isLoggingEnabled(): Boolean = syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
 
 @KotestInternal
-data class LogLine(val context: String?, val message: String)
+/**
+ * Models a logline for kotest debug.
+ * The context is optional and is used to provide the currently executing spec or test.
+ */
+data class LogLine(val context: String?, val message: String) {
+   constructor(context: KClass<*>, message: String) : this(context.bestName(), message)
+}
 
 @KotestInternal
 class Logger(private val kclass: KClass<*>) {
@@ -35,7 +41,7 @@ class Logger(private val kclass: KClass<*>) {
 
    @OverloadResolutionByLambdaReturnType
    fun log(f: () -> LogLine) {
-      log {
+      outputLog {
          val (context, message) = f()
          listOf(
             (kclass.simpleName ?: "").padEnd(60, ' '),
@@ -48,9 +54,13 @@ class Logger(private val kclass: KClass<*>) {
    @OverloadResolutionByLambdaReturnType
    @JvmName("logsimple")
    fun log(f: () -> String) {
+      log { LogLine(null, f()) }
+   }
+
+   private fun outputLog(f: () -> String) {
       if (isLoggingEnabled()) {
-         writeLog(start, null, f) // writes to file where possible eg jvm
-         println(start.elapsedNow().inWholeMilliseconds.toString() + "  " + f())
+         writeLog(start, null, f) // writes to file where possible e.g., jvm
+         println(start.elapsedNow().inWholeMilliseconds.toString().padStart(6, ' ') + "  " + f())
       }
    }
 }

@@ -33,8 +33,6 @@ internal object Discovery {
 
    fun discover(engineId: UniqueId, request: EngineDiscoveryRequest): DiscoveryResult {
 
-      logger.log { "Starting spec discovery $request" }
-
       // kotest only supports class selectors and unique id selectors (which we convert to class selectors)
       val classSelectors = request.getSelectorsByType(ClassSelector::class.java) +
          convertUniqueIdsToClassSelectors(engineId, request)

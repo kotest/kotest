@@ -144,7 +144,7 @@ data class TestEngineLauncher(
     * @return the [EngineResult] containing the results of the test execution.
     */
    suspend fun execute(): EngineResult {
-      logger.log { "Launching Test Engine" }
+      logger.log { "Executing Test Engine" }
       val engine = TestEngine(toConfig())
       return engine.execute(TestSuite(refs))
    }
