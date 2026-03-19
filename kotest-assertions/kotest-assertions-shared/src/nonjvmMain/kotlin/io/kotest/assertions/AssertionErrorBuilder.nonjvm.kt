@@ -1,5 +1,11 @@
 package io.kotest.assertions
 
+actual fun createLazyAssertionError(messageFn: () -> String): AssertionError =
+   object : AssertionError() {
+      private val lazyMessage: String by lazy(messageFn)
+      override val message: String get() = lazyMessage
+   }
+
 actual fun createAssertionError(
    message: String?,
    cause: Throwable?,

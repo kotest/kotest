@@ -2,6 +2,7 @@
 
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
@@ -19,6 +20,8 @@ import org.junit.platform.launcher.PostDiscoveryFilter
  * This adapter will return a [DescriptorFilter] for each of these filters.
  */
 internal object ClassMethodNameFilterAdapter {
+
+   private val logger = Logger<ClassMethodNameFilterAdapter>()
 
    /**
     * Returns a [DescriptorFilter] for each [PostDiscoveryFilter] that is an

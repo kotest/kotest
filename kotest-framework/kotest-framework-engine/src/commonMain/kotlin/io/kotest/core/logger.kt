@@ -35,7 +35,7 @@ class Logger(private val kclass: KClass<*>) {
 
    @OverloadResolutionByLambdaReturnType
    fun log(f: () -> LogLine) {
-      log(null) {
+      log {
          val (context, message) = f()
          listOf(
             (kclass.simpleName ?: "").padEnd(60, ' '),
@@ -47,20 +47,11 @@ class Logger(private val kclass: KClass<*>) {
 
    @OverloadResolutionByLambdaReturnType
    @JvmName("logsimple")
-   fun log(f: () -> String): Unit = log { LogLine(null, f()) }
-}
-
-@KotestInternal
-fun log(f: () -> String) {
-   log(null, f)
-}
-
-@KotestInternal
-fun log(t: Throwable?, f: () -> String) {
-   if (isLoggingEnabled()) {
-      writeLog(start, t, f)
-      println(start.elapsedNow().inWholeMilliseconds.toString() + "  " + f())
-      if (t != null) println(t)
+   fun log(f: () -> String) {
+      if (isLoggingEnabled()) {
+         writeLog(start, null, f) // writes to file where possible eg jvm
+         println(start.elapsedNow().inWholeMilliseconds.toString() + "  " + f())
+      }
    }
 }
 

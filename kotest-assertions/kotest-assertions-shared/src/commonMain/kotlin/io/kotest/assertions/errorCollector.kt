@@ -8,9 +8,11 @@ expect val errorCollector: ErrorCollector
  * Specifies an assertion mode:
  * - Hard: assertion errors are thrown immediately
  * - Soft: assertion errors are collected and throw together
+ * - InspectorHard: like Hard, but signals that errors should be constructed cheaply
+ *   (no stack trace, lazy message) since they will be caught and discarded if the inspector passes
  */
 enum class ErrorCollectionMode {
-   Soft, Hard
+   Soft, Hard, InspectorHard
 }
 
 typealias Clue = () -> String

@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform.discovery
 
-import io.kotest.core.log
+import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.runner.junit.platform.Segment
@@ -24,6 +24,8 @@ internal data class DiscoveryResult(
  */
 internal object Discovery {
 
+   private val logger = Logger<Discovery>()
+
    // filter functions
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
@@ -31,7 +33,7 @@ internal object Discovery {
 
    fun discover(engineId: UniqueId, request: EngineDiscoveryRequest): DiscoveryResult {
 
-      log { "[Discovery] Starting spec discovery" }
+      logger.log { "Starting spec discovery $request" }
 
       // kotest only supports class selectors and unique id selectors (which we convert to class selectors)
       val classSelectors = request.getSelectorsByType(ClassSelector::class.java) +
@@ -45,7 +47,7 @@ internal object Discovery {
 
       val specsAfterInitialFiltering = specsSelected.filter(filterFn(filters(request.configurationParameters)))
 
-      log { "[Discovery] ${specsAfterInitialFiltering.size} specs will be returned" }
+      logger.log { "${specsAfterInitialFiltering.size} specs will be returned" }
 
       return DiscoveryResult(specsAfterInitialFiltering.map { SpecRef.Reference(it, it.java.name) })
    }
@@ -74,10 +76,7 @@ internal object Discovery {
          .filterIsInstance<KClass<out Spec>>()
          .toList()
 
-      log {
-         "[Discovery] Collected specs via ${selectors.size} class discovery selectors: found ${specs.size} specs"
-      }
-
+      logger.log { "Collected specs via ${selectors.size} class discovery selectors: found ${specs.size} specs" }
       return specs
    }
 

@@ -2,10 +2,9 @@ package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
 import io.kotest.common.KotestInternal
+import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.log
 import io.kotest.engine.instantiateOrObject
-import io.kotest.engine.config.PackageUtils
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.reflect.KClass
@@ -20,7 +19,8 @@ import kotlin.reflect.KClass
 @JVMOnly
 object ProjectConfigLoader {
 
-   const val DEFAULT_CONFIG_FQN = "io.kotest.provided.ProjectConfig"
+   private val logger = Logger<ProjectConfigLoader>()
+   private const val DEFAULT_CONFIG_FQN = "io.kotest.provided.ProjectConfig"
 
    // we need to disambiguate between no config found (sentinel) and not yet initialized (null)
    private val sentinel = object : AbstractProjectConfig() {}
@@ -34,13 +34,13 @@ object ProjectConfigLoader {
     * This will look for a class on the well-defined classpath first, otherwise will search in the spec prefixes.
     */
    fun load(specFqns: Set<String>): AbstractProjectConfig? {
-      return config.updateAndGet({ it ?: initialize(specFqns) }).takeUnless { it === sentinel }
+      return config.updateAndGet { it ?: initialize(specFqns) }.takeUnless { it === sentinel }
    }
 
    @Suppress("UNCHECKED_CAST")
    private fun initialize(specFqns: Set<String>): AbstractProjectConfig {
       val fqn = fqn()
-      log { "Loading project configs from fqn: $fqn" }
+      logger.log { "Loading project configs from fqn: $fqn" }
       val kclass = runCatching { Class.forName(fqn).kotlin }.getOrNull()
       return if (kclass == null)
          tryFromFqns(specFqns)
@@ -56,7 +56,7 @@ object ProjectConfigLoader {
 
       for (pkg in packages) {
          val configFqn = "$pkg.ProjectConfig"
-         log { "Searching for project config at $configFqn" }
+         logger.log { "Searching for project config at $configFqn" }
          val kclass = runCatching { Class.forName(configFqn).kotlin }.getOrNull()
          if (kclass != null) {
             @Suppress("UNCHECKED_CAST")
@@ -74,7 +74,7 @@ object ProjectConfigLoader {
    private fun fqn(): String {
       val fqn = System.getProperty(KotestEngineProperties.PROJECT_CONFIGURATION_FQN)
       return if (fqn == null) {
-         log { "No project config class name provided, checking for default at $DEFAULT_CONFIG_FQN" }
+         logger.log { "No project config class name provided, checking for default at $DEFAULT_CONFIG_FQN" }
          DEFAULT_CONFIG_FQN
       } else fqn
    }
