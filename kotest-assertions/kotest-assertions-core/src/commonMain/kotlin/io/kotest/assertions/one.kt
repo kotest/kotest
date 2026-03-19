@@ -62,3 +62,8 @@ suspend fun <T> one(t: T, assertions: suspend T.(T) -> Unit) = one {
    t.assertions(t)
    t
 }
+
+
+public data class Foo(
+   val iShouldBreakTheApiDump: Boolean = true
+)
