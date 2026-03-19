@@ -33,7 +33,7 @@ data class GradleTestFilterBuilder(
          }
          if (test != null) {
             append(".")
-            append(test.path().joinToString(" -- ") { it.name.escapeSingleQuotes() })
+            append(test.path().joinToString(" -- ") { it.name.removeLineBreaks().escapeSingleQuotes() })
          }
          append("'")
       }
@@ -51,3 +51,5 @@ data class GradleTestFilterBuilder(
  * when wrapped in outer single quotes produces `'it'\''s a test'`.
  */
 private fun String.escapeSingleQuotes(): String = replace("'", "'\\''")
+
+private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")
