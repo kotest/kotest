@@ -33,10 +33,12 @@ import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonNull
 import kotlinx.serialization.json.JsonPrimitive
-import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.booleanOrNull
+import kotlinx.serialization.json.doubleOrNull
 import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
+import kotlinx.serialization.json.longOrNull
 import org.intellij.lang.annotations.Language
 
 private val schemaJsonConfig = Json {
@@ -45,7 +47,7 @@ private val schemaJsonConfig = Json {
 }
 
 /**
- * Parses a subset of JSON Schema into [JsonSchemaElement] which can be used to verify a json document with
+ * Parses a subset of JSON Schema into [JsonSchemaElement] which can be used to verify a JSON document with
  * [shouldMatchSchema]
  */
 @ExperimentalKotest
@@ -118,12 +120,12 @@ internal object JsonSchemaEnumSerializer : KSerializer<JsonSchema.JsonEnum> {
       val enumArray = obj["enum"]?.jsonArray ?: error("Expected 'enum' field in schema")
 
       val values = enumArray.map { element ->
-         when {
-            element is JsonNull -> null
-            element is JsonPrimitive && element.isString -> element.content
-            element is JsonPrimitive && element.booleanOrNull != null -> element.booleanOrNull!!
-            element is JsonPrimitive && element.longOrNull != null -> element.longOrNull!!
-            element is JsonPrimitive && element.doubleOrNull != null -> element.doubleOrNull!!
+         when (element) {
+           is JsonNull -> null
+            is JsonPrimitive if element.isString -> element.content
+            is JsonPrimitive if element.booleanOrNull != null -> element.booleanOrNull!!
+            is JsonPrimitive if element.longOrNull != null -> element.longOrNull!!
+            is JsonPrimitive if element.doubleOrNull != null -> element.doubleOrNull!!
             else -> error("Unsupported enum value: $element")
          }
       }
