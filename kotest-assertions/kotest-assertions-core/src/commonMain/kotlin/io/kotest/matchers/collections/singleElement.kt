@@ -22,12 +22,34 @@ infix fun <T, I : Iterable<T>> I.shouldHaveSingleElement(p: (T) -> Boolean): I {
    return this
 }
 
-infix fun <T> Array<T>.shouldHaveSingleElement(p: (T) -> Boolean) = asList().shouldHaveSingleElement(p)
-infix fun <T> Collection<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
-infix fun <T> Collection<T>.shouldHaveSingleElement(p: (T) -> Boolean) = this should singleElement(p)
-infix fun <T> Iterable<T>.shouldNotHaveSingleElement(t: T) = toList().shouldNotHaveSingleElement(t)
-infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T) = asList().shouldNotHaveSingleElement(t)
-infix fun <T> Collection<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
+infix fun <T> Array<T>.shouldHaveSingleElement(p: (T) -> Boolean): Array<T> {
+   asList().shouldHaveSingleElement(p)
+   return this
+}
+
+infix fun <T, C : Collection<T>> C.shouldHaveSingleElement(t: T): C {
+   this should singleElement(t)
+   return this
+}
+
+infix fun <T, C : Collection<T>> C.shouldHaveSingleElement(p: (T) -> Boolean): C {
+   this should singleElement(p)
+   return this
+}
+infix fun <T, I : Iterable<T>> I.shouldNotHaveSingleElement(t: T): I {
+   toList().shouldNotHaveSingleElement(t)
+   return this
+}
+
+infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T): Array<T> {
+   asList().shouldNotHaveSingleElement(t)
+   return this
+}
+
+infix fun <T, C : Collection<T>> C.shouldNotHaveSingleElement(t: T): C {
+   this shouldNot singleElement(t)
+   return this
+}
 
 fun <T> singleElement(t: T): Matcher<Collection<T>> = object : Matcher<Collection<T>> {
    override fun test(value: Collection<T>): MatcherResult {

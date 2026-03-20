@@ -347,8 +347,14 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<Sequence<T>> = object : Matcher<
 infix fun <T> Sequence<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith(comparator)
 infix fun <T> Sequence<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith(cmp)
 
-infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T) = this should singleElement(t)
-infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T) = this shouldNot singleElement(t)
+infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T): Sequence<T> {
+   this should singleElement(t)
+   return this
+}
+infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T): Sequence<T> {
+   this shouldNot singleElement(t)
+   return this
+}
 
 fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
