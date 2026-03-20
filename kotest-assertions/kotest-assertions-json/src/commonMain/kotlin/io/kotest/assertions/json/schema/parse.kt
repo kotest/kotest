@@ -29,7 +29,12 @@ import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonContentPolymorphicSerializer
+import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonPrimitive
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 import org.intellij.lang.annotations.Language
@@ -50,6 +55,7 @@ fun parseSchema(@Language("json") jsonSchema: String): JsonSchema =
 @ExperimentalKotest
 internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<JsonSchemaElement> {
+      if (element.jsonObject.containsKey("enum")) return JsonSchemaEnumSerializer
       return when (val type = element.jsonObject["type"]?.jsonPrimitive?.content) {
          "array" -> JsonSchemaArraySerializer
          "object" -> JsonSchema.JsonObject.serializer()
@@ -68,24 +74,6 @@ private infix fun <T> Matcher<T>?.and(other: Matcher<T>) =
 
 @ExperimentalKotest
 internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
-   override fun deserialize(decoder: Decoder): JsonSchema.JsonArray =
-      decoder.decodeStructure(descriptor) {
-         var matcher: Matcher<Sequence<JsonNode>>? = null
-         val minItems = runCatching { decodeIntElement(descriptor, 1) }.getOrDefault(1)
-         val maxItems = runCatching { decodeIntElement(descriptor, 2) }.getOrDefault(Int.MAX_VALUE)
-         val elementType =
-            runCatching { decodeSerializableElement(descriptor, 4, SchemaDeserializer) }.getOrNull()
-         val containsSpec =
-            runCatching { decodeSerializableElement(descriptor, 5, ContainsSpecSerializer) }.getOrNull()
-         while (true) {
-            when (val index = decodeElementIndex(descriptor)) {
-               3 -> matcher = if (decodeBooleanElement(descriptor, index)) matcher.and(beUnique()) else matcher
-               CompositeDecoder.DECODE_DONE -> break
-            }
-         }
-         JsonSchema.JsonArray(minItems, maxItems, matcher, containsSpec, elementType)
-      }
-
    override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonArray") {
       element<String>("type")
       element<Int>("minItems", isOptional = true)
@@ -93,9 +81,57 @@ internal object JsonSchemaArraySerializer : KSerializer<JsonSchema.JsonArray> {
       element<Boolean>("uniqueItems", isOptional = true)
       element<String>("elementType", isOptional = true)
       element<String>("contains", isOptional = true)
+      element<JsonElement>("prefixItems", isOptional = true)
+   }
+
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonArray {
+      require(decoder is JsonDecoder) { "JsonSchemaArraySerializer only supports JSON decoding" }
+      val obj = decoder.decodeJsonElement().jsonObject
+
+      val minItems = obj["minItems"]?.jsonPrimitive?.content?.toIntOrNull() ?: 0
+      val maxItems = obj["maxItems"]?.jsonPrimitive?.content?.toIntOrNull() ?: Int.MAX_VALUE
+      val uniqueItems = obj["uniqueItems"]?.jsonPrimitive?.booleanOrNull ?: false
+      val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
+      val elementType = obj["elementType"]?.let { decoder.json.decodeFromJsonElement(SchemaDeserializer, it) }
+      val containsSpec = obj["contains"]?.let { decoder.json.decodeFromJsonElement(ContainsSpecSerializer, it) }
+      val prefixItems = obj["prefixItems"]?.jsonArray?.map {
+         decoder.json.decodeFromJsonElement(SchemaDeserializer, it)
+      } ?: emptyList()
+
+      return JsonSchema.JsonArray(minItems, maxItems, matcher, containsSpec, elementType, prefixItems)
    }
 
    override fun serialize(encoder: Encoder, value: JsonSchema.JsonArray) {
+      TODO("Serialization of JsonSchema not supported atm")
+   }
+}
+
+@ExperimentalKotest
+internal object JsonSchemaEnumSerializer : KSerializer<JsonSchema.JsonEnum> {
+   override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonEnum") {
+      element<JsonElement>("enum")
+   }
+
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonEnum {
+      require(decoder is JsonDecoder) { "JsonSchemaEnumSerializer only supports JSON decoding" }
+      val obj = decoder.decodeJsonElement().jsonObject
+      val enumArray = obj["enum"]?.jsonArray ?: error("Expected 'enum' field in schema")
+
+      val values = enumArray.map { element ->
+         when {
+            element is JsonNull -> null
+            element is JsonPrimitive && element.isString -> element.content
+            element is JsonPrimitive && element.booleanOrNull != null -> element.booleanOrNull!!
+            element is JsonPrimitive && element.longOrNull != null -> element.longOrNull!!
+            element is JsonPrimitive && element.doubleOrNull != null -> element.doubleOrNull!!
+            else -> error("Unsupported enum value: $element")
+         }
+      }
+
+      return JsonSchema.JsonEnum(values)
+   }
+
+   override fun serialize(encoder: Encoder, value: JsonSchema.JsonEnum) {
       TODO("Serialization of JsonSchema not supported atm")
    }
 }
