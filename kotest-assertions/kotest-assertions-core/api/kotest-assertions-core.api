@@ -1282,12 +1282,28 @@ public final class io/kotest/matchers/collections/ContainKt {
 	public static synthetic fun contain$default (Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContain (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldContain (Ljava/lang/Iterable;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Ljava/lang/Iterable;
+	public static final fun shouldContain ([BB)[B
+	public static final fun shouldContain ([CC)[C
+	public static final fun shouldContain ([DD)[D
+	public static final fun shouldContain ([FF)[F
+	public static final fun shouldContain ([II)[I
+	public static final fun shouldContain ([JJ)[J
 	public static final fun shouldContain ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldContain ([Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)[Ljava/lang/Object;
+	public static final fun shouldContain ([SS)[S
+	public static final fun shouldContain ([ZZ)[Z
 	public static final fun shouldNotContain (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldNotContain (Ljava/lang/Iterable;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Ljava/lang/Iterable;
+	public static final fun shouldNotContain ([BB)[B
+	public static final fun shouldNotContain ([CC)[C
+	public static final fun shouldNotContain ([DD)[D
+	public static final fun shouldNotContain ([FF)[F
+	public static final fun shouldNotContain ([II)[I
+	public static final fun shouldNotContain ([JJ)[J
 	public static final fun shouldNotContain ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotContain ([Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)[Ljava/lang/Object;
+	public static final fun shouldNotContain ([SS)[S
+	public static final fun shouldNotContain ([ZZ)[Z
 }
 
 public final class io/kotest/matchers/collections/ContainOnlyKt {
