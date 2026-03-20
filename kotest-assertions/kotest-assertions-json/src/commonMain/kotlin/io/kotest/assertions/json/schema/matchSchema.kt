@@ -102,10 +102,20 @@ private fun validate(
 
    }
 
-   fun JsonSchemaElement.violation(tree: JsonNode.ArrayNode): List<SchemaViolation> =
-      tree.elements.flatMapIndexed { i, node ->
-         validate("$currentPath[$i]", node, this)
+   if (expected is JsonSchema.JsonEnum) {
+      val matches = expected.values.any { enumValue ->
+         when {
+            enumValue == null -> tree is JsonNode.NullNode
+            enumValue is String -> tree is JsonNode.StringNode && tree.value == enumValue
+            enumValue is Boolean -> tree is JsonNode.BooleanNode && tree.value == enumValue
+            enumValue is Long -> tree is JsonNode.NumberNode && tree.content.toLongOrNull() == enumValue
+            enumValue is Double -> tree is JsonNode.NumberNode && tree.content.toDoubleOrNull() == enumValue
+            else -> false
+         }
       }
+      return if (matches) emptyList()
+      else violation("Expected one of ${expected.values.joinToString(", ", "[", "]")} but was ${tree.type()}")
+   }
 
    return when (tree) {
       is JsonNode.ArrayNode -> {
@@ -116,8 +126,17 @@ private fun validate(
             )
             val matcherViolation = violation(expected.matcher, tree.elements.asSequence())
             val containsViolation = expected.contains?.violation(tree) ?: emptyList()
-            val elementTypeViolation = expected.elementType?.violation(tree) ?: emptyList()
-            matcherViolation + sizeViolation + containsViolation + elementTypeViolation
+            val prefixItemsViolation = expected.prefixItems.flatMapIndexed { i, schema ->
+               if (i < tree.elements.size) validate("$currentPath[$i]", tree.elements[i], schema)
+               else emptyList()
+            }
+            val elementTypeViolation = expected.elementType?.let { schema ->
+               val startIndex = expected.prefixItems.size
+               tree.elements.drop(startIndex).flatMapIndexed { i, node ->
+                  validate("$currentPath[${startIndex + i}]", node, schema)
+               }
+            } ?: emptyList()
+            matcherViolation + sizeViolation + containsViolation + prefixItemsViolation + elementTypeViolation
          } else violation("Expected ${expected.typeName()}, but was array")
       }
 
