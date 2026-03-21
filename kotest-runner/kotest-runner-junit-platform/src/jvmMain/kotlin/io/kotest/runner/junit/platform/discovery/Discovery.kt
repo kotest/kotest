@@ -68,7 +68,7 @@ internal object Discovery {
             ReflectionSupport.findAllClassesInClasspathRoot(selector.classpathRoot, isSpecSubclass) { true }
          }
          .asSequence()
-         .map(Class::kotlin)
+         .map(Class<*>::kotlin)
          .filterNot(isAbstract)
          .filterIsInstance<KClass<out Spec>>()
          .toList()
