@@ -226,7 +226,7 @@ fun <A> arbitraryBuilder(
       return if (shrinker == null) Sample(value) else sampleOf(value, shrinker)
    }
 
-   override fun edgecase(rs: RandomSource): Sample<A>? {
+   override fun edgecase(rs: RandomSource): Sample<A> {
       val value = runBuilderFn(SingleShotGenerationMode.Edgecase, rs)
       return edgecaseFn?.invoke(rs) ?: value.asSample()
    }
