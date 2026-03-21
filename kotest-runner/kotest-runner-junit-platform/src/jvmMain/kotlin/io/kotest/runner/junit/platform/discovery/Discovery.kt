@@ -4,10 +4,12 @@ import io.kotest.core.log
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.runner.junit.platform.Segment
+import org.junit.platform.commons.support.ReflectionSupport
 import org.junit.platform.engine.ConfigurationParameters
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
+import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import kotlin.reflect.KClass
@@ -33,11 +35,12 @@ internal object Discovery {
 
       log { "[Discovery] Starting spec discovery" }
 
-      // kotest only supports class selectors and unique id selectors (which we convert to class selectors)
+      // kotest only supports classpath root, class and unique id selectors (which we convert to class selectors)
+      val classpathRootSelectors = request.getSelectorsByType(ClasspathRootSelector::class.java)
       val classSelectors = request.getSelectorsByType(ClassSelector::class.java) +
          convertUniqueIdsToClassSelectors(engineId, request)
 
-      val specsSelected = specsFromClassDiscoverySelectorsOnly(classSelectors)
+      val specsSelected = (specsFromClasspathRootDiscoverySelectorsOnly(classpathRootSelectors) + specsFromClassDiscoverySelectorsOnly(classSelectors))
          .asSequence()
          .filter(isSpecSubclassKt)
          .filterNot(isAbstract)
@@ -54,6 +57,27 @@ internal object Discovery {
       val private = if (configurationParameters.get("allow_private").isPresent) Modifier.Private else null
       val modifiers = listOfNotNull(Modifier.Public, Modifier.Internal, private)
       return listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet()))
+   }
+
+   /**
+    * Returns the request's [Spec]s if they are completely specified by classpath root selectors, null otherwise.
+    */
+   private fun specsFromClasspathRootDiscoverySelectorsOnly(selectors: List<ClasspathRootSelector>): List<KClass<out Spec>> {
+      val specs = selectors
+         .flatMap { selector ->
+            ReflectionSupport.findAllClassesInClasspathRoot(selector.classpathRoot, isSpecSubclass) { true }
+         }
+         .asSequence()
+         .map(Class::kotlin)
+         .filterNot(isAbstract)
+         .filterIsInstance<KClass<out Spec>>()
+         .toList()
+
+      log {
+         "[Discovery] Collected specs via ${selectors.size} class discovery selectors: found ${specs.size} specs"
+      }
+
+      return specs
    }
 
    /**

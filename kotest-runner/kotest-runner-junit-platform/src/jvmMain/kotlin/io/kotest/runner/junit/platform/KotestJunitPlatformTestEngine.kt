@@ -18,6 +18,7 @@ import org.junit.platform.engine.ExecutionRequest
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
+import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import java.util.Optional
@@ -146,7 +147,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    /**
     * Returns true if there are selectors compatible with Kotest.
-    * Kotest supports [ClassSelector]s and [UniqueIdSelector]s.
+    * Kotest supports [ClasspathRootSelector]s, [ClassSelector]s, and [UniqueIdSelector]s.
     *
     * A [MethodSelector] is passed by intellij to run just a single method inside a test file.
     * Kotest will never use method selectors, so if we have one, then we know it is something
@@ -155,7 +156,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
    private fun shouldRunTests(request: EngineDiscoveryRequest): Boolean {
       if (request.getSelectorsByType(MethodSelector::class.java).isNotEmpty()) return false
       return request.getSelectorsByType(ClassSelector::class.java).isNotEmpty() ||
-         request.getSelectorsByType(UniqueIdSelector::class.java).isNotEmpty()
+         request.getSelectorsByType(UniqueIdSelector::class.java).isNotEmpty() ||
+         request.getSelectorsByType(ClasspathRootSelector::class.java).isNotEmpty()
    }
 
    /**
