@@ -41,6 +41,7 @@ class NelMatchers : StringSpec({
 
   "a collection contains a single given element"  {
     NonEmptyList(1, listOf()) shouldHaveSingleElement 1
+    NonEmptyList(1, listOf()).shouldHaveSingleElement(1).shouldHaveSize(1)
     shouldThrow<AssertionError> {
       NonEmptyList(1, listOf()) shouldHaveSingleElement 2
     }
@@ -53,6 +54,7 @@ class NelMatchers : StringSpec({
 
   "a collection does not contain a single element"  {
     NonEmptyList(1, listOf(2)) shouldNotHaveSingleElement 1
+    NonEmptyList(1, listOf(2)).shouldNotHaveSingleElement(1).shouldHaveSize(2)
   }
 
   "a collection contains an element"  {

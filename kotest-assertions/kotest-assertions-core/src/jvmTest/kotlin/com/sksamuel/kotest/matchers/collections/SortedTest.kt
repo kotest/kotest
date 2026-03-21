@@ -131,5 +131,107 @@ class SortedTest : WordSpec() {
             }.shouldHaveMessage("List [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, ...and 980 more (set 'kotest.assertions.collection.print.size' to see more / less items)] should not be sorted")
          }
       }
+
+      "primitive arrays" should {
+
+         "IntArray shouldBeSorted" {
+            intArrayOf().shouldBeSorted()
+            intArrayOf(1).shouldBeSorted()
+            intArrayOf(1, 2, 3).shouldBeSorted()
+            shouldThrow<AssertionError> { intArrayOf(3, 2, 1).shouldBeSorted() }
+         }
+
+         "IntArray shouldNotBeSorted" {
+            intArrayOf(3, 2, 1).shouldNotBeSorted()
+            shouldThrow<AssertionError> { intArrayOf(1, 2, 3).shouldNotBeSorted() }
+         }
+
+         "LongArray shouldBeSorted" {
+            longArrayOf().shouldBeSorted()
+            longArrayOf(1L).shouldBeSorted()
+            longArrayOf(1L, 2L, 3L).shouldBeSorted()
+            shouldThrow<AssertionError> { longArrayOf(3L, 2L, 1L).shouldBeSorted() }
+         }
+
+         "LongArray shouldNotBeSorted" {
+            longArrayOf(3L, 2L, 1L).shouldNotBeSorted()
+            shouldThrow<AssertionError> { longArrayOf(1L, 2L, 3L).shouldNotBeSorted() }
+         }
+
+         "DoubleArray shouldBeSorted" {
+            doubleArrayOf().shouldBeSorted()
+            doubleArrayOf(1.0).shouldBeSorted()
+            doubleArrayOf(1.0, 2.0, 3.0).shouldBeSorted()
+            shouldThrow<AssertionError> { doubleArrayOf(3.0, 2.0, 1.0).shouldBeSorted() }
+         }
+
+         "DoubleArray shouldNotBeSorted" {
+            doubleArrayOf(3.0, 2.0, 1.0).shouldNotBeSorted()
+            shouldThrow<AssertionError> { doubleArrayOf(1.0, 2.0, 3.0).shouldNotBeSorted() }
+         }
+
+         "FloatArray shouldBeSorted" {
+            floatArrayOf().shouldBeSorted()
+            floatArrayOf(1.0f).shouldBeSorted()
+            floatArrayOf(1.0f, 2.0f, 3.0f).shouldBeSorted()
+            shouldThrow<AssertionError> { floatArrayOf(3.0f, 2.0f, 1.0f).shouldBeSorted() }
+         }
+
+         "FloatArray shouldNotBeSorted" {
+            floatArrayOf(3.0f, 2.0f, 1.0f).shouldNotBeSorted()
+            shouldThrow<AssertionError> { floatArrayOf(1.0f, 2.0f, 3.0f).shouldNotBeSorted() }
+         }
+
+         "ByteArray shouldBeSorted" {
+            byteArrayOf().shouldBeSorted()
+            byteArrayOf(1).shouldBeSorted()
+            byteArrayOf(1, 2, 3).shouldBeSorted()
+            shouldThrow<AssertionError> { byteArrayOf(3, 2, 1).shouldBeSorted() }
+         }
+
+         "ByteArray shouldNotBeSorted" {
+            byteArrayOf(3, 2, 1).shouldNotBeSorted()
+            shouldThrow<AssertionError> { byteArrayOf(1, 2, 3).shouldNotBeSorted() }
+         }
+
+         "ShortArray shouldBeSorted" {
+            shortArrayOf().shouldBeSorted()
+            shortArrayOf(1).shouldBeSorted()
+            shortArrayOf(1, 2, 3).shouldBeSorted()
+            shouldThrow<AssertionError> { shortArrayOf(3, 2, 1).shouldBeSorted() }
+         }
+
+         "ShortArray shouldNotBeSorted" {
+            shortArrayOf(3, 2, 1).shouldNotBeSorted()
+            shouldThrow<AssertionError> { shortArrayOf(1, 2, 3).shouldNotBeSorted() }
+         }
+
+         "CharArray shouldBeSorted" {
+            charArrayOf().shouldBeSorted()
+            charArrayOf('a').shouldBeSorted()
+            charArrayOf('a', 'b', 'c').shouldBeSorted()
+            shouldThrow<AssertionError> { charArrayOf('c', 'b', 'a').shouldBeSorted() }
+         }
+
+         "CharArray shouldNotBeSorted" {
+            charArrayOf('c', 'b', 'a').shouldNotBeSorted()
+            shouldThrow<AssertionError> { charArrayOf('a', 'b', 'c').shouldNotBeSorted() }
+         }
+
+         "BooleanArray shouldBeSorted (false < true)" {
+            booleanArrayOf().shouldBeSorted()
+            booleanArrayOf(false).shouldBeSorted()
+            booleanArrayOf(true).shouldBeSorted()
+            booleanArrayOf(false, true).shouldBeSorted()
+            booleanArrayOf(false, false).shouldBeSorted()
+            booleanArrayOf(true, true).shouldBeSorted()
+            shouldThrow<AssertionError> { booleanArrayOf(true, false).shouldBeSorted() }
+         }
+
+         "BooleanArray shouldNotBeSorted" {
+            booleanArrayOf(true, false).shouldNotBeSorted()
+            shouldThrow<AssertionError> { booleanArrayOf(false, true).shouldNotBeSorted() }
+         }
+      }
    }
 }

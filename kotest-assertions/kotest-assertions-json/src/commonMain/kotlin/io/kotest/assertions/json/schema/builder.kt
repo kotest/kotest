@@ -59,8 +59,19 @@ data class JsonSchema(
      val matcher: Matcher<Sequence<JsonNode>>? = null,
      val contains: ContainsSpec? = null,
      val elementType: JsonSchemaElement? = null,
+     val prefixItems: List<JsonSchemaElement> = emptyList(),
    ) : JsonSchemaElement {
       override fun typeName() = "array"
+   }
+
+   /**
+    * Represents an enum schema element that constrains a value to a fixed set of allowed values.
+    * Allowed values can be strings, numbers, booleans, or null.
+    *
+    * https://json-schema.org/understanding-json-schema/reference/enum.html
+    */
+   data class JsonEnum(val values: List<Any?>) : JsonSchemaElement {
+      override fun typeName() = "enum"
    }
 
    class JsonObjectBuilder {
@@ -265,9 +276,14 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
  * The length of the array can be specified using the [minItems] and [maxItems] keywords. Schema can ensure
  * that each of item in an array is unique specified by [uniqueItems] keyword.
  *
+ * Use [prefixItems] to define tuple validation, where each position in the array is validated against
+ * a specific schema. If [typeBuilder] is also specified, it acts as the schema for any items beyond
+ * the prefix.
+ *
  * @param minItems - minimum array length, default value is 0
  * @param maxItems - maximum array length, default value is [Int.MAX_VALUE]
  * @param uniqueItems - item uniqueness, default value is false
+ * @param prefixItems - schemas for specific array positions (tuple validation)
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.array(
@@ -275,11 +291,26 @@ fun JsonSchema.Builder.array(
    maxItems: Int = Int.MAX_VALUE,
    uniqueItems: Boolean = false,
    contains: ContainsSpec? = null,
+   prefixItems: List<JsonSchemaElement> = emptyList(),
    typeBuilder: (() -> JsonSchemaElement?)? = null
 ): JsonSchema.JsonArray {
    val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
-   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder?.invoke())
+   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder?.invoke(), prefixItems)
 }
+
+/**
+ * Creates a [JsonSchema.JsonEnum] node that constrains a value to one of the given [values].
+ * Allowed values can be strings, numbers (Long or Double), booleans, or null.
+ *
+ * Example:
+ * ```kotlin
+ * val streetTypeSchema = jsonSchema { enum("Avenue", "Street", "Boulevard") }
+ * ```
+ *
+ * https://json-schema.org/understanding-json-schema/reference/enum.html
+ */
+@ExperimentalKotest
+fun JsonSchema.Builder.enum(vararg values: Any?) = JsonSchema.JsonEnum(values.toList())
 
 @ExperimentalKotest
 fun jsonSchema(
