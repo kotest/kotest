@@ -54,7 +54,7 @@ jobs:
                   -Dfile=$(ls kotest-intellij-plugin/build/distributions/*.zip) \
                   -DgroupId=io.kotest \
                   -DartifactId=kotest-intellij-plugin-${{ matrix.product }} \
-                  -Dversion=6.1.${{ github.run_number }} \
+                  -Dversion=${{ vars.KOTEST_RELEASE_MAJOR_MINOR }}.${{ github.run_number }} \
                   -Dpackaging=zip \
                   -DrepositoryId=github \
                   -Durl=https://maven.pkg.github.com/${{ github.repository }}
