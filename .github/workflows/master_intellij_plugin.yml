@@ -74,3 +74,4 @@ jobs:
 
 env:
    GRADLE_OPTS: -Dorg.gradle.configureondemand=true -Dorg.gradle.parallel=false -Dkotlin.incremental=false -Dorg.gradle.jvmargs="-Xmx3g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+   KOTEST_RELEASE_MAJOR_MINOR: ${{ vars.KOTEST_RELEASE_MAJOR_MINOR }}
