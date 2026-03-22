@@ -9,7 +9,6 @@ import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
-import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
 import kotlinx.coroutines.runBlocking
@@ -101,7 +100,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
    ): KotestEngineDescriptor {
 
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
-      logger.log { request.string() }
+      logger.log { "JUnit discovery request [configurationParameters=${request.configurationParameters}]" }
+      logger.log { "JUnit discovery request [engineFilters=${request.engineFilters()}]" }
+      logger.log { "JUnit discovery request [postFilters=${request.postFilters()}]" }
+      logger.log { "JUnit discovery request [classSelectors=${request.getSelectorsByType(ClassSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java)}]" }
 
       if (!isEngineIncluded(request) || !shouldRunTests(request))
          return EngineDescriptorBuilder.builder(uniqueId).build()
@@ -127,8 +131,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .withFormatter(formatting)
          .build()
 
-      logger.log { "JUnit discovery completed [descriptor=$engine]" }
-      logger.log { "Final specs [${engine.specs.joinToString(", ")}]" }
+      logger.log { "Final discovery [${engine.specs.joinToString(", ")}]" }
       return engine
    }
 

@@ -42,13 +42,13 @@ class TestEngine(private val config: TestEngineConfig) {
     * Starts execution of the given [TestSuite].
     */
    internal suspend fun execute(suite: TestSuite): EngineResult {
-      logger.log { Pair(null, "Initiating test engine with ${suite.specs.size} specs") }
+      logger.log { "Initiating test engine with ${suite.specs.size} specs" }
 
       // must be early so extensions and config resolvers have access to the props
       loadSystemProperties()
 
       val tags = TagExpression.Empty // todo = config.configuration.runtimeTagExpression()
-      logger.log { Pair(null, "TestEngine: Active tags: ${tags.expression}") }
+      logger.log { "Tag expression: ${tags.expression}" }
 
       val context = TestEngineContext.create(
          suite = suite,
@@ -72,7 +72,7 @@ class TestEngine(private val config: TestEngineConfig) {
 
       val result = executeWithProjectTimeout(context)
       result.errors.forEach {
-         logger.log { Pair(null, "Error during test engine run: $it") }
+         logger.log { "Error during test engine run: $it" }
          it.printStackTrace()
       }
 
@@ -135,7 +135,7 @@ class TestEngine(private val config: TestEngineConfig) {
       if (beforeErrors.isNotEmpty()) return EngineResult(beforeErrors)
 
       val result = executeSuite(context)
-      logger.log { "All specs completed with errors: ${result.errors}" }
+      logger.log { "All specs completed. Errors: ${result.errors}" }
 
       val afterErrors = extensions.afterProject()
 

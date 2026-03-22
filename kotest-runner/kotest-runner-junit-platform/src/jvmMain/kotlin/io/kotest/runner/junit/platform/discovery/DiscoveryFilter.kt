@@ -27,8 +27,8 @@ sealed class DiscoveryFilter {
    }
 
    /**
-    * Filters specs based on their [java.lang.reflect.Modifier] values (public, internal, etc).
-    * A Spec is included if it has a modifier that is included in the given set.
+    * Filters specs based on their [java.lang.reflect.Modifier] values (public, internal, etc.).
+    * A Spec is included if it has a modifier included in the given set.
     */
    data class ClassModifierDiscoveryFilter(val modifiers: Set<Modifier>) : DiscoveryFilter() {
       override fun test(kclass: KClass<out Spec>): Boolean {
