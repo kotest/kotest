@@ -26,7 +26,7 @@ actual fun createAssertionError(
    }
 
    return if (expected == null && actual == null) {
-      AssertionError(message, cause)
+      AssertionError(messageString, cause)
    } else {
       KotestAssertionFailedError(
          message = messageString,

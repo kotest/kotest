@@ -28,8 +28,8 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
    }
 
    /**
-    * Include the tests, listeners and extensions from the given [TestFactory] in this factory.
-    * Tests are added in order from where this include was invoked using configuration and
+    * Include the tests, listeners, and extensions from the given [TestFactory] in this factory.
+    * Tests are added in order from where the include function was invoked using configuration and
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {

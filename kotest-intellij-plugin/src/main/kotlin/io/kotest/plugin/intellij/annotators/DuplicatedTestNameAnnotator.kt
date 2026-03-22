@@ -37,7 +37,7 @@ class DuplicatedTestNameAnnotator : Annotator {
       val duplicated = tests.count { it.test.descriptorPath() == test.descriptorPath() } > 1
 
       if (duplicated) {
-         holder.createWarnAnnotation(test.psi, "Duplicated test name")
+         holder.createWarnAnnotation(test.psi, "Duplicated test name", "DuplicatedTestName")
       }
    }
 }
