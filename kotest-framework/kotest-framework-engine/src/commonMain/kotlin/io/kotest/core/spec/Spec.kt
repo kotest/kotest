@@ -409,7 +409,7 @@ data class RootTest(
    val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
-   val xmethod: TestXMethod,
-   val config: TestConfig?, // if specified by the test, may be null if no config is set using the spec DSL
+   val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
+   val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
    val factoryId: FactoryId?, // if this root test was added from a factory
 )
