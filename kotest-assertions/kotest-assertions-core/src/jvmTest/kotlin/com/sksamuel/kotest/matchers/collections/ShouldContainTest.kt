@@ -147,6 +147,62 @@ class ShouldContainTest : WordSpec({
          message.shouldContain("""qeqweew" should include substring "ooo"
 expected:<ooo> but was:<qeqweew>""")
       }
+
+      "support primitive BooleanArray" {
+         booleanArrayOf(true, false) shouldContain true
+         booleanArrayOf(true) shouldNotContain false
+         shouldThrow<AssertionError> { booleanArrayOf(true) shouldContain false }
+         shouldThrow<AssertionError> { booleanArrayOf(true, false) shouldNotContain true }
+      }
+
+      "support primitive ByteArray" {
+         byteArrayOf(1, 2, 3) shouldContain 2.toByte()
+         byteArrayOf(1, 2, 3) shouldNotContain 5.toByte()
+         shouldThrow<AssertionError> { byteArrayOf(1, 2, 3) shouldContain 5.toByte() }
+         shouldThrow<AssertionError> { byteArrayOf(1, 2, 3) shouldNotContain 2.toByte() }
+      }
+
+      "support primitive ShortArray" {
+         shortArrayOf(1, 2, 3) shouldContain 2.toShort()
+         shortArrayOf(1, 2, 3) shouldNotContain 5.toShort()
+         shouldThrow<AssertionError> { shortArrayOf(1, 2, 3) shouldContain 5.toShort() }
+         shouldThrow<AssertionError> { shortArrayOf(1, 2, 3) shouldNotContain 2.toShort() }
+      }
+
+      "support primitive CharArray" {
+         charArrayOf('a', 'b', 'c') shouldContain 'b'
+         charArrayOf('a', 'b', 'c') shouldNotContain 'z'
+         shouldThrow<AssertionError> { charArrayOf('a', 'b', 'c') shouldContain 'z' }
+         shouldThrow<AssertionError> { charArrayOf('a', 'b', 'c') shouldNotContain 'b' }
+      }
+
+      "support primitive IntArray" {
+         intArrayOf(1, 2, 3) shouldContain 2
+         intArrayOf(1, 2, 3) shouldNotContain 5
+         shouldThrow<AssertionError> { intArrayOf(1, 2, 3) shouldContain 5 }
+         shouldThrow<AssertionError> { intArrayOf(1, 2, 3) shouldNotContain 2 }
+      }
+
+      "support primitive LongArray" {
+         longArrayOf(1L, 2L, 3L) shouldContain 2L
+         longArrayOf(1L, 2L, 3L) shouldNotContain 5L
+         shouldThrow<AssertionError> { longArrayOf(1L, 2L, 3L) shouldContain 5L }
+         shouldThrow<AssertionError> { longArrayOf(1L, 2L, 3L) shouldNotContain 2L }
+      }
+
+      "support primitive FloatArray" {
+         floatArrayOf(1f, 2f, 3f) shouldContain 2f
+         floatArrayOf(1f, 2f, 3f) shouldNotContain 5f
+         shouldThrow<AssertionError> { floatArrayOf(1f, 2f, 3f) shouldContain 5f }
+         shouldThrow<AssertionError> { floatArrayOf(1f, 2f, 3f) shouldNotContain 2f }
+      }
+
+      "support primitive DoubleArray" {
+         doubleArrayOf(1.0, 2.0, 3.0) shouldContain 2.0
+         doubleArrayOf(1.0, 2.0, 3.0) shouldNotContain 5.0
+         shouldThrow<AssertionError> { doubleArrayOf(1.0, 2.0, 3.0) shouldContain 5.0 }
+         shouldThrow<AssertionError> { doubleArrayOf(1.0, 2.0, 3.0) shouldNotContain 2.0 }
+      }
    }
 })
 
