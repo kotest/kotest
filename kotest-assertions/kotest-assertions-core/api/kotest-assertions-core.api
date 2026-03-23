@@ -1796,33 +1796,65 @@ public final class io/kotest/matchers/collections/StartwithKt {
 	public static final fun shouldEndWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldEndWith (Ljava/util/List;Ljava/util/Collection;)V
 	public static final fun shouldEndWith (Ljava/util/List;[Ljava/lang/Object;)V
+	public static final fun shouldEndWith ([B[B)[B
+	public static final fun shouldEndWith ([C[C)[C
+	public static final fun shouldEndWith ([D[D)[D
+	public static final fun shouldEndWith ([F[F)[F
+	public static final fun shouldEndWith ([I[I)[I
+	public static final fun shouldEndWith ([J[J)[J
 	public static final fun shouldEndWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldEndWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldEndWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldEndWith ([S[S)[S
+	public static final fun shouldEndWith ([Z[Z)[Z
 	public static final fun shouldNotEndWith (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotEndWith (Ljava/lang/Iterable;Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith (Ljava/util/List;Ljava/util/Collection;)V
+	public static final fun shouldNotEndWith ([B[B)[B
+	public static final fun shouldNotEndWith ([C[C)[C
+	public static final fun shouldNotEndWith ([D[D)[D
+	public static final fun shouldNotEndWith ([F[F)[F
+	public static final fun shouldNotEndWith ([I[I)[I
+	public static final fun shouldNotEndWith ([J[J)[J
 	public static final fun shouldNotEndWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldNotEndWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotEndWith ([S[S)[S
+	public static final fun shouldNotEndWith ([Z[Z)[Z
 	public static final fun shouldNotStartWith (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotStartWith (Ljava/lang/Iterable;Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith (Ljava/util/List;Ljava/util/Collection;)V
+	public static final fun shouldNotStartWith ([B[B)[B
+	public static final fun shouldNotStartWith ([C[C)[C
+	public static final fun shouldNotStartWith ([D[D)[D
+	public static final fun shouldNotStartWith ([F[F)[F
+	public static final fun shouldNotStartWith ([I[I)[I
+	public static final fun shouldNotStartWith ([J[J)[J
 	public static final fun shouldNotStartWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldNotStartWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotStartWith ([S[S)[S
+	public static final fun shouldNotStartWith ([Z[Z)[Z
 	public static final fun shouldStartWith (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldStartWith (Ljava/lang/Iterable;Ljava/lang/Object;)V
 	public static final fun shouldStartWith (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldStartWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldStartWith (Ljava/util/List;Ljava/util/Collection;)V
+	public static final fun shouldStartWith ([B[B)[B
+	public static final fun shouldStartWith ([C[C)[C
+	public static final fun shouldStartWith ([D[D)[D
+	public static final fun shouldStartWith ([F[F)[F
+	public static final fun shouldStartWith ([I[I)[I
+	public static final fun shouldStartWith ([J[J)[J
 	public static final fun shouldStartWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldStartWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldStartWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldStartWith ([S[S)[S
+	public static final fun shouldStartWith ([Z[Z)[Z
 	public static final fun startWith (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
 }
 
