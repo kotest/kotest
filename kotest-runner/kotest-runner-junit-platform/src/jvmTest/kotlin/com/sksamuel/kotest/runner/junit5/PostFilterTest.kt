@@ -3,6 +3,7 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.FilterResult
 import org.junit.platform.engine.UniqueId
@@ -25,7 +26,7 @@ class PostFilterTest : StringSpec({
             }
          }).build()
       val descriptor = KotestJunitPlatformTestEngine()
-         .discover(request, UniqueId.forEngine("test-engine"))
+         .discover(request, UniqueId.forEngine("test-engine")) as KotestEngineDescriptor
       descriptor.specs.first().fqn shouldBe "com.sksamuel.kotest.runner.junit5.SpecToBeIncluded"
       descriptor.specs.size shouldBe 1
    }

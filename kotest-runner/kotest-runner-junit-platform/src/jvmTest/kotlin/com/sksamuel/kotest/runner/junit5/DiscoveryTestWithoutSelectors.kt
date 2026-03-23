@@ -7,6 +7,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassNameFilter
@@ -25,7 +26,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 0
    }
 
@@ -37,7 +38,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 30
    }
 
@@ -49,7 +50,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 28
    }
 
@@ -60,7 +61,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn }.toSet() shouldBe setOf(
          "com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1",
          "com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1",
@@ -76,7 +77,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 0
    }
 
@@ -87,7 +88,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn } shouldBe
          listOf(DiscoveryTestWithoutSelectors::class.java.canonicalName)
    }
@@ -99,7 +100,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 0
    }
 
@@ -110,7 +111,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 1
    }
 
@@ -121,7 +122,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.size shouldBe 1
    }
 
@@ -133,7 +134,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn } shouldBe listOf(
          DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
@@ -148,7 +149,7 @@ class DiscoveryTestWithoutSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn }.toSet() shouldBe setOf(
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
          DummySpec2::class.java.canonicalName,

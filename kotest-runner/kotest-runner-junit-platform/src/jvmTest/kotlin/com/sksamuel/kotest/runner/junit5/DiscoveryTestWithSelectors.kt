@@ -5,6 +5,7 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import io.kotest.runner.junit.platform.Segment
 import org.junit.platform.engine.UniqueId
@@ -90,7 +91,7 @@ class DiscoveryTestWithSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName)
       descriptor.children.map { (it.source.get() as ClassSource).javaClass } shouldBe listOf(com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java)
    }
@@ -103,7 +104,7 @@ class DiscoveryTestWithSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName,
@@ -121,7 +122,7 @@ class DiscoveryTestWithSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn }.toSet() shouldBe setOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage.mysubpackage.DummySpec1::class.java.canonicalName,
@@ -138,7 +139,7 @@ class DiscoveryTestWithSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec3::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec4::class.java.canonicalName,
@@ -155,7 +156,7 @@ class DiscoveryTestWithSelectors : FunSpec({
          )
          .build()
       val engine = KotestJunitPlatformTestEngine()
-      val descriptor = engine.discover(req, UniqueId.forEngine("testengine"))
+      val descriptor = engine.discover(req, UniqueId.forEngine("testengine")) as KotestEngineDescriptor
       descriptor.specs.map { it.fqn } shouldBe listOf(
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName,
          com.sksamuel.kotest.runner.junit5.mypackage2.DummySpec3::class.java.canonicalName,
