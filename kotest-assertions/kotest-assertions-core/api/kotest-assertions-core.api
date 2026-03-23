@@ -1746,7 +1746,15 @@ public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun beSortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeSorted (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeSorted (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeSorted ([B)[B
+	public static final fun shouldBeSorted ([C)[C
+	public static final fun shouldBeSorted ([D)[D
+	public static final fun shouldBeSorted ([F)[F
+	public static final fun shouldBeSorted ([I)[I
+	public static final fun shouldBeSorted ([J)[J
 	public static final fun shouldBeSorted ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldBeSorted ([S)[S
+	public static final fun shouldBeSorted ([Z)[Z
 	public static final fun shouldBeSortedBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldBeSortedBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
@@ -1758,7 +1766,15 @@ public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun shouldBeSortedWith ([Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)[Ljava/lang/Object;
 	public static final fun shouldNotBeSorted (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeSorted (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldNotBeSorted ([B)[B
+	public static final fun shouldNotBeSorted ([C)[C
+	public static final fun shouldNotBeSorted ([D)[D
+	public static final fun shouldNotBeSorted ([F)[F
+	public static final fun shouldNotBeSorted ([I)[I
+	public static final fun shouldNotBeSorted ([J)[J
 	public static final fun shouldNotBeSorted ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldNotBeSorted ([S)[S
+	public static final fun shouldNotBeSorted ([Z)[Z
 	public static final fun shouldNotBeSortedBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeSortedBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldNotBeSortedBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
