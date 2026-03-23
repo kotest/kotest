@@ -1,6 +1,6 @@
 package io.kotest.runner.junit.platform.discovery
 
-import io.kotest.core.log
+import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.runner.junit.platform.Segment
@@ -26,6 +26,8 @@ internal data class DiscoveryResult(
  */
 internal object Discovery {
 
+   private val logger = Logger<Discovery>()
+
    // filter functions
    private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
@@ -40,29 +42,46 @@ internal object Discovery {
       val classSelectors = request.getSelectorsByType(ClassSelector::class.java) +
          convertUniqueIdsToClassSelectors(engineId, request)
 
-      val specsSelected = (specsFromClasspathRootDiscoverySelectorsOnly(classpathRootSelectors) + specsFromClassDiscoverySelectorsOnly(classSelectors))
-         .asSequence()
-         .filter(isSpecSubclassKt)
-         .filterNot(isAbstract)
-         .toList()
+      val specsSelected = (specsFromClasspathRootSelectors(classpathRootSelectors) + specsFromClassDiscoverySelectorsOnly(classSelectors))
 
-      val specsAfterInitialFiltering = specsSelected.filter(filterFn(filters(request.configurationParameters)))
+      val specsAfterInitialFiltering = specsSelected.filter(
+         filterFn(
+            listOf(
+               classVisibilityFilter(classSelectors, request.configurationParameters)
+            )
+         )
+      )
 
-      log { "[Discovery] ${specsAfterInitialFiltering.size} specs will be returned" }
+      logger.log { "${specsAfterInitialFiltering.size} specs will be returned" }
 
       return DiscoveryResult(specsAfterInitialFiltering.map { SpecRef.Reference(it, it.java.name) })
    }
 
-   private fun filters(configurationParameters: ConfigurationParameters): List<DiscoveryFilter> {
-      val private = if (configurationParameters.get("allow_private").isPresent) Modifier.Private else null
+   /**
+    * Returns a [DiscoveryFilter] that filters specs based on their visibility.
+    *
+    * We normally filter out private classes, with two exceptions:
+    * 1. If the configuration parameter "allow_private" is set to true, then private classes are also included.
+    * 2. If there is only a single class, then we include it regardless of visibility, as this is most likely
+    *    a test class that is being run directly from the IDE
+    */
+   private fun classVisibilityFilter(
+      classSelectors: List<ClassSelector>,
+      configurationParameters: ConfigurationParameters
+   ): DiscoveryFilter {
+
+      val private = if (classSelectors.size == 1 ||
+         configurationParameters.get("allow_private").isPresent
+      ) Modifier.Private else null
+
       val modifiers = listOfNotNull(Modifier.Public, Modifier.Internal, private)
-      return listOf(DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet()))
+      return DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet())
    }
 
    /**
     * Returns the request's [Spec]s if they are completely specified by classpath root selectors, null otherwise.
     */
-   private fun specsFromClasspathRootDiscoverySelectorsOnly(selectors: List<ClasspathRootSelector>): List<KClass<out Spec>> {
+   private fun specsFromClasspathRootSelectors(selectors: List<ClasspathRootSelector>): List<KClass<out Spec>> {
       val specs = selectors
          .flatMap { selector ->
             ReflectionSupport.findAllClassesInClasspathRoot(selector.classpathRoot, isSpecSubclass) { true }
@@ -73,35 +92,31 @@ internal object Discovery {
          .filterIsInstance<KClass<out Spec>>()
          .toList()
 
-      log {
-         "[Discovery] Collected specs via ${selectors.size} class discovery selectors: found ${specs.size} specs"
-      }
-
+      logger.log { " Collected specs via ${selectors.size} classpath root discovery selectors: found ${specs.size} specs" }
       return specs
    }
 
    /**
     * Returns the request's [Spec]s if they are completely specified by class selectors, null otherwise.
+    * JUnit provides a list of [ClassSelector]s, which we can use to discover specs.
+    * We check that the classes are subclasses of [Spec] as the list may include JUnit classes or other
+    * test framework classes.
     */
-   private fun specsFromClassDiscoverySelectorsOnly(selectors: List<ClassSelector>): List<KClass<out Spec>> {
+   private fun specsFromClassSelectors(selectors: List<ClassSelector>): List<KClass<out Spec>> {
 
       // first filter down to spec instances only, then load the full class
       val specs = selectors
          .asSequence()
-         // must load the class without initializing it, we just want to check if it's a subclass of Spec
+         // must load the class without initializing it, as we just want to check if it's a subclass of Spec
          .mapNotNull { runCatching { Class.forName(it.className, false, this::class.java.classLoader) }.getOrNull() }
          .filter(isSpecSubclass)
          // now we can properly initialize it
          .map { Class.forName(it.name).kotlin }
          .filterNot(isAbstract)
-         // we know this will be true
          .filterIsInstance<KClass<out Spec>>()
          .toList()
 
-      log {
-         "[Discovery] Collected specs via ${selectors.size} class discovery selectors: found ${specs.size} specs"
-      }
-
+      logger.log { "Collected specs via ${selectors.size} class selectors: found ${specs.size} specs" }
       return specs
    }
 
@@ -112,14 +127,6 @@ internal object Discovery {
    private fun filterFn(filters: List<DiscoveryFilter>): (KClass<out Spec>) -> Boolean = { kclass ->
       filters.isEmpty() || filters.all { it.test(kclass) }
    }
-
-//   val classFilters = getFiltersByType(ClassNameFilter::class.java).map { filter ->
-//      DiscoveryFilter.ClassNameDiscoveryFilter { filter.toPredicate().test(it.value) }
-//   }
-//
-//   val packageFilters = getFiltersByType(PackageNameFilter::class.java).map { filter ->
-//      DiscoveryFilter.PackageNameDiscoveryFilter { filter.toPredicate().test(it.value) }
-//   }
 
    /**
     * Based on a previously discovered `TestPlan`, tools may decide to split
