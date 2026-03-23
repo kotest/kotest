@@ -3,9 +3,26 @@ package io.kotest.assertions
 import io.kotest.assertions.print.Printed
 import org.opentest4j.AssertionFailedError
 
+actual fun createLazyAssertionError(messageFn: () -> String): AssertionError = LazyJvmAssertionError(messageFn)
+
+/**
+ * An [AssertionError] that skips JVM stack trace capture (by overriding [fillInStackTrace] to be a no-op)
+ * and computes its message lazily. Intended for use inside inspectors where errors are created N times
+ * but only displayed when the inspector itself fails.
+ */
+private class LazyJvmAssertionError(messageFn: () -> String) : AssertionError() {
+
+   private val lazyMessage: String by lazy(messageFn)
+
+   /** Skip the expensive native fillInStackTrace call - stack traces are never shown for per-element errors. */
+   override fun fillInStackTrace(): Throwable = this
+
+   override val message: String = lazyMessage
+}
+
 /**
  * Creates an [AssertionError] from the given message and expected and actual values
- * using the opentest4j library.
+ * using the OpenTest4j library.
  *
  * The exception type is
  * See https://ota4j-team.github.io/opentest4j/docs/1.3.0/api/org/opentest4j/AssertionFailedError.html
