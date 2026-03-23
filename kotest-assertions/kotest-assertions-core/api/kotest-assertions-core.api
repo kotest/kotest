@@ -1479,13 +1479,29 @@ public final class io/kotest/matchers/collections/InorderKt {
 	public static final fun shouldContainInOrder (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainInOrder (Ljava/util/List;Ljava/util/List;)V
 	public static final fun shouldContainInOrder (Ljava/util/List;[Ljava/lang/Object;)V
+	public static final fun shouldContainInOrder ([B[B)[B
+	public static final fun shouldContainInOrder ([C[C)[C
+	public static final fun shouldContainInOrder ([D[D)[D
+	public static final fun shouldContainInOrder ([F[F)[F
+	public static final fun shouldContainInOrder ([I[I)[I
+	public static final fun shouldContainInOrder ([J[J)[J
 	public static final fun shouldContainInOrder ([Ljava/lang/Object;Ljava/util/List;)V
 	public static final fun shouldContainInOrder ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldContainInOrder ([S[S)[S
+	public static final fun shouldContainInOrder ([Z[Z)[Z
 	public static final fun shouldNotContainInOrder (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotContainInOrder (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldNotContainInOrder (Ljava/util/List;Ljava/util/List;)V
+	public static final fun shouldNotContainInOrder ([B[B)[B
+	public static final fun shouldNotContainInOrder ([C[C)[C
+	public static final fun shouldNotContainInOrder ([D[D)[D
+	public static final fun shouldNotContainInOrder ([F[F)[F
+	public static final fun shouldNotContainInOrder ([I[I)[I
+	public static final fun shouldNotContainInOrder ([J[J)[J
 	public static final fun shouldNotContainInOrder ([Ljava/lang/Object;Ljava/util/List;)V
 	public static final fun shouldNotContainInOrder ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainInOrder ([S[S)[S
+	public static final fun shouldNotContainInOrder ([Z[Z)[Z
 }
 
 public final class io/kotest/matchers/collections/LargerKt {
