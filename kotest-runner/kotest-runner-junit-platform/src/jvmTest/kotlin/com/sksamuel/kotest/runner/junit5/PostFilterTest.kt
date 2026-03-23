@@ -3,7 +3,6 @@ package com.sksamuel.kotest.runner.junit5
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.FilterResult
 import org.junit.platform.engine.UniqueId
