@@ -1236,14 +1236,30 @@ public final class io/kotest/matchers/collections/ContainAllKt {
 	public static final fun shouldContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)Ljava/util/Collection;
 	public static final fun shouldContainAll (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainAll (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldContainAll ([B[B)[B
+	public static final fun shouldContainAll ([C[C)[C
+	public static final fun shouldContainAll ([D[D)[D
+	public static final fun shouldContainAll ([F[F)[F
+	public static final fun shouldContainAll ([I[I)[I
+	public static final fun shouldContainAll ([J[J)[J
 	public static final fun shouldContainAll ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
 	public static final fun shouldContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldContainAll ([S[S)[S
+	public static final fun shouldContainAll ([Z[Z)[Z
 	public static final fun shouldNotContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldNotContainAll (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainAll (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldNotContainAll ([B[B)[B
+	public static final fun shouldNotContainAll ([C[C)[C
+	public static final fun shouldNotContainAll ([D[D)[D
+	public static final fun shouldNotContainAll ([F[F)[F
+	public static final fun shouldNotContainAll ([I[I)[I
+	public static final fun shouldNotContainAll ([J[J)[J
 	public static final fun shouldNotContainAll ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
 	public static final fun shouldNotContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotContainAll ([S[S)[S
+	public static final fun shouldNotContainAll ([Z[Z)[Z
 }
 
 public final class io/kotest/matchers/collections/ContainExactlyInAnyOrderKt {

@@ -109,51 +109,35 @@ infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>): Collection<T
 
 // BooleanArray
 fun BooleanArray.shouldContainAll(vararg expected: Boolean): BooleanArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun BooleanArray.shouldContainAll(expected: BooleanArray): BooleanArray = apply { asList().shouldContainAll(expected.asList()) }
 fun BooleanArray.shouldNotContainAll(vararg expected: Boolean): BooleanArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun BooleanArray.shouldNotContainAll(expected: BooleanArray): BooleanArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // ByteArray
 fun ByteArray.shouldContainAll(vararg expected: Byte): ByteArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun ByteArray.shouldContainAll(expected: ByteArray): ByteArray = apply { asList().shouldContainAll(expected.asList()) }
 fun ByteArray.shouldNotContainAll(vararg expected: Byte): ByteArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun ByteArray.shouldNotContainAll(expected: ByteArray): ByteArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // ShortArray
 fun ShortArray.shouldContainAll(vararg expected: Short): ShortArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun ShortArray.shouldContainAll(expected: ShortArray): ShortArray = apply { asList().shouldContainAll(expected.asList()) }
 fun ShortArray.shouldNotContainAll(vararg expected: Short): ShortArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun ShortArray.shouldNotContainAll(expected: ShortArray): ShortArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // CharArray
 fun CharArray.shouldContainAll(vararg expected: Char): CharArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun CharArray.shouldContainAll(expected: CharArray): CharArray = apply { asList().shouldContainAll(expected.asList()) }
 fun CharArray.shouldNotContainAll(vararg expected: Char): CharArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun CharArray.shouldNotContainAll(expected: CharArray): CharArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // IntArray
 fun IntArray.shouldContainAll(vararg expected: Int): IntArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun IntArray.shouldContainAll(expected: IntArray): IntArray = apply { asList().shouldContainAll(expected.asList()) }
 fun IntArray.shouldNotContainAll(vararg expected: Int): IntArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun IntArray.shouldNotContainAll(expected: IntArray): IntArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // LongArray
 fun LongArray.shouldContainAll(vararg expected: Long): LongArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun LongArray.shouldContainAll(expected: LongArray): LongArray = apply { asList().shouldContainAll(expected.asList()) }
 fun LongArray.shouldNotContainAll(vararg expected: Long): LongArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun LongArray.shouldNotContainAll(expected: LongArray): LongArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // FloatArray
 fun FloatArray.shouldContainAll(vararg expected: Float): FloatArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun FloatArray.shouldContainAll(expected: FloatArray): FloatArray = apply { asList().shouldContainAll(expected.asList()) }
 fun FloatArray.shouldNotContainAll(vararg expected: Float): FloatArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun FloatArray.shouldNotContainAll(expected: FloatArray): FloatArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // DoubleArray
 fun DoubleArray.shouldContainAll(vararg expected: Double): DoubleArray = apply { asList().shouldContainAll(expected.asList()) }
-infix fun DoubleArray.shouldContainAll(expected: DoubleArray): DoubleArray = apply { asList().shouldContainAll(expected.asList()) }
 fun DoubleArray.shouldNotContainAll(vararg expected: Double): DoubleArray = apply { asList().shouldNotContainAll(expected.asList()) }
-infix fun DoubleArray.shouldNotContainAll(expected: DoubleArray): DoubleArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 fun <T> containAll(vararg ts: T) = containAll(ts.asList())
 
