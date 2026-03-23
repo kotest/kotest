@@ -85,6 +85,7 @@
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ConfigClassesImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AnnotationSpecImplicitUsageProvider"/>
 
       <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
       <testFinder implementation="io.kotest.plugin.intellij.tests.KotestTestFinder"/>

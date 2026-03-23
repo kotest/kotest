@@ -12,7 +12,8 @@ The Kotest test framework is supported on all targets, including JVM, JavaScript
 To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
 
 :::caution[Migrating to Kotest 6]
-The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin but a simplified setup.
+The Kotlin multiplatform setup in Kotest 6.0 has changed from previous versions. The Kotest Gradle plugin has been
+renamed to `io.kotest`. Also, the compiler plugin has been replaced with a more robust method using KSP.
 Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
 :::
 
@@ -65,10 +66,11 @@ dependencies {
 
 And then execute the `test` task in gradle, or run tests directly from the IDE.
 
-### Enhanced IDE support
+## Enhanced IDE support
 
-For enhanced support for jump-to-source and re-running failed tests from the test results tree, add the
-[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to to your build.
+For enhanced support for jump-to-source and re-running failed tests from the test results tree,
+in addition to installing the Kotest Intellij Plugin into your IDE, add the
+[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
 
 For example:
 
