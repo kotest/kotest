@@ -14,7 +14,8 @@ internal class ProjectExtensions(private val projectConfigResolver: ProjectConfi
     */
    suspend fun beforeProject(): List<ExtensionException.BeforeProjectException> {
       val extensions = projectConfigResolver.extensions().filterIsInstance<BeforeProjectListener>()
-      logger.log { Pair(null, "Invoking ${extensions.size} BeforeProjectListeners") }
+      if (extensions.isEmpty()) return emptyList()
+      logger.log { "Invoking ${extensions.size} BeforeProjectListeners" }
       return extensions.mapNotNull { ext ->
          try {
             ext.beforeProject()
@@ -30,7 +31,8 @@ internal class ProjectExtensions(private val projectConfigResolver: ProjectConfi
     */
    suspend fun afterProject(): List<ExtensionException.AfterProjectException> {
       val extensions = projectConfigResolver.extensions().filterIsInstance<AfterProjectListener>()
-      logger.log { Pair(null, "Invoking ${extensions.size} AfterProjectListeners") }
+      if (extensions.isEmpty()) return emptyList()
+      logger.log { "Invoking ${extensions.size} AfterProjectListeners" }
       return extensions.mapNotNull { ext ->
          try {
             ext.afterProject()

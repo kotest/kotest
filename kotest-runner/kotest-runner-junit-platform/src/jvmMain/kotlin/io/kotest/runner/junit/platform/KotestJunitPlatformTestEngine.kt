@@ -9,12 +9,12 @@ import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
-import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
 import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
+import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
@@ -28,7 +28,7 @@ import kotlin.reflect.KClass
  */
 class KotestJunitPlatformTestEngine : TestEngine {
 
-   private val logger = Logger(KotestJunitPlatformTestEngine::class)
+   private val logger = Logger<KotestJunitPlatformTestEngine>()
 
    companion object {
       const val ENGINE_ID = "kotest"
@@ -53,7 +53,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "Executing request with listener ${request::class.java.name}:${request.engineExecutionListener}" }
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
+      // specifically; the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
       // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
@@ -86,6 +86,22 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
+    * This method is invoked by build systems that support JUnit Platform, to return a [TestDescriptor] that
+    * contains any matching tests given the [EngineDiscoveryRequest].
+    *
+    * The [EngineDiscoveryRequest] contains a list of [DiscoverySelector]s which provide information
+    * on the tests that have been discovered by the build system. The tests may or may not be relevant
+    * to Kotest, so our job is to filter them down to only those that are relevant.
+    *
+    * For example, when running a single test using --tests, Gradle will add a [ClassSelector] and a
+    * [ClassMethodNameFilter] post-discovery filter.
+    *
+    * When executing the test task without any particular --tests filter, Gradle will include multiple
+    * [ClassSelector]s, one for each test class, with no post-discovery filters.
+    *
+    * Finally, another example is re-running a failed test, Gradle will provide a [UniqueIdSelector]
+    * that contains the unique id of the test that failed.
+    *
     * gradlew --tests rules:
     * Classname: adds classname selector and ClassMethodNameFilter post-discovery filter
     * Classname.method: adds classname selector and ClassMethodNameFilter post-discovery filter
@@ -98,10 +114,15 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun discover(
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
-   ): KotestEngineDescriptor {
+   ): TestDescriptor {
 
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
-      logger.log { request.string() }
+      logger.log { "JUnit discovery request [configurationParameters=${request.configurationParameters}]" }
+      logger.log { "JUnit discovery request [engineFilters=${request.engineFilters()}]" }
+      logger.log { "JUnit discovery request [postFilters=${request.postFilters()}]" }
+      logger.log { "JUnit discovery request [classSelectors=${request.getSelectorsByType(ClassSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java)}]" }
 
       if (!isEngineIncluded(request) || !shouldRunTests(request))
          return EngineDescriptorBuilder.builder(uniqueId).build()
@@ -109,7 +130,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
       val result = Discovery.discover(uniqueId, request)
 
       // this is a hack - junit needs access to project config to load the formatter, but at this stage, the config is not quite ready
-      // specifically, the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
+      // specifically; the /kotest.properties file hasn't been loaded as the engine has not yet been initialized,
       // so we'll force the loading here as well. Ideally, this would all be taken care of in the engine and junit shouldn't need to know
       // anything about the internals. We will need to think of a better way to handle this in the future to clean this up, perhaps by changing
       // this initialize code out of engine interceptors and into the engine constructor itself
@@ -127,8 +148,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .withFormatter(formatting)
          .build()
 
-      logger.log { "JUnit discovery completed [descriptor=$engine]" }
-      logger.log { "Final specs [${engine.specs.joinToString(", ")}]" }
+      logger.log { "Final discovery [${engine.specs.joinToString(", ")}]" }
       return engine
    }
 
@@ -137,7 +157,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     */
    @Suppress("UNCHECKED_CAST")
    private fun configurationParameterExtensions(request: EngineDiscoveryRequest): List<Extension> {
-      return request.configurationParameters.get("kotest.extensions").orElseGet { "" }
+      return request.configurationParameters.get("kotest.extensions").orElse("")
          .split(',')
          .map { it.trim() }
          .filter { it.isNotBlank() }
@@ -159,7 +179,9 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
-    * If we are excluded from the engines, then we do not run discovery.
+    * If any engine filter excludes Kotest, then we do not run discovery.
+    * In other words, all filters must pass for a given engine to be included.
+    * Usually, these filters are not used, but they can be used to exclude engines.
     */
    private fun isEngineIncluded(request: EngineDiscoveryRequest): Boolean {
       return request.engineFilters().all { it.toPredicate().test(this) }

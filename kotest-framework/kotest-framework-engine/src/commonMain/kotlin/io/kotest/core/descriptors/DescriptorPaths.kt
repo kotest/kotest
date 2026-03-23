@@ -29,11 +29,30 @@ object DescriptorPaths {
     * com.sksamuel.MySpec/a context -- a test
     * com.sksamuel.MySpec/a context -- another context -- another test
     */
-   fun render(descriptor: Descriptor): DescriptorPath = when (descriptor) {
+   fun render(descriptor: Descriptor): DescriptorPath = render(descriptor, SPEC_DELIMITER, TEST_DELIMITER)
+
+   /**
+    * Returns a string representation of the given [descriptor] wrapped in a [DescriptorPath].
+    *
+    * The spec name is followed by a [specDelimiter] and then the test context. Each element in the test
+    * context is separated by a [testDelimiter].
+    *
+    * Examples:
+    *
+    * com.sksamuel.MySpec
+    * com.sksamuel.MySpec<specDelimiter>a context
+    * com.sksamuel.MySpec<specDelimiter>a context <testDelimiter> a test
+    */
+   fun render(
+      descriptor: Descriptor,
+      specDelimiter: String,
+      testDelimiter: String,
+   ): DescriptorPath = when (descriptor) {
       is SpecDescriptor -> DescriptorPath(descriptor.id.value)
       is TestDescriptor -> when (val p = descriptor.parent) {
-         is SpecDescriptor -> DescriptorPath(p.id.value + SPEC_DELIMITER + descriptor.id.value)
-         is TestDescriptor -> DescriptorPath(render(p).value + TEST_DELIMITER + descriptor.id.value)
+         is SpecDescriptor -> DescriptorPath(p.id.value + specDelimiter + descriptor.id.value)
+         is TestDescriptor ->
+            DescriptorPath(render(p, specDelimiter, testDelimiter).value + testDelimiter + descriptor.id.value)
       }
    }
 

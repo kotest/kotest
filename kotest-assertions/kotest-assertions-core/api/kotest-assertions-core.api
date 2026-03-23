@@ -1282,12 +1282,28 @@ public final class io/kotest/matchers/collections/ContainKt {
 	public static synthetic fun contain$default (Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;ILjava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContain (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldContain (Ljava/lang/Iterable;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Ljava/lang/Iterable;
+	public static final fun shouldContain ([BB)[B
+	public static final fun shouldContain ([CC)[C
+	public static final fun shouldContain ([DD)[D
+	public static final fun shouldContain ([FF)[F
+	public static final fun shouldContain ([II)[I
+	public static final fun shouldContain ([JJ)[J
 	public static final fun shouldContain ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldContain ([Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)[Ljava/lang/Object;
+	public static final fun shouldContain ([SS)[S
+	public static final fun shouldContain ([ZZ)[Z
 	public static final fun shouldNotContain (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldNotContain (Ljava/lang/Iterable;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Ljava/lang/Iterable;
+	public static final fun shouldNotContain ([BB)[B
+	public static final fun shouldNotContain ([CC)[C
+	public static final fun shouldNotContain ([DD)[D
+	public static final fun shouldNotContain ([FF)[F
+	public static final fun shouldNotContain ([II)[I
+	public static final fun shouldNotContain ([JJ)[J
 	public static final fun shouldNotContain ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotContain ([Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)[Ljava/lang/Object;
+	public static final fun shouldNotContain ([SS)[S
+	public static final fun shouldNotContain ([ZZ)[Z
 }
 
 public final class io/kotest/matchers/collections/ContainOnlyKt {
@@ -1601,13 +1617,13 @@ public final class io/kotest/matchers/collections/OneofKt {
 public final class io/kotest/matchers/collections/SingleElementKt {
 	public static final fun shouldHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldHaveSingleElement (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
-	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)V
-	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)V
+	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldHaveSingleElement (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
 	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
-	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)V
-	public static final fun shouldNotHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)V
+	public static final fun shouldHaveSingleElement ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
+	public static final fun shouldNotHaveSingleElement (Ljava/lang/Iterable;Ljava/lang/Object;)Ljava/lang/Iterable;
+	public static final fun shouldNotHaveSingleElement (Ljava/util/Collection;Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldNotHaveSingleElement ([Ljava/lang/Object;Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun singleElement (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun singleElement (Lkotlin/jvm/functions/Function1;)Lio/kotest/matchers/Matcher;
 }
@@ -1730,7 +1746,15 @@ public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun beSortedWith (Lkotlin/jvm/functions/Function2;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeSorted (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldBeSorted (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldBeSorted ([B)[B
+	public static final fun shouldBeSorted ([C)[C
+	public static final fun shouldBeSorted ([D)[D
+	public static final fun shouldBeSorted ([F)[F
+	public static final fun shouldBeSorted ([I)[I
+	public static final fun shouldBeSorted ([J)[J
 	public static final fun shouldBeSorted ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldBeSorted ([S)[S
+	public static final fun shouldBeSorted ([Z)[Z
 	public static final fun shouldBeSortedBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldBeSortedBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldBeSortedBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
@@ -1742,7 +1766,15 @@ public final class io/kotest/matchers/collections/SortedKt {
 	public static final fun shouldBeSortedWith ([Ljava/lang/Object;Lkotlin/jvm/functions/Function2;)[Ljava/lang/Object;
 	public static final fun shouldNotBeSorted (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeSorted (Ljava/util/List;)Ljava/util/List;
+	public static final fun shouldNotBeSorted ([B)[B
+	public static final fun shouldNotBeSorted ([C)[C
+	public static final fun shouldNotBeSorted ([D)[D
+	public static final fun shouldNotBeSorted ([F)[F
+	public static final fun shouldNotBeSorted ([I)[I
+	public static final fun shouldNotBeSorted ([J)[J
 	public static final fun shouldNotBeSorted ([Ljava/lang/Comparable;)[Ljava/lang/Comparable;
+	public static final fun shouldNotBeSorted ([S)[S
+	public static final fun shouldNotBeSorted ([Z)[Z
 	public static final fun shouldNotBeSortedBy (Ljava/lang/Iterable;Lkotlin/jvm/functions/Function1;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeSortedBy (Ljava/util/List;Lkotlin/jvm/functions/Function1;)Ljava/util/List;
 	public static final fun shouldNotBeSortedBy ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
@@ -3198,7 +3230,7 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldHaveCount (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldHaveElementAt (Lkotlin/sequences/Sequence;ILjava/lang/Object;)V
 	public static final fun shouldHaveLowerBound (Lkotlin/sequences/Sequence;Ljava/lang/Comparable;)V
-	public static final fun shouldHaveSingleElement (Lkotlin/sequences/Sequence;Ljava/lang/Object;)V
+	public static final fun shouldHaveSingleElement (Lkotlin/sequences/Sequence;Ljava/lang/Object;)Lkotlin/sequences/Sequence;
 	public static final fun shouldHaveSize (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldHaveUpperBound (Lkotlin/sequences/Sequence;Ljava/lang/Comparable;)V
 	public static final fun shouldMatchEach (Lkotlin/sequences/Sequence;Ljava/util/List;)V
@@ -3224,7 +3256,7 @@ public final class io/kotest/matchers/sequences/MatchersKt {
 	public static final fun shouldNotContainOnlyNulls (Lkotlin/sequences/Sequence;)V
 	public static final fun shouldNotHaveCount (Lkotlin/sequences/Sequence;I)V
 	public static final fun shouldNotHaveElementAt (Lkotlin/sequences/Sequence;ILjava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement (Lkotlin/sequences/Sequence;Ljava/lang/Object;)V
+	public static final fun shouldNotHaveSingleElement (Lkotlin/sequences/Sequence;Ljava/lang/Object;)Lkotlin/sequences/Sequence;
 	public static final fun shouldNotHaveSize (Lkotlin/sequences/Sequence;I)V
 	public static final fun singleElement (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun sorted ()Lio/kotest/matchers/Matcher;
