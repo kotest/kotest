@@ -139,6 +139,32 @@ infix fun <T, I : Iterable<T>> I.shouldNotBeSortedWith(cmp: (T, T) -> Int): I {
    return this
 }
 
+// Primitive Arrays ==================================================================================
+
+fun BooleanArray.shouldBeSorted(): BooleanArray = apply { asList().shouldBeSorted() }
+fun BooleanArray.shouldNotBeSorted(): BooleanArray = apply { asList().shouldNotBeSorted() }
+
+fun ByteArray.shouldBeSorted(): ByteArray = apply { asList().shouldBeSorted() }
+fun ByteArray.shouldNotBeSorted(): ByteArray = apply { asList().shouldNotBeSorted() }
+
+fun ShortArray.shouldBeSorted(): ShortArray = apply { asList().shouldBeSorted() }
+fun ShortArray.shouldNotBeSorted(): ShortArray = apply { asList().shouldNotBeSorted() }
+
+fun CharArray.shouldBeSorted(): CharArray = apply { asList().shouldBeSorted() }
+fun CharArray.shouldNotBeSorted(): CharArray = apply { asList().shouldNotBeSorted() }
+
+fun IntArray.shouldBeSorted(): IntArray = apply { asList().shouldBeSorted() }
+fun IntArray.shouldNotBeSorted(): IntArray = apply { asList().shouldNotBeSorted() }
+
+fun LongArray.shouldBeSorted(): LongArray = apply { asList().shouldBeSorted() }
+fun LongArray.shouldNotBeSorted(): LongArray = apply { asList().shouldNotBeSorted() }
+
+fun FloatArray.shouldBeSorted(): FloatArray = apply { asList().shouldBeSorted() }
+fun FloatArray.shouldNotBeSorted(): FloatArray = apply { asList().shouldNotBeSorted() }
+
+fun DoubleArray.shouldBeSorted(): DoubleArray = apply { asList().shouldBeSorted() }
+fun DoubleArray.shouldNotBeSorted(): DoubleArray = apply { asList().shouldNotBeSorted() }
+
 fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(comparator)
 
 fun <T> beSortedWith(cmp: (T, T) -> Int): Matcher<List<T>> = sortedWith(cmp)

@@ -75,3 +75,6 @@ jobs:
             check
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
+
+env:
+   KOTEST_RELEASE_MAJOR_MINOR: ${{ vars.KOTEST_RELEASE_MAJOR_MINOR }}

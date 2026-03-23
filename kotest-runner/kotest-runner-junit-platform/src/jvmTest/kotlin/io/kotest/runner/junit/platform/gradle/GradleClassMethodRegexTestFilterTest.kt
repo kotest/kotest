@@ -161,6 +161,42 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
          GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
       }
    }
+   
+   context("simple class name with leading wildcard") {
+      // When running: ./gradlew test --tests '*DecoderUtilsTest'
+      // Gradle converts '*ClassName' to the regex pattern: .*.*\QClassName\E
+      // See: https://github.com/kotest/kotest/issues/5639
+
+      val decoderSpec = Descriptor.SpecDescriptor(DescriptorId("org.example.binaries.DecoderUtilsTest"))
+      val otherSpec = Descriptor.SpecDescriptor(DescriptorId("org.example.binaries.EncoderUtilsTest"))
+      val noPackageSpec = Descriptor.SpecDescriptor(DescriptorId("DecoderUtilsTest"))
+
+      test("spec with deep package path should be INCLUDED by wildcard prefix pattern") {
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(decoderSpec) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("non-matching spec should be EXCLUDED by wildcard prefix pattern") {
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(otherSpec) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+
+      test("spec with no package should be INCLUDED by wildcard prefix pattern") {
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(noPackageSpec) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("nested test within matching spec should be INCLUDED") {
+         val nestedTest = decoderSpec.append("decode a number")
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(nestedTest) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("wildcard suffix pattern should match any spec ending with Test") {
+         val fooTest = Descriptor.SpecDescriptor(DescriptorId("org.example.FooTest"))
+         val barTest = Descriptor.SpecDescriptor(DescriptorId("com.example.deep.BarTest"))
+         val notATest = Descriptor.SpecDescriptor(DescriptorId("org.example.FooSpec"))
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QTest\\E")).filter(fooTest) shouldBe DescriptorFilterResult.Include
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QTest\\E")).filter(barTest) shouldBe DescriptorFilterResult.Include
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QTest\\E")).filter(notATest) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
 
    // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
    test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {

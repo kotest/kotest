@@ -40,6 +40,7 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.shouldNotHaveSingleElement
 import io.kotest.matchers.collections.shouldMatchInOrder
 import io.kotest.matchers.collections.shouldMatchInOrderSubset
 import io.kotest.matchers.collections.shouldNotBeIn
@@ -142,6 +143,15 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf(1) shouldBe singleElement(2)
             }.shouldHaveMessage("Collection should be a single element containing 2\nexpected:<2> but was:<1>")
+
+         }
+
+         "should return the receiver for chaining" {
+            listOf(1).shouldHaveSingleElement(1).shouldHaveSize(1)
+            listOf(1).shouldHaveSingleElement { it == 1 }.shouldHaveSize(1)
+            arrayOf(1).shouldHaveSingleElement(1).shouldHaveSize(1)
+            arrayOf(1).shouldHaveSingleElement { it == 1 }.shouldHaveSize(1)
+            listOf(2).shouldNotHaveSingleElement(1).shouldHaveSize(1)
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)

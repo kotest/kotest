@@ -6,7 +6,26 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import org.gradle.api.internal.tasks.testing.filter.TestFilterSpec
 import org.gradle.api.internal.tasks.testing.filter.TestSelectionMatcher
-import org.junit.platform.launcher.PostDiscoveryFilter
+/**
+ * The ClassMethodNameFilter class has moved across Gradle versions:
+ * - Gradle 8.x: org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$ClassMethodNameFilter
+ * - Gradle 9.3: org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestDefinitionProcessor$ClassMethodNameFilter
+ * - Gradle 9.4+: org.gradle.api.internal.tasks.testing.junitplatform.filters.ClassMethodNameFilter
+ *
+ * We try all known locations to find the one available on the test classpath.
+ */
+private val classMethodNameFilterFqns = listOf(
+   "org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor\$ClassMethodNameFilter",
+   "org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestDefinitionProcessor\$ClassMethodNameFilter",
+   "org.gradle.api.internal.tasks.testing.junitplatform.filters.ClassMethodNameFilter",
+)
+
+private fun resolveClassMethodNameFilterClass(): Class<*> {
+   for (fqn in classMethodNameFilterFqns) {
+      runCatching { return Class.forName(fqn) }.getOrNull()
+   }
+   error("Could not find ClassMethodNameFilter on the classpath. Tried: $classMethodNameFilterFqns")
+}
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ClassMethodNameFilterUtilsTest : FunSpec({
@@ -39,7 +58,7 @@ class ClassMethodNameFilterUtilsTest : FunSpec({
       val matcher = TestSelectionMatcher(spec)
 
       val filter =
-         Class.forName($$"org.gradle.api.internal.tasks.testing.junitplatform.JUnitPlatformTestClassProcessor$ClassMethodNameFilter")
+         resolveClassMethodNameFilterClass()
             .declaredConstructors.first { it.parameterCount == 1 }.let {
                it.isAccessible = true
                it.newInstance(matcher)

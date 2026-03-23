@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform
 import io.kotest.common.KotestInternal
 import io.kotest.common.env
 import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorId
@@ -125,7 +126,7 @@ class JUnitTestEngineListener(
    }
 
    override suspend fun specStarted(ref: SpecRef) {
-      logger.log { "specStarted ${ref.kclass}" }
+      logger.log { LogLine(ref.fqn, "specStarted") }
       try {
 
          var descriptor = findTestDescriptorForSpec(root, ref.descriptor())
@@ -138,17 +139,17 @@ class JUnitTestEngineListener(
 
          descriptors[ref.descriptor()] = descriptor
 
-         logger.log { Pair(ref.kclass.bestName(), "executionStarted $descriptor") }
+         logger.log { LogLine(ref.fqn, "executionStarted $descriptor") }
          listener.executionStarted(descriptor)
 
       } catch (t: Throwable) {
-         logger.log { Pair(ref.kclass.bestName(), "Error marking spec as started $t") }
+         logger.log { LogLine(ref.fqn, "Error marking spec as started $t") }
          throw t
       }
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      logger.log { "specFinished ${ref.kclass} $result" }
+      logger.log { LogLine(ref.fqn, "specFinished $result") }
 
       val t = result.errorOrNull
       when {
@@ -159,14 +160,14 @@ class JUnitTestEngineListener(
             val descriptor = findTestDescriptorForSpec(root, ref.descriptor())
                ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
             addPlaceholderTest(descriptor, t, ref.kclass)
-            logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor $t") }
+            logger.log { LogLine(ref.fqn, "executionFinished: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
 
          else -> {
             val descriptor = findTestDescriptorForSpec(root, ref.descriptor())
                ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
-            logger.log { Pair(ref.kclass.bestName(), "executionFinished: $descriptor") }
+            logger.log { LogLine(ref.fqn, "executionFinished: $descriptor") }
             listener.executionFinished(descriptor, TestExecutionResult.successful())
          }
       }
@@ -179,7 +180,7 @@ class JUnitTestEngineListener(
       // also, if using --tests then the spec would not have been registered, in that case
       // instead of showing all tests minus the one we are running as ignored, we'll just skip
 
-      logger.log { Pair(kclass.bestName(), "Spec is being flagged as ignored") }
+      logger.log { LogLine(kclass.bestName(), "specIgnored") }
       val testDescriptor = findTestDescriptorForSpec(root, Descriptor.SpecDescriptor(DescriptorId(kclass.java.name)))
       if (testDescriptor != null)
          listener.executionSkipped(testDescriptor, reasonIfEnabled(reason))

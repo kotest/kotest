@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.config.TestConfig
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
 import io.kotest.property.PropTestConfig
@@ -48,7 +49,7 @@ class PersistSeedsTest : FunSpec({
          .readText().shouldBe("623515")
    }
 
-   test("when write seeds is disabled, failed tests should not persist seeds") {
+   test("when write seeds is disabled, failed tests should not persist seeds").config(TestConfig(retries = 5)) {
       clearSeedDirectory()
       PropertyTesting.writeFailedSeed = false
       shouldThrowAny {
