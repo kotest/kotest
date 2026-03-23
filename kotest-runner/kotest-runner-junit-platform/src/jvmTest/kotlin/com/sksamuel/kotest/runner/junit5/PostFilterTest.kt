@@ -26,7 +26,7 @@ class PostFilterTest : StringSpec({
             }
          }).build()
       val descriptor = KotestJunitPlatformTestEngine()
-         .discover(request, UniqueId.forEngine("test-engine")) as KotestEngineDescriptor
+         .discover(request, UniqueId.forEngine("test-engine"))
       descriptor.specs.first().fqn shouldBe "com.sksamuel.kotest.runner.junit5.SpecToBeIncluded"
       descriptor.specs.size shouldBe 1
    }

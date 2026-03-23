@@ -114,7 +114,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
    override fun discover(
       request: EngineDiscoveryRequest,
       uniqueId: UniqueId,
-   ): TestDescriptor {
+   ): KotestEngineDescriptor {
 
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
       logger.log { "JUnit discovery request [configurationParameters=${request.configurationParameters}]" }
