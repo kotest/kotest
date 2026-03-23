@@ -180,3 +180,45 @@ fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
    }
 }
 
+// Primitive array overloads for shouldStartWith / shouldNotStartWith
+
+infix fun BooleanArray.shouldStartWith(slice: BooleanArray): BooleanArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun BooleanArray.shouldNotStartWith(slice: BooleanArray): BooleanArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun BooleanArray.shouldEndWith(slice: BooleanArray): BooleanArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun BooleanArray.shouldNotEndWith(slice: BooleanArray): BooleanArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun ByteArray.shouldStartWith(slice: ByteArray): ByteArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun ByteArray.shouldNotStartWith(slice: ByteArray): ByteArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun ByteArray.shouldEndWith(slice: ByteArray): ByteArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun ByteArray.shouldNotEndWith(slice: ByteArray): ByteArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun ShortArray.shouldStartWith(slice: ShortArray): ShortArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun ShortArray.shouldNotStartWith(slice: ShortArray): ShortArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun ShortArray.shouldEndWith(slice: ShortArray): ShortArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun ShortArray.shouldNotEndWith(slice: ShortArray): ShortArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun CharArray.shouldStartWith(slice: CharArray): CharArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun CharArray.shouldNotStartWith(slice: CharArray): CharArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun CharArray.shouldEndWith(slice: CharArray): CharArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun CharArray.shouldNotEndWith(slice: CharArray): CharArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun IntArray.shouldStartWith(slice: IntArray): IntArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun IntArray.shouldNotStartWith(slice: IntArray): IntArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun IntArray.shouldEndWith(slice: IntArray): IntArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun IntArray.shouldNotEndWith(slice: IntArray): IntArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun LongArray.shouldStartWith(slice: LongArray): LongArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun LongArray.shouldNotStartWith(slice: LongArray): LongArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun LongArray.shouldEndWith(slice: LongArray): LongArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun LongArray.shouldNotEndWith(slice: LongArray): LongArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun FloatArray.shouldStartWith(slice: FloatArray): FloatArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun FloatArray.shouldNotStartWith(slice: FloatArray): FloatArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun FloatArray.shouldEndWith(slice: FloatArray): FloatArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun FloatArray.shouldNotEndWith(slice: FloatArray): FloatArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
+infix fun DoubleArray.shouldStartWith(slice: DoubleArray): DoubleArray = apply { asList().shouldStartWith(slice.asList()) }
+infix fun DoubleArray.shouldNotStartWith(slice: DoubleArray): DoubleArray = apply { asList().shouldNotStartWith(slice.asList()) }
+infix fun DoubleArray.shouldEndWith(slice: DoubleArray): DoubleArray = apply { asList().shouldEndWith(slice.asList()) }
+infix fun DoubleArray.shouldNotEndWith(slice: DoubleArray): DoubleArray = apply { asList().shouldNotEndWith(slice.asList()) }
+
