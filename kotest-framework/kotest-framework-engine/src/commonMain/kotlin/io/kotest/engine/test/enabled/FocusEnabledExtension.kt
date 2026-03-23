@@ -1,6 +1,6 @@
 package io.kotest.engine.test.enabled
 
-import io.kotest.core.log
+import io.kotest.core.Logger
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
@@ -15,6 +15,8 @@ import io.kotest.core.test.isRootTest
  */
 internal object FocusEnabledExtension : TestEnabledExtension {
 
+   private val logger = Logger<FocusEnabledExtension>()
+
    override fun isEnabled(testCase: TestCase): Enabled {
 
       // focus only applies to root tests
@@ -27,7 +29,7 @@ internal object FocusEnabledExtension : TestEnabledExtension {
       if (testCase.spec.rootTests().any { it.name.focus || it.xmethod == TestXMethod.FOCUSED }) {
          return Enabled
             .disabled("${testCase.descriptor.path().value} is disabled by another test having focus")
-            .also { enabled -> enabled.reason?.let { log { it } } }
+            .also { enabled -> enabled.reason?.let { logger.log { it } } }
       }
 
       return Enabled.enabled

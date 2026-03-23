@@ -7,7 +7,6 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 /**
  * Holds state for generating suggested names for our config.
  */
-@Deprecated("Starting with Kotest 6 the preferred method is to run via gradle")
 data class RunData(
    val specName: String?,
    val testPath: String?,
