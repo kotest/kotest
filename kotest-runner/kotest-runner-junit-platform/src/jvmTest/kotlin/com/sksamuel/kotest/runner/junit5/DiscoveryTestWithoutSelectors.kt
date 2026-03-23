@@ -7,7 +7,6 @@ import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.runner.junit.platform.KotestEngineDescriptor
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassNameFilter
