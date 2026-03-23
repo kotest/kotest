@@ -1266,15 +1266,47 @@ public final class io/kotest/matchers/collections/ContainExactlyKt {
 	public static final fun shouldContainExactly (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainExactly (Ljava/util/Collection;Ljava/util/Collection;)V
 	public static final fun shouldContainExactly (Ljava/util/Collection;[Ljava/lang/Object;)V
+	public static final fun shouldContainExactly ([B[B)[B
+	public static final fun shouldContainExactly ([C[C)[C
+	public static final fun shouldContainExactly ([D[D)[D
+	public static final fun shouldContainExactly ([F[F)[F
+	public static final fun shouldContainExactly ([I[I)[I
+	public static final fun shouldContainExactly ([J[J)[J
 	public static final fun shouldContainExactly ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldContainExactly ([S[S)[S
+	public static final fun shouldContainExactly ([Z[Z)[Z
 	public static final fun shouldContainExactly_array ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldContainExactly_booleanArray ([Z[Z)[Z
+	public static final fun shouldContainExactly_byteArray ([B[B)[B
+	public static final fun shouldContainExactly_charArray ([C[C)[C
+	public static final fun shouldContainExactly_doubleArray ([D[D)[D
+	public static final fun shouldContainExactly_floatArray ([F[F)[F
+	public static final fun shouldContainExactly_intArray ([I[I)[I
 	public static final fun shouldContainExactly_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
+	public static final fun shouldContainExactly_longArray ([J[J)[J
+	public static final fun shouldContainExactly_shortArray ([S[S)[S
 	public static final fun shouldNotContainExactly (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainExactly (Ljava/util/Collection;Ljava/util/Collection;)V
 	public static final fun shouldNotContainExactly (Ljava/util/Collection;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainExactly ([B[B)[B
+	public static final fun shouldNotContainExactly ([C[C)[C
+	public static final fun shouldNotContainExactly ([D[D)[D
+	public static final fun shouldNotContainExactly ([F[F)[F
+	public static final fun shouldNotContainExactly ([I[I)[I
+	public static final fun shouldNotContainExactly ([J[J)[J
 	public static final fun shouldNotContainExactly ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainExactly ([S[S)[S
+	public static final fun shouldNotContainExactly ([Z[Z)[Z
 	public static final fun shouldNotContainExactly_array ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainExactly_booleanArray ([Z[Z)[Z
+	public static final fun shouldNotContainExactly_byteArray ([B[B)[B
+	public static final fun shouldNotContainExactly_charArray ([C[C)[C
+	public static final fun shouldNotContainExactly_doubleArray ([D[D)[D
+	public static final fun shouldNotContainExactly_floatArray ([F[F)[F
+	public static final fun shouldNotContainExactly_intArray ([I[I)[I
 	public static final fun shouldNotContainExactly_iterable (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
+	public static final fun shouldNotContainExactly_longArray ([J[J)[J
+	public static final fun shouldNotContainExactly_shortArray ([S[S)[S
 }
 
 public final class io/kotest/matchers/collections/ContainKt {
@@ -1812,33 +1844,65 @@ public final class io/kotest/matchers/collections/StartwithKt {
 	public static final fun shouldEndWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldEndWith (Ljava/util/List;Ljava/util/Collection;)V
 	public static final fun shouldEndWith (Ljava/util/List;[Ljava/lang/Object;)V
+	public static final fun shouldEndWith ([B[B)[B
+	public static final fun shouldEndWith ([C[C)[C
+	public static final fun shouldEndWith ([D[D)[D
+	public static final fun shouldEndWith ([F[F)[F
+	public static final fun shouldEndWith ([I[I)[I
+	public static final fun shouldEndWith ([J[J)[J
 	public static final fun shouldEndWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldEndWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldEndWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldEndWith ([S[S)[S
+	public static final fun shouldEndWith ([Z[Z)[Z
 	public static final fun shouldNotEndWith (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotEndWith (Ljava/lang/Iterable;Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith (Ljava/util/List;Ljava/util/Collection;)V
+	public static final fun shouldNotEndWith ([B[B)[B
+	public static final fun shouldNotEndWith ([C[C)[C
+	public static final fun shouldNotEndWith ([D[D)[D
+	public static final fun shouldNotEndWith ([F[F)[F
+	public static final fun shouldNotEndWith ([I[I)[I
+	public static final fun shouldNotEndWith ([J[J)[J
 	public static final fun shouldNotEndWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotEndWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldNotEndWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotEndWith ([S[S)[S
+	public static final fun shouldNotEndWith ([Z[Z)[Z
 	public static final fun shouldNotStartWith (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotStartWith (Ljava/lang/Iterable;Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith (Ljava/util/List;Ljava/util/Collection;)V
+	public static final fun shouldNotStartWith ([B[B)[B
+	public static final fun shouldNotStartWith ([C[C)[C
+	public static final fun shouldNotStartWith ([D[D)[D
+	public static final fun shouldNotStartWith ([F[F)[F
+	public static final fun shouldNotStartWith ([I[I)[I
+	public static final fun shouldNotStartWith ([J[J)[J
 	public static final fun shouldNotStartWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldNotStartWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldNotStartWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotStartWith ([S[S)[S
+	public static final fun shouldNotStartWith ([Z[Z)[Z
 	public static final fun shouldStartWith (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldStartWith (Ljava/lang/Iterable;Ljava/lang/Object;)V
 	public static final fun shouldStartWith (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldStartWith (Ljava/util/List;Ljava/lang/Object;)V
 	public static final fun shouldStartWith (Ljava/util/List;Ljava/util/Collection;)V
+	public static final fun shouldStartWith ([B[B)[B
+	public static final fun shouldStartWith ([C[C)[C
+	public static final fun shouldStartWith ([D[D)[D
+	public static final fun shouldStartWith ([F[F)[F
+	public static final fun shouldStartWith ([I[I)[I
+	public static final fun shouldStartWith ([J[J)[J
 	public static final fun shouldStartWith ([Ljava/lang/Object;Ljava/lang/Object;)V
 	public static final fun shouldStartWith ([Ljava/lang/Object;Ljava/util/Collection;)V
 	public static final fun shouldStartWith ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldStartWith ([S[S)[S
+	public static final fun shouldStartWith ([Z[Z)[Z
 	public static final fun startWith (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
 }
 
