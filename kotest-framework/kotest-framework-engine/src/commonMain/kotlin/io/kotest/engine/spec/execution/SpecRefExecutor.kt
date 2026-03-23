@@ -2,11 +2,11 @@ package io.kotest.engine.spec.execution
 
 import io.kotest.common.KotestTesting
 import io.kotest.common.platform
-import io.kotest.common.reflection.IncludingSuperclasses
 import io.kotest.common.reflection.IncludingAnnotations
+import io.kotest.common.reflection.IncludingSuperclasses
 import io.kotest.common.reflection.annotation
-import io.kotest.common.reflection.bestName
 import io.kotest.common.reflection.instantiations
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ApplyExtension
@@ -61,13 +61,13 @@ internal class SpecRefExecutor(
       when (val enabled = specRefEnabledChecker.isEnabled(ref)) {
 
          is EnabledOrDisabled.Disabled -> {
-            logger.log { Pair(ref.kclass.bestName(), "Spec is disabled: ${enabled.reason}") }
+            logger.log { LogLine(ref.fqn, "Spec is disabled: ${enabled.reason}") }
             runCatching { context.listener.specIgnored(ref.kclass, enabled.reason) }
                .flatMap { extensions.ignored(ref.kclass, enabled.reason) }
          }
 
          EnabledOrDisabled.Enabled -> {
-            logger.log { Pair(ref.kclass.bestName(), "Spec is enabled") }
+            logger.log { LogLine(ref.fqn, "Spec is enabled") }
             applyExtensions(ref)
          }
       }
@@ -82,17 +82,17 @@ internal class SpecRefExecutor(
 
          val classes = ref.kclass.annotation<ApplyExtension>(IncludingAnnotations, IncludingSuperclasses)?.extensions?.toList() ?: emptyList()
          val extensions = classes.map { instantiations.newInstanceNoArgConstructorOrObjectInstance(it) }
-         logger.log { Pair(ref.kclass.bestName(), "Applying extensions: $extensions") }
+         logger.log { LogLine(ref.fqn, "Applying extensions: $extensions") }
 
          extensions.forEach {
-            logger.log { Pair(ref.kclass.bestName(), "Registering extension $it") }
+            logger.log { LogLine(ref.fqn, "Registering extension $it") }
             context.registry.add(it, ref.kclass)
          }
 
          invokeSpecRefExtensions(ref)
 
          extensions.forEach {
-            logger.log { Pair(ref.kclass.bestName(), "Removing extension $it") }
+            logger.log { LogLine(ref.fqn, "Removing extension $it") }
             context.registry.remove(it, ref.kclass)
          }
 
@@ -105,7 +105,7 @@ internal class SpecRefExecutor(
 
    private suspend fun invokeSpecRefExtensions(ref: SpecRef) {
       val exts = context.projectConfigResolver.extensions().filterIsInstance<SpecRefExtension>()
-      logger.log { Pair(ref.kclass.bestName(), "Invoking SpecRefExtensions: $exts") }
+      logger.log { LogLine(ref.fqn, "Invoking SpecRefExtensions: $exts") }
 
       val inner: suspend (SpecRef) -> Unit = {
          invokeEngineListeners(ref)
@@ -159,7 +159,7 @@ internal class SpecRefExecutor(
    private suspend fun inflateAndExecute(ref: SpecRef): Map<TestCase, TestResult> {
       val spec = inflator.inflate(ref).getOrThrow()
       val executor = specExecutor(context, spec)
-      logger.log { Pair(ref.kclass.bestName(), "Found executor $executor for platform $platform") }
+      logger.log { LogLine(ref.fqn, "Found executor $executor for platform $platform") }
       return executor.execute(ref, spec).getOrThrow()
    }
 }

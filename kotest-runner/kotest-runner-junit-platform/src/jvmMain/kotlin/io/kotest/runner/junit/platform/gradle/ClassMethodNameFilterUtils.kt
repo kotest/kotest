@@ -38,20 +38,20 @@ internal object ClassMethodNameFilterUtils {
    private fun extract(filter: Any): List<String> = runCatching {
 
       val matcher = testMatcher(filter)
-      logger.log { Pair(null, "TestMatcher [$matcher]") }
+      logger.log { "TestSelectionMatcher [$matcher]" }
 
       val buildScriptIncludePatterns = buildScriptIncludePatterns(matcher)
-      logger.log { Pair(null, "buildScriptIncludePatterns [$buildScriptIncludePatterns]") }
+      logger.log { "TestSelectionMatcher.buildScriptIncludePatterns [$buildScriptIncludePatterns]" }
 
       val commandLineIncludePatterns = commandLineIncludePatterns(matcher)
-      logger.log { Pair(null, "commandLineIncludePatterns [$commandLineIncludePatterns]") }
+      logger.log { "TestSelectionMatcher.commandLineIncludePatterns [$commandLineIncludePatterns]" }
 
       val regexes = buildList {
          addAll(buildScriptIncludePatterns)
          addAll(commandLineIncludePatterns)
       }.map { pattern(it) }
 
-      logger.log { Pair(null, "ClassMethodNameFilter regexes [$regexes]") }
+      logger.log { "ClassMethodNameFilter regexes [$regexes]" }
       regexes
    }.getOrElse { emptyList() }
 
