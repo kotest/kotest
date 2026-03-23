@@ -2,6 +2,7 @@
 
 package io.kotest.runner.junit.platform.gradle
 
+import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.engine.extensions.filter.DescriptorFilter
 import io.kotest.engine.extensions.filter.DescriptorFilterResult
@@ -20,6 +21,8 @@ import org.junit.platform.launcher.PostDiscoveryFilter
  */
 internal object ClassMethodNameFilterAdapter {
 
+   private val logger = Logger<ClassMethodNameFilterAdapter>()
+
    /**
     * Returns a [DescriptorFilter] for each [PostDiscoveryFilter] that is an
     * implementation of [ClassMethodNameFilter].
@@ -30,7 +33,9 @@ internal object ClassMethodNameFilterAdapter {
     * If no post-filters are present, this will return an empty list.
     */
    internal fun adapt(request: EngineDiscoveryRequest): List<DescriptorFilter> {
+
       val patterns = ClassMethodNameFilterUtils.extractIncludePatterns(request.postFilters())
+      logger.log { "ClassMethodNameFilter patterns [$patterns]" }
       if (patterns.isEmpty()) {
          return emptyList()
       }
@@ -46,6 +51,8 @@ internal object ClassMethodNameFilterAdapter {
             regexPatterns.add(filter)
          }
       }
+
+      logger.log { "nestedArgs patterns [${nestedArgs.joinToString(", ")}] regexPatterns [${regexPatterns.joinToString(", ")}]" }
 
       if (nestedArgs.isNotEmpty()) {
          // HACK since we have a tests filter with a nested test name, we will clear the list of post-filters

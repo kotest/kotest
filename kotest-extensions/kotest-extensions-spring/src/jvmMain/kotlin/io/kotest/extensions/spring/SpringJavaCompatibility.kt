@@ -1,5 +1,6 @@
 package io.kotest.extensions.spring
 
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import net.bytebuddy.ByteBuddy
@@ -13,7 +14,7 @@ import kotlin.reflect.KClass
 
 internal object SpringJavaCompatibility {
 
-   private val logger = Logger(SpringJavaCompatibility::class)
+   private val logger = Logger<SpringJavaCompatibility>()
 
    var ignoreSpringListenerOnFinalClassWarning: Boolean = false
 
@@ -49,7 +50,7 @@ internal object SpringJavaCompatibility {
     * https://kotlinlang.org/docs/keyword-reference.html#soft-keywords
     */
    fun checkForSafeClassName(kclass: KClass<*>) {
-      logger.log { Pair(kclass.simpleName, "Checking for spring safe class name") }
+      logger.log { LogLine(kclass, "Checking for spring safe class name") }
       // these are names java won't let us use but are ok from kotlin
       if (kclass.java.name.split('.').any { illegals.contains(it) })
          error("Spec package name cannot contain a java keyword: ${illegals.joinToString(",")}")
