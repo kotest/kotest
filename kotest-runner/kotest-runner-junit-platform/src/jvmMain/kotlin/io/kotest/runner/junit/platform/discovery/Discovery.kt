@@ -29,20 +29,19 @@ internal object Discovery {
    private val logger = Logger<Discovery>()
 
    // filter functions
-   private val isSpecSubclassKt: (KClass<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it.java) }
    private val isSpecSubclass: (Class<*>) -> Boolean = { Spec::class.java.isAssignableFrom(it) }
    private val isAbstract: (KClass<*>) -> Boolean = { it.isAbstract }
 
    fun discover(engineId: UniqueId, request: EngineDiscoveryRequest): DiscoveryResult {
 
-      log { "[Discovery] Starting spec discovery" }
+      logger.log { "[Discovery] Starting spec discovery" }
 
       // kotest only supports classpath root, class and unique id selectors (which we convert to class selectors)
       val classpathRootSelectors = request.getSelectorsByType(ClasspathRootSelector::class.java)
       val classSelectors = request.getSelectorsByType(ClassSelector::class.java) +
          convertUniqueIdsToClassSelectors(engineId, request)
 
-      val specsSelected = (specsFromClasspathRootSelectors(classpathRootSelectors) + specsFromClassDiscoverySelectorsOnly(classSelectors))
+      val specsSelected = (specsFromClasspathRootSelectors(classpathRootSelectors) + specsFromClassSelectors(classSelectors))
 
       val specsAfterInitialFiltering = specsSelected.filter(
          filterFn(
