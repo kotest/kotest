@@ -1,5 +1,6 @@
 package io.kotest.extensions.spring
 
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.style.FreeSpec
 import org.flywaydb.core.internal.jdbc.JdbcTemplate
 import org.springframework.boot.test.context.SpringBootTest
@@ -50,6 +51,7 @@ class PostgresTCConfig {
 
 @SpringBootTest
 @Transactional
+@ApplyExtension(SpringExtension::class)
 @Import(PostgresTCConfig::class)
 class TransactionalTest(
    private val kotestUserRepository: KotestUserRepository,
