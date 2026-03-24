@@ -1166,11 +1166,27 @@ public final class io/kotest/matchers/char/CharMatchersKt {
 
 public final class io/kotest/matchers/collections/BeinKt {
 	public static final fun beIn (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeIn (B[B)B
+	public static final fun shouldBeIn (C[C)C
+	public static final fun shouldBeIn (D[D)D
+	public static final fun shouldBeIn (F[F)F
+	public static final fun shouldBeIn (I[I)I
+	public static final fun shouldBeIn (J[J)J
 	public static final fun shouldBeIn (Ljava/lang/Object;Ljava/util/Collection;)Ljava/lang/Object;
 	public static final fun shouldBeIn (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldBeIn (S[S)S
+	public static final fun shouldBeIn (Z[Z)Z
 	public static final fun shouldBeInArray (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeIn (B[B)B
+	public static final fun shouldNotBeIn (C[C)C
+	public static final fun shouldNotBeIn (D[D)D
+	public static final fun shouldNotBeIn (F[F)F
+	public static final fun shouldNotBeIn (I[I)I
+	public static final fun shouldNotBeIn (J[J)J
 	public static final fun shouldNotBeIn (Ljava/lang/Object;Ljava/util/Collection;)Ljava/lang/Object;
 	public static final fun shouldNotBeIn (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeIn (S[S)S
+	public static final fun shouldNotBeIn (Z[Z)Z
 	public static final fun shouldNotBeInArray (Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;
 }
 
