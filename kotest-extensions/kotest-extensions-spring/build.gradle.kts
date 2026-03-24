@@ -48,7 +48,7 @@ kotlin {
             implementation(libs.spring.boot.starter.flyway)
             implementation(libs.testcontainers.postgresql)
             implementation(libs.springmockk)
-            implementation(libs.postgresql)
+            runtimeOnly(libs.postgresql)
          }
       }
    }
