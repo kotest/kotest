@@ -2,7 +2,7 @@ package io.kotest.extensions.spring
 
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.spec.style.FreeSpec
-import org.flywaydb.core.internal.jdbc.JdbcTemplate
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
