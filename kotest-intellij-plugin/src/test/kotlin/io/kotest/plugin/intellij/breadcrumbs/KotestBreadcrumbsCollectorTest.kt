@@ -487,8 +487,8 @@ class KotestBreadcrumbsCollectorTest : LightJavaCodeInsightFixtureTestCase() {
         )
     }
 
-    fun `test AnnotationSpec shows only class name`() {
-        // AnnotationSpec uses @Test annotations, so there are no DSL scopes to walk.
+    fun `test AnnotationSpec shows class name and method name`() {
+        // AnnotationSpec uses @Test annotations; AnnotationSpecStyle recognises them as tests.
         assertCrumbs(
             """
             class MyTests : AnnotationSpec() {
@@ -498,7 +498,7 @@ class KotestBreadcrumbsCollectorTest : LightJavaCodeInsightFixtureTestCase() {
                 }
             }
             """.trimIndent(),
-            "MyTests",
+            "MyTests", "addition",
         )
     }
 
