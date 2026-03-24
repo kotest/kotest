@@ -79,7 +79,7 @@ data class AssertionErrorBuilder(
  * Creates the best error type supported on the platform from the given [message] and [expected] and [actual] values.
  * If the platform supports nested exceptions, the cause is set to the given [cause].
  *
- * If the platform has opentest4j it will use exceptions from that library for compatibility
+ * If the platform has OpenTest4J it will use exceptions from that library for compatibility
  * with tools that look for these special exception types to show diffs in the IDE.
  */
 expect fun createAssertionError(
@@ -88,6 +88,15 @@ expect fun createAssertionError(
    expected: Expected?,
    actual: Actual?
 ): AssertionError
+
+/**
+ * Creates a cheap [AssertionError] whose message is computed lazily by [messageFn].
+ *
+ * On the JVM, stack trace capture is skipped in the constructor, making this significantly cheaper
+ * than a regular [AssertionError] when the error may never be displayed (e.g. inside inspectors).
+ * The message is only computed when first accessed.
+ */
+expect fun createLazyAssertionError(messageFn: () -> String): AssertionError
 
 /**
  * Represents the expected value in an assertion error.
