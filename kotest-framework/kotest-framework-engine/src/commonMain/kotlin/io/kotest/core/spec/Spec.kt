@@ -11,6 +11,7 @@ import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
+import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
@@ -28,6 +29,7 @@ import io.kotest.engine.coroutines.CoroutineDispatcherFactory
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.CoroutineScope
 import kotlin.js.JsName
+import kotlin.reflect.KClass
 import kotlin.time.Duration
 
 /**
@@ -353,7 +355,8 @@ abstract class Spec : TestConfiguration() {
 
 
    /**
-    * Registers a callback to be executed after all tests in this spec.
+    * Registers a callback to be executed after all tests in this spec instance have completed.
+    *
     * The spec instance is provided as a parameter.
     */
    final override fun afterSpec(f: AfterSpec) {
@@ -361,6 +364,21 @@ abstract class Spec : TestConfiguration() {
          override suspend fun afterSpec(spec: Spec) {
             if (spec::class == this@Spec::class)
                f(spec)
+         }
+      })
+   }
+
+   /**
+    * Registers a callback to be executed once all tests defined in a spec class have completed.
+    *
+    * Unlike [afterSpec], this callback is invoked only once all spec instances have completed,
+    * and receives the full map of test results.
+    */
+   fun finalizeSpec(f: FinalizeSpec) {
+      extension(object : FinalizeSpecListener {
+         override suspend fun finalizeSpec(kclass: KClass<out Spec>, results: Map<TestCase, TestResult>) {
+            if (kclass == this@Spec::class)
+               f(kclass, results)
          }
       })
    }
@@ -409,7 +427,7 @@ data class RootTest(
    val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
-   val xmethod: TestXMethod,
-   val config: TestConfig?, // if specified by the test, may be null if no config is set using the spec DSL
+   val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
+   val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
    val factoryId: FactoryId?, // if this root test was added from a factory
 )

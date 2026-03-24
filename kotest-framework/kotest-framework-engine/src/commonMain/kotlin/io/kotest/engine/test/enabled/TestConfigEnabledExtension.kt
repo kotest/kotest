@@ -1,6 +1,6 @@
 package io.kotest.engine.test.enabled
 
-import io.kotest.core.log
+import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.engine.config.TestConfigResolver
@@ -10,10 +10,13 @@ import io.kotest.engine.config.TestConfigResolver
  * test case configs to determine if a test is enabled.
  */
 internal class TestConfigEnabledExtension(private val testConfigResolver: TestConfigResolver) : TestEnabledExtension {
+
+   private val logger = Logger<TestConfigEnabledExtension>()
+
    override fun isEnabled(testCase: TestCase): Enabled {
       val enabled = testConfigResolver.enabled(testCase).invoke(testCase)
       if (enabled.isDisabled)
-         log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabled.reason}" }
+         logger.log { "${testCase.descriptor.path()} is disabled by enabledOrReasonIf function in config: ${enabled.reason}" }
       return enabled
    }
 }

@@ -9,6 +9,7 @@ kotlin {
    androidLibrary {
       namespace = "io.kotest.runner.junit4"
       compileSdk = 34
+      minSdk = 24
       withHostTestBuilder {}
    }
 

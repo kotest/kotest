@@ -40,6 +40,7 @@ import io.kotest.matchers.collections.shouldHaveAtMostSize
 import io.kotest.matchers.collections.shouldHaveElementAt
 import io.kotest.matchers.collections.shouldHaveSingleElement
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.collections.shouldNotHaveSingleElement
 import io.kotest.matchers.collections.shouldMatchInOrder
 import io.kotest.matchers.collections.shouldMatchInOrderSubset
 import io.kotest.matchers.collections.shouldNotBeIn
@@ -142,6 +143,15 @@ class CollectionMatchersTest : WordSpec() {
             shouldThrow<AssertionError> {
                listOf(1) shouldBe singleElement(2)
             }.shouldHaveMessage("Collection should be a single element containing 2\nexpected:<2> but was:<1>")
+
+         }
+
+         "should return the receiver for chaining" {
+            listOf(1).shouldHaveSingleElement(1).shouldHaveSize(1)
+            listOf(1).shouldHaveSingleElement { it == 1 }.shouldHaveSize(1)
+            arrayOf(1).shouldHaveSingleElement(1).shouldHaveSize(1)
+            arrayOf(1).shouldHaveSingleElement { it == 1 }.shouldHaveSize(1)
+            listOf(2).shouldNotHaveSingleElement(1).shouldHaveSize(1)
 
             shouldThrow<AssertionError> {
                listOf(1, 2) shouldBe singleElement(2)
@@ -1105,6 +1115,112 @@ expected:<2> but was:<3>""")
             shouldNotThrow<AssertionError> {
                foo.shouldNotBeIn(list)
             }
+         }
+      }
+
+      "Be in primitive arrays" should {
+         "Pass for Int in IntArray" {
+            1.shouldBeIn(intArrayOf(1, 2, 3))
+         }
+         "Fail for Int not in IntArray" {
+            shouldThrow<AssertionError> { 4.shouldBeIn(intArrayOf(1, 2, 3)) }
+         }
+         "Pass for Int not in IntArray (negative)" {
+            4.shouldNotBeIn(intArrayOf(1, 2, 3))
+         }
+         "Fail for Int in IntArray (negative)" {
+            shouldThrow<AssertionError> { 1.shouldNotBeIn(intArrayOf(1, 2, 3)) }
+         }
+
+         "Pass for Long in LongArray" {
+            1L.shouldBeIn(longArrayOf(1L, 2L, 3L))
+         }
+         "Fail for Long not in LongArray" {
+            shouldThrow<AssertionError> { 4L.shouldBeIn(longArrayOf(1L, 2L, 3L)) }
+         }
+         "Pass for Long not in LongArray (negative)" {
+            4L.shouldNotBeIn(longArrayOf(1L, 2L, 3L))
+         }
+         "Fail for Long in LongArray (negative)" {
+            shouldThrow<AssertionError> { 1L.shouldNotBeIn(longArrayOf(1L, 2L, 3L)) }
+         }
+
+         "Pass for Float in FloatArray" {
+            1.0f.shouldBeIn(floatArrayOf(1.0f, 2.0f, 3.0f))
+         }
+         "Fail for Float not in FloatArray" {
+            shouldThrow<AssertionError> { 4.0f.shouldBeIn(floatArrayOf(1.0f, 2.0f, 3.0f)) }
+         }
+         "Pass for Float not in FloatArray (negative)" {
+            4.0f.shouldNotBeIn(floatArrayOf(1.0f, 2.0f, 3.0f))
+         }
+         "Fail for Float in FloatArray (negative)" {
+            shouldThrow<AssertionError> { 1.0f.shouldNotBeIn(floatArrayOf(1.0f, 2.0f, 3.0f)) }
+         }
+
+         "Pass for Double in DoubleArray" {
+            1.0.shouldBeIn(doubleArrayOf(1.0, 2.0, 3.0))
+         }
+         "Fail for Double not in DoubleArray" {
+            shouldThrow<AssertionError> { 4.0.shouldBeIn(doubleArrayOf(1.0, 2.0, 3.0)) }
+         }
+         "Pass for Double not in DoubleArray (negative)" {
+            4.0.shouldNotBeIn(doubleArrayOf(1.0, 2.0, 3.0))
+         }
+         "Fail for Double in DoubleArray (negative)" {
+            shouldThrow<AssertionError> { 1.0.shouldNotBeIn(doubleArrayOf(1.0, 2.0, 3.0)) }
+         }
+
+         "Pass for Byte in ByteArray" {
+            1.toByte().shouldBeIn(byteArrayOf(1, 2, 3))
+         }
+         "Fail for Byte not in ByteArray" {
+            shouldThrow<AssertionError> { 4.toByte().shouldBeIn(byteArrayOf(1, 2, 3)) }
+         }
+         "Pass for Byte not in ByteArray (negative)" {
+            4.toByte().shouldNotBeIn(byteArrayOf(1, 2, 3))
+         }
+         "Fail for Byte in ByteArray (negative)" {
+            shouldThrow<AssertionError> { 1.toByte().shouldNotBeIn(byteArrayOf(1, 2, 3)) }
+         }
+
+         "Pass for Short in ShortArray" {
+            1.toShort().shouldBeIn(shortArrayOf(1, 2, 3))
+         }
+         "Fail for Short not in ShortArray" {
+            shouldThrow<AssertionError> { 4.toShort().shouldBeIn(shortArrayOf(1, 2, 3)) }
+         }
+         "Pass for Short not in ShortArray (negative)" {
+            4.toShort().shouldNotBeIn(shortArrayOf(1, 2, 3))
+         }
+         "Fail for Short in ShortArray (negative)" {
+            shouldThrow<AssertionError> { 1.toShort().shouldNotBeIn(shortArrayOf(1, 2, 3)) }
+         }
+
+         "Pass for Char in CharArray" {
+            'a'.shouldBeIn(charArrayOf('a', 'b', 'c'))
+         }
+         "Fail for Char not in CharArray" {
+            shouldThrow<AssertionError> { 'd'.shouldBeIn(charArrayOf('a', 'b', 'c')) }
+         }
+         "Pass for Char not in CharArray (negative)" {
+            'd'.shouldNotBeIn(charArrayOf('a', 'b', 'c'))
+         }
+         "Fail for Char in CharArray (negative)" {
+            shouldThrow<AssertionError> { 'a'.shouldNotBeIn(charArrayOf('a', 'b', 'c')) }
+         }
+
+         "Pass for Boolean in BooleanArray" {
+            true.shouldBeIn(booleanArrayOf(true, false))
+         }
+         "Fail for Boolean not in BooleanArray" {
+            shouldThrow<AssertionError> { true.shouldBeIn(booleanArrayOf(false)) }
+         }
+         "Pass for Boolean not in BooleanArray (negative)" {
+            true.shouldNotBeIn(booleanArrayOf(false))
+         }
+         "Fail for Boolean in BooleanArray (negative)" {
+            shouldThrow<AssertionError> { true.shouldNotBeIn(booleanArrayOf(true, false)) }
          }
       }
    }

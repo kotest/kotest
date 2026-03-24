@@ -86,15 +86,14 @@ public infix fun <A> NonEmptyList<A>.shouldHaveSize(size: Int): NonEmptyList<A> 
 public infix fun <A> NonEmptyList<A>.shouldNotHaveSize(size: Int): NonEmptyList<A> =
   apply { all.shouldNotHaveSize(size) }
 
-public infix fun <A> NonEmptyList<A>.shouldHaveSingleElement(a: A): Unit =
-  all.shouldHaveSingleElement(a)
+public infix fun <A> NonEmptyList<A>.shouldHaveSingleElement(a: A): NonEmptyList<A> =
+  apply { all.shouldHaveSingleElement(a) }
 
-public infix fun <A> NonEmptyList<A>.shouldNotHaveSingleElement(a: A): Unit =
-  all.shouldNotHaveSingleElement(a)
+public infix fun <A> NonEmptyList<A>.shouldNotHaveSingleElement(a: A): NonEmptyList<A> =
+  apply { all.shouldNotHaveSingleElement(a) }
 
 public fun <A : Comparable<A>> NonEmptyList<A>.shouldBeSorted(): NonEmptyList<A> =
   apply { all.shouldBeSorted() }
 
 public fun <A : Comparable<A>> NonEmptyList<A>.shouldNotBeSorted(): NonEmptyList<A> =
   apply { all.shouldNotBeSorted() }
-
