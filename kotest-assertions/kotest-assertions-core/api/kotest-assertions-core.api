@@ -1537,6 +1537,14 @@ public final class io/kotest/matchers/collections/InorderKt {
 	public static final fun shouldContainInOrder ([Ljava/lang/Object;[Ljava/lang/Object;)V
 	public static final fun shouldContainInOrder ([S[S)[S
 	public static final fun shouldContainInOrder ([Z[Z)[Z
+	public static final fun shouldContainInOrderBooleanArray_infix ([Z[Z)[Z
+	public static final fun shouldContainInOrderByteArray_infix ([B[B)[B
+	public static final fun shouldContainInOrderCharArray_infix ([C[C)[C
+	public static final fun shouldContainInOrderDoubleArray_infix ([D[D)[D
+	public static final fun shouldContainInOrderFloatArray_infix ([F[F)[F
+	public static final fun shouldContainInOrderIntArray_infix ([I[I)[I
+	public static final fun shouldContainInOrderLongArray_infix ([J[J)[J
+	public static final fun shouldContainInOrderShortArray_infix ([S[S)[S
 	public static final fun shouldNotContainInOrder (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotContainInOrder (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldNotContainInOrder (Ljava/util/List;Ljava/util/List;)V
@@ -1550,6 +1558,14 @@ public final class io/kotest/matchers/collections/InorderKt {
 	public static final fun shouldNotContainInOrder ([Ljava/lang/Object;[Ljava/lang/Object;)V
 	public static final fun shouldNotContainInOrder ([S[S)[S
 	public static final fun shouldNotContainInOrder ([Z[Z)[Z
+	public static final fun shouldNotContainInOrderBooleanArray_infix ([Z[Z)[Z
+	public static final fun shouldNotContainInOrderByteArray_infix ([B[B)[B
+	public static final fun shouldNotContainInOrderCharArray_infix ([C[C)[C
+	public static final fun shouldNotContainInOrderDoubleArray_infix ([D[D)[D
+	public static final fun shouldNotContainInOrderFloatArray_infix ([F[F)[F
+	public static final fun shouldNotContainInOrderIntArray_infix ([I[I)[I
+	public static final fun shouldNotContainInOrderLongArray_infix ([J[J)[J
+	public static final fun shouldNotContainInOrderShortArray_infix ([S[S)[S
 }
 
 public final class io/kotest/matchers/collections/LargerKt {
