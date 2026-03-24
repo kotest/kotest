@@ -4,8 +4,8 @@ import io.kotest.core.listeners.AfterTestListener
 import io.kotest.core.listeners.BeforeTestListener
 import io.kotest.core.listeners.InstantiationErrorListener
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
 class AllureTestReporter(

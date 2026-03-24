@@ -1,5 +1,6 @@
 package io.kotest.extensions.allure
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.test.TestCase
@@ -16,6 +17,7 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
+@KotestInternal
 class AllureWriter(private val jvmSuiteName: String?) {
 
    companion object {
