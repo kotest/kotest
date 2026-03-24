@@ -90,6 +90,9 @@ open class SpringExtension(
       return if (testCase.isApplicable()) {
          // the spring docs state that beforeTestMethod must be called immediately prior to framework-specific before lifecycle callbacks
          testContextManager().beforeTestMethod(testCase.spec, methodName)
+         // beforeTestExecution is called here (before execute) so that the Spring-managed transaction is active
+         // when spec beforeEach callbacks run, allowing their changes to be rolled back after the test
+         testContextManager().beforeTestExecution(testCase.spec, methodName)
          val result = execute(testCase)
          // the spring docs state that afterTestMethod must be called immediately after framework-specific after lifecycle callbacks
          testContextManager().afterTestMethod(testCase.spec, methodName, null as Throwable?)
@@ -100,11 +103,8 @@ open class SpringExtension(
    }
 
    override suspend fun beforeAny(testCase: TestCase) {
-      if (testCase.isApplicable()) {
-         val methodName = SpringJavaCompatibility.methodHandle(testCase)
-         // the Spring docs state that beforeTestExecution must be called after framework-specific before lifecycle callbacks
-         testContextManager().beforeTestExecution(testCase.spec, methodName)
-      }
+      // beforeTestExecution is now called in intercept() before execute(), so that the transaction
+      // is active before spec beforeEach callbacks run
    }
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
