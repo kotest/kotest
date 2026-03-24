@@ -28,7 +28,7 @@ class InspectorPerformanceTest : FunSpec({
 
       // forNone must complete within 10x the time of forAll.
       // In practice the optimized path is within ~2x; 10x gives headroom for CI variance.
-      val maxAllowedNanos = forAllTime.inWholeNanoseconds * 5
+      val maxAllowedNanos = forAllTime.inWholeNanoseconds * 10
       forNoneTime.inWholeNanoseconds shouldBeLessThan maxAllowedNanos
    }
 })
