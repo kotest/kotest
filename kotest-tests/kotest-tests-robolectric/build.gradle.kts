@@ -21,12 +21,5 @@ kotlin {
             implementation(libs.androidx.appcompat)
          }
       }
-
-      val androidHostTest by getting {
-         dependencies {
-            implementation(libs.junit4)
-            implementation(libs.robolectric)
-         }
-      }
    }
 }
