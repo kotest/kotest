@@ -135,4 +135,85 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
          .withTest(test)
          .build(false) shouldBe "'MyTestClass.it'\\''s '\\''special'\\'''"
    }
+
+   fun testNewlineInTestNameIsReplacedWithSpace() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "a test\nwith newline", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.a test with newline'"
+   }
+
+   fun testCrlfInTestNameIsReplacedWithSpace() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "a test\r\nwith crlf", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.a test with crlf'"
+   }
+
+   fun testCarriageReturnInTestNameIsReplacedWithSpace() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "a test\rwith cr", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.a test with cr'"
+   }
+
+   fun testNewlineInNestedTestNameIsReplacedWithSpace() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val root = Test(
+         name = TestName(prefix = null, name = "parent\ncontext", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Container,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      val test = Test(
+         name = TestName(prefix = null, name = "child\ntest", interpolated = false),
+         parent = root,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.parent context -- child test'"
+   }
 }

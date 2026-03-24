@@ -355,6 +355,110 @@ class ShouldContainExactlyTest : WordSpec() {
                caseInsensitiveStringEquality
             )
          }
+
+         "test primitive BooleanArray" {
+            booleanArrayOf(true, false, true).shouldContainExactly(booleanArrayOf(true, false, true))
+            booleanArrayOf(true, false, true).shouldContainExactly(true, false, true)
+            booleanArrayOf(true, false).shouldNotContainExactly(booleanArrayOf(false, true))
+            booleanArrayOf(true, false).shouldNotContainExactly(false, true)
+            shouldThrow<AssertionError> {
+               booleanArrayOf(true, false, true).shouldContainExactly(false, true, true)
+            }
+            shouldThrow<AssertionError> {
+               booleanArrayOf(true, false).shouldNotContainExactly(true, false)
+            }
+         }
+
+         "test primitive ByteArray" {
+            byteArrayOf(1, 2, 3).shouldContainExactly(byteArrayOf(1, 2, 3))
+            byteArrayOf(1, 2, 3).shouldContainExactly(1.toByte(), 2.toByte(), 3.toByte())
+            byteArrayOf(1, 2, 3).shouldNotContainExactly(byteArrayOf(3, 2, 1))
+            byteArrayOf(1, 2, 3).shouldNotContainExactly(3.toByte(), 2.toByte(), 1.toByte())
+            shouldThrow<AssertionError> {
+               byteArrayOf(1, 2, 3).shouldContainExactly(3.toByte(), 2.toByte(), 1.toByte())
+            }
+            shouldThrow<AssertionError> {
+               byteArrayOf(1, 2, 3).shouldNotContainExactly(1.toByte(), 2.toByte(), 3.toByte())
+            }
+         }
+
+         "test primitive ShortArray" {
+            shortArrayOf(1, 2, 3).shouldContainExactly(shortArrayOf(1, 2, 3))
+            shortArrayOf(1, 2, 3).shouldContainExactly(1.toShort(), 2.toShort(), 3.toShort())
+            shortArrayOf(1, 2, 3).shouldNotContainExactly(shortArrayOf(3, 2, 1))
+            shortArrayOf(1, 2, 3).shouldNotContainExactly(3.toShort(), 2.toShort(), 1.toShort())
+            shouldThrow<AssertionError> {
+               shortArrayOf(1, 2, 3).shouldContainExactly(3.toShort(), 2.toShort(), 1.toShort())
+            }
+            shouldThrow<AssertionError> {
+               shortArrayOf(1, 2, 3).shouldNotContainExactly(1.toShort(), 2.toShort(), 3.toShort())
+            }
+         }
+
+         "test primitive CharArray" {
+            charArrayOf('a', 'b', 'c').shouldContainExactly(charArrayOf('a', 'b', 'c'))
+            charArrayOf('a', 'b', 'c').shouldContainExactly('a', 'b', 'c')
+            charArrayOf('a', 'b', 'c').shouldNotContainExactly(charArrayOf('c', 'b', 'a'))
+            charArrayOf('a', 'b', 'c').shouldNotContainExactly('c', 'b', 'a')
+            shouldThrow<AssertionError> {
+               charArrayOf('a', 'b', 'c').shouldContainExactly('c', 'b', 'a')
+            }
+            shouldThrow<AssertionError> {
+               charArrayOf('a', 'b', 'c').shouldNotContainExactly('a', 'b', 'c')
+            }
+         }
+
+         "test primitive IntArray" {
+            intArrayOf(1, 2, 3).shouldContainExactly(intArrayOf(1, 2, 3))
+            intArrayOf(1, 2, 3).shouldContainExactly(1, 2, 3)
+            intArrayOf(1, 2, 3).shouldNotContainExactly(intArrayOf(3, 2, 1))
+            intArrayOf(1, 2, 3).shouldNotContainExactly(3, 2, 1)
+            shouldThrow<AssertionError> {
+               intArrayOf(1, 2, 3).shouldContainExactly(3, 2, 1)
+            }
+            shouldThrow<AssertionError> {
+               intArrayOf(1, 2, 3).shouldNotContainExactly(1, 2, 3)
+            }
+         }
+
+         "test primitive LongArray" {
+            longArrayOf(1, 2, 3).shouldContainExactly(longArrayOf(1, 2, 3))
+            longArrayOf(1, 2, 3).shouldContainExactly(1L, 2L, 3L)
+            longArrayOf(1, 2, 3).shouldNotContainExactly(longArrayOf(3, 2, 1))
+            longArrayOf(1, 2, 3).shouldNotContainExactly(3L, 2L, 1L)
+            shouldThrow<AssertionError> {
+               longArrayOf(1, 2, 3).shouldContainExactly(3L, 2L, 1L)
+            }
+            shouldThrow<AssertionError> {
+               longArrayOf(1, 2, 3).shouldNotContainExactly(1L, 2L, 3L)
+            }
+         }
+
+         "test primitive FloatArray" {
+            floatArrayOf(1f, 2f, 3f).shouldContainExactly(floatArrayOf(1f, 2f, 3f))
+            floatArrayOf(1f, 2f, 3f).shouldContainExactly(1f, 2f, 3f)
+            floatArrayOf(1f, 2f, 3f).shouldNotContainExactly(floatArrayOf(3f, 2f, 1f))
+            floatArrayOf(1f, 2f, 3f).shouldNotContainExactly(3f, 2f, 1f)
+            shouldThrow<AssertionError> {
+               floatArrayOf(1f, 2f, 3f).shouldContainExactly(3f, 2f, 1f)
+            }
+            shouldThrow<AssertionError> {
+               floatArrayOf(1f, 2f, 3f).shouldNotContainExactly(1f, 2f, 3f)
+            }
+         }
+
+         "test primitive DoubleArray" {
+            doubleArrayOf(1.0, 2.0, 3.0).shouldContainExactly(doubleArrayOf(1.0, 2.0, 3.0))
+            doubleArrayOf(1.0, 2.0, 3.0).shouldContainExactly(1.0, 2.0, 3.0)
+            doubleArrayOf(1.0, 2.0, 3.0).shouldNotContainExactly(doubleArrayOf(3.0, 2.0, 1.0))
+            doubleArrayOf(1.0, 2.0, 3.0).shouldNotContainExactly(3.0, 2.0, 1.0)
+            shouldThrow<AssertionError> {
+               doubleArrayOf(1.0, 2.0, 3.0).shouldContainExactly(3.0, 2.0, 1.0)
+            }
+            shouldThrow<AssertionError> {
+               doubleArrayOf(1.0, 2.0, 3.0).shouldNotContainExactly(1.0, 2.0, 3.0)
+            }
+         }
       }
 
       "containExactlyInAnyOrder" should {

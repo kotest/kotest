@@ -24,7 +24,7 @@ internal inline fun <K, V, T : Map.Entry<K, V>> runTests(
 internal inline fun <T> runTest(index: Int, t: T, f: (T) -> Unit): ElementResult<T> {
    val originalAssertionMode = errorCollector.getCollectionMode()
    return try {
-      errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
+      errorCollector.setCollectionMode(ErrorCollectionMode.InspectorHard)
       f(t)
       ElementPass(index, t)
    } catch (e: Throwable) {
