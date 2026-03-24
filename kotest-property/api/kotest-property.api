@@ -1253,18 +1253,6 @@ public final class io/kotest/property/arbitrary/ShortsKt {
 	public static final fun uShortArray (Lio/kotest/property/Arb$Companion;Lio/kotest/property/Gen;Lio/kotest/property/Arb;)Lio/kotest/property/Arb;
 }
 
-public abstract class io/kotest/property/arbitrary/SingleShotArbContinuation : io/kotest/property/arbitrary/BaseArbitraryBuilderSyntax, kotlin/coroutines/Continuation {
-	public synthetic fun <init> (Lkotlin/coroutines/CoroutineContext;Lio/kotest/property/arbitrary/SingleShotGenerationMode;Lio/kotest/property/RandomSource;Lkotlin/jvm/functions/Function2;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public fun bind (Lio/kotest/property/Arb;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun createSingleShotArb (Lio/kotest/property/arbitrary/BaseArbitraryBuilderSyntax;)Lio/kotest/property/Arb;
-	public fun drop (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
-	public fun getContext ()Lkotlin/coroutines/CoroutineContext;
-	public fun next (Lio/kotest/property/Arb;)Ljava/lang/Object;
-	public fun resumeWith (Ljava/lang/Object;)V
-	public fun single (Lio/kotest/property/Arb;)Ljava/lang/Object;
-	public fun take (Lio/kotest/property/Arb;I)Lkotlin/sequences/Sequence;
-}
-
 public final class io/kotest/property/arbitrary/SingleShotArbContinuation$Restricted : io/kotest/property/arbitrary/SingleShotArbContinuation, io/kotest/property/arbitrary/ArbitraryBuilderContext {
 	public fun <init> (Lio/kotest/property/arbitrary/SingleShotGenerationMode;Lio/kotest/property/RandomSource;Lkotlin/jvm/functions/Function2;)V
 }

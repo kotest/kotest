@@ -76,6 +76,11 @@ class SequenceMatchersTest : StringSpec({
       }.message shouldBe "Sequence should not have a single element of 1."
    }
 
+   "single element should return receiver for chaining" {
+      sequenceOf(1).shouldHaveSingleElement(1).shouldContainExactly(1)
+      sequenceOf(2).shouldNotHaveSingleElement(1).shouldContainExactly(2)
+   }
+
    "should be empty" {
       shouldThrowAny {
          sequenceOf(0).shouldBeEmpty()

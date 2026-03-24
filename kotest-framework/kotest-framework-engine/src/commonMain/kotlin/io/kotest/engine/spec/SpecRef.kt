@@ -35,8 +35,10 @@ internal class SpecRefInflator(
          .onSuccess { spec ->
             // any spec level AfterProjectListener extensions should now be added to the global registry
             spec.afterProjectListeners().forEach { registry.add(it) }
-            // seal the spec to detect errors adding more root tests after execution has started
-            if (spec is DslDrivenSpec) spec.seal()
+            // seal the spec to detect adding root tests after execution has started
+            if (spec is DslDrivenSpec) {
+               spec.sealed = true
+            }
          }
    }
 }

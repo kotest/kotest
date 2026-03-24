@@ -1,6 +1,7 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.common.DelicateKotest
+import io.kotest.common.KotestInternal
 import io.kotest.property.Arb
 import io.kotest.property.ArbDefinition
 import io.kotest.property.Classifier
@@ -222,40 +223,29 @@ fun <A> arbitraryBuilder(
    edgecaseFn: EdgecaseFn<A>? = null,
    builderFn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
-   override fun edgecase(rs: RandomSource): Sample<A>? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
-   override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
    override val classifier: Classifier<out A>? = classifier
 
+   override fun sample(rs: RandomSource): Sample<A> {
+      val value = runBuilderFn(SingleShotGenerationMode.Sample, rs)
+      return if (shrinker == null) Sample(value) else sampleOf(value, shrinker)
+   }
+
+   override fun edgecase(rs: RandomSource): Sample<A> {
+      val value = runBuilderFn(SingleShotGenerationMode.Edgecase, rs)
+      return edgecaseFn?.invoke(rs) ?: value.asSample()
+   }
+
    /**
-    * This function generates a new instance of a single shot arb.
-    * DO NOT CACHE THE [Arb] returned by this function.
+    * Runs [builderFn] for one sample/edgecase generation and returns the produced value directly.
     *
-    * This needs to be a function because at time of writing, Kotlin 1.5's [Continuation] is single shot.
-    * With arbs, we ideally need multishot. To rerun [builderFn], we need to "reset" the continuation.
-    *
-    * The current way we do it is to recreate a fresh [SingleShotArbContinuation] instance that
-    * will provide another single shot Arb. Hence the reason why this function is invoked
-    * on every call to [sample] / [edgecase].
+    * A fresh [SingleShotArbContinuation] is created on every call because Kotlin [Continuation]s
+    * are single-shot and cannot be resumed more than once. The continuation here always completes
+    * synchronously — [bind] never actually suspends — so [startCoroutineUninterceptedOrReturn]
+    * returns the value inline without ever reaching a suspension point.
     */
-   private fun singleShotArb(mode: SingleShotGenerationMode, rs: RandomSource): Arb<A> {
-      val restrictedContinuation = SingleShotArbContinuation.Restricted(mode, rs) {
-         /**
-          * At the end of the suspension we got a generated value [A] as a comprehension result.
-          * This value can either be a sample, or an edgecase.
-          */
-         val value: A = builderFn(rs)
-
-         /**
-          * Here we point A into an Arb<A> with the appropriate enrichments including
-          * [Shrinker], [Classifier], and [EdgecaseFn]. When edgecase returns null, we pass the generated value
-          * to the edgecase function so to make sure we retain all arbs' edgecases inside the comprehension.
-          */
-         ArbitraryBuilder({ value }, classifier, shrinker, { rs -> edgecaseFn?.invoke(rs) ?: value.asSample() }).build()
-      }
-
-      return with(restrictedContinuation) {
-         this@with.createSingleShotArb()
-      }
+   private fun runBuilderFn(mode: SingleShotGenerationMode, rs: RandomSource): A {
+      val cont = SingleShotArbContinuation.Restricted(mode, rs) { builderFn(rs) }
+      return with(cont) { cont.runToValue() }
    }
 }
 
@@ -272,40 +262,21 @@ suspend fun <A> suspendArbitraryBuilder(
    fn: suspend GenerateArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = suspendCoroutineUninterceptedOrReturn { cont ->
    val arb = object : Arb<A>() {
-      override fun edgecase(rs: RandomSource): Sample<A>? = singleShotArb(SingleShotGenerationMode.Edgecase, rs).edgecase(rs)
-      override fun sample(rs: RandomSource): Sample<A> = singleShotArb(SingleShotGenerationMode.Sample, rs).sample(rs)
       override val classifier: Classifier<out A>? = classifier
 
-      /**
-       * This function generates a new instance of a single shot arb.
-       * DO NOT CACHE THE [Arb] returned by this function.
-       *
-       * This needs to be a function because at time of writing, Kotlin 1.5's [Continuation] is single shot.
-       * With arbs, we ideally need multishot. To rerun [fn], we need to "reset" the continuation.
-       *
-       * The current way we do it is to recreate a fresh [SingleShotArbContinuation] instance that
-       * will provide another single shot Arb. Hence the reason why this function is invoked
-       * on every call to [sample] / [edgecase].
-       */
-      private fun singleShotArb(genMode: SingleShotGenerationMode, rs: RandomSource): Arb<A> {
-         val suspendableContinuation = SingleShotArbContinuation.Suspendedable(genMode, rs, cont.context) {
-            /**
-             * At the end of the suspension we got a generated value [A] as a comprehension result.
-             * This value can either be a sample, or an edgecase.
-             */
-            val value: A = fn(rs)
+      override fun sample(rs: RandomSource): Sample<A> {
+         val value = runBuilderFn(SingleShotGenerationMode.Sample, rs)
+         return if (shrinker == null) Sample(value) else sampleOf(value, shrinker)
+      }
 
-            /**
-             * Here we point A into an Arb<A> with the appropriate enrichments including
-             * [Shrinker], [Classifier], and [EdgecaseFn]. When edgecase returns null, we pass the generated value
-             * to the edgecase function so to make sure we retain all arbs' edgecases inside the comprehension.
-             */
-            ArbitraryBuilder({ value }, classifier, shrinker, { rs -> edgecaseFn?.invoke(rs) ?: value.asSample() }).build()
-         }
+      override fun edgecase(rs: RandomSource): Sample<A> {
+         val value = runBuilderFn(SingleShotGenerationMode.Edgecase, rs)
+         return edgecaseFn?.invoke(rs) ?: value.asSample()
+      }
 
-         return with(suspendableContinuation) {
-            this@with.createSingleShotArb()
-         }
+      private fun runBuilderFn(genMode: SingleShotGenerationMode, rs: RandomSource): A {
+         val c = SingleShotArbContinuation.Suspendedable(genMode, rs, cont.context) { fn(rs) }
+         return with(c) { c.runToValue() }
       }
    }
 
@@ -377,17 +348,28 @@ interface GenerateArbitraryBuilderContext : BaseArbitraryBuilderSyntax
 
 enum class SingleShotGenerationMode { Edgecase, Sample }
 
+/**
+ * A [Continuation]-based helper that runs a suspend builder function synchronously.
+ *
+ * [bind] never actually suspends — it always returns the generated value inline — so
+ * [startCoroutineUninterceptedOrReturn] always returns the result directly without ever reaching a
+ * real suspension point.  A fresh instance must be created for every sample/edgecase call because
+ * Kotlin [Continuation]s are single-shot and cannot be reused.
+ *
+ * @KotestInternal: this is an implementation detail of the [arbitrary] / [arbitraryBuilder] DSL.
+ */
+@KotestInternal
 sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
    override val context: CoroutineContext,
    private val generationMode: SingleShotGenerationMode,
    private val randomSource: RandomSource,
-   private val fn: suspend F.() -> Arb<A>
-) : Continuation<Arb<A>>, BaseArbitraryBuilderSyntax {
+   private val fn: suspend F.() -> A
+) : Continuation<A>, BaseArbitraryBuilderSyntax {
 
    class Restricted<A>(
       genMode: SingleShotGenerationMode,
       rs: RandomSource,
-      fn: suspend ArbitraryBuilderContext.() -> Arb<A>
+      fn: suspend ArbitraryBuilderContext.() -> A
    ) : SingleShotArbContinuation<ArbitraryBuilderContext, A>(EmptyCoroutineContext, genMode, rs, fn),
       ArbitraryBuilderContext
 
@@ -395,16 +377,17 @@ sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
       genMode: SingleShotGenerationMode,
       rs: RandomSource,
       override val context: CoroutineContext,
-      fn: suspend GenerateArbitraryBuilderContext.() -> Arb<A>
+      fn: suspend GenerateArbitraryBuilderContext.() -> A
    ) : SingleShotArbContinuation<GenerateArbitraryBuilderContext, A>(context, genMode, rs, fn),
       GenerateArbitraryBuilderContext
 
-   private lateinit var returnedArb: Arb<A>
    private var hasExecuted: Boolean = false
 
-   override fun resumeWith(result: Result<Arb<A>>) {
-      hasExecuted = true
-      result.map { resultArb -> returnedArb = resultArb }.getOrThrow()
+   override fun resumeWith(result: Result<A>) {
+      // bind() never actually suspends, so this should never be called in normal usage.
+      // If it is called it means some code inside the builder block triggered a real suspension,
+      // which is not supported.  Propagate any exception so the failure is visible.
+      result.getOrThrow()
    }
 
    override suspend fun <T> Arb<T>.bind(): T = when (generationMode) {
@@ -413,20 +396,17 @@ sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
    }
 
    /**
-    * It's important to understand that at the time of writing (Kotlin 1.5) [Continuation] is single shot,
-    * i.e. it can only be resumed once. When it's possible to create multishot continuations in the future, we
-    * might be able to simplify this further.
+    * Runs [fn] synchronously and returns the produced value [A].
     *
-    * The aforementioned limitation means the [Arb] that we construct through this mechanism can only be used
-    * to generate exactly one value. Hence, to recycle and rerun the specified composed transformation,
-    * we need to recreate the [SingleShotArbContinuation] instance and call [createSingleShotArb] again.
+    * Because [bind] always completes without suspending, [startCoroutineUninterceptedOrReturn]
+    * returns the final value inline (never [kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED]).
+    * A new [SingleShotArbContinuation] instance must be used for each invocation.
     */
-   fun F.createSingleShotArb(): Arb<A> {
+   fun F.runToValue(): A {
       require(!hasExecuted) { "continuation has already been executed, if you see this error please raise a bug report" }
-      val result = fn.startCoroutineUninterceptedOrReturn(this@createSingleShotArb, this@SingleShotArbContinuation)
-
+      hasExecuted = true
+      val result = fn.startCoroutineUninterceptedOrReturn(this@runToValue, this@SingleShotArbContinuation)
       @Suppress("UNCHECKED_CAST")
-      returnedArb = result as Arb<A>
-      return returnedArb
+      return result as A
    }
 }
