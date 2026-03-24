@@ -17,7 +17,6 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-@KotestInternal
 class AllureWriter(private val jvmSuiteName: String?) {
 
    companion object {

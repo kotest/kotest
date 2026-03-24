@@ -9,6 +9,17 @@ public final class io/kotest/extensions/allure/AllureTestReporter : io/kotest/co
 	public fun instantiationError (Lkotlin/reflect/KClass;Ljava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/extensions/allure/AllureWriter {
+	public static final field Companion Lio/kotest/extensions/allure/AllureWriter$Companion;
+	public static final field FRAMEWORK_LABEL Ljava/lang/String;
+	public static final field LANGUAGE_LABEL Ljava/lang/String;
+	public fun <init> (Ljava/lang/String;)V
+	public final fun allureResultSpecInitFailure (Lkotlin/reflect/KClass;Ljava/lang/Throwable;)V
+	public final fun finishTestCase (Lio/kotest/core/test/TestCase;Lio/kotest/engine/test/TestResult;)V
+	public final fun id (Lio/kotest/core/test/TestCase;)Ljava/lang/String;
+	public final fun startTestCase (Lio/kotest/core/test/TestCase;)V
+}
+
 public final class io/kotest/extensions/allure/AllureWriter$Companion {
 	public final fun invoke ()Lio/kotest/extensions/allure/AllureWriter;
 }
