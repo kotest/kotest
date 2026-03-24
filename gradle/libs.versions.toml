@@ -33,8 +33,8 @@ plugin-publish = "1.3.1"
 rgxgen = "2.0"
 ksp = "2.2.0-2.0.2"
 shadowjar = "8.1.1"
-spring-boot = "2.7.18"
-spring = "5.3.39"
+spring-boot = "4.0.4" # version 4 requires JVM17+
+spring = "7.0.6"
 
 allure-commons = "2.30.0"
 allure-plugin = "3.0.2"
@@ -49,7 +49,7 @@ mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
 arrow = "2.1.2"
-testcontainers = "2.0.3"
+testcontainers = "2.0.4"
 asm = "9.8"
 nmcp = "1.0.2"
 kotlin-poet = "2.2.0"
@@ -95,7 +95,7 @@ blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blo
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
 jayway-json-path = { module = "com.jayway.jsonpath:json-path", version.ref = "json-path" }
 jdom2 = { module = "org.jdom:jdom2", version.ref = "jdom2" }
-jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.0.2" }
+jetbrainsAnnotations = { module = "org.jetbrains:annotations", version = "26.1.0" }
 
 jimfs = { module = "com.google.jimfs:jimfs", version.ref = "jimfs" }
 
@@ -169,24 +169,37 @@ ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = 
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version = "0.6.2" }
 
 pitest = { module = "org.pitest:pitest", version.ref = "pitest" }
+postgresql = { module = "org.postgresql:postgresql", version = "42.7.10" }
 
 spring-beans = { group = "org.springframework", name = "spring-beans", version.ref = "spring" }
 spring-context = { group = "org.springframework", name = "spring-context", version.ref = "spring" }
 spring-test = { group = "org.springframework", name = "spring-test", version.ref = "spring" }
-spring-boot-starter-test = { group = "org.springframework.boot", name = "spring-boot-starter-test", version.ref = "spring-boot" }
-spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-boot-starter-web", version.ref = "spring-boot" }
+spring-boot-starter = { module = "org.springframework.boot:spring-boot-starter", version.ref = "spring-boot" }
+spring-boot-starter-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-starter-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot" }
+spring-boot-starter-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+spring-boot-starter-data-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test", version.ref = "spring-boot" }
+spring-boot-starter-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot" }
+
+springmockk = { module = "com.ninja-squad:springmockk", version = "5.0.1" }
+
+# Versions managed by Spring dependency management and thus excluded here
+
+flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version = "12.1.1" }
 
 kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlin-poet" }
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
-hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
+hikari = { module = "com.zaxxer:HikariCP", version = "7.0.2" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.1" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-jdbc = { module = "org.testcontainers:testcontainers-jdbc", version.ref = "testcontainers" }
 testcontainers-kafka = { module = "org.testcontainers:testcontainers-kafka", version.ref = "testcontainers" }
 testcontainers-mysql = { module = "org.testcontainers:testcontainers-mysql", version.ref = "testcontainers" }
+testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 
 mysql-driver = { module = "mysql:mysql-connector-java", version = "8.0.33" }
 
@@ -196,7 +209,7 @@ xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.4" }
+kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.8" }
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "dev-publish-plugin" }
 nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }
@@ -213,3 +226,5 @@ allure = { id = "io.qameta.allure", version.ref = "allure.plugin" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
 power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+kotlin-plugin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }

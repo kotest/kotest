@@ -1,0 +1,9 @@
+spring:
+   application:
+      name: kotest-spring-data
+   datasource:
+      driver-class-name: org.postgresql.Driver
+   flyway:
+      baselineOnMigrate: true
+      baselineVersion: 0
+      locations: [ classpath:/db/migration ]
