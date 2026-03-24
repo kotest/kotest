@@ -16,17 +16,21 @@ import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
-class AllureWriter(
-   /**
-    * Returns the name of the currently executing Gradle [JvmTestSuite], or null when not
-    * running inside a suite (e.g. the standard `test` task without the jvm-test-suite plugin,
-    * or a non-Gradle execution). Defaults to reading the `JVM_SUITE_NAME` environment variable
-    * that is set automatically by the Kotest Gradle plugin.
-    */
-   private val jvmSuiteNameProvider: () -> String? = { System.getenv("JVM_SUITE_NAME") },
-) {
+class AllureWriter(private val jvmSuiteName: String?) {
 
    companion object {
+
+      operator fun invoke(): AllureWriter {
+         /**
+          * Returns the name of the currently executing Gradle [JvmTestSuite], or null when not
+          * running inside a suite (e.g., the standard `test` task without the jvm-test-suite plugin,
+          * or a non-Gradle execution). Defaults to reading the `JVM_SUITE_NAME` environment variable
+          * that is set automatically by the Kotest Gradle plugin.
+          */
+         val suiteName = System.getenv("JVM_SUITE_NAME")
+         return AllureWriter(suiteName)
+      }
+
       const val LANGUAGE_LABEL = "kotlin"
       const val FRAMEWORK_LABEL = "kotest"
    }
@@ -51,7 +55,6 @@ class AllureWriter(
       // When running inside a Gradle JvmTestSuite, the suite name is propagated as an
       // environment variable by the Kotest Gradle plugin. We use it as the top-level
       // Allure suite so that results are grouped by suite first, then by spec class.
-      val jvmSuiteName = jvmSuiteNameProvider()
       val suiteLabels = if (jvmSuiteName != null) {
          listOf(
             ResultsUtils.createSuiteLabel(jvmSuiteName),
@@ -64,10 +67,11 @@ class AllureWriter(
       val labels = listOfNotNull(
          testCase.epic(),
          testCase.feature(),
-         ResultsUtils.createFrameworkLabel(FRAMEWORK_LABEL),
-         ResultsUtils.createHostLabel(),
-         ResultsUtils.createLanguageLabel(LANGUAGE_LABEL),
          ResultsUtils.createTestClassLabel(testCase.spec::class.java.simpleName),
+         ResultsUtils.createThreadLabel(),
+         ResultsUtils.createHostLabel(),
+         ResultsUtils.createFrameworkLabel(FRAMEWORK_LABEL),
+         ResultsUtils.createLanguageLabel(LANGUAGE_LABEL),
          testCase.owner(),
          ResultsUtils.createPackageLabel(testCase.spec::class.java.`package`.name),
          testCase.maxSeverity()?.let { ResultsUtils.createSeverityLabel(it) },
@@ -138,7 +142,6 @@ class AllureWriter(
 
    fun allureResultSpecInitFailure(kclass: KClass<*>, t: Throwable) {
       val uuid = UUID.randomUUID()
-      val jvmSuiteName = jvmSuiteNameProvider()
       val suiteLabels = if (jvmSuiteName != null) {
          listOf(
             ResultsUtils.createSuiteLabel(jvmSuiteName),
@@ -148,6 +151,7 @@ class AllureWriter(
          listOf(ResultsUtils.createSuiteLabel(kclass.qualifiedName))
       }
       val labels = listOfNotNull(
+         ResultsUtils.createTestClassLabel(kclass.java.simpleName),
          ResultsUtils.createThreadLabel(),
          ResultsUtils.createHostLabel(),
          ResultsUtils.createLanguageLabel(LANGUAGE_LABEL),
