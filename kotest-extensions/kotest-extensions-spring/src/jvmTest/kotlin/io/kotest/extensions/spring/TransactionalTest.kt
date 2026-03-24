@@ -16,7 +16,9 @@ import jakarta.persistence.Id
 import jakarta.persistence.SequenceGenerator
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
+import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.PostgreSQLContainer
+import io.kotest.matchers.shouldBe
 
 @SpringBootApplication
 class Application
