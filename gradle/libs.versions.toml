@@ -146,6 +146,8 @@ junit-platform6-api = { module = "org.junit.platform:junit-platform-suite-api", 
 junit-jupiter5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter5" }
 junit-jupiter6-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter6" }
 
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit-jupiter5" }
+
 junit4 = { module = "junit:junit", version.ref = "junit4" }
 
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }

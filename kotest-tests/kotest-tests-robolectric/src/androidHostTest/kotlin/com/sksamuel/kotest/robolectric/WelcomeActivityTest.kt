@@ -1,7 +1,7 @@
 package com.sksamuel.kotest.robolectric
 
 import android.content.Intent
-import org.junit.Assert.assertEquals
+import io.kotest.matchers.shouldBe
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric
@@ -9,7 +9,8 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
 
-// taken from https://robolectric.org/writing-a-test/
+// Robolectric requires the JUnit4 runner (@RunWith). The JUnit Vintage Engine
+// bridges this to JUnit Platform, allowing it to run alongside Kotest specs.
 @RunWith(RobolectricTestRunner::class)
 class WelcomeActivityTest {
     @Test
@@ -22,7 +23,7 @@ class WelcomeActivityTest {
 
             val expectedIntent = Intent(activity, LoginActivity::class.java)
             val actual = shadowOf(RuntimeEnvironment.getApplication()).nextStartedActivity
-            assertEquals(expectedIntent.component, actual.component)
+            actual.component shouldBe expectedIntent.component
         }
     }
 }
