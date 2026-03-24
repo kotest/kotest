@@ -144,6 +144,24 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
+   context("line breaks in test names are normalized") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val fqn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      test("test with CR in name matches filter with space") {
+         val testDescriptor = spec.append("a test\rwith cr")
+         val filter = "$fqn\\Q.a test with cr\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("nested test with CR in name matches filter with space") {
+         val container = spec.append("parent\rcontext")
+         val testDescriptor = container.append("child\rtest")
+         val filter = "$fqn\\Q.parent context -- child test\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+   }
+   
    context("simple class name with leading wildcard") {
       // When running: ./gradlew test --tests '*DecoderUtilsTest'
       // Gradle converts '*ClassName' to the regex pattern: .*.*\QClassName\E

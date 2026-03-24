@@ -116,8 +116,11 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
    private fun Descriptor.dotSeparatedFullPath(): DescriptorPath = when (this) {
       is Descriptor.SpecDescriptor -> DescriptorPath(this.id.value)
       is Descriptor.TestDescriptor -> when (this.parent) {
-         is Descriptor.SpecDescriptor -> DescriptorPath("${this.parent.id.value}.${this.id.value}")
-         is Descriptor.TestDescriptor -> DescriptorPath("${this.parent.dotSeparatedFullPath().value} -- ${this.id.value}")
+         is Descriptor.SpecDescriptor -> DescriptorPath("${this.parent.id.value}.${this.id.value.removeLineBreaks()}")
+         is Descriptor.TestDescriptor -> DescriptorPath("${this.parent.dotSeparatedFullPath().value} -- ${this.id.value.removeLineBreaks()}")
       }
    }
 }
+
+private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")
+
