@@ -9,10 +9,9 @@ import io.kotest.core.test.TestType
 import kotlin.reflect.KClass
 
 class AllureTestReporter(
-   private val includeContainers: Boolean = false
+   private val includeContainers: Boolean = false,
+   internal val writer: AllureWriter = AllureWriter(),
 ) : BeforeTestListener, AfterTestListener, InstantiationErrorListener {
-
-   internal val writer = AllureWriter()
 
    override suspend fun beforeTest(testCase: TestCase) {
       if (includeContainers || testCase.type == TestType.Test) {
