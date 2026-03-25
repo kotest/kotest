@@ -4,7 +4,6 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import kotlin.concurrent.atomics.ExperimentalAtomicApi
 
 /**
  * Interceptors that are executed after a spec is instantiated.
@@ -20,12 +19,8 @@ internal interface SpecInterceptor {
 /**
  * The [SpecContext] is a context that can be used by [SpecInterceptor]s.
  * A fresh context is created for each spec instance.
- * It contains a mutable state that can be modified by the interceptors.
  */
-@OptIn(ExperimentalAtomicApi::class)
-internal data class SpecContext(
-   var testFailed: Boolean = false,
-) {
+internal class SpecContext private constructor() {
    companion object {
       fun create() = SpecContext()
    }
