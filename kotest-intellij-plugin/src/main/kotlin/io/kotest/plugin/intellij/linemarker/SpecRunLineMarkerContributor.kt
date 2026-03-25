@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.linemarker
 
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
+import com.intellij.icons.AllIcons
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -31,10 +32,9 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
             if (spec != null && spec.isRunnableSpec()) {
                val fqn = spec.fqName?.asString()
                val icon = if (fqn != null) {
-                  val status = LineMarkerUtils.determineSpecStatus(element, fqn)
-                  LineMarkerUtils.determineIconFromStatus(status, specIcon = true)
+                  getTestStateIcon(LineMarkerUtils.determineSpecState(element, fqn), true)
                } else {
-                  LineMarkerUtils.runRunIcon
+                  AllIcons.RunConfigurations.TestState.Run_run
                }
                return Info(
                   icon,

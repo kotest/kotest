@@ -1,5 +1,6 @@
 package io.kotest.plugin.intellij.linemarker
 
+import com.intellij.execution.TestStateStorage
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
 import com.intellij.openapi.module.ModuleUtil
@@ -52,15 +53,14 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       if (test.name.interpolated) return null
       // disabled tests are handled by another line marker
       if (!test.enabled) return null
-      val testStatus = LineMarkerUtils.determineTestStatus(element, test)
-      return icon(test, testStatus)
+      return icon(test, LineMarkerUtils.determineTestState(element, test))
    }
 
    /**
     * Returns an [Info] to use for the given [io.kotest.plugin.intellij.Test].
     */
-   private fun icon(test: Test, testStatus: LineMarkerUtils.TestStatus): Info {
-      val icon = LineMarkerUtils.determineIconFromStatus(testStatus)
+   private fun icon(test: Test, testState: TestStateStorage.Record?): Info {
+      val icon = getTestStateIcon(testState, false)
       return Info(
          icon,
          ExecutorAction.getActions(1),
