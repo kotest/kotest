@@ -1,6 +1,6 @@
 package io.kotest.engine.test.enabled
 
-import io.kotest.core.log
+import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
@@ -18,8 +18,10 @@ import io.kotest.engine.config.TestConfigResolver
 internal class SeverityLevelEnabledExtension(
    private val projectConfigResolver: ProjectConfigResolver,
    private val testConfigResolver: TestConfigResolver,
-) :
-   TestEnabledExtension {
+) : TestEnabledExtension {
+
+   private val logger = Logger<SeverityLevelEnabledExtension>()
+
    override fun isEnabled(testCase: TestCase): Enabled {
 
       // if min level is not defined, then we always allow through
@@ -31,7 +33,7 @@ internal class SeverityLevelEnabledExtension(
          testLevel.level >= minLevel.level -> Enabled.enabled
          else -> Enabled
             .disabled("${testCase.descriptor.path()} is disabled by severity level (minimum level is $minLevel)")
-            .also { it.reason?.let { log { it } } }
+            .also { it.reason?.let { logger.log { it } } }
       }
    }
 }

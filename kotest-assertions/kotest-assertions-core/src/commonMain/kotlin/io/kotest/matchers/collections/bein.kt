@@ -113,6 +113,86 @@ infix fun <T> T.shouldNotBeIn(array: Array<T>): T {
    return this
 }
 
+infix fun Int.shouldBeIn(array: IntArray): Int {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Int.shouldNotBeIn(array: IntArray): Int {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Long.shouldBeIn(array: LongArray): Long {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Long.shouldNotBeIn(array: LongArray): Long {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Float.shouldBeIn(array: FloatArray): Float {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Float.shouldNotBeIn(array: FloatArray): Float {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Double.shouldBeIn(array: DoubleArray): Double {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Double.shouldNotBeIn(array: DoubleArray): Double {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Byte.shouldBeIn(array: ByteArray): Byte {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Byte.shouldNotBeIn(array: ByteArray): Byte {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Short.shouldBeIn(array: ShortArray): Short {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Short.shouldNotBeIn(array: ShortArray): Short {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Char.shouldBeIn(array: CharArray): Char {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Char.shouldNotBeIn(array: CharArray): Char {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
+infix fun Boolean.shouldBeIn(array: BooleanArray): Boolean {
+   this should beIn(array.asList())
+   return this
+}
+
+infix fun Boolean.shouldNotBeIn(array: BooleanArray): Boolean {
+   this shouldNot beIn(array.asList())
+   return this
+}
+
 /**
  *  Matcher that verifies that this element is in [collection] by comparing value
  *

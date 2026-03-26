@@ -40,43 +40,20 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
    private var passParentEnvs: Boolean = true
    private var programParameters: String? = null
    private var vmParameters: String? = ""
+   @Suppress("UnstableApiUsage")
    private var workingDirectory: String? = PathMacroUtil.MODULE_WORKING_DIR
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    private var testPath: String? = null
-
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    private var specName: String? = null
    private var specsName: String? = null
-
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    private var packageName: String? = null
    private var searchScope: TestSearchScope.Wrapper = TestSearchScope.Wrapper()
 
    fun getInclude(): String? = include
-
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun getTestPath(): String? = testPath
 
    fun getSpecName(): String? = specsName?.split(';')?.get(0)
    fun getSpecsName(): String? = specsName
-
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun getPackageName(): String? = packageName
 
    override fun isPassParentEnvs(): Boolean = passParentEnvs
@@ -180,18 +157,10 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       this.envs = envs
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setTestPath(testName: String?) {
       this.testPath = testName
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setSpecName(specName: String?) {
       this.specName = specName
    }
@@ -200,18 +169,10 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       this.specsName = specsName
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setSpec(spec: KtClassOrObject?) {
       this.specName = spec?.fqName?.asString()
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setPackageName(packageName: String?) {
       this.packageName = packageName
    }

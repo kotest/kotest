@@ -12,7 +12,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
 import io.kotest.plugin.intellij.TestElement
-import io.kotest.plugin.intellij.psi.specStyle
+import io.kotest.plugin.intellij.psi.specStyleOnEdt
 import org.jetbrains.kotlin.idea.stubindex.KotlinFullClassNameIndex
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
@@ -47,7 +47,7 @@ internal class EmbeddedLocationTestLocator(private val location: EmbeddedLocatio
       if (contexts.isEmpty()) return listOf(createPsiClassNavigable(psiClass))
 
       val ktClass = psiClass.navigationElement as? KtClassOrObject ?: return emptyList()
-      val style = ktClass.specStyle() ?: return emptyList()
+      val style = ktClass.specStyleOnEdt() ?: return emptyList()
 
       val tests = style.tests(ktClass, false)
       val test = findTest(tests, contexts) ?: return emptyList()

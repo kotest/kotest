@@ -2,33 +2,34 @@
 
 package io.kotest.engine.listener
 
+import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
-import io.kotest.common.reflection.bestName
 
 object LoggingTestEngineListener : AbstractTestEngineListener() {
 
-   private val logger = Logger(LoggingTestEngineListener::class)
+   private val logger = Logger<LoggingTestEngineListener>()
 
    override suspend fun engineFinished(t: List<Throwable>) {
-      logger.log { Pair(null, "Engine finished $t") }
+      logger.log { "Engine finished $t" }
    }
 
    override suspend fun specStarted(ref: SpecRef) {
-      logger.log { Pair(ref.kclass.bestName(), "specStarted") }
+      logger.log { LogLine(ref.kclass.bestName(), "specStarted") }
    }
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
-      logger.log { Pair(ref.kclass.bestName(), "specFinished") }
+      logger.log { LogLine(ref.kclass.bestName(), "specFinished") }
    }
 
    override suspend fun testStarted(testCase: TestCase) {
-      logger.log { Pair(testCase.name.name, "testStarted") }
+      logger.log { LogLine(testCase.name.name, "testStarted") }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
-      logger.log { Pair(testCase.name.name, "testFinished") }
+      logger.log { LogLine(testCase.name.name, "testFinished") }
    }
 }

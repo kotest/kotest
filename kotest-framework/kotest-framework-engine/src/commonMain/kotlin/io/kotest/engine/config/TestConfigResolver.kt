@@ -195,8 +195,8 @@ class TestConfigResolver(
     * @param order - controls the order of extensions returned
     */
    internal fun extensions(testCase: TestCase, order: ExtensionsOrder): List<Extension> {
-      val ext = registry.all() +
-         (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
+      val ext = (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
+         registry.all() +
          loadPackageConfigs(testCase.spec).flatMap { it.extensions } + // package level extensions
          testCase.spec.extensions + // overriding the extensions val in the spec
          testCase.spec.functionOverrideCallbacks() + // spec level dsl eg override fun beforeTest(tc...) {}

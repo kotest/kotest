@@ -3,7 +3,7 @@ package io.kotest.engine.config
 import io.kotest.common.JVMOnly
 import io.kotest.common.KotestInternal
 import io.kotest.common.syspropOrEnv
-import io.kotest.core.log
+import io.kotest.core.Logger
 import java.util.Properties
 
 /**
@@ -13,20 +13,23 @@ import java.util.Properties
  * This is an alternative to using the system properties command line argument (Eg -dx=y) or by specifying
  * them in the Gradle test task.
  *
- * This is a JVM only feature.
+ * This is a JVM-only feature.
  */
 @JVMOnly
 @KotestInternal
 object KotestPropertiesLoader {
 
+   private val logger = Logger<KotestPropertiesLoader>()
    private const val DEFAULT_KOTEST_PROPERTIES_FILENAME = "/kotest.properties"
 
    fun loadAndApplySystemPropsFile() {
       val filename = systemPropsFilename()
-      log { "Loading kotest properties from $filename" }
+      logger.log { "Loading kotest properties from $filename" }
       loadSystemProps(filename).forEach { (key, value) ->
-         if (key != null && value != null)
+         if (key != null && value != null) {
+            logger.log { "Setting system property $key=$value" }
             System.setProperty(key.toString(), value.toString())
+         }
       }
    }
 
@@ -44,7 +47,7 @@ object KotestPropertiesLoader {
       val props = Properties()
       val input = object {}::class.java.getResourceAsStream(filename)
       if (input == null) {
-         log { "Kotest properties file was not detected" }
+         logger.log { "Kotest properties file was not detected" }
          return props
       }
       props.load(input)

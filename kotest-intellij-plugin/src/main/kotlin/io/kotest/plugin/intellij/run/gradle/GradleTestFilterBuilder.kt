@@ -58,7 +58,7 @@ data class GradleTestFilterBuilder(
    private fun StringBuilder.appendTestPath() {
       when {
          // Regular test - use full path
-         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name.escapeSingleQuotes() }
+         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name.removeLineBreaks().escapeSingleQuotes() }
          // Data test inside a regular context - use ancestor path to scope the run
          dataTestAncestorPath != null -> dataTestAncestorPath
          // Root-level data test or no test - no path needed
@@ -81,3 +81,5 @@ data class GradleTestFilterBuilder(
  * when wrapped in outer single quotes produces `'it'\''s a test'`.
  */
 private fun String.escapeSingleQuotes(): String = replace("'", "'\\''")
+
+private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")

@@ -1,3 +1,6 @@
+public final class io/kotest/core/Logger$Companion {
+}
+
 public final class io/kotest/core/LoggerKt {
 	public static final fun isLoggingEnabled ()Z
 }
@@ -1616,7 +1619,6 @@ public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Sp
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 	public final fun include (Ljava/lang/String;Lio/kotest/core/factory/TestFactory;)V
 	public fun rootTests ()Ljava/util/List;
-	public final fun seal ()V
 	public fun tags ([Lio/kotest/core/Tag;)V
 }
 
@@ -1672,6 +1674,7 @@ public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguratio
 	public final fun beforeTest (Lkotlin/jvm/functions/Function2;)V
 	public fun coroutineDispatcherFactory ()Lio/kotest/engine/coroutines/CoroutineDispatcherFactory;
 	public fun duplicateTestNameMode ()Lio/kotest/core/names/DuplicateTestNameMode;
+	public final fun finalizeSpec (Lkotlin/jvm/functions/Function3;)V
 	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
 	public final fun getBlockingTest ()Ljava/lang/Boolean;
 	public final fun getCoroutineDebugProbes ()Ljava/lang/Boolean;
@@ -4385,32 +4388,6 @@ public final class io/kotest/engine/spec/ThreadSafeMapKt {
 
 public final class io/kotest/engine/spec/execution/SpecRefExecutorKt {
 	public static final fun testSpecExecutor (Lio/kotest/core/config/AbstractProjectConfig;Lio/kotest/engine/listener/TestEngineListener;Lio/kotest/core/spec/SpecRef$Reference;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-}
-
-public abstract interface class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
-}
-
-public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled : io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
-	public fun <init> (Ljava/lang/String;)V
-	public final fun component1 ()Ljava/lang/String;
-	public final fun copy (Ljava/lang/String;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;
-	public static synthetic fun copy$default (Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Disabled;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getReason ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Enabled : io/kotest/engine/spec/execution/enabled/EnabledOrDisabled {
-	public static final field INSTANCE Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled$Enabled;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class io/kotest/engine/spec/execution/enabled/SpecRefEnabledChecker {
-	public fun <init> (Lio/kotest/engine/config/ProjectConfigResolver;)V
-	public final fun isEnabled (Lio/kotest/core/spec/SpecRef;)Lio/kotest/engine/spec/execution/enabled/EnabledOrDisabled;
 }
 
 public abstract interface annotation class io/kotest/engine/stable/IsStableType : java/lang/annotation/Annotation {
