@@ -220,6 +220,11 @@ based configuration will not work as Kotlin does not expose annotations at runti
    </TabItem>
    <TabItem value="Android">
 
+:::tip
+A working Android project with unit, instrumented and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
+:::
+
 Android supports two types of tests:
 - Unit tests, which are run on the local machine and are also referred to as "host" tests
 - Instrumented tests, which are run on an Android device or emulator and are also referred to as "device" tests
@@ -251,7 +256,7 @@ dependencies {
 ```
 
 When writing an instrumented test, you should use the `androidTest` source set to place your test code, and you must
-annotation your spec with @RunWith(KotestTestRunner::class). For example:
+annotate your spec with `@RunWith(KotestTestRunner::class)`. For example:
 
 ```kotlin
 @RunWith(KotestTestRunner::class)
@@ -283,11 +288,6 @@ class ComposeWithKotest : FreeSpec() {
   }
 }
 ```
-
-:::tip
-A working Android project with unit, instrumented and data driven test examples, can be found here:
-https://github.com/kotest/kotest-examples
-:::
 
    </TabItem>
    <TabItem value="Multiplatform">
