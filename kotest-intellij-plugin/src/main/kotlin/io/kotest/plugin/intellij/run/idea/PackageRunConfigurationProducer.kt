@@ -36,30 +36,36 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
     * When two configurations are created from the same context by two different producers, checks if the
     * configuration created by this producer should be preferred over the other one.
     *
-    * We return true when the other configuration is NOT a Kotest configuration and NOT a Gradle configuration,
-    * to ensure Kotest specs take priority over JUnit (which may claim the class due to Spring Boot test annotations
-    * like `@SpringBootTest` that are meta-annotated with `@ExtendWith(SpringExtension.class)`).
+    * We return true when the other configuration is NOT a Gradle configuration and NOT another package-level
+    * Kotest configuration. This ensures the package config takes priority over spec or test-level Kotest
+    * configurations (which should not win when the run was triggered from a package element), as well as
+    * over JUnit configurations.
     *
     * We do NOT prefer this IDEA-based runner over Gradle configurations, as Gradle is the preferred method
     * for running Kotest tests starting with Kotest 6.
     */
    override fun isPreferredConfiguration(self: ConfigurationFromContext?, other: ConfigurationFromContext?): Boolean {
       val otherConfig = other?.configuration
-      // Don't prefer over Gradle or other Kotest configurations
-      if (otherConfig is GradleRunConfiguration || otherConfig is KotestRunConfiguration) return false
-      // Prefer this over non-Kotest, non-Gradle configurations (like JUnit)
+      // Don't prefer over Gradle configurations
+      if (otherConfig is GradleRunConfiguration) return false
+      // Don't prefer over another package-level Kotest configuration
+      if (otherConfig is KotestRunConfiguration && otherConfig.getPackageName() != null) return false
+      // Prefer this package config over spec/test-level Kotest configurations (like JUnit)
       return true
    }
 
    /**
     * Returns true if this configuration should replace the other configuration.
-    * We replace JUnit configurations when we detect a Kotest spec, but NOT Gradle configurations.
+    * We replace JUnit configurations and spec/test-level Kotest configurations when running from a package
+    * element, but NOT Gradle configurations or other package-level Kotest configurations.
     */
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
       val otherConfig = other.configuration
-      // Don't replace Gradle or other Kotest configurations
-      if (otherConfig is GradleRunConfiguration || otherConfig is KotestRunConfiguration) return false
-      // Replace non-Kotest, non-Gradle configurations (like JUnit) with Kotest
+      // Don't replace Gradle configurations
+      if (otherConfig is GradleRunConfiguration) return false
+      // Don't replace another package-level Kotest configuration
+      if (otherConfig is KotestRunConfiguration && otherConfig.getPackageName() != null) return false
+      // Replace spec/test-level Kotest configurations and JUnit configurations with this package config
       return true
    }
 
@@ -114,6 +120,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
       }
       return foundClasses.filter { it.language.id == "kotlin" }
    }
+
    private fun setupConfigurationModule(context: ConfigurationContext, configuration: KotestRunConfiguration): Boolean {
       val template = context.runManager.getConfigurationTemplate(configurationFactory)
       val contextModule = context.module
