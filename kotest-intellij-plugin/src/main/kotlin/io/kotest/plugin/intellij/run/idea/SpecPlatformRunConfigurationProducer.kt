@@ -6,6 +6,7 @@ import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Ref
+import com.intellij.psi.PsiDirectory
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.psi.asKtClassOrObjectOrNull
@@ -87,6 +88,10 @@ class SpecPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
       }
 
       val element = sourceElement.get()
+
+      // Package/directory contexts are handled by PackageRunConfigurationProducer — bail out early.
+      if (element is PsiDirectory) return false
+
       if (element != null && element is LeafPsiElement) {
 
          // we are interested in either the class/object keyword or the identifier associated with it
