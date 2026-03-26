@@ -46,12 +46,12 @@ class AfterDslOrderAnnotationListener : TestListener {
  * respectively — run *after* any listeners registered via [@ApplyExtension] or project config.
  *
  * Ordering is driven by GLOBAL_FIRST scoping in [io.kotest.engine.config.TestConfigResolver.extensions]:
- * registry (annotation) → project config → spec DSL. Within [io.kotest.engine.test.TestExtensions],
+ * project config → registry (annotation) → spec DSL. Within [io.kotest.engine.test.TestExtensions],
  * the 'be' group (BeforeEachListeners) runs before the 'bt' group (BeforeTestListeners).
  *
  * Per-test expected order:
- *   be group: annotation-beforeEach → project-beforeEach → spec-beforeEach
- *   bt group: annotation-beforeTest → project-beforeTest → spec-beforeTest
+ *   be group: project-beforeEach → annotation-beforeEach → spec-beforeEach
+ *   bt group: project-beforeTest → annotation-beforeTest → spec-beforeTest
  */
 @Description("Confirms beforeEach and beforeTest DSL callbacks run after annotation and project config listeners")
 @ApplyExtension(BeforeDslOrderAnnotationListener::class)
@@ -71,8 +71,8 @@ class BeforeDslVsListenerOrderTest : FunSpec() {
 
       afterProject {
          val perTest = listOf(
-            "annotation-beforeEach", "project-beforeEach", "spec-beforeEach",
-            "annotation-beforeTest", "project-beforeTest", "spec-beforeTest",
+            "project-beforeEach", "annotation-beforeEach", "spec-beforeEach",
+            "project-beforeTest", "annotation-beforeTest", "spec-beforeTest",
          )
          beforeDslVsListenerEvents shouldBe perTest + perTest
       }
@@ -85,13 +85,13 @@ class BeforeDslVsListenerOrderTest : FunSpec() {
  * respectively — run *before* any listeners registered via [@ApplyExtension] or project config.
  *
  * Ordering is driven by LOCAL_FIRST (reversed GLOBAL_FIRST) scoping in
- * [io.kotest.engine.config.TestConfigResolver.extensions]: spec DSL → project config → registry (annotation).
+ * [io.kotest.engine.config.TestConfigResolver.extensions]: spec DSL → registry (annotation) → project config.
  * Within [io.kotest.engine.test.TestExtensions], the 'at' group (AfterTestListeners) runs before
  * the 'ae' group (AfterEachListeners).
  *
  * Per-test expected order:
- *   at group: spec-afterTest → project-afterTest → annotation-afterTest
- *   ae group: spec-afterEach → project-afterEach → annotation-afterEach
+ *   at group: spec-afterTest → annotation-afterTest → project-afterTest
+ *   ae group: spec-afterEach → annotation-afterEach → project-afterEach
  */
 @Description("Confirms afterEach and afterTest DSL callbacks run before annotation and project config listeners")
 @ApplyExtension(AfterDslOrderAnnotationListener::class)
@@ -111,8 +111,8 @@ class AfterDslVsListenerOrderTest : FunSpec() {
 
       afterProject {
          val perTest = listOf(
-            "spec-afterTest", "project-afterTest", "annotation-afterTest",
-            "spec-afterEach", "project-afterEach", "annotation-afterEach",
+            "spec-afterTest", "annotation-afterTest", "project-afterTest",
+            "spec-afterEach", "annotation-afterEach", "project-afterEach",
          )
          afterDslVsListenerEvents shouldBe perTest + perTest
       }
