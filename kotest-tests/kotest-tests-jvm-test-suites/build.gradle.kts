@@ -21,14 +21,14 @@ testing {
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
-      val integrationTest by registering(JvmTestSuite::class) {
+      register<JvmTestSuite>("integrationTest") {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
-      val functionalTest by registering(JvmTestSuite::class) {
+      register<JvmTestSuite>("functionalTest") {
          dependencies {
             implementation(projects.kotestRunner.kotestRunnerJunit5)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
