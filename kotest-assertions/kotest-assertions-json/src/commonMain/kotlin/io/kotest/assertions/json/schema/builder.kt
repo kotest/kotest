@@ -203,6 +203,14 @@ data class JsonSchema(
    object Null : JsonSchemaElement {
       override fun typeName() = "null"
    }
+
+   data class JsonAnyOf(val schemas: List<JsonSchemaElement>) : JsonSchemaElement {
+      override fun typeName() = "anyOf(${schemas.joinToString(", ") { it.typeName() }})"
+   }
+
+   data class JsonOneOf(val schemas: List<JsonSchemaElement>) : JsonSchemaElement {
+      override fun typeName() = "oneOf(${schemas.joinToString(", ") { it.typeName() }})"
+   }
 }
 
 
@@ -318,6 +326,18 @@ fun jsonSchema(
 ): JsonSchema = JsonSchema(
    JsonSchema.Builder.rootBuilder()
 )
+
+@ExperimentalKotest
+fun JsonSchema.Builder.anyOf(vararg schemas: JsonSchemaElement): JsonSchema.JsonAnyOf {
+   require(schemas.isNotEmpty()) { "anyOf requires at least one schema" }
+   return JsonSchema.JsonAnyOf(schemas.toList())
+}
+
+@ExperimentalKotest
+fun JsonSchema.Builder.oneOf(vararg schemas: JsonSchemaElement): JsonSchema.JsonOneOf {
+   require(schemas.isNotEmpty()) { "oneOf requires at least one schema" }
+   return JsonSchema.JsonOneOf(schemas.toList())
+}
 
 fun JsonSchema.Builder.containsSpec(
    minContains: Int = 0,

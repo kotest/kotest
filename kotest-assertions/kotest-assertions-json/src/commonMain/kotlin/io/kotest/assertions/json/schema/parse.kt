@@ -57,6 +57,8 @@ fun parseSchema(@Language("json") jsonSchema: String): JsonSchema =
 @ExperimentalKotest
 internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<JsonSchemaElement> {
+      if (element.jsonObject.containsKey("anyOf")) return JsonSchemaAnyOfSerializer
+      if (element.jsonObject.containsKey("oneOf")) return JsonSchemaOneOfSerializer
       if (element.jsonObject.containsKey("enum")) return JsonSchemaEnumSerializer
       return when (val type = element.jsonObject["type"]?.jsonPrimitive?.content) {
          "array" -> JsonSchemaArraySerializer
@@ -237,5 +239,47 @@ internal object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonDecimal>
 
    override fun serialize(encoder: Encoder, value: JsonSchema.JsonDecimal) {
       TODO("Not yet implemented")
+   }
+}
+
+@ExperimentalKotest
+internal object JsonSchemaAnyOfSerializer : KSerializer<JsonSchema.JsonAnyOf> {
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonAnyOf {
+      require(decoder is JsonDecoder) { "JsonSchema can only be deserialized from JSON" }
+      val jsonObject = decoder.decodeJsonElement().jsonObject
+      val schemas = jsonObject["anyOf"]!!.jsonArray.map {
+         schemaJsonConfig.decodeFromJsonElement(SchemaDeserializer, it)
+      }
+      require(schemas.isNotEmpty()) { "anyOf requires at least one schema" }
+      return JsonSchema.JsonAnyOf(schemas)
+   }
+
+   override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonAnyOf") {
+      element<JsonElement>("anyOf")
+   }
+
+   override fun serialize(encoder: Encoder, value: JsonSchema.JsonAnyOf) {
+      TODO("Serialization of JsonSchema not supported atm")
+   }
+}
+
+@ExperimentalKotest
+internal object JsonSchemaOneOfSerializer : KSerializer<JsonSchema.JsonOneOf> {
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonOneOf {
+      require(decoder is JsonDecoder) { "JsonSchema can only be deserialized from JSON" }
+      val jsonObject = decoder.decodeJsonElement().jsonObject
+      val schemas = jsonObject["oneOf"]!!.jsonArray.map {
+         schemaJsonConfig.decodeFromJsonElement(SchemaDeserializer, it)
+      }
+      require(schemas.isNotEmpty()) { "oneOf requires at least one schema" }
+      return JsonSchema.JsonOneOf(schemas)
+   }
+
+   override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonOneOf") {
+      element<JsonElement>("oneOf")
+   }
+
+   override fun serialize(encoder: Encoder, value: JsonSchema.JsonOneOf) {
+      TODO("Serialization of JsonSchema not supported atm")
    }
 }
