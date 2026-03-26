@@ -27,15 +27,23 @@ class GradleMultiplatformJvmTestTaskRunProducerTest : BasePlatformTestCase() {
       Paths.get("./src/test/resources/").toAbsolutePath().toString()
 
    /**
-    * Thin subclass that makes [doSetupConfigurationFromContext] callable from tests.
-    * The method is `protected` in the base class; a subclass can widen it to public.
+    * Calls the protected [GradleMultiplatformJvmTestTaskRunProducer.doSetupConfigurationFromContext]
+    * via reflection so that the class need not be made `open` just for testing.
     */
-   private class TestableProducer : GradleMultiplatformJvmTestTaskRunProducer() {
-      fun callDoSetup(
-         configuration: GradleRunConfiguration,
-         context: ConfigurationContext,
-         ref: Ref<PsiElement?>
-      ): Boolean = doSetupConfigurationFromContext(configuration, context, ref)
+   private fun callDoSetup(
+      producer: GradleMultiplatformJvmTestTaskRunProducer,
+      configuration: GradleRunConfiguration,
+      context: ConfigurationContext,
+      ref: Ref<PsiElement?>
+   ): Boolean {
+      val method = GradleMultiplatformJvmTestTaskRunProducer::class.java.getDeclaredMethod(
+         "doSetupConfigurationFromContext",
+         GradleRunConfiguration::class.java,
+         ConfigurationContext::class.java,
+         Ref::class.java
+      )
+      method.isAccessible = true
+      return method.invoke(producer, configuration, context, ref) as Boolean
    }
 
    /**
@@ -57,11 +65,11 @@ class GradleMultiplatformJvmTestTaskRunProducerTest : BasePlatformTestCase() {
          PsiLocation(project, myFixture.module, psiElement)
       )
 
-      val producer = TestableProducer()
+      val producer = GradleMultiplatformJvmTestTaskRunProducer()
       val configuration = producer.configurationFactory.createTemplateConfiguration(project) as GradleRunConfiguration
       val ref = Ref.create<PsiElement?>(psiElement)
 
-      val result = producer.callDoSetup(configuration, context, ref)
+      val result = callDoSetup(producer, configuration, context, ref)
 
       result shouldBe true
       configuration.settings.env["KOTEST_IDEA_PLUGIN"] shouldBe "true"
@@ -84,11 +92,11 @@ class GradleMultiplatformJvmTestTaskRunProducerTest : BasePlatformTestCase() {
          PsiLocation(project, myFixture.module, psiElement)
       )
 
-      val producer = TestableProducer()
+      val producer = GradleMultiplatformJvmTestTaskRunProducer()
       val configuration = producer.configurationFactory.createTemplateConfiguration(project) as GradleRunConfiguration
       val ref = Ref.create<PsiElement?>(psiElement)
 
-      val result = producer.callDoSetup(configuration, context, ref)
+      val result = callDoSetup(producer, configuration, context, ref)
 
       result shouldBe true
       configuration.settings.env["KOTEST_IDEA_PLUGIN"] shouldBe "true"
