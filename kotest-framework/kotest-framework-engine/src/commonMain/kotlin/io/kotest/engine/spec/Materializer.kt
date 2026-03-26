@@ -1,5 +1,7 @@
 package io.kotest.engine.spec
 
+import io.kotest.core.LogLine
+import io.kotest.core.Logger
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
@@ -22,6 +24,8 @@ class Materializer(
 
    constructor() : this(SpecConfigResolver())
 
+   private val logger = Logger<Materializer>()
+
    /**
     * Materializes the root tests from a [Spec] and any [TestFactory]s into
     * [TestCase]s by resolving config at runtime using the supplied project configuration
@@ -38,7 +42,9 @@ class Materializer(
       val handler = DuplicateTestNameHandler()
       val mode = specConfigResolver.duplicateTestNameMode(spec)
 
-      val tests = spec.rootTests().map { rootTest ->
+      val roots = spec.rootTests()
+      logger.log { LogLine(spec::class, "Spec has defined ${roots.size} root tests") }
+      val tests = roots.map { rootTest ->
 
          val unique = handler.unique(mode, rootTest.name)
          val resolvedName = rootTest.name.copy(name = unique)
@@ -60,7 +66,13 @@ class Materializer(
          )
       }
 
-      return when (specConfigResolver.testCaseOrder(spec)) {
+      return sort(tests, spec)
+   }
+
+   private fun sort(tests: List<TestCase>, spec: Spec): List<TestCase> {
+      val order = specConfigResolver.testCaseOrder(spec)
+      logger.log { LogLine(spec::class, "Sorting root tests by $order") }
+      return when (order) {
          TestCaseOrder.Sequential -> tests
          TestCaseOrder.Random -> tests.shuffled()
          TestCaseOrder.Lexicographic -> tests.sortedBy { it.name.name }

@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor.instance
 
-import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -18,7 +18,7 @@ import kotlinx.coroutines.test.TestDispatcher
  *
  * If the coroutine is an instance of [TestDispatcher] then the coroutine will not be changed.
  *
- * Note: This interceptor should run before before/after callbacks so they are executed in the right context.
+ * Note: This interceptor should run before any before/after callbacks so they are executed in the right context.
  */
 internal class CoroutineDispatcherFactorySpecInterceptor(
    private val specConfigResolver: SpecConfigResolver,
@@ -36,10 +36,10 @@ internal class CoroutineDispatcherFactorySpecInterceptor(
 
          val userFactory = specConfigResolver.coroutineDispatcherFactory(spec)
          if (userFactory == null) {
-            logger.log { Pair(spec::class.bestName(), "No CoroutineDispatcherFactory set") }
+            logger.log { LogLine(spec::class, "No CoroutineDispatcherFactory set") }
             next.invoke(spec)
          } else {
-            logger.log { Pair(spec::class.bestName(), "Switching dispatcher using factory $userFactory") }
+            logger.log { LogLine(spec::class, "Switching dispatcher using factory $userFactory") }
             userFactory.withDispatcher(spec) {
                next.invoke(spec)
             }
