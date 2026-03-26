@@ -43,10 +43,6 @@ tasks.withType<Test>().configureEach {
    outputs.upToDateWhen { false }
    filter { isFailOnNoMatchingTests = false }
    testLogging { events(TestLogEvent.FAILED) }
-   systemProperty(
-      "suiteXmlDir",
-      layout.buildDirectory.dir("test-results/$name").get().asFile.invariantSeparatorsPath,
-   )
 }
 
 tasks.named("check") {
