@@ -9,6 +9,7 @@ import io.kotest.matchers.paths.aFile
 import io.kotest.matchers.paths.exist
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 import java.nio.file.Path
 import kotlin.io.path.readText
@@ -25,6 +26,11 @@ infix fun Path.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.(
    return this
 }
 
+fun Path.shouldEqualJson(@Language("json") expected: String, parser: Json): Path {
+   this should (exist() and aFile() and equalJson(expected, CompareJsonOptions(), parser).contramap { it.readText() })
+   return this
+}
+
 infix fun Path.shouldNotEqualJson(@Language("json") expected: String): Path {
    this.readText() shouldNot equalJson(expected, CompareJsonOptions())
    return this
@@ -34,6 +40,11 @@ infix fun Path.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOption
    val options = CompareJsonOptions()
    val expected = configureAndProvideExpected(options)
    this shouldNot (exist() and aFile() and equalJson(expected, options).contramap<Path> { it.readText() }.invert())
+   return this
+}
+
+fun Path.shouldNotEqualJson(@Language("json") expected: String, parser: Json): Path {
+   this.readText() shouldNot equalJson(expected, CompareJsonOptions(), parser)
    return this
 }
 
