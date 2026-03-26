@@ -1,8 +1,8 @@
 package io.kotest.core.source
 
+import io.kotest.common.sysprop
 import io.kotest.core.spec.Spec
 import io.kotest.engine.config.KotestEngineProperties
-import io.kotest.common.sysprop
 import kotlin.reflect.KClass
 import kotlin.reflect.full.isSubclassOf
 
@@ -16,18 +16,9 @@ internal actual fun sourceRef(): SourceRef {
    val stack = Thread.currentThread().stackTrace
    if (stack.isEmpty()) return SourceRef.None
 
-   val frame = stack.dropWhile {
-      it.className.startsWith("java.") ||
-         it.className.startsWith("javax.") ||
-         it.className.startsWith("jdk.internal.") ||
-         it.className.startsWith("com.sun") ||
-         it.className.startsWith("kotlin.") ||
-         it.className.startsWith("kotlinx.") ||
-         it.className.startsWith("io.kotest.core.") ||
-         it.className.startsWith("io.kotest.engine.")
-   }.firstOrNull()
+   val frame = SourceRefUtils.firstUserFrame(stack)
 
-   // preference is given to the class name but we must try to find the enclosing spec
+   // preference is given to the class name, but we must try to find the enclosing spec
    val kclass = frame?.className?.let { fqn ->
       runCatching {
          var temp: KClass<*>? = Class.forName(fqn).kotlin
@@ -44,5 +35,28 @@ internal actual fun sourceRef(): SourceRef {
       kclass == null -> SourceRef.None
       lineNumber == null -> SourceRef.ClassSource(kclass.java.name)
       else -> SourceRef.ClassLineSource(kclass.java.name, lineNumber)
+   }
+}
+
+object SourceRefUtils {
+
+   /**
+    * Returns the first user-land frame from the given stack trace.
+    *
+    * That is, we strip all the invocations from JDK, Kotest, internal sun libraries, etc, in an attempt
+    * to find the location where the user defined the test.
+    */
+   internal fun firstUserFrame(stack: Array<StackTraceElement>): StackTraceElement? {
+      return stack.dropWhile {
+         it.className.startsWith("java.") ||
+            it.className.startsWith("javax.") ||
+            it.className.startsWith("jdk.internal.") ||
+            it.className.startsWith("com.sun") ||
+            it.className.startsWith("kotlin.") ||
+            it.className.startsWith("kotlinx.") ||
+            it.className.startsWith("io.kotest.core.") ||
+            it.className.startsWith("io.kotest.engine.") ||
+            it.className.startsWith("io.kotest.datatest.")
+      }.firstOrNull()
    }
 }

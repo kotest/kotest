@@ -56,6 +56,29 @@ class BehaviorSpecGivenContainerScope(
       }
    }
 
+   suspend fun And(name: String) =
+      addAnd(name, xmethod = TestXMethod.NONE)
+
+   suspend fun and(name: String) =
+      addAnd(name, xmethod = TestXMethod.NONE)
+
+   suspend fun xand(name: String) =
+      addAnd(name, xmethod = TestXMethod.DISABLED)
+
+   suspend fun xAnd(name: String) =
+      addAnd(name, xmethod = TestXMethod.DISABLED)
+
+   private suspend fun addAnd(
+      name: String,
+      xmethod: TestXMethod
+   ): ContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
+      return ContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
+         context = this,
+         xmethod = xmethod
+      ) { BehaviorSpecGivenContainerScope(it) }
+   }
+
    suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       addWhen(name, test, xmethod = TestXMethod.NONE)
 

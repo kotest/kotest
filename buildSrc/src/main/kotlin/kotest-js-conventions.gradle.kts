@@ -24,9 +24,13 @@ kotlin {
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
          group("common") {
+            // many KMP functions boil down to "jvm" implementations and "other" implementations, for example
+            // anything that needs reflection will be jvm only, so we create a common group for all non-jvm targets
             group("nonjvm") {
-               withJs()
-               withWasmJs()
+               group("jsHosted") {
+                  withJs()
+                  withWasmJs()
+               }
             }
          }
       }

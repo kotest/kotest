@@ -2,34 +2,45 @@ package io.kotest.matchers
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.ErrorCollectionMode
 import io.kotest.assertions.Expected
+import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.collectOrThrow
+import io.kotest.assertions.createLazyAssertionError
+import io.kotest.assertions.errorCollector
 
 fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)
    if (!result.passed()) {
-      when (result) {
 
-         is DiffableMatcherResult -> errorCollector.collectOrThrow(
-            AssertionErrorBuilder.create()
+      val error = if (errorCollector.getCollectionMode() == ErrorCollectionMode.InspectorHard) {
+         // Inside an inspector: create a cheap error with a lazy message and no stack trace.
+         // The error will be caught and discarded if the inspector passes, so we avoid
+         // the expensive stack trace capture and message computation (e.g. possibleMatchesDescription).
+         createLazyAssertionError { result.failureMessage() }
+      } else {
+         when (result) {
+
+            is ThrowableMatcherResult -> result.error
+
+            is DiffableMatcherResult -> AssertionErrorBuilder.create()
                .withMessage(result.failureMessage() + "\n")
                .withValues(
                   expected = Expected(result.expected()),
                   actual = Actual(result.actual())
                ).build()
-         )
 
-         is MatcherResultWithError -> {
-            val error = result.error() ?: AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
-            errorCollector.collectOrThrow(error)
+            is MatcherResultWithError -> result.error() ?: AssertionErrorBuilder.create()
+               .withMessage(result.failureMessage()).build()
+
+            else -> AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
          }
-
-         else -> errorCollector.collectOrThrow(
-            AssertionErrorBuilder.create().withMessage(result.failureMessage()).build()
-         )
       }
+
+      errorCollector.collectOrThrow(error)
    }
+
    return t
 }
 

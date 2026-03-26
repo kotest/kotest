@@ -2,6 +2,7 @@ package com.sksamuel.kotest.engine.spec.style
 
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.milliseconds
@@ -42,5 +43,11 @@ class WordSpecTest : WordSpec() {
             }
          }
       }
+      "a container can support nested tests where" should  {
+         "multiple invocations are allowed with config".config(invocations = 3) {
+            1 + 1 shouldBe 2
+         }
+      }
+
    }
 }

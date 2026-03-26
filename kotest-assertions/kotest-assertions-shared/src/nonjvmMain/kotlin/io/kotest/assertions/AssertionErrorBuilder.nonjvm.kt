@@ -1,6 +1,10 @@
 package io.kotest.assertions
 
-import io.kotest.matchers.clueContextAsString
+actual fun createLazyAssertionError(messageFn: () -> String): AssertionError =
+   object : AssertionError() {
+      private val lazyMessage: String by lazy(messageFn)
+      override val message: String get() = lazyMessage
+   }
 
 actual fun createAssertionError(
    message: String?,
@@ -22,7 +26,7 @@ actual fun createAssertionError(
    }
 
    return if (expected == null && actual == null) {
-      AssertionError(message, cause)
+      AssertionError(messageString, cause)
    } else {
       KotestAssertionFailedError(
          message = messageString,

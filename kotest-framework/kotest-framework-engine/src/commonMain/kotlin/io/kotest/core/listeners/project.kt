@@ -27,11 +27,9 @@ interface AfterProjectListener : Extension {
    suspend fun afterProject() {}
 }
 
-internal class ContextAwareAfterProjectListener(
-   val context: String?,
-   private val f: AfterProject
-) : AfterProjectListener {
-   override suspend fun afterProject() {
-      f()
-   }
+/**
+ * Provides extra context which is used by the test engine to output more information on which extension failed.
+ */
+interface ContextAwareListener {
+   val context: String?
 }

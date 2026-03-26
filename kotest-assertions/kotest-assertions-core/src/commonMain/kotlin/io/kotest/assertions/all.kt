@@ -3,8 +3,6 @@ package io.kotest.assertions
 import io.kotest.assertions.print.print
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.KotestInternal
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.withContext
 

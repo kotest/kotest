@@ -1,5 +1,7 @@
 package io.kotest.datatest
 
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.spec.style.FunSpec
@@ -13,8 +15,13 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
       test("with describe spec repeated names should have count appended") {
 
+         val c = object : AbstractProjectConfig() {
+            override val duplicateTestNameMode = DuplicateTestNameMode.Silent
+         }
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
+            .withProjectConfig(c)
             .withSpecRefs(SpecRef.Reference((RepeatedNamesDescribeSpec::class)))
             .execute()
 
@@ -32,8 +39,13 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
       test("with describe spec repeated names at root should have count appended") {
 
+         val c = object : AbstractProjectConfig() {
+            override val duplicateTestNameMode = DuplicateTestNameMode.Silent
+         }
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
+            .withProjectConfig(c)
             .withSpecRefs(SpecRef.Reference((RepeatedNamesDescribeSpecRoot::class)))
             .execute()
 
@@ -50,8 +62,13 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
       test("with fun spec repeated names should have count appended") {
 
+         val c = object : AbstractProjectConfig() {
+            override val duplicateTestNameMode = DuplicateTestNameMode.Silent
+         }
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
+            .withProjectConfig(c)
             .withSpecRefs(SpecRef.Reference((RepeatedNamesFunSpec::class)))
             .execute()
 
@@ -69,8 +86,13 @@ class DataTestingRepeatedTestNameTest : FunSpec() {
 
       test("with fun spec repeated names at root should have count appended") {
 
+         val c = object : AbstractProjectConfig() {
+            override val duplicateTestNameMode = DuplicateTestNameMode.Silent
+         }
+
          val collector = CollectingTestEngineListener()
          TestEngineLauncher().withListener(collector)
+            .withProjectConfig(c)
             .withSpecRefs(SpecRef.Reference((RepeatedNamesRootFunSpec::class)))
             .execute()
 

@@ -11,5 +11,6 @@ object BasicReflection : Reflection {
 
    override fun <T : Any> isDataClass(kclass: KClass<T>): Boolean = false
    override fun <T : Any> isEnumClass(kclass: KClass<T>): Boolean = false
+   override fun isAbstract(kclass: KClass<*>): Boolean = false
    override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> = emptyList()
 }

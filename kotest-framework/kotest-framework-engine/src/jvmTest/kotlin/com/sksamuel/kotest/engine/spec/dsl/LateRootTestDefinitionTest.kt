@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.dsl
 
+import io.kotest.common.KotestTesting
 import io.kotest.core.annotation.Description
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
@@ -17,6 +18,7 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.CollectingTestEngineListener
 import io.kotest.matchers.types.shouldBeInstanceOf
 
+@OptIn(KotestTesting::class)
 @Description("Tests that a spec cannot define root tests after the spec has been instantiated")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class LateRootTestDefinitionTest : FunSpec() {

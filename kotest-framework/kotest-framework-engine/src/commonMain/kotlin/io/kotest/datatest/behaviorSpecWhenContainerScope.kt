@@ -209,7 +209,7 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withAnds(
    ts: Iterable<T>,
    test: suspend BehaviorSpecWhenContainerScope.(T) -> Unit
 ) {
-   ts.forEach { t -> and(nameFn(t)) { this.test(t) } }
+   ts.forEach { t -> and(nameFn(t)).config() { this.test(t) } }
 }
 
 /**
@@ -221,7 +221,7 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withThens(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
-   ts.forEach { t -> then(nameFn(t)) { this.test(t) } }
+   ts.forEach { t -> then(nameFn(t)).config() { this.test(t) } }
 }
 
 /**
@@ -245,7 +245,7 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withAnds(
    data: Map<String, T>,
    test: suspend BehaviorSpecWhenContainerScope.(T) -> Unit
 ) {
-   data.forEach { (name, t) -> and(name) { this.test(t) } }
+   data.forEach { (name, t) -> and(name).config() { this.test(t) } }
 }
 
 /**
@@ -257,5 +257,5 @@ suspend fun <T> BehaviorSpecWhenContainerScope.withThens(
    data: Map<String, T>,
    test: suspend TestScope.(T) -> Unit
 ) {
-   data.forEach { (name, t) -> then(name) { this.test(t) } }
+   data.forEach { (name, t) -> then(name).config() { this.test(t) } }
 }

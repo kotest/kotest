@@ -3,6 +3,7 @@ package com.sksamuel.kotest.assertions
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.asClue
 import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.forEachAsClue
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
@@ -19,6 +20,17 @@ import kotlinx.coroutines.withTimeout
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ClueTest : FreeSpec({
+
+   "forEachAsClue()" - {
+      "should use each element as clue" {
+         val list = listOf("myelement")
+         shouldThrow<AssertionError> {
+            list.forEachAsClue {
+               1 shouldBe 2
+            }
+         }.message shouldContain "myelement"
+      }
+   }
 
    "withClue()" - {
       fun withClueEcho(other: String) = object : Matcher<String> {

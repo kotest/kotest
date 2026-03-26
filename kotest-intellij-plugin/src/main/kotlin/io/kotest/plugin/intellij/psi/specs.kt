@@ -20,7 +20,7 @@ import org.jetbrains.kotlin.psi.KtObjectDeclaration
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
- * Returns all [KtClassOrObject] children of this [PsiFile] that are instances of a spec class.
+ * Returns all [KtClassOrObject]s defined in this [PsiFile] that are Kotest specs.
  */
 fun PsiFile.specs(): List<KtClassOrObject> {
    return this.classes().filter { it.isSpec() }

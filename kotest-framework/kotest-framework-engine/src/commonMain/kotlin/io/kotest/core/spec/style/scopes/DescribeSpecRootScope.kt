@@ -76,6 +76,25 @@ interface DescribeSpecRootScope : RootScope {
       )
    }
 
+   fun it(name: String) =
+      addIt(name = name, xmethod = TestXMethod.NONE)
+
+   fun fit(name: String) =
+      addIt(name = name, xmethod = TestXMethod.FOCUSED)
+
+
+   fun xit(name: String) =
+      addIt(name = name, xmethod = TestXMethod.DISABLED)
+
+   private fun addIt(
+      name: String,
+      xmethod: TestXMethod
+   ) = RootTestWithConfigBuilder(
+      this,
+      TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build(),
+      xmethod = TestXMethod.DISABLED
+   )
+
    private fun context(
       name: String,
       xmethod: TestXMethod,

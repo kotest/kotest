@@ -18,6 +18,13 @@ class RootTestWithConfigBuilder(
 ) {
 
    fun config(
+      config: TestConfig,
+      test: suspend TestScope.() -> Unit,
+   ) {
+      context.addTest(testName = name, xmethod = xmethod, config = config, test = test)
+   }
+
+   fun config(
       enabled: Boolean? = null,
       invocations: Int? = null,
       tags: Set<Tag>? = null,
@@ -50,6 +57,6 @@ class RootTestWithConfigBuilder(
          retries = retries,
          retryDelay = retryDelay,
       )
-      context.addTest(testName = name, xmethod = xmethod, config = config, test = test)
+      config(config, test)
    }
 }

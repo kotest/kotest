@@ -1,7 +1,7 @@
 package io.kotest.inspectors
 
-import io.kotest.matchers.ErrorCollectionMode
-import io.kotest.matchers.errorCollector
+import io.kotest.assertions.ErrorCollectionMode
+import io.kotest.assertions.errorCollector
 
 @PublishedApi
 internal inline fun <T> runTests(col: Collection<T>, f: (T) -> Unit): List<ElementResult<T>> {
@@ -24,7 +24,7 @@ internal inline fun <K, V, T : Map.Entry<K, V>> runTests(
 internal inline fun <T> runTest(index: Int, t: T, f: (T) -> Unit): ElementResult<T> {
    val originalAssertionMode = errorCollector.getCollectionMode()
    return try {
-      errorCollector.setCollectionMode(ErrorCollectionMode.Hard)
+      errorCollector.setCollectionMode(ErrorCollectionMode.InspectorHard)
       f(t)
       ElementPass(index, t)
    } catch (e: Throwable) {

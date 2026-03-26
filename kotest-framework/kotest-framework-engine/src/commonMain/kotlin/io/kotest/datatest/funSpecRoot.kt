@@ -203,7 +203,7 @@ fun <T> FunSpecRootScope.withContexts(
    test: suspend FunSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -218,7 +218,7 @@ fun <T> FunSpecRootScope.withTests(
    test: suspend TestScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      test(nameFn(t)) { this.test(t) }
+      test(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -236,7 +236,7 @@ fun <T> FunSpecRootScope.withData(data: Map<String, T>, test: suspend FunSpecCon
  */
 fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpecContainerScope.(T) -> Unit) {
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -246,6 +246,6 @@ fun <T> FunSpecRootScope.withContexts(data: Map<String, T>, test: suspend FunSpe
  */
 fun <T> FunSpecRootScope.withTests(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
    data.forEach { (name, t) ->
-      test(name) { this.test(t) }
+      test(name).config() { this.test(t) }
    }
 }

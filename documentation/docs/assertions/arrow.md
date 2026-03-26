@@ -5,13 +5,11 @@ sidebar_label: Arrow
 ---
 
 
-[![Latest Release](https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-assertions-arrow)](https://search.maven.org/artifact/io.kotest.extensions/kotest-assertions-arrow)
-
 This page lists all current matchers in the Kotest arrow matchers extension library.
 
 :::note
-The following module is needed: `io.kotest.extensions:kotest-assertions-arrow` which is versioned independently of the main Kotest project.
-Search maven central for latest version [here](https://central.sonatype.com/search?q=io.kotest.extensions:kotest-assertions-arrow).
+The `kotest-assertions-arrow` module has moved to the `io.kotest` group. Please update your dependency to
+`io.kotest:kotest-assertions-arrow`, and use the version matching your kotest version.
 :::
 
 :::note

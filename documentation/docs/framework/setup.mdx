@@ -12,7 +12,8 @@ The Kotest test framework is supported on all targets, including JVM, JavaScript
 To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
 
 :::caution[Migrating to Kotest 6]
-The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin but a simplified setup.
+The Kotlin multiplatform setup in Kotest 6.0 has changed from previous versions. The Kotest Gradle plugin has been
+renamed to `io.kotest`. Also, the compiler plugin has been replaced with a more robust method using KSP.
 Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
 :::
 
@@ -65,8 +66,11 @@ dependencies {
 
 And then execute the `test` task in gradle, or run tests directly from the IDE.
 
-For enhanced support for jump-to-source and re-running failed tests from the test results tree, add the
-[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to to your build.
+## Enhanced IDE support
+
+For enhanced support for jump-to-source and re-running failed tests from the test results tree,
+in addition to installing the Kotest Intellij Plugin into your IDE, add the
+[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
 
 For example:
 
@@ -75,6 +79,18 @@ plugins {
    id("io.kotest").version("<kotest-version>")
 }
 ```
+
+Then you can jump-to-source for tests at any level:
+
+![jump to source](./setup/jump_to_source.png)
+
+As well as re-run all failed tests:
+
+![re-run failed](./setup/rerun_failed.png)
+
+Or re-run a single test from the results tree:
+
+![re-run selected](./setup/rerun_selected_test.png)
 
    </TabItem>
    <TabItem value="JS">
@@ -280,7 +296,8 @@ based configuration will not work as Kotlin does not expose annotations at runti
 
 ## Re-running tests
 
-By default, Gradle's incremental build will skip running tests if no source code has changed, marking the task as UP-TO-DATE. This can be inconvenient during debugging.
+By default, Gradle's incremental build will skip running tests if no source code has changed,
+marking the task as UP-TO-DATE. This can be inconvenient during debugging.
 
 To force your tests to run every time, you can temporarily add the following configuration to your build.gradle.kts file:
 
@@ -288,6 +305,14 @@ To force your tests to run every time, you can temporarily add the following con
 tasks.withType<Test>().configureEach {
    logger.lifecycle("UP-TO-DATE check for $name is disabled, forcing it to run.")
    outputs.upToDateWhen { false }
+}
+```
+
+Alternatively, if you have the Kotest Gradle Plugin installed, you can ask Kotest to do this for you:
+
+```kotlin
+kotest {
+   alwaysRerunTests = true
 }
 ```
 

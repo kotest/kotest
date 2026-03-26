@@ -32,7 +32,7 @@ class ProjectExtensionEngineResultTest : FunSpec({
       }
    }
 
-   test("ProjectExtension errors should be propogated to the test engine") {
+   test("ProjectExtension errors should be propagated to the test engine") {
 
       val errors = mutableListOf<Throwable>()
 

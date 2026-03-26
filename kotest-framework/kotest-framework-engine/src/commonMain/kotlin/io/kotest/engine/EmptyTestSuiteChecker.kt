@@ -17,9 +17,11 @@ internal object EmptyTestSuiteChecker {
 
 internal object TestDslChecker {
    fun checkForDslState(result: EngineResult): EngineResult {
-      return runCatching { TestDslState.checkState() }.fold(
-         { result },
-         { result.addError(it) },
-      )
+      return try {
+         TestDslState.checkState()
+         result
+      } catch (e: Throwable) {
+         result.addError(e)
+      }
    }
 }

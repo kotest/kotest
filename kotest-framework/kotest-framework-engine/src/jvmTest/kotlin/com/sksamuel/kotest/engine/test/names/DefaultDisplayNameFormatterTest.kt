@@ -37,32 +37,6 @@ class DefaultDisplayNameFormatterTest : FunSpec() {
          DefaultDisplayNameFormatter().format(SpecWithDisplayName::class) shouldBe "ZZZZZ"
       }
 
-      test("test name should use full path option") {
-
-         val c = object : AbstractProjectConfig() {
-            override val displayFullTestPath = true
-         }
-
-         val tc1 = TestCase(
-            SpecWithDisplayName::class.toDescriptor().append("test"),
-            TestNameBuilder.builder("test").build(),
-            SpecWithDisplayName(),
-            {},
-            SourceRef.None,
-            TestType.Test,
-         )
-         val tc2 = TestCase(
-            SpecWithDisplayName::class.toDescriptor().append("test2"),
-            TestNameBuilder.builder("test2").build(),
-            SpecWithDisplayName(),
-            {},
-            SourceRef.None,
-            TestType.Test,
-            parent = tc1
-         )
-         DefaultDisplayNameFormatter(ProjectConfigResolver(c), TestConfigResolver(c)).format(tc2) shouldBe "test test2"
-      }
-
       test("tags should be appended from config when configuration is set") {
 
          val c = object : AbstractProjectConfig() {

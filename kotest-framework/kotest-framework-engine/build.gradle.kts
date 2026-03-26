@@ -1,11 +1,15 @@
 plugins {
    id("kotest-jvm-conventions")
-   id("kotest-js-wasm-conventions")
+   id("kotest-js-conventions")
+   id("kotest-wasi-conventions")
    id("kotest-native-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
    id("kotest-publishing-conventions")
    alias(libs.plugins.kotlin.serialization)
+   id("com.google.devtools.ksp").version("2.3.4")
+   // the Kotest plugin must be a published version and not one in the current build
+   id("io.kotest").version("6.1.7")
 }
 
 kotlin {
@@ -25,10 +29,10 @@ kotlin {
             // used for the test scheduler
             implementation(libs.kotlinx.coroutines.test)
 
-            // used to generate the junit-format xml reports
+            // used to generate the junit-format XML reports
             implementation(libs.xmlutil)
 
-            // used to write the xml reports to the file system
+            // used to write the XML reports to the file system
             implementation(libs.kotlinx.io.core)
          }
       }
@@ -50,11 +54,8 @@ kotlin {
       jvmMain {
          dependencies {
 
-            // we use AssertionFailedError from opentest4j
+            // we use AssertionFailedError from OpenTest4J
             api(libs.opentest4j)
-
-            // used to write to the console with fancy colours!
-            api(libs.mordant)
 
             // used to install the debug probes for coroutines
             api(libs.kotlinx.coroutines.debug)

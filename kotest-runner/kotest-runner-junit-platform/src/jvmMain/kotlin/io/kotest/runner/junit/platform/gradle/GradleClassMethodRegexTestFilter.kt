@@ -44,8 +44,12 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
     *
     * Gradle supplies a pattern string which corresponds to a well-formed regex object.
     * This can be directly usable for kotest.
+    *
+    * - org.package.Test becomes \Qorg.package.Test\E
+    * - org.package.* becomes \Qio.kotest.runner.junit.platform.\E.*
     * - A* becomes \QA\E.*
     * - A*Test becomes \QA\E.*\QTest\E
+    * - *Test becomes .*.*\QTest\E
     * - io.*.A*Test becomes \Qio.\E.*\Q.A\E.*\QTest\E
     * - io.*.A*Test.AccountDetails* becomes \Qio.\E.*\Q.A\E.*\QTest.AccountDetails\E.*
     * - io.*.A*Test.some test context* becomes \Qio.\E.*\Q.A\E.*\QTest.some test context\E.*
@@ -112,8 +116,11 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
    private fun Descriptor.dotSeparatedFullPath(): DescriptorPath = when (this) {
       is Descriptor.SpecDescriptor -> DescriptorPath(this.id.value)
       is Descriptor.TestDescriptor -> when (this.parent) {
-         is Descriptor.SpecDescriptor -> DescriptorPath("${this.parent.id.value}.${this.id.value}")
-         is Descriptor.TestDescriptor -> DescriptorPath("${this.parent.dotSeparatedFullPath().value} -- ${this.id.value}")
+         is Descriptor.SpecDescriptor -> DescriptorPath("${this.parent.id.value}.${this.id.value.removeLineBreaks()}")
+         is Descriptor.TestDescriptor -> DescriptorPath("${this.parent.dotSeparatedFullPath().value} -- ${this.id.value.removeLineBreaks()}")
       }
    }
 }
+
+private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")
+

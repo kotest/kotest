@@ -42,6 +42,9 @@ internal actual fun loadSystemProperties() {
 }
 
 @JVMOnly
-internal actual fun resolveProjectConfig(projectConfig: AbstractProjectConfig?): AbstractProjectConfig? {
-   return ProjectConfigLoader.load() ?: projectConfig
+internal actual fun resolveProjectConfig(
+   projectConfig: AbstractProjectConfig?,
+   specFqns: Set<String>,
+): AbstractProjectConfig? {
+   return ProjectConfigLoader.load(specFqns) ?: projectConfig
 }

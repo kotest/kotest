@@ -37,6 +37,10 @@ class ContainJsonKeyValueTest : StringSpec({
                  "price": 19.95,
                  "code": 1,
                  "weight": null
+              },
+              "locations.buildings[2].location": {
+                 "color": "red",
+                 "weight": "unknown"
               }
          }
       }
@@ -45,7 +49,8 @@ class ContainJsonKeyValueTest : StringSpec({
    "Negated assertions" {
       "".shouldNotContainJsonKeyValue("$.store.bicycle.color", "red")
       "{}".shouldNotContainJsonKeyValue("$.store.bicycle.color", "red")
-      """{ "foo": "bar" }""".shouldNotContainJsonKeyValue("foo", "baz")
+      """{ "foo": "bar" }""".shouldNotContainJsonKeyValue("$.store['location.buildings[2]'].type", "apartment")
+      json.shouldNotContainJsonKeyValue("foo", "baz")
       shouldFail {
          """{ "foo": "bar" }""".shouldNotContainJsonKeyValue("foo", "bar")
       }.message shouldBe """{ "foo": "bar" } should not contain the element foo = bar"""
@@ -55,6 +60,9 @@ class ContainJsonKeyValueTest : StringSpec({
       shouldFail {
          json.shouldContainJsonKeyValue("$.bicycle.engine", "V2")
       }.message shouldBe "Expected given to contain json key <'$.bicycle.engine'> but key was not found. "
+      shouldFail {
+         json.shouldContainJsonKeyValue("$.store['locations.buildings[2].location'].type", "apartment")
+      }.message shouldBe "Expected given to contain json key <'$.store['locations.buildings[2].location'].type'> but key was not found. Found shorter valid subpath: <'$.store['locations.buildings[2].location']'>."
    }
 
    "Failure message states if key is missing, shows valid subpath" {
@@ -74,7 +82,7 @@ class ContainJsonKeyValueTest : StringSpec({
    "Failure message states if key is missing, shows element is not json array" {
       shouldFail {
          json.shouldContainJsonKeyValue("$.store.bicycle[0].color", "V2")
-      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store'>."
+      }.message shouldBe "Expected given to contain json key <'$.store.bicycle[0].color'> but key was not found. Found shorter valid subpath: <'$.store.bicycle'>."
    }
 
    "Failure message states if key is missing, shows json array index out of bounds when array is empty" {

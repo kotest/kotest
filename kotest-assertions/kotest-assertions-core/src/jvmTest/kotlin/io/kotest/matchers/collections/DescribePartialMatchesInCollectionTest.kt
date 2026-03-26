@@ -2,6 +2,7 @@ package io.kotest.matchers.collections
 
 import io.kotest.assertions.submatching.MatchedCollectionElement
 import io.kotest.assertions.submatching.PartialCollectionMatch
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
@@ -24,6 +25,24 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    length=3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0)
+          }
+          "work when two elements not found" {
+             val actual = describePartialMatchesInCollection(
+                expectedSlice = listOf("orange", "apple", "banana", "blueberry"),
+                value = listOf("banana", "blueberry")
+             )
+             actual.unmatchedElementsDescription shouldBe ""
+             actual.partialMatches shouldContainExactly listOf(
+                PartialCollectionMatch(
+                   matchedElement= MatchedCollectionElement(
+                      startIndexInExpected=2,
+                      startIndexInValue=0
+                   ),
+                   length=2
+                )
+             )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0, 1)
           }
           "work when one element found in another place" {
              val actual = describePartialMatchesInCollection(
@@ -39,6 +58,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    ), length = 3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0)
           }
           "work when one element found in multiple places" {
              val actual = describePartialMatchesInCollection(
@@ -54,6 +74,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    ), length = 3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0)
           }
           "work when multiple elements found" {
              val actual = describePartialMatchesInCollection(
@@ -72,6 +93,7 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                    ), length = 3
                 )
              )
+             actual.indexesOfUnmatchedElements shouldContainExactlyInAnyOrder listOf(0, 4)
           }
           "work for complete match" {
              val expectedSlice = listOf("orange", "apple", "banana", "cherry")
@@ -80,6 +102,14 @@ class DescribePartialMatchesInCollectionTest: WordSpec() {
                 value = expectedSlice
              )
              actual.unmatchedElementsDescription shouldBe ""
+             actual.indexesOfUnmatchedElements.shouldBeEmpty()
+          }
+
+          "overlapping partial matches, causing > 100% match ratio. Only use best match for any given range of expected indexes" {
+             val list = listOf("1.0.0.9/32", "1.0.0.10/32")
+             shouldNotThrowAny {
+                describePartialMatchesInCollection(listOf("1.0.0.10/32"), list)
+             }
           }
        }
 

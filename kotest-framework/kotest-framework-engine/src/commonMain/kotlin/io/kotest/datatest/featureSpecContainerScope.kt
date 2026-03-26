@@ -210,7 +210,7 @@ suspend fun <T> FeatureSpecContainerScope.withFeatures(
    test: suspend FeatureSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      feature(nameFn(t)) { this.test(t) }
+      feature(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -224,7 +224,7 @@ suspend fun <T> FeatureSpecContainerScope.withScenarios(
    test: suspend TestScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      scenario(nameFn(t)) { this.test(t) }
+      scenario(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -250,7 +250,7 @@ suspend fun <T> FeatureSpecContainerScope.withFeatures(
    test: suspend FeatureSpecContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      feature(name) { this.test(t) }
+      feature(name).config() { this.test(t) }
    }
 }
 
@@ -264,6 +264,6 @@ suspend fun <T> FeatureSpecContainerScope.withScenarios(
    test: suspend TestScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      scenario(name) { this.test(t) }
+      scenario(name).config() { this.test(t) }
    }
 }

@@ -92,6 +92,23 @@ class StartWithEndWithTest : WordSpec() {
                "[0] 6L => Found At Index(es): [6]",
             )
          }
+         "for an element not matched as part of slice, find a similar one" {
+            val message = shouldThrow<AssertionError> {
+               listOf(sweetGreenApple, sweetRedCherry, sweetYellowPear, bitterPurplePlum) shouldStartWith
+                  listOf(sweetGreenApple, sweetRedCherry, sweetGreenPear)
+            }.message
+            message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "The following fields did not match:",
+               """"name" expected: <"pear">, but was: <"apple">""",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=pear, color=yellow, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"yellow">""",
+            )
+         }
       }
 
       "endWith" should {
@@ -145,6 +162,91 @@ class StartWithEndWithTest : WordSpec() {
                "Element(s) not in matched slice(s):",
                "[0] 6L => Found At Index(es): [6]",
             )
+         }
+         "for an element not matched as part of slice, find a similar one" {
+            val message = shouldThrow<AssertionError> {
+               listOf(bitterPurplePlum, sweetGreenApple, sweetRedCherry, sweetYellowPear) shouldEndWith
+                  listOf(sweetGreenApple, sweetRedCherry, sweetGreenPear)
+            }.message
+            message.shouldContainInOrder(
+               "Possible matches:",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=apple, color=green, taste=sweet),",
+               "The following fields did not match:",
+               """"name" expected: <"pear">, but was: <"apple">""",
+               "expected: Fruit(name=pear, color=green, taste=sweet),",
+               "but was: Fruit(name=pear, color=yellow, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"yellow">""",
+            )
+         }
+
+      }
+
+      "primitive array startWith/endWith" should {
+         "BooleanArray shouldStartWith and shouldEndWith" {
+            booleanArrayOf(true, false, true, false).shouldStartWith(booleanArrayOf(true, false))
+            booleanArrayOf(true, false, true, false).shouldEndWith(booleanArrayOf(true, false))
+            booleanArrayOf(true, false, true, false).shouldNotStartWith(booleanArrayOf(false, true))
+            booleanArrayOf(true, false, true, false).shouldNotEndWith(booleanArrayOf(true, true))
+            shouldThrow<AssertionError> { booleanArrayOf(true, false).shouldStartWith(booleanArrayOf(false, true)) }
+            shouldThrow<AssertionError> { booleanArrayOf(true, false).shouldEndWith(booleanArrayOf(false, false)) }
+         }
+         "ByteArray shouldStartWith and shouldEndWith" {
+            byteArrayOf(1, 2, 3, 4).shouldStartWith(byteArrayOf(1, 2))
+            byteArrayOf(1, 2, 3, 4).shouldEndWith(byteArrayOf(3, 4))
+            byteArrayOf(1, 2, 3, 4).shouldNotStartWith(byteArrayOf(2, 3))
+            byteArrayOf(1, 2, 3, 4).shouldNotEndWith(byteArrayOf(1, 2))
+            shouldThrow<AssertionError> { byteArrayOf(1, 2, 3, 4).shouldStartWith(byteArrayOf(2, 3)) }
+            shouldThrow<AssertionError> { byteArrayOf(1, 2, 3, 4).shouldEndWith(byteArrayOf(1, 2)) }
+         }
+         "ShortArray shouldStartWith and shouldEndWith" {
+            shortArrayOf(1, 2, 3, 4).shouldStartWith(shortArrayOf(1, 2))
+            shortArrayOf(1, 2, 3, 4).shouldEndWith(shortArrayOf(3, 4))
+            shortArrayOf(1, 2, 3, 4).shouldNotStartWith(shortArrayOf(2, 3))
+            shortArrayOf(1, 2, 3, 4).shouldNotEndWith(shortArrayOf(1, 2))
+            shouldThrow<AssertionError> { shortArrayOf(1, 2, 3, 4).shouldStartWith(shortArrayOf(2, 3)) }
+            shouldThrow<AssertionError> { shortArrayOf(1, 2, 3, 4).shouldEndWith(shortArrayOf(1, 2)) }
+         }
+         "CharArray shouldStartWith and shouldEndWith" {
+            charArrayOf('a', 'b', 'c', 'd').shouldStartWith(charArrayOf('a', 'b'))
+            charArrayOf('a', 'b', 'c', 'd').shouldEndWith(charArrayOf('c', 'd'))
+            charArrayOf('a', 'b', 'c', 'd').shouldNotStartWith(charArrayOf('b', 'c'))
+            charArrayOf('a', 'b', 'c', 'd').shouldNotEndWith(charArrayOf('a', 'b'))
+            shouldThrow<AssertionError> { charArrayOf('a', 'b', 'c', 'd').shouldStartWith(charArrayOf('b', 'c')) }
+            shouldThrow<AssertionError> { charArrayOf('a', 'b', 'c', 'd').shouldEndWith(charArrayOf('a', 'b')) }
+         }
+         "IntArray shouldStartWith and shouldEndWith" {
+            intArrayOf(1, 2, 3, 4).shouldStartWith(intArrayOf(1, 2))
+            intArrayOf(1, 2, 3, 4).shouldEndWith(intArrayOf(3, 4))
+            intArrayOf(1, 2, 3, 4).shouldNotStartWith(intArrayOf(2, 3))
+            intArrayOf(1, 2, 3, 4).shouldNotEndWith(intArrayOf(1, 2))
+            shouldThrow<AssertionError> { intArrayOf(1, 2, 3, 4).shouldStartWith(intArrayOf(2, 3)) }
+            shouldThrow<AssertionError> { intArrayOf(1, 2, 3, 4).shouldEndWith(intArrayOf(1, 2)) }
+         }
+         "LongArray shouldStartWith and shouldEndWith" {
+            longArrayOf(1, 2, 3, 4).shouldStartWith(longArrayOf(1, 2))
+            longArrayOf(1, 2, 3, 4).shouldEndWith(longArrayOf(3, 4))
+            longArrayOf(1, 2, 3, 4).shouldNotStartWith(longArrayOf(2, 3))
+            longArrayOf(1, 2, 3, 4).shouldNotEndWith(longArrayOf(1, 2))
+            shouldThrow<AssertionError> { longArrayOf(1, 2, 3, 4).shouldStartWith(longArrayOf(2, 3)) }
+            shouldThrow<AssertionError> { longArrayOf(1, 2, 3, 4).shouldEndWith(longArrayOf(1, 2)) }
+         }
+         "FloatArray shouldStartWith and shouldEndWith" {
+            floatArrayOf(1f, 2f, 3f, 4f).shouldStartWith(floatArrayOf(1f, 2f))
+            floatArrayOf(1f, 2f, 3f, 4f).shouldEndWith(floatArrayOf(3f, 4f))
+            floatArrayOf(1f, 2f, 3f, 4f).shouldNotStartWith(floatArrayOf(2f, 3f))
+            floatArrayOf(1f, 2f, 3f, 4f).shouldNotEndWith(floatArrayOf(1f, 2f))
+            shouldThrow<AssertionError> { floatArrayOf(1f, 2f, 3f, 4f).shouldStartWith(floatArrayOf(2f, 3f)) }
+            shouldThrow<AssertionError> { floatArrayOf(1f, 2f, 3f, 4f).shouldEndWith(floatArrayOf(1f, 2f)) }
+         }
+         "DoubleArray shouldStartWith and shouldEndWith" {
+            doubleArrayOf(1.0, 2.0, 3.0, 4.0).shouldStartWith(doubleArrayOf(1.0, 2.0))
+            doubleArrayOf(1.0, 2.0, 3.0, 4.0).shouldEndWith(doubleArrayOf(3.0, 4.0))
+            doubleArrayOf(1.0, 2.0, 3.0, 4.0).shouldNotStartWith(doubleArrayOf(2.0, 3.0))
+            doubleArrayOf(1.0, 2.0, 3.0, 4.0).shouldNotEndWith(doubleArrayOf(1.0, 2.0))
+            shouldThrow<AssertionError> { doubleArrayOf(1.0, 2.0, 3.0, 4.0).shouldStartWith(doubleArrayOf(2.0, 3.0)) }
+            shouldThrow<AssertionError> { doubleArrayOf(1.0, 2.0, 3.0, 4.0).shouldEndWith(doubleArrayOf(1.0, 2.0)) }
          }
       }
    }

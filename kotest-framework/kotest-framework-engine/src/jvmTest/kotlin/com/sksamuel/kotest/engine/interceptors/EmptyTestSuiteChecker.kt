@@ -27,7 +27,7 @@ class EmptyTestSuiteChecker : FunSpec() {
          val c = object : AbstractProjectConfig() {
             override val failOnEmptyTestSuite = true
          }
-         val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(TestEngineContext(c), EngineResult.empty)
+         val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(TestEngineContext(c), EngineResult())
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(1)
       }
 
@@ -47,7 +47,7 @@ class EmptyTestSuiteChecker : FunSpec() {
          }
          val context = TestEngineContext(c)
          context.listener.testFinished(tc, TestResult.Success(Duration.ZERO))
-         val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(context, EngineResult.empty)
+         val result = EmptyTestSuiteChecker.checkForEmptyTestSuite(context, EngineResult())
          result.errors.filterIsInstance<EmptyTestSuiteException>().shouldHaveSize(0)
       }
    }

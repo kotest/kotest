@@ -5,7 +5,7 @@ import com.intellij.execution.testframework.sm.runner.states.TestStateInfo
 import io.kotest.matchers.shouldBe
 import org.junit.Test
 
-@Suppress("UnstableApiUsage")
+@Suppress("DEPRECATION")
 class TestProxyUpdaterTest {
 
    private val root = SMTestProxy("root", true, null)

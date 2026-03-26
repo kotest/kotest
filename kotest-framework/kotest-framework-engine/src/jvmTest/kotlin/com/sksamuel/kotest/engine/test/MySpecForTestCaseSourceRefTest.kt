@@ -6,7 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
 /**
- * Test case for [TestCaseSourceRefTest], defined in a separate file so that the line numbers are stable.
+ * Test case for [SourceRefTest], defined in a separate file so that the line numbers are stable.
  */
 @EnabledIf(LinuxOnlyGithubCondition::class)
 internal class MySpecForTestCaseSourceRefTest : FunSpec() {

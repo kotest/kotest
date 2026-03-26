@@ -1,6 +1,7 @@
 package io.kotest.core
 
 import io.kotest.common.KotestInternal
+import io.kotest.common.reflection.bestName
 import io.kotest.common.syspropOrEnv
 import kotlin.jvm.JvmName
 import kotlin.reflect.KClass
@@ -11,19 +12,40 @@ import kotlin.time.TimeSource
 val start by lazy { TimeSource.Monotonic.markNow() }
 
 @PublishedApi
-internal fun isLoggingEnabled() =
-   syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
+internal fun isLoggingEnabled(): Boolean = syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
+
+@KotestInternal
+/**
+ * Models a logline for kotest debug.
+ * The context is optional and is used to provide the currently executing spec or test.
+ */
+data class LogLine(val context: String?, val message: String) {
+   constructor(context: KClass<*>, message: String) : this(context.bestName(), message)
+}
 
 @KotestInternal
 class Logger(private val kclass: KClass<*>) {
 
+   companion object {
+      inline operator fun <reified T> invoke() = Logger(T::class)
+   }
+
    @OverloadResolutionByLambdaReturnType
+   @JvmName("logpair")
    fun log(f: () -> Pair<String?, String>) {
-      log(null) {
-         val (testName, message) = f()
+      log {
+         val (context, message) = f()
+         LogLine(context, message)
+      }
+   }
+
+   @OverloadResolutionByLambdaReturnType
+   fun log(f: () -> LogLine) {
+      outputLog {
+         val (context, message) = f()
          listOf(
             (kclass.simpleName ?: "").padEnd(60, ' '),
-            (testName ?: "").padEnd(70, ' ').take(70),
+            (context ?: "").padEnd(70, ' ').take(70),
             message
          ).joinToString("  ")
       }
@@ -31,20 +53,15 @@ class Logger(private val kclass: KClass<*>) {
 
    @OverloadResolutionByLambdaReturnType
    @JvmName("logsimple")
-   fun log(f: () -> String): Unit = log { Pair(null, f()) }
-}
+   fun log(f: () -> String) {
+      log { LogLine(null, f()) }
+   }
 
-@KotestInternal
-fun log(f: () -> String) {
-   log(null, f)
-}
-
-@KotestInternal
-fun log(t: Throwable?, f: () -> String) {
-   if (isLoggingEnabled()) {
-      writeLog(start, t, f)
-      println(start.elapsedNow().inWholeMilliseconds.toString() + "  " + f())
-      if (t != null) println(t)
+   private fun outputLog(f: () -> String) {
+      if (isLoggingEnabled()) {
+         writeLog(start, null, f) // writes to file where possible e.g., jvm
+         println(start.elapsedNow().inWholeMilliseconds.toString().padStart(6, ' ') + "  " + f())
+      }
    }
 }
 

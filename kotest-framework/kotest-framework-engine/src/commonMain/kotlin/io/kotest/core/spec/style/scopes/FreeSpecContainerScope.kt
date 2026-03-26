@@ -106,6 +106,22 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
    }
 
    /**
+    * Adds the contained config and test to this scope as a leaf test.
+    *
+    * E.g.
+    * ```
+    * "this test".config(...) { }
+    * ```
+    */
+   suspend infix operator fun FreeSpecContextConfigBuilder.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
+      registerContainer(
+         name = TestNameBuilder.builder(name).build(),
+         xmethod = TestXMethod.NONE,
+         config = config
+      ) { FreeSpecTerminalScope(this).test() }
+   }
+
+   /**
     * Starts a config builder, which can be added to the scope by invoking [minus] on the returned value.
     *
     * E.g.

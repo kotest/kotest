@@ -2,13 +2,13 @@ package io.kotest.plugin.intellij.actions
 
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.psi.NavigatablePsiElement
 import com.intellij.psi.PsiDocumentManager
 import io.kotest.plugin.intellij.psi.enclosingSpec
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestElement
-import org.jetbrains.kotlin.idea.refactoring.hostEditor
 
 enum class Direction {
    Previous, Next
@@ -18,7 +18,7 @@ abstract class NavigateToTestAction(private val direction: Direction) : AnAction
    override fun actionPerformed(e: AnActionEvent) {
 
       val project = e.project ?: return
-      val editor = e.dataContext.hostEditor ?: return
+      val editor = e.dataContext.getData(CommonDataKeys.EDITOR) ?: return
       val offset = editor.caretModel.offset
 
       val file = PsiDocumentManager.getInstance(project).getPsiFile(editor.document) ?: return

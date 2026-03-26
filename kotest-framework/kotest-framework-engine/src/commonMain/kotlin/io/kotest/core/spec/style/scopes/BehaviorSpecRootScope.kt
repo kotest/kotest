@@ -97,7 +97,7 @@ interface BehaviorSpecRootScope : RootScope {
 
    fun addGiven(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
       return RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+         name = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
          context = this@BehaviorSpecRootScope,
          xmethod = xmethod,
       ) { BehaviorSpecGivenContainerScope(it) }
@@ -134,5 +134,38 @@ interface BehaviorSpecRootScope : RootScope {
          xmethod = xmethod,
          config = null
       ) { BehaviorSpecContextContainerScope(this).test() }
+   }
+
+   /**
+    * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun Context(name: String) =
+      addContext(name = name, xmethod = TestXMethod.NONE)
+
+   /**
+    * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun context(name: String) =
+      addContext(name = name, xmethod = TestXMethod.NONE)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun xcontext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   /**
+    * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun xContext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   fun addContext(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<BehaviorSpecContextContainerScope> {
+      return RootContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
+         context = this@BehaviorSpecRootScope,
+         xmethod = xmethod,
+      ) { BehaviorSpecContextContainerScope(it) }
    }
 }

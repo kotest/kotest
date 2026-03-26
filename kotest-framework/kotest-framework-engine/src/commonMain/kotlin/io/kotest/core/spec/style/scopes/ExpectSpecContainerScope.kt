@@ -51,6 +51,22 @@ class ExpectSpecContainerScope(
       ) { ExpectSpecContainerScope(this).test() }
    }
 
+   suspend fun context(name: String) =
+      addContext(name = name, xmethod = TestXMethod.NONE)
+
+   suspend fun fcontext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED)
+
+   suspend fun xcontext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   private suspend fun addContext(name: String, xmethod: TestXMethod) =
+      ContainerWithConfigBuilder(
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         context = this,
+         xmethod = xmethod,
+      ) { ExpectSpecContainerScope(it) }
+
    suspend fun expect(name: String, test: suspend TestScope.() -> Unit) {
       registerExpect(name = name, xmethod = TestXMethod.NONE, test = test)
    }

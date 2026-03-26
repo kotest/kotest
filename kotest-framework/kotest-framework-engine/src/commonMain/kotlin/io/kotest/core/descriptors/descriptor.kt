@@ -43,7 +43,8 @@ sealed interface Descriptor {
    ) : Descriptor {
 
       /**
-       * Returns the root test for this [TestDescriptor]. If this descriptor is already a root test, then returns this.
+       * Returns the root test for this [TestDescriptor].
+       * If this descriptor is already a root test, then returns this.
        */
       fun root(): TestDescriptor = when (parent) {
          is SpecDescriptor -> this
@@ -84,7 +85,7 @@ sealed interface Descriptor {
    /**
     * Returns a parseable path to the test including the spec name.
     *
-    * For example, a test with name "my test" inside a context "my context" in a spec called "my spec"
+    * For example, a test with the name "my test" inside a context "my context" in a spec called "my spec"
     * would have the path "my spec/my context -- my test".
     */
    fun path(): DescriptorPath = DescriptorPaths.render(this)
@@ -92,7 +93,7 @@ sealed interface Descriptor {
    /**
     * Returns the test parts as a list of strings, excluding the spec.
     *
-    * For example, a test with name "my test" inside a context "my context" in a spec called "my spec"
+    * For example, a test with the name "my test" inside a context "my context" in a spec called "my spec"
     * would have the parts ["my context", "my test"].
     */
    fun testParts(): List<String> = when (this) {
@@ -191,7 +192,6 @@ sealed interface Descriptor {
    }
 }
 
-// only for creating spec descriptors in unit tests
 @KotestInternal
 fun KClass<*>.toDescriptor() = Descriptor.SpecDescriptor(DescriptorId(bestName()))
 

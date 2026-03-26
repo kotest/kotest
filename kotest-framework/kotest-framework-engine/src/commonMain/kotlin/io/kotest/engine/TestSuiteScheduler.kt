@@ -2,13 +2,12 @@ package io.kotest.engine
 
 import io.kotest.common.Platform
 import io.kotest.common.platform
-import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.Parallel
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
-import io.kotest.core.spec.name
 import io.kotest.engine.concurrency.ConcurrencyOrder
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.concurrency.isParallel
@@ -32,44 +31,41 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
    private val logger = Logger(TestSuiteScheduler::class)
    private val projectConfigResolver = ProjectConfigResolver(context.projectConfig, context.registry)
 
-   suspend fun schedule(suite: TestSuite): EngineResult {
-      logger.log { Pair(null, "Launching ${suite.specs.size} specs") }
+   suspend fun schedule(suite: TestSuite) {
+      logger.log { "Launching ${suite.specs.size} specs" }
 
       val isolated = suite.specs.filter { it.kclass.isIsolate() }
-      logger.log { Pair(null, "Isolated spec count: ${isolated.size}") }
-
       val parallel = suite.specs.filter { it.kclass.isParallel() }
-      logger.log { Pair(null, "Parallelized spec count: ${parallel.size}") }
-
       // the rest of the specs use the default concurrency mode
       val default = suite.specs.filter { !it.kclass.isIsolate() && !it.kclass.isParallel() }
-      logger.log { Pair(null, "Remaining spec count: ${default.size}") }
 
-      when (projectConfigResolver.concurrencyOrder()) {
+      logger.log { "Partitioned into ${isolated.size} isolated, ${parallel.size} parallel, ${default.size} default" }
+      val order = projectConfigResolver.concurrencyOrder()
+      logger.log { "Concurrency order is $order" }
+
+      when (order) {
          ConcurrencyOrder.IsolateFirst -> {
             schedule(isolated, 1)
-            logger.log { Pair(null, "Isolated specs have completed") }
+            logger.log { "Isolated specs have completed" }
 
             schedule(parallel, Int.MAX_VALUE)
-            logger.log { Pair(null, "Parallelized specs have completed") }
+            logger.log { "Parallelized specs have completed" }
 
             schedule(default, concurrency())
-            logger.log { Pair(null, "Remaining specs have completed") }
+            logger.log { "Remaining specs have completed" }
          }
 
          ConcurrencyOrder.IsolateLast -> {
             schedule(default, concurrency())
-            logger.log { Pair(null, "Remaining specs have completed") }
+            logger.log { "Remaining specs have completed" }
 
             schedule(parallel, Int.MAX_VALUE)
-            logger.log { Pair(null, "Parallelized specs have completed") }
+            logger.log { "Parallelized specs have completed" }
 
             schedule(isolated, 1)
-            logger.log { Pair(null, "Isolated specs have completed") }
+            logger.log { "Isolated specs have completed" }
          }
       }
-
-      return EngineResult(emptyList(), false)
    }
 
    private suspend fun schedule(
@@ -78,17 +74,17 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
    ) {
 
       val semaphore = Semaphore(concurrency)
-      logger.log { Pair(null, "Scheduling using concurrency: $concurrency") }
+      logger.log { "Scheduling using concurrency: $concurrency" }
 
       coroutineScope { // we don't want this function to return until all specs are completed
          specs.map { ref ->
-            logger.log { Pair(ref.kclass.bestName(), "Scheduling coroutine") }
+            logger.log { LogLine(ref.fqn, "Scheduling coroutine") }
             launch {
                semaphore.withPermit {
-                  logger.log { Pair(ref.name(), "Acquired permit") }
+                  logger.log { LogLine(ref.fqn, "Acquired permit") }
                   executeIfNotFailedFast(ref, context.collector)
                }
-               logger.log { Pair(ref.name(), "Released permit") }
+               logger.log { LogLine(ref.fqn, "Released permit") }
             }
          }
       }
@@ -99,15 +95,15 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
       collector: CollectingTestEngineListener,
    ) {
       if (projectConfigResolver.projectWideFailFast() && collector.errors) {
-         logger.log { Pair(ref.kclass.bestName(), "Project wide fail fast is active, skipping spec") }
+         logger.log { LogLine(ref.fqn, "Project wide fail fast is active, skipping spec") }
          context.listener.specIgnored(ref.kclass, null)
       } else {
          try {
             val executor = SpecRefExecutor(context)
-            logger.log { Pair(ref.name(), "Executing ref") }
+            logger.log { LogLine(ref.fqn, "Executing ref") }
             executor.execute(ref)
          } catch (t: Throwable) {
-            logger.log { Pair(ref.name(), "Unhandled error during spec execution $t") }
+            logger.log { LogLine(ref.fqn, "Unhandled error during spec execution $t") }
             throw t
          }
       }
@@ -122,7 +118,7 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
    private fun concurrency(): Int {
       return when (platform) {
          Platform.JVM -> projectConfigResolver.specExecutionMode().concurrency
-         Platform.JS, Platform.Native, Platform.WasmWasi, Platform.WasmJs -> 1
+         else -> 1
       }
    }
 }

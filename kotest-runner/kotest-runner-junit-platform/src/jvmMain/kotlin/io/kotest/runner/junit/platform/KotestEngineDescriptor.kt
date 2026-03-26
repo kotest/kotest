@@ -1,7 +1,7 @@
 package io.kotest.runner.junit.platform
 
+import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
-import io.kotest.core.log
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
 import io.kotest.engine.test.names.DisplayNameFormatting
@@ -25,6 +25,8 @@ internal data class EngineDescriptorBuilder(
    private val formatter: DisplayNameFormatting,
 ) {
 
+   private val logger = Logger<EngineDescriptorBuilder>()
+
    companion object {
       fun builder(id: UniqueId): EngineDescriptorBuilder {
          return EngineDescriptorBuilder(id, emptyList(), emptyList(), DisplayNameFormatting(null))
@@ -37,7 +39,7 @@ internal data class EngineDescriptorBuilder(
 
    fun build(): KotestEngineDescriptor {
       val engine = KotestEngineDescriptor(id = id, specs = specs, extensions = extensions)
-      log { "Adding ${specs.size} specs to the engine ${KotestEngineDescriptor::class}@${engine.hashCode()}" }
+      logger.log { "Adding ${specs.size} specs to the engine ${KotestEngineDescriptor::class}@${engine.hashCode()}" }
       specs.forEach {
          engine.addChild(createSpecTestDescriptor(engine, it.descriptor(), formatter.format(it.kclass)))
       }

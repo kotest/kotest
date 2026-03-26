@@ -229,7 +229,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withContexts(
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t), xmethod = TestXMethod.NONE) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -244,7 +244,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withGivens(
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      given(nameFn(t), xmethod = TestXMethod.NONE) { this.test(t) }
+      given(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -271,7 +271,7 @@ suspend fun <T> BehaviorSpecContextContainerScope.withContexts(
    data: Map<String, T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
-   data.forEach { (name, t) -> this.context(name, xmethod = TestXMethod.NONE) { this.test(t) } }
+   data.forEach { (name, t) -> context(name).config() { this.test(t) } }
 }
 
 /**
@@ -284,5 +284,5 @@ suspend fun <T> BehaviorSpecContextContainerScope.withGivens(
    data: Map<String, T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
-   data.forEach { (name, t) -> given(name, xmethod = TestXMethod.NONE) { this.test(t) } }
+   data.forEach { (name, t) -> given(name).config() { this.test(t) } }
 }

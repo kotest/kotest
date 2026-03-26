@@ -11,6 +11,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.PsiManager
 import io.kotest.plugin.intellij.files.findFiles
+import io.kotest.plugin.intellij.psi.AnalysisUtils
 import io.kotest.plugin.intellij.psi.getAllSuperClasses
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specs
@@ -85,7 +86,7 @@ class KotestTestExplorerService(
                }
             }
          } else {
-            val specs = psi.specs()
+            val specs = AnalysisUtils.withEdtSafeAnalysis { psi.specs() } ?: emptyList()
             broadcastUpdatedModel(createTreeModel(file, project, specs, module))
          }
       }

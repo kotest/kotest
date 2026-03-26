@@ -45,5 +45,9 @@ class FreeSpecTest : FreeSpec() {
          "support config".config(enabled = true) {
          }
       }
+
+      "multiple invocations root test is allowed with config".config(invocations = 3) {
+         1 + 1 shouldBe 2
+      }
    }
 }

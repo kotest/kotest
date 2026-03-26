@@ -2,6 +2,10 @@ package io.kotest.engine.test
 
 sealed interface TestResult {
 
+   companion object {
+      val Ignored = Ignored()
+   }
+
    /**
     * Creates an ignored [TestResult] with a status from the given [reason] string.
     *

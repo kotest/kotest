@@ -19,7 +19,7 @@ class ProjectTimeoutTest : FunSpec({
    test("a project times out when the sum duration of its tests exceeds the specified project timeout") {
 
       val c = object : AbstractProjectConfig() {
-         override val projectTimeout = 10.milliseconds
+         override val projectTimeout = 100.milliseconds
       }
 
       // project timeout is set to 10
@@ -35,16 +35,9 @@ class ProjectTimeoutTest : FunSpec({
 })
 
 private class ProjectTimeoutSampleSpec : FunSpec({
-
-   test("1: a test under the test level timeout") {
-      delay(5)
-   }
-
-   test("2: a test under the test level timeout") {
-      delay(5)
-   }
-
-   test("3: a test under the test level timeout") {
-      delay(5)
+   repeat(10) {
+      test("$it: a test under the test level timeout") {
+         delay(25)
+      }
    }
 })

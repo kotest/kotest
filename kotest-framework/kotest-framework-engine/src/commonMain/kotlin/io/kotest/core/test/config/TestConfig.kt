@@ -27,17 +27,18 @@ data class TestConfig(
    val invocations: Int? = null,
 
    /**
-    * The timeout for a test case and all it's invocations. For example, if this value was set to 800ms,
-    * and invocations was 1 (which is the default and typical value), then that single invocation has
-    * the full 800ms to complete. But if invocations was 2 for example, then the 800ms would apply to
-    * the total time across both those invocations.
+    * The timeout for a test case and all it's invocations.
+    *
+    * For example, if this value was set to 800ms, and invocations were 1 (which is the default and typical value),
+    * then that single invocation has the full 800ms to complete. But if invocations were instead set to 3 then the
+    * 800ms would apply to the total time across all three invocations.
     *
     * To set a timeout per invocation see [invocationTimeout].
     */
    val timeout: Duration? = null,
 
    /**
-    * This timeout applies to individual invocations of a test case. If invocations is 1, then this
+    * This timeout applies to individual invocations of a test case. If invocations are 1, then this
     * has the same effect as timeout. To set a timeout across all invocations then see [timeout].
     */
    val invocationTimeout: Duration? = null,
@@ -63,6 +64,39 @@ data class TestConfig(
    // when set to true, installs a coroutine debug probe for tracing coroutines when an error occurs
    val coroutineDebugProbes: Boolean? = null,
 
+   /**
+    * When set to true, this test, and any nested tests, will be executed inside a runTest
+    * block from the `kotlin.test` library.
+    *
+    * Any test executing in such a `runTest` block will use virtual time via a [kotlinx.coroutines.test.TestDispatcher].
+    *
+    * The scheduler is the central source of truth for virtual time in a test. It performs two critical roles:
+    * - Skips Delays: It automatically fast-forwards through delay() calls.
+    * - Orchestrates Execution: It maintains a queue of tasks and determines their execution order based on their scheduled virtual time.
+    *
+    * Task Queuing: When you launch a coroutine on a TestDispatcher, the dispatcher doesn't run the code itself.
+    * Instead, it sends the task to its linked scheduler.
+    *
+    * Clock Management: The scheduler waits for you to manually move the clock. When you call methods
+    * like `advanceUntilIdle` or `advanceTimeBy(ms)` on the scheduler, it tells the linked dispatchers to execute the
+    * tasks whose time has come.
+    *
+    * Synchronization: You can link multiple TestDispatchers to the same scheduler. This ensures that even
+    * if different parts of your code use different dispatchers (e.g., one for Main, one for IO), they all share
+    * the same virtual clock and stay in sync.
+    *
+    * You typically interact with the scheduler through a `testScheduler` variable - exposed as an extension value
+    * inside the test scope - which exposes these controls:
+    *
+    * `testScheduler.runCurrent()`: Runs tasks scheduled at the current virtual time.
+    * `testScheduler.advanceTimeBy(delay)`: Moves the clock forward and executes tasks in that window.
+    * `testScheduler.advanceUntilIdle()`: Fast-forwards until there are no more tasks left to run.
+    *
+    * Note that [timeout] or [invocationTimeout] settings on a test are always treated as real time (or wall clock).
+    * That is, if a test has a timeout of say 10 seconds, then invoking `delay(2.hours)` when [coroutineTestScope]
+    * is true would not cause the test to time out, because the delay is skipped instantly, and has not taken
+    * 10 seconds of real time.
+    */
    val coroutineTestScope: Boolean? = null,
 
    // When set to true, execution will switch to a dedicated thread for each test case in this spec,
@@ -75,7 +109,7 @@ data class TestConfig(
    // if left to null, then the default provided by a spec or the project config will be used
    val retries: Int? = null,
 
-   // if set to to a non null value then this is the delay between retries
+   // if set to a non-null value, then this is the delay between retries
    // if left to null, then the default provided by a spec or the project config will be used
    val retryDelay: Duration? = null,
 ) {

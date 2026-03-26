@@ -2,6 +2,14 @@ package io.kotest.core.spec.style
 
 enum class TestXMethod {
    NONE,
-   FOCUSED, // if the test is explicitly focused, say through an annotation or method name
-   DISABLED // if the test is explicitly disabled, say through an annotation or method name
+
+   /**
+    * If a test is explicitly focused through a keyword in the DSL, eg `ftest` or `fcontext`.
+    */
+   FOCUSED,
+
+   /**
+    * If a test is explicitly disabled through a keyword in the DSL, eg `xtest` or `xcontext`.
+    */
+   DISABLED
 }

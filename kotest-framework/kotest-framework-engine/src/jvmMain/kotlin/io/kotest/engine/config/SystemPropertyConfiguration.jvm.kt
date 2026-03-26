@@ -1,5 +1,6 @@
 package io.kotest.engine.config
 
+import io.kotest.common.JVMOnly
 import io.kotest.common.sysprop
 import io.kotest.common.syspropOrEnv
 import io.kotest.core.config.LogLevel
@@ -12,6 +13,7 @@ import io.kotest.engine.concurrency.ConcurrencyOrder
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 
+@JVMOnly
 internal actual fun loadSystemPropertyConfiguration(): SystemPropertyConfiguration? = JvmSystemPropertyConfiguration
 
 /**

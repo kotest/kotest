@@ -6,7 +6,7 @@ import io.kotest.engine.listener.TestEngineListener
 
 /**
  * Builds a [TestEngineListener] based on the type which is suitable
- * for test engines launched externally, by gradle or from intellij for example.
+ * for test engines launched externally, by Gradle or from intellij, for example.
  */
 data class TestEngineListenerBuilder(
    private val type: String?,

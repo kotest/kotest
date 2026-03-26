@@ -37,3 +37,8 @@ kotlin {
 
    }
 }
+
+tasks.withType<Test>().configureEach {
+   // Required by kotest-extensions-system's withEnvironment to modify System.getenv() in tests
+   jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+}

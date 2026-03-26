@@ -19,6 +19,7 @@ import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 /**
  * Runs a Kotest spec using the standard gradle `task` test.
  */
+@Suppress("DEPRECATION")
 @Deprecated("Starting with Kotest 6.1 the preferred method is use GradleMultiplatformJvmTestTaskRunProducer")
 class SpecGradleConfigurationProducer : TestClassGradleConfigurationProducer() {
 
@@ -38,7 +39,7 @@ class SpecGradleConfigurationProducer : TestClassGradleConfigurationProducer() {
    }
 
    /**
-    * Returns true if this configuration should replace the other configuration.
+    * Returns true if [self] configuration should replace the other configuration.
     * We replace JUnit configurations when we detect a Kotest spec.
     */
    override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean {
@@ -58,6 +59,16 @@ class SpecGradleConfigurationProducer : TestClassGradleConfigurationProducer() {
       }
 
       return super.setupConfigurationFromContext(configuration, context, sourceElement)
+   }
+
+   override fun createConfigurationFromContext(context: ConfigurationContext): ConfigurationFromContext? {
+
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) {
+         logger.info("Runner mode is not LEGACY so this producer will not contribute")
+         return null
+      }
+
+      return super.createConfigurationFromContext(context)
    }
 
    override fun getPsiClassForLocation(contextLocation: Location<*>): PsiClass? {

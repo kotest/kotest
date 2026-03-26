@@ -1,14 +1,15 @@
 package io.kotest.core.spec
 
+import io.kotest.common.reflection.bestName
 import io.kotest.core.Tag
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.AfterProjectListener
-import io.kotest.core.listeners.ContextAwareAfterProjectListener
+import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.core.spec.style.scopes.RootScope
 import kotlin.js.JsName
 
 /**
- * Base class for specs that allow for registration of tests via the DSL.
+ * Base class for specs that allow for registration of tests via a DSL.
  */
 abstract class DslDrivenSpec : Spec(), RootScope {
 
@@ -18,20 +19,21 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    @JsName("rootTests_js")
    private var rootTests = emptyList<RootTest>()
 
-   private var sealed = false
-
    /**
     * Marks that this spec has been instantiated and all root tests have been registered.
     * After this point, no further root tests are allowed to be defined.
     */
-   fun seal() {
-      sealed = true
-   }
+   internal var sealed = false
 
    override fun rootTests(): List<RootTest> {
       return rootTests
    }
 
+   /**
+    * Register a [RootTest] with this spec.
+    * This function may only be called before tests in the spec begin executing.
+    * If this function is called after tests have started executing, an [InvalidDslException] will be thrown.
+    */
    override fun add(test: RootTest) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
       rootTests = rootTests + test
@@ -55,7 +57,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
     * Includes the tests from the given [TestFactory] in this spec or factory, with the given
-    * prefixed added to each of the test's name.
+    * prefixed added to each of the test's names.
     */
    fun include(prefix: String, factory: TestFactory) {
       val renamed = factory.tests.map { test ->
@@ -72,7 +74,13 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * it with project configuration.
     */
    fun afterProject(f: AfterProject) {
-      afterProjectListeners.add(ContextAwareAfterProjectListener(this::class.simpleName, f))
+      afterProjectListeners.add(object : AfterProjectListener, ContextAwareListener {
+         override suspend fun afterProject() {
+            f()
+         }
+
+         override val context: String = this@DslDrivenSpec::class.bestName()
+      })
    }
 }
 

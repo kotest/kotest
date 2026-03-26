@@ -1,6 +1,7 @@
 package io.kotest.engine.errors
 
-import io.kotest.core.listeners.ContextAwareAfterProjectListener
+import io.kotest.core.listeners.AfterProjectListener
+import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.ExtensionException
 import io.kotest.matchers.shouldBe
@@ -12,7 +13,10 @@ class ExtensionExceptionExtractorTest : FunSpec() {
          ExtensionExceptionExtractor.resolve(
             ExtensionException.AfterProjectException(
                IOException("foo"),
-               ContextAwareAfterProjectListener("context mccontextface", {}),
+               object : AfterProjectListener, ContextAwareListener {
+                  override val context: String = "context mccontextface"
+                  override suspend fun afterProject() {}
+               },
             )
          ).first shouldBe "After Project Error: context mccontextface"
       }

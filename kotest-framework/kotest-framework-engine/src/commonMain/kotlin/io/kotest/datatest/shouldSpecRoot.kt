@@ -212,7 +212,7 @@ fun <T> ShouldSpecRootScope.withContexts(
    test: suspend ShouldSpecContainerScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      context(nameFn(t)) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -227,7 +227,7 @@ fun <T> ShouldSpecRootScope.withShoulds(
    test: suspend TestScope.(T) -> Unit
 ) {
    ts.forEach { t ->
-      should(nameFn(t)) { this.test(t) }
+      should(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -251,7 +251,7 @@ fun <T> ShouldSpecRootScope.withContexts(
    test: suspend ShouldSpecContainerScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      context(name) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -264,6 +264,6 @@ fun <T> ShouldSpecRootScope.withShoulds(
    test: suspend TestScope.(T) -> Unit
 ) {
    data.forEach { (name, t) ->
-      should(name) { this.test(t) }
+      should(name).config() { this.test(t) }
    }
 }
