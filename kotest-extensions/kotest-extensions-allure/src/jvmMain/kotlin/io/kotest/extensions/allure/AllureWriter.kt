@@ -25,10 +25,10 @@ class AllureWriter(private val jvmSuiteName: String?) {
          /**
           * Returns the name of the currently executing Gradle [JvmTestSuite], or null when not
           * running inside a suite (e.g., the standard `test` task without the jvm-test-suite plugin,
-          * or a non-Gradle execution). Defaults to reading the `JVM_SUITE_NAME` environment variable
+          * or a non-Gradle execution). Defaults to reading the `JVM_TEST_SUITE` environment variable
           * that is set automatically by the Kotest Gradle plugin.
           */
-         val suiteName = System.getenv("JVM_SUITE_NAME")
+         val suiteName = System.getenv("JVM_TEST_SUITE")
          return AllureWriter(suiteName)
       }
 

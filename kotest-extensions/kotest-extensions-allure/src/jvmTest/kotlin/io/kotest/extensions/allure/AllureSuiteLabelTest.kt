@@ -7,16 +7,16 @@ import io.kotest.matchers.shouldBe
 import io.qameta.allure.util.ResultsUtils
 
 /**
- * Verifies Allure suite label behavior driven by [JVM_SUITE_NAME].
+ * Verifies Allure suite label behavior driven by [JVM_TEST_SUITE].
  *
- * When [JVM_SUITE_NAME] is absent the suite label falls back to the spec's fully qualified
+ * When [JVM_TEST_SUITE] is absent the suite label falls back to the spec's fully qualified
  * class name (existing behavior).  When it is present, the suite label becomes the suite name
  * and the spec FQN is placed in the sub-suite slot, giving a two-level hierarchy in the Allure
  * report.
  */
 class AllureSuiteLabelTest : FunSpec() {
 
-   // Use a custom AllureWriter that returns null – simulates no JVM_SUITE_NAME env var.
+   // Use a custom AllureWriter that returns null – simulates no JVM_TEST_SUITE env var.
    private val writerNoSuite = AllureWriter(null)
    private val reporterNoSuite = AllureTestReporter(writer = writerNoSuite)
 
@@ -28,7 +28,7 @@ class AllureSuiteLabelTest : FunSpec() {
 
    init {
 
-      test("suite label equals spec FQN when JVM_SUITE_NAME is not set") {
+      test("suite label equals spec FQN when JVM_TEST_SUITE is not set") {
          val id = writerNoSuite.id(this.testCase).toString()
          writerNoSuite.allure.updateTestCase(id) { result ->
             result.labels.forOne {
@@ -40,7 +40,7 @@ class AllureSuiteLabelTest : FunSpec() {
          }
       }
 
-      test("suite label equals JVM_SUITE_NAME and sub-suite label equals spec FQN when JVM_SUITE_NAME is set") {
+      test("suite label equals JVM_TEST_SUITE and sub-suite label equals spec FQN when JVM_TEST_SUITE is set") {
          val id = writerWithSuite.id(this.testCase).toString()
          writerWithSuite.allure.updateTestCase(id) { result ->
             result.labels.forOne {

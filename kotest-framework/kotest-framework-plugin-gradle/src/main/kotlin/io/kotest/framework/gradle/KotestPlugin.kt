@@ -71,7 +71,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
-      internal const val JVM_SUITE_NAME = "JVM_SUITE_NAME"
+      internal const val JVM_TEST_SUITE = "JVM_TEST_SUITE"
 
       const val POWER_ASSERT_PLUGIN_ID = "org.jetbrains.kotlin.plugin.power-assert"
    }
@@ -206,8 +206,8 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    /**
-    * Detects Gradle's JvmTestSuite plugin and, for each suite, sets the [JVM_SUITE_NAME]
-    * environment variable on the suite's test task so the Kotest runtime (and reporters
+    * Detects Gradle's JvmTestSuite plugin and, for each suite, sets the [JVM_TEST_SUITE]
+    * environment variable on the suite's test task during execution so the Kotest runtime (and reporters
     * such as the Allure extension) can identify which suite is currently executing.
     */
    private fun handleJvmTestSuites(project: Project) {
@@ -221,7 +221,10 @@ abstract class KotestPlugin : Plugin<Project> {
             // is only available in gradle-core-api and not in the public gradleApi() dependency.
             val suiteName = name
             project.tasks.withType(Test::class.java).matching { it.name == suiteName }.configureEach {
-               environment(JVM_SUITE_NAME, suiteName)
+               val testTask = this
+               doFirst {
+                  setEnvVar(testTask, JVM_TEST_SUITE, testTask.name)
+               }
             }
          }
       }
