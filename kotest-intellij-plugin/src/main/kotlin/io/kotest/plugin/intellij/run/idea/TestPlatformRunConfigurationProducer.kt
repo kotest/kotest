@@ -17,10 +17,11 @@ import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
 /**
- * This producer creates run configurations for individual tests using an IDEA runner.
+ * This run producer creates a run configuration to run all tests in a package, and is aimed at users who are not
+ * using Gradle to execute tests. It provides a way to run tests through a forked Java process, so works for
+ * Maven users, as well as users who have selected Idea as the test runner in
+ * Settings -> Build, Execution, Deployment -> Build Tools -> Gradle -> Run tests Using -> Intellij IDEA.
  */
-@Suppress("DEPRECATION")
-@Deprecated("Starting with Kotest 6.1 use GradleMultiplatformJvmTestTaskRunProducer")
 class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunConfiguration>() {
 
    private val logger = logger<TestPlatformRunConfigurationProducer>()
