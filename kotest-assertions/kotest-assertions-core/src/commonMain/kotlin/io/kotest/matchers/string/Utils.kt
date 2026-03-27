@@ -23,15 +23,21 @@ internal suspend fun describeBestFitForSubstringsInOrder(
          return BestFitForSubstringsInOrderOutcome.TimedOut
       }
       if (bestFit == substrings.indices.toList() )
-         BestFitForSubstringsInOrderOutcome.Success
+         BestFitForSubstringsInOrderOutcome.Match
       else
-         BestFitForSubstringsInOrderOutcome.Failure("The best fit is the subset with the following indexes: ${bestFit.print().value}.")
+         BestFitForSubstringsInOrderOutcome.Mismatch(
+            bestFit,
+            )
    }
 }
 
 sealed interface BestFitForSubstringsInOrderOutcome {
-   object Success : BestFitForSubstringsInOrderOutcome
-   data class Failure(val description: String) : BestFitForSubstringsInOrderOutcome
+   object Match : BestFitForSubstringsInOrderOutcome
+   data class Mismatch(
+      val matchedIndexes: List<Int>,
+      ) : BestFitForSubstringsInOrderOutcome {
+      val description: String = "The best fit is the subset with the following indexes: ${matchedIndexes.print().value}."
+   }
    data class Ineligible(val reason: String) : BestFitForSubstringsInOrderOutcome
    object TimedOut : BestFitForSubstringsInOrderOutcome
 }

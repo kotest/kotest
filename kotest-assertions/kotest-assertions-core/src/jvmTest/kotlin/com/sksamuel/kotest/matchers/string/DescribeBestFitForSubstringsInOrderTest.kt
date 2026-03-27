@@ -35,40 +35,40 @@ class DescribeBestFitForSubstringsInOrderTest : StringSpec(){
 
       "return Success when all substrings are found in order" {
          val result = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "it", "a", "day"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Success
+         result shouldBe BestFitForSubstringsInOrderOutcome.Match
       }
 
       "return Failure when substrings are not found in order" {
          val result = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "day", "it"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Failure>()
+         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Mismatch>()
             .description shouldBe "The best fit is the subset with the following indexes: [0, 2]."
       }
 
       "return Failure when a substring is not found in value" {
          val result = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "it", "a", "Day"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Failure>()
+         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Mismatch>()
             .description shouldBe "The best fit is the subset with the following indexes: [0, 1, 2]."
       }
 
       "return Success for single substring that exists in value" {
          val result = describeBestFitForSubstringsInOrder("I've been in this boat", listOf("boat"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Success
+         result shouldBe BestFitForSubstringsInOrderOutcome.Match
       }
 
       "return Failure for single substring that does not exist in value" {
          val result = describeBestFitForSubstringsInOrder("No pain no gain", listOf("yes"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Failure>()
+         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Mismatch>()
 
       }
 
       "return Success when value exactly matches the single substring" {
          val result = describeBestFitForSubstringsInOrder("exact", listOf("exact"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Success
+         result shouldBe BestFitForSubstringsInOrderOutcome.Match
       }
 
       "return Success when substrings are adjacent in value" {
          val result = describeBestFitForSubstringsInOrder("worldwide", listOf("world", "wide"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Success
+         result shouldBe BestFitForSubstringsInOrderOutcome.Match
       }
    }
 }
