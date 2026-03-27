@@ -51,7 +51,7 @@ class AndroidInstrumentedTestRunConfigurationProducerTest : BasePlatformTestCase
       val configuration = runconfig!!.configuration as AndroidTestRunConfiguration
       configuration.CLASS_NAME shouldBe "io.kotest.samples.gradle.FunSpecExampleTest"
       configuration.TESTING_TYPE shouldBe AndroidTestRunConfiguration.TEST_CLASS
-      configuration.EXTRA_OPTIONS shouldBe ""
+      configuration.EXTRA_OPTIONS shouldBe "-e KOTEST_IDEA_PLUGIN true"
    }
 
    fun testCreateConfigurationFromContextAddsFilterForIndividualTest() {
@@ -72,7 +72,7 @@ class AndroidInstrumentedTestRunConfigurationProducerTest : BasePlatformTestCase
       val runconfig = AndroidInstrumentedTestRunConfigurationProducer().createConfigurationFromContext(context)
       val configuration = runconfig!!.configuration as AndroidTestRunConfiguration
       configuration.CLASS_NAME shouldBe "io.kotest.samples.gradle.FunSpecExampleTest"
-      configuration.EXTRA_OPTIONS shouldBe "-e INSTRUMENTATION_INCLUDE_PATTERN 'io.kotest.samples.gradle.FunSpecExampleTest.some context -- a nested test'"
+      configuration.EXTRA_OPTIONS shouldBe "-e INSTRUMENTATION_INCLUDE_PATTERN 'io.kotest.samples.gradle.FunSpecExampleTest.some context -- a nested test' -e KOTEST_IDEA_PLUGIN true"
       configuration.TESTING_TYPE shouldBe AndroidTestRunConfiguration.TEST_CLASS
    }
 
@@ -88,6 +88,61 @@ class AndroidInstrumentedTestRunConfigurationProducerTest : BasePlatformTestCase
 
       AndroidInstrumentedTestRunConfigurationProducer()
          .isConfigurationFromContext(createConfiguration(), context) shouldBe false
+   }
+
+   /**
+    * [AndroidInstrumentedTestRunConfigurationProducer] must always append
+    * `-e KOTEST_IDEA_PLUGIN true` to [AndroidTestRunConfiguration.EXTRA_OPTIONS] so the Kotest
+    * engine can detect it is running inside the IntelliJ plugin. This test verifies the flag is
+    * present when running a spec (no individual test selected).
+    */
+   fun testPluginFlagIsSetForSpecLevelRun() {
+      setupKotestGradleTestTaskMode()
+      setupAndroidFacet()
+
+      val psiFiles = myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val psiElement = psiFiles[0].elementAtLine(6) ?: error("Could not find PSI element")
+      val context = ConfigurationContext.createEmptyContextForLocation(
+         PsiLocation(project, myFixture.module, psiElement)
+      )
+
+      val runconfig = AndroidInstrumentedTestRunConfigurationProducer().createConfigurationFromContext(context)
+      val configuration = runconfig!!.configuration as AndroidTestRunConfiguration
+      configuration.EXTRA_OPTIONS.contains("KOTEST_IDEA_PLUGIN") shouldBe true
+      configuration.EXTRA_OPTIONS.contains("-e KOTEST_IDEA_PLUGIN true") shouldBe true
+   }
+
+   /**
+    * [AndroidInstrumentedTestRunConfigurationProducer] must always append
+    * `-e KOTEST_IDEA_PLUGIN true` to [AndroidTestRunConfiguration.EXTRA_OPTIONS] so the Kotest
+    * engine can detect it is running inside the IntelliJ plugin. This test verifies the flag is
+    * present (after the test filter) when running an individual test.
+    */
+   fun testPluginFlagIsSetForTestLevelRun() {
+      setupKotestGradleTestTaskMode()
+      setupAndroidFacet()
+
+      val psiFiles = myFixture.configureByFiles(
+         "/funspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val psiElement = psiFiles[0].elementAtLine(22) ?: error("Could not find PSI element")
+      val context = ConfigurationContext.createEmptyContextForLocation(
+         PsiLocation(project, myFixture.module, psiElement)
+      )
+
+      val runconfig = AndroidInstrumentedTestRunConfigurationProducer().createConfigurationFromContext(context)
+      val configuration = runconfig!!.configuration as AndroidTestRunConfiguration
+      configuration.EXTRA_OPTIONS.contains("-e KOTEST_IDEA_PLUGIN true") shouldBe true
+      // Plugin flag comes after the test filter
+      val filterIdx = configuration.EXTRA_OPTIONS.indexOf("INSTRUMENTATION_INCLUDE_PATTERN")
+      val flagIdx = configuration.EXTRA_OPTIONS.indexOf("KOTEST_IDEA_PLUGIN")
+      (filterIdx < flagIdx) shouldBe true
    }
 
    /**
