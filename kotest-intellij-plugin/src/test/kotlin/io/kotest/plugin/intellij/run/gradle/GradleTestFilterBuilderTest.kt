@@ -172,6 +172,51 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
          .build(true) shouldBe "--tests 'MyTestClass.a test with crlf'"
    }
 
+   fun testPeriodInTestNameIsReplacedWithQuestionMark() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "1.2.3 my test", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.1?2?3 my test'"
+   }
+
+   fun testPeriodInNestedTestNameIsReplacedWithQuestionMark() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val root = Test(
+         name = TestName(prefix = null, name = "v1.0 context", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Container,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      val test = Test(
+         name = TestName(prefix = null, name = "feature 2.0", interpolated = false),
+         parent = root,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.v1?0 context -- feature 2?0'"
+   }
+
    fun testCarriageReturnInTestNameIsReplacedWithSpace() {
       val factory = KtPsiFactory(project)
       val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")

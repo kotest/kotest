@@ -198,6 +198,49 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
+   context("question-mark wildcards in test names match tests with periods") {
+      // GradleTestFilterBuilder replaces '.' in test names with '?' to avoid Gradle
+      // misinterpreting them as FQN separators. Gradle converts '?' -> '.' (regex any-char)
+      // and wraps surrounding literals in \Q...\E, so the filter for test name "1.2.3 my test"
+      // becomes the regex pattern \Q...MySpec.1\E.\Q2\E.\Q3 my test\E.
+
+      val spec = Descriptor.SpecDescriptor(DescriptorId("io.example.MySpec"))
+      val fqn = "\\Qio.example.MySpec\\E"
+
+      test("root test named '1.2.3 my test' is INCLUDED by question-mark-escaped filter") {
+         val testDescriptor = spec.append("1.2.3 my test")
+         // Gradle converts --tests 'io.example.MySpec.1?2?3 my test' to this regex:
+         val filter = "$fqn\\Q.1\\E.\\Q2\\E.\\Q3 my test\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("root test named '1.2.3 my test' is INCLUDED by spec-level filter") {
+         val testDescriptor = spec.append("1.2.3 my test")
+         GradleClassMethodRegexTestFilter(setOf(fqn)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("root test with a different name is EXCLUDED by question-mark-escaped filter") {
+         val testDescriptor = spec.append("4.5.6 other test")
+         val filter = "$fqn\\Q.1\\E.\\Q2\\E.\\Q3 my test\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+
+      test("nested test under '1.2.3 my test' is INCLUDED when filtering to parent") {
+         val parent = spec.append("1.2.3 my test")
+         val child = parent.append("nested child")
+         val filter = "$fqn\\Q.1\\E.\\Q2\\E.\\Q3 my test\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(child) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("context named 'v1.0 context' with nested test is INCLUDED by question-mark-escaped filter") {
+         val container = spec.append("v1.0 context")
+         val child = container.append("feature 2.0")
+         // Gradle converts --tests 'io.example.MySpec.v1?0 context -- feature 2?0'
+         val filter = "$fqn\\Q.v1\\E.\\Q0 context -- feature 2\\E.\\Q0\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(child) shouldBe DescriptorFilterResult.Include
+      }
+   }
+
    // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
    test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()

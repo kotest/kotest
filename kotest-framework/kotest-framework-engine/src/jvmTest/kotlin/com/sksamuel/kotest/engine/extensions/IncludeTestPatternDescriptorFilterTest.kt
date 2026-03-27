@@ -87,4 +87,45 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
       val pattern = "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest.a test"
       IncludePatternEnvDescriptorFilter.filter(pattern, test1) shouldBe DescriptorFilterResult.Include
    }
+
+   context("question-mark wildcard in test name matches tests with periods") {
+      // GradleTestFilterBuilder replaces '.' in test names with '?' to avoid Gradle
+      // misinterpreting them as FQN separators. This filter must treat '?' as a
+      // single-character wildcard so that e.g. "1?2?3 my test" matches "1.2.3 my test".
+
+      val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
+      val fqcn = "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest"
+
+      test("root test named '1.2.3 my test' is INCLUDED by pattern with question marks") {
+         val testDescriptor = spec.append("1.2.3 my test")
+         IncludePatternEnvDescriptorFilter.filter("$fqcn.1?2?3 my test", testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("root test named '1.2.3 my test' is EXCLUDED by non-matching question-mark pattern") {
+         val testDescriptor = spec.append("1.2.3 my test")
+         IncludePatternEnvDescriptorFilter.filter("$fqcn.4?5?6 my test", testDescriptor) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+
+      test("spec is INCLUDED when filtering to a test with question-mark pattern") {
+         IncludePatternEnvDescriptorFilter.filter("$fqcn.1?2?3 my test", spec) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("child of '1.2.3 my test' is INCLUDED when filtering to parent with question marks") {
+         val parent = spec.append("1.2.3 my test")
+         val child = parent.append("nested child")
+         IncludePatternEnvDescriptorFilter.filter("$fqcn.1?2?3 my test", child) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("nested test with periods in name is INCLUDED by question-mark pattern") {
+         val parent = spec.append("v1.0 context")
+         val child = parent.append("feature 2.0")
+         IncludePatternEnvDescriptorFilter.filter("$fqcn.v1?0 context -- feature 2?0", child) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("question mark does not match multiple characters") {
+         val testDescriptor = spec.append("1..2 my test")
+         // '?' matches exactly one char, so "1?2" should NOT match "1..2"
+         IncludePatternEnvDescriptorFilter.filter("$fqcn.1?2 my test", testDescriptor) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
 })

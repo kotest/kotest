@@ -33,7 +33,7 @@ data class GradleTestFilterBuilder(
          }
          if (test != null) {
             append(".")
-            append(test.path().joinToString(" -- ") { it.name.removeLineBreaks().escapeSingleQuotes() })
+            append(test.path().joinToString(" -- ") { it.name.removeLineBreaks().escapeSingleQuotes().escapeDots() })
          }
          append("'")
       }
@@ -53,3 +53,14 @@ data class GradleTestFilterBuilder(
 private fun String.escapeSingleQuotes(): String = replace("'", "'\\''")
 
 private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")
+
+/**
+ * Replaces periods in test names with the single-character wildcard `?` so that Gradle
+ * does not mistake them for package/class-name separators in the `--tests` filter.
+ *
+ * Gradle's `--tests` filter splits patterns on `.` to find the class boundary. A test
+ * named e.g. `1.2.3 my test` would cause Gradle to look for a class named `MySpec.1.2.3`
+ * (which doesn't exist), so no tests are discovered. Replacing `.` with `?` (Gradle's
+ * single-character wildcard) avoids the misparse while still matching the correct test.
+ */
+private fun String.escapeDots(): String = replace(".", "?")
