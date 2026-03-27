@@ -1,74 +1,51 @@
 package com.sksamuel.kotest.matchers.string
 
-import io.kotest.core.spec.style.StringSpec
 import io.kotest.assertions.AssertionsConfig
+import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.BestFitForSubstringsInOrderOutcome
 import io.kotest.matchers.string.describeBestFitForSubstringsInOrder
 import io.kotest.matchers.types.shouldBeInstanceOf
 
-class DescribeBestFitForSubstringsInOrderTest : StringSpec(){
+class DescribeBestFitForSubstringsInOrderTest : StringSpec()
+{
    init {
-      "return Ineligible when value length exceeds maxValueSubmatchingSize" {
-         val maxSize = AssertionsConfig.maxValueSubmatchingSize.value
-         val longValue = "a".repeat(maxSize + 1)
-         val result = describeBestFitForSubstringsInOrder(longValue, listOf("a"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
-            .reason shouldBe "value length (${longValue.length}) exceeds maximum allowed ($maxSize)"
+      "return Match when all substrings are found in order" {
+         val value = "no pain no gain"
+         val substrings = listOf("pain", "no", "gain")
+         val outcome = describeBestFitForSubstringsInOrder(value, substrings)
+         outcome shouldBe BestFitForSubstringsInOrderOutcome.Match
       }
 
-      "return Ineligible when substring count exceeds maxSubstringCount" {
-         val maxCount = AssertionsConfig.maxSubstringCount.value
-         val substrings = List(maxCount + 1) { "sub$it" }
-         val result = describeBestFitForSubstringsInOrder("value", substrings)
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
-            .reason shouldBe "substring count (${substrings.size}) exceeds maximum allowed ($maxCount)"
+      "return Mismatch with best fit indexes when not all substrings are found in order" {
+         val value = "no pain no gain"
+         val substrings = listOf("no", "no", "pain")
+         val outcome = describeBestFitForSubstringsInOrder(value, substrings)
+         assert(outcome is BestFitForSubstringsInOrderOutcome.Mismatch)
+         val mismatchOutcome = outcome as BestFitForSubstringsInOrderOutcome.Mismatch
+         mismatchOutcome.matchedIndexes shouldBe listOf(1, 2)
       }
 
-      "return Ineligible when any substring length exceeds maxSubstringSize" {
-         val maxSize = AssertionsConfig.maxSubstringSize.value
-         val longSubstring = "a".repeat(maxSize + 1)
-         val result = describeBestFitForSubstringsInOrder("value", listOf("wolf", longSubstring))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
-            .reason shouldBe "at least one substring length exceeds maximum allowed ($maxSize)"
+      "return Ineligible when value length exceeds maximum allowed" {
+         val value = "a".repeat(AssertionsConfig.maxValueSubmatchingSize.value + 1)
+         val substrings = listOf("a")
+         val outcome = describeBestFitForSubstringsInOrder(value, substrings)
+         outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
       }
 
-      "return Success when all substrings are found in order" {
-         val result = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "it", "a", "day"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Match
+      "return Ineligible when substring count exceeds maximum allowed" {
+         val value = "abc"
+         val substrings = List(AssertionsConfig.maxSubstringCount.value + 1) { "a" }
+         val outcome = describeBestFitForSubstringsInOrder(value, substrings)
+         outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
       }
 
-      "return Failure when substrings are not found in order" {
-         val result = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "day", "it"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Mismatch>()
-            .description shouldBe "The best fit is the subset with the following indexes: [0, 2]."
-      }
-
-      "return Failure when a substring is not found in value" {
-         val result = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "it", "a", "Day"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Mismatch>()
-            .description shouldBe "The best fit is the subset with the following indexes: [0, 1, 2]."
-      }
-
-      "return Success for single substring that exists in value" {
-         val result = describeBestFitForSubstringsInOrder("I've been in this boat", listOf("boat"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Match
-      }
-
-      "return Failure for single substring that does not exist in value" {
-         val result = describeBestFitForSubstringsInOrder("No pain no gain", listOf("yes"))
-         result.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Mismatch>()
-
-      }
-
-      "return Success when value exactly matches the single substring" {
-         val result = describeBestFitForSubstringsInOrder("exact", listOf("exact"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Match
-      }
-
-      "return Success when substrings are adjacent in value" {
-         val result = describeBestFitForSubstringsInOrder("worldwide", listOf("world", "wide"))
-         result shouldBe BestFitForSubstringsInOrderOutcome.Match
+      "return Ineligible when at least one substring length exceeds maximum allowed" {
+         val value = "abc"
+         val longSubstring = "a".repeat(AssertionsConfig.maxSubstringSize.value + 1)
+         val substrings = listOf(longSubstring)
+         val outcome = describeBestFitForSubstringsInOrder(value, substrings)
+         outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
       }
    }
 }

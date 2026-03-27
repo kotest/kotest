@@ -184,7 +184,32 @@ internal fun interface MatchOffset {
    operator fun invoke(value: String) : Int
 }
 
-fun containInOrder(vararg substrings: String) = containSubstringsInOrder({ 1 }, *substrings)
+fun containInOrder(vararg substrings: String) =
+   containSubstringsInOrderDetailed({ 1 }, *substrings) ?:
+   containSubstringsInOrder({ 1 }, *substrings)
+
+internal fun containSubstringsInOrderDetailed(matchOffset: MatchOffset, vararg substrings: String) : Matcher<String?>? {
+   return when(val outcome = describeBestFitForSubstringsInOrder(
+      value = "",
+      substrings = substrings.toList(),
+   ) ){
+      is BestFitForSubstringsInOrderOutcome.Ineligible -> null
+      BestFitForSubstringsInOrderOutcome.TimedOut -> null
+      else -> neverNullMatcher<String>{ value ->
+         MatcherResult(
+            passed = outcome is BestFitForSubstringsInOrderOutcome.Match,
+            failureMessageFn = {
+               "${value.print().value} should include substrings ${substrings.print().value} in order${
+                  prefixIfNotEmpty(
+                     (outcome as? BestFitForSubstringsInOrderOutcome.Mismatch)?.description ?: "",
+                     "\n"
+                  )
+               }"
+            },
+            negatedFailureMessageFn = { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
+      }
+   }
+}
 
 internal fun containSubstringsInOrder(matchOffset: MatchOffset, vararg substrings: String) = neverNullMatcher<String> { value ->
    val matchOutcome = matchSubstrings(
