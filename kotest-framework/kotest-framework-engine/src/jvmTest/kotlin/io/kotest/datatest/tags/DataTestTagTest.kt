@@ -33,6 +33,7 @@ class DataTestTagTest : FunSpec({
 
       TestEngineLauncher()
          .withSpecRefs(SpecRef.Reference(testClass))
+         .withoutEnvFilters()
          .addExtension(object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                // skip `parent context` and `child context` as they are not data tests
@@ -114,6 +115,7 @@ class DataTestTagTest : FunSpec({
 
       TestEngineLauncher()
          .withSpecRefs(SpecRef.Reference(DataTestTagsStringSpec::class))
+         .withoutEnvFilters()
          .addExtension(object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                if(testCase.config?.tags?.isNotEmpty() == true){
@@ -162,6 +164,7 @@ class DataTestTagTest : FunSpec({
       TestEngineLauncher()
          .withListener(listener)
          .withSpecRefs(SpecRef.Reference(testClass))
+         .withoutEnvFilters()
          .withTagExpression(TagExpression("(kotest.data.36 & !kotest.data.37 & !kotest.data.58 & !kotest.data.49 & !kotest.data.52 & !kotest.data.42) | kotest.data.nonJvm"))
          .execute()
 

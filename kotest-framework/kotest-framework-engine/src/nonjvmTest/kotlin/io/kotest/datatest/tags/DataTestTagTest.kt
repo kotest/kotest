@@ -28,6 +28,7 @@ class DataTestTagTest : FunSpec({
 
       TestEngineLauncher()
          .withSpecRefs(SpecRef.Reference(testClass))
+         .withoutEnvFilters()
          .addExtension(object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                // skip `parent context` and `child context` as they are not data tests
@@ -109,6 +110,7 @@ class DataTestTagTest : FunSpec({
 
       TestEngineLauncher()
          .withSpecRefs(SpecRef.Reference(DataTestTagsStringSpec::class))
+         .withoutEnvFilters()
          .addExtension(object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                if(testCase.config?.tags?.isNotEmpty() == true){
