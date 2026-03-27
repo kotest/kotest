@@ -1,7 +1,9 @@
 package io.kotest.provided
 
+import com.sksamuel.kotest.engine.callback.order.afterDslVsListenerEvents
 import com.sksamuel.kotest.engine.callback.order.afterEachEvents
 import com.sksamuel.kotest.engine.callback.order.afterTestEvents
+import com.sksamuel.kotest.engine.callback.order.beforeDslVsListenerEvents
 import com.sksamuel.kotest.engine.callback.order.beforeEachEvents
 import com.sksamuel.kotest.engine.callback.order.beforeTestEvents
 import io.kotest.core.config.AbstractProjectConfig
@@ -32,6 +34,30 @@ class ProjectConfig : AbstractProjectConfig() {
             if (testCase.spec::class.simpleName == "TestListenerPrecedenceTest")
                beforeEachEvents.add("projectBeforeEach")
          }
-      }
+      },
+      object : TestListener {
+
+         override suspend fun beforeEach(testCase: TestCase) {
+            if (testCase.spec::class.simpleName == "BeforeDslVsListenerOrderTest")
+               beforeDslVsListenerEvents.add("project-beforeEach")
+         }
+
+         override suspend fun beforeTest(testCase: TestCase) {
+            if (testCase.spec::class.simpleName == "BeforeDslVsListenerOrderTest")
+               beforeDslVsListenerEvents.add("project-beforeTest")
+         }
+      },
+      object : TestListener {
+
+         override suspend fun afterEach(testCase: TestCase, result: TestResult) {
+            if (testCase.spec::class.simpleName == "AfterDslVsListenerOrderTest")
+               afterDslVsListenerEvents.add("project-afterEach")
+         }
+
+         override suspend fun afterTest(testCase: TestCase, result: TestResult) {
+            if (testCase.spec::class.simpleName == "AfterDslVsListenerOrderTest")
+               afterDslVsListenerEvents.add("project-afterTest")
+         }
+      },
    )
 }

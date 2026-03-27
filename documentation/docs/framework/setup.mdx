@@ -12,7 +12,8 @@ The Kotest test framework is supported on all targets, including JVM, JavaScript
 To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
 
 :::caution[Migrating to Kotest 6]
-The KMP support in Kotest 6.0 has changed from the previous versions. There is no longer a compiler plugin but a simplified setup.
+The Kotlin multiplatform setup in Kotest 6.0 has changed from previous versions. The Kotest Gradle plugin has been
+renamed to `io.kotest`. Also, the compiler plugin has been replaced with a more robust method using KSP.
 Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
 :::
 
@@ -65,8 +66,11 @@ dependencies {
 
 And then execute the `test` task in gradle, or run tests directly from the IDE.
 
-For enhanced support for jump-to-source and re-running failed tests from the test results tree, add the
-[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to to your build.
+## Enhanced IDE support
+
+For enhanced support for jump-to-source and re-running failed tests from the test results tree,
+in addition to installing the Kotest Intellij Plugin into your IDE, add the
+[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
 
 For example:
 
@@ -75,6 +79,18 @@ plugins {
    id("io.kotest").version("<kotest-version>")
 }
 ```
+
+Then you can jump-to-source for tests at any level:
+
+![jump to source](./setup/jump_to_source.png)
+
+As well as re-run all failed tests:
+
+![re-run failed](./setup/rerun_failed.png)
+
+Or re-run a single test from the results tree:
+
+![re-run selected](./setup/rerun_selected_test.png)
 
    </TabItem>
    <TabItem value="JS">
@@ -204,14 +220,17 @@ based configuration will not work as Kotlin does not expose annotations at runti
    </TabItem>
    <TabItem value="Android">
 
-:::info
-Currently, only Unit tests are supported in Kotest.
-The following steps enable Kotest to be used for unit tests - where the Android framework is not needed or is mocked - and that usually reside in the
-`src/test` folder of your module.
+:::tip
+A working Android project with unit, instrumented and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
 :::
 
-Kotest on Android uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
-This requires configuring the android test options block in your build file and then adding the Kotest junit5 runner dependency.
+Android supports two types of tests:
+- Unit tests, which are run on the local machine and are also referred to as "host" tests
+- Instrumented tests, which are run on an Android device or emulator and are also referred to as "device" tests
+
+For unit tests, Kotest uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
+This requires configuring the android test options block in your build file and then adding the Kotest JUnit5 runner dependency.
 
 ```kotlin
 android.testOptions {
@@ -223,15 +242,52 @@ android.testOptions {
 
 ```kotlin
 dependencies {
-   testImplementation 'io.kotest:kotest-runner-junit5:version'
+   testImplementation("io.kotest:kotest-runner-junit5:version")
 }
 ```
 
-:::tip
-A working Android project with unit and data driven test examples, can be found here:
-https://github.com/kotest/kotest-examples
-:::
+For instrumented tests, Kotest uses the [JUnit4 Runner](https://developer.android.com/training/testing/junit-runner).
+This requires adding the Kotest JUnit4 runner dependency to your build using the `androidTestImplementation` configuration.
 
+```kotlin
+dependencies {
+   androidTestImplementation("io.kotest:kotest-runner-junit4:version")
+}
+```
+
+When writing an instrumented test, you should use the `androidTest` source set to place your test code, and you must
+annotate your spec with `@RunWith(KotestTestRunner::class)`. For example:
+
+```kotlin
+@RunWith(KotestTestRunner::class)
+class ComposeWithKotest : FreeSpec() {
+
+  @get:Rule
+  val composeTestRule: ComposeContentTestRule = createComposeRule()
+
+  init {
+    "should have initial state of 0" {
+
+      composeTestRule.setContent {
+        TestComposable()
+      }
+
+      composeTestRule.onNodeWithText("0").assertExists()
+      composeTestRule.onNodeWithText("Click me!").assertExists()
+    }
+
+    "should increment when clicked" {
+
+      composeTestRule.setContent {
+        TestComposable()
+      }
+
+      composeTestRule.onNodeWithText("0").assertExists()
+      composeTestRule.onNodeWithText("Click me!").assertExists()
+    }
+  }
+}
+```
 
    </TabItem>
    <TabItem value="Multiplatform">
@@ -280,7 +336,8 @@ based configuration will not work as Kotlin does not expose annotations at runti
 
 ## Re-running tests
 
-By default, Gradle's incremental build will skip running tests if no source code has changed, marking the task as UP-TO-DATE. This can be inconvenient during debugging.
+By default, Gradle's incremental build will skip running tests if no source code has changed,
+marking the task as UP-TO-DATE. This can be inconvenient during debugging.
 
 To force your tests to run every time, you can temporarily add the following configuration to your build.gradle.kts file:
 
@@ -288,6 +345,14 @@ To force your tests to run every time, you can temporarily add the following con
 tasks.withType<Test>().configureEach {
    logger.lifecycle("UP-TO-DATE check for $name is disabled, forcing it to run.")
    outputs.upToDateWhen { false }
+}
+```
+
+Alternatively, if you have the Kotest Gradle Plugin installed, you can ask Kotest to do this for you:
+
+```kotlin
+kotest {
+   alwaysRerunTests = true
 }
 ```
 

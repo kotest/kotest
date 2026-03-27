@@ -82,7 +82,7 @@ val specs = listOf(
     """.trim()
          ).addCode("\n")
       specs.forEachIndexed { index, spec ->
-         val sn = spec.simpleName.asString() + index
+         val sn = spec.simpleName.asString() + "_" + index
          val fqn = spec.qualifiedName?.asString() ?: spec.simpleName.asString()
          function.addCode("""SpecRef.Function ({ `${sn}`() }, `${sn}`::class, "$fqn"), """)
          function.addCode("\n")
@@ -117,7 +117,7 @@ val specs = listOf(
       specs.forEachIndexed { index, spec ->
          file.addAliasedImport(
             ClassName(spec.packageName.asString(), spec.simpleName.asString()),
-            `as` = spec.simpleName.asString() + index.toString()
+            `as` = spec.simpleName.asString() + "_" + index.toString()
          )
       }
 
