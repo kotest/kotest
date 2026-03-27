@@ -10,6 +10,10 @@ plugins {
 
 kotlin {
 
+   compilerOptions {
+      freeCompilerArgs.add("-Xallow-kotlin-package")
+   }
+
    sourceSets {
 
       commonMain {
