@@ -270,4 +270,59 @@ class JsTestFrameworkTestEngineListenerTest : FunSpec({
          fw.suites[0].tests[0].ignored shouldBe true
       }
    }
+
+   context("engineFinished") {
+
+      test("spec suite is registered with the framework during specFinished, not deferred to engineFinished") {
+         // Regression guard: suites must be registered in specFinished so that all framework.suite() calls
+         // happen before channel.send(Unit) in engineFinished. If registration were deferred to
+         // engineFinished, mocha would have already advanced past the executor before suites exist.
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+
+         val ref = specRef("com.example.MySpec")
+         listener.specStarted(ref)
+         val tc = rootTestCase("com.example.MySpec", "a test")
+         listener.testStarted(tc)
+         listener.testFinished(tc, TestResultBuilder.builder().build())
+         listener.specFinished(ref, TestResultBuilder.builder().build())
+
+         // suite must be visible before engineFinished is called
+         fw.suites.size shouldBe 1
+         fw.suites[0].name shouldBe "com.example.MySpec"
+
+         listener.engineFinished(emptyList())
+
+         // engineFinished only releases the channel — it must not register any additional suites
+         fw.suites.size shouldBe 1
+      }
+
+      test("all spec suites from multiple specs are registered before engineFinished is called") {
+         // Regression guard: with multiple specs each suite must be visible after its own specFinished,
+         // long before engineFinished sends the channel. A per-spec channel send (the pre-fix behaviour)
+         // would release mocha before the remaining specs are registered.
+         val fw = RecordingFramework()
+         val listener = JsTestFrameworkTestEngineListener(fw)
+
+         listOf("com.example.Spec1", "com.example.Spec2", "com.example.Spec3").forEach { fqn ->
+            val ref = specRef(fqn)
+            listener.specStarted(ref)
+            val tc = rootTestCase(fqn, "a test")
+            listener.testStarted(tc)
+            listener.testFinished(tc, TestResultBuilder.builder().build())
+            listener.specFinished(ref, TestResultBuilder.builder().build())
+         }
+
+         // all three spec suites are registered before engineFinished is called
+         fw.suites.size shouldBe 3
+         fw.suites[0].name shouldBe "com.example.Spec1"
+         fw.suites[1].name shouldBe "com.example.Spec2"
+         fw.suites[2].name shouldBe "com.example.Spec3"
+
+         listener.engineFinished(emptyList())
+
+         // engineFinished must not register any new suites
+         fw.suites.size shouldBe 3
+      }
+   }
 })
