@@ -14,7 +14,32 @@ sealed interface BestFitForSubstringsInOrderOutcome {
       val bestFitIndexes: List<Int>,
       val indexesOfMatches: List<List<Int>>,
       ) : BestFitForSubstringsInOrderOutcome {
-      val description: String = "The best fit is the subset with the following indexes: ${bestFitIndexes.print().value}."
+      val description: String = run {
+         if(bestFitIndexes.isEmpty()) {
+            "No matches found."
+         } else {
+            val bestFitDescriptionElements = (0 until indexesOfMatches.size).map { index ->
+               if(index in bestFitIndexes) {
+                  index.toString()
+               } else {
+                  "-"
+               }
+            }.joinToString { ", " }
+            val bestFitDescription = "The best fit is the subset with the following indexes: [$bestFitDescriptionElements]."
+
+            val mismatchesDescription = (0 until indexesOfMatches.size).asSequence()
+               .filter { it !in bestFitIndexes }
+               .map { index ->
+                  if(indexesOfMatches[index].isEmpty()) {
+                     "Element[$index] not found"
+                  } else {
+                     "Element[$index] found at index(es) ${indexesOfMatches[index].print().value}"
+                  }
+               }
+
+            (listOf(bestFitDescription)+mismatchesDescription).joinToString { "\n" }
+         }
+      }
    }
    data class Ineligible(val reason: String) : BestFitForSubstringsInOrderOutcome
    object TimedOut : BestFitForSubstringsInOrderOutcome
