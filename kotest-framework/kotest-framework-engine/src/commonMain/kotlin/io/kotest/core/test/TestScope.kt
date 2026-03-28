@@ -3,9 +3,7 @@ package io.kotest.core.test
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.KotestTestScope
-import io.kotest.core.spec.RootTest
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -36,23 +34,6 @@ interface TestScope : CoroutineScope {
     */
    @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
-}
-
-class DefaultTestScope(
-   override val testCase: TestCase,
-   override val coroutineContext: CoroutineContext,
-   private val onRegister: suspend (NestedTest) -> Unit,
-) : TestScope {
-
-   override suspend fun registerTestCase(nested: NestedTest) {
-      onRegister(nested)
-   }
-
-   companion object {
-      suspend operator fun invoke(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
-         return DefaultTestScope(testCase, currentCoroutineContext(), onRegister)
-      }
-   }
 }
 
 annotation class TestRunnable
