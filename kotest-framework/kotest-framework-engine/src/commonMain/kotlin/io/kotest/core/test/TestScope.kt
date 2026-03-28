@@ -1,7 +1,7 @@
 package io.kotest.core.test
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.AbstractSpec
 import io.kotest.core.spec.KotestTestScope
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
@@ -38,13 +38,13 @@ interface TestScope : CoroutineScope {
 
 annotation class TestRunnable
 
-abstract class SuiteSpec : DslDrivenSpec() {
+abstract class SuiteSpec : AbstractSpec() {
 
-   fun suite(name: String, test: suspend TestScope.() -> Unit) {
+   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
       // add(RootTest(name, test))
    }
 
-   fun test(name: String, test: suspend SuiteScope.() -> Unit) {
+   fun test(name: String, test: suspend TestScope.() -> Unit) {
       // add(RootTest(name, test))
    }
 }
@@ -57,7 +57,7 @@ class SuiteScope(
       // testScope.registerTestCase(NestedTest(name, this))
    }
 
-   fun test(name: String, test: suspend SuiteScope.() -> Unit) {
+   fun test(name: String, test: suspend TestScope.() -> Unit) {
       // testScope.registerTestCase(NestedTest(name, this))
    }
 }

@@ -8,6 +8,8 @@ import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.core.spec.style.scopes.RootScope
 import kotlin.js.JsName
 
+abstract class AbstractSpec : DslDrivenSpec()
+
 /**
  * Base class for specs that allow for registration of tests via a DSL.
  */
