@@ -16,6 +16,7 @@ import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.kotlin.idea.gradleJava.run.MultiplatformTestTasksChooser
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestRunConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
+import kotlin.collections.plus
 
 /**
  * Creates run configurations that use the Gradle test task, passing in a `--tests` arg.
@@ -78,21 +79,8 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       setUniqueNameIfNeeded(configuration.project, configuration)
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
 
-      var env = configuration.settings.env
-
       // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
-      env = env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
-
-      // If the user triggered a "run with repetitions" action, consume the pending count
-      // and pass it to the engine via an environment variable.
-      val kotestRunState = configuration.project.service<KotestRunState>()
-      val invocationCount = kotestRunState.pendingInvocationCount
-      if (invocationCount != null) {
-         env = env + mapOf("KOTEST_INVOCATION_COUNT" to invocationCount.toString())
-         kotestRunState.clearPendingInvocationCount()
-      }
-
-      configuration.settings.env = env
+      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
 
       return true
    }
@@ -116,15 +104,6 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
          return false
       }
-
-      // A pending invocation count means the user scheduled "run with repetitions", force a fresh
-      // configuration so doSetupConfigurationFromContext is called and injects the env var.
-      if (context.project?.service<KotestRunState>()?.pendingInvocationCount != null) return false
-
-      // Never reuse a configuration that was created with an invocation count override.
-      // This ensures that once the N-times run completes, the next run creates a fresh
-      // configuration without KOTEST_INVOCATION_COUNT, returning to the default count.
-      if (configuration.settings.env.containsKey("KOTEST_INVOCATION_COUNT")) return false
 
       val element = context.psiLocation ?: return false
       val testref = ElementUtils.findTestReference(element) ?: return false
@@ -177,6 +156,19 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
 
       val runConfiguration = configuration.configuration as GradleRunConfiguration
       val dataContext = MultiplatformTestTasksChooser.createContext(context.dataContext, runConfiguration.name)
+
+      var env = runConfiguration.settings.env
+
+      // If the user triggered a "run with repetitions" action, consume the pending count
+      // and pass it to the engine via an environment variable.
+      val kotestRunState = runConfiguration.project.service<KotestRunState>()
+      val invocationCount = kotestRunState.pendingInvocationCount
+      if (invocationCount != null) {
+         env = env + mapOf("KOTEST_INVOCATION_COUNT" to invocationCount.toString())
+         kotestRunState.clearPendingInvocationCount()
+      }
+
+      runConfiguration.settings.env = env
 
       // used to pre-filter targets, eg if you are running something that could only be a JVM test, then it would filter
       // down to JVM targets only. When running from the gutter, there is no context, so we pass null, and all targets will appear
