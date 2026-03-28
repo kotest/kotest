@@ -33,8 +33,13 @@ class DescribeBestFitForSubstringsInOrderTest : StringSpec()
          outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
       }
 
-      "return Ineligible when substrings is empty" {
+      "return Ineligible when no substrings provided" {
          val outcome = describeBestFitForSubstringsInOrder("Call it a day", emptyList())
+         outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
+      }
+
+      "return Ineligible when some substrings are empty" {
+         val outcome = describeBestFitForSubstringsInOrder("Call it a day", listOf("Call", "", "day"))
          outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
       }
 
