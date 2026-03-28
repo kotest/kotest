@@ -1,7 +1,9 @@
 package io.kotest.core.test
 
 import io.kotest.common.KotestInternal
+import io.kotest.core.spec.DslDrivenSpec
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.RootTest
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.CoroutineContext
@@ -29,6 +31,8 @@ interface TestScope : CoroutineScope {
     * Registers a [NestedTest] with the engine as a child of the current [testCase].
     *
     * Will throw an error if the current [testCase] is not a container test.
+    *
+    * This method is not intended for use directly, but by spec styles which use this to support their DSL.
     */
    @KotestInternal
    suspend fun registerTestCase(nested: NestedTest)
@@ -48,5 +52,41 @@ class DefaultTestScope(
       suspend operator fun invoke(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
          return DefaultTestScope(testCase, currentCoroutineContext(), onRegister)
       }
+   }
+}
+
+annotation class TestRunnable
+
+abstract class SuiteSpec : DslDrivenSpec() {
+
+   fun suite(name: String, test: suspend TestScope.() -> Unit) {
+      // add(RootTest(name, test))
+   }
+
+   fun test(name: String, test: suspend SuiteScope.() -> Unit) {
+      // add(RootTest(name, test))
+   }
+}
+
+class SuiteScope(
+   val testScope: TestScope,
+) : DelegatingTestScope(testScope) {
+
+   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
+      // testScope.registerTestCase(NestedTest(name, this))
+   }
+
+   fun test(name: String, test: suspend SuiteScope.() -> Unit) {
+      // testScope.registerTestCase(NestedTest(name, this))
+   }
+}
+
+abstract class DelegatingTestScope(private val testScope: TestScope) : TestScope {
+
+   override val testCase: TestCase = testScope.testCase
+   override val coroutineContext: CoroutineContext = testScope.coroutineContext
+
+   override suspend fun registerTestCase(nested: NestedTest) {
+      testScope.registerTestCase(nested)
    }
 }
