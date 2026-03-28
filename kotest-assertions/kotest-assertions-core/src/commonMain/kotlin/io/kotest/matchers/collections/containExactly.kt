@@ -83,13 +83,21 @@ fun <T, C : Collection<T>> containExactly(
       matchCollectionsWithVerifier(actual, expected, verifier)
    }
 
-   val missing = expected.filterNot { t ->
-      actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
-   }
-   val extra = actual.filterNot { t ->
-      expected.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
-   }
    val passed = failureReason == null
+   val missing = if(passed) {
+      emptyList()
+   } else {
+      expected.filterNot { t ->
+         actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
+      }
+   }
+   val extra = if(passed) {
+      emptyList()
+   } else {
+      actual.filterNot { t ->
+             expected.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
+      }
+   }
 
    val failureMessage = {
       buildString {
