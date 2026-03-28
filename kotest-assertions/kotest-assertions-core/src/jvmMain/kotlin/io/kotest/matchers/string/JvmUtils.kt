@@ -12,6 +12,8 @@ internal actual fun describeBestFitForSubstringsInOrder(
 ) : BestFitForSubstringsInOrderOutcome = when {
    value.length > AssertionsConfig.maxValueSubmatchingSize.value ->
       BestFitForSubstringsInOrderOutcome.Ineligible("value length (${value.length}) exceeds maximum allowed (${AssertionsConfig.maxValueSubmatchingSize.value})")
+   substrings.isEmpty() ->
+      BestFitForSubstringsInOrderOutcome.Ineligible("substring is empty")
    substrings.size > AssertionsConfig.maxSubstringCount.value ->
       BestFitForSubstringsInOrderOutcome.Ineligible("substring count (${substrings.size}) exceeds maximum allowed (${AssertionsConfig.maxSubstringCount.value})")
    substrings.any { it.length > AssertionsConfig.maxSubstringSize.value } ->

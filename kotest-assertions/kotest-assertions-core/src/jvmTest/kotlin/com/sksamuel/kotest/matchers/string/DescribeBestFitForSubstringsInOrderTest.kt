@@ -33,6 +33,11 @@ class DescribeBestFitForSubstringsInOrderTest : StringSpec()
          outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
       }
 
+      "return Ineligible when substrings is empty" {
+         val outcome = describeBestFitForSubstringsInOrder("Call it a day", emptyList())
+         outcome.shouldBeInstanceOf<BestFitForSubstringsInOrderOutcome.Ineligible>()
+      }
+
       "return Ineligible when substring count exceeds maximum allowed" {
          val value = "abc"
          val substrings = List(AssertionsConfig.maxSubstringCount.value + 1) { "a" }
