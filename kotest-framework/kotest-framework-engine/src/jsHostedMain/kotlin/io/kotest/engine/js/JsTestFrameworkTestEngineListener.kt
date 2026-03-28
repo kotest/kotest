@@ -45,7 +45,7 @@ internal class JsTestFrameworkTestEngineListener(
       kotlinJsTestFramework.suite("Kotest", false) {
          kotlinJsTestFramework.test("Executor", false) {
             promise {
-               channel.receive() // will suspend this placeholder test until the first real test releases us
+               channel.receive() // will suspend this placeholder test until all tests have completed
             }
          }
       }
