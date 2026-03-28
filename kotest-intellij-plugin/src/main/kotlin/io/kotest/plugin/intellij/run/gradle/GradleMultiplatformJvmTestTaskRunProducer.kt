@@ -3,11 +3,13 @@ package io.kotest.plugin.intellij.run.gradle
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.ElementUtils
+import io.kotest.plugin.intellij.run.KotestRunState
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
 import org.jetbrains.kotlin.idea.base.util.module
@@ -76,8 +78,21 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       setUniqueNameIfNeeded(configuration.project, configuration)
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
 
+      var env = configuration.settings.env
+
       // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
-      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
+      env = env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
+
+      // If the user triggered a "run with repetitions" action, consume the pending count
+      // and pass it to the engine via an environment variable.
+      val kotestRunState = configuration.project.service<KotestRunState>()
+      val invocationCount = kotestRunState.pendingInvocationCount
+      if (invocationCount != null) {
+         env = env + mapOf("KOTEST_INVOCATION_COUNT" to invocationCount.toString())
+         kotestRunState.clearPendingInvocationCount()
+      }
+
+      configuration.settings.env = env
 
       return true
    }
@@ -101,6 +116,15 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          logger.info("Runner mode is not GRADLE_TEST_TASK so this producer will not contribute")
          return false
       }
+
+      // A pending invocation count means the user scheduled "run with repetitions", force a fresh
+      // configuration so doSetupConfigurationFromContext is called and injects the env var.
+      if (context.project?.service<KotestRunState>()?.pendingInvocationCount != null) return false
+
+      // Never reuse a configuration that was created with an invocation count override.
+      // This ensures that once the N-times run completes, the next run creates a fresh
+      // configuration without KOTEST_INVOCATION_COUNT, returning to the default count.
+      if (configuration.settings.env.containsKey("KOTEST_INVOCATION_COUNT")) return false
 
       val element = context.psiLocation ?: return false
       val testref = ElementUtils.findTestReference(element) ?: return false

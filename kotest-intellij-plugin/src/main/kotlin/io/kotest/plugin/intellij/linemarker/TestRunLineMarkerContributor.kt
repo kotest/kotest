@@ -7,6 +7,7 @@ import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.actions.RunRepeatAction
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
@@ -63,7 +64,7 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val icon = getTestStateIcon(testState, false)
       return Info(
          icon,
-         ExecutorAction.getActions(1),
+         arrayOf(*ExecutorAction.getActions(1), RunRepeatAction()),
       )
       // note that the run name is used for the tooltip not the drop down
       // the drop down gets names from the created run configurations
