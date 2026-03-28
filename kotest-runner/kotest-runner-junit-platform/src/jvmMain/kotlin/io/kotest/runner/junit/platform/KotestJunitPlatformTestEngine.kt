@@ -169,12 +169,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * Returns true if there are selectors compatible with Kotest.
     * Kotest supports [ClasspathRootSelector]s, [ClassSelector]s, and [UniqueIdSelector]s.
     *
-    * A [MethodSelector] is passed by intellij to run just a single method inside a test file.
-    * Kotest will never use method selectors, so if we have one, then we know it is something
-    * other than kotest that is trying to run the tests, and we should skip running the engine.
+    * Note: [MethodSelector]s may be present alongside class/classpath selectors (e.g., from AGP 9+
+    * which pre-discovers `@Test` methods and passes them as method selectors). We intentionally
+    * ignore method selectors here — [Discovery] already ignores them — and only check for the
+    * selector types Kotest actually processes.
     */
    private fun shouldRunTests(request: EngineDiscoveryRequest): Boolean {
-      if (request.getSelectorsByType(MethodSelector::class.java).isNotEmpty()) return false
       return request.getSelectorsByType(ClassSelector::class.java).isNotEmpty() ||
          request.getSelectorsByType(UniqueIdSelector::class.java).isNotEmpty() ||
          request.getSelectorsByType(ClasspathRootSelector::class.java).isNotEmpty()
