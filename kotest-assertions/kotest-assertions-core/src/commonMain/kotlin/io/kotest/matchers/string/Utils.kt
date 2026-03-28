@@ -24,8 +24,8 @@ sealed interface BestFitForSubstringsInOrderOutcome {
                } else {
                   "-"
                }
-            }.joinToString { ", " }
-            val bestFitDescription = "The best fit is the subset with the following indexes: [$bestFitDescriptionElements]."
+            }
+            val bestFitDescription = "The best fit is the subset with the following indexes: ${bestFitDescriptionElements.print().value.replace("\"", "")}."
 
             val mismatchesDescription = (0 until indexesOfMatches.size).asSequence()
                .filter { it !in bestFitIndexes }
@@ -33,11 +33,11 @@ sealed interface BestFitForSubstringsInOrderOutcome {
                   if(indexesOfMatches[index].isEmpty()) {
                      "Element[$index] not found"
                   } else {
-                     "Element[$index] found at index(es) ${indexesOfMatches[index].print().value}"
+                     "Element[$index] found at index(es): ${indexesOfMatches[index].print().value}"
                   }
-               }
+               }.toList()
 
-            (listOf(bestFitDescription)+mismatchesDescription).joinToString { "\n" }
+            (listOf(bestFitDescription)+mismatchesDescription).joinToString( "\n" )
          }
       }
    }
