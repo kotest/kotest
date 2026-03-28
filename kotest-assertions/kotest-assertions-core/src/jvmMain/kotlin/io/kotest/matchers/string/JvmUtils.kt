@@ -22,7 +22,7 @@ internal actual fun describeBestFitForSubstringsInOrder(
    substrings.any { it.length > AssertionsConfig.maxSubstringSize.value } ->
       BestFitForSubstringsInOrderOutcome.Ineligible("at least one substring length exceeds maximum allowed (${AssertionsConfig.maxSubstringSize.value})")
    else -> {
-      val bestFit = try {
+      val bestFitSearchOutcome = try {
          findBestFitForSubstringsInOrder(
             value,
             substrings,
@@ -31,20 +31,26 @@ internal actual fun describeBestFitForSubstringsInOrder(
       } catch (_: CancellationException) {
          return BestFitForSubstringsInOrderOutcome.TimedOut
       }
-      if (bestFit == substrings.indices.toList() )
+      if (bestFitSearchOutcome.bestFitIndexes == substrings.indices.toList() )
          BestFitForSubstringsInOrderOutcome.Match
       else
          BestFitForSubstringsInOrderOutcome.Mismatch(
-            bestFit,
+            bestFitSearchOutcome.bestFitIndexes,
+            bestFitSearchOutcome.indexesOfMatches,
             )
    }
 }
+
+internal data class BestFitSearchOutcome(
+   val bestFitIndexes: List<Int>,
+   val indexesOfMatches: List<List<Int>>,
+)
 
 internal fun findBestFitForSubstringsInOrder(
    value: String,
    substrings: List<String>,
    matchOffset: MatchOffset,
-) : List<Int> {
+) : BestFitSearchOutcome {
    return runBlocking {
       withNonVirtualTimeout(AssertionsConfig.maxSubstringSearchDurationInMs.value.milliseconds) {
          val indexesOfMatches = allIndexesOfSubstrings(
@@ -52,14 +58,17 @@ internal fun findBestFitForSubstringsInOrder(
             substrings,
             matchOffset,
             )
-         return@withNonVirtualTimeout powerSetIndexes(substrings.size)
-            .firstOrNull { subset -> subsetFitsInOrder(
-               indexesOfMatches,
-               subset,
-               substrings,
-               matchOffset,
-               ) }
-            ?: emptyList()
+         val bestFitIndexes = (powerSetIndexes(substrings.size)
+            .firstOrNull { subset ->
+               subsetFitsInOrder(
+                  indexesOfMatches,
+                  subset,
+                  substrings,
+                  matchOffset,
+               )
+            }
+            ?: emptyList())
+         return@withNonVirtualTimeout BestFitSearchOutcome(bestFitIndexes, indexesOfMatches)
       }
    }
 }

@@ -11,9 +11,10 @@ internal expect fun describeBestFitForSubstringsInOrder(
 sealed interface BestFitForSubstringsInOrderOutcome {
    object Match : BestFitForSubstringsInOrderOutcome
    data class Mismatch(
-      val matchedIndexes: List<Int>,
+      val bestFitIndexes: List<Int>,
+      val indexesOfMatches: List<List<Int>>,
       ) : BestFitForSubstringsInOrderOutcome {
-      val description: String = "The best fit is the subset with the following indexes: ${matchedIndexes.print().value}."
+      val description: String = "The best fit is the subset with the following indexes: ${bestFitIndexes.print().value}."
    }
    data class Ineligible(val reason: String) : BestFitForSubstringsInOrderOutcome
    object TimedOut : BestFitForSubstringsInOrderOutcome

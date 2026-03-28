@@ -23,7 +23,7 @@ class DescribeBestFitForSubstringsInOrderTest : StringSpec()
          val outcome = describeBestFitForSubstringsInOrder(value, substrings, { 1 })
          assert(outcome is BestFitForSubstringsInOrderOutcome.Mismatch)
          val mismatchOutcome = outcome as BestFitForSubstringsInOrderOutcome.Mismatch
-         mismatchOutcome.matchedIndexes shouldBe listOf(1, 2)
+         mismatchOutcome.bestFitIndexes shouldBe listOf(1, 2)
       }
 
       "return Ineligible when value length exceeds maximum allowed" {
