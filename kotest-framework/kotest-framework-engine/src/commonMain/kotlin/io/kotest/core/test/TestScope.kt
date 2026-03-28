@@ -1,13 +1,9 @@
 package io.kotest.core.test
 
 import io.kotest.common.KotestInternal
-import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.source.sourceRef
-import io.kotest.core.spec.AbstractSpec
 import io.kotest.core.spec.KotestTestScope
-import io.kotest.core.spec.RootTest
-import io.kotest.core.spec.style.TestXMethod
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -40,49 +36,24 @@ interface TestScope : CoroutineScope {
    suspend fun registerTestCase(nested: NestedTest)
 }
 
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class TestRunnable
 
-abstract class SuiteSpec : AbstractSpec() {
+class DefaultTestScope(
+   override val testCase: TestCase,
+   override val coroutineContext: CoroutineContext,
+   private val onRegister: suspend (NestedTest) -> Unit,
+) : TestScope {
 
-   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
-      add(
-         RootTest(
-            name = TestNameBuilder.builder(name).build(),
-            test = { SuiteScope(this).test() },
-            type = TestType.Container,
-            source = sourceRef(),
-            xmethod = TestXMethod.NONE,
-            config = null,
-            factoryId = null
-         )
-      )
+   override suspend fun registerTestCase(nested: NestedTest) {
+      onRegister(nested)
    }
 
-   fun test(name: String, test: suspend TestScope.() -> Unit) {
-      add(
-         RootTest(
-            name = TestNameBuilder.builder(name).build(),
-            test = test,
-            type = TestType.Test,
-            source = sourceRef(),
-            xmethod = TestXMethod.NONE,
-            config = null,
-            factoryId = null
-         )
-      )
-   }
-}
-
-class SuiteScope(
-   val testScope: TestScope,
-) : DelegatingTestScope(testScope) {
-
-   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
-      // testScope.registerTestCase(NestedTest(name, this))
-   }
-
-   fun test(name: String, test: suspend TestScope.() -> Unit) {
-      // testScope.registerTestCase(NestedTest(name, this))
+   companion object {
+      suspend operator fun invoke(testCase: TestCase, onRegister: suspend (NestedTest) -> Unit): TestScope {
+         return DefaultTestScope(testCase, currentCoroutineContext(), onRegister)
+      }
    }
 }
 

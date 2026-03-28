@@ -39,6 +39,7 @@ interface SpecStyle {
          ShouldSpecStyle,
          WordSpecStyle,
          AnnotationSpecStyle,
+         CustomSpecStyle,
       )
 
       /**
