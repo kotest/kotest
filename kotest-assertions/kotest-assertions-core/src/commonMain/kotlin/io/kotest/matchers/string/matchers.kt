@@ -7,6 +7,7 @@ import io.kotest.assertions.submatching.describePartialMatchesInStringForSlice
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.MatcherResultBuilder
+import io.kotest.matchers.NeverNullMatcher
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
@@ -184,18 +185,16 @@ internal fun interface MatchOffset {
    operator fun invoke(value: String) : Int
 }
 
-fun containInOrder(vararg substrings: String) =
-   containSubstringsInOrderDetailed({ 1 }, *substrings) ?:
-   containSubstringsInOrder({ 1 }, *substrings)
+fun containInOrder(vararg substrings: String) = containSubstringsInOrder({ 1 }, *substrings)
 
-internal fun containSubstringsInOrderDetailed(matchOffset: MatchOffset, vararg substrings: String) : Matcher<String?>? {
-   return when(val outcome = describeBestFitForSubstringsInOrder(
-      value = "",
+internal fun containSubstringsInOrder(matchOffset: MatchOffset, vararg substrings: String) = neverNullMatcher<String> { value ->
+   val detailedMatchResult: MatcherResult? = when (val outcome = describeBestFitForSubstringsInOrder(
+      value = value,
       substrings = substrings.toList(),
-   ) ){
+   )) {
       is BestFitForSubstringsInOrderOutcome.Ineligible -> null
-      BestFitForSubstringsInOrderOutcome.TimedOut -> null
-      else -> neverNullMatcher<String>{ value ->
+      is BestFitForSubstringsInOrderOutcome.TimedOut -> null
+      else ->
          MatcherResult(
             passed = outcome is BestFitForSubstringsInOrderOutcome.Match,
             failureMessageFn = {
@@ -206,40 +205,40 @@ internal fun containSubstringsInOrderDetailed(matchOffset: MatchOffset, vararg s
                   )
                }"
             },
-            negatedFailureMessageFn = { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
-      }
+            negatedFailureMessageFn = { "${value.print().value} should not include substrings ${substrings.print().value} in order" }
+         )
    }
-}
 
-internal fun containSubstringsInOrder(matchOffset: MatchOffset, vararg substrings: String) = neverNullMatcher<String> { value ->
-   val matchOutcome = matchSubstrings(
-      value,
-      substrings.toList(),
-      depth = 0,
-      matchOffset = matchOffset,
+   detailedMatchResult ?: run {
+      val matchOutcome = matchSubstrings(
+         value,
+         substrings.toList(),
+         depth = 0,
+         matchOffset = matchOffset,
       )
 
-   val substringFoundEarlier = if (matchOutcome is ContainInOrderOutcome.Mismatch) {
-      describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
-   } else ""
+      val substringFoundEarlier = if (matchOutcome is ContainInOrderOutcome.Mismatch) {
+         describePartialMatchesInStringForSlice(matchOutcome.substring, value).toString()
+      } else ""
 
-   val completeMismatchDescription = joinNonEmpty(
-      "\n",
-      matchOutcome.mistmatchDescription,
-      substringFoundEarlier
-   )
+      val completeMismatchDescription = joinNonEmpty(
+         "\n",
+         matchOutcome.mistmatchDescription,
+         substringFoundEarlier
+      )
 
-   MatcherResult(
-      matchOutcome.match,
-      {
-         "${value.print().value} should include substrings ${substrings.print().value} in order${
-            prefixIfNotEmpty(
-               completeMismatchDescription,
-               "\n"
-            )
-         }"
-      },
-      { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
+      MatcherResult(
+         matchOutcome.match,
+         {
+            "${value.print().value} should include substrings ${substrings.print().value} in order${
+               prefixIfNotEmpty(
+                  completeMismatchDescription,
+                  "\n"
+               )
+            }"
+         },
+         { "${value.print().value} should not include substrings ${substrings.print().value} in order" })
+   }
 }
 
 internal fun prefixIfNotEmpty(value: String, prefix: String) = if (value.isEmpty()) "" else "$prefix$value"
