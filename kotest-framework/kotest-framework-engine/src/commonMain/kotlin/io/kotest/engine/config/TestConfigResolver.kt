@@ -13,6 +13,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
@@ -158,7 +159,14 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.invocations }
          ?: testCase.spec.defaultTestConfig?.invocations
          ?: projectConfig?.invocations
-         ?: invocationCountFromExtensions()
+         /**
+          * Extensions (env var / system property) only apply to leaf tests. Containers
+          * cannot have multiple invocations, but they are still materialized when a child
+          * test is selected, so we skip the extension lookup for them to avoid false errors,
+          * at the detriment of not catching and informing users when they use the invocations setter wrongly
+          * and directly on a container.
+          */
+         ?: (if (testCase.type == TestType.Test) invocationCountFromExtensions() else null)
          ?: Defaults.INVOCATIONS
    }
 

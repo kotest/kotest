@@ -139,6 +139,25 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
 
             resolver.invocations(tc) shouldBe 1
          }
+
+         it("should ignore extension invocation count for container tests") {
+            val registry = DefaultExtensionRegistry()
+            registry.add(object : InvocationCountExtension {
+               override fun getInvocationCount(): Int = 5
+            })
+            val resolver = TestConfigResolver(null, registry)
+
+            val tc = TestCase(
+               InvocationCountCheckInterceptorTest::class.toDescriptor().append("a context"),
+               TestNameBuilder.builder("a context").build(),
+               InvocationCountCheckInterceptorTest(),
+               {},
+               SourceRef.None,
+               TestType.Container,
+            )
+
+            resolver.invocations(tc) shouldBe 1
+         }
       }
 
       describe("interceptor ordering: enabled check before invocation count check") {
@@ -182,7 +201,9 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             result.isError shouldBe false
          }
 
-         it("should still error for an enabled container with invocations > 1") {
+         it("should pass through for an enabled container when invocation count comes from extension") {
+            // Extensions are ignored for containers, so even with an extension returning 5,
+            // the container resolves to the default invocation count of 1 and passes through.
             val registry = DefaultExtensionRegistry()
             registry.add(object : InvocationCountExtension {
                override fun getInvocationCount(): Int = 5
@@ -203,13 +224,16 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             )
             val invocationCheck = InvocationCountCheckInterceptor(testConfigResolver)
 
+            var downstreamFired = false
             val result = enabledCheck.intercept(tc, NoopTestScope(tc, coroutineContext)) { tc2, scope2 ->
                invocationCheck.intercept(tc2, scope2) { _, _ ->
+                  downstreamFired = true
                   TestResult.Success(0.milliseconds)
                }
             }
 
-            result.isError shouldBe true
+            downstreamFired.shouldBeTrue()
+            result.isError shouldBe false
          }
       }
    }
