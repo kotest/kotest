@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 internal actual fun describeBestFitForSubstringsInOrder(
    value: String,
    substrings: List<String>,
+   matchOffset: MatchOffset,
 ) : BestFitForSubstringsInOrderOutcome = when {
    value.length > AssertionsConfig.maxValueSubmatchingSize.value ->
       BestFitForSubstringsInOrderOutcome.Ineligible("value length (${value.length}) exceeds maximum allowed (${AssertionsConfig.maxValueSubmatchingSize.value})")
@@ -22,7 +23,11 @@ internal actual fun describeBestFitForSubstringsInOrder(
       BestFitForSubstringsInOrderOutcome.Ineligible("at least one substring length exceeds maximum allowed (${AssertionsConfig.maxSubstringSize.value})")
    else -> {
       val bestFit = try {
-         findBestFitForSubstringsInOrder(value, substrings)
+         findBestFitForSubstringsInOrder(
+            value,
+            substrings,
+            matchOffset,
+            )
       } catch (_: CancellationException) {
          return BestFitForSubstringsInOrderOutcome.TimedOut
       }
@@ -38,21 +43,41 @@ internal actual fun describeBestFitForSubstringsInOrder(
 internal fun findBestFitForSubstringsInOrder(
    value: String,
    substrings: List<String>,
+   matchOffset: MatchOffset,
 ) : List<Int> {
    return runBlocking {
       withNonVirtualTimeout(AssertionsConfig.maxSubstringSearchDurationInMs.value.milliseconds) {
-         val indexesOfMatches = allIndexesOfSubstrings(value, substrings)
+         val indexesOfMatches = allIndexesOfSubstrings(
+            value,
+            substrings,
+            matchOffset,
+            )
          return@withNonVirtualTimeout powerSetIndexes(substrings.size)
-            .firstOrNull { subset -> subsetFitsInOrder(indexesOfMatches, subset) }
+            .firstOrNull { subset -> subsetFitsInOrder(
+               indexesOfMatches,
+               subset,
+               substrings,
+               matchOffset,
+               ) }
             ?: emptyList()
       }
    }
 }
 
-internal fun allIndexesOfSubstrings(value: String, substrings: List<String>) =
-   substrings.map { substring -> allIndexesOf(value, substring) }
+internal fun allIndexesOfSubstrings(
+   value: String,
+   substrings: List<String>,
+   matchOffset: MatchOffset,
+   ) =
+   substrings.map { substring -> allIndexesOf(
+      value,
+      substring,
+      ) }
 
-internal fun allIndexesOf(value: String, substring: String): List<Int> {
+internal fun allIndexesOf(
+   value: String,
+   substring: String,
+   ): List<Int> {
    val indexes = mutableListOf<Int>()
    var index = value.indexOf(substring)
    while (index >= 0 && indexes.size < 100) {
@@ -62,12 +87,17 @@ internal fun allIndexesOf(value: String, substring: String): List<Int> {
    return indexes
 }
 
-internal fun subsetFitsInOrder(indexesOfMatches: List<List<Int>>, subset: List<Int>) : Boolean {
+internal fun subsetFitsInOrder(
+   indexesOfMatches: List<List<Int>>,
+   subset: List<Int>,
+   substrings: List<String>,
+   matchOffset: MatchOffset,
+   ) : Boolean {
    var nextIndex = -1
    (0 until subset.size).forEach { i ->
       val nextIndexes = indexesOfMatches[subset[i]]
       val nextIndexInSubset = nextIndexes.firstOrNull { it >= nextIndex } ?: return false
-      nextIndex = nextIndexInSubset + 1
+      nextIndex = nextIndexInSubset + matchOffset(substrings[subset[i]])
    }
    return true
 }

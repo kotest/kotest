@@ -15,49 +15,49 @@ class FindBestFitForSubstringsInOrderTest : StringSpec() {
    init {
        "finds a few substrings in order" {
           findBestFitForSubstringsInOrder(
-             shortText, listOf("quick", "fox", "over")
+             shortText, listOf("quick", "fox", "over"), { 1 }
           ) shouldContainExactly listOf(0, 1, 2)
        }
       "finds all words in short text in order" {
          findBestFitForSubstringsInOrder(
-            shortText, shortText.split(" ")
+            shortText, shortText.split(" "), { 1 }
          ) shouldContainExactly listOf(0, 1, 2, 3, 4, 5, 6, 7, 8,)
       }
       "finds best match when mismatch in the beginning" {
          val allWords = shortText.split(" ").replaceElement(0, "wolf")
          findBestFitForSubstringsInOrder(
-            shortText, allWords
+            shortText, allWords, { 1 }
          ) shouldContainExactly listOf(1, 2, 3, 4, 5, 6, 7, 8,)
       }
       "finds best match when mismatch in the middle" {
          val allWords = shortText.split(" ").replaceElement(4, "wolf")
          findBestFitForSubstringsInOrder(
-            shortText, allWords
+            shortText, allWords, { 1 }
          ) shouldContainExactly listOf(0, 1, 2, 3, 5, 6, 7, 8,)
       }
       "finds best match when mismatch in the end" {
          val allWords = shortText.split(" ").replaceElement(8, "wolf")
          findBestFitForSubstringsInOrder(
-            shortText, allWords
+            shortText, allWords, { 1 }
          ) shouldContainExactly listOf(0, 1, 2, 3, 4, 5, 6, 7,)
       }
       "finds some words in long text in order" {
          findBestFitForSubstringsInOrder(
             longText, listOf("Lorem", "ipsum", "dolor", "elit", "sed", "do", "eiusmod", "tempor", "incididunt"
-            )
+            ), { 1 }
          ) shouldContainExactly listOf(0, 1, 2, 3, 4, 5, 6, 7, 8,)
       }
        "finds all words in long text in order" {
           val allWords = longText.split(" ")
           findBestFitForSubstringsInOrder(
-             longText, allWords
+             longText, allWords, { 1 }
           ) shouldContainExactly (0 until allWords.size).toList()
        }
       "finds all words except one in long text in order" {
          val indexToReplace = 7
          val allWords = longText.split(" ").replaceElement(indexToReplace, "NOT_IN_TEXT")
          findBestFitForSubstringsInOrder(
-            longText, allWords
+            longText, allWords, { 1 }
          ) shouldContainExactly (0 until allWords.size).toList().filter { it != indexToReplace }
       }
    }

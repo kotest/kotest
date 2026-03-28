@@ -5,6 +5,7 @@ import io.kotest.assertions.print.print
 internal expect fun describeBestFitForSubstringsInOrder(
    value: String,
    substrings: List<String>,
+   matchOffset: MatchOffset,
 ) : BestFitForSubstringsInOrderOutcome
 
 sealed interface BestFitForSubstringsInOrderOutcome {

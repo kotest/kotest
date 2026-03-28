@@ -191,6 +191,7 @@ internal fun containSubstringsInOrder(matchOffset: MatchOffset, vararg substring
    val detailedMatchResult: MatcherResult? = when (val outcome = describeBestFitForSubstringsInOrder(
       value = value,
       substrings = substrings.toList(),
+      matchOffset = matchOffset,
    )) {
       is BestFitForSubstringsInOrderOutcome.Ineligible -> null
       is BestFitForSubstringsInOrderOutcome.TimedOut -> null
