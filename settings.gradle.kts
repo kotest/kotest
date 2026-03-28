@@ -180,6 +180,8 @@ if (shouldRunJvmOnlyModules) {
       // we shouldn't really add it, people can add it themselves if they want the dependency, but this is a historic artifact
       ":kotest-tests:kotest-tests-junit-jupiter",
 
+      ":kotest-tests:kotest-tests-robolectric",
+
       ":kotest-tests:kotest-tests-junitxml",
       ":kotest-tests:kotest-tests-junit-displaynameformatter",
 
