@@ -1,8 +1,12 @@
 package io.kotest.core.test
 
 import io.kotest.common.KotestInternal
+import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.AbstractSpec
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.RootTest
+import io.kotest.core.spec.style.TestXMethod
 import kotlinx.coroutines.CoroutineScope
 import kotlin.coroutines.CoroutineContext
 
@@ -41,11 +45,31 @@ annotation class TestRunnable
 abstract class SuiteSpec : AbstractSpec() {
 
    fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
-      // add(RootTest(name, test))
+      add(
+         RootTest(
+            name = TestNameBuilder.builder(name).build(),
+            test = { SuiteScope(this).test() },
+            type = TestType.Container,
+            source = sourceRef(),
+            xmethod = TestXMethod.NONE,
+            config = null,
+            factoryId = null
+         )
+      )
    }
 
    fun test(name: String, test: suspend TestScope.() -> Unit) {
-      // add(RootTest(name, test))
+      add(
+         RootTest(
+            name = TestNameBuilder.builder(name).build(),
+            test = test,
+            type = TestType.Test,
+            source = sourceRef(),
+            xmethod = TestXMethod.NONE,
+            config = null,
+            factoryId = null
+         )
+      )
    }
 }
 

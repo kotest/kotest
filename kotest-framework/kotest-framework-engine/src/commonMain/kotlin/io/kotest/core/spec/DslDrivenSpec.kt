@@ -8,6 +8,9 @@ import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.core.spec.style.scopes.RootScope
 import kotlin.js.JsName
 
+/**
+ * Public API for creating a custom spec style.
+ */
 abstract class AbstractSpec : DslDrivenSpec()
 
 /**
