@@ -1607,6 +1607,10 @@ public final class io/kotest/core/source/SourceRefUtils {
 	public static final field INSTANCE Lio/kotest/core/source/SourceRefUtils;
 }
 
+public abstract class io/kotest/core/spec/AbstractSpec : io/kotest/core/spec/DslDrivenSpec {
+	public fun <init> ()V
+}
+
 public abstract class io/kotest/core/spec/CompositeSpec : io/kotest/core/spec/Spec {
 	public fun <init> ([Lio/kotest/core/factory/TestFactory;)V
 	public fun rootTests ()Ljava/util/List;
@@ -2856,6 +2860,13 @@ public final class io/kotest/core/test/DelayControllerKt {
 	public static final fun getTestCoroutineScheduler (Lkotlin/coroutines/CoroutineContext;)Lkotlinx/coroutines/test/TestCoroutineScheduler;
 }
 
+public abstract class io/kotest/core/test/DelegatingTestScope : io/kotest/core/test/TestScope {
+	public fun <init> (Lio/kotest/core/test/TestScope;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getTestCase ()Lio/kotest/core/test/TestCase;
+	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/core/test/Enabled {
 	public static final field Companion Lio/kotest/core/test/Enabled$Companion;
 	public fun <init> (ZLjava/lang/String;)V
@@ -2937,6 +2948,9 @@ public final class io/kotest/core/test/TestCaseSeverityLevel : java/lang/Enum {
 	public final fun getLevel ()I
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/core/test/TestCaseSeverityLevel;
 	public static fun values ()[Lio/kotest/core/test/TestCaseSeverityLevel;
+}
+
+public abstract interface annotation class io/kotest/core/test/TestRunnable : java/lang/annotation/Annotation {
 }
 
 public abstract interface class io/kotest/core/test/TestScope : kotlinx/coroutines/CoroutineScope {
