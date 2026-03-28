@@ -2,6 +2,7 @@ package io.kotest.datatest.tags
 
 import io.kotest.assertions.assertSoftly
 import io.kotest.core.listeners.BeforeTestListener
+import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
@@ -10,24 +11,37 @@ import io.kotest.engine.TestEngineLauncher
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlin.reflect.KClass
+
+/**
+ * Helper that pairs a spec name with a [SpecRef.Function] so the inner [TestEngineLauncher]
+ * can instantiate specs without reflection (which is unsupported on non-JVM targets).
+ */
+private data class SpecFactory(val name: String, val ref: SpecRef.Function) {
+   override fun toString(): String = name
+}
+
+private fun <T : Spec> specFactory(kclass: KClass<T>, factory: () -> T): SpecFactory =
+   SpecFactory(kclass.simpleName ?: error("won't happen"), SpecRef.Function(factory, kclass))
 
 class DataTestTagTest : FunSpec({
 
    withTests(
-      nameFn = {"withXXX applies data test tags to generated tests for $it"},
-      DataTestTagsFunSpec::class,
-      DataTestTagsWordSpec::class,
-      DataTestTagsShouldSpec::class,
-      DataTestTagsFreeSpec::class,
-      DataTestTagsFeatureSpec::class,
-      DataTestTagsExpectSpec::class,
-      DataTestTagsDescribeSpec::class,
-      DataTestTagsBehaviorSpec::class,
-   ){ testClass ->
+      nameFn = { "withXXX applies data test tags to generated tests for ${it.name}" },
+      specFactory(DataTestTagsFunSpec::class) { DataTestTagsFunSpec() },
+      specFactory(DataTestTagsWordSpec::class) { DataTestTagsWordSpec() },
+      specFactory(DataTestTagsShouldSpec::class) { DataTestTagsShouldSpec() },
+      specFactory(DataTestTagsFreeSpec::class) { DataTestTagsFreeSpec() },
+      specFactory(DataTestTagsFeatureSpec::class) { DataTestTagsFeatureSpec() },
+      specFactory(DataTestTagsExpectSpec::class) { DataTestTagsExpectSpec() },
+      specFactory(DataTestTagsDescribeSpec::class) { DataTestTagsDescribeSpec() },
+      specFactory(DataTestTagsBehaviorSpec::class) { DataTestTagsBehaviorSpec() },
+   ) { specFactory ->
       val capturedTests = mutableListOf<TestCase>()
 
       TestEngineLauncher()
-         .withSpecRefs(SpecRef.Reference(testClass))
+         .withSpecRefs(specFactory.ref)
+         .withoutEnvFilters()
          .addExtension(object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                // skip `parent context` and `child context` as they are not data tests
@@ -108,7 +122,8 @@ class DataTestTagTest : FunSpec({
       val capturedTests = mutableListOf<TestCase>()
 
       TestEngineLauncher()
-         .withSpecRefs(SpecRef.Reference(DataTestTagsStringSpec::class))
+         .withSpecRefs(SpecRef.Function(::DataTestTagsStringSpec, DataTestTagsStringSpec::class))
+         .withoutEnvFilters()
          .addExtension(object : BeforeTestListener {
             override suspend fun beforeTest(testCase: TestCase) {
                if(testCase.config?.tags?.isNotEmpty() == true){
