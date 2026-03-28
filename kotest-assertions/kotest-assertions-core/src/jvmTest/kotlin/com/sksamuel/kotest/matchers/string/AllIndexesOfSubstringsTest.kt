@@ -7,7 +7,7 @@ import io.kotest.matchers.string.allIndexesOfSubstrings
 class AllIndexesOfSubstringsTest : StringSpec() {
    init {
        "works for one substring" {
-          allIndexesOfSubstrings("no pain no gain", listOf("no")) shouldBe listOf(0, 8)
+          allIndexesOfSubstrings("no pain no gain", listOf("no")) shouldBe listOf(listOf(0, 8))
        }
       "works for multiple substrings, all found" {
          allIndexesOfSubstrings("no pain no gain", listOf("no", "ain")) shouldBe listOf(
