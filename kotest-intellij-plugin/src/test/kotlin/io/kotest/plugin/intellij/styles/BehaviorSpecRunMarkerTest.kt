@@ -82,7 +82,7 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Disabled - a context disabled given", 1657, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - a context disabled given a disabled when", 1691, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Disabled - a context disabled given a disabled when a disabled test", 1729, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Run All Spec Tests, including data tests", 1815),
+         Gutter("Run This data test block", 1815),
       )
 
 
