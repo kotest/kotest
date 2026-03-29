@@ -28,11 +28,12 @@ interface FreeSpecRootScope : RootScope {
 
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = null
-      ) { FreeSpecTerminalScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(this).build(), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .build { FreeSpecTerminalScope(this).test() }
+      )
    }
 
    /**

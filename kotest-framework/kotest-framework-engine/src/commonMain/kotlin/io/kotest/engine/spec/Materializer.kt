@@ -3,7 +3,6 @@ package io.kotest.engine.spec
 import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.factory.TestFactory
-import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
@@ -16,7 +15,7 @@ import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.test.names.DuplicateTestNameHandler
 
 /**
- * Materializes [TestCase]s at runtime from [RootTest] and [NestedTest] definitions.
+ * Materializes [TestCase]s at runtime from [io.kotest.core.spec.TestDefinition]s.
  */
 class Materializer(
    private val specConfigResolver: SpecConfigResolver,

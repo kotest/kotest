@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.core.factory
 
 import io.kotest.core.TestConfiguration
