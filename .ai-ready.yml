@@ -1,0 +1,215 @@
+project:
+  name: Kotest
+  description: >
+    A flexible and comprehensive testing tool for Kotlin with multiplatform support.
+    Provides a testing framework with multiple spec styles, a rich assertion library,
+    and property-based testing — all as a single cohesive ecosystem.
+  language: Kotlin
+  type: library
+  license: Apache-2.0
+  website: https://kotest.io
+  repository: https://github.com/kotest/kotest
+  documentation: https://kotest.io/docs/quickstart/
+  slack: https://kotlinlang.slack.com/archives/CT0G9SD7Z
+
+architecture:
+  style: Kotlin Multiplatform multi-module Gradle project
+  platforms:
+    - JVM
+    - JS (IR)
+    - WasmJS
+    - WasmWASI
+    - Native (Linux, macOS, Windows/MinGW, iOS, tvOS, watchOS)
+    - Android (via JUnit4 runner)
+  base_package: io.kotest
+  modules:
+    kotest-common:
+      description: >
+        Shared annotations and utilities used across all modules.
+        Defines @ExperimentalKotest, @KotestInternal, @DelicateKotest, @JVMOnly markers.
+      path: kotest-common/
+
+    kotest-framework-engine:
+      description: >
+        The core test execution engine. Contains spec styles (FunSpec, StringSpec,
+        BehaviorSpec, etc.), test lifecycle management, configuration (AbstractProjectConfig),
+        extensions/listeners, concurrency control, and platform-specific runners.
+      path: kotest-framework/kotest-framework-engine/
+      key_packages:
+        - io.kotest.core.spec.style          # Spec base classes (FunSpec, StringSpec, etc.)
+        - io.kotest.core.spec.style.scopes   # DSL scope receivers for each spec style
+        - io.kotest.core.config              # AbstractProjectConfig and configuration
+        - io.kotest.core.extensions          # Extension interfaces (TestCaseExtension, SpecExtension, etc.)
+        - io.kotest.core.listeners           # Listener interfaces (BeforeTestListener, AfterSpecListener, etc.)
+        - io.kotest.core.test                # TestCase, TestScope, TestType, test config
+        - io.kotest.engine                   # Internal engine: execution, interceptors, concurrency
+
+    kotest-assertions-shared:
+      description: >
+        Foundation of the assertion library. Defines the Matcher<T> interface,
+        MatcherResult (Simple, Diffable, Throwable variants), assertSoftly,
+        error collectors, and assertion counters.
+      path: kotest-assertions/kotest-assertions-shared/
+
+    kotest-assertions-core:
+      description: >
+        The main assertion library with matchers for strings, collections, numbers,
+        maps, types, exceptions, and more. Also includes nondeterministic helpers
+        (eventually, continually, until) and inspectors.
+      path: kotest-assertions/kotest-assertions-core/
+
+    kotest-assertions-json:
+      description: Matchers for JSON string comparison and validation.
+      path: kotest-assertions/kotest-assertions-json/
+
+    kotest-assertions-ktor:
+      description: Matchers for Ktor HTTP requests and responses.
+      path: kotest-assertions/kotest-assertions-ktor/
+
+    kotest-property:
+      description: >
+        Property-based testing engine. Defines the Gen<A> sealed class hierarchy
+        with Arb (random/arbitrary values with edge cases and shrinking) and
+        Exhaustive (closed-space enumeration). Includes built-in generators for
+        all common types, seed persistence, and statistical coverage reporting.
+      path: kotest-property/
+      key_types:
+        - Gen<A>         # Sealed base class for all generators
+        - Arb<A>         # Random value generators with edge cases
+        - Exhaustive<A>  # Closed-space value enumeration
+        - Sample<A>      # Generated value with shrink tree
+        - Shrinker<A>    # Shrinking strategy for finding minimal failing cases
+
+    kotest-property-lifecycle:
+      description: Property testing extensions that integrate with the kotest test framework lifecycle.
+      path: kotest-property/kotest-property-lifecycle/
+
+    kotest-property-permutations:
+      description: The 6.0+ permutations-based DSL for property testing.
+      path: kotest-property/kotest-property-permutations/
+
+    kotest-extensions:
+      description: >
+        Integration extensions for third-party libraries: Allure, Spring, Testcontainers,
+        WireMock, MockServer, Koin, JUnit5, Pitest, BlockHound, Decoroutinator.
+        Some are Linux-only in CI due to runner constraints.
+      path: kotest-extensions/
+
+    kotest-runner-junit-platform:
+      description: Shared support for executing kotest tests via the JUnit Platform.
+      path: kotest-runner/kotest-runner-junit-platform/
+
+    kotest-runner-junit5:
+      description: Primary JVM runner that integrates with JUnit5/Gradle/IntelliJ.
+      path: kotest-runner/kotest-runner-junit5/
+
+    kotest-runner-junit4:
+      description: JUnit4 runner, primarily for Android instrumented tests.
+      path: kotest-runner/kotest-runner-junit4/
+
+    kotest-intellij-plugin:
+      description: IntelliJ IDEA plugin for running and navigating kotest tests.
+      path: kotest-intellij-plugin/
+
+    kotest-bom:
+      description: Bill of Materials (BOM) for consistent version alignment.
+      path: kotest-bom/
+
+  spec_styles:
+    - name: FunSpec
+      description: Simple function-style tests with `test("name") { }` blocks.
+    - name: StringSpec
+      description: Minimalist style where test name is a string mapped to a lambda.
+    - name: BehaviorSpec
+      description: Given/When/Then BDD-style testing.
+    - name: DescribeSpec
+      description: Jasmine/Mocha-style describe/it blocks.
+    - name: ShouldSpec
+      description: Tests using `should("name") { }` syntax.
+    - name: WordSpec
+      description: Tests reading as English sentences with `"subject" should { }`.
+    - name: FreeSpec
+      description: Unrestricted nesting with `"name" - { }` operator.
+    - name: FeatureSpec
+      description: Cucumber-like feature/scenario style.
+    - name: ExpectSpec
+      description: Tests using `expect("name") { }` syntax.
+
+build:
+  tool: Gradle (Kotlin DSL)
+  wrapper_version: See gradle/wrapper/gradle-wrapper.properties
+  key_files:
+    - build.gradle.kts                    # Root project: API validation, publishing aggregation
+    - settings.gradle.kts                 # Module inclusion, conditional CI/platform filtering
+    - gradle.properties                   # JVM args, Kotlin flags, kotest target toggles
+    - buildSrc/src/main/kotlin/Ci.kt      # Version computation, CI detection, platform flags
+  convention_plugins:
+    location: buildSrc/src/main/kotlin/
+    plugins:
+      - kotest-base.gradle.kts
+      - kotest-jvm-conventions.gradle.kts
+      - kotest-js-conventions.gradle.kts
+      - kotest-native-conventions.gradle.kts
+      - kotest-multiplatform-library-conventions.gradle.kts
+      - kotest-publishing-conventions.gradle.kts
+      - kotlin-conventions.gradle.kts
+  typesafe_project_accessors: true
+  binary_compatibility_validator: true
+  commands:
+    build: ./gradlew check
+    test_jvm_only: ./gradlew check -PjvmOnly=true
+    test_specific_module: ./gradlew :kotest-assertions:kotest-assertions-core:check
+    api_dump: ./gradlew apiDump
+    api_check: ./gradlew apiCheck
+
+testing:
+  self_testing_note: >
+    Kotest tests itself using its own framework. The kotest-tests/ directory
+    contains integration and regression tests organized by concern (callback order,
+    concurrency, config, parallelism, etc.). Each test module is a separate Gradle
+    subproject to isolate JVM system properties and project configuration.
+  test_module_pattern: "kotest-tests/kotest-tests-*"
+  indentation: 3 spaces (per CONTRIBUTING.md)
+
+ci:
+  platform: GitHub Actions
+  pr_workflow: .github/workflows/pr_main.yml
+  master_workflow: .github/workflows/master.yml
+  matrix_strategy:
+    - JVM-only on Ubuntu
+    - JS+Wasm on Ubuntu
+    - Native (Linux+Android) on Ubuntu
+    - Native (MinGW) on Windows
+    - Native (Apple) on macOS
+  api_validation_required: true
+
+versioning:
+  current_major: 6
+  version_env: RELEASE_VERSION (release) or KOTEST_RELEASE_MAJOR_MINOR (snapshot base)
+  snapshot_format: "{major.minor.patch}.{GITHUB_RUN_NUMBER}-SNAPSHOT"
+  local_format: "{major.minor.patch}-LOCAL"
+  publishing: Maven Central via nmcp aggregation plugin
+
+key_patterns:
+  matcher_creation: >
+    Matchers implement Matcher<T> with a test(value: T): MatcherResult method.
+    Use MatcherResultBuilder for constructing results. DiffableMatcherResult enables
+    IntelliJ "Click to see difference" links.
+  extension_vs_listener: >
+    Extensions modify engine behavior (intercept execution). Listeners receive
+    events without changing behavior (callbacks). Prefer listeners when possible.
+  spec_architecture: >
+    Each spec style (FunSpec, etc.) is an abstract class extending DslDrivenSpec,
+    which extends Spec. The DSL is provided via scope interfaces (e.g. FunSpecRootScope)
+    that define the test registration methods. Scopes are composited via Kotlin interfaces.
+  test_factory: >
+    TestFactory allows defining reusable test sets that can be included in any spec
+    via the include() function, optionally with a name prefix.
+  project_config: >
+    Global configuration is done via a class extending AbstractProjectConfig placed
+    at io.kotest.provided.ProjectConfig. On JVM, the FQN can be overridden via
+    the kotest.framework.config.fqn system property.
+  conditional_modules: >
+    settings.gradle.kts conditionally includes modules based on CI environment,
+    OS, and branch. JVM-only modules skip non-Linux CI runners. Linux-only
+    extension modules (Allure, Spring, Testcontainers) only build on Linux runners.
