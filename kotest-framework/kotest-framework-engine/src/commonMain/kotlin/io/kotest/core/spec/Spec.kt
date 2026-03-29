@@ -433,7 +433,19 @@ data class RootTest(
    val factoryId: FactoryId?, // if this root test was added from a factory
 )
 
-data class RootTestBuilder(
+/**
+ * A [TestDefinition] is a test that has not yet been materialized at runtime.
+ */
+data class TestDefinition(
+   val name: TestName,
+   val test: suspend TestScope.() -> Unit,
+   val type: TestType,
+   val source: SourceRef,
+   val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
+   val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
+)
+
+data class TestDefinitionBuilder(
    val name: TestName,
    val test: suspend TestScope.() -> Unit,
    val type: TestType,
@@ -443,23 +455,22 @@ data class RootTestBuilder(
 ) {
 
    companion object {
-      fun builder(name: TestName, type: TestType, test: suspend TestScope.() -> Unit): RootTestBuilder {
-         return RootTestBuilder(name, test, type, sourceRef(), TestXMethod.NONE, null)
+      fun builder(name: TestName, type: TestType, test: suspend TestScope.() -> Unit): TestDefinitionBuilder {
+         return TestDefinitionBuilder(name, test, type, sourceRef(), TestXMethod.NONE, null)
       }
    }
 
-   fun withConfig(config: TestConfig): RootTestBuilder = copy(config = config)
-   fun withXmethod(xmethod: TestXMethod): RootTestBuilder = copy(xmethod = xmethod)
+   fun withConfig(config: TestConfig): TestDefinitionBuilder = copy(config = config)
+   fun withXmethod(xmethod: TestXMethod): TestDefinitionBuilder = copy(xmethod = xmethod)
 
-   fun build(): RootTest {
-      return RootTest(
+   fun build(): TestDefinition {
+      return TestDefinition(
          name = name,
          test = test,
          type = type,
          source = source,
          xmethod = xmethod,
          config = config,
-         factoryId = null,
       )
    }
 }
