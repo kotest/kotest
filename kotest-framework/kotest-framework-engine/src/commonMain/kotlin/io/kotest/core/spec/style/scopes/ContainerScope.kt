@@ -240,6 +240,7 @@ abstract class AbstractContainerScope(
 
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
 
+   @Suppress("DEPRECATION")
    @Deprecated("Use TestDefinition. Will be removed in 7.0")
    override suspend fun registerTestCase(nested: NestedTest) {
       registered = true
