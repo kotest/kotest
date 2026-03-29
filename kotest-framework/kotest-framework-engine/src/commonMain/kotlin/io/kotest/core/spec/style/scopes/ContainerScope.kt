@@ -53,7 +53,7 @@ interface ContainerScope : TestScope {
       test: suspend TestScope.() -> Unit,
    ) {
       registerTestCase(
-         NestedTest(
+         TestDefinition(
             name = name,
             xmethod = xmethod,
             config = config,
