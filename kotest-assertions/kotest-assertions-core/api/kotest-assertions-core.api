@@ -20,6 +20,9 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxErrorsOutput ()I
 	public final fun getMaxSimilarityPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxSubstringCount ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxSubstringSearchDurationInMs ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxSubstringSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxSubtringSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxValueSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMinSubtringSubmatchingSize ()Lio/kotest/assertions/EnvironmentConfigValue;
@@ -3468,6 +3471,42 @@ public final class io/kotest/matchers/stats/MatchersKt {
 	public static final fun shouldNotHaveVariance (Ljava/util/Collection;Ljava/math/BigDecimal;I)V
 	public static synthetic fun shouldNotHaveVariance$default (Ljava/util/Collection;DIILjava/lang/Object;)V
 	public static synthetic fun shouldNotHaveVariance$default (Ljava/util/Collection;Ljava/math/BigDecimal;IILjava/lang/Object;)V
+}
+
+public abstract interface class io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome {
+}
+
+public final class io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Ineligible : io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome {
+	public fun <init> (Ljava/lang/String;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun copy (Ljava/lang/String;)Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Ineligible;
+	public static synthetic fun copy$default (Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Ineligible;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Ineligible;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getReason ()Ljava/lang/String;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Match : io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome {
+	public static final field INSTANCE Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Match;
+}
+
+public final class io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Mismatch : io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome {
+	public fun <init> (Ljava/util/List;Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;Ljava/util/List;)Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Mismatch;
+	public static synthetic fun copy$default (Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Mismatch;Ljava/util/List;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$Mismatch;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBestFitIndexes ()Ljava/util/List;
+	public final fun getDescription ()Ljava/lang/String;
+	public final fun getIndexesOfMatches ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$TimedOut : io/kotest/matchers/string/BestFitForSubstringsInOrderOutcome {
+	public static final field INSTANCE Lio/kotest/matchers/string/BestFitForSubstringsInOrderOutcome$TimedOut;
 }
 
 public final class io/kotest/matchers/string/CaseKt {
