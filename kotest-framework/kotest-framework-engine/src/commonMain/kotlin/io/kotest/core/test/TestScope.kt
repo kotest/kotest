@@ -44,7 +44,19 @@ interface TestScope : CoroutineScope {
     *
     * This method is not intended for use directly, but by spec styles which use this to support their DSL.
     */
-   suspend fun registerTestCase(test: TestDefinition)
+   suspend fun registerTestCase(test: TestDefinition) {
+      @Suppress("DEPRECATION")
+      registerTestCase(
+         NestedTest(
+            name = test.name,
+            config = test.config,
+            type = test.type,
+            test = test.test,
+            source = test.source,
+            xmethod = test.xmethod,
+         )
+      )
+   }
 }
 
 @Target(AnnotationTarget.FUNCTION)
