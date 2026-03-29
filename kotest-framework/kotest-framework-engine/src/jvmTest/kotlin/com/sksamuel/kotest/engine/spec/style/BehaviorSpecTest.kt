@@ -322,7 +322,13 @@ class BehaviorSpecTest : BehaviorSpec() {
          }
       }
 
+      xGiven("A disabled Given") {
+         error("boom")
+      }
 
+      xgiven("a disabled given") {
+         error("boom")
+      }
    }
 
    override suspend fun afterSpec(spec: Spec) {

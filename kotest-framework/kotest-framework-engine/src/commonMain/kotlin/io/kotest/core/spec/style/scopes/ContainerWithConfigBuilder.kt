@@ -13,7 +13,7 @@ import kotlin.time.Duration
 
 class ContainerWithConfigBuilder<T>(
    private val name: TestName,
-   private val context: ContainerScope, // this should really be called scope, but cannot rename for backwards compatibility
+   private val context: ContainerScope, // this should really be called scope but cannot be renamed due to keeping backwards compatibility
    private val xmethod: TestXMethod,
    private val contextFn: (TestScope) -> T
 ) {

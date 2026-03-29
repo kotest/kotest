@@ -79,24 +79,20 @@ class DescribeSpecContainerScope(
     * Registers a container test.
     */
    suspend fun describe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      describe(name = name, xmethod = TestXMethod.NONE, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(describeName(name), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .build { DescribeSpecContainerScope(this).test() }
+      )
    }
 
    /**
     * Registers a container test.
     */
    suspend fun xdescribe(name: String, test: suspend DescribeSpecContainerScope.() -> Unit) {
-      describe(name = name, xmethod = TestXMethod.DISABLED, test = test)
-   }
-
-   private suspend fun describe(
-      name: String,
-      xmethod: TestXMethod,
-      test: suspend DescribeSpecContainerScope.() -> Unit
-   ) {
       registerTest(
          TestDefinitionBuilder.builder(describeName(name), TestType.Container)
-            .withXmethod(xmethod)
+            .withXmethod(TestXMethod.DISABLED)
             .build { DescribeSpecContainerScope(this).test() }
       )
    }

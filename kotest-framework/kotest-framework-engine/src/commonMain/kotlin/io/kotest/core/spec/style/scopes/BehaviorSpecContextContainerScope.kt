@@ -19,12 +19,6 @@ class BehaviorSpecContextContainerScope(
    suspend fun given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       given(name, xmethod = TestXMethod.NONE, test)
 
-   suspend fun fgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      given(name, xmethod = TestXMethod.FOCUSED, test)
-
-   suspend fun fGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
-      given(name, xmethod = TestXMethod.FOCUSED, test)
-
    suspend fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       given(name, xmethod = TestXMethod.DISABLED, test)
 
@@ -43,28 +37,19 @@ class BehaviorSpecContextContainerScope(
       )
    }
 
-   private fun givenName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build()
-
-   suspend fun Given(name: String) =
+   fun Given(name: String) =
       addGiven(name, xmethod = TestXMethod.NONE)
 
-   suspend fun given(name: String) =
+   fun given(name: String) =
       addGiven(name, xmethod = TestXMethod.NONE)
 
-   suspend fun fgiven(name: String) =
-      addGiven(name, xmethod = TestXMethod.FOCUSED)
-
-   suspend fun fGiven(name: String) =
-      addGiven(name, xmethod = TestXMethod.FOCUSED)
-
-   suspend fun xgiven(name: String) =
+   fun xgiven(name: String) =
       addGiven(name, xmethod = TestXMethod.DISABLED)
 
-   suspend fun xGiven(name: String) =
+   fun xGiven(name: String) =
       addGiven(name, xmethod = TestXMethod.DISABLED)
 
-   private suspend fun addGiven(
+   private fun addGiven(
       name: String,
       xmethod: TestXMethod
    ): ContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
@@ -87,9 +72,6 @@ class BehaviorSpecContextContainerScope(
       )
    }
 
-   private fun contextName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
-
    @Suppress("FunctionName")
    fun Context(name: String) =
       addContext(name = name, xmethod = TestXMethod.NONE)
@@ -102,6 +84,12 @@ class BehaviorSpecContextContainerScope(
 
    fun xContext(name: String) =
       addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   private fun givenName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build()
+
+   private fun contextName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
 
    private fun addContext(
       name: String,
