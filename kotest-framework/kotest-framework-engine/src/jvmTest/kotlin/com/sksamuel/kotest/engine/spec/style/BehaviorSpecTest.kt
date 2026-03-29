@@ -272,6 +272,18 @@ class BehaviorSpecTest : BehaviorSpec() {
                         xthen("should be ignored") {
                            error("boom")
                         }
+                        xand("xand should be ignored") {
+                           error("boom")
+                        }
+                        xand("xand with config should be ignored").config(enabled = false) {
+                           error("boom")
+                        }
+                        xAnd("xAnd should be ignored") {
+                           error("boom")
+                        }
+                        xAnd("xAnd with config should be ignored").config(enabled = false) {
+                           error("boom")
+                        }
                      }
                   }
 

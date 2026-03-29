@@ -102,11 +102,13 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
     * ```
     */
    suspend infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      registerContainer(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
-      ) { FreeSpecContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(name).build(), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .withConfig(config)
+            .build { FreeSpecContainerScope(this).test() }
+      )
    }
 
    /**
@@ -118,11 +120,13 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
     * ```
     */
    suspend infix operator fun FreeSpecContextConfigBuilder.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      registerContainer(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
-      ) { FreeSpecTerminalScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(name).build(), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .withConfig(config)
+            .build { FreeSpecTerminalScope(this).test() }
+      )
    }
 
    /**

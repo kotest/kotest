@@ -34,11 +34,12 @@ class WordSpecWhenContainerScope(
       `when`(this, xmethod = TestXMethod.DISABLED, init)
 
    private suspend fun `when`(name: String, xmethod: TestXMethod, test: suspend WordSpecWhenContainerScope.() -> Unit) {
-      registerContainer(
-         name = TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null,
-      ) { WordSpecWhenContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(whenName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { WordSpecWhenContainerScope(this).test() }
+      )
    }
 
    suspend infix fun String.Should(test: suspend WordSpecShouldContainerScope.() -> Unit) {
@@ -159,7 +160,7 @@ class WordSpecWhenContainerScope(
    }
 
    private fun whenName(name: String): TestName =
-      TestNameBuilder.builder(name).withSuffix(" when").build()
+      TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build()
 
    private fun shouldName(name: String): TestName =
       TestNameBuilder.builder(name).withSuffix(" should").withDefaultAffixes().build()
