@@ -1,7 +1,7 @@
 package io.kotest.samples.gradle
 
 import io.kotest.core.spec.AbstractSpec
-import io.kotest.core.annotation.TestRunnable
+import io.kotest.core.spec.style.TestRunnable
 
 @TestRunnable
 fun runTest(name: String, action: () -> Unit) { action() }

@@ -59,10 +59,6 @@ interface TestScope : CoroutineScope {
    }
 }
 
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class TestRunnable
-
 @KotestInternal
 class DefaultTestScope(
    override val testCase: TestCase,
@@ -95,18 +91,3 @@ class DefaultTestScope(
    }
 }
 
-abstract class DelegatingTestScope(private val testScope: TestScope) : TestScope {
-
-   override val testCase: TestCase = testScope.testCase
-   override val coroutineContext: CoroutineContext = testScope.coroutineContext
-
-   @Suppress("DEPRECATION")
-   @Deprecated("Use TestDefinition. Will be removed in 7.0")
-   override suspend fun registerTestCase(nested: NestedTest) {
-      testScope.registerTestCase(nested)
-   }
-
-   override suspend fun registerTest(test: TestDefinition) {
-      testScope.registerTest(test)
-   }
-}

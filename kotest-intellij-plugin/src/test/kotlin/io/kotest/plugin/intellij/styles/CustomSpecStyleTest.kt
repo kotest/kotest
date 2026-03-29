@@ -8,7 +8,7 @@ import io.kotest.plugin.intellij.psi.elementAtLine
 import java.nio.file.Paths
 
 /**
- * Tests for [AbstractSpecStyle], which recognises calls to `@TestRunnable`-annotated functions
+ * Tests for [AbstractSpecStyle], which recognizes calls to `@TestRunnable`-annotated functions
  * with a [String] first parameter as Kotest tests.
  *
  * The test fixture (`customspec.kt`) contains:
@@ -18,7 +18,7 @@ import java.nio.file.Paths
  * ```
  * line  1: package io.kotest.samples.gradle
  * line  3: import io.kotest.core.spec.AbstractSpec
- * line  4: import io.kotest.core.annotation.TestRunnable
+ * line  4: import io.kotest.core.spec.style.TestRunnable
  * line  6: @TestRunnable
  * line  7: fun runTest(name: String, action: () -> Unit) { action() }
  * line  9: fun notAnnotated(name: String, action: () -> Unit) { action() }
@@ -46,7 +46,7 @@ class CustomSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       val psiFiles = myFixture.configureByFiles(
          "/customspec.kt",
          "/io/kotest/core/spec/AbstractSpec.kt",
-         "/io/kotest/core/annotation/TestRunnable.kt"
+         "/io/kotest/core/spec/style/TestRunnable.kt"
       )
 
       ApplicationManager.getApplication().runReadAction {
@@ -62,7 +62,7 @@ class CustomSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       val psiFiles = myFixture.configureByFiles(
          "/customspec.kt",
          "/io/kotest/core/spec/AbstractSpec.kt",
-         "/io/kotest/core/annotation/TestRunnable.kt"
+         "/io/kotest/core/spec/style/TestRunnable.kt"
       )
 
       ApplicationManager.getApplication().runReadAction {
@@ -81,7 +81,7 @@ class CustomSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       val psiFiles = myFixture.configureByFiles(
          "/customspec.kt",
          "/io/kotest/core/spec/AbstractSpec.kt",
-         "/io/kotest/core/annotation/TestRunnable.kt"
+         "/io/kotest/core/spec/style/TestRunnable.kt"
       )
 
       ApplicationManager.getApplication().runReadAction {

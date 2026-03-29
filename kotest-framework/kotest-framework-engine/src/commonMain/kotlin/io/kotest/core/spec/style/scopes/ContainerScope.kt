@@ -1,6 +1,5 @@
 package io.kotest.core.spec.style.scopes
 
-import io.kotest.common.KotestInternal
 import io.kotest.core.Tuple2
 import io.kotest.core.extensions.Extension
 import io.kotest.core.listeners.AfterContainerListener
@@ -35,7 +34,8 @@ private val outOfOrderCallbacksException =
    InvalidDslException("Cannot register callbacks after a test has been defined. To disable this behavior set the global configuration value allowOutOfOrderCallbacks to true but be aware this can lead to subtle bugs in your tests.")
 
 /**
- * Extends a [TestScope] with convenience methods for registering tests and listeners.
+ * Extends a [TestScope] with convenience methods for extensions
+ * and callbacks that apply to this and nested scopes.
  */
 @KotestTestScope
 interface ContainerScope : TestScope {
@@ -44,52 +44,6 @@ interface ContainerScope : TestScope {
     * Returns true if this scope has at least one registered child.
     */
    fun hasChildren(): Boolean
-
-   @Deprecated("Use registerTestCase with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
-   suspend fun registerTest(
-      name: TestName,
-      xmethod: TestXMethod,
-      config: TestConfig?,
-      type: TestType,
-      test: suspend TestScope.() -> Unit,
-   ) {
-      registerTest(
-         TestDefinitionBuilder.builder(name, type)
-            .withXmethod(xmethod)
-            .withConfig(config)
-            .build(test)
-      )
-   }
-
-   @Deprecated("Use registerTestCase with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
-   suspend fun registerContainer(
-      name: TestName,
-      xmethod: TestXMethod,
-      config: TestConfig?,
-      test: suspend TestScope.() -> Unit,
-   ) {
-      registerTest(
-         TestDefinitionBuilder.builder(name, TestType.Container)
-            .withXmethod(xmethod)
-            .withConfig(config)
-            .build(test)
-      )
-   }
-
-   @Deprecated("Use registerTestCase with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
-   suspend fun registerTest(
-      name: TestName,
-      xmethod: TestXMethod,
-      config: TestConfig?,
-      test: suspend TestScope.() -> Unit,
-   ) {
-      registerTest(
-         TestDefinitionBuilder.builder(name, TestType.Test)
-            .withXmethod(xmethod)
-            .withConfig(config)
-            .build(test)
-      )
-   }
 
    private fun appendExtension(extension: Extension) {
       testCase.spec.extension(extension)
@@ -112,7 +66,7 @@ interface ContainerScope : TestScope {
    }
 
    /**
-    * Registers a callback that is executed once for this container after all tests have completed.
+    * Registers a callback executed once for this container after all tests have completed.
     *
     * This differs from [afterContainer] which is executed after each container including child containers,
     * whereas this callback is executed only for this exact container.
@@ -236,31 +190,75 @@ interface ContainerScope : TestScope {
          }
       })
    }
+
+   @Deprecated("Use registerTest with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
+   suspend fun registerTest(
+      name: TestName,
+      xmethod: TestXMethod,
+      config: TestConfig?,
+      type: TestType,
+      test: suspend TestScope.() -> Unit,
+   ) {
+      registerTest(
+         TestDefinitionBuilder.builder(name, type)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build(test)
+      )
+   }
+
+   @Deprecated("Use registerTest with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
+   suspend fun registerContainer(
+      name: TestName,
+      xmethod: TestXMethod,
+      config: TestConfig?,
+      test: suspend TestScope.() -> Unit,
+   ) {
+      registerTest(
+         TestDefinitionBuilder.builder(name, TestType.Container)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build(test)
+      )
+   }
+
+   @Deprecated("Use registerTest with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
+   suspend fun registerTest(
+      name: TestName,
+      xmethod: TestXMethod,
+      config: TestConfig?,
+      test: suspend TestScope.() -> Unit,
+   ) {
+      registerTest(
+         TestDefinitionBuilder.builder(name, TestType.Test)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build(test)
+      )
+   }
 }
 
 @KotestTestScope
-@KotestInternal
-@Deprecated("Use DelegatingContainerScope instead. Will be removed in 7.0")
 abstract class AbstractContainerScope(
    private val testScope: TestScope
 ) : ContainerScope {
 
-   private var registered = false
    override val testCase: TestCase = testScope.testCase
-
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
+
+   private var _hasChildren = false
 
    @Deprecated("Use registerTest with TestDefinitionBuilder. Will be removed in 7.0")
    override suspend fun registerTestCase(nested: NestedTest) {
-      registered = true
+      _hasChildren = true
       @Suppress("DEPRECATION")
       testScope.registerTestCase(nested)
    }
 
    override suspend fun registerTest(test: TestDefinition) {
-      registered = true
+      _hasChildren = true
       testScope.registerTest(test)
    }
 
-   override fun hasChildren(): Boolean = registered
+   override fun hasChildren(): Boolean = _hasChildren
 }
