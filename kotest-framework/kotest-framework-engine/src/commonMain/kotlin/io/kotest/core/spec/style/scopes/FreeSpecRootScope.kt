@@ -99,11 +99,13 @@ interface FreeSpecRootScope : RootScope {
     * ```
     */
    infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
-      ) { FreeSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(name).build(), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .withConfig(config)
+            .build { FreeSpecContainerScope(this).test() }
+      )
    }
 
    /**
