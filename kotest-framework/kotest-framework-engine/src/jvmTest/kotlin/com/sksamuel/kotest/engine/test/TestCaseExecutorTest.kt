@@ -5,6 +5,7 @@ import io.kotest.common.reflection.bestName
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef.Reference
+import io.kotest.core.spec.TestDefinition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase

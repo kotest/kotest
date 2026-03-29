@@ -1,9 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.spec.RootTest
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * Extends [RootScope] with dsl-methods for the 'fun spec' style.
@@ -11,20 +13,20 @@ import io.kotest.core.test.TestScope
 interface FunSpecRootScope : RootScope {
 
    /**
-    * Adds a container [RootTest] that uses a [FunSpecContainerScope] as the test context.
+    * Adds a container that uses a [FunSpecContainerScope] as the test context.
     */
    fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       context(name, TestXMethod.NONE, test)
    }
 
    /**
-    * Adds a focused container [RootTest] that uses a [FunSpecContainerScope] as the test context.
+    * Adds a focused container that uses a [FunSpecContainerScope] as the test context.
     */
    fun fcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) =
       context(name, TestXMethod.FOCUSED, test)
 
    /**
-    * Adds a disabled container [RootTest] that uses a [FunSpecContainerScope] as the test context.
+    * Adds a disabled container that uses a [FunSpecContainerScope] as the test context.
     */
    fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) =
       context(name, TestXMethod.DISABLED, test)
@@ -34,36 +36,36 @@ interface FunSpecRootScope : RootScope {
    fun xcontext(name: String) = context(name, TestXMethod.DISABLED)
 
    /**
-    * Adds a [RootTest], with the given name and config taken from the config builder.
+    * Adds a test with the given name and config taken from the config builder.
     */
    fun test(name: String): RootTestWithConfigBuilder = test(name, TestXMethod.NONE)
 
    /**
-    * Adds a focused [RootTest], with the given name and with config taken from the config builder.
+    * Adds a focused test, with the given name and with config taken from the config builder.
     */
    fun ftest(name: String): RootTestWithConfigBuilder = test(name, TestXMethod.FOCUSED)
 
    /**
-    * Adds a disabled [RootTest], with the given name and with config taken from the config builder.
+    * Adds a disabled test, with the given name and with config taken from the config builder.
     */
    fun xtest(name: String): RootTestWithConfigBuilder = test(name, TestXMethod.DISABLED)
 
    /**
-    * Adds a [RootTest], with the given name and with config taken from the config builder.
+    * Adds a test, with the given name and with config taken from the config builder.
     */
    fun test(name: String, test: suspend TestScope.() -> Unit) {
       test(name, TestXMethod.NONE, test)
    }
 
    /**
-    * Adds a focused [RootTest], with the given name and default config.
+    * Adds a focused test, with the given name and default config.
     */
    fun ftest(name: String, test: suspend TestScope.() -> Unit) {
       test(name, TestXMethod.FOCUSED, test)
    }
 
    /**
-    * Adds a disabled [RootTest], with the given name and default config.
+    * Adds a disabled test, with the given name and default config.
     */
    fun xtest(name: String, test: suspend TestScope.() -> Unit) {
       test(name, TestXMethod.DISABLED, test)
@@ -77,26 +79,30 @@ interface FunSpecRootScope : RootScope {
       )
    }
 
-   private fun test(name: String, xMethod: TestXMethod, test: suspend TestScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(name).build(),
-         xmethod = xMethod,
-         config = null,
-         test = test,
+   private fun test(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
+      add(
+         TestDefinitionBuilder.builder(
+            TestNameBuilder.builder(name).build(),
+            TestType.Test,
+         ).withXmethod(xmethod)
+            .build { FunSpecContainerScope(this).test() }
       )
    }
 
-   private fun context(name: String, xmethod: TestXMethod, test: suspend FunSpecContainerScope.() -> Unit) =
-      addContainer(
-         testName = TestNameBuilder.builder(name).withPrefix("context ").build(),
-         xmethod = xmethod,
-         config = null
-      ) { FunSpecContainerScope(this).test() }
+   private fun context(name: String, xmethod: TestXMethod, test: suspend FunSpecContainerScope.() -> Unit) {
+      add(
+         TestDefinitionBuilder.builder(contextName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { FunSpecContainerScope(this).test() }
+      )
+   }
 
    private fun context(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<FunSpecContainerScope> =
       RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         name = contextName(name),
          xmethod = xmethod,
          context = this,
       ) { FunSpecContainerScope(it) }
+
+   fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("context ").build()
 }

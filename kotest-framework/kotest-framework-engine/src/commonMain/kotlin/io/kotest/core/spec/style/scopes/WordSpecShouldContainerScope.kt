@@ -4,10 +4,12 @@ import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 import kotlin.time.Duration
 
 /**
@@ -61,9 +63,10 @@ class WordSpecShouldContainerScope(
 
    suspend infix operator fun String.invoke(test: suspend WordSpecTerminalScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = null
-      ) { WordSpecTerminalScope(this).test() }
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(this).build(), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .build { WordSpecTerminalScope(this).test() }
+      )
    }
 }

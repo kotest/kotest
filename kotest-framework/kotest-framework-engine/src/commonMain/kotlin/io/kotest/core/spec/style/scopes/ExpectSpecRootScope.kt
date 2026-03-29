@@ -1,8 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * Top level registration methods for ExpectSpec methods.
@@ -26,7 +29,7 @@ interface ExpectSpecRootScope : RootScope {
     */
    fun context(name: String): RootContainerWithConfigBuilder<ExpectSpecContainerScope> =
       RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         name = contextName(name),
          xmethod = TestXMethod.NONE,
          context = this
       ) { ExpectSpecContainerScope(it) }
@@ -36,7 +39,7 @@ interface ExpectSpecRootScope : RootScope {
     */
    fun fcontext(name: String): RootContainerWithConfigBuilder<ExpectSpecContainerScope> =
       RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         name = contextName(name),
          xmethod = TestXMethod.FOCUSED,
          context = this
       ) { ExpectSpecContainerScope(it) }
@@ -46,7 +49,7 @@ interface ExpectSpecRootScope : RootScope {
     */
    fun xcontext(name: String): RootContainerWithConfigBuilder<ExpectSpecContainerScope> =
       RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         name = contextName(name),
          xmethod = TestXMethod.DISABLED,
          context = this
       ) { ExpectSpecContainerScope(it) }
@@ -72,11 +75,12 @@ interface ExpectSpecRootScope : RootScope {
       test: suspend ExpectSpecContainerScope.() -> Unit,
       xmethod: TestXMethod,
    ) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
-         xmethod = xmethod,
-         config = null,
-      ) { ExpectSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { ExpectSpecContainerScope(this).test() }
+      )
    }
 
    private fun addExpect(
@@ -84,11 +88,12 @@ interface ExpectSpecRootScope : RootScope {
       test: suspend ExpectSpecContainerScope.() -> Unit,
       xmethod: TestXMethod,
    ) {
-      addTest(
-         testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
-         xmethod = xmethod,
-         config = null,
-      ) { ExpectSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(expectName(name), TestType.Test)
+            .withXmethod(xmethod)
+            .build { ExpectSpecContainerScope(this).test() }
+      )
    }
 
    private fun addExpect(
@@ -97,8 +102,12 @@ interface ExpectSpecRootScope : RootScope {
    ): RootTestWithConfigBuilder {
       return RootTestWithConfigBuilder(
          context = this,
-         name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
+         name = expectName(name),
          xmethod = xmethod,
       )
    }
+
+   private fun expectName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+
+   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").build()
 }
