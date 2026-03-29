@@ -57,18 +57,21 @@ fun parseSchema(@Language("json") jsonSchema: String): JsonSchema =
 @ExperimentalKotest
 internal object SchemaDeserializer : JsonContentPolymorphicSerializer<JsonSchemaElement>(JsonSchemaElement::class) {
    override fun selectDeserializer(element: JsonElement): DeserializationStrategy<JsonSchemaElement> {
-      if (element.jsonObject.containsKey("anyOf")) return JsonSchemaAnyOfSerializer
-      if (element.jsonObject.containsKey("oneOf")) return JsonSchemaOneOfSerializer
-      if (element.jsonObject.containsKey("enum")) return JsonSchemaEnumSerializer
-      return when (val type = element.jsonObject["type"]?.jsonPrimitive?.content) {
-         "array" -> JsonSchemaArraySerializer
-         "object" -> JsonSchema.JsonObject.serializer()
-         "string" -> JsonSchemaStringSerializer
-         "integer" -> JsonSchemaIntegerSerializer
-         "number" -> JsonSchemaNumberSerializer
-         "boolean" -> JsonSchema.JsonBoolean.serializer()
-         "null" -> JsonSchema.Null.serializer()
-         else -> error("Unknown type: $type")
+      val obj = element.jsonObject
+      return when {
+         obj.containsKey("anyOf") -> JsonSchemaAnyOfSerializer
+         obj.containsKey("oneOf") -> JsonSchemaOneOfSerializer
+         obj.containsKey("enum") -> JsonSchemaEnumSerializer
+         else -> when (val type = obj["type"]?.jsonPrimitive?.content) {
+            "array" -> JsonSchemaArraySerializer
+            "object" -> JsonSchema.JsonObject.serializer()
+            "string" -> JsonSchemaStringSerializer
+            "integer" -> JsonSchemaIntegerSerializer
+            "number" -> JsonSchemaNumberSerializer
+            "boolean" -> JsonSchema.JsonBoolean.serializer()
+            "null" -> JsonSchema.Null.serializer()
+            else -> error("Unknown type: $type")
+         }
       }
    }
 }
@@ -242,17 +245,29 @@ internal object JsonSchemaNumberSerializer : KSerializer<JsonSchema.JsonDecimal>
    }
 }
 
+/**
+ * Shared deserialization logic for composite (combinator) schemas like anyOf/oneOf.
+ * Reads an array of sub-schemas from the given [keyword] field and wraps them using [wrap].
+ */
+@ExperimentalKotest
+private fun <T : JsonSchemaElement> deserializeCompositeSchema(
+   decoder: Decoder,
+   keyword: String,
+   wrap: (List<JsonSchemaElement>) -> T
+): T {
+   require(decoder is JsonDecoder) { "JsonSchema can only be deserialized from JSON" }
+   val jsonObject = decoder.decodeJsonElement().jsonObject
+   val schemas = jsonObject[keyword]!!.jsonArray.map {
+      schemaJsonConfig.decodeFromJsonElement(SchemaDeserializer, it)
+   }
+   require(schemas.isNotEmpty()) { "$keyword requires at least one schema" }
+   return wrap(schemas)
+}
+
 @ExperimentalKotest
 internal object JsonSchemaAnyOfSerializer : KSerializer<JsonSchema.JsonAnyOf> {
-   override fun deserialize(decoder: Decoder): JsonSchema.JsonAnyOf {
-      require(decoder is JsonDecoder) { "JsonSchema can only be deserialized from JSON" }
-      val jsonObject = decoder.decodeJsonElement().jsonObject
-      val schemas = jsonObject["anyOf"]!!.jsonArray.map {
-         schemaJsonConfig.decodeFromJsonElement(SchemaDeserializer, it)
-      }
-      require(schemas.isNotEmpty()) { "anyOf requires at least one schema" }
-      return JsonSchema.JsonAnyOf(schemas)
-   }
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonAnyOf =
+      deserializeCompositeSchema(decoder, "anyOf", JsonSchema::JsonAnyOf)
 
    override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonAnyOf") {
       element<JsonElement>("anyOf")
@@ -265,15 +280,8 @@ internal object JsonSchemaAnyOfSerializer : KSerializer<JsonSchema.JsonAnyOf> {
 
 @ExperimentalKotest
 internal object JsonSchemaOneOfSerializer : KSerializer<JsonSchema.JsonOneOf> {
-   override fun deserialize(decoder: Decoder): JsonSchema.JsonOneOf {
-      require(decoder is JsonDecoder) { "JsonSchema can only be deserialized from JSON" }
-      val jsonObject = decoder.decodeJsonElement().jsonObject
-      val schemas = jsonObject["oneOf"]!!.jsonArray.map {
-         schemaJsonConfig.decodeFromJsonElement(SchemaDeserializer, it)
-      }
-      require(schemas.isNotEmpty()) { "oneOf requires at least one schema" }
-      return JsonSchema.JsonOneOf(schemas)
-   }
+   override fun deserialize(decoder: Decoder): JsonSchema.JsonOneOf =
+      deserializeCompositeSchema(decoder, "oneOf", JsonSchema::JsonOneOf)
 
    override val descriptor = buildClassSerialDescriptor("JsonSchema.JsonOneOf") {
       element<JsonElement>("oneOf")
