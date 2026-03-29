@@ -1,0 +1,116 @@
+# Kotest - Cursor Editor Rules
+
+## Project Context
+
+Kotest is a Kotlin Multiplatform testing framework. It provides:
+1. A test framework with 9+ spec styles (FunSpec, StringSpec, BehaviorSpec, DescribeSpec, ShouldSpec, WordSpec, FreeSpec, FeatureSpec, ExpectSpec)
+2. A rich assertion/matchers library built on the Matcher<T> interface
+3. A property-based testing engine with Arb (random) and Exhaustive (closed-space) generators
+
+The codebase is a multi-module Gradle project using Kotlin DSL, targeting JVM, JS, WasmJS, WasmWASI, and Native platforms.
+
+## Code Style Rules
+
+- Use 3-space indentation everywhere (not 4). This is the project standard per CONTRIBUTING.md.
+- Follow Kotlin Coding Conventions (https://kotlinlang.org/docs/reference/coding-conventions.html).
+- Minimize mutability. Prefer val, immutable collections, and data classes.
+- The base package is `io.kotest`. Legacy test code may use `com.sksamuel.kotest`.
+
+## Source Set Structure
+
+This is a Kotlin Multiplatform project. Always place code in the most general source set:
+- `src/commonMain/kotlin/` for cross-platform code (preferred)
+- `src/jvmMain/kotlin/` only when using JVM-specific APIs
+- `src/jsMain/kotlin/` only when using JS-specific APIs
+- `src/nativeMain/kotlin/` only when using Native-specific APIs
+- Tests go in corresponding test source sets (commonTest, jvmTest, etc.)
+
+## Key Types and Patterns
+
+### Spec Styles
+All spec styles extend DslDrivenSpec -> Spec. The DSL is provided via scope interfaces:
+```kotlin
+abstract class FunSpec(body: FunSpec.() -> Unit = {}) : DslDrivenSpec(), FunSpecRootScope {
+   init { body() }
+}
+```
+
+### Matchers
+Implement `Matcher<T>` from `io.kotest.matchers`:
+```kotlin
+fun bePositive() = Matcher<Int> { value ->
+   MatcherResult.Companion(
+      passed = value > 0,
+      failureMessageFn = { "$value should be positive" },
+      negatedFailureMessageFn = { "$value should not be positive" },
+   )
+}
+```
+- Prefer DiffableMatcherResult when actual/expected are available (enables IntelliJ diff)
+- Always provide both `should` and `shouldNot` extension functions
+- Use MatcherResultBuilder for more complex result construction
+
+### Property Testing
+Generators are either Arb<A> (random with edge cases) or Exhaustive<A> (all values):
+```kotlin
+abstract class Arb<out A> : Gen<A>() {
+   abstract fun edgecase(rs: RandomSource): Sample<A>?
+   abstract fun sample(rs: RandomSource): Sample<A>
+}
+```
+- Provide meaningful edge cases (0, -1, MAX_VALUE, empty string, etc.)
+- Implement Shrinker<A> when the type can be meaningfully reduced
+
+### Extensions vs Listeners
+- Extensions intercept and can modify engine behavior (TestCaseExtension, SpecExtension)
+- Listeners receive events without changing behavior (BeforeTestListener, AfterSpecListener)
+- Prefer listeners when you only need callbacks
+
+### Project Configuration
+Global config via `AbstractProjectConfig` at `io.kotest.provided.ProjectConfig`:
+```kotlin
+class ProjectConfig : AbstractProjectConfig() {
+   override val specExecutionMode = SpecExecutionMode.Concurrent
+   override val testCaseOrder = TestCaseOrder.Random
+   override val extensions = listOf(MyExtension())
+}
+```
+
+## Module Responsibilities
+
+- `kotest-common` -- shared annotations only (@ExperimentalKotest, @KotestInternal)
+- `kotest-assertions-shared` -- Matcher<T> interface, MatcherResult, assertSoftly, error collectors
+- `kotest-assertions-core` -- all standard matchers (strings, collections, numbers, etc.)
+- `kotest-property` -- Gen/Arb/Exhaustive hierarchy, built-in generators, shrinking
+- `kotest-framework-engine` -- spec styles, lifecycle, config, extensions, execution engine
+- `kotest-runner-junit5` -- primary JVM runner for Gradle and IntelliJ
+- `kotest-extensions/*` -- third-party integrations (each in its own module)
+- `kotest-tests/*` -- integration tests (each in a separate module for isolation)
+
+## Build Commands
+
+```bash
+./gradlew check                     # Full build and test
+./gradlew check -PjvmOnly=true     # JVM-only (much faster)
+./gradlew apiDump                   # Regenerate API dumps after public API changes
+./gradlew apiCheck                  # Validate binary compatibility
+```
+
+## Important Annotations
+
+- `@ExperimentalKotest` -- opt-in for experimental features
+- `@KotestInternal` -- internal API, excluded from binary compatibility checks
+- `@DelicateKotest` -- advanced features requiring careful usage
+- `@JVMOnly` -- JVM-platform-only features
+- `@SoftDeprecated` -- features scheduled for removal in a future major version
+
+## Test Module Isolation
+
+The `kotest-tests/` directory contains many small Gradle modules rather than one large test suite. Each module can have its own system properties and project configuration without conflicts. When adding tests that need specific JVM flags or project config, create a new test module.
+
+## Binary Compatibility
+
+The project enforces binary compatibility via Kotlin Binary Compatibility Validator. Any change to public API requires:
+1. Running `./gradlew apiDump`
+2. Committing the updated `.api` files in the module's `api/` directory
+3. API validation runs as a required CI check on every PR
