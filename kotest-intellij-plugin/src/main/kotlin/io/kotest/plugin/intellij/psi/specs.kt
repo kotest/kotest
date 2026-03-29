@@ -27,15 +27,15 @@ fun PsiFile.specs(): List<KtClassOrObject> {
 }
 
 /**
- * Returns true if this [KtClassOrObject] is a subclass of [Spec], including classes
+ * Returns true if this [KtClassOrObject] is a subclass of a spec, including classes
  * which are subclasses of intermediate classes.
  */
 fun KtClassOrObject.isSpec(): Boolean {
    return when (this) {
-      is KtObjectDeclaration -> this.getAllSuperClasses()
-      is KtClass -> this.getAllSuperClasses()
-      else -> emptyList()
-   }.any { it.asString() == "io.kotest.core.spec.Spec" }
+      is KtObjectDeclaration -> this.specStyle() != null
+      is KtClass -> this.specStyle() != null
+      else -> false
+   }
 }
 
 /**
