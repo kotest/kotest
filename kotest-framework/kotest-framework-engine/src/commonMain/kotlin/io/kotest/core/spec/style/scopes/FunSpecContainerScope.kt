@@ -57,7 +57,7 @@ class FunSpecContainerScope(
    fun context(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         context = this,
+         scope = this,
          xmethod = TestXMethod.NONE,
          contextFn = { FunSpecContainerScope(it) }
       )
@@ -69,7 +69,7 @@ class FunSpecContainerScope(
    fun fcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         context = this,
+         scope = this,
          xmethod = TestXMethod.FOCUSED,
       ) { FunSpecContainerScope(it) }
    }
@@ -80,7 +80,7 @@ class FunSpecContainerScope(
    fun xcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         context = this,
+         scope = this,
          xmethod = TestXMethod.DISABLED,
       ) { FunSpecContainerScope(it) }
    }

@@ -454,7 +454,6 @@ data class TestDefinition(
 
 data class TestDefinitionBuilder(
    val name: TestName,
-   val test: suspend TestScope.() -> Unit,
    val type: TestType,
    val source: SourceRef,
    val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
@@ -463,8 +462,8 @@ data class TestDefinitionBuilder(
 ) {
 
    companion object {
-      fun builder(name: TestName, type: TestType, test: suspend TestScope.() -> Unit): TestDefinitionBuilder {
-         return TestDefinitionBuilder(name, test, type, sourceRef(), TestXMethod.NONE, null, null)
+      fun builder(name: TestName, type: TestType): TestDefinitionBuilder {
+         return TestDefinitionBuilder(name, type, sourceRef(), TestXMethod.NONE, null, null)
       }
    }
 
@@ -472,7 +471,7 @@ data class TestDefinitionBuilder(
    fun withXmethod(xmethod: TestXMethod): TestDefinitionBuilder = copy(xmethod = xmethod)
    fun withFactoryId(factoryId: FactoryId): TestDefinitionBuilder = copy(factoryId = factoryId)
 
-   fun build(): TestDefinition {
+   fun build(test: suspend TestScope.() -> Unit): TestDefinition {
       return TestDefinition(
          name = name,
          test = test,

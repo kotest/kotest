@@ -190,6 +190,12 @@ class BehaviorSpecTest : BehaviorSpec() {
          xGiven("d") {
             error("boom")
          }
+         xgiven("e").config(enabled = false) {
+            error("boom")
+         }
+         xGiven("f").config(enabled = false) {
+            error("boom")
+         }
       }
 
       xGiven("should be ignored 1") {

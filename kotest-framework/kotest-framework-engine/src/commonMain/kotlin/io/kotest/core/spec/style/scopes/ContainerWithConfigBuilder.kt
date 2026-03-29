@@ -2,19 +2,30 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
 class ContainerWithConfigBuilder<T>(
    private val name: TestName,
-   private val context: ContainerScope,
+   private val scope: ContainerScope,
    private val xmethod: TestXMethod,
    private val contextFn: (TestScope) -> T
 ) {
+
+   suspend fun config(config: TestConfig, test: suspend T.() -> Unit) {
+      scope.registerTest(
+         TestDefinitionBuilder.builder(name, TestType.Container)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build { contextFn(this).test() }
+      )
+   }
 
    suspend fun config(
       enabled: Boolean? = null,
@@ -35,6 +46,6 @@ class ContainerWithConfigBuilder<T>(
          failfast = failfast,
          blockingTest = blockingTest,
       )
-      context.registerContainer(name, xmethod, config) { contextFn(this).test() }
+      config(config, test)
    }
 }

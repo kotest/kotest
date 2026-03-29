@@ -54,10 +54,10 @@ interface ContainerScope : TestScope {
       test: suspend TestScope.() -> Unit,
    ) {
       registerTest(
-         TestDefinitionBuilder.builder(name, type, test)
+         TestDefinitionBuilder.builder(name, type)
             .withXmethod(xmethod)
             .withConfig(config)
-            .build()
+            .build(test)
       )
    }
 
@@ -69,10 +69,10 @@ interface ContainerScope : TestScope {
       test: suspend TestScope.() -> Unit,
    ) {
       registerTest(
-         TestDefinitionBuilder.builder(name, TestType.Container, test)
+         TestDefinitionBuilder.builder(name, TestType.Container)
             .withXmethod(xmethod)
             .withConfig(config)
-            .build()
+            .build(test)
       )
    }
 
@@ -84,10 +84,10 @@ interface ContainerScope : TestScope {
       test: suspend TestScope.() -> Unit,
    ) {
       registerTest(
-         TestDefinitionBuilder.builder(name, TestType.Test, test)
+         TestDefinitionBuilder.builder(name, TestType.Test)
             .withXmethod(xmethod)
             .withConfig(config)
-            .build()
+            .build(test)
       )
    }
 

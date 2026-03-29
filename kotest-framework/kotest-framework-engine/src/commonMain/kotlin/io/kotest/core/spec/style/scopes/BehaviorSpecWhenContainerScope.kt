@@ -81,7 +81,7 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
    ): ContainerWithConfigBuilder<BehaviorSpecWhenContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
-         context = this,
+         scope = this,
          xmethod = xmethod
       ) { BehaviorSpecWhenContainerScope(it) }
    }

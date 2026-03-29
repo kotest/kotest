@@ -51,7 +51,7 @@ class ShouldSpecContainerScope(
    fun context(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         context = this,
+         scope = this,
          xmethod = TestXMethod.NONE
       ) {
          ShouldSpecContainerScope(it)
@@ -61,7 +61,7 @@ class ShouldSpecContainerScope(
    fun fcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         context = this,
+         scope = this,
          xmethod = TestXMethod.FOCUSED,
       ) { ShouldSpecContainerScope(it) }
    }
@@ -69,7 +69,7 @@ class ShouldSpecContainerScope(
    fun xcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         context = this,
+         scope = this,
          xmethod = TestXMethod.DISABLED,
       ) { ShouldSpecContainerScope(it) }
    }

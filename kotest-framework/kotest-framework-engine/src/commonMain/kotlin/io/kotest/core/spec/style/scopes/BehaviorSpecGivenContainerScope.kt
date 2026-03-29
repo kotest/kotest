@@ -74,7 +74,7 @@ class BehaviorSpecGivenContainerScope(
    ): ContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
-         context = this,
+         scope = this,
          xmethod = xmethod
       ) { BehaviorSpecGivenContainerScope(it) }
    }
@@ -125,7 +125,7 @@ class BehaviorSpecGivenContainerScope(
    ): ContainerWithConfigBuilder<BehaviorSpecWhenContainerScope> {
       return ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build(),
-         context = this,
+         scope = this,
          xmethod = xmethod
       ) { BehaviorSpecWhenContainerScope(it) }
    }
