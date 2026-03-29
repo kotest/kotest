@@ -1849,7 +1849,7 @@ public final class io/kotest/core/spec/style/AnnotationSpec$Test$None : java/lan
 	public static final field INSTANCE Lio/kotest/core/spec/style/AnnotationSpec$Test$None;
 }
 
-public abstract class io/kotest/core/spec/style/BehaviorSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/BehaviorSpecRootScope {
+public abstract class io/kotest/core/spec/style/BehaviorSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/BehaviorSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -1963,7 +1963,7 @@ public final class io/kotest/core/spec/style/DescribeSpecTestFactoryConfiguratio
 	public fun xit (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract class io/kotest/core/spec/style/ExpectSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/ExpectSpecRootScope {
+public abstract class io/kotest/core/spec/style/ExpectSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/ExpectSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2027,7 +2027,7 @@ public final class io/kotest/core/spec/style/FeatureSpecTestFactoryConfiguration
 	public fun xfeature (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract class io/kotest/core/spec/style/FreeSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/FreeSpecRootScope {
+public abstract class io/kotest/core/spec/style/FreeSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/FreeSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2093,7 +2093,7 @@ public final class io/kotest/core/spec/style/FunSpecTestFactoryConfiguration : i
 	public fun xtest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract class io/kotest/core/spec/style/ShouldSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/ShouldSpecRootScope {
+public abstract class io/kotest/core/spec/style/ShouldSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/ShouldSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
