@@ -18,7 +18,7 @@ internal class TerminalTestScope(
       error("Nested tests are not supported")
    }
 
-   override suspend fun registerTestCase(test: TestDefinition {
+   override suspend fun registerTestCase(test: TestDefinition) {
       error("Nested tests are not supported")
    }
 }
