@@ -42,8 +42,8 @@ internal class JsTestFrameworkTestEngineListener(
       // we have to launch the engine inside a test and return a promise, so mocha will wait for the engine to finish
       // otherwise our engine is running in a coroutine and mocha will have exited before we start emitting tests
       // The downside is that we get an extra node in the output (todo, perhaps the IDE plugin can hide this?)
-      kotlinJsTestFramework.suite("Kotest", false) {
-         kotlinJsTestFramework.test("Executor", false) {
+      framework.suite("Kotest", false) {
+         framework.test("Executor", false) {
             promise {
                channel.receive() // will suspend this placeholder test until all tests have completed
             }

@@ -72,12 +72,12 @@ class JsTestFrameworkTestEngineListenerTest : FunSpec({
 
    context("engineStarted") {
 
-      test("registers an anchor suite named 'Kotest Engine'") {
+      test("registers an anchor suite named 'Kotest'") {
          val fw = RecordingFramework()
          val listener = JsTestFrameworkTestEngineListener(fw)
          listener.engineStarted()
          fw.suites.size shouldBe 1
-         fw.suites[0].name shouldBe "Kotest Engine"
+         fw.suites[0].name shouldBe "Kotest"
          fw.suites[0].ignored shouldBe false
       }
 
