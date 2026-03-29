@@ -2312,12 +2312,6 @@ public final class io/kotest/core/spec/style/scopes/BehaviorSpecWhenContainerSco
 	public final fun Then (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun and (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun and (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun fAnd (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun fAnd (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun fThen (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
-	public final fun fand (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun fand (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun fthen (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
 	public final fun getTestScope ()Lio/kotest/core/test/TestScope;
 	public final fun then (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/TestWithConfigBuilder;
 	public final fun then (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
@@ -2570,10 +2564,6 @@ public final class io/kotest/core/spec/style/scopes/FunSpecContainerScope : io/k
 	public fun <init> (Lio/kotest/core/test/TestScope;)V
 	public final fun context (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
 	public final fun context (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun fcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
-	public final fun fcontext (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun ftest (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public final fun ftest (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun test (Ljava/lang/String;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun test (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public final fun xcontext (Ljava/lang/String;)Lio/kotest/core/spec/style/scopes/ContainerWithConfigBuilder;
