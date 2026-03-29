@@ -57,7 +57,7 @@ class DefaultTestScope(
    private val onRegister: suspend (NestedTest) -> Unit,
 ) : TestScope {
 
-   @Deprecated("Use registerTestCase(NestedTest) instead")
+   @Deprecated("Use registerTestCase(TestDefinition) instead")
    override suspend fun registerTestCase(nested: NestedTest) {
       onRegister(nested)
    }
