@@ -14,6 +14,7 @@ import kotlin.js.JsName
  * Note: There is no difference between this and the parent, but it is simply a better name and one
  * that is being chosen as part of the public API.
  */
+@Suppress("DEPRECATION")
 abstract class AbstractSpec : DslDrivenSpec()
 
 /**

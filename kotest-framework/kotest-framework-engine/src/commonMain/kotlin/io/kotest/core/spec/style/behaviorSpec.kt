@@ -5,7 +5,7 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
 import io.kotest.core.names.TestNameBuilder
-import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.AbstractSpec
 import io.kotest.core.spec.style.scopes.BehaviorSpecContextContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecGivenContainerScope
 import io.kotest.core.spec.style.scopes.BehaviorSpecRootScope
@@ -26,7 +26,7 @@ fun behaviorSpec(block: BehaviorSpecTestFactoryConfiguration.() -> Unit): TestFa
 
 class BehaviorSpecTestFactoryConfiguration : TestFactoryConfiguration(), BehaviorSpecRootScope
 
-abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : DslDrivenSpec(), BehaviorSpecRootScope {
+abstract class BehaviorSpec(body: BehaviorSpec.() -> Unit = {}) : AbstractSpec(), BehaviorSpecRootScope {
    init {
       body()
    }

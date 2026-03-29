@@ -1913,7 +1913,7 @@ public final class io/kotest/core/spec/style/BehaviorSpecTestFactoryConfiguratio
 	public fun xgiven (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract class io/kotest/core/spec/style/DescribeSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/DescribeSpecRootScope {
+public abstract class io/kotest/core/spec/style/DescribeSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/DescribeSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2001,7 +2001,7 @@ public final class io/kotest/core/spec/style/ExpectSpecTestFactoryConfiguration 
 	public fun xexpect (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract class io/kotest/core/spec/style/FeatureSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/FeatureSpecRootScope {
+public abstract class io/kotest/core/spec/style/FeatureSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/FeatureSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2055,7 +2055,7 @@ public final class io/kotest/core/spec/style/FreeSpecTestFactoryConfiguration : 
 	public fun minus (Ljava/lang/String;Lkotlin/jvm/functions/Function2;)V
 }
 
-public abstract class io/kotest/core/spec/style/FunSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/FunSpecRootScope {
+public abstract class io/kotest/core/spec/style/FunSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/FunSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -2164,7 +2164,7 @@ public final class io/kotest/core/spec/style/UnwrapIfReflectionCallKt {
 	public static final fun unwrapIfReflectionCall (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 }
 
-public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/DslDrivenSpec, io/kotest/core/spec/style/scopes/WordSpecRootScope {
+public abstract class io/kotest/core/spec/style/WordSpec : io/kotest/core/spec/AbstractSpec, io/kotest/core/spec/style/scopes/WordSpecRootScope {
 	public fun <init> ()V
 	public fun <init> (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
