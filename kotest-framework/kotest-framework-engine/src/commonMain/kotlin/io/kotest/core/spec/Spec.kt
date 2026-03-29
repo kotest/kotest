@@ -423,6 +423,7 @@ abstract class Spec : TestConfiguration() {
  * The materialization process turns a root test into a test case.
  */
 @KotestInternal
+@Deprecated("This is an internal Kotest class. Use TestDefinition instead which is part of the public API. Deprecated since 6.2", ReplaceWith("TestDefinition"))
 data class RootTest(
    val name: TestName,
    val test: suspend TestScope.() -> Unit,
