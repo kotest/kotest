@@ -1158,6 +1158,10 @@ public abstract interface class io/kotest/core/extensions/EnabledExtension : io/
 public abstract interface class io/kotest/core/extensions/Extension {
 }
 
+public abstract interface class io/kotest/core/extensions/InvocationCountExtension : io/kotest/core/extensions/Extension {
+	public abstract fun getInvocationCount ()Ljava/lang/Integer;
+}
+
 public abstract interface class io/kotest/core/extensions/LazyMaterialized {
 	public abstract fun get (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
@@ -3969,6 +3973,11 @@ public final class io/kotest/engine/extensions/filter/IncludePatternEnvDescripto
 public abstract class io/kotest/engine/extensions/filter/TestPatternIncludeDescriptorFilter : io/kotest/engine/extensions/filter/DescriptorFilter {
 	public fun <init> ()V
 	public final fun filter (Ljava/lang/String;Lio/kotest/core/descriptors/Descriptor;)Lio/kotest/engine/extensions/filter/DescriptorFilterResult;
+}
+
+public final class io/kotest/engine/extensions/invocationcount/SystemPropertyOrEnvInvocationCountExtension : io/kotest/core/extensions/InvocationCountExtension {
+	public static final field INSTANCE Lio/kotest/engine/extensions/invocationcount/SystemPropertyOrEnvInvocationCountExtension;
+	public fun getInvocationCount ()Ljava/lang/Integer;
 }
 
 public final class io/kotest/engine/extensions/tags/SystemPropertyOrEnvTagExtension : io/kotest/core/extensions/TagExtension {
