@@ -13,13 +13,13 @@ import kotlin.time.Duration
 
 class ContainerWithConfigBuilder<T>(
    private val name: TestName,
-   private val scope: ContainerScope,
+   private val context: ContainerScope, // this should really be called scope, but cannot rename for backwards compatibility
    private val xmethod: TestXMethod,
    private val contextFn: (TestScope) -> T
 ) {
 
    suspend fun config(config: TestConfig, test: suspend T.() -> Unit) {
-      scope.registerTest(
+      context.registerTest(
          TestDefinitionBuilder.builder(name, TestType.Container)
             .withXmethod(xmethod)
             .withConfig(config)

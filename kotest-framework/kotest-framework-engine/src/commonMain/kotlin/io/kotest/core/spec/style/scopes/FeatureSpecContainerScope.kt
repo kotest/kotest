@@ -59,7 +59,7 @@ class FeatureSpecContainerScope(
    private suspend fun addFeature(name: String, xmethod: TestXMethod) =
       ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         scope = this,
+         context = this,
          xmethod = xmethod,
       ) { FeatureSpecContainerScope(it) }
 

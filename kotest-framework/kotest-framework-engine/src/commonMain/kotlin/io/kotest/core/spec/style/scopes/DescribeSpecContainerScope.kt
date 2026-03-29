@@ -64,14 +64,14 @@ class DescribeSpecContainerScope(
    fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).build(),
-         scope = this,
+         context = this,
          xmethod = TestXMethod.NONE,
       ) { DescribeSpecContainerScope(it) }
 
    fun xcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
          name = contextName(name),
-         scope = this,
+         context = this,
          xmethod = TestXMethod.DISABLED,
       ) { DescribeSpecContainerScope(it) }
 
@@ -104,14 +104,14 @@ class DescribeSpecContainerScope(
    fun describe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
          name = describeName(name),
-         scope = this,
+         context = this,
          xmethod = TestXMethod.NONE,
       ) { DescribeSpecContainerScope(it) }
 
    fun xdescribe(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
          name = describeName(name),
-         scope = this,
+         context = this,
          xmethod = TestXMethod.DISABLED,
       ) { DescribeSpecContainerScope(it) }
 

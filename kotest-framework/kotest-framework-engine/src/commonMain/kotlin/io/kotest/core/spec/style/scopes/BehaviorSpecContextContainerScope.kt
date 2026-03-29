@@ -70,7 +70,7 @@ class BehaviorSpecContextContainerScope(
    ): ContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
       return ContainerWithConfigBuilder(
          name = givenName(name),
-         scope = this,
+         context = this,
          xmethod = xmethod
       ) { BehaviorSpecGivenContainerScope(it) }
    }
@@ -109,7 +109,7 @@ class BehaviorSpecContextContainerScope(
    ): ContainerWithConfigBuilder<BehaviorSpecContextContainerScope> {
       return ContainerWithConfigBuilder(
          name = contextName(name),
-         scope = this,
+         context = this,
          xmethod = xmethod
       ) { BehaviorSpecContextContainerScope(it) }
    }

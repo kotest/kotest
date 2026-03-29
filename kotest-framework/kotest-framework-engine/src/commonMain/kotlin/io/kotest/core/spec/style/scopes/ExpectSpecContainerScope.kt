@@ -63,7 +63,7 @@ class ExpectSpecContainerScope(
    private suspend fun addContext(name: String, xmethod: TestXMethod) =
       ContainerWithConfigBuilder(
          name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
-         scope = this,
+         context = this,
          xmethod = xmethod,
       ) { ExpectSpecContainerScope(it) }
 
