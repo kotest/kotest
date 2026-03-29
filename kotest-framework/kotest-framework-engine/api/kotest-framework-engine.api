@@ -2733,6 +2733,7 @@ public final class io/kotest/core/spec/style/scopes/StringSpecScope : io/kotest/
 
 public abstract class io/kotest/core/spec/style/scopes/TerminalScope : io/kotest/core/test/TestScope {
 	public fun <init> ()V
+	public fun registerTestCase (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -2869,6 +2870,7 @@ public final class io/kotest/core/test/DefaultTestScope : io/kotest/core/test/Te
 	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;Lkotlin/jvm/functions/Function2;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getTestCase ()Lio/kotest/core/test/TestCase;
+	public fun registerTestCase (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
@@ -3005,6 +3007,7 @@ public abstract interface annotation class io/kotest/core/test/TestRunnable : ja
 
 public abstract interface class io/kotest/core/test/TestScope : kotlinx/coroutines/CoroutineScope {
 	public abstract fun getTestCase ()Lio/kotest/core/test/TestCase;
+	public abstract fun registerTestCase (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/test/TestStatus : java/lang/Enum {
@@ -4878,6 +4881,7 @@ public final class io/kotest/engine/test/scopes/NoopTestScope : io/kotest/core/t
 	public fun <init> (Lio/kotest/core/test/TestCase;Lkotlin/coroutines/CoroutineContext;)V
 	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
 	public fun getTestCase ()Lio/kotest/core/test/TestCase;
+	public fun registerTestCase (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 

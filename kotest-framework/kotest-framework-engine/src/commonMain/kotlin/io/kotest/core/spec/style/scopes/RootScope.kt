@@ -34,14 +34,13 @@ fun RootScope.addTest(
    test: suspend TestScope.() -> Unit
 ) {
    add(
-      RootTest(
+      TestDefinition(
          name = testName,
          test = test,
          type = TestType.Test,
          source = sourceRef(),
          xmethod = if (disabled) TestXMethod.DISABLED else TestXMethod.NONE,
          config = config,
-         factoryId = null,
       )
    )
 }
@@ -56,14 +55,13 @@ fun RootScope.addTest(
    test: suspend TestScope.() -> Unit
 ) {
    add(
-      RootTest(
+      TestDefinition(
          name = testName,
          test = test,
          type = TestType.Test,
          source = sourceRef(),
          xmethod = xmethod,
          config = config,
-         factoryId = null,
       )
    )
 }
@@ -78,14 +76,13 @@ fun RootScope.addContainer(
    test: suspend TestScope.() -> Unit
 ) {
    add(
-      RootTest(
+      TestDefinition(
          name = testName,
          test = test,
          type = TestType.Container,
          source = sourceRef(),
          xmethod = xmethod,
          config = config,
-         factoryId = null,
       )
    )
 }
