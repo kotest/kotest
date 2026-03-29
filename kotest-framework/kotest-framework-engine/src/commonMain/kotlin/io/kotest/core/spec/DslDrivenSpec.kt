@@ -26,6 +26,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    /**
     * Contains the [RootTest]s that have been registered on this spec.
     */
+   @Suppress("DEPRECATION")
    @JsName("rootTests_js")
    private var rootTests = emptyList<RootTest>()
 
@@ -35,6 +36,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     */
    internal var sealed = false
 
+   @Suppress("DEPRECATION")
    override fun rootTests(): List<RootTest> {
       return rootTests
    }
@@ -44,6 +46,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * This function may only be called before tests in the spec begin executing.
     * If this function is called after tests have started executing, an [InvalidDslException] will be thrown.
     */
+   @Suppress("DEPRECATION")
    @Deprecated("Use TestDefinition. Will be removed in 7.0")
    override fun add(test: RootTest) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
@@ -52,6 +55,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    override fun add(test: TestDefinition) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
+      @Suppress("DEPRECATION")
       rootTests = rootTests + RootTest(
          name = test.name,
          config = test.config,

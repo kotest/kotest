@@ -1594,6 +1594,7 @@ public abstract class io/kotest/core/spec/AbstractSpec : io/kotest/core/spec/Dsl
 public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Spec, io/kotest/core/spec/style/scopes/RootScope {
 	public fun <init> ()V
 	public fun add (Lio/kotest/core/spec/RootTest;)V
+	public fun add (Lio/kotest/core/spec/TestDefinition;)V
 	public final fun afterProject (Lkotlin/jvm/functions/Function1;)V
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 	public final fun include (Ljava/lang/String;Lio/kotest/core/factory/TestFactory;)V
@@ -2372,6 +2373,7 @@ public final class io/kotest/core/spec/style/scopes/ContainerScope$DefaultImpls 
 	public static fun registerContainer (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun registerTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static fun registerTest (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/names/TestName;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static fun registerTestCase (Lio/kotest/core/spec/style/scopes/ContainerScope;Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/spec/style/scopes/ContainerWithConfigBuilder {
@@ -2970,7 +2972,11 @@ public abstract interface annotation class io/kotest/core/test/TestRunnable : ja
 
 public abstract interface class io/kotest/core/test/TestScope : kotlinx/coroutines/CoroutineScope {
 	public abstract fun getTestCase ()Lio/kotest/core/test/TestCase;
-	public abstract fun registerTestCase (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerTestCase (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
+public final class io/kotest/core/test/TestScope$DefaultImpls {
+	public static fun registerTestCase (Lio/kotest/core/test/TestScope;Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class io/kotest/core/test/TestStatus : java/lang/Enum {

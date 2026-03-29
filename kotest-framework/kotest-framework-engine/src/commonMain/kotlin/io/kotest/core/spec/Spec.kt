@@ -80,6 +80,7 @@ abstract class Spec : TestConfiguration() {
    /**
     * Returns the [RootTest]s that are defined by this spec.
     */
+   @Suppress("DEPRECATION")
    abstract fun rootTests(): List<RootTest>
 
    /**
@@ -94,7 +95,7 @@ abstract class Spec : TestConfiguration() {
     * Override this value to register [Extension]s which will be invoked during the
     * execution of this spec.
     *
-    * If you wish to register an extension for all specs then register the extension
+    * If you wish to register an extension for all specs, then register the extension
     * using project config.
     */
    @JsName("extensions_js")
