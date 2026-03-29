@@ -8,7 +8,7 @@ import io.kotest.plugin.intellij.psi.elementAtLine
 import java.nio.file.Paths
 
 /**
- * Tests for [CustomSpecStyle], which recognises calls to `@TestRunnable`-annotated functions
+ * Tests for [AbstractSpecStyle], which recognises calls to `@TestRunnable`-annotated functions
  * with a [String] first parameter as Kotest tests.
  *
  * The test fixture (`customspec.kt`) contains:
@@ -17,19 +17,20 @@ import java.nio.file.Paths
  *
  * ```
  * line  1: package io.kotest.samples.gradle
- * line  3: import io.kotest.core.spec.style.CustomSpec
+ * line  3: import io.kotest.core.spec.AbstractSpec
  * line  4: import io.kotest.core.annotation.TestRunnable
  * line  6: @TestRunnable
  * line  7: fun runTest(name: String, action: () -> Unit) { action() }
  * line  9: fun notAnnotated(name: String, action: () -> Unit) { action() }
- * line 11: class CustomSpecExample : CustomSpec() {
+ * line 11: class CustomSpecExample : AbstractSpec() {
  * line 12:    init {
  * line 13:       runTest("a test") {
- * line 14:       }
  * line 15:       notAnnotated("not a test") {
- * line 16:       }
- * line 17:    }
- * line 18: }
+ * line 20: @TestRunnable
+ * line 21: fun context(name: String, action: () -> Unit) { action() }
+ * line 23: class NestedCustomSpecExample : AbstractSpec() {
+ * line 25:    context("outer") {
+ * line 26:       runTest("inner") {
  * ```
  */
 class CustomSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
@@ -44,14 +45,14 @@ class CustomSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
    fun testAnnotatedFunctionCallIsDetectedAsTest() {
       val psiFiles = myFixture.configureByFiles(
          "/customspec.kt",
-         "/io/kotest/core/spec/style/specs.kt",
+         "/io/kotest/core/spec/AbstractSpec.kt",
          "/io/kotest/core/annotation/TestRunnable.kt"
       )
 
       ApplicationManager.getApplication().runReadAction {
          // Line 13: runTest("a test") {
          val element = psiFiles[0].elementAtLine(13) ?: error("No PSI element on line 13")
-         val test = CustomSpecStyle.findAssociatedTest(element)
+         val test = AbstractSpecStyle.findAssociatedTest(element)
          test shouldNotBe null
          test!!.name.name shouldBe "a test"
       }
@@ -60,19 +61,37 @@ class CustomSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
    fun testNonAnnotatedFunctionCallIsNotDetectedAsTest() {
       val psiFiles = myFixture.configureByFiles(
          "/customspec.kt",
-         "/io/kotest/core/spec/style/specs.kt",
+         "/io/kotest/core/spec/AbstractSpec.kt",
          "/io/kotest/core/annotation/TestRunnable.kt"
       )
 
       ApplicationManager.getApplication().runReadAction {
          // Line 15: notAnnotated("not a test") {
          val element = psiFiles[0].elementAtLine(15) ?: error("No PSI element on line 15")
-         val test = CustomSpecStyle.findAssociatedTest(element)
+         val test = AbstractSpecStyle.findAssociatedTest(element)
          test shouldBe null
       }
    }
 
    fun testMethodGeneration() {
-      CustomSpecStyle.generateTest("MySpec", "my test") shouldBe "test(\"my test\") { }"
+      AbstractSpecStyle.generateTest("MySpec", "my test") shouldBe "test(\"my test\") { }"
+   }
+
+   fun testNestedTestHasCorrectParent() {
+      val psiFiles = myFixture.configureByFiles(
+         "/customspec.kt",
+         "/io/kotest/core/spec/AbstractSpec.kt",
+         "/io/kotest/core/annotation/TestRunnable.kt"
+      )
+
+      ApplicationManager.getApplication().runReadAction {
+         // Line 26: runTest("inner") {
+         val element = psiFiles[0].elementAtLine(26) ?: error("No PSI element on line 26")
+         val test = AbstractSpecStyle.findAssociatedTest(element)
+         test shouldNotBe null
+         test!!.name.name shouldBe "inner"
+         test.parent shouldNotBe null
+         test.parent!!.name.name shouldBe "outer"
+      }
    }
 }

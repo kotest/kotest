@@ -1659,6 +1659,35 @@ public abstract interface annotation class io/kotest/core/spec/Order : java/lang
 	public abstract fun value ()I
 }
 
+public final class io/kotest/core/spec/RootTestBuilder {
+	public static final field Companion Lio/kotest/core/spec/RootTestBuilder$Companion;
+	public fun <init> (Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;)V
+	public final fun build ()Lio/kotest/core/spec/RootTest;
+	public final fun component1 ()Lio/kotest/core/names/TestName;
+	public final fun component2 ()Lkotlin/jvm/functions/Function2;
+	public final fun component3 ()Lio/kotest/core/test/TestType;
+	public final fun component4 ()Lio/kotest/core/source/SourceRef;
+	public final fun component5 ()Lio/kotest/core/spec/style/TestXMethod;
+	public final fun component6 ()Lio/kotest/core/test/config/TestConfig;
+	public final fun copy (Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/RootTestBuilder;
+	public static synthetic fun copy$default (Lio/kotest/core/spec/RootTestBuilder;Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;ILjava/lang/Object;)Lio/kotest/core/spec/RootTestBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConfig ()Lio/kotest/core/test/config/TestConfig;
+	public final fun getName ()Lio/kotest/core/names/TestName;
+	public final fun getSource ()Lio/kotest/core/source/SourceRef;
+	public final fun getTest ()Lkotlin/jvm/functions/Function2;
+	public final fun getType ()Lio/kotest/core/test/TestType;
+	public final fun getXmethod ()Lio/kotest/core/spec/style/TestXMethod;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withConfig (Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/spec/RootTestBuilder;
+	public final fun withXmethod (Lio/kotest/core/spec/style/TestXMethod;)Lio/kotest/core/spec/RootTestBuilder;
+}
+
+public final class io/kotest/core/spec/RootTestBuilder$Companion {
+	public final fun builder (Lio/kotest/core/names/TestName;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/spec/RootTestBuilder;
+}
+
 public abstract class io/kotest/core/spec/Spec : io/kotest/core/TestConfiguration {
 	public field scope Lkotlinx/coroutines/CoroutineScope;
 	public fun <init> ()V
@@ -2892,6 +2921,35 @@ public final class io/kotest/core/test/Enabled$Companion {
 
 public final class io/kotest/core/test/ExpectFailureExceptionKt {
 	public static final fun runIf (Lio/kotest/core/test/TestScope;Lkotlin/jvm/functions/Function0;)V
+}
+
+public final class io/kotest/core/test/NestedTestBuilder {
+	public static final field Companion Lio/kotest/core/test/NestedTestBuilder$Companion;
+	public fun <init> (Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;)V
+	public final fun build ()Lio/kotest/core/test/NestedTest;
+	public final fun component1 ()Lio/kotest/core/names/TestName;
+	public final fun component2 ()Lkotlin/jvm/functions/Function2;
+	public final fun component3 ()Lio/kotest/core/test/TestType;
+	public final fun component4 ()Lio/kotest/core/source/SourceRef;
+	public final fun component5 ()Lio/kotest/core/spec/style/TestXMethod;
+	public final fun component6 ()Lio/kotest/core/test/config/TestConfig;
+	public final fun copy (Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/test/NestedTestBuilder;
+	public static synthetic fun copy$default (Lio/kotest/core/test/NestedTestBuilder;Lio/kotest/core/names/TestName;Lkotlin/jvm/functions/Function2;Lio/kotest/core/test/TestType;Lio/kotest/core/source/SourceRef;Lio/kotest/core/spec/style/TestXMethod;Lio/kotest/core/test/config/TestConfig;ILjava/lang/Object;)Lio/kotest/core/test/NestedTestBuilder;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getConfig ()Lio/kotest/core/test/config/TestConfig;
+	public final fun getName ()Lio/kotest/core/names/TestName;
+	public final fun getSource ()Lio/kotest/core/source/SourceRef;
+	public final fun getTest ()Lkotlin/jvm/functions/Function2;
+	public final fun getType ()Lio/kotest/core/test/TestType;
+	public final fun getXmethod ()Lio/kotest/core/spec/style/TestXMethod;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public final fun withConfig (Lio/kotest/core/test/config/TestConfig;)Lio/kotest/core/test/NestedTestBuilder;
+	public final fun withXmethod (Lio/kotest/core/spec/style/TestXMethod;)Lio/kotest/core/test/NestedTestBuilder;
+}
+
+public final class io/kotest/core/test/NestedTestBuilder$Companion {
+	public final fun builder (Lio/kotest/core/names/TestName;Lio/kotest/core/test/TestType;Lkotlin/jvm/functions/Function2;)Lio/kotest/core/test/NestedTestBuilder;
 }
 
 public final class io/kotest/core/test/TestCase {

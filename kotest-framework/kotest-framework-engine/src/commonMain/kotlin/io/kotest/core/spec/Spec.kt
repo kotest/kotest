@@ -15,6 +15,7 @@ import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
@@ -262,7 +263,7 @@ abstract class Spec : TestConfiguration() {
     * Note that if this value is set to true at the spec level,
     * all tests for that spec will be executed within a `runTest` block.
     *
-    * For full details on how this affects tests see [io.kotest.core.test.config.TestConfig.coroutineTestScope].
+    * For full details on how this affects tests see [TestConfig.coroutineTestScope].
     */
    var coroutineTestScope: Boolean? = null
 
@@ -431,3 +432,34 @@ data class RootTest(
    val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
    val factoryId: FactoryId?, // if this root test was added from a factory
 )
+
+data class RootTestBuilder(
+   val name: TestName,
+   val test: suspend TestScope.() -> Unit,
+   val type: TestType,
+   val source: SourceRef,
+   val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
+   val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
+) {
+
+   companion object {
+      fun builder(name: TestName, type: TestType, test: suspend TestScope.() -> Unit): RootTestBuilder {
+         return RootTestBuilder(name, test, type, sourceRef(), TestXMethod.NONE, null)
+      }
+   }
+
+   fun withConfig(config: TestConfig): RootTestBuilder = copy(config = config)
+   fun withXmethod(xmethod: TestXMethod): RootTestBuilder = copy(xmethod = xmethod)
+
+   fun build(): RootTest {
+      return RootTest(
+         name = name,
+         test = test,
+         type = type,
+         source = source,
+         xmethod = xmethod,
+         config = config,
+         factoryId = null,
+      )
+   }
+}

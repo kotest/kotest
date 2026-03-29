@@ -16,9 +16,10 @@ import org.jetbrains.kotlin.psi.KtValueArgument
 import org.jetbrains.kotlin.psi.KtValueArgumentList
 
 /**
- * A [SpecStyle] that recognises any function annotated with `@TestRunnable` as a test runner.
+ * A [SpecStyle] that recognizes any function annotated with `@TestRunnable` as a test runner.
  *
  * A call is treated as a test when:
+ *  - The spec class extends AbstractSpec.
  *  - The callee function is annotated with `@TestRunnable`.
  *  - The function has at least one parameter.
  *  - The first parameter is of type `String`.
@@ -35,12 +36,14 @@ import org.jetbrains.kotlin.psi.KtValueArgumentList
  *     }
  * }
  * ```
+ *
+ * Over time, the other spec styles will move into this infrastructure.
  */
-object CustomSpecStyle : SpecStyle {
+object AbstractSpecStyle : SpecStyle {
 
-   override fun fqn() = FqName("io.kotest.core.spec.style.CustomSpec")
+   override fun fqn() = FqName("io.kotest.core.spec.AbstractSpec")
 
-   override fun specStyleName(): String = "Custom Spec"
+   override fun specStyleName(): String = "Abstract Spec"
 
    override fun generateTest(specName: String, name: String): String {
       return "test(\"$name\") { }"
@@ -72,6 +75,18 @@ object CustomSpecStyle : SpecStyle {
       if (argList.arguments.firstOrNull() != valueArg) return null
       val callExpr = argList.parent as? KtCallExpression ?: return null
       return test(callExpr)
+   }
+
+   /**
+    * Walks the PSI parent chain looking for the nearest enclosing `@TestRunnable` call,
+    * which becomes the parent [Test] of a nested test.
+    */
+   private fun locateParent(element: PsiElement): Test? {
+      val parent = element.parent ?: return null
+      return when (parent) {
+         is KtCallExpression -> parent.tryTestRunnableCall() ?: locateParent(parent)
+         else -> locateParent(parent)
+      }
    }
 
    /**
@@ -108,9 +123,9 @@ object CustomSpecStyle : SpecStyle {
 
       return Test(
          TestName(null, testName.text, testName.interpolated),
-         null,
+         locateParent(this),
          specClass,
-         TestType.Test,
+         TestType.Container,
          xdisabled = false,
          psi = this
       )
