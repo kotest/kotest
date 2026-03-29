@@ -20,6 +20,7 @@ interface RootScope {
     */
    @Deprecated("Use TestDefinition. Will be removed in 7.0")
    fun add(test: RootTest)
+
    fun add(test: TestDefinition)
 }
 

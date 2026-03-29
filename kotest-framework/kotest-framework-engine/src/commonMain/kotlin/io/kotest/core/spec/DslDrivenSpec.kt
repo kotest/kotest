@@ -50,6 +50,19 @@ abstract class DslDrivenSpec : Spec(), RootScope {
       rootTests = rootTests + test
    }
 
+   override fun add(test: TestDefinition) {
+      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
+      rootTests = rootTests + RootTest(
+         name = test.name,
+         config = test.config,
+         type = test.type,
+         test = test.test,
+         source = test.source,
+         xmethod = test.xmethod,
+         factoryId = null,
+      )
+   }
+
    override fun tags(vararg tags: Tag) {
       if (sealed) throw InvalidDslException("Cannot add a tag after the spec has been instantiated")
       super.tags(*tags)
