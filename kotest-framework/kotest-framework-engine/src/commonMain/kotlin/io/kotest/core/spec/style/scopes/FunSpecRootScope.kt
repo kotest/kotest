@@ -1,5 +1,6 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
@@ -83,25 +84,25 @@ interface FunSpecRootScope : RootScope {
          TestDefinitionBuilder.builder(
             TestNameBuilder.builder(name).build(),
             TestType.Test,
-         ) { FunSpecContainerScope(this).test() }
-            .withXmethod(xmethod).build()
+         ).withXmethod(xmethod)
+            .build { FunSpecContainerScope(this).test() }
       )
    }
 
    private fun context(name: String, xmethod: TestXMethod, test: suspend FunSpecContainerScope.() -> Unit) {
       add(
-         TestDefinitionBuilder.builder(
-            TestNameBuilder.builder(name).withPrefix("context ").build(),
-            TestType.Container,
-         ) { FunSpecContainerScope(this).test() }
-            .withXmethod(xmethod).build()
+         TestDefinitionBuilder.builder(contextName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { FunSpecContainerScope(this).test() }
       )
    }
 
    private fun context(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<FunSpecContainerScope> =
       RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("context ").build(),
+         name = contextName(name),
          xmethod = xmethod,
          context = this,
       ) { FunSpecContainerScope(it) }
+
+   fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("context ").build()
 }

@@ -440,7 +440,8 @@ data class RootTest(
 )
 
 /**
- * A [TestDefinition] is a test that has not yet been materialized at runtime.
+ * A [TestDefinition] contains the definition of a test in source code.
+ * Once a test is materialized at runtime, it becomes an instance of [TestCase].
  */
 data class TestDefinition(
    val name: TestName,

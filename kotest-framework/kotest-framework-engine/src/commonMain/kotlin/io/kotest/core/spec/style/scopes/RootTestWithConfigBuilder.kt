@@ -11,6 +11,9 @@ import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
+/**
+ * Creates a builder for a top-level leaf test that can be configured.
+ */
 class RootTestWithConfigBuilder(
    private val context: RootScope,
    private val name: TestName,

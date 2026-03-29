@@ -56,8 +56,8 @@ interface ShouldSpecRootScope : RootScope {
       add(
          TestDefinitionBuilder
             .builder(contextName(name), TestType.Container)
-            { ShouldSpecContainerScope(this).test() }
-            .build()
+            .withXmethod(xmethod)
+            .build { ShouldSpecContainerScope(this).test() }
       )
    }
 
@@ -110,34 +110,36 @@ interface ShouldSpecRootScope : RootScope {
     * Adds a top-level test, with the given name and test function, with default test config.
     */
    fun should(name: String, test: suspend TestScope.() -> Unit) {
-      should(name = name, xmethod = TestXMethod.NONE, test = test)
+      add(
+         TestDefinitionBuilder
+            .builder(shouldName(name), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .build(test)
+      )
    }
 
    /**
     * Adds a focused top-level test, with the given name and test function, with default test config.
     */
    fun fshould(name: String, test: suspend TestScope.() -> Unit) {
-      should(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+      add(
+         TestDefinitionBuilder
+            .builder(shouldName(name), TestType.Test)
+            .withXmethod(TestXMethod.FOCUSED)
+            .build(test)
+      )
    }
 
    /**
     * Adds a disabled top-level test, with the given name and test function, with default test config.
     */
    fun xshould(name: String, test: suspend TestScope.() -> Unit) {
-      should(name = name, xmethod = TestXMethod.DISABLED, test = test)
-   }
-
-   private fun contextName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("context ").withDefaultAffixes().build()
-
-   private fun shouldName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
-
-   private fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
-      TestDefinitionBuilder
-         .builder(shouldName(name), TestType.Test, test)
-         .withXmethod(xmethod)
-         .build()
+      add(
+         TestDefinitionBuilder
+            .builder(shouldName(name), TestType.Test)
+            .withXmethod(TestXMethod.DISABLED)
+            .build(test)
+      )
    }
 
    private fun should(name: String, xmethod: TestXMethod): RootTestWithConfigBuilder {
@@ -147,4 +149,11 @@ interface ShouldSpecRootScope : RootScope {
          xmethod = xmethod,
       )
    }
+
+   private fun contextName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("context ").withDefaultAffixes().build()
+
+   private fun shouldName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
+
 }
