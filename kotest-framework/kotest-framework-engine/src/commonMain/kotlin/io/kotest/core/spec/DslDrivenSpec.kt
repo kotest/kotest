@@ -10,12 +10,16 @@ import kotlin.js.JsName
 
 /**
  * Public API for creating a custom spec style.
+ *
+ * Note: There is no difference between this and the parent, but it is simply a better name and one
+ * that is being chosen as part of the public API.
  */
 abstract class AbstractSpec : DslDrivenSpec()
 
 /**
  * Base class for specs that allow for registration of tests via a DSL.
  */
+@Deprecated("Was never intended as a public API. Use io.kotest.core.spec.AbstractSpec instead which is part of the public API. Deprecated in 6.2")
 abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
