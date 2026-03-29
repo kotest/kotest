@@ -1252,14 +1252,46 @@ public final class io/kotest/matchers/collections/ContainAllKt {
 	public static final fun shouldContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)Ljava/util/Collection;
 	public static final fun shouldContainAll (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldContainAll (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldContainAll ([B[B)[B
+	public static final fun shouldContainAll ([C[C)[C
+	public static final fun shouldContainAll ([D[D)[D
+	public static final fun shouldContainAll ([F[F)[F
+	public static final fun shouldContainAll ([I[I)[I
+	public static final fun shouldContainAll ([J[J)[J
 	public static final fun shouldContainAll ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
 	public static final fun shouldContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldContainAll ([S[S)[S
+	public static final fun shouldContainAll ([Z[Z)[Z
+	public static final fun shouldContainAll_booleanArray_infix ([Z[Z)[Z
+	public static final fun shouldContainAll_byteArray_infix ([B[B)[B
+	public static final fun shouldContainAll_charArray_infix ([C[C)[C
+	public static final fun shouldContainAll_doubleArray_infix ([D[D)[D
+	public static final fun shouldContainAll_floatArray_infix ([F[F)[F
+	public static final fun shouldContainAll_intArray_infix ([I[I)[I
+	public static final fun shouldContainAll_longArray_infix ([J[J)[J
+	public static final fun shouldContainAll_shortArray_infix ([S[S)[S
 	public static final fun shouldNotContainAll (Ljava/lang/Iterable;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainAll (Ljava/lang/Iterable;[Ljava/lang/Object;)Ljava/lang/Iterable;
 	public static final fun shouldNotContainAll (Ljava/util/Collection;Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotContainAll (Ljava/util/Collection;[Ljava/lang/Object;)Ljava/util/Collection;
+	public static final fun shouldNotContainAll ([B[B)[B
+	public static final fun shouldNotContainAll ([C[C)[C
+	public static final fun shouldNotContainAll ([D[D)[D
+	public static final fun shouldNotContainAll ([F[F)[F
+	public static final fun shouldNotContainAll ([I[I)[I
+	public static final fun shouldNotContainAll ([J[J)[J
 	public static final fun shouldNotContainAll ([Ljava/lang/Object;Ljava/util/Collection;)[Ljava/lang/Object;
 	public static final fun shouldNotContainAll ([Ljava/lang/Object;[Ljava/lang/Object;)[Ljava/lang/Object;
+	public static final fun shouldNotContainAll ([S[S)[S
+	public static final fun shouldNotContainAll ([Z[Z)[Z
+	public static final fun shouldNotContainAll_booleanArray_infix ([Z[Z)[Z
+	public static final fun shouldNotContainAll_byteArray_infix ([B[B)[B
+	public static final fun shouldNotContainAll_charArray_infix ([C[C)[C
+	public static final fun shouldNotContainAll_doubleArray_infix ([D[D)[D
+	public static final fun shouldNotContainAll_floatArray_infix ([F[F)[F
+	public static final fun shouldNotContainAll_intArray_infix ([I[I)[I
+	public static final fun shouldNotContainAll_longArray_infix ([J[J)[J
+	public static final fun shouldNotContainAll_shortArray_infix ([S[S)[S
 }
 
 public final class io/kotest/matchers/collections/ContainExactlyInAnyOrderKt {
@@ -1527,13 +1559,45 @@ public final class io/kotest/matchers/collections/InorderKt {
 	public static final fun shouldContainInOrder (Ljava/lang/Iterable;[Ljava/lang/Object;)V
 	public static final fun shouldContainInOrder (Ljava/util/List;Ljava/util/List;)V
 	public static final fun shouldContainInOrder (Ljava/util/List;[Ljava/lang/Object;)V
+	public static final fun shouldContainInOrder ([B[B)[B
+	public static final fun shouldContainInOrder ([C[C)[C
+	public static final fun shouldContainInOrder ([D[D)[D
+	public static final fun shouldContainInOrder ([F[F)[F
+	public static final fun shouldContainInOrder ([I[I)[I
+	public static final fun shouldContainInOrder ([J[J)[J
 	public static final fun shouldContainInOrder ([Ljava/lang/Object;Ljava/util/List;)V
 	public static final fun shouldContainInOrder ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldContainInOrder ([S[S)[S
+	public static final fun shouldContainInOrder ([Z[Z)[Z
+	public static final fun shouldContainInOrderBooleanArray_infix ([Z[Z)[Z
+	public static final fun shouldContainInOrderByteArray_infix ([B[B)[B
+	public static final fun shouldContainInOrderCharArray_infix ([C[C)[C
+	public static final fun shouldContainInOrderDoubleArray_infix ([D[D)[D
+	public static final fun shouldContainInOrderFloatArray_infix ([F[F)[F
+	public static final fun shouldContainInOrderIntArray_infix ([I[I)[I
+	public static final fun shouldContainInOrderLongArray_infix ([J[J)[J
+	public static final fun shouldContainInOrderShortArray_infix ([S[S)[S
 	public static final fun shouldNotContainInOrder (Ljava/lang/Iterable;Ljava/lang/Iterable;)V
 	public static final fun shouldNotContainInOrder (Ljava/lang/Iterable;Ljava/util/List;)V
 	public static final fun shouldNotContainInOrder (Ljava/util/List;Ljava/util/List;)V
+	public static final fun shouldNotContainInOrder ([B[B)[B
+	public static final fun shouldNotContainInOrder ([C[C)[C
+	public static final fun shouldNotContainInOrder ([D[D)[D
+	public static final fun shouldNotContainInOrder ([F[F)[F
+	public static final fun shouldNotContainInOrder ([I[I)[I
+	public static final fun shouldNotContainInOrder ([J[J)[J
 	public static final fun shouldNotContainInOrder ([Ljava/lang/Object;Ljava/util/List;)V
 	public static final fun shouldNotContainInOrder ([Ljava/lang/Object;[Ljava/lang/Object;)V
+	public static final fun shouldNotContainInOrder ([S[S)[S
+	public static final fun shouldNotContainInOrder ([Z[Z)[Z
+	public static final fun shouldNotContainInOrderBooleanArray_infix ([Z[Z)[Z
+	public static final fun shouldNotContainInOrderByteArray_infix ([B[B)[B
+	public static final fun shouldNotContainInOrderCharArray_infix ([C[C)[C
+	public static final fun shouldNotContainInOrderDoubleArray_infix ([D[D)[D
+	public static final fun shouldNotContainInOrderFloatArray_infix ([F[F)[F
+	public static final fun shouldNotContainInOrderIntArray_infix ([I[I)[I
+	public static final fun shouldNotContainInOrderLongArray_infix ([J[J)[J
+	public static final fun shouldNotContainInOrderShortArray_infix ([S[S)[S
 }
 
 public final class io/kotest/matchers/collections/LargerKt {
@@ -2465,7 +2529,9 @@ public final class io/kotest/matchers/equality/ReflectionKt {
 public final class io/kotest/matchers/equals/ShouldEqualKt {
 	public static final fun beEqual (Ljava/lang/Object;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldBeEqual (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldEqual (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public static final fun shouldNotBeEqual (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotEqual (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class io/kotest/matchers/file/ContentKt {
