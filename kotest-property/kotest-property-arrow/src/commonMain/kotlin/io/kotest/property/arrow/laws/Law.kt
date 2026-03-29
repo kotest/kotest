@@ -12,6 +12,7 @@ public data class Law(val name: String, val test: suspend TestScope.() -> Unit)
 public fun <A> A.equalUnderTheLaw(other: A, f: (A, A) -> Boolean = { a, b -> a == b }): Boolean =
    if (f(this, other)) true else AssertionErrorBuilder.fail("Found $this but expected: $other")
 
+@Suppress("DEPRECATION")
 public fun RootScope.testLaws(vararg laws: List<Law>): Unit =
    laws
       .flatMap { list: List<Law> -> list.asIterable() }
@@ -24,6 +25,7 @@ public fun RootScope.testLaws(vararg laws: List<Law>): Unit =
          ) { law.test(this) }
       }
 
+@Suppress("DEPRECATION")
 public fun RootScope.testLaws(prefix: String, vararg laws: List<Law>): Unit =
    laws
       .flatMap { list: List<Law> -> list.asIterable() }
