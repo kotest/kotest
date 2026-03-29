@@ -13,7 +13,7 @@ import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 
 /**
- * A [RootScope] allows for [RootTest]s to be registered via a DSL.
+ * A [RootScope] allows for top level [TestDefinition]s to be registered via a DSL.
  */
 @KotestInternal
 interface RootScope {

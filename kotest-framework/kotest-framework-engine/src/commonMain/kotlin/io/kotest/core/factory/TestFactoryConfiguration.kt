@@ -24,7 +24,7 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
     */
    internal var tests = emptyList<TestDefinition>()
 
-   @Deprecated("Use TestDefinition. Will be removed in 7.0")
+   @Deprecated("Use add(TestDefinition). Deprecated since 6.2. Will be removed in 7.0")
    override fun add(test: RootTest) {
       tests = tests + TestDefinition(
          name = test.name,

@@ -1,8 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * Allows tests to be registered in the 'ShouldSpec' fashion.
@@ -51,11 +53,12 @@ interface ShouldSpecRootScope : RootScope {
       xmethod: TestXMethod,
       test: suspend ShouldSpecContainerScope.() -> Unit
    ) {
-      addContainer(
-         testName = contextName(name),
-         xmethod = xmethod,
-         config = null
-      ) { ShouldSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            { ShouldSpecContainerScope(this).test() }
+            .build()
+      )
    }
 
    /**
@@ -131,12 +134,10 @@ interface ShouldSpecRootScope : RootScope {
       TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
 
    private fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
-      addTest(
-         testName = shouldName(name),
-         xmethod = xmethod,
-         config = null,
-         test = test,
-      )
+      TestDefinitionBuilder
+         .builder(shouldName(name), TestType.Test, test)
+         .withXmethod(xmethod)
+         .build()
    }
 
    private fun should(name: String, xmethod: TestXMethod): RootTestWithConfigBuilder {

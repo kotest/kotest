@@ -24,11 +24,11 @@ abstract class AbstractSpec : DslDrivenSpec()
 abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
-    * Contains the [RootTest]s that have been registered on this spec.
+    * Contains the [@KotestInternal]s that have been registered on this spec.
     */
    @Suppress("DEPRECATION")
-   @JsName("rootTests_js")
-   private var rootTests = emptyList<RootTest>()
+   @JsName("tests_js")
+   private var tests = emptyList<TestDefinition>()
 
    /**
     * Marks that this spec has been instantiated and all root tests have been registered.
@@ -37,8 +37,8 @@ abstract class DslDrivenSpec : Spec(), RootScope {
    internal var sealed = false
 
    @Suppress("DEPRECATION")
-   override fun rootTests(): List<RootTest> {
-      return rootTests
+   override fun tests(): List<TestDefinition> {
+      return tests
    }
 
    /**
@@ -47,16 +47,10 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * If this function is called after tests have started executing, an [InvalidDslException] will be thrown.
     */
    @Suppress("DEPRECATION")
-   @Deprecated("Use TestDefinition. Will be removed in 7.0")
+   @Deprecated("Use add(TestDefinition). Deprecated since 6.2. Will be removed in 7.0")
    override fun add(test: RootTest) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
-      rootTests = rootTests + test
-   }
-
-   override fun add(test: TestDefinition) {
-      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
-      @Suppress("DEPRECATION")
-      rootTests = rootTests + RootTest(
+      tests = tests + TestDefinition(
          name = test.name,
          config = test.config,
          type = test.type,
@@ -65,6 +59,12 @@ abstract class DslDrivenSpec : Spec(), RootScope {
          xmethod = test.xmethod,
          factoryId = test.factoryId,
       )
+   }
+
+   override fun add(test: TestDefinition) {
+      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
+      @Suppress("DEPRECATION")
+      tests = tests + test
    }
 
    override fun tags(vararg tags: Tag) {

@@ -38,6 +38,15 @@ class ShouldSpecConfigSyntaxTest : ShouldSpec() {
           counter.incrementAndGet()
       }
 
+      fshould("a focused top level test") {
+      }
+
+      fshould("a focused top level test with config").config(timeout = 1.seconds) {}
+
+      xshould("a disabled top level test") {}
+
+      xshould("a disabled top level test with config").config(timeout = 1.seconds) {}
+
       should("a test with tags").config(tags = setOf(Tag1)) {
          counter.incrementAndGet()
       }

@@ -37,7 +37,7 @@ import kotlin.time.Duration
  * A [Spec] is the top most container of tests.
  *
  * It allows tests to be defined, either through DSL-methods or via annotated methods, or
- * through any user defined way by subclassing this class and implementing [rootTests].
+ * through any user defined way by subclassing this class and implementing [tests].
  *
  * Test case defaults can be specified by either assignment to the settings var's or
  * by overriding the applicable setting function and returning the required value.
@@ -78,10 +78,10 @@ import kotlin.time.Duration
 abstract class Spec : TestConfiguration() {
 
    /**
-    * Returns the [RootTest]s that are defined by this spec.
+    * Returns the root [TestDefinition]s that are defined by this spec.
     */
-   @Suppress("DEPRECATION")
-   abstract fun rootTests(): List<RootTest>
+   @KotestInternal
+   abstract fun tests(): List<TestDefinition>
 
    /**
     * A [CoroutineScope] that can be used to launch spec level coroutines.
@@ -89,6 +89,7 @@ abstract class Spec : TestConfiguration() {
     * A spec will not be completed until all coroutines launched on this scope return.
     */
    @ExperimentalKotest
+   @KotestInternal
    lateinit var scope: CoroutineScope
 
    /**

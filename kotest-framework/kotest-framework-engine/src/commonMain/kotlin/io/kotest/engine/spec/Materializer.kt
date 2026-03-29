@@ -42,7 +42,7 @@ class Materializer(
       val handler = DuplicateTestNameHandler()
       val mode = specConfigResolver.duplicateTestNameMode(spec)
 
-      val roots = spec.rootTests()
+      val roots = spec.tests()
       logger.log { LogLine(spec::class, "Spec has defined ${roots.size} root tests") }
       val tests = roots.map { rootTest ->
 
