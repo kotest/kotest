@@ -225,7 +225,7 @@ internal class InstancePerLeafSpecExecutor(
 
          val discoveredTests = mutableListOf<TestExecutionInFreshSpec>()
 
-         override suspend fun registerTestCase(test: TestDefinition) {
+         override suspend fun registerTest(test: TestDefinition) {
             registerTestCase(
                NestedTest(
                   name = test.name,

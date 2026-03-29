@@ -63,7 +63,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
          test = test.test,
          source = test.source,
          xmethod = test.xmethod,
-         factoryId = null,
+         factoryId = test.factoryId,
       )
    }
 
@@ -74,11 +74,11 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
     * Include the tests and extensions from the given [TestFactory] in this spec.
-    * Tests are added in order from where this include was invoked using configuration and
+    * Tests are added in order from where this function was invoked using configuration and
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {
-      factory.tests.forEach { add(it) }
+      factory.tests.forEach { add(it.copy(factoryId = factory.factoryId)) }
       factory.configuration.setParentConfiguration(this)
       extensions(factory.extensions)
    }

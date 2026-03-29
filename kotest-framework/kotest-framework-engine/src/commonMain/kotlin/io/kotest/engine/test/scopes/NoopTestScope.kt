@@ -17,5 +17,5 @@ class NoopTestScope(
    override suspend fun registerTestCase(nested: NestedTest) {
    }
 
-   override suspend fun registerTestCase(test: TestDefinition) {}
+   override suspend fun registerTest(test: TestDefinition) {}
 }

@@ -424,7 +424,10 @@ abstract class Spec : TestConfiguration() {
  * The materialization process turns a root test into a test case.
  */
 @KotestInternal
-@Deprecated("This is an internal Kotest class. Use TestDefinition instead which is part of the public API. Deprecated since 6.2", ReplaceWith("TestDefinition"))
+@Deprecated(
+   "This is an internal Kotest class. Use TestDefinition instead which is part of the public API. Deprecated since 6.2",
+   ReplaceWith("TestDefinition")
+)
 data class RootTest(
    val name: TestName,
    val test: suspend TestScope.() -> Unit,
@@ -445,6 +448,7 @@ data class TestDefinition(
    val source: SourceRef,
    val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
    val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
+   val factoryId: FactoryId?, // if this root test was added from a factory
 )
 
 data class TestDefinitionBuilder(
@@ -454,16 +458,18 @@ data class TestDefinitionBuilder(
    val source: SourceRef,
    val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
    val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
+   val factoryId: FactoryId?, // if this root test was added from a factory
 ) {
 
    companion object {
       fun builder(name: TestName, type: TestType, test: suspend TestScope.() -> Unit): TestDefinitionBuilder {
-         return TestDefinitionBuilder(name, test, type, sourceRef(), TestXMethod.NONE, null)
+         return TestDefinitionBuilder(name, test, type, sourceRef(), TestXMethod.NONE, null, null)
       }
    }
 
-   fun withConfig(config: TestConfig): TestDefinitionBuilder = copy(config = config)
+   fun withConfig(config: TestConfig?): TestDefinitionBuilder = copy(config = config)
    fun withXmethod(xmethod: TestXMethod): TestDefinitionBuilder = copy(xmethod = xmethod)
+   fun withFactoryId(factoryId: FactoryId): TestDefinitionBuilder = copy(factoryId = factoryId)
 
    fun build(): TestDefinition {
       return TestDefinition(
@@ -473,6 +479,7 @@ data class TestDefinitionBuilder(
          source = source,
          xmethod = xmethod,
          config = config,
+         factoryId = factoryId,
       )
    }
 }

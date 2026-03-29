@@ -8,9 +8,11 @@ var specAfterContainer = mutableListOf<String>()
 var factoryAfterContainer = mutableListOf<String>()
 
 private val factory = funSpec {
+
    afterContainer {
       factoryAfterContainer.add(it.a.name.name)
    }
+
    context("factory") {
       test("a") { }
       test("b") { }

@@ -9,7 +9,6 @@ import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.TestListener
 import io.kotest.core.names.TestName
-import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.AfterAny
 import io.kotest.core.spec.AfterContainer
 import io.kotest.core.spec.AfterEach
@@ -21,6 +20,7 @@ import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.KotestTestScope
 import io.kotest.core.spec.TestDefinition
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -45,6 +45,7 @@ interface ContainerScope : TestScope {
     */
    fun hasChildren(): Boolean
 
+   @Deprecated("Use registerTestCase with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
    suspend fun registerTest(
       name: TestName,
       xmethod: TestXMethod,
@@ -52,34 +53,42 @@ interface ContainerScope : TestScope {
       type: TestType,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTestCase(
-         TestDefinition(
-            name = name,
-            xmethod = xmethod,
-            config = config,
-            test = test,
-            type = type,
-            source = sourceRef(),
-         )
+      registerTest(
+         TestDefinitionBuilder.builder(name, type, test)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build()
       )
    }
 
+   @Deprecated("Use registerTestCase with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
    suspend fun registerContainer(
       name: TestName,
       xmethod: TestXMethod,
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name = name, xmethod = xmethod, config = config, type = TestType.Container, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(name, TestType.Container, test)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build()
+      )
    }
 
+   @Deprecated("Use registerTestCase with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
    suspend fun registerTest(
       name: TestName,
       xmethod: TestXMethod,
       config: TestConfig?,
       test: suspend TestScope.() -> Unit,
    ) {
-      registerTest(name = name, xmethod = xmethod, config = config, type = TestType.Test, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(name, TestType.Test, test)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build()
+      )
    }
 
    private fun appendExtension(extension: Extension) {
@@ -231,6 +240,7 @@ interface ContainerScope : TestScope {
 
 @KotestTestScope
 @KotestInternal
+@Deprecated("Use DelegatingContainerScope instead. Will be removed in 7.0")
 abstract class AbstractContainerScope(
    private val testScope: TestScope
 ) : ContainerScope {
@@ -240,16 +250,16 @@ abstract class AbstractContainerScope(
 
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
 
-   @Suppress("DEPRECATION")
-   @Deprecated("Use TestDefinition. Will be removed in 7.0")
+   @Deprecated("Use registerTest with TestDefinitionBuilder. Will be removed in 7.0")
    override suspend fun registerTestCase(nested: NestedTest) {
       registered = true
+      @Suppress("DEPRECATION")
       testScope.registerTestCase(nested)
    }
 
-   override suspend fun registerTestCase(test: TestDefinition) {
+   override suspend fun registerTest(test: TestDefinition) {
       registered = true
-      testScope.registerTestCase(test)
+      testScope.registerTest(test)
    }
 
    override fun hasChildren(): Boolean = registered

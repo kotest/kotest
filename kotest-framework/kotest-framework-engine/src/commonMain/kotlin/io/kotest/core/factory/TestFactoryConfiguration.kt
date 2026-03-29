@@ -33,6 +33,7 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
          test = test.test,
          source = test.source,
          xmethod = test.xmethod,
+         factoryId = factoryId,
       )
    }
 

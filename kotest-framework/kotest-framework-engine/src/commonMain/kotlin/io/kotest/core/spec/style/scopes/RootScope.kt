@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.common.KotestInternal
@@ -18,7 +20,7 @@ interface RootScope {
    /**
     * Register a new [RootTest].
     */
-   @Deprecated("Use TestDefinition. Will be removed in 7.0")
+   @Deprecated("Use add(TestDefinition). Deprecated since 6.2. Will be removed in 7.0")
    fun add(test: RootTest)
 
    fun add(test: TestDefinition)
@@ -42,6 +44,7 @@ fun RootScope.addTest(
          source = sourceRef(),
          xmethod = if (disabled) TestXMethod.DISABLED else TestXMethod.NONE,
          config = config,
+         factoryId = null,
       )
    )
 }
@@ -49,6 +52,7 @@ fun RootScope.addTest(
 /**
  * Convenience method to add a [TestType.Test] test to this [RootScope].
  */
+@Deprecated("Use add directly on RootScope with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
 fun RootScope.addTest(
    testName: TestName,
    xmethod: TestXMethod,
@@ -63,6 +67,7 @@ fun RootScope.addTest(
          source = sourceRef(),
          xmethod = xmethod,
          config = config,
+         factoryId = null,
       )
    )
 }
@@ -70,6 +75,7 @@ fun RootScope.addTest(
 /**
  * Convenience method to add a root test of type [TestType.Container] test to this [RootScope].
  */
+@Deprecated("Use add directly on RootScope with TestDefinitionBuilder. Deprecated since 6.2. Will be removed in 7.0")
 fun RootScope.addContainer(
    testName: TestName,
    xmethod: TestXMethod,
@@ -84,6 +90,7 @@ fun RootScope.addContainer(
          source = sourceRef(),
          xmethod = xmethod,
          config = config,
+         factoryId = null,
       )
    )
 }

@@ -11,7 +11,7 @@ abstract class TerminalScope : TestScope {
       error("Cannot add nested tests at this level")
    }
 
-   override suspend fun registerTestCase(test: TestDefinition) {
+   override suspend fun registerTest(test: TestDefinition) {
       error("Cannot add nested tests at this level")
    }
 }

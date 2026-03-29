@@ -2,8 +2,10 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -167,25 +169,31 @@ class DescribeSpecContainerScope(
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         TestDefinitionBuilder.builder(
+            TestNameBuilder.builder(name).build(),
+            TestType.Test,
+            test,
+         ).build()
+      )
    }
 
    suspend fun fit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.FOCUSED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         TestDefinitionBuilder.builder(
+            TestNameBuilder.builder(name).build(),
+            TestType.Test,
+            test,
+         ).withXmethod(TestXMethod.FOCUSED).build()
+      )
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.DISABLED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         TestDefinitionBuilder.builder(
+            TestNameBuilder.builder(name).build(),
+            TestType.Test,
+            test,
+         ).withXmethod(TestXMethod.DISABLED).build()
+      )
    }
 }

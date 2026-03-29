@@ -217,7 +217,7 @@ internal class InstancePerTestSpecExecutor(
       private val duplicateTestNameHandler = DuplicateTestNameHandler()
       private val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
 
-      override suspend fun registerTestCase(test: TestDefinition) {
+      override suspend fun registerTest(test: TestDefinition) {
          registerTestCase(
             NestedTest(
                name = test.name,
