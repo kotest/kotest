@@ -117,6 +117,36 @@ private fun validate(
       else violation("Expected one of ${expected.values.joinToString(", ", "[", "]")} but was ${tree.type()}")
    }
 
+   if (expected is JsonSchema.JsonAnyOf) {
+      val results = expected.schemas.map { schema -> validate(currentPath, tree, schema) }
+      return if (results.any { it.isEmpty() }) {
+         emptyList()
+      } else {
+         val detail = expected.schemas.mapIndexed { i, schema ->
+            "  ${schema.typeName()}: ${results[i].joinToString("; ") { "${it.path} => ${it.message}" }}"
+         }.joinToString("\n")
+         violation("Expected value to match anyOf(${expected.schemas.joinToString(", ") { it.typeName() }}), but none matched:\n$detail")
+      }
+   }
+
+   if (expected is JsonSchema.JsonOneOf) {
+      val results = expected.schemas.map { schema -> validate(currentPath, tree, schema) }
+      val matchCount = results.count { it.isEmpty() }
+      return when {
+         matchCount == 1 -> emptyList()
+         matchCount == 0 -> {
+            val detail = expected.schemas.mapIndexed { i, schema ->
+               "  ${schema.typeName()}: ${results[i].joinToString("; ") { "${it.path} => ${it.message}" }}"
+            }.joinToString("\n")
+            violation("Expected value to match oneOf(${expected.schemas.joinToString(", ") { it.typeName() }}), but none matched:\n$detail")
+         }
+         else -> {
+            val matched = expected.schemas.filterIndexed { i, _ -> results[i].isEmpty() }
+            violation("Expected value to match exactly one of oneOf(${expected.schemas.joinToString(", ") { it.typeName() }}), but $matchCount matched: ${matched.joinToString(", ") { it.typeName() }}")
+         }
+      }
+   }
+
    return when (tree) {
       is JsonNode.ArrayNode -> {
          if (expected is JsonSchema.JsonArray) {
