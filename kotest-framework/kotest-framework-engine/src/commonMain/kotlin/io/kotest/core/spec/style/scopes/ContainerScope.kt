@@ -20,6 +20,7 @@ import io.kotest.core.spec.BeforeEach
 import io.kotest.core.spec.BeforeTest
 import io.kotest.core.spec.InvalidDslException
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinition
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
@@ -239,9 +240,15 @@ abstract class AbstractContainerScope(
 
    override val coroutineContext: CoroutineContext = testScope.coroutineContext
 
+   @Deprecated("Use TestDefinition. Will be removed in 7.0")
    override suspend fun registerTestCase(nested: NestedTest) {
       registered = true
       testScope.registerTestCase(nested)
+   }
+
+   override suspend fun registerTestCase(test: TestDefinition) {
+      registered = true
+      testScope.registerTestCase(test)
    }
 
    override fun hasChildren(): Boolean = registered

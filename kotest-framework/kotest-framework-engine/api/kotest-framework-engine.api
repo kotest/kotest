@@ -1288,30 +1288,10 @@ public final class io/kotest/core/factory/FactoryId$Companion {
 	public final fun next ()Lio/kotest/core/factory/FactoryId;
 }
 
-public final class io/kotest/core/factory/TestFactory {
-	public fun <init> (Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;Lio/kotest/core/factory/TestFactoryConfiguration;)V
-	public final fun component1 ()Lio/kotest/core/factory/FactoryId;
-	public final fun component2 ()Ljava/util/List;
-	public final fun component3 ()Ljava/util/Set;
-	public final fun component4 ()Lio/kotest/core/test/AssertionMode;
-	public final fun component5 ()Ljava/util/List;
-	public final fun component6 ()Lio/kotest/core/factory/TestFactoryConfiguration;
-	public final fun copy (Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;Lio/kotest/core/factory/TestFactoryConfiguration;)Lio/kotest/core/factory/TestFactory;
-	public static synthetic fun copy$default (Lio/kotest/core/factory/TestFactory;Lio/kotest/core/factory/FactoryId;Ljava/util/List;Ljava/util/Set;Lio/kotest/core/test/AssertionMode;Ljava/util/List;Lio/kotest/core/factory/TestFactoryConfiguration;ILjava/lang/Object;)Lio/kotest/core/factory/TestFactory;
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getAssertionMode ()Lio/kotest/core/test/AssertionMode;
-	public final fun getConfiguration ()Lio/kotest/core/factory/TestFactoryConfiguration;
-	public final fun getExtensions ()Ljava/util/List;
-	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
-	public final fun getTags ()Ljava/util/Set;
-	public final fun getTests ()Ljava/util/List;
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
 public abstract class io/kotest/core/factory/TestFactoryConfiguration : io/kotest/core/TestConfiguration, io/kotest/core/spec/style/scopes/RootScope {
 	public fun <init> ()V
 	public fun add (Lio/kotest/core/spec/RootTest;)V
+	public fun add (Lio/kotest/core/spec/TestDefinition;)V
 	public final fun getFactoryId ()Lio/kotest/core/factory/FactoryId;
 	public final fun include (Lio/kotest/core/factory/TestFactory;)V
 }
@@ -1609,11 +1589,6 @@ public final class io/kotest/core/source/SourceRefUtils {
 
 public abstract class io/kotest/core/spec/AbstractSpec : io/kotest/core/spec/DslDrivenSpec {
 	public fun <init> ()V
-}
-
-public abstract class io/kotest/core/spec/CompositeSpec : io/kotest/core/spec/Spec {
-	public fun <init> ([Lio/kotest/core/factory/TestFactory;)V
-	public fun rootTests ()Ljava/util/List;
 }
 
 public abstract class io/kotest/core/spec/DslDrivenSpec : io/kotest/core/spec/Spec, io/kotest/core/spec/style/scopes/RootScope {
@@ -2674,10 +2649,6 @@ public final class io/kotest/core/spec/style/scopes/RootContainerWithConfigBuild
 	public final fun config-AcCKELw (Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;)V
 	public static synthetic fun config-AcCKELw$default (Lio/kotest/core/spec/style/scopes/RootContainerWithConfigBuilder;Ljava/lang/Boolean;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Ljava/util/Set;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/time/Duration;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/lang/Boolean;Ljava/util/List;Ljava/lang/Integer;Lkotlin/time/Duration;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)V
 	public final fun getContextFn ()Lkotlin/jvm/functions/Function1;
-}
-
-public abstract interface class io/kotest/core/spec/style/scopes/RootScope {
-	public abstract fun add (Lio/kotest/core/spec/RootTest;)V
 }
 
 public final class io/kotest/core/spec/style/scopes/RootScopeKt {

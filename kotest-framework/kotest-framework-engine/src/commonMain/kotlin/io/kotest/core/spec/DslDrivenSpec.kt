@@ -44,6 +44,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * This function may only be called before tests in the spec begin executing.
     * If this function is called after tests have started executing, an [InvalidDslException] will be thrown.
     */
+   @Deprecated("Use TestDefinition. Will be removed in 7.0")
    override fun add(test: RootTest) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
       rootTests = rootTests + test
@@ -60,7 +61,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {
-      factory.tests.forEach { add(it.copy(factoryId = factory.factoryId)) }
+      factory.tests.forEach { add(it) }
       factory.configuration.setParentConfiguration(this)
       extensions(factory.extensions)
    }

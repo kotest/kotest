@@ -1,9 +1,10 @@
 package io.kotest.core.factory
 
+import io.kotest.common.KotestInternal
 import io.kotest.core.Tag
 import io.kotest.core.extensions.Extension
-import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.TestDefinition
 import io.kotest.core.test.AssertionMode
 
 /**
@@ -14,11 +15,12 @@ import io.kotest.core.test.AssertionMode
  * Factories are useful if you want to group tests together with some callbacks and settings
  * and inject them into specs as a unit.
  */
+@KotestInternal
 data class TestFactory(
-  val factoryId: FactoryId,
-  val tests: List<RootTest>,
-  val tags: Set<Tag>,
-  val assertionMode: AssertionMode?,
-  val extensions: List<Extension>,
-  val configuration: TestFactoryConfiguration
+   val factoryId: FactoryId,
+   val tests: List<TestDefinition>,
+   val tags: Set<Tag>,
+   val assertionMode: AssertionMode?,
+   val extensions: List<Extension>,
+   val configuration: TestFactoryConfiguration
 )
