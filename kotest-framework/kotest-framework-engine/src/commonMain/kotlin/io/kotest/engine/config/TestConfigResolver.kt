@@ -159,18 +159,19 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.invocations }
          ?: testCase.spec.defaultTestConfig?.invocations
          ?: projectConfig?.invocations
-         /**
-          * Extensions (env var / system property) only apply to leaf tests. Containers
-          * cannot have multiple invocations, but they are still materialized when a child
-          * test is selected, so we skip the extension lookup for them to avoid false errors,
-          * at the detriment of not catching and informing users when they use the invocations setter wrongly
-          * and directly on a container.
-          */
-         ?: (if (testCase.type == TestType.Test) invocationCountFromExtensions() else null)
+         ?: readInvocationCountFromExtensions(testCase)
          ?: Defaults.INVOCATIONS
    }
 
-   private fun invocationCountFromExtensions(): Int? {
+   /**
+    * Extensions (env var / system property) only apply to leaf tests. Containers
+    * cannot have multiple invocations, but they are still materialized when a child
+    * test is selected, so we skip the extension lookup for them to avoid false errors,
+    * at the detriment of not catching and informing users when they use the invocations setter wrongly
+    * and directly on a container.
+    */
+   private fun readInvocationCountFromExtensions(testCase: TestCase): Int? {
+      if (testCase.type != TestType.Test) return null
       val extensions = registry.all().filterIsInstance<InvocationCountExtension>() +
          SystemPropertyOrEnvInvocationCountExtension
       return extensions.firstNotNullOfOrNull { it.getInvocationCount() }

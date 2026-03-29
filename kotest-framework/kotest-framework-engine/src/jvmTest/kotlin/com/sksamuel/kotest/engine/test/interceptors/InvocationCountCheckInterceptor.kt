@@ -10,15 +10,11 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
-import io.kotest.engine.config.ProjectConfigResolver
-import io.kotest.engine.config.SpecConfigResolver
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.extensions.DefaultExtensionRegistry
 import io.kotest.core.descriptors.toDescriptor
 import io.kotest.engine.test.interceptors.InvocationCountCheckInterceptor
-import io.kotest.engine.test.interceptors.TestEnabledCheckInterceptor
 import io.kotest.engine.test.scopes.NoopTestScope
-import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.milliseconds
@@ -157,83 +153,6 @@ class InvocationCountCheckInterceptorTest : DescribeSpec() {
             )
 
             resolver.invocations(tc) shouldBe 1
-         }
-      }
-
-      describe("interceptor ordering: enabled check before invocation count check") {
-
-         it("should skip a disabled container with invocations > 1 without error") {
-            // A container test that is disabled (name starts with !) and has invocations > 1.
-            // With correct ordering, TestEnabledCheckInterceptor returns Ignored before
-            // InvocationCountCheckInterceptor sees it, so no error is produced.
-            val registry = DefaultExtensionRegistry()
-            registry.add(object : InvocationCountExtension {
-               override fun getInvocationCount(): Int = 5
-            })
-            val testConfigResolver = TestConfigResolver(null, registry)
-
-            val tc = TestCase(
-               InvocationCountCheckInterceptorTest::class.toDescriptor().append("!disabled container"),
-               TestNameBuilder.builder("!disabled container").build(),
-               InvocationCountCheckInterceptorTest(),
-               {},
-               SourceRef.None,
-               TestType.Container,
-            )
-
-            // Chain: TestEnabledCheckInterceptor -> InvocationCountCheckInterceptor -> downstream
-            val enabledCheck = TestEnabledCheckInterceptor(
-               ProjectConfigResolver(), SpecConfigResolver(), testConfigResolver
-            )
-            val invocationCheck = InvocationCountCheckInterceptor(testConfigResolver)
-
-            var downstreamFired = false
-            val result = enabledCheck.intercept(tc, NoopTestScope(tc, coroutineContext)) { tc2, scope2 ->
-               invocationCheck.intercept(tc2, scope2) { _, _ ->
-                  downstreamFired = true
-                  TestResult.Success(0.milliseconds)
-               }
-            }
-
-            // The test should be ignored by the enabled check, never reaching the invocation check
-            downstreamFired.shouldBeFalse()
-            result.isIgnored shouldBe true
-            result.isError shouldBe false
-         }
-
-         it("should pass through for an enabled container when invocation count comes from extension") {
-            // Extensions are ignored for containers, so even with an extension returning 5,
-            // the container resolves to the default invocation count of 1 and passes through.
-            val registry = DefaultExtensionRegistry()
-            registry.add(object : InvocationCountExtension {
-               override fun getInvocationCount(): Int = 5
-            })
-            val testConfigResolver = TestConfigResolver(null, registry)
-
-            val tc = TestCase(
-               InvocationCountCheckInterceptorTest::class.toDescriptor().append("enabled container"),
-               TestNameBuilder.builder("enabled container").build(),
-               InvocationCountCheckInterceptorTest(),
-               {},
-               SourceRef.None,
-               TestType.Container,
-            )
-
-            val enabledCheck = TestEnabledCheckInterceptor(
-               ProjectConfigResolver(), SpecConfigResolver(), testConfigResolver
-            )
-            val invocationCheck = InvocationCountCheckInterceptor(testConfigResolver)
-
-            var downstreamFired = false
-            val result = enabledCheck.intercept(tc, NoopTestScope(tc, coroutineContext)) { tc2, scope2 ->
-               invocationCheck.intercept(tc2, scope2) { _, _ ->
-                  downstreamFired = true
-                  TestResult.Success(0.milliseconds)
-               }
-            }
-
-            downstreamFired.shouldBeTrue()
-            result.isError shouldBe false
          }
       }
    }

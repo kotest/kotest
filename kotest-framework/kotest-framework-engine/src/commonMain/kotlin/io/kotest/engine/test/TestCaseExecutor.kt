@@ -72,6 +72,7 @@ internal class TestCaseExecutor(
          TestNameContextInterceptor,
          FailFastInterceptor(context, specContext),
          TestFinishedInterceptor(listener, context.testExtensions()),
+         InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before the before/after callbacks, so they are executed in the right context
          CoroutineDispatcherFactoryTestInterceptor(context.specConfigResolver),
@@ -81,7 +82,6 @@ internal class TestCaseExecutor(
             context.specConfigResolver,
             context.testConfigResolver
          ),
-         InvocationCountCheckInterceptor(context.testConfigResolver),
          TestCaseExtensionInterceptor(context.testExtensions()),
          LifecycleInterceptor(listener, timeMark, context.testExtensions()),
          AssertionModeInterceptor(context.testConfigResolver),
