@@ -73,7 +73,7 @@ class DescribeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run context with config nested describe with config", 2647),
          Gutter("Run context with config nested describe with config it block", 2688),
          Gutter("Run xcontext with config", 2801),
-         Gutter("Run All Spec Tests, including data tests", 2866),
+         Gutter("Run This data test block", 2866),
       )
 
       expected.size shouldBe gutters.size

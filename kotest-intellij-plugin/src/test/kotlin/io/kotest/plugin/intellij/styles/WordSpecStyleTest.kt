@@ -37,7 +37,7 @@ class WordSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run with capital When test something with config", 463),
          Gutter("Run with capital When disabled should", 515),
          Gutter("Run disabled when", 564),
-         Gutter("Run All Spec Tests, including data tests", 625),
+         Gutter("Run This data test block", 625),
       )
 
       gutters.size shouldBe expected.size

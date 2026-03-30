@@ -34,6 +34,7 @@ data class TestEngineLauncher(
    private val refs: List<SpecRef>,
    private val tagExpression: TagExpression?,
    private val registry: ExtensionRegistry,
+   private val applyEnvFilters: Boolean = true,
 ) {
 
    // we use this to capture any test failures so we know to exit appropriately
@@ -99,6 +100,15 @@ data class TestEngineLauncher(
    }
 
    /**
+    * Returns a copy of this launcher that will not apply environment-based descriptor filters
+    * (e.g. [IncludePatternEnvDescriptorFilter] which reads from the KOTEST_INCLUDE_PATTERN env variable).
+    *
+    * This is useful when programmatically launching an inner [TestEngine] from within a test, where the
+    * outer engine's environment-based filters (set by the Gradle plugin) should not be inherited.
+    */
+   fun withoutEnvFilters(): TestEngineLauncher = copy(applyEnvFilters = false)
+
+   /**
     * Returns a copy of this launcher with the given [extension] added to the configuration.
     */
    fun addExtension(extension: Extension): TestEngineLauncher = addExtensions(listOf(extension))
@@ -125,7 +135,9 @@ data class TestEngineLauncher(
       )
 
       // add in extensions that are enabled by default
-      registry.add(IncludePatternEnvDescriptorFilter)
+      if (applyEnvFilters) {
+         registry.add(IncludePatternEnvDescriptorFilter)
+      }
 
       // if the engine was configured with explicit tags, we register those via a tag extension
       tagExpression?.let { registry.add(SpecifiedTagsTagExtension(it)) }
