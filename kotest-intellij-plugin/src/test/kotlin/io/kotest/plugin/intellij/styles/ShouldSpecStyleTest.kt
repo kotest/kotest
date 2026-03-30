@@ -43,7 +43,7 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run an xcontext with config", 993),
          Gutter("Run an xcontext with config a should", 1035),
          Gutter("Run xdisabled should", 1072),
-         Gutter("Run All Spec Tests, including data tests", 1133),
+         Gutter("Run This data test block", 1133),
       )
 
       gutters.size shouldBe expected.size
