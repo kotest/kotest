@@ -40,7 +40,7 @@ kotlin {
 
       apiVersion.set(
          org.jetbrains.kotlin.gradle.dsl.KotlinVersion.fromVersion(
-            libs.findVersion("kotlin-core-libaries-version").get().toString().substringBeforeLast('.') // x.y.z -> x.y
+            libs.findVersion("kotlin-language-version").get().toString().substringBeforeLast('.') // x.y.z -> x.y
          )
       )
 
