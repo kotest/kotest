@@ -5,7 +5,6 @@ on:
       -  cron: '0 10 * * *'
    workflow_dispatch:
 
-
 permissions:
    contents: read
 
@@ -16,6 +15,7 @@ jobs:
    check:
       name: "Check (${{ matrix.name }})"
       runs-on: ${{ matrix.os }}
+      if: github.event_name == 'schedule' && github.repository == 'kotest/kotest'
       continue-on-error: false
       strategy:
          matrix:
