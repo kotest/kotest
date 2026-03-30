@@ -145,7 +145,7 @@ public final class io/kotest/common/stacktrace/JvmStacktraces : io/kotest/common
 public abstract interface class io/kotest/common/stacktrace/StackTraces {
 	public abstract fun cleanStackTrace (Ljava/lang/Throwable;)Ljava/lang/Throwable;
 	public abstract fun root (Ljava/lang/Throwable;)Ljava/lang/Throwable;
-	public abstract fun throwableLocation (Ljava/lang/Throwable;)Ljava/lang/String;
+	public fun throwableLocation (Ljava/lang/Throwable;)Ljava/lang/String;
 	public abstract fun throwableLocation (Ljava/lang/Throwable;I)Ljava/util/List;
 }
 
