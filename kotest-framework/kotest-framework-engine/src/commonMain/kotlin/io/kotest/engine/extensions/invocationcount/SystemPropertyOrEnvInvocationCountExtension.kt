@@ -4,6 +4,6 @@ import io.kotest.common.syspropOrEnv
 import io.kotest.core.extensions.InvocationCountExtension
 import io.kotest.engine.config.KotestEngineEnvVars
 
-object SystemPropertyOrEnvInvocationCountExtension : InvocationCountExtension {
+internal object SystemPropertyOrEnvInvocationCountExtension : InvocationCountExtension {
    override fun getInvocationCount(): Int? = syspropOrEnv(KotestEngineEnvVars.INVOCATION_COUNT)?.toIntOrNull()
 }

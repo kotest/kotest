@@ -1,5 +1,5 @@
 package io.kotest.core.extensions
 
-interface InvocationCountExtension: Extension {
+internal interface InvocationCountExtension: Extension {
    fun getInvocationCount(): Int?
 }
