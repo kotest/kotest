@@ -1,7 +1,6 @@
 package io.kotest.engine.test.enabled
 
 import io.kotest.common.syspropOrEnv
-import io.kotest.engine.tags.TagExpression
 import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
