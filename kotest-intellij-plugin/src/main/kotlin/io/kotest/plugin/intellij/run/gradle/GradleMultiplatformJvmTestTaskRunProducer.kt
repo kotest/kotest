@@ -203,7 +203,8 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
 
    /**
     * Sets or removes the KOTEST_TAGS environment variable for data test filtering.
-    * If the test context has a [DataTestInfo], it sets KOTEST_TAGS to [DataTestInfo.tag].
+    * If the test context has a [DataTestInfo], it sets KOTEST_TAGS to [DataTestInfo.tag] and removes
+    * KOTEST_TEST_ENABLED_OVERRIDE to avoid it interfering with the tags filtering.
     * If not, it removes KOTEST_TAGS from the environment variables.
     * Have to rely on env vars here because Gradle system properties (-D) do not propagate to the test JVM.
     *
@@ -216,6 +217,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
    ) {
       dataTestInfoMaybe?.let {
          val envVars = runConfiguration.settings.env.toMutableMap()
+         envVars.remove("KOTEST_TEST_ENABLED_OVERRIDE")
          envVars["KOTEST_TAGS"] = it.tag
          runConfiguration.settings.env = envVars
       } ?: run {
