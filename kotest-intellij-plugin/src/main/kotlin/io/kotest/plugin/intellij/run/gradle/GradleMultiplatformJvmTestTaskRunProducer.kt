@@ -76,6 +76,10 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
 
       setUniqueNameIfNeeded(configuration.project, configuration)
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
+
+      // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
+      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
+
       return true
    }
 

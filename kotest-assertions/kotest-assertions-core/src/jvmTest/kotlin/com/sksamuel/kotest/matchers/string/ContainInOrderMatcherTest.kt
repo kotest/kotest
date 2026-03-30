@@ -54,11 +54,13 @@ class ContainInOrderMatcherTest : FreeSpec() {
          }
 
          "should output first mismatch" {
-            shouldThrowAny {
+            val message = shouldThrowAny {
                "The quick brown fox jumps over the lazy dog".shouldContainInOrder(
                   "The", "quick", "red", "fox", "jumps", "over", "the", "lazy", "dog"
                )
-            }.message.shouldContain("""Did not match substring[2]: <"red">""")
+            }.message
+            message.shouldContain("""The best fit is the subset with the following indexes: [0, 1, -, 3, 4, 5, 6, 7, 8]""")
+            message.shouldContain("Element[2] not found")
          }
 
          "should pass for overlapping substrings when second one occurs later" {
@@ -76,10 +78,12 @@ class ContainInOrderMatcherTest : FreeSpec() {
                )
             }.message
             assertSoftly {
-               message.shouldContain("""Did not match substring[6]: <"quick brown">""")
-               message.shouldContain("Match[0]: whole slice matched actual[4..14]")
-               message.shouldContain("""Line[0] ="The quick brown fox jumps over the lazy dog"""")
-               message.shouldContain(  "Match[0]= ----+++++++++++----------------------------")
+               message.shouldContain("""The best fit is the subset with the following indexes: [0, -, -, -, -, -, 6, 7, 8]""")
+               message.shouldContain("Element[1] found at index(es): [10]")
+               message.shouldContain("Element[2] found at index(es): [16]")
+               message.shouldContain("Element[3] found at index(es): [20]")
+               message.shouldContain("Element[4] found at index(es): [26]")
+               message.shouldContain("Element[5] found at index(es): [31]")
             }
          }
       }

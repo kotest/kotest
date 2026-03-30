@@ -83,13 +83,21 @@ fun <T, C : Collection<T>> containExactly(
       matchCollectionsWithVerifier(actual, expected, verifier)
    }
 
-   val missing = expected.filterNot { t ->
-      actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
-   }
-   val extra = actual.filterNot { t ->
-      expected.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
-   }
    val passed = failureReason == null
+   val missing = if(passed) {
+      emptyList()
+   } else {
+      expected.filterNot { t ->
+         actual.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
+      }
+   }
+   val extra = if(passed) {
+      emptyList()
+   } else {
+      actual.filterNot { t ->
+             expected.any { verifier?.verify(it, t)?.areEqual() ?: (it == t) }
+      }
+   }
 
    val failureMessage = {
       buildString {
@@ -185,6 +193,74 @@ fun <T> Array<T>?.shouldNotContainExactly(vararg expected: T) = this?.asList() s
 
 infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
 fun <T> Collection<T>?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
+
+// region Primitive array overloads
+
+@JvmName("shouldContainExactly_booleanArray")
+infix fun BooleanArray?.shouldContainExactly(expected: BooleanArray): BooleanArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun BooleanArray?.shouldContainExactly(vararg expected: Boolean): BooleanArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_booleanArray")
+infix fun BooleanArray?.shouldNotContainExactly(expected: BooleanArray): BooleanArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun BooleanArray?.shouldNotContainExactly(vararg expected: Boolean): BooleanArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_byteArray")
+infix fun ByteArray?.shouldContainExactly(expected: ByteArray): ByteArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun ByteArray?.shouldContainExactly(vararg expected: Byte): ByteArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_byteArray")
+infix fun ByteArray?.shouldNotContainExactly(expected: ByteArray): ByteArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun ByteArray?.shouldNotContainExactly(vararg expected: Byte): ByteArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_shortArray")
+infix fun ShortArray?.shouldContainExactly(expected: ShortArray): ShortArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun ShortArray?.shouldContainExactly(vararg expected: Short): ShortArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_shortArray")
+infix fun ShortArray?.shouldNotContainExactly(expected: ShortArray): ShortArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun ShortArray?.shouldNotContainExactly(vararg expected: Short): ShortArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_charArray")
+infix fun CharArray?.shouldContainExactly(expected: CharArray): CharArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun CharArray?.shouldContainExactly(vararg expected: Char): CharArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_charArray")
+infix fun CharArray?.shouldNotContainExactly(expected: CharArray): CharArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun CharArray?.shouldNotContainExactly(vararg expected: Char): CharArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_intArray")
+infix fun IntArray?.shouldContainExactly(expected: IntArray): IntArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun IntArray?.shouldContainExactly(vararg expected: Int): IntArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_intArray")
+infix fun IntArray?.shouldNotContainExactly(expected: IntArray): IntArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun IntArray?.shouldNotContainExactly(vararg expected: Int): IntArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_longArray")
+infix fun LongArray?.shouldContainExactly(expected: LongArray): LongArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun LongArray?.shouldContainExactly(vararg expected: Long): LongArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_longArray")
+infix fun LongArray?.shouldNotContainExactly(expected: LongArray): LongArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun LongArray?.shouldNotContainExactly(vararg expected: Long): LongArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_floatArray")
+infix fun FloatArray?.shouldContainExactly(expected: FloatArray): FloatArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun FloatArray?.shouldContainExactly(vararg expected: Float): FloatArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_floatArray")
+infix fun FloatArray?.shouldNotContainExactly(expected: FloatArray): FloatArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun FloatArray?.shouldNotContainExactly(vararg expected: Float): FloatArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+@JvmName("shouldContainExactly_doubleArray")
+infix fun DoubleArray?.shouldContainExactly(expected: DoubleArray): DoubleArray? = apply { this?.asList() should containExactly(expected.asList()) }
+fun DoubleArray?.shouldContainExactly(vararg expected: Double): DoubleArray? = apply { this?.asList() should containExactly(expected.asList()) }
+
+@JvmName("shouldNotContainExactly_doubleArray")
+infix fun DoubleArray?.shouldNotContainExactly(expected: DoubleArray): DoubleArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+fun DoubleArray?.shouldNotContainExactly(vararg expected: Double): DoubleArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+
+// endregion
 
 fun StringBuilder.appendMissingAndExtra(missing: Collection<Any?>, extra: Collection<Any?>) {
    if (missing.isNotEmpty()) {
