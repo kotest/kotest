@@ -8,6 +8,7 @@ import io.kotest.assertions.json.paths.shouldBeValidJson
 import io.kotest.assertions.json.paths.shouldNotBeJsonArray
 import io.kotest.assertions.json.paths.shouldNotBeJsonObject
 import io.kotest.assertions.json.paths.shouldNotBeValidJson
+import kotlinx.serialization.json.Json
 import java.io.File
 
 fun File.shouldBeEmptyJsonArray(): File {
@@ -25,8 +26,18 @@ fun File.shouldBeJsonArray(): File {
    return this
 }
 
+fun File.shouldBeJsonArray(parser: Json): File {
+   this.toPath().shouldBeJsonArray(parser)
+   return this
+}
+
 fun File.shouldNotBeJsonArray(): File {
    this.toPath().shouldNotBeJsonArray()
+   return this
+}
+
+fun File.shouldNotBeJsonArray(parser: Json): File {
+   this.toPath().shouldNotBeJsonArray(parser)
    return this
 }
 
@@ -35,8 +46,18 @@ fun File.shouldBeJsonObject(): File {
    return this
 }
 
+fun File.shouldBeJsonObject(parser: Json): File {
+   this.toPath().shouldBeJsonObject(parser)
+   return this
+}
+
 fun File.shouldNotBeJsonObject(): File {
    this.toPath().shouldNotBeJsonObject()
+   return this
+}
+
+fun File.shouldNotBeJsonObject(parser: Json): File {
+   this.toPath().shouldNotBeJsonObject(parser)
    return this
 }
 
@@ -45,7 +66,17 @@ fun File.shouldBeValidJson(): File {
    return this
 }
 
+fun File.shouldBeValidJson(parser: Json): File {
+   this.toPath().shouldBeValidJson(parser)
+   return this
+}
+
 fun File.shouldNotBeValidJson(): File {
    this.toPath().shouldNotBeValidJson()
+   return this
+}
+
+fun File.shouldNotBeValidJson(parser: Json): File {
+   this.toPath().shouldNotBeValidJson(parser)
    return this
 }

@@ -72,6 +72,13 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       }
 
       configuration.EXTRA_OPTIONS = getOptions(configuration.EXTRA_OPTIONS, context, OPTIONS_EP.extensionList, logger)
+
+      // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
+      val existingOptions = configuration.EXTRA_OPTIONS.trim()
+      configuration.EXTRA_OPTIONS =
+         if (existingOptions.isEmpty()) "-e KOTEST_IDEA_PLUGIN true"
+         else "$existingOptions -e KOTEST_IDEA_PLUGIN true"
+
       logger.debug("Configuration ${configuration.name} setup successfully")
       return true
    }
