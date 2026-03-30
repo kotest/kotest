@@ -5,17 +5,17 @@ on:
       -  cron: '0 10 * * *'
    workflow_dispatch:
 
-
 permissions:
    contents: read
 
 env:
-   KOTLIN_VERSION: "2.3.20-Beta2"
+   KOTLIN_VERSION: "2.3.20"
 
 jobs:
    check:
       name: "Check (${{ matrix.name }})"
       runs-on: ${{ matrix.os }}
+      if: github.event_name == 'schedule' && github.repository == 'kotest/kotest'
       continue-on-error: false
       strategy:
          matrix:
