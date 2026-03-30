@@ -12,10 +12,7 @@ import io.kotest.plugin.intellij.psi.ElementUtils
 import io.kotest.plugin.intellij.run.KotestRunState
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
-import io.kotest.plugin.intellij.styles.SpecStyle
 import io.kotest.plugin.intellij.util.DataTestInfo
-import org.jetbrains.kotlin.analysis.api.KaImplementationDetail
-import org.jetbrains.kotlin.analysis.api.permissions.KaAnalysisPermissionRegistry
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.kotlin.idea.gradleJava.run.MultiplatformTestTasksChooser
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestRunConfigurationProducer
