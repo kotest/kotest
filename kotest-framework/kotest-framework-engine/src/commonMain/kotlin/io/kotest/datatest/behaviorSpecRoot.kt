@@ -211,8 +211,9 @@ fun <T> BehaviorSpecRootScope.withContexts(
    ts: Iterable<T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)).config() { this.test(t) }
+      context(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -226,8 +227,9 @@ fun <T> BehaviorSpecRootScope.withGivens(
    ts: Iterable<T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      given(nameFn(t)).config() { this.test(t) }
+      given(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -250,8 +252,9 @@ fun <T> BehaviorSpecRootScope.withContexts(
    data: Map<String, T>,
    test: suspend BehaviorSpecContextContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name).config() { this.test(t) }
+      context(name).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -263,7 +266,8 @@ fun <T> BehaviorSpecRootScope.withGivens(
    data: Map<String, T>,
    test: suspend BehaviorSpecGivenContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      given(name).config() { this.test(t) }
+      given(name).config(dataTestTagConfig) { this.test(t) }
    }
 }

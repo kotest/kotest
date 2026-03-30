@@ -59,7 +59,7 @@ class FreeSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
       (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 434
 
       gutters[8].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[8].tooltipText shouldBe "Run All Spec Tests, including data tests"
+      gutters[8].tooltipText shouldBe "Run This data test block"
       (gutters[8] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 505
    }
 

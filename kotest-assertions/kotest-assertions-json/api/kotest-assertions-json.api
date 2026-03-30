@@ -494,6 +494,7 @@ public final class io/kotest/assertions/json/paths/MatchersKt {
 }
 
 public final class io/kotest/assertions/json/schema/BuilderKt {
+	public static final fun anyOf (Lio/kotest/assertions/json/schema/JsonSchema$Builder;[Lio/kotest/assertions/json/schema/JsonSchemaElement;)Lio/kotest/assertions/json/schema/JsonSchema$JsonAnyOf;
 	public static final fun array (Lio/kotest/assertions/json/schema/JsonSchema$Builder;IIZLio/kotest/assertions/json/ContainsSpec;Ljava/util/List;Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/json/schema/JsonSchema$JsonArray;
 	public static synthetic fun array$default (Lio/kotest/assertions/json/schema/JsonSchema$Builder;IIZLio/kotest/assertions/json/ContainsSpec;Ljava/util/List;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/assertions/json/schema/JsonSchema$JsonArray;
 	public static final fun boolean (Lio/kotest/assertions/json/schema/JsonSchema$Builder;Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/json/schema/JsonSchema$JsonBoolean;
@@ -511,6 +512,7 @@ public final class io/kotest/assertions/json/schema/BuilderKt {
 	public static synthetic fun number$default (Lio/kotest/assertions/json/schema/JsonSchema$Builder;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/assertions/json/schema/JsonSchema$JsonDecimal;
 	public static final fun obj (Lio/kotest/assertions/json/schema/JsonSchema$Builder;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;
 	public static synthetic fun obj$default (Lio/kotest/assertions/json/schema/JsonSchema$Builder;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/assertions/json/schema/JsonSchema$JsonObject;
+	public static final fun oneOf (Lio/kotest/assertions/json/schema/JsonSchema$Builder;[Lio/kotest/assertions/json/schema/JsonSchemaElement;)Lio/kotest/assertions/json/schema/JsonSchema$JsonOneOf;
 	public static final fun string (Lio/kotest/assertions/json/schema/JsonSchema$Builder;Lkotlin/jvm/functions/Function0;)Lio/kotest/assertions/json/schema/JsonSchema$JsonString;
 	public static synthetic fun string$default (Lio/kotest/assertions/json/schema/JsonSchema$Builder;Lkotlin/jvm/functions/Function0;ILjava/lang/Object;)Lio/kotest/assertions/json/schema/JsonSchema$JsonString;
 }
@@ -529,6 +531,18 @@ public final class io/kotest/assertions/json/schema/JsonSchema {
 
 public final class io/kotest/assertions/json/schema/JsonSchema$Builder {
 	public static final field INSTANCE Lio/kotest/assertions/json/schema/JsonSchema$Builder;
+}
+
+public final class io/kotest/assertions/json/schema/JsonSchema$JsonAnyOf : io/kotest/assertions/json/schema/JsonSchemaElement {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lio/kotest/assertions/json/schema/JsonSchema$JsonAnyOf;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/schema/JsonSchema$JsonAnyOf;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/assertions/json/schema/JsonSchema$JsonAnyOf;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSchemas ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun typeName ()Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/json/schema/JsonSchema$JsonArray : io/kotest/assertions/json/schema/JsonSchemaElement {
@@ -694,6 +708,18 @@ public final class io/kotest/assertions/json/schema/JsonSchema$JsonObjectBuilder
 	public static synthetic fun string$default (Lio/kotest/assertions/json/schema/JsonSchema$JsonObjectBuilder;Ljava/lang/String;ZLkotlin/jvm/functions/Function0;ILjava/lang/Object;)V
 	public final fun withProperty (Ljava/lang/String;ZLkotlin/jvm/functions/Function1;)V
 	public static synthetic fun withProperty$default (Lio/kotest/assertions/json/schema/JsonSchema$JsonObjectBuilder;Ljava/lang/String;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+}
+
+public final class io/kotest/assertions/json/schema/JsonSchema$JsonOneOf : io/kotest/assertions/json/schema/JsonSchemaElement {
+	public fun <init> (Ljava/util/List;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun copy (Ljava/util/List;)Lio/kotest/assertions/json/schema/JsonSchema$JsonOneOf;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/schema/JsonSchema$JsonOneOf;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/assertions/json/schema/JsonSchema$JsonOneOf;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getSchemas ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+	public fun typeName ()Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/json/schema/JsonSchema$JsonString : io/kotest/assertions/json/schema/JsonSchemaElement, io/kotest/assertions/json/schema/ValueNode {
