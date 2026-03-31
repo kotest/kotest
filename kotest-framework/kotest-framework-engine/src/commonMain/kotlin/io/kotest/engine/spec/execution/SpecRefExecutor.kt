@@ -11,6 +11,7 @@ import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.SpecRefExtension
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -165,11 +166,18 @@ internal class SpecRefExecutor(
 }
 
 /**
- * Returns a [SpecExecutor] for the given [Spec] suitable for the current platform.
- * For example, on the JVM it would take into account isolation modes, and on Wasm it will
- * detect if we have a JS hosted environment.
+ * Returns a [SpecExecutor] for the given [Spec], selecting the appropriate executor
+ * based on the configured [IsolationMode].
  */
-internal expect fun specExecutor(context: TestEngineContext, spec: Spec): SpecExecutor
+@Suppress("DEPRECATION")
+internal fun specExecutor(context: TestEngineContext, spec: Spec): SpecExecutor {
+   return when (context.specConfigResolver.isolationMode(spec)) {
+      IsolationMode.SingleInstance -> SingleInstanceSpecExecutor(context)
+      IsolationMode.InstancePerRoot -> InstancePerRootSpecExecutor(context)
+      IsolationMode.InstancePerLeaf -> InstancePerLeafSpecExecutor(context)
+      IsolationMode.InstancePerTest -> InstancePerTestSpecExecutor(context)
+   }
+}
 
 /**
  * Used to test a [SpecRefExecutor] from another module.
