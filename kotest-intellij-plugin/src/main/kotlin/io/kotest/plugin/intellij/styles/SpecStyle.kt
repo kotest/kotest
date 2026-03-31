@@ -52,7 +52,7 @@ interface SpecStyle {
       }
 
       // in future iterations this could change and be somehow saying running all data tests within the spec
-      val dataTestDefaultTestName = TestName(null, "All Spec Tests, including data tests", interpolated = false)
+      val dataTestDefaultTestName: TestName = TestName(null, "This data test block", interpolated = false)
    }
 
    /**
@@ -142,7 +142,7 @@ interface SpecStyle {
 
    /**
     * Returns a test for a method with the given name, in a way that is compatible with this style.
-    * For example, a [FunSpec] would return a string like this: test("given name") { }
+    * For example, a FunSpec would return a string like this: test("given name") { }
     */
    fun generateTest(specName: String, name: String): String
 

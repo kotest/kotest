@@ -19,12 +19,7 @@ Please see the rest of this page for details on how to configure Kotest for KMP 
 
 :::tip
 When running the Gradle test task, Gradle will cache the output and report no tests executed if no source code has changed.
-See the section on rerunning tests for details on how to disable this behaviour.
-:::
-
-:::info[Install the IntelliJ Plugin]
-Kotest provides an IntelliJ plugin for enhanced UX, including the ability to run individual tests, tool windows to show
-test layouts, and jump to source.
+See the section on rerunning tests for details on how to disable this behavior.
 :::
 
 <Tabs
@@ -65,32 +60,6 @@ dependencies {
 ```
 
 And then execute the `test` task in gradle, or run tests directly from the IDE.
-
-## Enhanced IDE support
-
-For enhanced support for jump-to-source and re-running failed tests from the test results tree,
-in addition to installing the Kotest Intellij Plugin into your IDE, add the
-[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
-
-For example:
-
-```kotlin
-plugins {
-   id("io.kotest").version("<kotest-version>")
-}
-```
-
-Then you can jump-to-source for tests at any level:
-
-![jump to source](./setup/jump_to_source.png)
-
-As well as re-run all failed tests:
-
-![re-run failed](./setup/rerun_failed.png)
-
-Or re-run a single test from the results tree:
-
-![re-run selected](./setup/rerun_selected_test.png)
 
    </TabItem>
    <TabItem value="JS">
@@ -333,6 +302,46 @@ based configuration will not work as Kotlin does not expose annotations at runti
    </TabItem>
 </Tabs>
 
+## IDE Support
+
+Support in your IDE is provided by the Kotest IntelliJ Plugin. By installing this Plugin, you will be able to:
+
+- Run tests from the IDE through the sidebar (gutter) run icons for all targets
+- See test results (failed or pass) directly in the editor
+- Use the Kotest Test Explorere View
+- Highlight kotest tests in the structure view
+- Kotest compatible breadcrumbs in the editor
+
+The plugin is available in the [Jetbrains marketplace](https://plugins.jetbrains.com/plugin/14080-kotest) and can be installed
+from the IDE by going to Preferences -> Plugins -> Marketplace -> Search for Kotest.
+
+For more details, see the [Intellij Plugin page](https://kotest.io/docs/intellij/intellij-plugin.html).
+
+### Enhanced IDE support
+
+For enhanced support such as jump-to-source and re-running tests from the test results tree,
+in addition to installing the Kotest Intellij Plugin into your IDE, add the
+[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
+
+For example:
+
+```kotlin
+plugins {
+id("io.kotest").version("<kotest-version>")
+}
+```
+
+Then you can jump-to-source for tests at any level:
+
+![jump to source](./setup/jump_to_source.png)
+
+As well as re-run all failed tests:
+
+![re-run failed](./setup/rerun_failed.png)
+
+Or re-run a single test from the results tree:
+
+![re-run selected](./setup/rerun_selected_test.png)
 
 ## Re-running tests
 

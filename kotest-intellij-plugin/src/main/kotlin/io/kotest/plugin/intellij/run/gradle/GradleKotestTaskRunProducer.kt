@@ -129,7 +129,9 @@ class GradleKotestTaskRunProducer : GradleRunConfigurationProducer() {
       // note: configuration.settings.externalSystemId is set for us
       configuration.settings.externalProjectPath = modulePath
       configuration.settings.scriptParameters = ""
-      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
+      // if we are running a single test, we want to ignore any disabled flags because we're explicitly running the single test
+      if (test != null)
+         configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
       configuration.settings.taskNames = taskNames(module, spec, test)
 
       // executes any RunConfigurationExtensionBase extension points
