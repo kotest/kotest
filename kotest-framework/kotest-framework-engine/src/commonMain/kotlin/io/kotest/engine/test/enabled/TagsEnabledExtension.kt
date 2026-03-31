@@ -1,10 +1,12 @@
 package io.kotest.engine.test.enabled
 
-import io.kotest.engine.tags.TagExpression
-import io.kotest.core.log
+import io.kotest.common.syspropOrEnv
+import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.tags.isActive
 import io.kotest.engine.tags.parse
 
@@ -13,22 +15,26 @@ import io.kotest.engine.tags.parse
  *
  * This extension disables a test if:
  *
- * - Excluded tags have been specified and this test has a [io.kotest.core.Tag] which is one of those excluded.
- * - Included tags have been specified and this test either has no tags,
+ * - Excluded tags have been specified, and this test has a [io.kotest.core.Tag] which is one of those excluded.
+ * - Included tags have been specified, and this test either has no tags
  *   or does not have any of the specified inclusion tags.
  *
- *  Note: tags are attached to tests either through test config, or at the spec level.
+ *  Note: tags are attached to tests either through test config or at the spec level.
  */
 internal class TagsEnabledExtension(
    private val tags: TagExpression,
    private val testConfigResolver: TestConfigResolver,
 ) : TestEnabledExtension {
+
+   private val logger = Logger<TagsEnabledExtension>()
+
    override fun isEnabled(testCase: TestCase): Enabled {
+      if (syspropOrEnv(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE) == "true") return Enabled.enabled
       val enabledInTags = tags.parse().isActive(testConfigResolver.tags(testCase))
       if (!enabledInTags) {
          return Enabled
             .disabled("Disabled by tags: ${tags.expression}")
-            .also { it.reason?.let { log { it } } }
+            .also { it.reason?.let { logger.log { it } } }
       }
       return Enabled.enabled
    }

@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtLambdaArgument
@@ -106,3 +107,17 @@ fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
    }
    return null
 }
+
+/**
+ * Returns the lambda body (block expression) of this call expression, if it has one.
+ * For example, for `test("name") { body }`, returns the body block.
+ */
+fun KtCallExpression.lambdaBody(): KtBlockExpression? {
+   for (child in children) {
+      if (child is KtLambdaArgument) {
+         return child.getLambdaExpression()?.bodyExpression
+      }
+   }
+   return null
+}
+

@@ -3,17 +3,21 @@ package io.kotest.plugin.intellij.run.gradle
 import com.intellij.execution.JavaRunConfigurationExtensionManager
 import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.ElementUtils
+import io.kotest.plugin.intellij.run.KotestRunState
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
+import io.kotest.plugin.intellij.util.DataTestInfo
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.kotlin.idea.gradleJava.run.MultiplatformTestTasksChooser
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestRunConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
+import kotlin.collections.plus
 
 /**
  * Creates run configurations that use the Gradle test task, passing in a `--tests` arg.
@@ -71,10 +75,17 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          .build()
       configuration.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
       configuration.settings.scriptParameters = ""
+      // if we are running a single test, we want to ignore any disabled flags because we're explicitly running the single test
+      if (testref.test != null)
+         configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
       configuration.isRunAsTest = true
 
       setUniqueNameIfNeeded(configuration.project, configuration)
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
+
+      // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
+      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
+
       return true
    }
 
@@ -150,6 +161,19 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       val runConfiguration = configuration.configuration as GradleRunConfiguration
       val dataContext = MultiplatformTestTasksChooser.createContext(context.dataContext, runConfiguration.name)
 
+      var env = runConfiguration.settings.env
+
+      // If the user triggered a "run with repetitions" action, consume the pending count
+      // and pass it to the engine via an environment variable.
+      val kotestRunState = runConfiguration.project.service<KotestRunState>()
+      val invocationCount = kotestRunState.pendingInvocationCount
+      if (invocationCount != null) {
+         env = env + mapOf("KOTEST_INVOCATION_COUNT" to invocationCount.toString())
+         kotestRunState.clearPendingInvocationCount()
+      }
+
+      runConfiguration.settings.env = env
+
       // used to pre-filter targets, eg if you are running something that could only be a JVM test, then it would filter
       // down to JVM targets only. When running from the gutter, there is no context, so we pass null, and all targets will appear
       //      val contextualSuffix = when (context.location) {
@@ -166,9 +190,18 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       ) { tasks ->
          logger.info("MultiplatformChooseTasks: $tasks")
 
+         val (spec, test) = testContext
+         /**
+          * For data tests, we use tag-based filtering instead of test path filtering.
+          * For non data test, we set this to null to allow [setOrRemoveDataTestEnvVarIfNeeded]
+          * to remove such env var if it was set previously.
+          */
+         val dataTestInfoMaybe = test?.dataTestInfoMaybe()
+
          val filter = GradleTestFilterBuilder.builder()
-            .withSpec(testContext.spec)
-            .withTest(testContext.test)
+            .withSpec(spec)
+            .withTest(test)
+            .withDataTestAncestorPath(dataTestInfoMaybe?.ancestorTestPath)
             .build(true)
 
          // the tasks are a list of groups that clean/test each target, eg ':cleanLinuxX64Test :linuxX64Test'
@@ -178,8 +211,34 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          runConfiguration.settings.taskNames = tasksWithFilter.toList()
          runConfiguration.settings.scriptParameters = if (tasks.size > 1) "--continue" else ""
 
+         setOrRemoveDataTestEnvVarIfNeeded(runConfiguration, dataTestInfoMaybe)
          startRunnable.run()
       }
    }
 
+   /**
+    * Sets or removes the KOTEST_TAGS environment variable for data test filtering.
+    * If the test context has a [DataTestInfo], it sets KOTEST_TAGS to [DataTestInfo.tag] and removes
+    * KOTEST_TEST_ENABLED_OVERRIDE to avoid it interfering with the tags filtering.
+    * If not, it removes KOTEST_TAGS from the environment variables.
+    * Have to rely on env vars here because Gradle system properties (-D) do not propagate to the test JVM.
+    *
+    * @param runConfiguration The Gradle run configuration to modify.
+    * @param dataTestInfoMaybe The optional [DataTestInfo] for the test.
+    */
+   private fun setOrRemoveDataTestEnvVarIfNeeded(
+      runConfiguration: GradleRunConfiguration,
+      dataTestInfoMaybe: DataTestInfo?
+   ) {
+      dataTestInfoMaybe?.let {
+         val envVars = runConfiguration.settings.env.toMutableMap()
+         envVars.remove("KOTEST_TEST_ENABLED_OVERRIDE")
+         envVars["KOTEST_TAGS"] = it.tag
+         runConfiguration.settings.env = envVars
+      } ?: run {
+         val envVars = runConfiguration.settings.env.toMutableMap()
+         envVars.remove("KOTEST_TAGS")
+         runConfiguration.settings.env = envVars
+      }
+   }
 }

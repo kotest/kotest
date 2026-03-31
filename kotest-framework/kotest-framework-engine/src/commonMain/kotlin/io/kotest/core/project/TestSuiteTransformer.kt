@@ -38,7 +38,7 @@ internal object FilterAbstractSpecsTransformer : TestSuiteTransformer {
  */
 internal class SortSpecsTransformer(private val projectConfigResolver: ProjectConfigResolver) : TestSuiteTransformer {
 
-   private val logger = Logger(this::class)
+   private val logger = Logger<SortSpecsTransformer>()
 
    override fun transform(suite: TestSuite): TestSuite {
 

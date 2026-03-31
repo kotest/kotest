@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.interceptor
 
-import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
@@ -42,7 +42,7 @@ internal class SpecInterceptorPipeline(
       initial: NextSpecInterceptor,
    ): Result<Map<TestCase, TestResult>> {
       val interceptors = createPipeline()
-      logger.log { Pair(spec::class.bestName(), "Executing ${interceptors.size} spec interceptors") }
+      logger.log { LogLine(spec::class, "Executing ${interceptors.size} spec interceptors") }
       return interceptors.foldRight(initial) { ext, next ->
          // changing this to a lambda seems to keep wrapping a result in a result, unsure why
          object : NextSpecInterceptor {

@@ -6,8 +6,8 @@ import com.sksamuel.kotest.parallelism.TestStatus.Status.Finished
 import com.sksamuel.kotest.parallelism.TestStatus.Status.Started
 import com.sksamuel.kotest.parallelism.TestStatus.Status.TimedOut
 import io.kotest.assertions.withClue
+import io.kotest.core.Logger
 import io.kotest.core.config.AbstractProjectConfig
-import io.kotest.core.log
 import io.kotest.core.test.TestScope
 import io.kotest.engine.concurrency.SpecExecutionMode
 import io.kotest.inspectors.shouldForAll
@@ -42,6 +42,8 @@ private val linux = System.getProperty("os.name").lowercase().contains("linux")
 
 object ProjectConfig : AbstractProjectConfig() {
 
+   private val logger = Logger<ProjectConfig>()
+
    override val specExecutionMode = SpecExecutionMode.Concurrent
 
    /** The expected number of test cases. All should be launched simultaneously. */
@@ -63,16 +65,16 @@ object ProjectConfig : AbstractProjectConfig() {
       // Start listening for launched tests in an independent CoroutineScope.
       if (linux)
          testStatuses
-            .onEach { msg -> log { "$msg" } }
+            .onEach { msg -> logger.log { "$msg" } }
             .filter { msg -> msg.status == Started }
             // Count the number of started tests by name
             .runningFold(setOf<String>()) { acc, msg -> acc + msg.testName }
             .map { testNames -> testNames.size }
             // Once all tests are launched, unlock testCompletionLock
             .onEach { startedTestCount ->
-               log { "startedTestCount: $startedTestCount" }
+               logger.log { "startedTestCount: $startedTestCount" }
                if (startedTestCount == EXPECTED_TEST_COUNT) {
-                  log {
+                  logger.log {
                      "$EXPECTED_TEST_COUNT tests have been successfully launched simultaneously. " +
                         "Unlocking testCompletionLock and allowing the tests to complete."
                   }
@@ -144,7 +146,7 @@ internal suspend fun TestScope.startAndLockTest() {
             testStatuses.emit(TestStatus(testCase.name.name, Finished))
          }
       }
-   } catch (ex: TimeoutCancellationException) {
+   } catch (_: TimeoutCancellationException) {
       testStatuses.emit(TestStatus(testCase.name.name, TimedOut))
    }
 }

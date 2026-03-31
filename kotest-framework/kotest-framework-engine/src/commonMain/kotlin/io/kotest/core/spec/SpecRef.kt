@@ -29,7 +29,7 @@ sealed interface SpecRef {
 
    /**
     * A [SpecRef] that contains only a [kclass] reference and instances are created using reflection.
-    * This allows the engine to instantiate specs with non-empty constructors, eg for dependency injection.
+    * This allows the engine to instantiate specs with non-empty constructors, e.g., for dependency injection.
     */
    data class Reference(
       override val kclass: KClass<out Spec>,

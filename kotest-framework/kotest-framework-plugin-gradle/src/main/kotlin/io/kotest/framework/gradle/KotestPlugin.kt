@@ -14,11 +14,13 @@ import org.gradle.api.file.Directory
 import org.gradle.api.internal.tasks.testing.filter.DefaultTestFilter
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
+import org.gradle.testing.base.TestingExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
@@ -69,6 +71,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
+      internal const val JVM_TEST_SUITE = "JVM_TEST_SUITE"
 
       const val POWER_ASSERT_PLUGIN_ID = "org.jetbrains.kotlin.plugin.power-assert"
    }
@@ -89,6 +92,9 @@ abstract class KotestPlugin : Plugin<Project> {
       // configures standalone Kotlin JVM projects
       handleKotlinJvm(project, extension)
 
+      // propagates the Gradle JvmTestSuite name to the test process as an environment variable
+      handleJvmTestSuites(project)
+
       configureAlwaysRerun(project, extension.alwaysRerunTests)
 
       // configure Kotlin Android projects when it is not a multiplatform project
@@ -97,7 +103,9 @@ abstract class KotestPlugin : Plugin<Project> {
       // configures Kotlin multiplatform projects
       handleMultiplatform(project, extension)
 
-      configurePowerAssert(project, extension.enablePowerAssert)
+      project.afterEvaluate {
+         configurePowerAssert(project, extension.enablePowerAssert)
+      }
 
       project.gradle.taskGraph.whenReady {
          project.tasks.withType(AbstractTestTask::class.java).configureEach {
@@ -108,6 +116,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
    @OptIn(ExperimentalKotlinGradlePluginApi::class)
    private fun configurePowerAssert(project: Project, enablePowerAssert: Property<Boolean>) {
+      if (!enablePowerAssert.getOrElse(false)) return
 
       // apply the power assert plugin, won't matter if already applied
       project.pluginManager.apply(POWER_ASSERT_PLUGIN_ID)
@@ -121,7 +130,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // we add the assertions library for users to simplify configuration
          // if it already exists, it won't matter, Gradle will handle it
-         project.configurations.filter { it.name == "commonTestApi" }.forEach {
+         project.configurations.filter { it.name == "commonTestImplementation" }.forEach {
             it.dependencies.add(
                project.dependencies.create("io.kotest:kotest-assertions-core:$kotestVersion")
             )
@@ -142,6 +151,12 @@ abstract class KotestPlugin : Plugin<Project> {
     */
    @OptIn(ExperimentalKotest::class)
    private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension, task: AbstractTestTask) {
+
+      // this has to happen at configuration time as its a final property
+      if (task.hasProperty("failOnNoDiscoveredTests")) {
+         task.setProperty("failOnNoDiscoveredTests", false)
+      }
+
       task.doFirst {
 
          // when running Gradle from IntelliJ, the test tasks are forked and so the idea.active system property
@@ -158,38 +173,65 @@ abstract class KotestPlugin : Plugin<Project> {
          if (extension.truncateTestNamesInGradle.getOrElse(false)) {
             setEnvVar(task, KOTEST_TRUNCATE_TEST_NAMES, "true")
          }
-      }
 
-      val includes = when (val f = task.filter) {
-         is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
-         else -> f.includePatterns
-      }
+         val includes = when (val f = task.filter) {
+            is DefaultTestFilter -> f.includePatterns + f.commandLineIncludePatterns
+            else -> f.includePatterns
+         }
 
-      if (includes.isNotEmpty()) {
-         val pattern = includes.joinToString(";")
-         setEnvVar(task, KOTEST_INCLUDE_PATTERN, pattern)
-      }
+         logger.info("Include patterns set on test filter: $includes")
 
-      when (task) {
-         is KotlinNativeTest -> Unit
-         is KotlinJsTest -> {
-            // https://github.com/kotest/kotest/issues/5704
-            // without resetting the filters, the KotlinJsTest task will also try filtering the tests,
-            // but it is unaware of Kotest's generated tests, so we must remove the filter from its eyes
-            // this does mean that you can't combine kotlin.test tests and Kotest tests and expect
-            // to filter the kotlin.test ones
-            task.filter.excludePatterns.clear()
-            task.filter.includePatterns.clear()
-            when (val filter = task.filter) {
-               is DefaultTestFilter -> filter.commandLineIncludePatterns.clear()
+         if (includes.isNotEmpty()) {
+            val pattern = includes.joinToString(";")
+            setEnvVar(task, KOTEST_INCLUDE_PATTERN, pattern)
+         }
+
+         when (task) {
+            is KotlinJsTest -> {
+               // https://github.com/kotest/kotest/issues/5704
+               // without resetting the filters, the KotlinJsTest task will also try filtering the tests,
+               // but it is unaware of Kotest's generated tests, so we must remove the filter from its eyes
+               // this does mean that you can't combine kotlin.test tests and Kotest tests and expect
+               // to filter the kotlin.test ones
+               logger.info("Cleaning test filter for task ${task.name} to avoid filtering Kotlin.test tests")
+               task.filter.excludePatterns.clear()
+               task.filter.includePatterns.clear()
+               when (val filter = task.filter) {
+                  is DefaultTestFilter -> filter.commandLineIncludePatterns.clear()
+               }
+               task.filter.isFailOnNoMatchingTests = false
             }
-            task.filter.isFailOnNoMatchingTests = false
+         }
+      }
+   }
+
+   /**
+    * Detects Gradle's JvmTestSuite plugin and, for each suite, sets the [JVM_TEST_SUITE]
+    * environment variable on the suite's test task during execution so the Kotest runtime (and reporters
+    * such as the Allure extension) can identify which suite is currently executing.
+    */
+   private fun handleJvmTestSuites(project: Project) {
+      project.plugins.withId("jvm-test-suite") {
+         val testing = project.extensions.getByType(TestingExtension::class.java)
+         testing.suites.withType(JvmTestSuite::class.java).configureEach {
+            // By Gradle convention, each JvmTestSuite creates a Test task with the same name as
+            // the suite (e.g. suite "integrationTest" → task "integrationTest"). We use this
+            // naming convention to look up the task rather than going through suite.targets, whose
+            // return type (ExtensiblePolymorphicDomainObjectContainer<? extends JvmTestSuiteTarget>)
+            // is only available in gradle-core-api and not in the public gradleApi() dependency.
+            val suiteName = name
+            project.tasks.withType(Test::class.java).matching { it.name == suiteName }.configureEach {
+               val testTask = this
+               doFirst {
+                  setEnvVar(testTask, JVM_TEST_SUITE, testTask.name)
+               }
+            }
          }
       }
    }
 
    private fun setEnvVar(task: AbstractTestTask, name: String, value: String) {
-      task.logger.debug("Setting environment variable $name=$value for task ${task.name}")
+      task.logger.info("Setting environment variable $name=$value for task ${task.name}")
       when (task) {
          is KotlinJsTest -> task.environment(name, value)
          is KotlinNativeTest -> task.environment(name, value, false)

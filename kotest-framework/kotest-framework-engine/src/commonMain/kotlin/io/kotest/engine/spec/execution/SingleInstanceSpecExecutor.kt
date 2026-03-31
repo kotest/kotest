@@ -47,7 +47,7 @@ internal class SingleInstanceSpecExecutor(private val context: TestEngineContext
       val concurrency = context.specConfigResolver.testExecutionMode(spec).concurrency
       val semaphore = Semaphore(concurrency)
 
-      // all root test coroutines are launched immediately,
+      // all root test coroutines are launched immediately;
       // the semaphore will control how many can actually run concurrently
       coroutineScope { // will wait for all tests to complete
          rootTests.forEach { root ->

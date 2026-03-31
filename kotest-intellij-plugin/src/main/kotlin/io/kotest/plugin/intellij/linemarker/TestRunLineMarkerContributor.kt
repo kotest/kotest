@@ -1,13 +1,14 @@
 package io.kotest.plugin.intellij.linemarker
 
+import com.intellij.execution.TestStateStorage
 import com.intellij.execution.lineMarker.ExecutorAction
 import com.intellij.execution.lineMarker.RunLineMarkerContributor
-import com.intellij.icons.AllIcons
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.util.Function
 import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.actions.RunRepeatAction
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
@@ -17,7 +18,6 @@ import org.jetbrains.kotlin.psi.KtDeclarationModifierList
 import org.jetbrains.kotlin.psi.KtImportDirective
 import org.jetbrains.kotlin.psi.KtImportList
 import org.jetbrains.kotlin.psi.KtPackageDirective
-import javax.swing.Icon
 
 /**
  * A [RunLineMarkerContributor] adds gutter icons to elements if they are actionable.
@@ -25,10 +25,6 @@ import javax.swing.Icon
  * This [TestRunLineMarkerContributor] adds the test run icon to individual kotest test cases.
  */
 class TestRunLineMarkerContributor : RunLineMarkerContributor() {
-
-   // icons list https://jetbrains.design/intellij/resources/icons_list/
-   private val icon: Icon = AllIcons.RunConfigurations.TestState.Run
-
    override fun getInfo(element: PsiElement): Info? {
       // the docs say to only run a line marker for a leaf
       return when (element) {
@@ -42,13 +38,13 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
                else -> markerIfTest(element)
             }
          }
+
          else -> null
       }
    }
 
    /**
     * Returns an [Info] if this element is a test that is enabled.
-    * Disabled tests are handled by the [DisabledTestLineMarker].
     */
    private fun markerIfTest(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingKtClass() ?: return null
@@ -56,21 +52,21 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val test = style.test(element) ?: return null
       // we cannot run interpolated names via the plugin because we don't know what descriptor to pass along
       if (test.name.interpolated) return null
-      // disabled tests are handled by another line marker
-      if (!test.enabled) return null
-      return icon(test)
+      return icon(test, LineMarkerUtils.determineTestState(element, test))
    }
 
    /**
     * Returns an [Info] to use for the given [io.kotest.plugin.intellij.Test].
     */
-   private fun icon(test: Test): Info {
+   private fun icon(test: Test, testState: TestStateStorage.Record?): Info {
+      val icon = getTestStateIcon(testState, false)
+      val runRepeatActionMaybe = if (test.testType == TestType.Test) RunRepeatAction() else null
       return Info(
          icon,
-         ExecutorAction.Companion.getActions(1),
-         // note that the run name is used for the tooltip not the drop down
-         // the drop down gets names from the created run configurations
-         Function<PsiElement, String> { "Run ${test.readableTestPath()}" },
+         listOfNotNull(*ExecutorAction.getActions(1), runRepeatActionMaybe).toTypedArray()
       )
+      // note that the run name is used for the tooltip, not the drop down
+      // the drop down gets names from the created run configurations
+      { "Run ${test.readableTestPath()}" }
    }
 }

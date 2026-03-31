@@ -79,7 +79,12 @@ class IncludeTestPatternDescriptorFilterTest : FunSpec({
       IncludePatternEnvDescriptorFilter.filter(pattern, test2) shouldBe DescriptorFilterResult.Include
       IncludePatternEnvDescriptorFilter.filter(pattern, test3) shouldBe DescriptorFilterResult.Exclude(null)
       IncludePatternEnvDescriptorFilter.filter(pattern, test4) shouldBe DescriptorFilterResult.Exclude(null)
+   }
 
-
+   test("include tests whose names contain CR when pattern uses space") {
+      val spec = IncludeTestPatternDescriptorFilterTest::class.toDescriptor()
+      val test1 = spec.append("a\rtest")
+      val pattern = "com.sksamuel.kotest.engine.extensions.IncludeTestPatternDescriptorFilterTest.a test"
+      IncludePatternEnvDescriptorFilter.filter(pattern, test1) shouldBe DescriptorFilterResult.Include
    }
 })

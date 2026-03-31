@@ -34,7 +34,7 @@ public final class io/kotest/assertions/arrow/core/NelKt {
 	public static final fun shouldContainNull-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldContainOnlyNulls-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldHaveElementAt-lNWZWLA (Ljava/util/List;ILjava/lang/Object;)V
-	public static final fun shouldHaveSingleElement-ZALtuoE (Ljava/util/List;Ljava/lang/Object;)V
+	public static final fun shouldHaveSingleElement-ZALtuoE (Ljava/util/List;Ljava/lang/Object;)Ljava/util/List;
 	public static final fun shouldHaveSize-ZALtuoE (Ljava/util/List;I)Ljava/util/List;
 	public static final fun shouldNotBeSorted-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotBeUnique-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
@@ -46,7 +46,7 @@ public final class io/kotest/assertions/arrow/core/NelKt {
 	public static final fun shouldNotContainNull-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotContainOnlyNulls-GZgkXh4 (Ljava/util/List;)Ljava/util/List;
 	public static final fun shouldNotHaveElementAt-lNWZWLA (Ljava/util/List;ILjava/lang/Object;)V
-	public static final fun shouldNotHaveSingleElement-ZALtuoE (Ljava/util/List;Ljava/lang/Object;)V
+	public static final fun shouldNotHaveSingleElement-ZALtuoE (Ljava/util/List;Ljava/lang/Object;)Ljava/util/List;
 	public static final fun shouldNotHaveSize-ZALtuoE (Ljava/util/List;I)Ljava/util/List;
 }
 
