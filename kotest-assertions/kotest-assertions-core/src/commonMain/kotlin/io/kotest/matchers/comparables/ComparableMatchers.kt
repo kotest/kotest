@@ -52,6 +52,8 @@ fun <T : Comparable<T>> beLessThan(x: T) = object : Matcher<Comparable<T>> {
 /**
  * Verifies that this is less than or equal to [other]
  *
+ * Same as [shouldBeAtMost]
+ *
  * Opposite of [shouldNotBeLessThanOrEqualTo]
  *
  * This function will check for the result of [Comparable.compareTo] and result accordingly.
@@ -66,7 +68,27 @@ infix fun <T : Comparable<T>> T.shouldBeLessThanOrEqualTo(other: T): T {
 }
 
 /**
+ * Verifies that this is at most [other]
+ *
+ * Same as [shouldBeLessThanOrEqualTo]
+ *
+ * Opposite of [shouldNotBeLessThanOrEqualTo]
+ *
+ * This function will check for the result of [Comparable.compareTo] and result accordingly.
+ * This will pass if the value is less than or equal to [other] (compareTo returns <= 0).
+ *
+ * @see [shouldNotBeLessThanOrEqualTo]
+ * @see [shouldBeLessThan]
+ */
+infix fun <T : Comparable<T>> T.shouldBeAtMost(other: T): T {
+   this shouldBe lte(other)
+   return this
+}
+
+/**
  * Verifies that this is NOT less than nor equal to [other]
+ *
+ * Same as [shouldNotBeAtMost]
  *
  * Opposite of [shouldBeLessThanOrEqualTo]
  *
@@ -77,6 +99,24 @@ infix fun <T : Comparable<T>> T.shouldBeLessThanOrEqualTo(other: T): T {
  * @see [shouldNotBeLessThan]
  */
 infix fun <T : Comparable<T>> T.shouldNotBeLessThanOrEqualTo(other: T): T {
+   this shouldNotBe lte(other)
+   return this
+}
+
+/**
+ * Verifies that this is NOT less than nor equal to [other]
+ *
+ * Same as [shouldNotBeLessThanOrEqualTo]
+ *
+ * Opposite of [shouldBeLessThanOrEqualTo]
+ *
+ * This function will check for the result of [Comparable.compareTo] and result accordingly.
+ * This will pass if the value is not less than nor equal to [other] (compareTo doesn't return <= 0).
+ *
+ * @see [shouldBeLessThanOrEqualTo]
+ * @see [shouldNotBeLessThan]
+ */
+infix fun <T : Comparable<T>> T.shouldNotBeAtMost(other: T): T {
    this shouldNotBe lte(other)
    return this
 }
