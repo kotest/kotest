@@ -23,6 +23,7 @@ import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
+import io.kotest.matchers.comparables.shouldBeAtLeast
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeAtMost
@@ -146,6 +147,7 @@ class ComparableMatchersTest : FreeSpec() {
                   it.first shouldBe gte(it.second)
                   it.first should beGreaterThanOrEqualTo(it.second)
                   it.first shouldBeGreaterThanOrEqualTo it.second
+                  it.first shouldBeAtLeast it.second
                }
             }
 

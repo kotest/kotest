@@ -170,6 +170,8 @@ fun <T : Comparable<T>> beGreaterThan(x: T) = object : Matcher<Comparable<T>> {
 /**
  * Verifies that this is greater than or equal to [other]
  *
+ * Same as [shouldBeAtLeast]
+ *
  * Opposite of [shouldNotBeGreaterThanOrEqualTo]
  *
  * This function will check for the result of [Comparable.compareTo] and result accordingly.
@@ -179,6 +181,24 @@ fun <T : Comparable<T>> beGreaterThan(x: T) = object : Matcher<Comparable<T>> {
  * @see [shouldBeGreaterThan]
  */
 infix fun <T : Comparable<T>> T.shouldBeGreaterThanOrEqualTo(other: T): T {
+   this shouldBe gte(other)
+   return this
+}
+
+/**
+ * Verifies that this is at least [other]
+ *
+ * Same as [shouldBeGreaterThanOrEqualTo]
+ *
+ * Opposite of [shouldNotBeGreaterThanOrEqualTo]
+ *
+ * This function will check for the result of [Comparable.compareTo] and result accordingly.
+ * This will pass if the value is greater than or equal to [other] (compareTo returns >= 0).
+ *
+ * @see [shouldNotBeGreaterThanOrEqualTo]
+ * @see [shouldBeGreaterThan]
+ */
+infix fun <T : Comparable<T>> T.shouldBeAtLeast(other: T): T {
    this shouldBe gte(other)
    return this
 }
