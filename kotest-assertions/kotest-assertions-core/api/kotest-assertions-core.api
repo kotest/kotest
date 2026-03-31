@@ -2015,6 +2015,8 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 	public static final fun gte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeAtMost (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)Ljava/lang/Comparable;
@@ -2022,6 +2024,8 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 	public static final fun shouldBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeLessThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeAtLeast (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeAtMost (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)Ljava/lang/Comparable;
