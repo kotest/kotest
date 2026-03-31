@@ -206,6 +206,8 @@ infix fun <T : Comparable<T>> T.shouldBeAtLeast(other: T): T {
 /**
  * Verifies that this is NOT greater than nor equal to [other]
  *
+ * Same as [shouldNotBeAtLeast]
+ *
  * Opposite of [shouldBeGreaterThanOrEqualTo]
  *
  * This function will check for the result of [Comparable.compareTo] and result accordingly.
@@ -215,6 +217,24 @@ infix fun <T : Comparable<T>> T.shouldBeAtLeast(other: T): T {
  * @see [shouldNotBeGreaterThan]
  */
 infix fun <T : Comparable<T>> T.shouldNotBeGreaterThanOrEqualTo(other: T): T {
+   this shouldNotBe gte(other)
+   return this
+}
+
+/**
+ * Verifies that this is NOT greater than nor equal to [other]
+ *
+ * Same as [shouldNotBeGreaterThanOrEqualTo]
+ *
+ * Opposite of [shouldBeGreaterThanOrEqualTo]
+ *
+ * This function will check for the result of [Comparable.compareTo] and result accordingly.
+ * This will pass if the value is NOT greater than nor equal to [other] (compareTo doesn't return >= 0).
+ *
+ * @see [shouldBeGreaterThanOrEqualTo]
+ * @see [shouldNotBeGreaterThan]
+ */
+infix fun <T : Comparable<T>> T.shouldNotBeAtLeast(other: T): T {
    this shouldNotBe gte(other)
    return this
 }
