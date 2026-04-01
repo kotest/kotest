@@ -31,6 +31,7 @@ import io.kotest.plugin.intellij.psi.ElementUtils
 import io.kotest.plugin.intellij.psi.TestReference
 import io.kotest.plugin.intellij.run.gradle.GradleTestFilterBuilder
 import io.kotest.plugin.intellij.run.gradle.GradleTestRunNameBuilder
+import io.kotest.plugin.intellij.util.EnvVarUtil
 import org.jetbrains.android.facet.AndroidFacet
 import org.jetbrains.android.util.AndroidUtils
 
@@ -76,8 +77,8 @@ class AndroidInstrumentedTestRunConfigurationProducer :
       // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
       val existingOptions = configuration.EXTRA_OPTIONS.trim()
       configuration.EXTRA_OPTIONS =
-         if (existingOptions.isEmpty()) "-e KOTEST_IDEA_PLUGIN true"
-         else "$existingOptions -e KOTEST_IDEA_PLUGIN true"
+         if (existingOptions.isEmpty()) "-e ${EnvVarUtil.KOTEST_IDEA_PLUGIN} true"
+         else "$existingOptions -e ${EnvVarUtil.KOTEST_IDEA_PLUGIN} true"
 
       logger.debug("Configuration ${configuration.name} setup successfully")
       return true
