@@ -7,12 +7,14 @@ import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.shouldFail
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldNotBeSameInstanceAs
 import java.util.TreeSet
@@ -207,5 +209,57 @@ class CollectionEqTest : FunSpec({
          CollectionEq.equals(exceededList1, exceededList2, EqContext())
       }
       exception.message shouldBe "Cannot recursively match structures more than 64 levels deep"
+   }
+
+   test("should show data class diff for lists of data classes with differing elements") {
+      val result = CollectionEq.equals(
+         listOf(DataClass1(1, 3.4F), DataClass1(1, 3.4F), DataClass1(2, 7.6F)),
+         listOf(DataClass1(2, 3.5F), DataClass1(1, 3.4F), DataClass1(99, 7.6F)),
+         EqContext()
+      ) as EqResult.Failure
+      val error = result.error()
+      error.message shouldStartWith """Element differ at index: [0, 2]
+
+                                      |The following elements differ:
+                                      |index 0: data class diff for com.sksamuel.kotest.eq.DataClass1
+                                      |├ a: expected:<2> but was:<1>
+                                      |└ b: expected:<3.5f> but was:<3.4f>
+                                      |
+                                      |index 2: data class diff for com.sksamuel.kotest.eq.DataClass1
+                                      |└ a: expected:<99> but was:<2>""".trimMargin()
+   }
+
+   test("should show nested data class diff for lists") {
+      val result = CollectionEq.equals(
+         listOf(DataClass2(2, 4.4F, DataClass1(2, 7.6F))),
+         listOf(DataClass2(2, 4.4F, DataClass1(99, 7.6F))),
+         EqContext()
+      ) as EqResult.Failure
+      val error = result.error()
+      error.message shouldStartWith """Element differ at index: [0]
+
+                                      |The following elements differ:
+                                      |index 0: data class diff for com.sksamuel.kotest.eq.DataClass2
+                                      |└ z: data class diff for com.sksamuel.kotest.eq.DataClass1
+                                      |   └ a: expected:<99> but was:<2>""".trimMargin()
+   }
+
+   test("should not show data class diff section for non-data-class elements") {
+      val result = CollectionEq.equals(listOf(1, 2), listOf(3, 2), EqContext()) as EqResult.Failure
+      val error = result.error()
+      error.message shouldBe """Element differ at index: [0]
+                               |expected:<[3, 2]> but was:<[1, 2]>""".trimMargin()
+   }
+
+   test("should show data class diff via shouldBe for collection of data classes") {
+      val throwable = shouldThrowAny {
+         listOf(DataClass1(1, 3.4F)) shouldBe listOf(DataClass1(2, 3.5F))
+      }
+      throwable.message shouldStartWith """Element differ at index: [0]
+
+                                          |The following elements differ:
+                                          |index 0: data class diff for com.sksamuel.kotest.eq.DataClass1
+                                          |├ a: expected:<2> but was:<1>
+                                          |└ b: expected:<3.5f> but was:<3.4f>""".trimMargin()
    }
 })

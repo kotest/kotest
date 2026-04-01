@@ -121,11 +121,14 @@ object CollectionEq : Eq<Collection<*>> {
 
    private const val DISALLOWED = "$TRIGGER nesting iterator"
 
+   private const val MAX_DETAILED_DIFFS = 10
+
    private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, context: EqContext): Throwable? {
 
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
       val elementDifferAtIndex = mutableListOf<Int>()
+      val elementDiffDetails = mutableListOf<Pair<Int, String>>()
 
       fun <T> nestedIterator(item: T, oracle: Iterable<*>): String? = item?.let {
          if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(
@@ -177,7 +180,14 @@ object CollectionEq : Eq<Collection<*>> {
                else -> equalXorDisallowed(EqCompare.compare(a, b, context))
             }
             if (!accrueDetails) break
-            if (t != null) elementDifferAtIndex.add(index)
+            if (t != null) {
+               elementDifferAtIndex.add(index)
+               val msg = t.message
+               if (msg != null && msg.startsWith("data class diff")) {
+                  val diffTree = msg.substringBefore("\n\nexpected:<").trimEnd()
+                  elementDiffDetails.add(index to diffTree)
+               }
+            }
          } else unexpectedElementAtIndex = index
          index++
       }
@@ -193,6 +203,15 @@ object CollectionEq : Eq<Collection<*>> {
          }
          if (missingElementAt != null) {
             append("Missing elements from index $missingElementAt\n")
+         }
+         if (elementDiffDetails.isNotEmpty()) {
+            append("\nThe following elements differ:\n")
+            for ((idx, diffMsg) in elementDiffDetails.take(MAX_DETAILED_DIFFS)) {
+               append("index $idx: $diffMsg\n\n")
+            }
+            if (elementDiffDetails.size > MAX_DETAILED_DIFFS) {
+               append("... and ${elementDiffDetails.size - MAX_DETAILED_DIFFS} more differences\n")
+            }
          }
       }.toString()
 
