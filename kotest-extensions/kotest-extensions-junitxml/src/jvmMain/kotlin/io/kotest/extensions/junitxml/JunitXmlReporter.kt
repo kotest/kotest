@@ -45,7 +45,18 @@ import kotlin.time.TimeMark
  * In other words the name will include the name of any parent tests as a single string.
  *
  * @param outputDir The directory to write reports.
+ *
+ * @deprecated Since 6.2, deprecated for removal in 7.0. Gradle's built-in JUnit XML output
+ * (enabled by default on all `Test` tasks via `useJUnitPlatform()`) writes per-suite XML reports
+ * to `build/test-results/<taskName>/`, which correctly reflects the JVM test suite name.
+ * Use that instead of this reporter.
  */
+@Deprecated(
+   message = "JunitXmlReporter is deprecated since 6.2 and will be removed in 7.0. " +
+      "Migrate to Gradle's built-in JUnit XML output, which writes XML reports to " +
+      "build/test-results/<taskName>/ by default.",
+   level = DeprecationLevel.WARNING,
+)
 class JunitXmlReporter(
    private val includeContainers: Boolean = false,
    private val useTestPathAsName: Boolean = true,

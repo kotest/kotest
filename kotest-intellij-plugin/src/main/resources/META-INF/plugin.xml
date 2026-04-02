@@ -63,8 +63,6 @@
 
       <codeInsight.lineMarkerProvider language="kotlin"
                                       implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
-      <codeInsight.lineMarkerProvider language="kotlin"
-                                      implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
       <runLineMarkerContributor language="kotlin"
@@ -85,6 +83,7 @@
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.SpecImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.ConfigClassesImplicitUsageProvider"/>
       <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AutoScanUsageProvider"/>
+      <implicitUsageProvider implementation="io.kotest.plugin.intellij.implicits.AnnotationSpecImplicitUsageProvider"/>
 
       <testFramework id="Kotest" implementation="io.kotest.plugin.intellij.KotestTestFramework"/>
       <testFinder implementation="io.kotest.plugin.intellij.tests.KotestTestFinder"/>
@@ -97,6 +96,8 @@
       <stacktrace.fold substring="at io.kotest."/>
       <programRunner implementation="io.kotest.plugin.intellij.run.idea.KotestDebuggerRunner"/>
       <library.dependencyScopeSuggester implementation="io.kotest.plugin.intellij.KotestDependencyScopeSuggester"/>
+
+      <fileBreadcrumbsCollector implementation="io.kotest.plugin.intellij.breadcrumbs.KotestBreadcrumbsCollector"/>
 
       <intentionAction>
          <language>kotlin</language>

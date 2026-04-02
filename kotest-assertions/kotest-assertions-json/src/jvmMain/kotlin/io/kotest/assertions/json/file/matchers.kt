@@ -6,6 +6,7 @@ import io.kotest.assertions.json.paths.shouldEqualSpecifiedJson
 import io.kotest.assertions.json.paths.shouldEqualSpecifiedJsonIgnoringOrder
 import io.kotest.assertions.json.paths.shouldNotEqualJson
 import io.kotest.assertions.json.paths.shouldNotEqualSpecifiedJson
+import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 import java.io.File
 
@@ -19,6 +20,11 @@ infix fun File.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.(
    return this
 }
 
+fun File.shouldEqualJson(@Language("json") expected: String, parser: Json): File {
+   this.toPath().shouldEqualJson(expected, parser)
+   return this
+}
+
 infix fun File.shouldNotEqualJson(@Language("json") expected: String): File {
    this.toPath().shouldNotEqualJson(expected)
    return this
@@ -26,6 +32,11 @@ infix fun File.shouldNotEqualJson(@Language("json") expected: String): File {
 
 infix fun File.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): File {
    this.toPath().shouldNotEqualJson(configureAndProvideExpected)
+   return this
+}
+
+fun File.shouldNotEqualJson(@Language("json") expected: String, parser: Json): File {
+   this.toPath().shouldNotEqualJson(expected, parser)
    return this
 }
 

@@ -38,7 +38,7 @@ interface TestEngineListener {
    /**
     * Is invoked when the [TestEngine] has finished execution of all tests.
     *
-    * If any unexpected errors were detected during execution then they will be
+    * If any unexpected errors were detected during execution, then they will be
     * passed to this method.
     */
    suspend fun engineFinished(t: List<Throwable>)

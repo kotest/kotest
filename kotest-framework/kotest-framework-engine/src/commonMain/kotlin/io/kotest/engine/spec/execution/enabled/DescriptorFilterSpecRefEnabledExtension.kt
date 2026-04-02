@@ -1,6 +1,6 @@
 package io.kotest.engine.spec.execution.enabled
 
-import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
@@ -15,12 +15,12 @@ internal class DescriptorFilterSpecRefEnabledExtension(
    private val projectConfigResolver: ProjectConfigResolver,
 ) : SpecRefEnabledExtension {
 
-   private val logger = Logger(DescriptorFilterSpecRefEnabledExtension::class)
+   private val logger = Logger<DescriptorFilterSpecRefEnabledExtension>()
 
    override fun isEnabled(ref: SpecRef): EnabledOrDisabled {
 
       val filters = projectConfigResolver.extensions().filterIsInstance<DescriptorFilter>()
-      logger.log { Pair(ref.kclass.bestName(), "${filters.size} descriptor filters") }
+      logger.log { LogLine(ref.fqn, "${filters.size} descriptor filters") }
 
       val excluded = filters.firstNotNullOfOrNull {
          val result = it.filter(ref.descriptor())

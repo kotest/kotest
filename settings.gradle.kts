@@ -202,6 +202,9 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-package-recursive",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-class-wildcard-prefix",
 
+      // tests for Gradle JVM test suite integration
+      ":kotest-tests:kotest-tests-jvm-test-suites",
+
       // tests specific to the JS implementations
       ":kotest-tests:kotest-tests-js",
 

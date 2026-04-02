@@ -4,9 +4,11 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit.platform.KotestJunitPlatformTestEngine
 import io.kotest.runner.junit.platform.Segment
+import io.kotest.runner.junit.platform.discovery.Discovery
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.DiscoverySelectors
 import org.junit.platform.engine.support.descriptor.ClassSource
@@ -112,6 +114,56 @@ class DiscoveryTestWithSelectors : FunSpec({
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java,
          com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java,
       )
+   }
+
+   test("classpath root selector should discover spec classes in that root") {
+      val classpathRoot = java.nio.file.Paths.get(
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java
+            .protectionDomain.codeSource.location.toURI()
+      )
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(DiscoverySelectors.selectClasspathRoots(setOf(classpathRoot)))
+         .build()
+      val result = Discovery.discover(engineId, req)
+      result.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName
+      result.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName
+   }
+
+   test("engine should not skip discovery for classpath root selectors") {
+      val classpathRoot = java.nio.file.Paths.get(
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java
+            .protectionDomain.codeSource.location.toURI()
+      )
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(DiscoverySelectors.selectClasspathRoots(setOf(classpathRoot)))
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      val descriptor = engine.discover(req, engineId)
+      descriptor.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName
+      descriptor.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName
+   }
+
+   // Regression test for https://github.com/kotest/kotest/issues/5773
+   // AGP 9+ passes MethodSelectors alongside ClasspathRootSelectors for pre-discovered @Test methods.
+   // Kotest must not bail out when MethodSelectors are present if valid classpath/class selectors are also present.
+   test("engine should not skip discovery when method selectors are present alongside classpath root selectors") {
+      val classpathRoot = java.nio.file.Paths.get(
+         com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java
+            .protectionDomain.codeSource.location.toURI()
+      )
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(
+            DiscoverySelectors.selectClasspathRoots(setOf(classpathRoot)) +
+               listOf(DiscoverySelectors.selectMethod("com.example.SomeJunitTest#someMethod"))
+         )
+         .build()
+      val engine = KotestJunitPlatformTestEngine()
+      val descriptor = engine.discover(req, engineId)
+      descriptor.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class.java.canonicalName
+      descriptor.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName
    }
 
    xtest("package selector should include packages and subpackages") {
