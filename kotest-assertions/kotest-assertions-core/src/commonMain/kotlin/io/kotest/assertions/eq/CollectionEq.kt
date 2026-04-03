@@ -182,10 +182,12 @@ object CollectionEq : Eq<Collection<*>> {
             if (!accrueDetails) break
             if (t != null) {
                elementDifferAtIndex.add(index)
-               val msg = t.message
-               if (msg != null && msg.startsWith("data class diff")) {
-                  val diffTree = msg.substringBefore("\n\nexpected:<").trimEnd()
-                  elementDiffDetails.add(index to diffTree)
+               if (isDataClassInstance(a) && isDataClassInstance(b)) {
+                  val msg = t.message
+                  if (msg != null) {
+                     val diffTree = msg.substringBefore("\n\nexpected:<").trimEnd()
+                     elementDiffDetails.add(index to diffTree)
+                  }
                }
             }
          } else unexpectedElementAtIndex = index
@@ -205,7 +207,7 @@ object CollectionEq : Eq<Collection<*>> {
             append("Missing elements from index $missingElementAt\n")
          }
          if (elementDiffDetails.isNotEmpty()) {
-            append("\nThe following elements differ:\n")
+            append("\nThe following element(s) differ:\n")
             for ((idx, diffMsg) in elementDiffDetails.take(MAX_DETAILED_DIFFS)) {
                append("index $idx: $diffMsg\n\n")
             }
