@@ -4,14 +4,10 @@ plugins {
 
 kotlin {
    sourceSets {
-      jvmMain {
-         dependencies {
-            // putting this in main so it can also be extended by kotest-tests-config-project-inherited
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
-         }
-      }
       jvmTest {
          dependencies {
+            implementation(projects.kotestTests.kotestTestsConfigProject)
+            implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestRunner.kotestRunnerJunit5)
          }
