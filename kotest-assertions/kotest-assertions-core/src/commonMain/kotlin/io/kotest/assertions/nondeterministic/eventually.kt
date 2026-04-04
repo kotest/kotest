@@ -114,8 +114,6 @@ private suspend fun <T> runIterations(
             return test()
          } catch (e: Throwable) {
             val notSuppressible = control.exceptionIsNotSuppressible(e)
-            println("Config=$config")
-            println("listener=${config.listener}")
             config.listener.invoke(control.iterations + 1, e)
             if (config.shortCircuit.invoke(e)) {
                throw ShortCircuitControlException()
@@ -134,9 +132,7 @@ private suspend fun <T> runIterations(
       // since the step function is not invoked when terminating early
       control.iterations++
    } catch (e: Throwable) {
-      println("Eventually failed with $e ${e::class.simpleName}")
       if (e is Error && e !is AssertionError) {
-         println("Eventually failed with Error")
          throw e
       }
       control.iterations++
