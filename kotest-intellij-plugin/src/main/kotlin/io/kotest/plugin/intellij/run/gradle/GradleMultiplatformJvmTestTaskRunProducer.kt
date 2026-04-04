@@ -75,9 +75,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          .build()
       configuration.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
       configuration.settings.scriptParameters = ""
-      // if we are running a single test, we want to ignore any disabled flags because we're explicitly running the single test
-      if (testref.test != null)
-         configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
+      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
       configuration.isRunAsTest = true
 
       setUniqueNameIfNeeded(configuration.project, configuration)
