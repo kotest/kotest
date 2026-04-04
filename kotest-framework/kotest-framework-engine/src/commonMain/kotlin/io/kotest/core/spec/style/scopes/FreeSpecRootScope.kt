@@ -145,12 +145,7 @@ interface FreeSpecRootScope : RootScope {
       )
    }
 
-   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config,
-         test = test
-      )
+   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit): FreeSpecContextConfigBuilder {
+      return FreeSpecContextConfigBuilder(this, config)
    }
 }

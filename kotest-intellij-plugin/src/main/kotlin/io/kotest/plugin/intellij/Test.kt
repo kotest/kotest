@@ -1,8 +1,6 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.psi.PsiElement
-import io.kotest.plugin.intellij.util.DataTestInfo
-import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 data class TestElement(
@@ -116,11 +114,6 @@ data class Test private constructor(
     * Returns the test path without delimiters for display to a user.
     */
    fun readableTestPath() = path().joinToString(" ") { it.name }
-
-   /**
-    * @see DataTestUtil.dataTestInfoMaybe
-    */
-   fun dataTestInfoMaybe(): DataTestInfo? = DataTestUtil.dataTestInfoMaybe(isDataTest, psi)
 }
 
 enum class TestType {

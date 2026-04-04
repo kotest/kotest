@@ -13,7 +13,6 @@ import io.kotest.plugin.intellij.psi.ifMinusOperator
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.isDataTestMethodCall
-import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
@@ -30,7 +29,12 @@ object FreeSpecStyle : SpecStyle {
       return "\"$name\" { }"
    }
 
-   override fun getDataTestMethodNames(): Set<String> = DataTestUtil.styleToDataTestMethodNames[this] ?: emptySet()
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+         "withContexts",
+         "withTests"
+      )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 

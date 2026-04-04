@@ -62,7 +62,7 @@ class BehaviorSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run a context disabled given", 1657),
          Gutter("Run a context disabled given a disabled when", 1691),
          Gutter("Run a context disabled given a disabled when a disabled test", 1729),
-         Gutter("Run This data test block", 1815),
+         Gutter("Run All Spec Tests, including data tests", 1815),
       )
 
 

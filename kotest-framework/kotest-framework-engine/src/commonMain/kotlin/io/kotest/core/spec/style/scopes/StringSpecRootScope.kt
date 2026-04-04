@@ -63,17 +63,6 @@ interface StringSpecRootScope : RootScope {
       )
    }
 
-   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-      RootTestWithConfigBuilder(
-         context = this@StringSpecRootScope,
-         name = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE
-      ).config(
-         config = config,
-         test = test
-      )
-   }
-
    /**
     * Adds a String Spec test using the default test case config.
     */
@@ -82,6 +71,19 @@ interface StringSpecRootScope : RootScope {
          testName = TestNameBuilder.builder(this).build(),
          xmethod = TestXMethod.NONE,
          config = null,
+      ) {
+         StringSpecScope(this).test()
+      }
+   }
+
+   /**
+    * Adds a String Spec test using the supplied [TestConfig].
+    */
+   fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit) {
+      addTest(
+         testName = TestNameBuilder.builder(this).build(),
+         xmethod = TestXMethod.NONE,
+         config = config,
       ) {
          StringSpecScope(this).test()
       }

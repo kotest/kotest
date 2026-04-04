@@ -11,7 +11,6 @@ import io.kotest.plugin.intellij.psi.extractStringFromStringInvokeWithLambda
 import io.kotest.plugin.intellij.psi.ifCallExpressionLhsStringOpenQuote
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.isDataTestMethodCall
-import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
@@ -30,7 +29,10 @@ object StringSpecStyle : SpecStyle {
       return "\"$name\" { }"
    }
 
-   override fun getDataTestMethodNames(): Set<String> = DataTestUtil.styleToDataTestMethodNames[this] ?: emptySet()
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+      )
 
    /**
     * A test of the form:

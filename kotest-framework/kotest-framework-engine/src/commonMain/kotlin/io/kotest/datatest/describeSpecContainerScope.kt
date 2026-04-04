@@ -270,9 +270,8 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(
    ts: Iterable<T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
-   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
+      context(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -285,9 +284,8 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
    ts: Iterable<T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
-   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      describe(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
+      describe(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -300,9 +298,8 @@ suspend fun <T> DescribeSpecContainerScope.withIts(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
-   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      it(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
+      it(nameFn(t)).config() { this.test(t) }
    }
 }
 
@@ -327,9 +324,8 @@ suspend fun <T> DescribeSpecContainerScope.withContexts(
    data: Map<String, T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
-   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name).config(dataTestTagConfig) { this.test(t) }
+      context(name).config() { this.test(t) }
    }
 }
 
@@ -342,9 +338,8 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
    data: Map<String, T>,
    test: suspend DescribeSpecContainerScope.(T) -> Unit
 ) {
-   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      describe(name).config(dataTestTagConfig) { this.test(t) }
+      describe(name).config() { this.test(t) }
    }
 }
 
@@ -354,8 +349,7 @@ suspend fun <T> DescribeSpecContainerScope.withDescribes(
  */
 @JvmName("withItsMap")
 suspend fun <T> DescribeSpecContainerScope.withIts(data: Map<String, T>, test: suspend TestScope.(T) -> Unit) {
-   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      it(name).config(dataTestTagConfig) { this.test(t) }
+      it(name).config() { this.test(t) }
    }
 }

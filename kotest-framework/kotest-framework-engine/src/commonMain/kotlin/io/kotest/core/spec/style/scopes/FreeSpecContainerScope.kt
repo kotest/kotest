@@ -153,6 +153,4 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
       )
       return FreeSpecContextConfigBuilder(this, config)
    }
-
-   fun String.config(config: TestConfig) = FreeSpecContextConfigBuilder(this, config)
 }

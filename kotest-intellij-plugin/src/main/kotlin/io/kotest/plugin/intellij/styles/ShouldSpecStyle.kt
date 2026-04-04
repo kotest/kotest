@@ -11,7 +11,6 @@ import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLam
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import io.kotest.plugin.intellij.psi.isDataTestMethodCall
-import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -27,7 +26,12 @@ object ShouldSpecStyle : SpecStyle {
       return "should(\"$name\") { }"
    }
 
-   override fun getDataTestMethodNames(): Set<String> = DataTestUtil.styleToDataTestMethodNames[this] ?: emptySet()
+   override fun getDataTestMethodNames(): Set<String> =
+      setOf(
+         "withData",
+         "withContexts",
+         "withShoulds"
+      )
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
