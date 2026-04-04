@@ -15,7 +15,6 @@ import io.kotest.plugin.intellij.psi.enclosingSpec
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.styles.SpecStyle
-import io.kotest.plugin.intellij.util.EnvVarUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.plugins.gradle.execution.GradleRunConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
@@ -131,7 +130,8 @@ class GradleKotestTaskRunProducer : GradleRunConfigurationProducer() {
       configuration.settings.externalProjectPath = modulePath
       configuration.settings.scriptParameters = ""
       // if we are running a single test, we want to ignore any disabled flags because we're explicitly running the single test
-      if (test != null) EnvVarUtil.setKotestTestEnabledOverride(configuration.settings)
+      if (test != null)
+         configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
       configuration.settings.taskNames = taskNames(module, spec, test)
 
       // executes any RunConfigurationExtensionBase extension points
