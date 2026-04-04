@@ -16,6 +16,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMapDiffLimit ()I
 	public final fun getMapFileEndingsToUnix ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxCollectionDiffCount ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxErrorsOutput ()I

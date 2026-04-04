@@ -2,6 +2,7 @@ package io.kotest.assertions.eq
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
 import io.kotest.assertions.print.print
 
@@ -121,8 +122,6 @@ object CollectionEq : Eq<Collection<*>> {
 
    private const val DISALLOWED = "$TRIGGER nesting iterator"
 
-   private const val MAX_DETAILED_DIFFS = 10
-
    private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, context: EqContext): Throwable? {
 
       val iter1 = actual.iterator()
@@ -208,11 +207,11 @@ object CollectionEq : Eq<Collection<*>> {
          }
          if (elementDiffDetails.isNotEmpty()) {
             append("\nThe following element(s) differ:\n")
-            for ((idx, diffMsg) in elementDiffDetails.take(MAX_DETAILED_DIFFS)) {
+            for ((idx, diffMsg) in elementDiffDetails.take(AssertionsConfig.maxCollectionDiffCount.value)) {
                append("index $idx: $diffMsg\n\n")
             }
-            if (elementDiffDetails.size > MAX_DETAILED_DIFFS) {
-               append("... and ${elementDiffDetails.size - MAX_DETAILED_DIFFS} more differences\n")
+            if (elementDiffDetails.size > AssertionsConfig.maxCollectionDiffCount.value) {
+               append("... and ${elementDiffDetails.size - AssertionsConfig.maxCollectionDiffCount.value} more differences\n")
             }
          }
       }.toString()
