@@ -47,9 +47,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeFunSpecTest, IsolationModeFunSpecTest::class))
+               executor.execute(SpecRef.Reference(FunSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeFunSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(FunSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -58,7 +58,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("d"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeFunSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(FunSpecTest::class, null),
                )
             }
          }
@@ -83,9 +83,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeBehaviorSpecTest, IsolationModeBehaviorSpecTest::class))
+               executor.execute(SpecRef.Reference(BehaviorSpecTest::class))
                listener.events.shouldHaveSize(12).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeBehaviorSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(BehaviorSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -96,7 +96,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestStarted("e"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("e", null),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeBehaviorSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(BehaviorSpecTest::class, null),
                )
             }
          }
@@ -121,9 +121,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeDescribeSpecTest, IsolationModeDescribeSpecTest::class))
+               executor.execute(SpecRef.Reference(DescribeSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeDescribeSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(DescribeSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -132,7 +132,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("d"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeDescribeSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(DescribeSpecTest::class, null),
                )
             }
          }
@@ -157,9 +157,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeExpectSpecTest, IsolationModeExpectSpecTest::class))
+               executor.execute(SpecRef.Reference(ExpectSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeExpectSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(ExpectSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -168,7 +168,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("d"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeExpectSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(ExpectSpecTest::class, null),
                )
             }
          }
@@ -193,9 +193,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeFeatureSpecTest, IsolationModeFeatureSpecTest::class))
+               executor.execute(SpecRef.Reference(FeatureSpecTest::class))
                listener.events.shouldHaveSize(12).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeFeatureSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(FeatureSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -206,7 +206,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestStarted("e"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("e", null),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeFeatureSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(FeatureSpecTest::class, null),
                )
             }
          }
@@ -231,9 +231,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeFreeSpecTest, IsolationModeFreeSpecTest::class))
+               executor.execute(SpecRef.Reference(FreeSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeFreeSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(FreeSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -242,7 +242,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("d"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeFreeSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(FreeSpecTest::class, null),
                )
             }
          }
@@ -265,11 +265,11 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   override val testExecutionMode: TestExecutionMode = executionMode
                }
                val executor = SpecRefExecutor(
-                  TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
+                  TestEngineContext(config,  ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeShouldSpecTest, IsolationModeShouldSpecTest::class))
+               executor.execute(SpecRef.Reference(ShouldSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeShouldSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(ShouldSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -278,7 +278,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("d"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeShouldSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(ShouldSpecTest::class, null),
                )
             }
          }
@@ -303,14 +303,14 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeStringSpecTest, IsolationModeStringSpecTest::class))
+               executor.execute(SpecRef.Reference(StringSpecTest::class))
                listener.events.shouldHaveSize(6).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeStringSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(StringSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("b", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeStringSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(StringSpecTest::class, null),
                )
             }
          }
@@ -335,9 +335,9 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                val executor = SpecRefExecutor(
                   TestEngineContext(config, ThreadSafeTestEngineListener(PinnedSpecTestEngineListener(listener)))
                )
-               executor.execute(SpecRef.Function(::IsolationModeWordSpecTest, IsolationModeWordSpecTest::class))
+               executor.execute(SpecRef.Reference(WordSpecTest::class))
                listener.events.shouldHaveSize(10).toSet() shouldBe setOf(
-                  TestEventsTestEngineListener.TestEvent.SpecStarted(IsolationModeWordSpecTest::class),
+                  TestEventsTestEngineListener.TestEvent.SpecStarted(WordSpecTest::class),
                   TestEventsTestEngineListener.TestEvent.TestStarted("a"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("b"),
                   TestEventsTestEngineListener.TestEvent.TestStarted("c"),
@@ -346,7 +346,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
                   TestEventsTestEngineListener.TestEvent.TestFinished("a", null),
                   TestEventsTestEngineListener.TestEvent.TestStarted("d"),
                   TestEventsTestEngineListener.TestEvent.TestFinished("d", null),
-                  TestEventsTestEngineListener.TestEvent.SpecFinished(IsolationModeWordSpecTest::class, null),
+                  TestEventsTestEngineListener.TestEvent.SpecFinished(WordSpecTest::class, null),
                )
             }
          }
@@ -354,7 +354,7 @@ class SpecExecutorIsolationModeTest : FunSpec() {
    }
 }
 
-private class IsolationModeFunSpecTest : FunSpec() {
+private class FunSpecTest : FunSpec() {
    init {
       context("a") {
          delay(2)
@@ -371,7 +371,7 @@ private class IsolationModeFunSpecTest : FunSpec() {
    }
 }
 
-private class IsolationModeBehaviorSpecTest : BehaviorSpec() {
+private class BehaviorSpecTest : BehaviorSpec() {
    init {
       given("a") {
          delay(2)
@@ -387,7 +387,7 @@ private class IsolationModeBehaviorSpecTest : BehaviorSpec() {
    }
 }
 
-private class IsolationModeDescribeSpecTest : DescribeSpec() {
+private class DescribeSpecTest : DescribeSpec() {
    init {
       describe("a") {
          delay(2)
@@ -400,7 +400,7 @@ private class IsolationModeDescribeSpecTest : DescribeSpec() {
    }
 }
 
-private class IsolationModeExpectSpecTest : ExpectSpec() {
+private class ExpectSpecTest : ExpectSpec() {
    init {
       context("a") {
          delay(2)
@@ -413,7 +413,7 @@ private class IsolationModeExpectSpecTest : ExpectSpec() {
    }
 }
 
-private class IsolationModeFeatureSpecTest : FeatureSpec() {
+private class FeatureSpecTest : FeatureSpec() {
    init {
       feature("a") {
          delay(2)
@@ -429,7 +429,7 @@ private class IsolationModeFeatureSpecTest : FeatureSpec() {
    }
 }
 
-private class IsolationModeFreeSpecTest : FreeSpec() {
+private class FreeSpecTest : FreeSpec() {
    init {
       "a" - {
          delay(2)
@@ -442,7 +442,7 @@ private class IsolationModeFreeSpecTest : FreeSpec() {
    }
 }
 
-private class IsolationModeShouldSpecTest : ShouldSpec() {
+private class ShouldSpecTest : ShouldSpec() {
    init {
       context("a") {
          delay(2)
@@ -455,14 +455,14 @@ private class IsolationModeShouldSpecTest : ShouldSpec() {
    }
 }
 
-private class IsolationModeStringSpecTest : StringSpec() {
+private class StringSpecTest : StringSpec() {
    init {
       "a" { delay(2) }
       "b" { delay(2) }
    }
 }
 
-private class IsolationModeWordSpecTest : WordSpec() {
+private class WordSpecTest : WordSpec() {
    init {
       "a" `when` {
          delay(2)
