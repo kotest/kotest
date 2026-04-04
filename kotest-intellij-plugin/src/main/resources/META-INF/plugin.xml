@@ -63,6 +63,8 @@
 
       <codeInsight.lineMarkerProvider language="kotlin"
                                       implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
+      <codeInsight.lineMarkerProvider language="kotlin"
+                                      implementationClass="io.kotest.plugin.intellij.linemarker.DisabledTestLineMarker"/>
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
       <runLineMarkerContributor language="kotlin"

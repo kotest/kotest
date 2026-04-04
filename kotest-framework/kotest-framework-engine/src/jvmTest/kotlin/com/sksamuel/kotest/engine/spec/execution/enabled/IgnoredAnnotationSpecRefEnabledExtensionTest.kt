@@ -3,17 +3,14 @@ package com.sksamuel.kotest.engine.spec.execution.enabled
 import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.Ignored
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.spec.execution.enabled.EnabledOrDisabled
 import io.kotest.engine.spec.execution.enabled.IgnoredAnnotationSpecRefEnabledExtension
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-@Isolate
 class IgnoredAnnotationSpecRefEnabledExtensionTest : FunSpec({
 
    test("IgnoredSpecInterceptor should pass any class not annotated with @Ignored") {
@@ -26,15 +23,6 @@ class IgnoredAnnotationSpecRefEnabledExtensionTest : FunSpec({
 
    test("IgnoredSpec should use reason from annotation when annotated") {
       IgnoredAnnotationSpecRefEnabledExtension.isEnabled(SpecRef.Reference(ReasonIgnoredSpec::class)) shouldBe EnabledOrDisabled.Disabled("Disabled by @Ignored(reason=\"it's a good reason!\")")
-   }
-
-   test("IgnoredSpecInterceptor should return enabled when KOTEST_TEST_ENABLED_OVERRIDE is set") {
-      try {
-         System.setProperty(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE, "true")
-         IgnoredAnnotationSpecRefEnabledExtension.isEnabled(SpecRef.Reference(MyIgnoredSpec::class)) shouldBe EnabledOrDisabled.Enabled
-      } finally {
-         System.getProperties().remove(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE)
-      }
    }
 })
 

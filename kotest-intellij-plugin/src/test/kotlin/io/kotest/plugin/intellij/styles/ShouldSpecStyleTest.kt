@@ -40,9 +40,9 @@ class ShouldSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run some context 2 some nested context top level test with config", 762),
          Gutter("Run a context with config", 887),
          Gutter("Run a context with config a should", 929),
-         Gutter("Run an xcontext with config", 993),
-         Gutter("Run an xcontext with config a should", 1035),
-         Gutter("Run xdisabled should", 1072),
+         Gutter("Disabled - an xcontext with config", 993, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext with config a should", 1035, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - xdisabled should", 1072, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Run All Spec Tests, including data tests", 1133),
       )
 

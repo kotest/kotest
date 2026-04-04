@@ -30,32 +30,56 @@ class FunSpecRunMarkerTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run FunSpecExampleTest", 111, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run a test", 157),
          Gutter("Run a test with config", 204),
-         Gutter("Run an xtest", 245),
-         Gutter("Run an xtest with config", 297),
+         Gutter("Disabled - an xtest", 245, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xtest with config", 297, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Run some context", 340),
          Gutter("Run some context a nested test", 370),
          Gutter("Run some context a nested test with config", 437),
-         Gutter("Run some context a nested xtest", 484),
-         Gutter("Run some context a nested xtest with config", 554),
+         Gutter("Disabled - some context a nested xtest", 484, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context a nested xtest with config", 554, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Run some context a nested context", 603),
          Gutter("Run some context a nested context a test", 640),
-         Gutter("Run some context a nested context a nested xcontext", 682),
-         Gutter("Run some context a nested context a nested xcontext a test", 722),
-         Gutter("Run some context a nested context a nested xcontext a nested context", 768),
-         Gutter("Run some context a nested context a nested xcontext a nested context a test", 810),
-         Gutter("Run some context an xcontext", 888),
-         Gutter("Run some context an xcontext a test", 919),
-         Gutter("Run some context an xcontext an xtest", 957),
-         Gutter("Run some context an xcontext a nested xcontext", 1001),
-         Gutter("Run some context an xcontext a nested xcontext a test", 1041),
-         Gutter("Run an xcontext", 1104),
-         Gutter("Run an xcontext a test", 1132),
-         Gutter("Run an xcontext a nested xcontext", 1166),
-         Gutter("Run an xcontext a nested xcontext a test", 1203),
+         Gutter(
+            "Disabled - some context a nested context a nested xcontext",
+            682,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
+         Gutter(
+            "Disabled - some context a nested context a nested xcontext a test",
+            722,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
+         Gutter(
+            "Disabled - some context a nested context a nested xcontext a nested context",
+            768,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
+         Gutter(
+            "Disabled - some context a nested context a nested xcontext a nested context a test",
+            810,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
+         Gutter("Disabled - some context an xcontext", 888, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context an xcontext a test", 919, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context an xcontext an xtest", 957, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - some context an xcontext a nested xcontext", 1001, AllIcons.RunConfigurations.TestIgnored),
+         Gutter(
+            "Disabled - some context an xcontext a nested xcontext a test",
+            1041,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
+         Gutter("Disabled - an xcontext", 1104, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext a test", 1132, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext a nested xcontext", 1166, AllIcons.RunConfigurations.TestIgnored),
+         Gutter("Disabled - an xcontext a nested xcontext a test", 1203, AllIcons.RunConfigurations.TestIgnored),
          Gutter("Run context with config", 1273),
          Gutter("Run context with config a test inside a context with config", 1310),
-         Gutter("Run xcontext with config", 1400),
-         Gutter("Run xcontext with config a test inside an xcontext with config", 1437),
+         Gutter("Disabled - xcontext with config", 1400, AllIcons.RunConfigurations.TestIgnored),
+         Gutter(
+            "Disabled - xcontext with config a test inside an xcontext with config",
+            1437,
+            AllIcons.RunConfigurations.TestIgnored
+         ),
 
          // Previously the PSI text was fetched which contains the raw text entered, not parsed string, which means it would include the backslashes as well.
          // See https://github.com/kotest/kotest/issues/3078

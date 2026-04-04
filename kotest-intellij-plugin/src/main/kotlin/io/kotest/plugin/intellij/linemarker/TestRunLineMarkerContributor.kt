@@ -43,6 +43,7 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    /**
     * Returns an [Info] if this element is a test that is enabled.
+    * Disabled tests are handled by the [DisabledTestLineMarker].
     */
    private fun markerIfTest(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingKtClass() ?: return null
@@ -50,6 +51,8 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val test = style.test(element) ?: return null
       // we cannot run interpolated names via the plugin because we don't know what descriptor to pass along
       if (test.name.interpolated) return null
+      // disabled tests are handled by another line marker
+      if (!test.enabled) return null
       return icon(test, LineMarkerUtils.determineTestState(element, test))
    }
 
@@ -62,7 +65,7 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
          icon,
          ExecutorAction.getActions(1),
       )
-      // note that the run name is used for the tooltip, not the drop down
+      // note that the run name is used for the tooltip not the drop down
       // the drop down gets names from the created run configurations
       { "Run ${test.readableTestPath()}" }
    }

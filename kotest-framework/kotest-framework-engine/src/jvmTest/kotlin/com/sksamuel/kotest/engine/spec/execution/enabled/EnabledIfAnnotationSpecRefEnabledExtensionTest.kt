@@ -3,17 +3,14 @@ package com.sksamuel.kotest.engine.spec.execution.enabled
 import io.kotest.core.annotation.AlwaysFalseCondition
 import io.kotest.core.annotation.AlwaysTrueCondition
 import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.Isolate
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.spec.execution.enabled.EnabledIfAnnotationSpecRefEnabledExtension
 import io.kotest.engine.spec.execution.enabled.EnabledOrDisabled
 import io.kotest.matchers.shouldBe
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
-@Isolate
 class EnabledIfAnnotationSpecRefEnabledExtensionTest : FunSpec({
 
    test("EnabledIfSpecInterceptor should proceed for any spec not annotated with @EnabledIf") {
@@ -27,15 +24,6 @@ class EnabledIfAnnotationSpecRefEnabledExtensionTest : FunSpec({
    test("EnabledIfSpecInterceptor should skip any spec annotated with @EnabledIf that fails predicate") {
       EnabledIfAnnotationSpecRefEnabledExtension.isEnabled(SpecRef.Reference(MyDisabledSpec::class)) shouldBe
          EnabledOrDisabled.Disabled("Disabled by @EnabledIf (AlwaysFalseCondition)")
-   }
-
-   test("EnabledIfSpecInterceptor should return enabled when KOTEST_TEST_ENABLED_OVERRIDE is set") {
-      try {
-         System.setProperty(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE, "true")
-         EnabledIfAnnotationSpecRefEnabledExtension.isEnabled(SpecRef.Reference(MyDisabledSpec::class)) shouldBe EnabledOrDisabled.Enabled
-      } finally {
-         System.getProperties().remove(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE)
-      }
    }
 })
 

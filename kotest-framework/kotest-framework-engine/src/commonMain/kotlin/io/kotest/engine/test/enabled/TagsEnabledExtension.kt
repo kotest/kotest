@@ -1,10 +1,8 @@
 package io.kotest.engine.test.enabled
 
-import io.kotest.common.syspropOrEnv
 import io.kotest.core.Logger
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
-import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.tags.TagExpression
 import io.kotest.engine.tags.isActive
@@ -29,7 +27,6 @@ internal class TagsEnabledExtension(
    private val logger = Logger<TagsEnabledExtension>()
 
    override fun isEnabled(testCase: TestCase): Enabled {
-      if (syspropOrEnv(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE) == "true") return Enabled.enabled
       val enabledInTags = tags.parse().isActive(testConfigResolver.tags(testCase))
       if (!enabledInTags) {
          return Enabled

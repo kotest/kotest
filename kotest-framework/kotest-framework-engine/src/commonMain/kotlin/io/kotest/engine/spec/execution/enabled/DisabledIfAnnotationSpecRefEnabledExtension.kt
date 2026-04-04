@@ -5,10 +5,8 @@ import io.kotest.common.reflection.IncludingAnnotations
 import io.kotest.common.reflection.IncludingSuperclasses
 import io.kotest.common.reflection.annotation
 import io.kotest.common.reflection.instantiations
-import io.kotest.common.syspropOrEnv
 import io.kotest.core.annotation.DisabledIf
 import io.kotest.core.spec.SpecRef
-import io.kotest.engine.config.KotestEngineProperties
 
 /**
  * Evaluates any spec annotated with [DisabledIf] to check if it should be executed.
@@ -19,7 +17,6 @@ import io.kotest.engine.config.KotestEngineProperties
 internal object DisabledIfAnnotationSpecRefEnabledExtension : SpecRefEnabledExtension {
 
    override fun isEnabled(ref: SpecRef): EnabledOrDisabled {
-      if (syspropOrEnv(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE) == "true") return EnabledOrDisabled.Enabled
 
       val condition = ref.kclass
          .annotation<DisabledIf>(IncludingAnnotations, IncludingSuperclasses)
