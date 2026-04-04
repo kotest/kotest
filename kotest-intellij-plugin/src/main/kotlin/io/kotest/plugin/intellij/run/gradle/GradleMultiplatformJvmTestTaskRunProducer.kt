@@ -13,6 +13,7 @@ import io.kotest.plugin.intellij.run.KotestRunState
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.util.DataTestInfo
+import io.kotest.plugin.intellij.util.EnvVarUtil
 import org.jetbrains.kotlin.idea.base.util.module
 import org.jetbrains.kotlin.idea.gradleJava.run.MultiplatformTestTasksChooser
 import org.jetbrains.plugins.gradle.execution.test.runner.GradleTestRunConfigurationProducer
@@ -76,15 +77,14 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       configuration.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
       configuration.settings.scriptParameters = ""
       // if we are running a single test, we want to ignore any disabled flags because we're explicitly running the single test
-      if (testref.test != null)
-         configuration.settings.env = configuration.settings.env + mapOf("KOTEST_TEST_ENABLED_OVERRIDE" to "true")
+      if (testref.test != null) EnvVarUtil.setKotestTestEnabledOverride(configuration.settings)
       configuration.isRunAsTest = true
 
       setUniqueNameIfNeeded(configuration.project, configuration)
       JavaRunConfigurationExtensionManager.instance.extendCreatedConfiguration(configuration, location)
 
       // Tag the run so the Kotest engine knows it was launched from the IntelliJ plugin.
-      configuration.settings.env = configuration.settings.env + mapOf("KOTEST_IDEA_PLUGIN" to "true")
+      EnvVarUtil.setKotestIdeaPlugin(configuration.settings)
 
       return true
    }
@@ -161,18 +161,15 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       val runConfiguration = configuration.configuration as GradleRunConfiguration
       val dataContext = MultiplatformTestTasksChooser.createContext(context.dataContext, runConfiguration.name)
 
-      var env = runConfiguration.settings.env
-
       // If the user triggered a "run with repetitions" action, consume the pending count
       // and pass it to the engine via an environment variable.
       val kotestRunState = runConfiguration.project.service<KotestRunState>()
       val invocationCount = kotestRunState.pendingInvocationCount
       if (invocationCount != null) {
-         env = env + mapOf("KOTEST_INVOCATION_COUNT" to invocationCount.toString())
-         kotestRunState.clearPendingInvocationCount()
+         EnvVarUtil.setInvocationCount(runConfiguration.settings, invocationCount) {
+            kotestRunState.clearPendingInvocationCount()
+         }
       }
-
-      runConfiguration.settings.env = env
 
       // used to pre-filter targets, eg if you are running something that could only be a JVM test, then it would filter
       // down to JVM targets only. When running from the gutter, there is no context, so we pass null, and all targets will appear
@@ -231,14 +228,7 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       dataTestInfoMaybe: DataTestInfo?
    ) {
       dataTestInfoMaybe?.let {
-         val envVars = runConfiguration.settings.env.toMutableMap()
-         envVars.remove("KOTEST_TEST_ENABLED_OVERRIDE")
-         envVars["KOTEST_TAGS"] = it.tag
-         runConfiguration.settings.env = envVars
-      } ?: run {
-         val envVars = runConfiguration.settings.env.toMutableMap()
-         envVars.remove("KOTEST_TAGS")
-         runConfiguration.settings.env = envVars
-      }
+         EnvVarUtil.setKotestTags(runConfiguration.settings, it.tag)
+      } ?: EnvVarUtil.removeKotestTags(runConfiguration.settings)
    }
 }
