@@ -92,17 +92,11 @@ interface MatcherResult {
    fun negatedFailureMessage(): String
 
    companion object {
-
       operator fun invoke(
          passed: Boolean,
          failureMessageFn: () -> String,
          negatedFailureMessageFn: () -> String,
       ): MatcherResult = SimpleMatcherResult(passed, failureMessageFn, negatedFailureMessageFn)
-
-      /**
-       * Creates a [MatcherResult]
-       */
-      fun multiple(vararg results: MatcherResult): MultipleMatcherResult = MultipleMatcherResult(results.toList())
    }
 }
 
