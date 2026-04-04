@@ -1,7 +1,6 @@
 package io.kotest.matchers.string
 
 import io.kotest.assertions.AssertionsConfig
-import io.kotest.common.powerSetIndexes
 import io.kotest.common.withNonVirtualTimeout
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.time.Duration.Companion.milliseconds
