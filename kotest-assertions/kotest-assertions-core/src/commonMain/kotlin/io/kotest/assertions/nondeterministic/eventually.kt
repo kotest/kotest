@@ -114,6 +114,8 @@ private suspend fun <T> runIterations(
             return test()
          } catch (e: Throwable) {
             val notSuppressible = control.exceptionIsNotSuppressible(e)
+            println("Config=$config")
+            println("listener=${config.listener}")
             config.listener.invoke(control.iterations + 1, e)
             if (config.shortCircuit.invoke(e)) {
                throw ShortCircuitControlException()
@@ -132,7 +134,9 @@ private suspend fun <T> runIterations(
       // since the step function is not invoked when terminating early
       control.iterations++
    } catch (e: Throwable) {
+      println("Eventually failed with $e ${e::class.simpleName}")
       if (e is Error && e !is AssertionError) {
+         println("Eventually failed with Error")
          throw e
       }
       control.iterations++
@@ -161,7 +165,7 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
          this.expectedExceptions.any { it.isInstance(t) } ||
             (this.expectedExceptions.isEmpty() && this.expectedExceptionsFn(t))
       },
-      listener = this.listener ?: NoopEventuallyListener,
+      listener = this.listener,
       shortCircuit = this.shortCircuit,
       includeFirst = this.includeFirst,
    )
@@ -191,7 +195,7 @@ internal object EventuallyConfigurationDefaults {
    val retries: Int = Int.MAX_VALUE
    val expectedExceptions: Set<KClass<out Throwable>> = emptySet()
    val expectedExceptionsFn: (Throwable) -> Boolean = { true }
-   val listener: EventuallyListener? = null
+   val listener: suspend (Int, Throwable) -> Unit = { _, _ -> }
    val shortCircuit: (Throwable) -> Boolean = { false }
    val includeFirst: Boolean = true
 }
@@ -244,10 +248,10 @@ class EventuallyConfigurationBuilder {
    var expectedExceptionsFn: (Throwable) -> Boolean = EventuallyConfigurationDefaults.expectedExceptionsFn
 
    /**
-    * A listener that is invoked after each failed invocation, with the iteration count,
+    * A listener that is invoked after each failed invocation with the iteration count
     * and the failing cause.
     */
-   var listener: EventuallyListener? = EventuallyConfigurationDefaults.listener
+   var listener: EventuallyListener = EventuallyConfigurationDefaults.listener
 
    /**
     * A function that is invoked after each failed invocation which causes no further
@@ -266,10 +270,6 @@ class EventuallyConfigurationBuilder {
 }
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
-
-object NoopEventuallyListener : EventuallyListener {
-   override suspend fun invoke(iteration: Int, error: Throwable) {}
-}
 
 private class EventuallyControl(
    val config: EventuallyConfiguration,
