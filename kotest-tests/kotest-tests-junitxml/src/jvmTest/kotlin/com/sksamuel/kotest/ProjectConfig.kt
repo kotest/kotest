@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.sksamuel.kotest
 
 import io.kotest.core.config.AbstractProjectConfig
