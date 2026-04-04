@@ -6,15 +6,18 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.extensions.Extension
+import io.kotest.core.extensions.InvocationCountExtension
 import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
+import io.kotest.engine.extensions.invocationcount.SystemPropertyOrEnvInvocationCountExtension
 import io.kotest.engine.tags.tags
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
@@ -156,7 +159,22 @@ class TestConfigResolver(
       return testConfigs(testCase).firstNotNullOfOrNull { it.invocations }
          ?: testCase.spec.defaultTestConfig?.invocations
          ?: projectConfig?.invocations
+         ?: readInvocationCountFromExtensions(testCase)
          ?: Defaults.INVOCATIONS
+   }
+
+   /**
+    * Extensions (env var / system property) only apply to leaf tests. Containers
+    * cannot have multiple invocations, but they are still materialized when a child
+    * test is selected, so we skip the extension lookup for them to avoid false errors,
+    * at the detriment of not catching and informing users when they use the invocations setter wrongly
+    * and directly on a container.
+    */
+   private fun readInvocationCountFromExtensions(testCase: TestCase): Int? {
+      if (testCase.type != TestType.Test) return null
+      val extensions = registry.all().filterIsInstance<InvocationCountExtension>() +
+         SystemPropertyOrEnvInvocationCountExtension
+      return extensions.firstNotNullOfOrNull { it.getInvocationCount() }
    }
 
    fun tags(testCase: TestCase): Set<Tag> {
