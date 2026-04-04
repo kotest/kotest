@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package io.kotest.extensions.junitxml
 
 import io.kotest.core.names.TestNameBuilder
