@@ -161,7 +161,7 @@ private fun EventuallyConfigurationBuilder.build(): EventuallyConfiguration {
          this.expectedExceptions.any { it.isInstance(t) } ||
             (this.expectedExceptions.isEmpty() && this.expectedExceptionsFn(t))
       },
-      listener = this.listener ?: NoopEventuallyListener,
+      listener = this.listener,
       shortCircuit = this.shortCircuit,
       includeFirst = this.includeFirst,
    )
@@ -191,7 +191,7 @@ internal object EventuallyConfigurationDefaults {
    val retries: Int = Int.MAX_VALUE
    val expectedExceptions: Set<KClass<out Throwable>> = emptySet()
    val expectedExceptionsFn: (Throwable) -> Boolean = { true }
-   val listener: EventuallyListener? = null
+   val listener: suspend (Int, Throwable) -> Unit = { _, _ -> }
    val shortCircuit: (Throwable) -> Boolean = { false }
    val includeFirst: Boolean = true
 }
@@ -244,10 +244,10 @@ class EventuallyConfigurationBuilder {
    var expectedExceptionsFn: (Throwable) -> Boolean = EventuallyConfigurationDefaults.expectedExceptionsFn
 
    /**
-    * A listener that is invoked after each failed invocation, with the iteration count,
+    * A listener that is invoked after each failed invocation with the iteration count
     * and the failing cause.
     */
-   var listener: EventuallyListener? = EventuallyConfigurationDefaults.listener
+   var listener: EventuallyListener = EventuallyConfigurationDefaults.listener
 
    /**
     * A function that is invoked after each failed invocation which causes no further
@@ -266,10 +266,6 @@ class EventuallyConfigurationBuilder {
 }
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
-
-object NoopEventuallyListener : EventuallyListener {
-   override suspend fun invoke(iteration: Int, error: Throwable) {}
-}
 
 private class EventuallyControl(
    val config: EventuallyConfiguration,
