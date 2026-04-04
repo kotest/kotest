@@ -23,12 +23,8 @@ import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.comparables.shouldBeEqualComparingTo
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
-import io.kotest.matchers.comparables.shouldBeAtLeast
-import io.kotest.matchers.comparables.shouldNotBeAtLeast
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
-import io.kotest.matchers.comparables.shouldBeAtMost
-import io.kotest.matchers.comparables.shouldNotBeAtMost
 import io.kotest.matchers.comparables.shouldNotBeBetween
 import io.kotest.matchers.comparables.shouldNotBeEqualComparingTo
 import io.kotest.matchers.equality.FieldsEqualityCheckConfig
@@ -97,7 +93,6 @@ class ComparableMatchersTest : FreeSpec() {
                   it.first shouldBe lte(it.second)
                   it.first should beLessThanOrEqualTo(it.second)
                   it.first shouldBeLessThanOrEqualTo it.second
-                  it.first shouldBeAtMost it.second
                }
             }
 
@@ -106,8 +101,6 @@ class ComparableMatchersTest : FreeSpec() {
                   shouldThrow<AssertionError> { it.first shouldBe lte(it.second) }
                   shouldThrow<AssertionError> { it.first should beLessThanOrEqualTo(it.second) }
                   shouldThrow<AssertionError> { it.first shouldBeLessThanOrEqualTo it.second }
-                  shouldThrow<AssertionError> { it.first shouldBeAtMost it.second }
-                  shouldThrow<AssertionError> { it.second shouldNotBeAtMost it.first }
                }
             }
 
@@ -148,7 +141,6 @@ class ComparableMatchersTest : FreeSpec() {
                   it.first shouldBe gte(it.second)
                   it.first should beGreaterThanOrEqualTo(it.second)
                   it.first shouldBeGreaterThanOrEqualTo it.second
-                  it.first shouldBeAtLeast it.second
                }
             }
 
@@ -157,8 +149,6 @@ class ComparableMatchersTest : FreeSpec() {
                   shouldThrow<AssertionError> { it.first shouldBe gte(it.second) }
                   shouldThrow<AssertionError> { it.first should beGreaterThanOrEqualTo(it.second) }
                   shouldThrow<AssertionError> { it.first shouldBeGreaterThanOrEqualTo it.second }
-                  shouldThrow<AssertionError> { it.first shouldBeAtLeast it.second }
-                  shouldThrow<AssertionError> { it.second shouldNotBeAtLeast it.first }
                }
             }
          }
