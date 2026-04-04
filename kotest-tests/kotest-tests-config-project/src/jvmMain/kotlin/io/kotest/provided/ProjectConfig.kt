@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 private val initialized = AtomicBoolean(false)
 
-class ProjectConfig : AbstractProjectConfig() {
+open class ProjectConfig : AbstractProjectConfig() {
    override val invocations = 5
    init {
       val updated = initialized.compareAndSet(false, true)

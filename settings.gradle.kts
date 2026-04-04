@@ -162,8 +162,9 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-concurrency-specs",
 
       ":kotest-tests:kotest-tests-config-project",
-
-      // tests that we can lookup a project config by putting it on a common package path
+      // tests that we can look up a project config by extending from a shared module
+      ":kotest-tests:kotest-tests-config-project-inherited",
+      // tests that we can look up a project config by putting it on a common package path
       ":kotest-tests:kotest-tests-config-project-prefix",
       ":kotest-tests:kotest-tests-config-classname",
       ":kotest-tests:kotest-tests-config-packages",
