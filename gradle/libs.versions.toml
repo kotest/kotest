@@ -44,7 +44,7 @@ spring = "5.3.39"
 allure-commons = "2.30.0"
 allure-plugin = "3.1.0"
 
-byte-buddy = "1.17.6"
+byte-buddy = "1.18.8-jdk5"
 
 dev-publish-plugin = "0.4.2"
 
