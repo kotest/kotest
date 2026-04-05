@@ -53,7 +53,7 @@ fun KtCallExpression.hasFinalLambdaArg(): Boolean {
 }
 
 /**
- * Convenience call for [extractStringArgForFunctionWithStringAndLambdaArgs] with list of names.
+ * Convenience call for [extractStringArgForFunctionWithStringAndLambdaArgs] with a list of names.
  */
 fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg names: String): StringArg? =
    extractStringArgForFunctionWithStringAndLambdaArgs(names.asList())
@@ -61,7 +61,7 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg n
 /**
  * Matches code in the form:
  *
- *   function("some string") { }
+ *   `function("some string") { }`
  *
  * The structure in PSI for this is:
  *
@@ -71,7 +71,7 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg n
  *      - KtValueArgument (container wrapper for an argument, in this case the string name)
  *        - KtStringTemplateExpression (the expression for the string arg)
  *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
- *    - KtLambdaArgument (the test closure)
+ *    - KtLambdaArgument (the test closure, when outside the normal function list)
  *      - KtLambdaArgument
  */
 fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: List<String>): StringArg? {
