@@ -66,7 +66,7 @@ agp = "8.13.2"
 
 binary-compatibility-validator = "0.18.1"
 decoroutinator = "2.6.2"
-pitest = "1.20.1"
+pitest = "1.23.0"
 
 # https://developer.android.com/jetpack/androidx/versions/all-channel
 androidx-test = "1.7.0"
