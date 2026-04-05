@@ -4,7 +4,7 @@ slug: custom-styles.html
 ---
 
 Kotest ships with [nine built-in spec styles](styles.md) to give you extensive power right out of the box, but if
-you want to go further and define your own styles, Kotest is fully customizable. A custom spec style lets you invent
+you want to go further and define your own styles, Kotest is fully customizable. A custom spec style lets you derive
 whatever DSL syntax you want while plugging into the full Kotest lifecycle, extensions, and IntelliJ IDEA integration.
 
 ## Overview
@@ -14,6 +14,11 @@ Creating a custom spec style involves these pieces:
 1. **Extend `AbstractSpec`** — the public base class for all spec styles.
 2. **Define test functions annotated with `@TestRunnable`** — these become the vocabulary of your DSL.
 3. **Optionally create Scope interfaces that extend `TestScope`** — to expose nested DSL methods inside a container.
+
+:::tip
+If you want to see a real-world example of a custom spec style, then check out
+the [Prepared](https://prepared.opensavvy.dev/api-docs/runners/runner-kotest/index.html) library.
+:::
 
 ## Step 1 — Define a spec base class
 
