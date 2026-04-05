@@ -1,7 +1,7 @@
 [versions]
 gradleApi = "8.11.1"
 jaxbApi = "2.3.1"
-jedis = "7.1.0"
+jedis = "7.4.1"
 
 # https://mbonnin.net/2026-02-22-kotlin-versions/
 kotlin-gradle-plugin = "2.3.20" # always use the most recent version to leverage the latest tooling
