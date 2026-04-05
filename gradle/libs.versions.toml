@@ -183,7 +183,7 @@ spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-b
 
 kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlin-poet" }
 
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.2" }
 
 hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.2" }
