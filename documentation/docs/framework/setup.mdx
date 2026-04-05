@@ -4,12 +4,11 @@ slug: project-setup.html
 ---
 
 
-
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 
-The Kotest test framework is supported on all targets, including JVM, JavaScript, Native (Linux, MacOS, watchOS, iOS, tvOS, Windows) and Wasm.
+The Kotest test framework is supported on all targets, including JVM, JavaScript, Native and Wasm.
 To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
 
 :::caution[Migrating to Kotest 6]
@@ -190,18 +189,17 @@ based configuration will not work as Kotlin does not expose annotations at runti
    </TabItem>
    <TabItem value="Android">
 
-Kotest supports both Unit tests and Instrumented tests on Android.
-
-:::tip[Example Project]
-An example Android project with unit, instrumented and data-driven tests can be found here:
-https://github.com/kotest/kotest-examples/tree/master/kotest-android
+:::tip
+A working Android project with unit, instrumented and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
 :::
 
-## Unit Tests
+Android supports two types of tests:
+- Unit tests, which are run on the local machine and are also referred to as "host" tests
+- Instrumented tests, which are run on an Android device or emulator and are also referred to as "device" tests
 
-Android Unit tests build on top of [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) like regular JVM tests.
-This requires configuring the android test options block in your build file and then adding the Kotest JUnit5 runner dependency to the `testImplementation` sourceset.
-These tests typically reside inside of `src/test/kotlin`.
+For unit tests, Kotest uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
+This requires configuring the android test options block in your build file and then adding the Kotest JUnit5 runner dependency.
 
 ```kotlin
 android.testOptions {
@@ -213,35 +211,50 @@ android.testOptions {
 
 ```kotlin
 dependencies {
-   testImplementation("io.kotest:kotest-runner-junit5:<version>")
+   testImplementation("io.kotest:kotest-runner-junit5:version")
 }
 ```
 
-## Instrumented Tests
-
-Android Instrumented tests build on top of JUnit4 like the default Android instrumented tests.
-This requires adding the Kotest JUnit4 runner dependency to the `androidTestImplementation` sourceset.
-These tests typically reside inside of `src/androidTest/kotlin`.
+For instrumented tests, Kotest uses the [JUnit4 Runner](https://developer.android.com/training/testing/junit-runner).
+This requires adding the Kotest JUnit4 runner dependency to your build using the `androidTestImplementation` configuration.
 
 ```kotlin
 dependencies {
-   androidTestImplementation("io.kotest:kotest-runner-junit4:<version>")
+   androidTestImplementation("io.kotest:kotest-runner-junit4:version")
 }
 ```
 
-Then you must annotate your test classes with `@RunWith(KotestTestRunner::class)`
-
-For example:
+When writing an instrumented test, you should use the `androidTest` source set to place your test code, and you must
+annotate your spec with `@RunWith(KotestTestRunner::class)`. For example:
 
 ```kotlin
 @RunWith(KotestTestRunner::class)
-class MyInstrumentedTest : ShouldSpec() {
-   init {
-      should("provide app context") {
-         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-         Thread.currentThread().name shouldBe "main"
+class ComposeWithKotest : FreeSpec() {
+
+  @get:Rule
+  val composeTestRule: ComposeContentTestRule = createComposeRule()
+
+  init {
+    "should have initial state of 0" {
+
+      composeTestRule.setContent {
+        TestComposable()
       }
-   }
+
+      composeTestRule.onNodeWithText("0").assertExists()
+      composeTestRule.onNodeWithText("Click me!").assertExists()
+    }
+
+    "should increment when clicked" {
+
+      composeTestRule.setContent {
+        TestComposable()
+      }
+
+      composeTestRule.onNodeWithText("0").assertExists()
+      composeTestRule.onNodeWithText("Click me!").assertExists()
+    }
+  }
 }
 ```
 
@@ -282,7 +295,7 @@ Tests can be placed in either `commonTest` or a platform specific directory such
 Run your tests using the gradle `check` task, or a platform specific test task such as `macosX64Test`
 
 :::note
-The JS, Wasm and Native test engines are feature limited compared to the JVM test engine. The major restriction is that annotation
+The JS, Wasm and native test engines are feature limited when compared to the JVM test engine. The major restriction is that annotation
 based configuration will not work as Kotlin does not expose annotations at runtime to non-JVM platforms.
 :::
 
