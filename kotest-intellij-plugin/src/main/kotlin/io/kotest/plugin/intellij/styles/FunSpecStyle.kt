@@ -65,7 +65,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   context("test name").config(...) { }
+    *   `context("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
@@ -77,7 +77,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   context("test name").config(...) { }
+    *   `context("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
@@ -89,19 +89,22 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   test("test name") { }
+    *   `test("test name") { }`
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
+      println("Trying call expression $this")
       val specClass = enclosingKtClassOrObject() ?: return null
+      println("Enclosing class is $specClass")
       val test = extractStringArgForFunctionWithStringAndLambdaArgs("test") ?: return null
+      println("Extracted test name is $test")
       return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, false, specClass)
    }
 
    /**
     * A test of the form:
     *
-    *   xtest("test name") { }
+    *   `xtest("test name") { }`
     *
     */
    private fun KtCallExpression.tryXTest(): Test? {
@@ -113,7 +116,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   test("test name").config(...) { }
+    *   `test("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
@@ -125,7 +128,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   xtest("test name").config(...) { }
+    *   `xtest("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryXTestWithConfig(): Test? {
@@ -147,11 +150,12 @@ object FunSpecStyle : SpecStyle {
    /**
     * For a FunSpec we consider the following scenarios:
     *
-    * test("test name") { }
-    * test("test name").config(...) {}
-    * context("test name").config(...) {}
+    * `test("test name") { }`
+    * `test("test name").config(...) { }`
+    * `context("test name").config(...) { }`
     */
    override fun test(element: PsiElement): Test? {
+      println("Testing this element for a test $element")
       return when (element) {
          is KtCallExpression -> element.tryContext() ?: element.tryXContext() ?: element.tryTest() ?: element.tryXTest() ?: element.tryDataTest()
          is KtDotQualifiedExpression -> element.tryContextWithConfig() ?: element.tryXContextWithConfig()
