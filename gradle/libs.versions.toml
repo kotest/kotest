@@ -10,7 +10,7 @@ kotlin-core-libaries-version = "2.3.20" # the std lib version
 kotlin-language-version = "2.2.0" # the minimum version we support and what is written into kotlin metadata
 
 runtime-kotest = "4.2.0" # intellij plugin
-test-kotest = "5.9.1"# intellij plugin
+test-kotest = "6.1.11"# intellij plugin
 
 blockhound = "1.0.16.RELEASE"
 commons-lang3 = "3.18.0"
