@@ -28,13 +28,6 @@ class ContainerWithConfigBuilder<T>(
    }
 
    suspend fun config(
-      config: TestConfig,
-      test: suspend T.() -> Unit
-   ) {
-      context.registerContainer(name, xmethod, config) { contextFn(this).test() }
-   }
-
-   suspend fun config(
       enabled: Boolean? = null,
       enabledIf: EnabledIf? = null,
       enabledOrReasonIf: EnabledOrReasonIf? = null,
