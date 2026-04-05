@@ -49,7 +49,7 @@ byte-buddy = "1.17.6"
 dev-publish-plugin = "0.4.2"
 
 koin = "4.2.0"
-wiremock = "3.11.0"
+wiremock = "3.13.2"
 mockserver = "5.15.0"
 fuel = "2.3.1"
 konform = "0.10.0"
