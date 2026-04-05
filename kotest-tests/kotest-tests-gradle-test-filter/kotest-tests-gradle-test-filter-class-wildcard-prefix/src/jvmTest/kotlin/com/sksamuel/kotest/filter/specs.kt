@@ -18,6 +18,7 @@ class Foo : FunSpec() {
 // should be ignored completely as the filter is '*Foo'
 class Bar : FunSpec() {
    init {
+      test("name with periods 1.2.3 and more") {}
       test("whack!") {
          error("whack!")
       }

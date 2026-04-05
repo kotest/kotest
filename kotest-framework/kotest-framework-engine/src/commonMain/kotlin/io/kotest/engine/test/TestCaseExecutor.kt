@@ -70,7 +70,7 @@ internal class TestCaseExecutor(
       val interceptors = listOfNotNull(
          DescriptorPathContextInterceptor,
          TestNameContextInterceptor,
-         FailFastInterceptor(context, specContext),
+         FailFastInterceptor(context),
          TestFinishedInterceptor(listener, context.testExtensions()),
          InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,

@@ -11,7 +11,6 @@ kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinNative.get()) {
       androidNativeX86()
       androidNativeX64()
-      androidNativeArm32()
       androidNativeArm64()
 
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
