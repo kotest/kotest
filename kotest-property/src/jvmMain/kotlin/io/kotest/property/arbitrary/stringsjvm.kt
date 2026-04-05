@@ -20,9 +20,7 @@ fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<Str
    override fun sample(rs: RandomSource): Sample<String> = sampleStringPattern(rs)
 
    private fun sampleStringPattern(rs: RandomSource): Sample<String> = synchronized(this) {
-      val javaRandom = Random()
-      javaRandom.setSeed(rs.random.nextLong())
-      val value = rgxgen.generate(javaRandom)
+      val value = rgxgen.generate(Random(rs.random.nextLong()))
       Sample(value)
    }
 }
