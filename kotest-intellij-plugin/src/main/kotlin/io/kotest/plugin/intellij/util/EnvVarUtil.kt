@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij.util
 
 import com.intellij.openapi.externalSystem.model.execution.ExternalSystemTaskExecutionSettings
+import io.kotest.plugin.intellij.run.idea.KotestRunConfiguration
 import kotlin.collections.plus
 
 object EnvVarUtil {
@@ -31,6 +32,13 @@ object EnvVarUtil {
 
    fun setInvocationCount(settings : ExternalSystemTaskExecutionSettings, invocationCount: Int, resetAction: () -> Unit) {
       with(settings.env){
+         put(KOTEST_INVOCATION_COUNT,invocationCount.toString())
+      }
+      resetAction()
+   }
+
+   fun setInvocationCount(kotestRunConfiguration : KotestRunConfiguration, invocationCount: Int, resetAction: () -> Unit) {
+      with(kotestRunConfiguration.envs){
          put(KOTEST_INVOCATION_COUNT,invocationCount.toString())
       }
       resetAction()
