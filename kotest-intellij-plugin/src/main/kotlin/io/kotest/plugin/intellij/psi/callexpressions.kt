@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.psi.KtValueArgumentList
 /**
  * Extracts the string literal from things like:
  *
- *   "my test" {}
+ *   `"my test" {}`
  */
 fun KtCallExpression.extractStringFromStringInvokeWithLambda(): StringArg? {
    if (children.size == 2) {
@@ -89,7 +89,7 @@ data class StringArg(val text: String, val interpolated: Boolean)
 
 /**
  * If this [LeafPsiElement] is the open brace of a function lambda arg, then returns that function name.
- * Eg, test("my function") {}
+ * E.g., `test("my function") {}`
  */
 fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
    if (this.elementType.toString() != "LBRACE") return null
@@ -109,7 +109,7 @@ fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
 }
 
 /**
- * Returns the lambda body (block expression) of this call expression, if it has one.
+ * Returns the lambda body (block expression) of this call expression if it has one.
  * For example, for `test("name") { body }`, returns the body block.
  */
 fun KtCallExpression.lambdaBody(): KtBlockExpression? {
