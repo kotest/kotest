@@ -4,6 +4,7 @@ import com.intellij.execution.actions.ConfigurationContext
 import com.intellij.execution.actions.ConfigurationFromContext
 import com.intellij.execution.actions.LazyRunConfigurationProducer
 import com.intellij.execution.configurations.ConfigurationFactory
+import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
@@ -11,9 +12,11 @@ import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.dependencies.ModuleDependencies
 import io.kotest.plugin.intellij.gradle.GradleUtils
 import io.kotest.plugin.intellij.psi.enclosingKtClass
+import io.kotest.plugin.intellij.run.KotestRunState
 import io.kotest.plugin.intellij.run.RunnerMode
 import io.kotest.plugin.intellij.run.RunnerModes
 import io.kotest.plugin.intellij.styles.SpecStyle
+import io.kotest.plugin.intellij.util.EnvVarUtil
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 
 /**
@@ -118,6 +121,29 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
          .filter { it.isContainedInSpec(element) }
          .mapNotNull { it.findAssociatedTest(element) }
          .firstOrNull()
+   }
+
+   /**
+    * Consumes any pending invocation count from [KotestRunState] and sets
+    * [EnvVarUtil.KOTEST_INVOCATION_COUNT] on the run configuration before execution.
+    */
+   override fun onFirstRun(
+      configuration: ConfigurationFromContext,
+      context: ConfigurationContext,
+      startRunnable: Runnable
+   ) {
+      val project = context.project
+      val runConfiguration = configuration.configuration as? KotestRunConfiguration
+      if (project != null && runConfiguration != null) {
+         val kotestRunState = project.service<KotestRunState>()
+         val invocationCount = kotestRunState.pendingInvocationCount
+         if (invocationCount != null) {
+            EnvVarUtil.setInvocationCount(runConfiguration, invocationCount) {
+               kotestRunState.clearPendingInvocationCount()
+            }
+         }
+      }
+      super.onFirstRun(configuration, context, startRunnable)
    }
 
    /**

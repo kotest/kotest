@@ -53,7 +53,7 @@ interface SpecStyle {
       }
 
       // in future iterations this could change and be somehow saying running all data tests within the spec
-      val dataTestDefaultTestName: TestName = TestName(null, "All Spec Tests, including data tests", interpolated = false)
+      val dataTestDefaultTestName: TestName = TestName(null, "This data test block", interpolated = false)
    }
 
    /**

@@ -35,9 +35,9 @@ class WordSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run with capital When and capital Should", 370),
          Gutter("Run with capital When test something", 408),
          Gutter("Run with capital When test something with config", 463),
-         Gutter("Disabled - with capital When disabled should", 515, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Disabled - disabled when", 564, AllIcons.RunConfigurations.TestIgnored),
-         Gutter("Run All Spec Tests, including data tests", 625),
+         Gutter("Run with capital When disabled should", 515),
+         Gutter("Run disabled when", 564),
+         Gutter("Run This data test block", 625),
       )
 
       gutters.size shouldBe expected.size

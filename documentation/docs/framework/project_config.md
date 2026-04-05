@@ -211,3 +211,46 @@ object KotestProjectConfig : AbstractProjectConfig() {
 ```
 
 For more details on this feature, see the [concurrency documentation](concurrency6.html#coroutine-dispatcher-factory).
+
+## Sharing Config Across Modules
+
+In multi-module projects, you may want to share a common project configuration across several test modules rather than duplicating it in each one.
+
+The recommended approach is to define an `open` base config class in a shared module, then create a minimal subclass in each test module that needs it.
+
+### Shared module
+
+In the shared module (published to your classpath, e.g. as a `jvmMain` source set), define an open base config:
+
+```kotlin
+// shared-module/src/jvmMain/kotlin/com/example/shared/BaseProjectConfig.kt
+package com.example.shared
+
+import io.kotest.core.config.AbstractProjectConfig
+import kotlin.time.Duration.Companion.seconds
+
+open class BaseProjectConfig : AbstractProjectConfig() {
+   override val timeout = 10.seconds
+   override val coroutineTestScope = true
+   // ... other shared settings
+}
+```
+
+### Each test module
+
+In each test module that should use the shared config, create a thin subclass. No overrides are needed unless you want to customize behavior for that module:
+
+```kotlin
+// my-service/src/jvmTest/kotlin/io/kotest/provided/ProjectConfig.kt
+package io.kotest.provided
+
+import com.example.shared.BaseProjectConfig
+
+class ProjectConfig : BaseProjectConfig()
+```
+
+:::note
+On multiplatform projects, Kotest uses KSP to detect config classes, which is source-based and does not scan across module boundaries. Inheritance is therefore the recommended pattern for sharing config in KMP projects.
+:::
+
+This pattern keeps the per-module boilerplate to a single empty class while all shared settings are maintained in one place.

@@ -12,6 +12,7 @@ import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
+import io.kotest.engine.test.FailFastScopeTracker
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.enabled.TestEnabledChecker
@@ -43,7 +44,7 @@ internal class InstancePerRootSpecExecutor(
       val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
-      return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
+      return withContext(CoroutineName("spec-scope-" + seed.hashCode()) + FailFastScopeTracker()) {
 
          // for the seed spec passed in, we need to run the instance pipeline,
          // then materialize the root tests. These root tests will either execute in the
