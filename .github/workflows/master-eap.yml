@@ -110,7 +110,7 @@ jobs:
 
          -  name: Upload build reports
             if: failure()
-            uses: actions/upload-artifact@v5
+            uses: actions/upload-artifact@v7
             with:
                name: build-reports-kotlin-beta-${{ matrix.name }}-${{ github.run_id }}
                path: |
