@@ -83,7 +83,7 @@ val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == produc
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
 plugins {
-   id("org.jetbrains.intellij.platform") version "2.11.0"
+   id("org.jetbrains.intellij.platform") version "2.13.1"
    kotlin("jvm")
 }
 
