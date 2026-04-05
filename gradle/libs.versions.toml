@@ -1,7 +1,7 @@
 [versions]
 gradleApi = "8.11.1"
 jaxbApi = "2.3.1"
-jedis = "7.1.0"
+jedis = "7.4.1"
 
 # https://mbonnin.net/2026-02-22-kotlin-versions/
 kotlin-gradle-plugin = "2.3.20" # always use the most recent version to leverage the latest tooling
@@ -17,7 +17,7 @@ commons-lang3 = "3.20.0"
 gradle-test-logger-plugin = "4.0.0"
 java-diff-utils = "4.16"
 jdom2 = "2.0.6.1"
-json-path = "2.10.0"
+json-path = "3.0.0"
 junit4 = "4.13.2"
 
 junit-platform5 = "1.13.4"
@@ -44,7 +44,7 @@ spring = "5.3.39"
 allure-commons = "2.30.0"
 allure-plugin = "3.1.0"
 
-byte-buddy = "1.17.6"
+byte-buddy = "1.18.8-jdk5"
 
 dev-publish-plugin = "0.4.2"
 
@@ -65,8 +65,8 @@ xmlutil = "0.91.3"
 agp = "8.13.2"
 
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.5.9"
-pitest = "1.20.1"
+decoroutinator = "2.6.2"
+pitest = "1.23.0"
 
 # https://developer.android.com/jetpack/androidx/versions/all-channel
 androidx-test = "1.7.0"
@@ -183,7 +183,7 @@ spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-b
 
 kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotlin-poet" }
 
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.2" }
 
 hikari = { module = "com.zaxxer:HikariCP", version = "7.0.2" }
 kafka-client = { module = "org.apache.kafka:kafka-clients", version = "4.2.0" }

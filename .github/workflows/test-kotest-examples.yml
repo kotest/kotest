@@ -62,7 +62,7 @@ jobs:
               echo "Published Kotest version: $VERSION"
 
          - name: Upload Maven Local artifacts
-           uses: actions/upload-artifact@v5
+           uses: actions/upload-artifact@v7
            with:
               name: kotest-maven-local-linux
               path: ~/.m2/repository/io/kotest/
@@ -118,7 +118,7 @@ jobs:
               --no-configuration-cache
 
          - name: Upload Maven Local artifacts
-           uses: actions/upload-artifact@v5
+           uses: actions/upload-artifact@v7
            with:
               name: kotest-maven-local-macos
               path: ~/.m2/repository/io/kotest/
@@ -150,7 +150,7 @@ jobs:
               --no-configuration-cache
 
          - name: Upload Maven Local artifacts
-           uses: actions/upload-artifact@v5
+           uses: actions/upload-artifact@v7
            with:
               name: kotest-maven-local-windows
               path: ~/.m2/repository/io/kotest/
@@ -183,19 +183,19 @@ jobs:
               path: kotest-examples
 
          - name: Download Linux Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-linux
               path: ~/.m2/repository/io/kotest/
 
          - name: Download macOS Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-macos
               path: ~/.m2/repository/io/kotest/
 
          - name: Download Windows Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-windows
               path: ~/.m2/repository/io/kotest/
@@ -223,7 +223,7 @@ jobs:
 
          - name: Upload test reports
            if: failure()
-           uses: actions/upload-artifact@v5
+           uses: actions/upload-artifact@v7
            with:
               name: test-reports-linux-${{ matrix.project }}-${{ github.run_id }}
               path: kotest-examples/${{ matrix.project }}/**/build/reports/
@@ -246,19 +246,19 @@ jobs:
               path: kotest-examples
 
          - name: Download Linux Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-linux
               path: ~/.m2/repository/io/kotest/
 
          - name: Download macOS Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-macos
               path: ~/.m2/repository/io/kotest/
 
          - name: Download Windows Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-windows
               path: ~/.m2/repository/io/kotest/
@@ -280,7 +280,7 @@ jobs:
 
          - name: Upload test reports
            if: failure()
-           uses: actions/upload-artifact@v5
+           uses: actions/upload-artifact@v7
            with:
               name: test-reports-macos-${{ matrix.project }}-${{ github.run_id }}
               path: kotest-examples/${{ matrix.project }}/**/build/reports/
@@ -303,19 +303,19 @@ jobs:
               path: kotest-examples
 
          - name: Download Linux Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-linux
               path: ~/.m2/repository/io/kotest/
 
          - name: Download macOS Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-macos
               path: ~/.m2/repository/io/kotest/
 
          - name: Download Windows Maven Local artifacts
-           uses: actions/download-artifact@v5
+           uses: actions/download-artifact@v8
            with:
               name: kotest-maven-local-windows
               path: ~/.m2/repository/io/kotest/
@@ -337,7 +337,7 @@ jobs:
 
          - name: Upload test reports
            if: failure()
-           uses: actions/upload-artifact@v5
+           uses: actions/upload-artifact@v7
            with:
               name: test-reports-windows-${{ matrix.project }}-${{ github.run_id }}
               path: kotest-examples/${{ matrix.project }}/**/build/reports/
