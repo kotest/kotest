@@ -75,7 +75,7 @@ jobs:
                java-version-file: .github/.java-version
 
          -  name: Setup Gradle
-            uses: gradle/actions/setup-gradle@v5
+            uses: gradle/actions/setup-gradle@v6
             with:
                gradle-home-cache-cleanup: true
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
@@ -110,7 +110,7 @@ jobs:
 
          -  name: Upload build reports
             if: failure()
-            uses: actions/upload-artifact@v5
+            uses: actions/upload-artifact@v7
             with:
                name: build-reports-kotlin-beta-${{ matrix.name }}-${{ github.run_id }}
                path: |
