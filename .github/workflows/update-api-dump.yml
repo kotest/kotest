@@ -46,7 +46,7 @@ jobs:
       runs-on: ubuntu-latest
       steps:
          -  name: Checkout PR branch
-            uses: actions/checkout@v5
+            uses: actions/checkout@v6
             with:
                ref: ${{ github.event.workflow_run.head_branch }}
                token: ${{ secrets.GITHUB_TOKEN }}
@@ -58,7 +58,7 @@ jobs:
                java-version-file: .github/.java-version
 
          -  name: Setup Gradle
-            uses: gradle/actions/setup-gradle@v5
+            uses: gradle/actions/setup-gradle@v6
             with:
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
                cache-read-only: true

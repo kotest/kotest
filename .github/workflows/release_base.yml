@@ -41,17 +41,17 @@ jobs:
                - publishAndroidNativeArm64PublicationToDeployRepository
       steps:
          -  name: Checkout the repo
-            uses: actions/checkout@v4
+            uses: actions/checkout@v6
             with:
                ref: ${{ inputs.branch }}
 
          -  name: Setup JDK
-            uses: actions/setup-java@v4
+            uses: actions/setup-java@v5
             with:
                distribution: "temurin"
                java-version-file: .github/.java-version
 
-         -  uses: gradle/actions/setup-gradle@v4
+         -  uses: gradle/actions/setup-gradle@v6
 
          -  name: publish
             run: ./gradlew ${{ matrix.target }}
