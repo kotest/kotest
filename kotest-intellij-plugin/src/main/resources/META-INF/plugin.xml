@@ -61,8 +61,6 @@
 
       <lang.structureViewExtension implementation="io.kotest.plugin.intellij.structure.KotestStructureViewExtension"/>
 
-      <codeInsight.lineMarkerProvider language="kotlin"
-                                      implementationClass="io.kotest.plugin.intellij.linemarker.InterpolatedTestLineMarker"/>
       <runLineMarkerContributor language="kotlin"
                                 implementationClass="io.kotest.plugin.intellij.linemarker.TestRunLineMarkerContributor"/>
       <runLineMarkerContributor language="kotlin"
