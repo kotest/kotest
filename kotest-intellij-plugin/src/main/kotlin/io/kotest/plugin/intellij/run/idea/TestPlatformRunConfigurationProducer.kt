@@ -63,14 +63,26 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
          val test = findTest(element)
          if (test != null) {
 
+            val dataTestInfoMaybe = test.dataTestInfoMaybe()
             val ktclass = element.enclosingKtClass()
             if (ktclass != null) {
-               if (test.isDataTest) {
-                  configuration.setTestPath(null)
-                  configuration.setInclude(null)
-               } else {
-                  configuration.setTestPath(test.testPath())
-                  configuration.setInclude(test.descriptorPath())
+               when (test.isDataTest) {
+                  true -> {
+                     if (dataTestInfoMaybe != null) {
+                        configuration.setTestPath(dataTestInfoMaybe.ancestorTestPath)
+                        EnvVarUtil.setKotestTags(configuration, dataTestInfoMaybe.tag)
+                     } else {
+                        configuration.setTestPath(null)
+                        EnvVarUtil.removeKotestTags(configuration)
+                     }
+                     configuration.setInclude(null)
+                  }
+
+                  false -> {
+                     configuration.setTestPath(test.testPath())
+                     configuration.setInclude(test.descriptorPath())
+                     EnvVarUtil.removeKotestTags(configuration)
+                  }
                }
                configuration.setSpecsName(ktclass.fqName?.asString().toString())
                configuration.setModule(context.module)
