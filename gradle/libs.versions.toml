@@ -2,7 +2,12 @@
 gradleApi = "8.11.1"
 jaxbApi = "2.3.1"
 jedis = "7.1.0"
-kotlin = "2.2.21"
+
+# https://mbonnin.net/2026-02-22-kotlin-versions/
+kotlin-gradle-plugin = "2.3.20" # always use the most recent version to leverage the latest tooling
+kotlin-compile-version = "2.3.20"
+kotlin-core-libaries-version = "2.3.20" # the std lib version
+kotlin-language-version = "2.2.0" # the minimum version we support and what is written into kotlin metadata
 
 runtime-kotest = "4.2.0" # intellij plugin
 test-kotest = "5.9.1"# intellij plugin
@@ -161,8 +166,8 @@ ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "kto
 kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.12.1" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-core-libaries-version" }
+kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin-core-libaries-version" }
 
 ksp = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
 
@@ -195,21 +200,22 @@ wiremock = { module = "org.wiremock:wiremock-standalone", version.ref = "wiremoc
 xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "xmlutil" }
 
 # Gradle plugins
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
 kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.11" }
+
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "dev-publish-plugin" }
 nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }
 android-kotlin-multiplatform-library = { module = "com.android.kotlin.multiplatform.library:com.android.kotlin.multiplatform.library.gradle.plugin", version.ref = "agp" }
-power-assert-plugin = { module = "org.jetbrains.kotlin.plugin.power-assert:org.jetbrains.kotlin.plugin.power-assert.gradle.plugin", version.ref = "kotlin" }
+power-assert-plugin = { module = "org.jetbrains.kotlin.plugin.power-assert:org.jetbrains.kotlin.plugin.power-assert.gradle.plugin", version.ref = "kotlin-compile-version" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 
 [plugins]
 gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "plugin-publish" }
 shadowjar = { id = "com.github.johnrengelman.shadow", version.ref = "shadowjar" }
-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin-compile-version" }
 kotlinBinaryCompatibilityValidator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref = "binary-compatibility-validator" }
 allure = { id = "io.qameta.allure", version.ref = "allure.plugin" }
 nmcpAggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
-power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin" }
+power-assert = { id = "org.jetbrains.kotlin.plugin.power-assert", version.ref = "kotlin-compile-version" }
 android-library = { id = "com.android.library", version.ref = "agp" }

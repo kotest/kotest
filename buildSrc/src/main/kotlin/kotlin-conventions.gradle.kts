@@ -2,6 +2,7 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.gradle.tooling.events.FinishEvent
 import org.gradle.tooling.events.OperationCompletionListener
 import org.gradle.tooling.events.task.TaskFinishEvent
+import org.jetbrains.kotlin.buildtools.api.ExperimentalBuildToolsApi
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.tasks.KotlinTest
 import utils.SystemPropertiesArgumentProvider
@@ -25,13 +26,31 @@ tasks.withType<Test>().configureEach {
    }
 }
 
+val libs = versionCatalogs.named("libs")
+
 kotlin {
-   @OptIn(ExperimentalKotlinGradlePluginApi::class)
+   @OptIn(ExperimentalKotlinGradlePluginApi::class, ExperimentalBuildToolsApi::class)
    compilerOptions {
+
       freeCompilerArgs.add("-Xexpect-actual-classes")
       freeCompilerArgs.add("-Xwhen-guards")
-      apiVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
-      languageVersion.set(org.jetbrains.kotlin.gradle.dsl.KotlinVersion.KOTLIN_2_2)
+
+      // See https://mbonnin.net/2026-02-22-kotlin-versions
+      compilerVersion.set(libs.findVersion("kotlin-compile-version").get().toString())
+      coreLibrariesVersion = libs.findVersion("kotlin-core-libaries-version").get().toString()
+
+      apiVersion.set(
+         org.jetbrains.kotlin.gradle.dsl.KotlinVersion.fromVersion(
+            libs.findVersion("kotlin-language-version").get().toString().substringBeforeLast('.') // x.y.z -> x.y
+         )
+      )
+
+      languageVersion.set(
+         org.jetbrains.kotlin.gradle.dsl.KotlinVersion.fromVersion(
+            libs.findVersion("kotlin-language-version").get().toString().substringBeforeLast('.') // x.y.z -> x.y
+         )
+      )
+
       allWarningsAsErrors = false
    }
    sourceSets.configureEach {
