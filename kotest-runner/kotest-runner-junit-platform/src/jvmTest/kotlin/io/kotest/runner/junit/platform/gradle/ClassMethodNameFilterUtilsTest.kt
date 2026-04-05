@@ -69,4 +69,28 @@ class ClassMethodNameFilterUtilsTest : FunSpec({
       )
    }
 
+   test("periods replaced by wildcards in test name produce correct regex pattern") {
+      // When GradleTestFilterBuilder replaces periods in a test name with '*' wildcards,
+      // e.g. "my method with 1.2.3 periods" becomes "my method with 1*2*3 periods",
+      // Gradle converts each '*' to '.*' in the regex, surrounding literal segments with \Q...\E.
+      // This verifies the round-trip: the extracted pattern has '.*' where the periods were.
+      val spec = TestFilterSpec(
+         setOf("com.sksamuel.kotest.filter.Bar.my method with 1*2*3 periods"),
+         emptySet(),
+         emptySet()
+      )
+
+      val matcher = TestSelectionMatcher(spec)
+
+      val filter =
+         resolveClassMethodNameFilterClass()
+            .declaredConstructors.first { it.parameterCount == 1 }.let {
+               it.isAccessible = true
+               it.newInstance(matcher)
+            }
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)) shouldBe listOf(
+         "\\Qcom.sksamuel.kotest.filter.Bar.my method with 1\\E.*\\Q2\\E.*\\Q3 periods\\E"
+      )
+   }
+
 })

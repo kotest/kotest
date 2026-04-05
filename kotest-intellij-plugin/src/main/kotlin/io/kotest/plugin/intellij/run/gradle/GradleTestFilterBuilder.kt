@@ -58,7 +58,7 @@ data class GradleTestFilterBuilder(
    private fun StringBuilder.appendTestPath() {
       when {
          // Regular test - use full path
-         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name.removeLineBreaks().escapeSingleQuotes() }
+         test != null && !test.isDataTest -> test.path().joinToString(" -- ") { it.name.removeLineBreaks().replacePeriodsWithWildcards().escapeSingleQuotes() }
          // Data test inside a regular context - use ancestor path to scope the run
          dataTestAncestorPath != null -> dataTestAncestorPath
          // Root-level data test or no test - no path needed
@@ -83,3 +83,18 @@ data class GradleTestFilterBuilder(
 private fun String.escapeSingleQuotes(): String = replace("'", "'\\''")
 
 private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")
+
+/**
+ * Replaces periods in test names with Gradle's single-character wildcard `*`.
+ *
+ * Gradle uses `.` as a separator between the class name and the test method/name in its
+ * `--tests` filter (e.g. `MySpec.my test`). If a test name itself contains a period
+ * (e.g. `"1.2.3 my test"`), Gradle misinterprets those dots as class/package boundaries
+ * and fails to find the test.
+ *
+ * By replacing `.` with `*` (Gradle's wildcard) the generated filter becomes
+ * `MySpec.1*2*3 my test`, which Gradle converts to the regex
+ * `\QMySpec.1\E.*\Q2\E.*\Q3 my test\E`. That regex still matches the real test name
+ * because `.*` matches the literal period character in the descriptor path.
+ */
+private fun String.replacePeriodsWithWildcards(): String = replace(".", "*")

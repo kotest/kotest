@@ -216,4 +216,139 @@ class GradleTestFilterBuilderTest : BasePlatformTestCase() {
          .withTest(test)
          .build(true) shouldBe "--tests 'MyTestClass.parent context -- child test'"
    }
+
+   fun testSinglePeriodInTestNameIsReplacedWithWildcard() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "version 1.0 test", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.version 1*0 test'"
+   }
+
+   fun testMultiplePeriodsInTestNameAreReplacedWithWildcards() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "my method with 1.2.3 periods", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.my method with 1*2*3 periods'"
+   }
+
+   fun testPeriodsInNestedTestNameAreReplacedWithWildcards() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val root = Test(
+         name = TestName(prefix = null, name = "context 1.0", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Container,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      val test = Test(
+         name = TestName(prefix = null, name = "test 2.5.1 behaviour", interpolated = false),
+         parent = root,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.context 1*0 -- test 2*5*1 behaviour'"
+   }
+
+   fun testPeriodAtStartOfTestNameIsReplacedWithWildcard() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = ".leading period", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.*leading period'"
+   }
+
+   fun testPeriodAtEndOfTestNameIsReplacedWithWildcard() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "trailing period.", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.trailing period*'"
+   }
+
+   fun testPeriodAndSingleQuoteCombinedAreHandledCorrectly() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "it's version 1.0", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.it'\\''s version 1*0'"
+   }
+
+   fun testPeriodAndNewlineCombinedAreHandledCorrectly() {
+      val factory = KtPsiFactory(project)
+      val spec: KtClass = factory.createClass("class MyTestClass { fun hello() {} }")
+      val test = Test(
+         name = TestName(prefix = null, name = "version\n1.0 test", interpolated = false),
+         parent = null,
+         specClassName = spec,
+         testType = TestType.Test,
+         xdisabled = false,
+         psi = spec,
+         isDataTest = false
+      )
+      GradleTestFilterBuilder.builder()
+         .withSpec(spec)
+         .withTest(test)
+         .build(true) shouldBe "--tests 'MyTestClass.version 1*0 test'"
+   }
 }
