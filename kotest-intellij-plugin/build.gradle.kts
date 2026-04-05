@@ -180,7 +180,7 @@ dependencies {
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
-   implementation("org.jetbrains:annotations:26.0.2-1")
+   implementation("org.jetbrains:annotations:26.1.0")
 
    // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
    testImplementation(libs.junit4)
