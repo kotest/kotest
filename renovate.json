@@ -1,13 +1,14 @@
 {
    "extends": [
-      "config:base", "github>kotest/renovate-config"
+      "config:recommended",
+    "github>kotest/renovate-config"
    ],
    "packageRules": [
       {
-         "matchPackagePrefixes": [
-            "org.junit"
-         ],
-         "dependencyDashboardApproval": true
+         "dependencyDashboardApproval": true,
+         "matchPackageNames": [
+            "org.junit{/,}**"
+         ]
       }
    ]
 }
