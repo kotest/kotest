@@ -152,7 +152,6 @@ object FunSpecStyle : SpecStyle {
     * `context("test name").config(...) { }`
     */
    override fun test(element: PsiElement): Test? {
-      println("Testing this element for a test $element")
       return when (element) {
          is KtCallExpression -> element.tryContext() ?: element.tryXContext() ?: element.tryTest() ?: element.tryXTest() ?: element.tryDataTest()
          is KtDotQualifiedExpression -> element.tryContextWithConfig() ?: element.tryXContextWithConfig()
