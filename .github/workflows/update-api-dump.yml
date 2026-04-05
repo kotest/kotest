@@ -58,7 +58,7 @@ jobs:
                java-version-file: .github/.java-version
 
          -  name: Setup Gradle
-            uses: gradle/actions/setup-gradle@v5
+            uses: gradle/actions/setup-gradle@v6
             with:
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
                cache-read-only: true

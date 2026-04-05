@@ -32,7 +32,7 @@ jobs:
               java-version: "21"
 
          - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v5
+           uses: gradle/actions/setup-gradle@v6
 
          - name: Publish KMP and JVM to Maven Local
            run: >
@@ -83,7 +83,7 @@ jobs:
               java-version: "21"
 
          - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v5
+           uses: gradle/actions/setup-gradle@v6
 
          - name: Publish macOS to Maven Local
            run: >
@@ -139,7 +139,7 @@ jobs:
               java-version: "17"
 
          - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v5
+           uses: gradle/actions/setup-gradle@v6
 
          - name: Publish mingw to Maven Local
            run: >
@@ -207,7 +207,7 @@ jobs:
               java-version: "21"
 
          - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v5
+           uses: gradle/actions/setup-gradle@v6
 
          - name: Run tests
            if: matrix.project != 'kotest-maven'
@@ -270,7 +270,7 @@ jobs:
               java-version: "21"
 
          - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v5
+           uses: gradle/actions/setup-gradle@v6
 
          - name: Run tests
            working-directory: kotest-examples/${{ matrix.project }}
@@ -327,7 +327,7 @@ jobs:
               java-version: "17"
 
          - name: Setup Gradle
-           uses: gradle/actions/setup-gradle@v5
+           uses: gradle/actions/setup-gradle@v6
 
          - name: Run tests
            working-directory: kotest-examples/${{ matrix.project }}

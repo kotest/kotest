@@ -31,7 +31,7 @@ jobs:
           distribution: "temurin"
           java-version-file: .github/.java-version
 
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - name: deploy to gradle
         run: ./gradlew :kotest-framework:kotest-framework-plugin-gradle:publishPlugins
