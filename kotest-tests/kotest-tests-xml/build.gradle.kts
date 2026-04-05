@@ -6,7 +6,7 @@ plugins {
    id("kotlin-conventions")
    // using a published version
    id("io.kotest").version("6.1.11")
-   id("com.google.devtools.ksp").version("2.3.4")
+   id("com.google.devtools.ksp").version("2.3.6")
 }
 
 kotlin {
