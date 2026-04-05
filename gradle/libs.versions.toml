@@ -58,7 +58,7 @@ testcontainers = "2.0.3"
 asm = "9.8"
 nmcp = "1.0.2"
 kotlin-poet = "2.2.0"
-kotlinx-io-core = "0.7.0"
+kotlinx-io-core = "0.9.0"
 xmlutil = "0.91.3"
 
 # https://developer.android.com/kotlin/multiplatform/plugin
