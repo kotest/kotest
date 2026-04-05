@@ -9,6 +9,7 @@ import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
+import io.kotest.engine.test.FailFastScopeTracker
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DuplicateTestNameHandler
@@ -30,7 +31,7 @@ internal class SingleInstanceSpecExecutor(private val context: TestEngineContext
 
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance, which in this case is always the same provided instance
-      return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
+      return withContext(CoroutineName("spec-scope-" + seed.hashCode()) + FailFastScopeTracker()) {
          val specContext = SpecContext.create()
          pipeline.execute(seed, ref) { spec ->
             launchRootTests(spec, specContext, ref)

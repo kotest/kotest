@@ -24,7 +24,7 @@ kotlin {
       // so we need to force it to be same as our version
       commonMain {
          dependencies {
-            api("org.jetbrains.kotlin:kotlin-test:${libs.versions.kotlin.asProvider().get()}")
+            api("org.jetbrains.kotlin:kotlin-test:${libs.versions.kotlin.compile.version.get()}")
          }
       }
 

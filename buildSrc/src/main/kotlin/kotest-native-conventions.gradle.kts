@@ -16,7 +16,6 @@ kotlin {
          linuxArm64()
       }
 
-      macosX64()
       macosArm64()
 
       mingwX64()
@@ -33,13 +32,11 @@ kotlin {
          iosArm64()
          iosSimulatorArm64()
 
-         tvosX64()
          tvosArm64()
          tvosSimulatorArm64()
 
          watchosArm32()
          watchosArm64()
-         watchosX64()
          watchosSimulatorArm64()
       }
 
