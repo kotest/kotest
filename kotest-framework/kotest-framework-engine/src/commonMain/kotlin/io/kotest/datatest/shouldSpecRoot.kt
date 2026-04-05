@@ -211,8 +211,9 @@ fun <T> ShouldSpecRootScope.withContexts(
    ts: Iterable<T>,
    test: suspend ShouldSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      context(nameFn(t)).config() { this.test(t) }
+      context(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -226,8 +227,9 @@ fun <T> ShouldSpecRootScope.withShoulds(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      should(nameFn(t)).config() { this.test(t) }
+      should(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -250,8 +252,9 @@ fun <T> ShouldSpecRootScope.withContexts(
    data: Map<String, T>,
    test: suspend ShouldSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      context(name).config() { this.test(t) }
+      context(name).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -263,7 +266,8 @@ fun <T> ShouldSpecRootScope.withShoulds(
    data: Map<String, T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      should(name).config() { this.test(t) }
+      should(name).config(dataTestTagConfig) { this.test(t) }
    }
 }

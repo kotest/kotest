@@ -7,6 +7,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.config.TestConfigResolver
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.scopes.withCoroutineContext
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.TimeoutCancellationException
 
 /**
@@ -29,6 +30,12 @@ internal class InvocationTimeoutInterceptor(private val testConfigResolver: Test
 
          val timeout = testConfigResolver.invocationTimeout(testCase)
          logger.log { Pair(testCase.name.name, "Switching context to add invocationTimeout $timeout") }
+
+         // D8's setTimeout fires callbacks in registration order (ignoring delay values), so
+         // withTimeout would fire before any delay() in the test body. Skip timeout on D8.
+         if (isD8Runtime()) {
+            return test(testCase, scope.withCoroutineContext(currentCoroutineContext()))
+         }
 
          try {
             // we use orNull because we want to disambiguate between our timeouts and user level timeouts

@@ -47,10 +47,11 @@ fun ErrorCollector.pushErrorAndMaybeThrow(error: Throwable) {
  * throw immediately.
  */
 fun ErrorCollector.collectOrThrow(error: Throwable) {
-   val cleanedError = stacktraces.cleanStackTrace(error)
    when (getCollectionMode()) {
-      ErrorCollectionMode.Soft -> pushError(cleanedError)
-      ErrorCollectionMode.Hard -> throw cleanedError
+      ErrorCollectionMode.Soft -> pushError(stacktraces.cleanStackTrace(error))
+      ErrorCollectionMode.Hard -> throw stacktraces.cleanStackTrace(error)
+      // Inspector errors are cheap by design (no stack trace) — throw as-is, skip stack trace cleaning
+      ErrorCollectionMode.InspectorHard -> throw error
    }
 }
 

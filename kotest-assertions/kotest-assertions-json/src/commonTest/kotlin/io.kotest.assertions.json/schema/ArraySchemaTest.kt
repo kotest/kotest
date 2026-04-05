@@ -213,5 +213,77 @@ class ArraySchemaTest : FunSpec(
          }
          "[1, \"bob\"]" shouldMatchSchema array
       }
+
+      test("prefixItems validates each position against specific schema") {
+         val tupleSchema = jsonSchema {
+            array(prefixItems = listOf(number(), string()))
+         }
+         "[1, \"hello\"]" shouldMatchSchema tupleSchema
+      }
+
+      test("prefixItems fails when item at position has wrong type") {
+         val tupleSchema = jsonSchema {
+            array(prefixItems = listOf(number(), string()))
+         }
+         shouldFail { "[\"wrong\", \"hello\"]" shouldMatchSchema tupleSchema }.message shouldBe """
+            $[0] => Expected number, but was string
+         """.trimIndent()
+      }
+
+      test("prefixItems only validates up to number of prefix schemas") {
+         val tupleSchema = jsonSchema {
+            array(prefixItems = listOf(number()))
+         }
+         // extra items beyond prefix are unconstrained when no elementType
+         "[1, \"anything\", true]" shouldMatchSchema tupleSchema
+      }
+
+      test("prefixItems with elementType validates additional items against elementType") {
+         val tupleSchema = jsonSchema {
+            array(prefixItems = listOf(number()), typeBuilder = { string() })
+         }
+         "[1, \"hello\", \"world\"]" shouldMatchSchema tupleSchema
+         shouldFail { "[1, 2, 3]" shouldMatchSchema tupleSchema }.message shouldBe """
+            $[1] => Expected string, but was number
+            $[2] => Expected string, but was number
+         """.trimIndent()
+      }
+
+      test("prefixItems shorter than array does not fail when no elementType") {
+         val tupleSchema = jsonSchema {
+            array(prefixItems = listOf(number(), string()))
+         }
+         // array has 4 elements but only 2 prefix schemas - extra 2 are unconstrained
+         "[1, \"hello\", true, null]" shouldMatchSchema tupleSchema
+      }
+
+      test("prefixItems fails all position violations") {
+         val tupleSchema = jsonSchema {
+            array(prefixItems = listOf(number(), string(), boolean()))
+         }
+         shouldFail { "[\"x\", 1, \"y\"]" shouldMatchSchema tupleSchema }.message shouldBe """
+            $[0] => Expected number, but was string
+            $[1] => Expected string, but was number
+            $[2] => Expected boolean, but was string
+         """.trimIndent()
+      }
+
+      test("Should parse schema with prefixItems") {
+         val schema = parseSchema(
+            """
+            {
+               "type": "array",
+               "prefixItems": [
+                  {"type": "number"},
+                  {"type": "string"}
+               ]
+            }
+            """.trimIndent()
+         )
+         "[1, \"hello\"]" shouldMatchSchema schema
+         shouldFail { "[\"wrong\", \"hello\"]" shouldMatchSchema schema }.message shouldBe """
+            $[0] => Expected number, but was string
+         """.trimIndent()
+      }
    }
 )

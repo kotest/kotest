@@ -6,6 +6,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
+import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 
 /**
@@ -17,6 +18,20 @@ import org.intellij.lang.annotations.Language
 fun equalJson(
    @Language("json") expected: String,
    options: CompareJsonOptions
+): Matcher<String?> = equalJson(expected, options, pretty)
+
+/**
+ * Returns a [io.kotest.matchers.Matcher] that verifies that two JSON strings are equal,
+ * parsed with the given [parser].
+ *
+ * This matcher will consider two JSON strings matched if they have the same key-values pairs.
+ * The [CompareJsonOptions] parameter can be used to configure the matcher behavior.
+ * The [parser] parameter can be used to provide a custom [Json] instance for parsing.
+ */
+fun equalJson(
+   @Language("json") expected: String,
+   options: CompareJsonOptions,
+   parser: Json,
 ): Matcher<String?> =
    Matcher { actual ->
       if (actual == null) {
@@ -25,7 +40,7 @@ fun equalJson(
             .withNegatedFailureMessage { "Expected value to be not equal to json '$expected', but was: null" }
             .build()
       } else {
-         val (expectedTree, actualTree) = parse(expected, actual)
+         val (expectedTree, actualTree) = parse(expected, actual, parser)
          equalJsonTree(expectedTree, options).test(actualTree)
       }
    }
@@ -86,6 +101,11 @@ infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions
    return this
 }
 
+fun String.shouldEqualJson(@Language("json") expected: String, parser: Json): String {
+   this should equalJson(expected, CompareJsonOptions(), parser)
+   return this
+}
+
 infix fun String.shouldNotEqualJson(@Language("json") expected: String): String {
    this shouldNot equalJson(expected, CompareJsonOptions())
    return this
@@ -98,6 +118,11 @@ infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOpti
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
    this shouldNot equalJson(expected, options)
+   return this
+}
+
+fun String.shouldNotEqualJson(@Language("json") expected: String, parser: Json): String {
+   this shouldNot equalJson(expected, CompareJsonOptions(), parser)
    return this
 }
 

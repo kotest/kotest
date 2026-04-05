@@ -8,6 +8,24 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+// Primitive array overloads
+infix fun BooleanArray.shouldContain(t: Boolean): BooleanArray = apply { asList().shouldContain(t) }
+infix fun BooleanArray.shouldNotContain(t: Boolean): BooleanArray = apply { asList().shouldNotContain(t) }
+infix fun ByteArray.shouldContain(t: Byte): ByteArray = apply { asList().shouldContain(t) }
+infix fun ByteArray.shouldNotContain(t: Byte): ByteArray = apply { asList().shouldNotContain(t) }
+infix fun ShortArray.shouldContain(t: Short): ShortArray = apply { asList().shouldContain(t) }
+infix fun ShortArray.shouldNotContain(t: Short): ShortArray = apply { asList().shouldNotContain(t) }
+infix fun CharArray.shouldContain(t: Char): CharArray = apply { asList().shouldContain(t) }
+infix fun CharArray.shouldNotContain(t: Char): CharArray = apply { asList().shouldNotContain(t) }
+infix fun IntArray.shouldContain(t: Int): IntArray = apply { asList().shouldContain(t) }
+infix fun IntArray.shouldNotContain(t: Int): IntArray = apply { asList().shouldNotContain(t) }
+infix fun LongArray.shouldContain(t: Long): LongArray = apply { asList().shouldContain(t) }
+infix fun LongArray.shouldNotContain(t: Long): LongArray = apply { asList().shouldNotContain(t) }
+infix fun FloatArray.shouldContain(t: Float): FloatArray = apply { asList().shouldContain(t) }
+infix fun FloatArray.shouldNotContain(t: Float): FloatArray = apply { asList().shouldNotContain(t) }
+infix fun DoubleArray.shouldContain(t: Double): DoubleArray = apply { asList().shouldContain(t) }
+infix fun DoubleArray.shouldNotContain(t: Double): DoubleArray = apply { asList().shouldNotContain(t) }
+
 // Infix
 infix fun <T, I : Iterable<T>> I.shouldNotContain(t: T): I = shouldNotContain(t, Equality.default())
 infix fun <T> Array<T>.shouldNotContain(t: T): Array<T> = shouldNotContain(t, Equality.default())

@@ -59,8 +59,19 @@ data class JsonSchema(
      val matcher: Matcher<Sequence<JsonNode>>? = null,
      val contains: ContainsSpec? = null,
      val elementType: JsonSchemaElement? = null,
+     val prefixItems: List<JsonSchemaElement> = emptyList(),
    ) : JsonSchemaElement {
       override fun typeName() = "array"
+   }
+
+   /**
+    * Represents an enum schema element that constrains a value to a fixed set of allowed values.
+    * Allowed values can be strings, numbers, booleans, or null.
+    *
+    * https://json-schema.org/understanding-json-schema/reference/enum.html
+    */
+   data class JsonEnum(val values: List<Any?>) : JsonSchemaElement {
+      override fun typeName() = "enum"
    }
 
    class JsonObjectBuilder {
@@ -192,6 +203,24 @@ data class JsonSchema(
    object Null : JsonSchemaElement {
       override fun typeName() = "null"
    }
+
+   /**
+    * Represents a composite schema that passes validation if **any** of the given [schemas] match.
+    *
+    * https://json-schema.org/understanding-json-schema/reference/combining.html#anyof
+    */
+   data class JsonAnyOf(val schemas: List<JsonSchemaElement>) : JsonSchemaElement {
+      override fun typeName() = "anyOf(${schemas.joinToString(", ") { it.typeName() }})"
+   }
+
+   /**
+    * Represents a composite schema that passes validation if **exactly one** of the given [schemas] matches.
+    *
+    * https://json-schema.org/understanding-json-schema/reference/combining.html#oneof
+    */
+   data class JsonOneOf(val schemas: List<JsonSchemaElement>) : JsonSchemaElement {
+      override fun typeName() = "oneOf(${schemas.joinToString(", ") { it.typeName() }})"
+   }
 }
 
 
@@ -265,9 +294,14 @@ fun JsonSchema.Builder.obj(dsl: JsonSchema.JsonObjectBuilder.() -> Unit = {}) =
  * The length of the array can be specified using the [minItems] and [maxItems] keywords. Schema can ensure
  * that each of item in an array is unique specified by [uniqueItems] keyword.
  *
+ * Use [prefixItems] to define tuple validation, where each position in the array is validated against
+ * a specific schema. If [typeBuilder] is also specified, it acts as the schema for any items beyond
+ * the prefix.
+ *
  * @param minItems - minimum array length, default value is 0
  * @param maxItems - maximum array length, default value is [Int.MAX_VALUE]
  * @param uniqueItems - item uniqueness, default value is false
+ * @param prefixItems - schemas for specific array positions (tuple validation)
  */
 @ExperimentalKotest
 fun JsonSchema.Builder.array(
@@ -275,11 +309,26 @@ fun JsonSchema.Builder.array(
    maxItems: Int = Int.MAX_VALUE,
    uniqueItems: Boolean = false,
    contains: ContainsSpec? = null,
+   prefixItems: List<JsonSchemaElement> = emptyList(),
    typeBuilder: (() -> JsonSchemaElement?)? = null
 ): JsonSchema.JsonArray {
    val matcher: Matcher<Sequence<JsonNode>>? = if (uniqueItems) beUnique() else null
-   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder?.invoke())
+   return JsonSchema.JsonArray(minItems, maxItems, matcher, contains, typeBuilder?.invoke(), prefixItems)
 }
+
+/**
+ * Creates a [JsonSchema.JsonEnum] node that constrains a value to one of the given [values].
+ * Allowed values can be strings, numbers (Long or Double), booleans, or null.
+ *
+ * Example:
+ * ```kotlin
+ * val streetTypeSchema = jsonSchema { enum("Avenue", "Street", "Boulevard") }
+ * ```
+ *
+ * https://json-schema.org/understanding-json-schema/reference/enum.html
+ */
+@ExperimentalKotest
+fun JsonSchema.Builder.enum(vararg values: Any?) = JsonSchema.JsonEnum(values.toList())
 
 @ExperimentalKotest
 fun jsonSchema(
@@ -287,6 +336,38 @@ fun jsonSchema(
 ): JsonSchema = JsonSchema(
    JsonSchema.Builder.rootBuilder()
 )
+
+/**
+ * Creates a [JsonSchema.JsonAnyOf] node that passes validation when **any** of the given [schemas] match.
+ *
+ * Example:
+ * ```kotlin
+ * val schema = jsonSchema { anyOf(string(), integer()) }
+ * ```
+ *
+ * https://json-schema.org/understanding-json-schema/reference/combining.html#anyof
+ */
+@ExperimentalKotest
+fun JsonSchema.Builder.anyOf(vararg schemas: JsonSchemaElement): JsonSchema.JsonAnyOf {
+   require(schemas.isNotEmpty()) { "anyOf requires at least one schema" }
+   return JsonSchema.JsonAnyOf(schemas.toList())
+}
+
+/**
+ * Creates a [JsonSchema.JsonOneOf] node that passes validation when **exactly one** of the given [schemas] matches.
+ *
+ * Example:
+ * ```kotlin
+ * val schema = jsonSchema { oneOf(string(), integer()) }
+ * ```
+ *
+ * https://json-schema.org/understanding-json-schema/reference/combining.html#oneof
+ */
+@ExperimentalKotest
+fun JsonSchema.Builder.oneOf(vararg schemas: JsonSchemaElement): JsonSchema.JsonOneOf {
+   require(schemas.isNotEmpty()) { "oneOf requires at least one schema" }
+   return JsonSchema.JsonOneOf(schemas.toList())
+}
 
 fun JsonSchema.Builder.containsSpec(
    minContains: Int = 0,

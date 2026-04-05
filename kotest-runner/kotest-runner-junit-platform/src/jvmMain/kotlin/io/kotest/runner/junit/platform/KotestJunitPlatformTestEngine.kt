@@ -9,15 +9,16 @@ import io.kotest.engine.config.ProjectConfigLoader
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
 import io.kotest.engine.test.names.DisplayNameFormatting
-import io.kotest.runner.junit.platform.debug.string
 import io.kotest.runner.junit.platform.discovery.Discovery
 import io.kotest.runner.junit.platform.gradle.ClassMethodNameFilterAdapter
 import kotlinx.coroutines.runBlocking
 import org.junit.platform.engine.EngineDiscoveryRequest
 import org.junit.platform.engine.ExecutionRequest
+import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestEngine
 import org.junit.platform.engine.UniqueId
 import org.junit.platform.engine.discovery.ClassSelector
+import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import java.util.Optional
@@ -86,6 +87,22 @@ class KotestJunitPlatformTestEngine : TestEngine {
    }
 
    /**
+    * This method is invoked by build systems that support JUnit Platform, to return a [TestDescriptor] that
+    * contains any matching tests given the [EngineDiscoveryRequest].
+    *
+    * The [EngineDiscoveryRequest] contains a list of [DiscoverySelector]s which provide information
+    * on the tests that have been discovered by the build system. The tests may or may not be relevant
+    * to Kotest, so our job is to filter them down to only those that are relevant.
+    *
+    * For example, when running a single test using --tests, Gradle will add a [ClassSelector] and a
+    * [ClassMethodNameFilter] post-discovery filter.
+    *
+    * When executing the test task without any particular --tests filter, Gradle will include multiple
+    * [ClassSelector]s, one for each test class, with no post-discovery filters.
+    *
+    * Finally, another example is re-running a failed test, Gradle will provide a [UniqueIdSelector]
+    * that contains the unique id of the test that failed.
+    *
     * gradlew --tests rules:
     * Classname: adds classname selector and ClassMethodNameFilter post-discovery filter
     * Classname.method: adds classname selector and ClassMethodNameFilter post-discovery filter
@@ -101,7 +118,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
    ): KotestEngineDescriptor {
 
       logger.log { "JUnit discovery request [uniqueId=$uniqueId]" }
-      logger.log { request.string() }
+      logger.log { "JUnit discovery request [configurationParameters=${request.configurationParameters}]" }
+      logger.log { "JUnit discovery request [engineFilters=${request.engineFilters()}]" }
+      logger.log { "JUnit discovery request [postFilters=${request.postFilters()}]" }
+      logger.log { "JUnit discovery request [classSelectors=${request.getSelectorsByType(ClassSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java)}]" }
 
       if (!isEngineIncluded(request) || !shouldRunTests(request))
          return EngineDescriptorBuilder.builder(uniqueId).build()
@@ -127,8 +149,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
          .withFormatter(formatting)
          .build()
 
-      logger.log { "JUnit discovery completed [descriptor=$engine]" }
-      logger.log { "Final specs [${engine.specs.joinToString(", ")}]" }
+      logger.log { "Final discovery [${engine.specs.joinToString(", ")}]" }
       return engine
    }
 
@@ -146,20 +167,23 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    /**
     * Returns true if there are selectors compatible with Kotest.
-    * Kotest supports [ClassSelector]s and [UniqueIdSelector]s.
+    * Kotest supports [ClasspathRootSelector]s, [ClassSelector]s, and [UniqueIdSelector]s.
     *
-    * A [MethodSelector] is passed by intellij to run just a single method inside a test file.
-    * Kotest will never use method selectors, so if we have one, then we know it is something
-    * other than kotest that is trying to run the tests, and we should skip running the engine.
+    * Note: [MethodSelector]s may be present alongside class/classpath selectors (e.g., from AGP 9+
+    * which pre-discovers `@Test` methods and passes them as method selectors). We intentionally
+    * ignore method selectors here — [Discovery] already ignores them — and only check for the
+    * selector types Kotest actually processes.
     */
    private fun shouldRunTests(request: EngineDiscoveryRequest): Boolean {
-      if (request.getSelectorsByType(MethodSelector::class.java).isNotEmpty()) return false
       return request.getSelectorsByType(ClassSelector::class.java).isNotEmpty() ||
-         request.getSelectorsByType(UniqueIdSelector::class.java).isNotEmpty()
+         request.getSelectorsByType(UniqueIdSelector::class.java).isNotEmpty() ||
+         request.getSelectorsByType(ClasspathRootSelector::class.java).isNotEmpty()
    }
 
    /**
-    * If we are excluded from the engines, then we do not run discovery.
+    * If any engine filter excludes Kotest, then we do not run discovery.
+    * In other words, all filters must pass for a given engine to be included.
+    * Usually, these filters are not used, but they can be used to exclude engines.
     */
    private fun isEngineIncluded(request: EngineDiscoveryRequest): Boolean {
       return request.engineFilters().all { it.toPredicate().test(this) }

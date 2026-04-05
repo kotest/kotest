@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.common.reflection.bestName
+import io.kotest.core.LogLine
 import io.kotest.core.Logger
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.SpecExtension
@@ -31,7 +31,7 @@ internal class SpecExtensions(
 
    constructor() : this(SpecConfigResolver(), ProjectConfigResolver())
 
-   private val logger = Logger(SpecExtensions::class)
+   private val logger = Logger<SpecExtensions>()
 
    /**
     * Runs all the [BeforeSpecListener]s for this [Spec]. All errors are caught and wrapped
@@ -39,7 +39,7 @@ internal class SpecExtensions(
     * all will be wrapped in a [MultipleExceptions].
     */
    suspend fun beforeSpec(spec: Spec) {
-      logger.log { Pair(spec::class.bestName(), "beforeSpec $spec") }
+      logger.log { LogLine(spec::class, "beforeSpec $spec") }
 
       val errors = specConfigResolver.extensions(spec)
          .filterIsInstance<BeforeSpecListener>()
@@ -62,10 +62,10 @@ internal class SpecExtensions(
     * all will be wrapped in a [MultipleExceptions].
     */
    suspend fun afterSpec(spec: Spec): Result<Spec> = runCatching {
-      logger.log { Pair(spec::class.bestName(), "afterSpec $spec") }
+      logger.log { LogLine(spec::class, "afterSpec $spec") }
 
       spec.autoCloseables().let { closeables ->
-         logger.log { Pair(spec::class.bestName(), "Closing ${closeables.size} autocloseables [$closeables]") }
+         logger.log { LogLine(spec::class, "Closing ${closeables.size} autocloseables [$closeables]") }
          closeables.forEach {
             if (it.isInitialized()) it.value.close() else Unit
          }
@@ -87,14 +87,14 @@ internal class SpecExtensions(
    }
 
    suspend fun specInstantiated(spec: Spec) = runCatching {
-      logger.log { Pair(spec::class.bestName(), "specInstantiated $spec") }
+      logger.log { LogLine(spec::class, "specInstantiated $spec") }
       specConfigResolver.extensions(spec)
          .filterIsInstance<InstantiationListener>()
          .forEach { it.specInstantiated(spec) }
    }
 
    suspend fun specInstantiationError(kclass: KClass<out Spec>, t: Throwable) = runCatching {
-      logger.log { Pair(kclass.bestName(), "specInstantiationError $t") }
+      logger.log { LogLine(kclass, "specInstantiationError $t") }
       projectConfigResolver.extensions()
          .filterIsInstance<InstantiationErrorListener>()
          .forEach { it.instantiationError(kclass, t) }
@@ -110,7 +110,7 @@ internal class SpecExtensions(
    suspend fun prepareSpec(kclass: KClass<out Spec>) {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<PrepareSpecListener>()
-      logger.log { Pair(kclass.bestName(), "prepareSpec (${exts.size})") }
+      logger.log { LogLine(kclass, "${exts.size} PrepareSpecListener extensions") }
 
       val errors = exts.mapNotNull { listener ->
          runCatching { listener.prepareSpec(kclass) }
@@ -135,10 +135,10 @@ internal class SpecExtensions(
    ): Result<KClass<out Spec>> {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<FinalizeSpecListener>()
-      logger.log { Pair(kclass.bestName(), "finishSpec (${exts.size})") }
+      logger.log { LogLine(kclass, "${exts.size} FinalizeSpecListener extensions") }
 
-      val errors = exts.mapNotNull {
-         runCatching { it.finalizeSpec(kclass, results) }
+      val errors = exts.mapNotNull { listener ->
+         runCatching { listener.finalizeSpec(kclass, results) }
             .mapError { ExtensionException.FinalizeSpecException(it) }.exceptionOrNull()
       }
 
@@ -149,10 +149,14 @@ internal class SpecExtensions(
       }
    }
 
+   /**
+    * Executes any [SpecExtension]s for this spec, and then invokes the [f] as the innermost function.
+    */
    suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T? {
 
       val exts = specConfigResolver.extensions(spec).filterIsInstance<SpecExtension>()
-      logger.log { Pair(spec::class.bestName(), "Intercepting spec with ${exts.size} spec extensions") }
+      logger.log { LogLine(spec::class, "${exts.size} SpecExtension interceptors") }
+      if (exts.isEmpty()) return f()
 
       var result: T? = null
       val initial: suspend () -> Unit = {
@@ -175,10 +179,11 @@ internal class SpecExtensions(
    suspend fun ignored(kclass: KClass<out Spec>, reason: String?): Result<KClass<out Spec>> {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<IgnoredSpecListener>()
-      logger.log { Pair(kclass.bestName(), "ignored ${exts.size} extensions on $kclass") }
+      logger.log { LogLine(kclass, "${exts.size} IgnoredSpecListener extensions") }
+      if (exts.isEmpty()) return Result.success(kclass)
 
-      val errors = exts.mapNotNull {
-         runCatching { it.ignoredSpec(kclass, reason) }
+      val errors = exts.mapNotNull { listener ->
+         runCatching { listener.ignoredSpec(kclass, reason) }
             .mapError { ExtensionException.IgnoredSpecException(it) }.exceptionOrNull()
       }
 
