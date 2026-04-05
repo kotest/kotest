@@ -24,9 +24,23 @@ object EnvVarUtil {
          put(KOTEST_TAGS, tag)
       }
    }
+
+   fun setKotestTags(kotestRunConfiguration : KotestRunConfiguration, tag: String) {
+      with(kotestRunConfiguration.envs){
+         remove(KOTEST_TEST_ENABLED_OVERRIDE)
+         put(KOTEST_TAGS, tag)
+      }
+   }
+
    fun removeKotestTags(settings : ExternalSystemTaskExecutionSettings) {
       with(settings.env) {
         remove(KOTEST_TAGS)
+      }
+   }
+
+   fun removeKotestTags(kotestRunConfiguration : KotestRunConfiguration) {
+      with(kotestRunConfiguration.envs){
+         remove(KOTEST_TAGS)
       }
    }
 
