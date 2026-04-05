@@ -20,6 +20,7 @@ import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLe
 import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLeafOperation.TestListenerOperation.SendIgnoredNotification
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
+import io.kotest.engine.test.FailFastScopeTracker
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
@@ -56,7 +57,7 @@ internal class InstancePerLeafSpecExecutor(
     * Each root will be executed in new specs for isolation.
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
-      return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
+      return withContext(CoroutineName("spec-scope-" + seed.hashCode()) + FailFastScopeTracker()) {
          pipeline.execute(seed, ref) {
             launchRootTests(seed, ref)
             Result.success(results.toMap())
