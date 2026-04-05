@@ -93,11 +93,8 @@ object FunSpecStyle : SpecStyle {
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
-      println("Trying call expression $this")
       val specClass = enclosingKtClassOrObject() ?: return null
-      println("Enclosing class is $specClass")
       val test = extractStringArgForFunctionWithStringAndLambdaArgs("test") ?: return null
-      println("Extracted test name is $test")
       return buildTest(TestName(null, test.text, test.interpolated), this, TestType.Test, false, specClass)
    }
 
