@@ -15,7 +15,7 @@ import kotlinx.coroutines.test.TestDispatcher
  *
  * If the coroutine is an instance of [TestDispatcher] then the coroutine will not be changed.
  *
- * Note: This interceptor should run before before/after callbacks so they are executed in the right context.
+ * Note: This interceptor should run before `before/after` callbacks so they are executed in the right context.
  */
 internal class CoroutineDispatcherFactoryTestInterceptor(
    private val specConfigResolver: SpecConfigResolver,
