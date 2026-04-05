@@ -16,6 +16,7 @@ public final class io/kotest/assertions/AssertionsConfig {
 	public final fun getLargeStringDiffMinSize ()I
 	public final fun getMapDiffLimit ()I
 	public final fun getMapFileEndingsToUnix ()Lio/kotest/assertions/EnvironmentConfigValue;
+	public final fun getMaxCollectionDiffCount ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxCollectionEnumerateSize ()I
 	public final fun getMaxCollectionPrintSize ()Lio/kotest/assertions/EnvironmentConfigValue;
 	public final fun getMaxErrorsOutput ()I
@@ -450,12 +451,6 @@ public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFn$Com
 public final class io/kotest/assertions/nondeterministic/FibonacciIntervalFnKt {
 	public static final fun fibonacci-QTBD994 (JJ)Lio/kotest/assertions/nondeterministic/FibonacciIntervalFn;
 	public static synthetic fun fibonacci-QTBD994$default (JJILjava/lang/Object;)Lio/kotest/assertions/nondeterministic/FibonacciIntervalFn;
-}
-
-public final class io/kotest/assertions/nondeterministic/NoopEventuallyListener : kotlin/coroutines/jvm/internal/SuspendFunction, kotlin/jvm/functions/Function3 {
-	public static final field INSTANCE Lio/kotest/assertions/nondeterministic/NoopEventuallyListener;
-	public fun invoke (ILjava/lang/Throwable;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public synthetic fun invoke (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 }
 
 public final class io/kotest/assertions/nondeterministic/UntilConfiguration {
@@ -2015,6 +2010,8 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 	public static final fun gte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lt (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
 	public static final fun lte (Ljava/lang/Comparable;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtLeast (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldBeAtMost (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)Ljava/lang/Comparable;
@@ -2022,6 +2019,8 @@ public final class io/kotest/matchers/comparables/ComparableMatchersKt {
 	public static final fun shouldBeGreaterThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeLessThan (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldBeLessThanOrEqualTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeAtLeast (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
+	public static final fun shouldNotBeAtMost (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeBetween (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Comparable;
 	public static final fun shouldNotBeEqualComparingTo (Ljava/lang/Comparable;Ljava/lang/Comparable;Ljava/util/Comparator;)Ljava/lang/Comparable;

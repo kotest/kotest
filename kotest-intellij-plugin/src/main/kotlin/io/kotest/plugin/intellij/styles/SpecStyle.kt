@@ -48,12 +48,11 @@ interface SpecStyle {
       fun findTest(element: PsiElement): Test? {
          return styles.asSequence()
             .filter { it.isContainedInSpec(element) }
-            .mapNotNull { it.findAssociatedTest(element) }
-            .firstOrNull()
+            .firstNotNullOfOrNull { it.findAssociatedTest(element) }
       }
 
       // in future iterations this could change and be somehow saying running all data tests within the spec
-      val dataTestDefaultTestName: TestName = TestName(null, "All Spec Tests, including data tests", interpolated = false)
+      val dataTestDefaultTestName: TestName = TestName(null, "This data test block", interpolated = false)
    }
 
    /**
@@ -76,7 +75,7 @@ interface SpecStyle {
     * speculatively for tests.
     */
    fun findAssociatedTest(element: PsiElement): Test? {
-      return generateSequence(element) { it.parent }.mapNotNull { test(it) }.firstOrNull()
+      return generateSequence(element) { it.parent }.firstNotNullOfOrNull { test(it) }
    }
 
    /**
@@ -143,7 +142,7 @@ interface SpecStyle {
 
    /**
     * Returns a test for a method with the given name, in a way that is compatible with this style.
-    * For example, a [FunSpec] would return a string like this: test("given name") { }
+    * For example, a FunSpec would return a string like this: test("given name") { }
     */
    fun generateTest(specName: String, name: String): String
 

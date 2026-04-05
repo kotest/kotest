@@ -6,13 +6,11 @@ plugins {
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
    id("kotest-publishing-conventions")
+   id("com.google.devtools.ksp").version("2.3.6")
+   id("io.kotest").version("6.1.11")
 }
 
 kotlin {
-
-   compilerOptions {
-      freeCompilerArgs.add("-Xallow-kotlin-package")
-   }
 
    sourceSets {
 

@@ -6,7 +6,6 @@ import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.testMode
 import java.nio.file.Paths
-import kotlin.collections.get
 
 class ExpectSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
 
@@ -55,7 +54,7 @@ class ExpectSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
       (gutters[6] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 496
 
       gutters[7].icon shouldBe AllIcons.RunConfigurations.TestState.Run
-      gutters[7].tooltipText shouldBe "Run All Spec Tests, including data tests"
+      gutters[7].tooltipText shouldBe "Run This data test block"
       (gutters[7] as LineMarkerInfo.LineMarkerGutterIconRenderer<*>).lineMarkerInfo.startOffset shouldBe 599
    }
 }

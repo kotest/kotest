@@ -7,6 +7,8 @@ import com.intellij.openapi.module.ModuleUtil
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import io.kotest.plugin.intellij.Test
+import io.kotest.plugin.intellij.TestType
+import io.kotest.plugin.intellij.actions.RunRepeatAction
 import io.kotest.plugin.intellij.psi.enclosingKtClass
 import io.kotest.plugin.intellij.psi.isTestFile
 import io.kotest.plugin.intellij.psi.specStyle
@@ -43,7 +45,6 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
 
    /**
     * Returns an [Info] if this element is a test that is enabled.
-    * Disabled tests are handled by the [DisabledTestLineMarker].
     */
    private fun markerIfTest(element: LeafPsiElement): Info? {
       val ktclass = element.enclosingKtClass() ?: return null
@@ -51,8 +52,6 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val test = style.test(element) ?: return null
       // we cannot run interpolated names via the plugin because we don't know what descriptor to pass along
       if (test.name.interpolated) return null
-      // disabled tests are handled by another line marker
-      if (!test.enabled) return null
       return icon(test, LineMarkerUtils.determineTestState(element, test))
    }
 
@@ -61,11 +60,12 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
     */
    private fun icon(test: Test, testState: TestStateStorage.Record?): Info {
       val icon = getTestStateIcon(testState, false)
+      val runRepeatActionMaybe = if (test.testType == TestType.Test) RunRepeatAction() else null
       return Info(
          icon,
-         ExecutorAction.getActions(1),
+         listOfNotNull(*ExecutorAction.getActions(1), runRepeatActionMaybe).toTypedArray()
       )
-      // note that the run name is used for the tooltip not the drop down
+      // note that the run name is used for the tooltip, not the drop down
       // the drop down gets names from the created run configurations
       { "Run ${test.readableTestPath()}" }
    }

@@ -1,3 +1,5 @@
+@file:Suppress("INVISIBLE_REFERENCE", "INVISIBLE_MEMBER")
+
 package io.kotest.matchers.equals
 
 import io.kotest.assertions.print.print

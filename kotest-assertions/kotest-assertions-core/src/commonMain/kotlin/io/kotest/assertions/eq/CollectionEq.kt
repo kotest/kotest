@@ -2,6 +2,7 @@ package io.kotest.assertions.eq
 
 import io.kotest.assertions.Actual
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
 import io.kotest.assertions.print.print
 
@@ -126,6 +127,7 @@ object CollectionEq : Eq<Collection<*>> {
       val iter1 = actual.iterator()
       val iter2 = expected.iterator()
       val elementDifferAtIndex = mutableListOf<Int>()
+      val elementDiffDetails = mutableListOf<Pair<Int, String>>()
 
       fun <T> nestedIterator(item: T, oracle: Iterable<*>): String? = item?.let {
          if ((it is Iterable<*>) && (it !is Collection<*>) && (it::class.isInstance(oracle) || oracle::class.isInstance(
@@ -177,7 +179,16 @@ object CollectionEq : Eq<Collection<*>> {
                else -> equalXorDisallowed(EqCompare.compare(a, b, context))
             }
             if (!accrueDetails) break
-            if (t != null) elementDifferAtIndex.add(index)
+            if (t != null) {
+               elementDifferAtIndex.add(index)
+               if (isDataClassInstance(a) && isDataClassInstance(b)) {
+                  val msg = t.message
+                  if (msg != null) {
+                     val diffTree = msg.substringBefore("\n\nexpected:<").trimEnd()
+                     elementDiffDetails.add(index to diffTree)
+                  }
+               }
+            }
          } else unexpectedElementAtIndex = index
          index++
       }
@@ -193,6 +204,15 @@ object CollectionEq : Eq<Collection<*>> {
          }
          if (missingElementAt != null) {
             append("Missing elements from index $missingElementAt\n")
+         }
+         if (elementDiffDetails.isNotEmpty()) {
+            append("\nThe following element(s) differ:\n")
+            for ((idx, diffMsg) in elementDiffDetails.take(AssertionsConfig.maxCollectionDiffCount.value)) {
+               append("index $idx: $diffMsg\n\n")
+            }
+            if (elementDiffDetails.size > AssertionsConfig.maxCollectionDiffCount.value) {
+               append("... and ${elementDiffDetails.size - AssertionsConfig.maxCollectionDiffCount.value} more differences\n")
+            }
          }
       }.toString()
 

@@ -71,6 +71,9 @@ object AssertionsConfig {
       val maxSubstringSearchDurationInMs: EnvironmentConfigValue<Long> =
       EnvironmentConfigValue("kotest.assertions.string.substring.max.durationInMs", 1000L, String::toLong)
 
+   val maxCollectionDiffCount: EnvironmentConfigValue<Int> =
+      EnvironmentConfigValue("kotest.assertions.collection.diff.max.count", 10, String::toInt)
+
 }
 
 class EnvironmentConfigValue<T>(

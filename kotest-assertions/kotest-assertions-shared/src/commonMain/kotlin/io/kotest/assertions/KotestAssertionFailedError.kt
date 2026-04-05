@@ -1,7 +1,7 @@
 package io.kotest.assertions
 
 /**
- * A multiplatform equivalent of opentest4j's AssertionFailedError.
+ * A multiplatform equivalent of OpenTest4j's AssertionFailedError.
  *
  * This is defined in the shared module so that it can be used by the Kotest engine when
  * generating TeamCity service messages, which are used to report assertion diffs.

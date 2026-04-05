@@ -209,8 +209,9 @@ suspend fun <T> FeatureSpecContainerScope.withFeatures(
    ts: Iterable<T>,
    test: suspend FeatureSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      feature(nameFn(t)).config() { this.test(t) }
+      feature(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -223,8 +224,9 @@ suspend fun <T> FeatureSpecContainerScope.withScenarios(
    ts: Iterable<T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      scenario(nameFn(t)).config() { this.test(t) }
+      scenario(nameFn(t)).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -249,8 +251,9 @@ suspend fun <T> FeatureSpecContainerScope.withFeatures(
    data: Map<String, T>,
    test: suspend FeatureSpecContainerScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      feature(name).config() { this.test(t) }
+      feature(name).config(dataTestTagConfig) { this.test(t) }
    }
 }
 
@@ -263,7 +266,8 @@ suspend fun <T> FeatureSpecContainerScope.withScenarios(
    data: Map<String, T>,
    test: suspend TestScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      scenario(name).config() { this.test(t) }
+      scenario(name).config(dataTestTagConfig) { this.test(t) }
    }
 }

@@ -40,7 +40,7 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
                   icon,
                   ExecutorAction.getActions(1),
                )
-               // note that the run name is used for the tooltip not the drop down
+               // note that the run name is used for the tooltip, not the drop down
                // the drop down gets names from the created run configurations
                { "Run ${spec.fqName?.shortName()}" }
             }

@@ -186,7 +186,7 @@ kotlin-poet = { group = "com.squareup", name = "kotlinpoet", version.ref = "kotl
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.15.2" }
 
 hikari = { module = "com.zaxxer:HikariCP", version = "6.3.3" }
-kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.1" }
+kafka-client = { module = "org.apache.kafka:kafka-clients", version = "3.9.2" }
 
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-jdbc = { module = "org.testcontainers:testcontainers-jdbc", version.ref = "testcontainers" }
@@ -201,7 +201,8 @@ xmlutil = { module = "io.github.pdvrieze.xmlutil:serialization", version.ref = "
 
 # Gradle plugins
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin-gradle-plugin" }
-kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.10" }
+kotest-gradle-plugin = { module = "io.kotest:io.kotest.gradle.plugin", version = "6.1.11" }
+
 testlogger-gradle-plugin = { module = "com.adarshr:gradle-test-logger-plugin", version.ref = "gradle-test-logger-plugin" }
 devPublish-plugin = { module = "dev.adamko.gradle:dev-publish-plugin", version.ref = "dev-publish-plugin" }
 nmcp-plugin = { module = "com.gradleup.nmcp:com.gradleup.nmcp.gradle.plugin", version.ref = "nmcp" }
