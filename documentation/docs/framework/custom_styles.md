@@ -17,7 +17,8 @@ Creating a custom spec style involves these pieces:
 
 :::tip
 If you want to see a real-world example of a custom spec style, then check out
-the [Prepared](https://prepared.opensavvy.dev/api-docs/runners/runner-kotest/index.html) library.
+the [Prepared](https://prepared.opensavvy.dev/api/runner-kotest/index.html) library which offers an advanced
+fixture based DSL on top of Kotest.
 :::
 
 ## Step 1 — Define a spec base class
