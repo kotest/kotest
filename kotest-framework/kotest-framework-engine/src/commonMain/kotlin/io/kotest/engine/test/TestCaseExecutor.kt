@@ -90,6 +90,7 @@ internal class TestCaseExecutor(
          if (platform == Platform.JVM)
             blockedThreadTimeoutInterceptor(timeMark, context.testConfigResolver)
          else null,
+         CoroutineDebugProbeInterceptor(context.testConfigResolver),
          TimeoutInterceptor(timeMark, context.testConfigResolver),
          HandleSkippedExceptionsTestInterceptor,
          *testInterceptorsForPlatform().toTypedArray(),
@@ -105,7 +106,6 @@ internal class TestCaseExecutor(
             testConfigResolver = context.testConfigResolver,
             testExtensions = context.testExtensions()
          ),
-         CoroutineDebugProbeInterceptor(context.testConfigResolver),
       )
 
       val base = NextTestExecutionInterceptor { tc, scope ->
