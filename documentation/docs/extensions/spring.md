@@ -116,7 +116,7 @@ class ProjectConfig : AbstractProjectConfig() {
 :::tip
 If you want to use root mode with @ApplyExtension, you must use the `SpringRootTestExtension` subclass, eg
 `@ApplyExtension(SpringRootTestExtension::class)`.
-::
+:::
 
 ### Order of Events
 
@@ -139,6 +139,36 @@ Group 1: Spring's `BeforeTestMethodEvent` and any other `TestCaseExtension`s.
 Group 2: Spring's `BeforeTestExecutionEvent` and any other `BeforeTest`, `BeforeAny`, and `BeforeEach` callbacks.
 Group 3: Spring's `AfterTestExecutionEvent` and any other `AfterTest`, `AfterAny`, and `AfterEach` callbacks.
 Group 4: Spring's `AfterTestMethodEvent` and any other `TestCaseExtension`s.
+
+## Transactions
+
+When using `@ApplyExtension(SpringExtension::class)` (the default leaf mode), each test scope runs in its own transaction
+which is **rolled back by default** at the end of that test. This means data written in one test will not be visible
+to subsequent tests.
+
+If you need data to persist between tests, there are two options:
+
+1. **Use root mode** — register `SpringRootTestExtension` so that a single transaction spans the entire spec.
+2. **Use `@Commit`** — add `@Commit` to the test class. This overrides the default rollback behaviour and causes the
+   transaction to be committed at the end of each test scope.
+
+```kotlin
+@ContextConfiguration(classes = [(Components::class)])
+@Transactional
+@Commit
+@ApplyExtension(SpringExtension::class)
+class MyTransactionalSpec : FunSpec() {
+  init {
+    test("data written here is committed and visible to later tests") {
+      // ...
+    }
+  }
+}
+```
+
+See the [Spring documentation on rollback and commit behaviour](https://docs.spring.io/spring-framework/reference/testing/testcontext-framework/tx.html#testcontext-tx-rollback-and-commit-behavior)
+for full details. See also [kotest/kotest#5813](https://github.com/kotest/kotest/issues/5813) for the background on
+this behaviour.
 
 ## Final Classes
 
