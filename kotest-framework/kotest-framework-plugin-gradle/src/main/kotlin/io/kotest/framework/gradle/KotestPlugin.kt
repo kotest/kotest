@@ -14,11 +14,13 @@ import org.gradle.api.file.Directory
 import org.gradle.api.internal.tasks.testing.filter.DefaultTestFilter
 import org.gradle.api.plugins.JavaBasePlugin
 import org.gradle.api.plugins.JavaPluginExtension
+import org.gradle.api.plugins.jvm.JvmTestSuite
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.StopExecutionException
 import org.gradle.api.tasks.testing.AbstractTestTask
 import org.gradle.api.tasks.testing.Test
+import org.gradle.testing.base.TestingExtension
 import org.gradle.kotlin.dsl.configure
 import org.gradle.kotlin.dsl.get
 import org.gradle.kotlin.dsl.register
@@ -69,6 +71,7 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val IDEA_ACTIVE_ENV = "IDEA_ACTIVE"
       internal const val IDEA_ACTIVE_SYSPROP = "idea.active"
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
+      internal const val JVM_TEST_SUITE = "JVM_TEST_SUITE"
 
       const val POWER_ASSERT_PLUGIN_ID = "org.jetbrains.kotlin.plugin.power-assert"
    }
@@ -88,6 +91,9 @@ abstract class KotestPlugin : Plugin<Project> {
 
       // configures standalone Kotlin JVM projects
       handleKotlinJvm(project, extension)
+
+      // propagates the Gradle JvmTestSuite name to the test process as an environment variable
+      handleJvmTestSuites(project)
 
       configureAlwaysRerun(project, extension.alwaysRerunTests)
 
@@ -194,6 +200,31 @@ abstract class KotestPlugin : Plugin<Project> {
                   is DefaultTestFilter -> filter.commandLineIncludePatterns.clear()
                }
                task.filter.isFailOnNoMatchingTests = false
+            }
+         }
+      }
+   }
+
+   /**
+    * Detects Gradle's JvmTestSuite plugin and, for each suite, sets the [JVM_TEST_SUITE]
+    * environment variable on the suite's test task during execution so the Kotest runtime (and reporters
+    * such as the Allure extension) can identify which suite is currently executing.
+    */
+   private fun handleJvmTestSuites(project: Project) {
+      project.plugins.withId("jvm-test-suite") {
+         val testing = project.extensions.getByType(TestingExtension::class.java)
+         testing.suites.withType(JvmTestSuite::class.java).configureEach {
+            // By Gradle convention, each JvmTestSuite creates a Test task with the same name as
+            // the suite (e.g. suite "integrationTest" → task "integrationTest"). We use this
+            // naming convention to look up the task rather than going through suite.targets, whose
+            // return type (ExtensiblePolymorphicDomainObjectContainer<? extends JvmTestSuiteTarget>)
+            // is only available in gradle-core-api and not in the public gradleApi() dependency.
+            val suiteName = name
+            project.tasks.withType(Test::class.java).matching { it.name == suiteName }.configureEach {
+               val testTask = this
+               doFirst {
+                  setEnvVar(testTask, JVM_TEST_SUITE, testTask.name)
+               }
             }
          }
       }

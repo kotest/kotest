@@ -5,17 +5,17 @@ on:
       -  cron: '0 10 * * *'
    workflow_dispatch:
 
-
 permissions:
    contents: read
 
 env:
-   KOTLIN_VERSION: "2.3.20-Beta2"
+   KOTLIN_VERSION: "2.4.0-Beta1"
 
 jobs:
    check:
       name: "Check (${{ matrix.name }})"
       runs-on: ${{ matrix.os }}
+      if: github.event_name == 'schedule' && github.repository == 'kotest/kotest'
       continue-on-error: false
       strategy:
          matrix:
@@ -53,7 +53,7 @@ jobs:
                echo "KONAN_DATA_DIR=${HOME}/.konan" >> $GITHUB_ENV
 
          -  name: Checkout the repo
-            uses: actions/checkout@v5
+            uses: actions/checkout@v6
 
          -  name: Override Kotlin version (macOS)
             if: matrix.name == 'apple-native'
@@ -75,13 +75,13 @@ jobs:
                java-version-file: .github/.java-version
 
          -  name: Setup Gradle
-            uses: gradle/actions/setup-gradle@v5
+            uses: gradle/actions/setup-gradle@v6
             with:
                gradle-home-cache-cleanup: true
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
 
          -  name: Cache Kotlin Konan
-            uses: actions/cache@v4
+            uses: actions/cache@v5
             with:
                path: ${{ env.KONAN_DATA_DIR }}
                key: kotlin-konan-${{ runner.os }}
@@ -90,7 +90,7 @@ jobs:
                   kotlin-konan-
 
          -  name: Cache Kotest user directory
-            uses: actions/cache@v4
+            uses: actions/cache@v5
             with:
                path: ~/.kotest
                key: kotest-user-dir-${{ runner.os }}
@@ -110,7 +110,7 @@ jobs:
 
          -  name: Upload build reports
             if: failure()
-            uses: actions/upload-artifact@v5
+            uses: actions/upload-artifact@v7
             with:
                name: build-reports-kotlin-beta-${{ matrix.name }}-${{ github.run_id }}
                path: |

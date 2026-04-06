@@ -34,7 +34,7 @@ internal object Discovery {
 
    fun discover(engineId: UniqueId, request: EngineDiscoveryRequest): DiscoveryResult {
 
-      logger.log { "[Discovery] Starting spec discovery" }
+      logger.log { "Starting spec discovery" }
 
       // kotest only supports classpath root, class and unique id selectors (which we convert to class selectors)
       val classpathRootSelectors = request.getSelectorsByType(ClasspathRootSelector::class.java)
@@ -91,7 +91,7 @@ internal object Discovery {
          .filterIsInstance<KClass<out Spec>>()
          .toList()
 
-      logger.log { " Collected specs via ${selectors.size} classpath root discovery selectors: found ${specs.size} specs" }
+      logger.log { "Collected specs via ${selectors.size} classpath root discovery selectors: found ${specs.size} specs" }
       return specs
    }
 

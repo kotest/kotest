@@ -53,8 +53,10 @@ internal class TimeoutInterceptor(
       logger.log { Pair(testCase.name.name, "Switching context to add timeout $timeout") }
 
       return try {
-         // this will hang on wasm-wasi for reasons
-         if (platform != Platform.WasmWasi) {
+         // withTimeout uses setTimeout internally on JS/WasmJS. D8's setTimeout fires callbacks
+         // in registration order (ignoring the delay value), so the timeout would fire before
+         // any delay() in the test body. WasmWasi also hangs with withTimeout for unrelated reasons.
+         if (platform != Platform.WasmWasi && !isD8Runtime()) {
             withAppropriateTimeout(timeout) {
                test(testCase, scope.withCoroutineContext(coroutineContext))
             }

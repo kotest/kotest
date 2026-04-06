@@ -15,6 +15,7 @@ import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
+import io.kotest.engine.test.FailFastScopeTracker
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
 import io.kotest.engine.test.TestResult
@@ -95,7 +96,7 @@ internal class InstancePerTestSpecExecutor(
     */
    override suspend fun execute(ref: SpecRef, seed: Spec): Result<Map<TestCase, TestResult>> {
       // we switch to a new coroutine for each spec instance
-      return withContext(CoroutineName("spec-scope-" + seed.hashCode())) {
+      return withContext(CoroutineName("spec-scope-" + seed.hashCode()) + FailFastScopeTracker()) {
 
          // for the seed spec that is passed in, we need to run the instance pipeline,
          // then register all the root tests. These root tests will either execute in the

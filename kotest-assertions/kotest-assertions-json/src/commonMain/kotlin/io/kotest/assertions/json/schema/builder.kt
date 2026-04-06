@@ -203,6 +203,24 @@ data class JsonSchema(
    object Null : JsonSchemaElement {
       override fun typeName() = "null"
    }
+
+   /**
+    * Represents a composite schema that passes validation if **any** of the given [schemas] match.
+    *
+    * https://json-schema.org/understanding-json-schema/reference/combining.html#anyof
+    */
+   data class JsonAnyOf(val schemas: List<JsonSchemaElement>) : JsonSchemaElement {
+      override fun typeName() = "anyOf(${schemas.joinToString(", ") { it.typeName() }})"
+   }
+
+   /**
+    * Represents a composite schema that passes validation if **exactly one** of the given [schemas] matches.
+    *
+    * https://json-schema.org/understanding-json-schema/reference/combining.html#oneof
+    */
+   data class JsonOneOf(val schemas: List<JsonSchemaElement>) : JsonSchemaElement {
+      override fun typeName() = "oneOf(${schemas.joinToString(", ") { it.typeName() }})"
+   }
 }
 
 
@@ -318,6 +336,38 @@ fun jsonSchema(
 ): JsonSchema = JsonSchema(
    JsonSchema.Builder.rootBuilder()
 )
+
+/**
+ * Creates a [JsonSchema.JsonAnyOf] node that passes validation when **any** of the given [schemas] match.
+ *
+ * Example:
+ * ```kotlin
+ * val schema = jsonSchema { anyOf(string(), integer()) }
+ * ```
+ *
+ * https://json-schema.org/understanding-json-schema/reference/combining.html#anyof
+ */
+@ExperimentalKotest
+fun JsonSchema.Builder.anyOf(vararg schemas: JsonSchemaElement): JsonSchema.JsonAnyOf {
+   require(schemas.isNotEmpty()) { "anyOf requires at least one schema" }
+   return JsonSchema.JsonAnyOf(schemas.toList())
+}
+
+/**
+ * Creates a [JsonSchema.JsonOneOf] node that passes validation when **exactly one** of the given [schemas] matches.
+ *
+ * Example:
+ * ```kotlin
+ * val schema = jsonSchema { oneOf(string(), integer()) }
+ * ```
+ *
+ * https://json-schema.org/understanding-json-schema/reference/combining.html#oneof
+ */
+@ExperimentalKotest
+fun JsonSchema.Builder.oneOf(vararg schemas: JsonSchemaElement): JsonSchema.JsonOneOf {
+   require(schemas.isNotEmpty()) { "oneOf requires at least one schema" }
+   return JsonSchema.JsonOneOf(schemas.toList())
+}
 
 fun JsonSchema.Builder.containsSpec(
    minContains: Int = 0,

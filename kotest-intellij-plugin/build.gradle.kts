@@ -83,7 +83,7 @@ val descriptor: PluginDescriptor = descriptors.first { it.sourceFolder == produc
 val jvmTargetVersion: String = System.getenv("JVM_TARGET") ?: descriptor.jdkTarget.majorVersion
 
 plugins {
-   id("org.jetbrains.intellij.platform") version "2.11.0"
+   id("org.jetbrains.intellij.platform") version "2.13.1"
    kotlin("jvm")
 }
 
@@ -126,7 +126,19 @@ intellijPlatform {
    pluginConfiguration {
       name = "kotest"
       id = "kotest-plugin-intellij"
-      description = "Kotest individual test support inside the IDE"
+      description =
+         "Official IntelliJ IDEA plugin for Kotest, an expressive, powerful and extensible Kotlin Multiplatform test framework.\n" +
+            "\n" +
+            "Run specs or individual tests from the editor gutter icons for JVM, Multiplatform, Android instrumented and unit tests.\n" +
+            "Support for data tests and interpolated tests.\n" +
+            "Navigate between tests using the \"Next Method\" and \"Previous Method\" actions.\n" +
+            "See test results icons in the gutter.\n" +
+            "Stack traces are automatically folded hiding internal framework methods.\n" +
+            "Browse tests in the Kotest tool window.\n" +
+            "Kotest structure suported in the project view.\n" +
+            "Breadcrumb support for Kotest styles.\n" +
+            "Utilize \"Run\", \"Debug\" and \"Jump to source\" directly from the test result tree.\n" +
+            "Warnings for unsupported test layouts.\n"
       version = project.version.toString() + "-" + descriptor.sdkVersion
       vendor {
          name = "Kotest"
@@ -180,7 +192,7 @@ dependencies {
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
-   implementation("org.jetbrains:annotations:26.0.2-1")
+   implementation("org.jetbrains:annotations:26.1.0")
 
    // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase
    testImplementation(libs.junit4)

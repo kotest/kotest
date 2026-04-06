@@ -126,8 +126,9 @@ fun <T> StringSpecRootScope.withData(
    ts: Iterable<T>,
    test: suspend StringSpecScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    ts.forEach { t ->
-      nameFn(t).config() { StringSpecScope(this).test(t) }
+      nameFn(t).config(dataTestTagConfig) { StringSpecScope(this).test(t) }
    }
 }
 
@@ -149,8 +150,9 @@ fun <T> StringSpecRootScope.withData(
    data: Map<String, T>,
    test: suspend StringSpecScope.(T) -> Unit
 ) {
+   val dataTestTagConfig = getDataTestTagConfig()
    data.forEach { (name, t) ->
-      name.config() { StringSpecScope(this).test(t) }
+      name.config(dataTestTagConfig) { StringSpecScope(this).test(t) }
    }
 }
 

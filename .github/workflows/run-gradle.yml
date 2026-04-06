@@ -52,7 +52,7 @@ jobs:
                java-version-file: .github/.java-version
 
          -  name: Setup Gradle
-            uses: gradle/actions/setup-gradle@v5
+            uses: gradle/actions/setup-gradle@v6
             with:
                cache-encryption-key: ${{ secrets.GRADLE_CONFIGURATION_CACHE_ENCRYPTION_KEY }}
                cache-read-only: ${{ inputs.cache-read-only }}
@@ -87,7 +87,7 @@ jobs:
 
          -  name: Upload build reports
             if: failure()
-            uses: actions/upload-artifact@v5
+            uses: actions/upload-artifact@v7
             with:
                name: build-reports-${{ runner.os }}-${{ github.action }}-${{ github.run_id }}
                path: |
