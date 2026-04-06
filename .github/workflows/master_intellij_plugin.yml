@@ -57,7 +57,7 @@ jobs:
                   -Dversion=${{ vars.KOTEST_RELEASE_MAJOR_MINOR }}.${{ github.run_number }} \
                   -Dpackaging=zip \
                   -DrepositoryId=github \
-                  -Durl=https://maven.pkg.github.com/${{ github.repository }}
+                  -Durl=https://maven.pkg.github.com/kotest/kotest
             env:
                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
