@@ -47,13 +47,12 @@ class FreeSpecConfigSyntaxTest : FreeSpec() {
          counter.incrementAndGet()
       }
 
-      val config = TestConfig(enabled = false)
-      "a test with overloaded config".config(config) {
+      "a test with config".config(TestConfig(enabled = false)) {
          error("boom")
       }
 
-      "a context with overloaded config" - {
-         "disabled from config object".config(config) {
+      "a context with an inner test with config" - {
+         "disabled from config object".config(TestConfig(enabled = false)) {
             error("boom")
          }
       }

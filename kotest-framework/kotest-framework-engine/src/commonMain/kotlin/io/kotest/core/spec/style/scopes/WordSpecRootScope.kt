@@ -2,10 +2,13 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
@@ -26,13 +29,15 @@ interface WordSpecRootScope : RootScope {
    }
 
    private fun should(name: String, xmethod: TestXMethod, test: suspend WordSpecShouldContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" should").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null,
-      ) { WordSpecShouldContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(shouldName(name), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .build { WordSpecShouldContainerScope(this).test() }
+      )
    }
 
+   @Suppress("FunctionName")
    infix fun String.When(init: suspend WordSpecWhenContainerScope.() -> Unit) = `when`(
       name = this,
       xmethod = TestXMethod.NONE,
@@ -74,11 +79,12 @@ interface WordSpecRootScope : RootScope {
       xmethod: TestXMethod,
       test: suspend WordSpecWhenContainerScope.() -> Unit
    ) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null,
-      ) { WordSpecWhenContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(whenName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { WordSpecWhenContainerScope(this).test() }
+      )
    }
 
    /**
@@ -154,14 +160,19 @@ interface WordSpecRootScope : RootScope {
    infix fun WordSpecContextConfigBuilder.xwhen(test: suspend WordSpecWhenContainerScope.() -> Unit) =
       addWhen(this.name, TestXMethod.DISABLED, this.config, test)
 
-   private fun addWhen(name: String, xmethod: TestXMethod, config: TestConfig?, test: suspend WordSpecWhenContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" when").build(),
-         xmethod = xmethod,
-         config = config
-      ) { WordSpecWhenContainerScope(this).test() }
+   private fun addWhen(
+      name: String,
+      xmethod: TestXMethod,
+      config: TestConfig?,
+      test: suspend WordSpecWhenContainerScope.() -> Unit
+   ) {
+      add(
+         TestDefinitionBuilder
+            .builder(whenName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { WordSpecWhenContainerScope(this).test() }
+      )
    }
-
 
    infix fun WordSpecContextConfigBuilder.should(test: suspend WordSpecShouldContainerScope.() -> Unit) =
       addShould(this.name, TestXMethod.NONE, this.config, test)
@@ -172,11 +183,23 @@ interface WordSpecRootScope : RootScope {
    infix fun WordSpecContextConfigBuilder.xshould(test: suspend WordSpecShouldContainerScope.() -> Unit) =
       addShould(this.name, TestXMethod.DISABLED, this.config, test)
 
-   private fun addShould(name: String, xmethod: TestXMethod, config: TestConfig?, test: suspend WordSpecShouldContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" when").build(),
-         xmethod = xmethod,
-         config = config
-      ) { WordSpecShouldContainerScope(this).test() }
+   private fun addShould(
+      name: String,
+      xmethod: TestXMethod,
+      config: TestConfig?,
+      test: suspend WordSpecShouldContainerScope.() -> Unit
+   ) {
+      add(
+         TestDefinitionBuilder
+            .builder(whenName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { WordSpecShouldContainerScope(this).test() }
+      )
    }
+
+   fun whenName(name: String): TestName =
+      TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build()
+
+   private fun shouldName(name: String): TestName =
+      TestNameBuilder.builder(name).withSuffix(" should").withDefaultAffixes().build()
 }

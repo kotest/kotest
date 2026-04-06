@@ -190,6 +190,12 @@ class BehaviorSpecTest : BehaviorSpec() {
          xGiven("d") {
             error("boom")
          }
+         xgiven("e").config(enabled = false) {
+            error("boom")
+         }
+         xGiven("f").config(enabled = false) {
+            error("boom")
+         }
       }
 
       xGiven("should be ignored 1") {
@@ -266,6 +272,18 @@ class BehaviorSpecTest : BehaviorSpec() {
                         xthen("should be ignored") {
                            error("boom")
                         }
+                        xand("xand should be ignored") {
+                           error("boom")
+                        }
+                        xand("xand with config should be ignored").config(enabled = false) {
+                           error("boom")
+                        }
+                        xAnd("xAnd should be ignored") {
+                           error("boom")
+                        }
+                        xAnd("xAnd with config should be ignored").config(enabled = false) {
+                           error("boom")
+                        }
                      }
                   }
 
@@ -316,7 +334,13 @@ class BehaviorSpecTest : BehaviorSpec() {
          }
       }
 
+      xGiven("A disabled Given") {
+         error("boom")
+      }
 
+      xgiven("a disabled given") {
+         error("boom")
+      }
    }
 
    override suspend fun afterSpec(spec: Spec) {
