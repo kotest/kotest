@@ -126,7 +126,19 @@ intellijPlatform {
    pluginConfiguration {
       name = "kotest"
       id = "kotest-plugin-intellij"
-      description = "Kotest individual test support inside the IDE"
+      description =
+         "Official IntelliJ IDEA plugin for Kotest, an expressive, powerful and extensible Kotlin Multiplatform test framework.\n" +
+            "\n" +
+            "Run specs or individual tests from the editor gutter icons for JVM, Multiplatform, Android instrumented and unit tests.\n" +
+            "Support for data tests and interpolated tests.\n" +
+            "Navigate between tests using the \"Next Method\" and \"Previous Method\" actions.\n" +
+            "See test results icons in the gutter.\n" +
+            "Stack traces are automatically folded hiding internal framework methods.\n" +
+            "Browse tests in the Kotest tool window.\n" +
+            "Kotest structure suported in the project view.\n" +
+            "Breadcrumb support for Kotest styles.\n" +
+            "Utilize \"Run\", \"Debug\" and \"Jump to source\" directly from the test result tree.\n" +
+            "Warnings for unsupported test layouts.\n"
       version = project.version.toString() + "-" + descriptor.sdkVersion
       vendor {
          name = "Kotest"

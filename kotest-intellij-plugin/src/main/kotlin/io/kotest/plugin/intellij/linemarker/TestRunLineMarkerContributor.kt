@@ -50,8 +50,6 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val ktclass = element.enclosingKtClass() ?: return null
       val style = ktclass.specStyle() ?: return null
       val test = style.test(element) ?: return null
-      // we cannot run interpolated names via the plugin because we don't know what descriptor to pass along
-      if (test.name.interpolated) return null
       return icon(test, LineMarkerUtils.determineTestState(element, test))
    }
 
@@ -62,8 +60,8 @@ class TestRunLineMarkerContributor : RunLineMarkerContributor() {
       val icon = getTestStateIcon(testState, false)
       val runRepeatActionMaybe = if (test.testType == TestType.Test) RunRepeatAction() else null
       return Info(
-         icon,
-         listOfNotNull(*ExecutorAction.getActions(1), runRepeatActionMaybe).toTypedArray()
+         /* icon = */ icon,
+         /* actions = */ listOfNotNull(*ExecutorAction.getActions(1), runRepeatActionMaybe).toTypedArray()
       )
       // note that the run name is used for the tooltip, not the drop down
       // the drop down gets names from the created run configurations
