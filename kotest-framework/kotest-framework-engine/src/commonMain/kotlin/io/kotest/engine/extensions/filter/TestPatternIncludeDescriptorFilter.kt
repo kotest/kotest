@@ -24,8 +24,18 @@ abstract class TestPatternIncludeDescriptorFilter : DescriptorFilter {
       if (pattern.className == null) return packageMatch(pattern, descriptor.spec())
       val spec: Descriptor = Descriptor.SpecDescriptor(DescriptorId(pattern.packageName + "." + pattern.className))
       val tests = pattern.contexts.fold(spec) { acc, op -> acc.append(op) }
-      return descriptor.hasSharedPath(tests)
+      return descriptor.normalizeLineBreaks().hasSharedPath(tests)
    }
+
+   private fun Descriptor.normalizeLineBreaks(): Descriptor = when (this) {
+      is Descriptor.SpecDescriptor -> this
+      is Descriptor.TestDescriptor -> Descriptor.TestDescriptor(
+         parent.normalizeLineBreaks(),
+         DescriptorId(id.value.removeLineBreaks())
+      )
+   }
+
+   private fun String.removeLineBreaks(): String = replace(Regex("\r\n|\n|\r"), " ")
 
    private fun packageMatch(
       pattern: TestPattern,

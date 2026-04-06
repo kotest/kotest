@@ -149,11 +149,14 @@ internal class SpecExtensions(
       }
    }
 
+   /**
+    * Executes any [SpecExtension]s for this spec, and then invokes the [f] as the innermost function.
+    */
    suspend fun <T> intercept(spec: Spec, f: suspend () -> T): T? {
 
       val exts = specConfigResolver.extensions(spec).filterIsInstance<SpecExtension>()
-      if (exts.isEmpty()) return f()
       logger.log { LogLine(spec::class, "${exts.size} SpecExtension interceptors") }
+      if (exts.isEmpty()) return f()
 
       var result: T? = null
       val initial: suspend () -> Unit = {
@@ -176,8 +179,8 @@ internal class SpecExtensions(
    suspend fun ignored(kclass: KClass<out Spec>, reason: String?): Result<KClass<out Spec>> {
 
       val exts = projectConfigResolver.extensions().filterIsInstance<IgnoredSpecListener>()
-      if (exts.isEmpty()) return Result.success(kclass)
       logger.log { LogLine(kclass, "${exts.size} IgnoredSpecListener extensions") }
+      if (exts.isEmpty()) return Result.success(kclass)
 
       val errors = exts.mapNotNull { listener ->
          runCatching { listener.ignoredSpec(kclass, reason) }

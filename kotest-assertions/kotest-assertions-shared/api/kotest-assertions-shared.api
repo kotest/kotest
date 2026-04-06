@@ -53,6 +53,7 @@ public final class io/kotest/assertions/AssertionErrorBuilder$Companion {
 
 public final class io/kotest/assertions/AssertionErrorBuilder_jvmKt {
 	public static final fun createAssertionError (Ljava/lang/String;Ljava/lang/Throwable;Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/AssertionError;
+	public static final fun createLazyAssertionError (Lkotlin/jvm/functions/Function0;)Ljava/lang/AssertionError;
 	public static final fun intellijFormattedComparison (Lio/kotest/assertions/Expected;Lio/kotest/assertions/Actual;)Ljava/lang/String;
 }
 
@@ -90,6 +91,7 @@ public final class io/kotest/assertions/Collector_jvmKt {
 
 public final class io/kotest/assertions/ErrorCollectionMode : java/lang/Enum {
 	public static final field Hard Lio/kotest/assertions/ErrorCollectionMode;
+	public static final field InspectorHard Lio/kotest/assertions/ErrorCollectionMode;
 	public static final field Soft Lio/kotest/assertions/ErrorCollectionMode;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/ErrorCollectionMode;
@@ -238,6 +240,7 @@ public abstract interface class io/kotest/matchers/MatcherResult {
 
 public final class io/kotest/matchers/MatcherResult$Companion {
 	public final fun invoke (ZLkotlin/jvm/functions/Function0;Lkotlin/jvm/functions/Function0;)Lio/kotest/matchers/MatcherResult;
+	public final fun multiple ([Lio/kotest/matchers/MatcherResult;)Lio/kotest/matchers/MultipleMatcherResult;
 }
 
 public final class io/kotest/matchers/MatcherResultBuilder {
@@ -259,6 +262,13 @@ public final class io/kotest/matchers/MatcherResultBuilder {
 
 public final class io/kotest/matchers/MatcherResultBuilder$Companion {
 	public final fun create (Z)Lio/kotest/matchers/MatcherResultBuilder;
+}
+
+public final class io/kotest/matchers/MultipleMatcherResult : io/kotest/matchers/MatcherResult {
+	public fun <init> (Ljava/util/List;)V
+	public fun failureMessage ()Ljava/lang/String;
+	public fun negatedFailureMessage ()Ljava/lang/String;
+	public fun passed ()Z
 }
 
 public final class io/kotest/matchers/SimpleMatcherResult : io/kotest/matchers/MatcherResult {

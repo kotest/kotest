@@ -9,7 +9,7 @@ pluginManagement {
 }
 
 plugins {
-   id("com.gradle.develocity") version "3.17.5"
+   id("com.gradle.develocity") version "4.4.0"
    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -162,8 +162,9 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-concurrency-specs",
 
       ":kotest-tests:kotest-tests-config-project",
-
-      // tests that we can lookup a project config by putting it on a common package path
+      // tests that we can look up a project config by extending from a shared module
+      ":kotest-tests:kotest-tests-config-project-inherited",
+      // tests that we can look up a project config by putting it on a common package path
       ":kotest-tests:kotest-tests-config-project-prefix",
       ":kotest-tests:kotest-tests-config-classname",
       ":kotest-tests:kotest-tests-config-packages",
@@ -201,6 +202,9 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-single-class",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-package-recursive",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-class-wildcard-prefix",
+
+      // tests for Gradle JVM test suite integration
+      ":kotest-tests:kotest-tests-jvm-test-suites",
 
       // tests specific to the JS implementations
       ":kotest-tests:kotest-tests-js",

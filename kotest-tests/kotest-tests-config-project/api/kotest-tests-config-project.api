@@ -1,0 +1,5 @@
+public class io/kotest/provided/ProjectConfig : io/kotest/core/config/AbstractProjectConfig {
+	public fun <init> ()V
+	public fun getInvocations ()Ljava/lang/Integer;
+}
+

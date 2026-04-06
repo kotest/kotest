@@ -30,7 +30,7 @@ class StringSpecStyleTest : LightJavaCodeInsightFixtureTestCase() {
          Gutter("Run StringSpecExample", 126, AllIcons.RunConfigurations.TestState.Run_run),
          Gutter("Run test", 180),
          Gutter("Run test with config", 236),
-         Gutter("Run All Spec Tests, including data tests", 299),
+         Gutter("Run This data test block", 299),
       )
 
       expected.size shouldBe gutters.size

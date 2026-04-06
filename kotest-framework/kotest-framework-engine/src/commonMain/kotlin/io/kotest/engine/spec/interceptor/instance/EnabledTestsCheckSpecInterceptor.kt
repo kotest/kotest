@@ -1,5 +1,7 @@
 package io.kotest.engine.spec.interceptor.instance
 
+import io.kotest.core.LogLine
+import io.kotest.core.Logger
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
@@ -18,6 +20,7 @@ internal class EnabledTestsCheckSpecInterceptor(
    private val context: TestEngineContext,
 ) : SpecInterceptor {
 
+   private val logger = Logger<EnabledTestsCheckSpecInterceptor>()
    private val materializer = Materializer(context.specConfigResolver)
    private val checker = TestEnabledChecker(
       context.projectConfigResolver,
@@ -31,6 +34,7 @@ internal class EnabledTestsCheckSpecInterceptor(
       next: NextSpecInterceptor
    ): Result<Map<TestCase, TestResult>> {
       val tests = materializer.materialize(spec, ref)
+      logger.log { LogLine(spec::class, "Materialized ${tests.size} tests") }
       val hasEnabledTests = tests.any { checker.isEnabled(it).isEnabled }
       return if (hasEnabledTests) {
          next.invoke(spec)

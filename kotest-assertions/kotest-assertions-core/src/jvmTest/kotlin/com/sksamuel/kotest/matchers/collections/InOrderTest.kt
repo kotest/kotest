@@ -5,6 +5,7 @@ import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.containsInOrder
 import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldNotContainInOrder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainInOrder
@@ -61,6 +62,76 @@ class InOrderTest : WordSpec() {
                "could not match element 2 at index 3",
                "but found it before at index(es) [1]"
             )
+         }
+      }
+
+      "primitive array support" should {
+         "support IntArray with vararg" {
+            intArrayOf(1, 2, 3).shouldContainInOrder(1, 3)
+            intArrayOf(1, 2, 3).shouldContainInOrder(1, 2, 3)
+            shouldThrow<AssertionError> {
+               intArrayOf(1, 2, 3).shouldContainInOrder(3, 1)
+            }
+         }
+         "support IntArray infix with IntArray" {
+            intArrayOf(1, 2, 3).shouldContainInOrder(intArrayOf(1, 3))
+            shouldThrow<AssertionError> {
+               intArrayOf(1, 2, 3).shouldContainInOrder(intArrayOf(3, 1))
+            }
+         }
+         "support IntArray shouldNotContainInOrder with vararg" {
+            intArrayOf(1, 2, 3).shouldNotContainInOrder(2, 4)
+            shouldThrow<AssertionError> {
+               intArrayOf(1, 2, 3).shouldNotContainInOrder(1, 3)
+            }
+         }
+         "support IntArray shouldNotContainInOrder infix" {
+            intArrayOf(1, 2, 3).shouldNotContainInOrder(intArrayOf(2, 4))
+            shouldThrow<AssertionError> {
+               intArrayOf(1, 2, 3).shouldNotContainInOrder(intArrayOf(1, 3))
+            }
+         }
+         "support LongArray" {
+            longArrayOf(1L, 2L, 3L).shouldContainInOrder(1L, 3L)
+            longArrayOf(1L, 2L, 3L).shouldContainInOrder(longArrayOf(1L, 3L))
+            longArrayOf(1L, 2L, 3L).shouldNotContainInOrder(2L, 4L)
+            longArrayOf(1L, 2L, 3L).shouldNotContainInOrder(longArrayOf(2L, 4L))
+         }
+         "support DoubleArray" {
+            doubleArrayOf(1.0, 2.0, 3.0).shouldContainInOrder(1.0, 3.0)
+            doubleArrayOf(1.0, 2.0, 3.0).shouldContainInOrder(doubleArrayOf(1.0, 3.0))
+            doubleArrayOf(1.0, 2.0, 3.0).shouldNotContainInOrder(2.0, 4.0)
+            doubleArrayOf(1.0, 2.0, 3.0).shouldNotContainInOrder(doubleArrayOf(2.0, 4.0))
+         }
+         "support FloatArray" {
+            floatArrayOf(1f, 2f, 3f).shouldContainInOrder(1f, 3f)
+            floatArrayOf(1f, 2f, 3f).shouldContainInOrder(floatArrayOf(1f, 3f))
+            floatArrayOf(1f, 2f, 3f).shouldNotContainInOrder(2f, 4f)
+            floatArrayOf(1f, 2f, 3f).shouldNotContainInOrder(floatArrayOf(2f, 4f))
+         }
+         "support ByteArray" {
+            byteArrayOf(1, 2, 3).shouldContainInOrder(1, 3)
+            byteArrayOf(1, 2, 3).shouldContainInOrder(byteArrayOf(1, 3))
+            byteArrayOf(1, 2, 3).shouldNotContainInOrder(2, 4)
+            byteArrayOf(1, 2, 3).shouldNotContainInOrder(byteArrayOf(2, 4))
+         }
+         "support ShortArray" {
+            shortArrayOf(1, 2, 3).shouldContainInOrder(1, 3)
+            shortArrayOf(1, 2, 3).shouldContainInOrder(shortArrayOf(1, 3))
+            shortArrayOf(1, 2, 3).shouldNotContainInOrder(2, 4)
+            shortArrayOf(1, 2, 3).shouldNotContainInOrder(shortArrayOf(2, 4))
+         }
+         "support CharArray" {
+            charArrayOf('a', 'b', 'c').shouldContainInOrder('a', 'c')
+            charArrayOf('a', 'b', 'c').shouldContainInOrder(charArrayOf('a', 'c'))
+            charArrayOf('a', 'b', 'c').shouldNotContainInOrder('b', 'd')
+            charArrayOf('a', 'b', 'c').shouldNotContainInOrder(charArrayOf('b', 'd'))
+         }
+         "support BooleanArray" {
+            booleanArrayOf(true, false, true).shouldContainInOrder(true, true)
+            booleanArrayOf(true, false, true).shouldContainInOrder(booleanArrayOf(true, true))
+            booleanArrayOf(true, false, true).shouldNotContainInOrder(false, false)
+            booleanArrayOf(true, false, true).shouldNotContainInOrder(booleanArrayOf(false, false))
          }
       }
    }

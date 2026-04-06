@@ -133,4 +133,14 @@ object KotestEngineProperties {
     * If set to true, then private classes will not be included in the test plan.
     */
    internal const val IGNORE_PRIVATE_CLASSES = "kotest.framework.discovery.ignore.private.classes"
+
+   /**
+    * When set to "true" (via system property or environment variable), all test-enabled extensions
+    * will return enabled regardless of any configuration, tags, or annotations that would
+    * otherwise disable the test or spec.
+    *
+    * This is used by the IntelliJ plugin when running a specific test from the IDE, so that
+    * tests marked as disabled (via @Ignored, @DisabledIf, tags, etc.) are still executed.
+    */
+   const val KOTEST_TEST_ENABLED_OVERRIDE = "KOTEST_TEST_ENABLED_OVERRIDE"
 }

@@ -11,6 +11,7 @@ import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLam
 import io.kotest.plugin.intellij.psi.ifDotExpressionSeparator
 import io.kotest.plugin.intellij.psi.ifOpenQuoteOfFunctionName
 import io.kotest.plugin.intellij.psi.isDataTestMethodCall
+import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -26,12 +27,7 @@ object FunSpecStyle : SpecStyle {
       return "test(\"$name\") { }"
    }
 
-   override fun getDataTestMethodNames(): Set<String> =
-      setOf(
-         "withData",
-         "withContexts",
-         "withTests"
-      )
+   override fun getDataTestMethodNames(): Set<String> = DataTestUtil.styleToDataTestMethodNames[this] ?: emptySet()
 
    override fun isTestElement(element: PsiElement): Boolean = test(element) != null
 
@@ -69,7 +65,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   context("test name").config(...) { }
+    *   `context("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryContextWithConfig(): Test? {
@@ -81,7 +77,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   context("test name").config(...) { }
+    *   `context("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryXContextWithConfig(): Test? {
@@ -93,7 +89,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   test("test name") { }
+    *   `test("test name") { }`
     *
     */
    private fun KtCallExpression.tryTest(): Test? {
@@ -105,7 +101,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   xtest("test name") { }
+    *   `xtest("test name") { }`
     *
     */
    private fun KtCallExpression.tryXTest(): Test? {
@@ -117,7 +113,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   test("test name").config(...) { }
+    *   `test("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryTestWithConfig(): Test? {
@@ -129,7 +125,7 @@ object FunSpecStyle : SpecStyle {
    /**
     * A test of the form:
     *
-    *   xtest("test name").config(...) { }
+    *   `xtest("test name").config(...) { }`
     *
     */
    private fun KtDotQualifiedExpression.tryXTestWithConfig(): Test? {
@@ -151,9 +147,9 @@ object FunSpecStyle : SpecStyle {
    /**
     * For a FunSpec we consider the following scenarios:
     *
-    * test("test name") { }
-    * test("test name").config(...) {}
-    * context("test name").config(...) {}
+    * `test("test name") { }`
+    * `test("test name").config(...) { }`
+    * `context("test name").config(...) { }`
     */
    override fun test(element: PsiElement): Test? {
       return when (element) {

@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.psi
 
 import com.intellij.psi.PsiElement
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.psi.KtBlockExpression
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtFunctionLiteral
 import org.jetbrains.kotlin.psi.KtLambdaArgument
@@ -13,7 +14,7 @@ import org.jetbrains.kotlin.psi.KtValueArgumentList
 /**
  * Extracts the string literal from things like:
  *
- *   "my test" {}
+ *   `"my test" {}`
  */
 fun KtCallExpression.extractStringFromStringInvokeWithLambda(): StringArg? {
    if (children.size == 2) {
@@ -52,7 +53,7 @@ fun KtCallExpression.hasFinalLambdaArg(): Boolean {
 }
 
 /**
- * Convenience call for [extractStringArgForFunctionWithStringAndLambdaArgs] with list of names.
+ * Convenience call for [extractStringArgForFunctionWithStringAndLambdaArgs] with a list of names.
  */
 fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg names: String): StringArg? =
    extractStringArgForFunctionWithStringAndLambdaArgs(names.asList())
@@ -60,7 +61,7 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg n
 /**
  * Matches code in the form:
  *
- *   function("some string") { }
+ *   `function("some string") { }`
  *
  * The structure in PSI for this is:
  *
@@ -70,7 +71,7 @@ fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(vararg n
  *      - KtValueArgument (container wrapper for an argument, in this case the string name)
  *        - KtStringTemplateExpression (the expression for the string arg)
  *          - KtLiteralStringTemplateEntry (the raw string value, safe to call .text on)
- *    - KtLambdaArgument (the test closure)
+ *    - KtLambdaArgument (the test closure, when outside the normal function list)
  *      - KtLambdaArgument
  */
 fun KtCallExpression.extractStringArgForFunctionWithStringAndLambdaArgs(names: List<String>): StringArg? {
@@ -88,7 +89,7 @@ data class StringArg(val text: String, val interpolated: Boolean)
 
 /**
  * If this [LeafPsiElement] is the open brace of a function lambda arg, then returns that function name.
- * Eg, test("my function") {}
+ * E.g., `test("my function") {}`
  */
 fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
    if (this.elementType.toString() != "LBRACE") return null
@@ -106,3 +107,17 @@ fun LeafPsiElement.ifCallExpressionLambdaOpenBrace(): KtCallExpression? {
    }
    return null
 }
+
+/**
+ * Returns the lambda body (block expression) of this call expression if it has one.
+ * For example, for `test("name") { body }`, returns the body block.
+ */
+fun KtCallExpression.lambdaBody(): KtBlockExpression? {
+   for (child in children) {
+      if (child is KtLambdaArgument) {
+         return child.getLambdaExpression()?.bodyExpression
+      }
+   }
+   return null
+}
+

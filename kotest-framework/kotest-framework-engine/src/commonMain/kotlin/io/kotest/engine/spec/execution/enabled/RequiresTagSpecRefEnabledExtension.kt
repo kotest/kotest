@@ -2,9 +2,11 @@ package io.kotest.engine.spec.execution.enabled
 
 import io.kotest.common.JVMOnly
 import io.kotest.common.reflection.annotation
+import io.kotest.common.syspropOrEnv
 import io.kotest.core.NamedTag
 import io.kotest.core.annotation.RequiresTag
 import io.kotest.core.spec.SpecRef
+import io.kotest.engine.config.KotestEngineProperties
 import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.tags.TagExpressionBuilder
 import io.kotest.engine.tags.isActive
@@ -20,6 +22,7 @@ internal class RequiresTagSpecRefEnabledExtension(
 ) : SpecRefEnabledExtension {
 
    override fun isEnabled(ref: SpecRef): EnabledOrDisabled {
+      if (syspropOrEnv(KotestEngineProperties.KOTEST_TEST_ENABLED_OVERRIDE) == "true") return EnabledOrDisabled.Enabled
       return when (val annotation = ref.kclass.annotation<RequiresTag>()) {
          null -> EnabledOrDisabled.Enabled
          else -> {

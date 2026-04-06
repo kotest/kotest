@@ -157,18 +157,10 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       this.envs = envs
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setTestPath(testName: String?) {
       this.testPath = testName
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setSpecName(specName: String?) {
       this.specName = specName
    }
@@ -177,18 +169,10 @@ class KotestRunConfiguration(name: String, factory: ConfigurationFactory, projec
       this.specsName = specsName
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setSpec(spec: KtClassOrObject?) {
       this.specName = spec?.fqName?.asString()
    }
 
-   @Deprecated(
-      "Starting with Kotest 6 JVM launcher has no option for package. It will be removed in the future.",
-      level = DeprecationLevel.WARNING
-   )
    fun setPackageName(packageName: String?) {
       this.packageName = packageName
    }

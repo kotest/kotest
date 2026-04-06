@@ -144,6 +144,114 @@ class GradleClassMethodRegexTestFilterTest : FunSpec({
       }
    }
 
+   context("line breaks in test names are normalized") {
+      val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
+      val fqn = "\\Q${GradleClassMethodRegexTestFilterTest::class.qualifiedName}\\E"
+
+      test("test with CR in name matches filter with space") {
+         val testDescriptor = spec.append("a test\rwith cr")
+         val filter = "$fqn\\Q.a test with cr\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("nested test with CR in name matches filter with space") {
+         val container = spec.append("parent\rcontext")
+         val testDescriptor = container.append("child\rtest")
+         val filter = "$fqn\\Q.parent context -- child test\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+   }
+   
+   context("simple class name with leading wildcard") {
+      // When running: ./gradlew test --tests '*DecoderUtilsTest'
+      // Gradle converts '*ClassName' to the regex pattern: .*.*\QClassName\E
+      // See: https://github.com/kotest/kotest/issues/5639
+
+      val decoderSpec = Descriptor.SpecDescriptor(DescriptorId("org.example.binaries.DecoderUtilsTest"))
+      val otherSpec = Descriptor.SpecDescriptor(DescriptorId("org.example.binaries.EncoderUtilsTest"))
+      val noPackageSpec = Descriptor.SpecDescriptor(DescriptorId("DecoderUtilsTest"))
+
+      test("spec with deep package path should be INCLUDED by wildcard prefix pattern") {
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(decoderSpec) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("non-matching spec should be EXCLUDED by wildcard prefix pattern") {
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(otherSpec) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+
+      test("spec with no package should be INCLUDED by wildcard prefix pattern") {
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(noPackageSpec) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("nested test within matching spec should be INCLUDED") {
+         val nestedTest = decoderSpec.append("decode a number")
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QDecoderUtilsTest\\E")).filter(nestedTest) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("wildcard suffix pattern should match any spec ending with Test") {
+         val fooTest = Descriptor.SpecDescriptor(DescriptorId("org.example.FooTest"))
+         val barTest = Descriptor.SpecDescriptor(DescriptorId("com.example.deep.BarTest"))
+         val notATest = Descriptor.SpecDescriptor(DescriptorId("org.example.FooSpec"))
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QTest\\E")).filter(fooTest) shouldBe DescriptorFilterResult.Include
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QTest\\E")).filter(barTest) shouldBe DescriptorFilterResult.Include
+         GradleClassMethodRegexTestFilter(setOf(".*.*\\QTest\\E")).filter(notATest) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+   }
+
+   context("wildcards in the middle of test names") {
+      // When test names contain periods (e.g. "test with 1.2.3"), GradleTestFilterBuilder replaces
+      // them with wildcards, producing a filter like "MySpec.test with 1*2*3".
+      // Gradle converts that to the regex: \QMySpec.test with 1\E.*\Q2\E.*\Q3\E
+      // These tests verify that the filter correctly includes/excludes the right descriptors.
+
+      val spec = Descriptor.SpecDescriptor(DescriptorId("io.pkg.MySpec"))
+
+      test("test with period in name is INCLUDED when filter has wildcard in middle") {
+         // "test with 1.2.3" → filter "MySpec.test with 1*2*3" → \QMySpec.test with 1\E.*\Q2\E.*\Q3\E
+         val testDescriptor = spec.append("test with 1.2.3")
+         val filter = "\\QMySpec.test with 1\\E.*\\Q2\\E.*\\Q3\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("test with multiple periods is INCLUDED when filter has multiple wildcards in middle") {
+         // "assert a.b equals c.d.e" → filter "MySpec.assert a*b equals c*d*e"
+         // → \QMySpec.assert a\E.*\Qb equals c\E.*\Qd\E.*\Qe\E
+         val testDescriptor = spec.append("assert a.b equals c.d.e")
+         val filter = "\\QMySpec.assert a\\E.*\\Qb equals c\\E.*\\Qd\\E.*\\Qe\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("unrelated test is EXCLUDED when filter has wildcards matching a different test name") {
+         val testDescriptor = spec.append("unrelated test")
+         val filter = "\\QMySpec.test with 1\\E.*\\Q2\\E.*\\Q3\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Exclude(null)
+      }
+
+      test("FQN filter with wildcards in middle of test name is INCLUDED") {
+         // --tests 'io.pkg.MySpec.test with 1*2*3' → \Qio.pkg.MySpec.test with 1\E.*\Q2\E.*\Q3\E
+         val testDescriptor = spec.append("test with 1.2.3")
+         val filter = "\\Qio.pkg.MySpec.test with 1\\E.*\\Q2\\E.*\\Q3\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("wildcard-prefix filter with wildcards in middle of test name is INCLUDED") {
+         // --tests '*MySpec.test with 1*2*3' → .*.*\QMySpec.test with 1\E.*\Q2\E.*\Q3\E
+         val testDescriptor = spec.append("test with 1.2.3")
+         val filter = ".*.*\\QMySpec.test with 1\\E.*\\Q2\\E.*\\Q3\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+
+      test("nested test with periods in both context and test name is INCLUDED") {
+         // context "context v1.0", test "name with periods 1.2.3 and more"
+         // filter: "MySpec.context v1*0 -- name with periods 1*2*3 and more"
+         // → \QMySpec.context v1\E.*\Q0 -- name with periods 1\E.*\Q2\E.*\Q3 and more\E
+         val container = spec.append("context v1.0")
+         val testDescriptor = container.append("name with periods 1.2.3 and more")
+         val filter = "\\QMySpec.context v1\\E.*\\Q0 -- name with periods 1\\E.*\\Q2\\E.*\\Q3 and more\\E"
+         GradleClassMethodRegexTestFilter(setOf(filter)).filter(testDescriptor) shouldBe DescriptorFilterResult.Include
+      }
+   }
+
    // Unable to make field final java.util.Map java.util.Collections$UnmodifiableMap.m accessible: module java.base does not "opens java.util" to unnamed module @62163b39
    test("!is ignored when KOTEST_INCLUDE_PATTERN is set") {
       val spec = GradleClassMethodRegexTestFilterTest::class.toDescriptor()
