@@ -137,7 +137,7 @@ interface BehaviorSpecRootScope : RootScope {
 
    fun addContext(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       add(
-         TestDefinitionBuilder.builder(contextName(name), TestType.Test)
+         TestDefinitionBuilder.builder(contextName(name), TestType.Container)
             .withXmethod(xmethod)
             .build { BehaviorSpecContextContainerScope(this).test() }
       )

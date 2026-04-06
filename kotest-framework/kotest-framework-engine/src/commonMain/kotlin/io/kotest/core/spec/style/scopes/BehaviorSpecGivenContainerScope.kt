@@ -51,7 +51,7 @@ class BehaviorSpecGivenContainerScope(
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
    ) {
       registerTest(
-         TestDefinitionBuilder.builder(andName(name), TestType.Test)
+         TestDefinitionBuilder.builder(andName(name), TestType.Container)
             .withXmethod(xmethod)
             .build { BehaviorSpecGivenContainerScope(this).test() }
       )
@@ -98,7 +98,7 @@ class BehaviorSpecGivenContainerScope(
       xmethod: TestXMethod
    ) {
       registerTest(
-         TestDefinitionBuilder.builder(whenName(name), TestType.Test)
+         TestDefinitionBuilder.builder(whenName(name), TestType.Container)
             .withXmethod(xmethod)
             .build { BehaviorSpecWhenContainerScope(this).test() }
       )

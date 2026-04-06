@@ -47,7 +47,7 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
    ) {
       registerTest(
          TestDefinitionBuilder
-            .builder(andName(name), TestType.Test)
+            .builder(andName(name), TestType.Container)
             .withXmethod(xmethod)
             .build { BehaviorSpecWhenContainerScope(this).test() }
       )
