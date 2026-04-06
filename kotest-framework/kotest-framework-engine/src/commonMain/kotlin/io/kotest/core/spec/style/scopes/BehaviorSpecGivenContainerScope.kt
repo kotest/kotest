@@ -33,6 +33,36 @@ class BehaviorSpecGivenContainerScope(
    val testScope: TestScope,
 ) : AbstractContainerScope(testScope) {
 
+   suspend fun Given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addGiven(name, xmethod = TestXMethod.NONE, test)
+
+   suspend fun given(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addGiven(name, xmethod = TestXMethod.NONE, test)
+
+   suspend fun fGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addGiven(name, xmethod = TestXMethod.FOCUSED, test)
+
+   suspend fun fgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addGiven(name, xmethod = TestXMethod.FOCUSED, test)
+
+   suspend fun xGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addGiven(name, xmethod = TestXMethod.DISABLED, test)
+
+   suspend fun xgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
+      addGiven(name, xmethod = TestXMethod.DISABLED, test)
+
+   private suspend fun addGiven(
+      name: String,
+      xmethod: TestXMethod,
+      test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
+   ) {
+      registerTest(
+         TestDefinitionBuilder.builder(givenName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { BehaviorSpecGivenContainerScope(this).test() }
+      )
+   }
+
    suspend fun And(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) =
       addAnd(name, xmethod = TestXMethod.NONE, test)
 
@@ -166,6 +196,9 @@ class BehaviorSpecGivenContainerScope(
             .build(test)
       )
    }
+
+   private fun givenName(name: String): TestName =
+      TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build()
 
    private fun whenName(name: String): TestName =
       TestNameBuilder.builder(name).withPrefix("When: ").withDefaultAffixes().build()

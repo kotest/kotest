@@ -60,7 +60,20 @@ class BehaviorSpecContextContainerScope(
       ) { BehaviorSpecGivenContainerScope(it) }
    }
 
-   internal suspend fun context(
+   @Suppress("FunctionName")
+   suspend fun Context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name, xmethod = TestXMethod.NONE, test)
+
+   suspend fun context(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name, xmethod = TestXMethod.NONE, test)
+
+   suspend fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name, xmethod = TestXMethod.DISABLED, test)
+
+   suspend fun xcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name, xmethod = TestXMethod.DISABLED, test)
+
+   private suspend fun addContext(
       name: String,
       xmethod: TestXMethod,
       test: suspend BehaviorSpecContextContainerScope.() -> Unit,
