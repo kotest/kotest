@@ -4,13 +4,13 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlinx.datetime.*
+import kotlin.time.Clock
 
 /**
  * Matcher that checks if a LocalDateTime has a Date component of today
  *
- * It does this by checking it against Current Time, so if you are not using constant now listeners,
- * using this might fail if tests run exactly on a date change.
+ * It does this by checking it against the system Clock, so if you are not using constant `now` extensions,
+ * using this might be non-deterministic.
  *
  * ```
  *     val date = Clock.System().todayIn(TimeZone.UTC)
@@ -37,8 +37,8 @@ fun beInToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDateTim
 /**
  * Matcher that checks if a LocalDate is today
  *
- * It does this by checking it against current time, so if you are not using constant now listeners,
- * using this might fail if test run exactly on a date change.
+ * It does this by checking it against the system Clock, so if you are not using constant `now` extensions,
+ * using this might be non-deterministic.
  *
  * ```
  *     val date = Clock.System().todayIn(TimeZone.UTC).date
@@ -51,7 +51,7 @@ fun beInToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDateTim
  *     date should beToday() // Assertion fails
  * ```
  */
-fun beToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDate> {
+fun beToday(timezone: TimeZone = TimeZone.UTC): Matcher<LocalDate> = object : Matcher<LocalDate> {
   override fun test(value: LocalDate): MatcherResult {
     val passed = value == Clock.System.todayIn(timezone)
     return MatcherResult(
@@ -69,7 +69,10 @@ fun beToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDate> {
  *      Clock.System().todayIn(TimeZone.UTC).shouldBeToday() // Assertion passes
  * ```
  */
-fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beInToday(timezone)
+fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) {
+   this should beInToday(timezone)
+   return this
+}
 
 /**
  * Asserts that the LocalDate is today
@@ -78,7 +81,10 @@ fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should
  *      Clock.System().todayIn(TimeZone.UTC).date.shouldBeToday() // Assertion passes
  * ```
  */
-fun LocalDate.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beToday(timezone)
+fun LocalDate.shouldBeToday(timezone: TimeZone = TimeZone.UTC) {
+   this should beToday(timezone)
+   return this
+}
 
 /**
  * Asserts that the LocalDateTime does not have a date component of today
@@ -87,7 +93,10 @@ fun LocalDate.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beT
  *      LocalDateTime(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
  * ```
  */
-fun LocalDateTime.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) = this shouldNot beInToday(timezone)
+fun LocalDateTime.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) {
+   this shouldNot beInToday(timezone)
+   return this
+}
 
 /**
  * Asserts that the LocalDate is not today
@@ -96,6 +105,9 @@ fun LocalDateTime.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) = this sho
  *      LocalDate(2009, Month.APRIL, 2).shouldNotBeToday() // Assertion passes
  * ```
  */
-fun LocalDate.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) = this shouldNot beToday(timezone)
+fun LocalDate.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) {
+   this shouldNot beToday(timezone)
+   return this
+}
 
 
