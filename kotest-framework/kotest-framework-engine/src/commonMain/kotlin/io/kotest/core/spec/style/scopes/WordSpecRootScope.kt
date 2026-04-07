@@ -17,22 +17,27 @@ data class WordSpecContextConfigBuilder(val name: String, val config: TestConfig
 interface WordSpecRootScope : RootScope {
 
    infix fun String.should(test: suspend WordSpecShouldContainerScope.() -> Unit) {
-      should(name = this, xmethod = TestXMethod.NONE, test = test)
+      add(
+         TestDefinitionBuilder
+            .builder(shouldName(this), TestType.Container)
+            .build { WordSpecShouldContainerScope(this).test() }
+      )
    }
 
    infix fun String.fshould(test: suspend WordSpecShouldContainerScope.() -> Unit) {
-      should(name = this, xmethod = TestXMethod.FOCUSED, test = test)
+      add(
+         TestDefinitionBuilder
+            .builder(shouldName(this), TestType.Container)
+            .withXmethod(TestXMethod.FOCUSED)
+            .build { WordSpecShouldContainerScope(this).test() }
+      )
    }
 
    infix fun String.xshould(test: suspend WordSpecShouldContainerScope.() -> Unit) {
-      should(name = this, xmethod = TestXMethod.DISABLED, test = test)
-   }
-
-   private fun should(name: String, xmethod: TestXMethod, test: suspend WordSpecShouldContainerScope.() -> Unit) {
       add(
          TestDefinitionBuilder
-            .builder(shouldName(name), TestType.Container)
-            .withXmethod(TestXMethod.NONE)
+            .builder(shouldName(this), TestType.Container)
+            .withXmethod(TestXMethod.DISABLED)
             .build { WordSpecShouldContainerScope(this).test() }
       )
    }
