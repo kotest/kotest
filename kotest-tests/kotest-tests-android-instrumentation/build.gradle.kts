@@ -16,6 +16,30 @@ android {
    compileSdk = 36
    defaultConfig {
       minSdk = 24
+      testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+   }
+   packaging {
+      resources {
+         excludes += "/META-INF/{AL2.0,LGPL2.1,LICENSE*.md}"
+      }
+   }
+   buildFeatures {
+      compose = true
+   }
+   testOptions {
+      unitTests.all {
+         it.useJUnitPlatform()
+      }
+      animationsDisabled = true
+      managedDevices {
+         localDevices {
+            create("pixel2Api30") {
+               device = "Pixel 2"
+               apiLevel = 30
+               systemImageSource = "aosp"
+            }
+         }
+      }
    }
 }
 
@@ -53,6 +77,13 @@ kotlin {
    }
 }
 
+// Run instrumented tests on the managed emulator as part of the standard check lifecycle.
+// Use: ./gradlew pixel2Api30DebugAndroidTest
+// The managed device handles the full AVD lifecycle (download image, boot, test, shutdown).
+tasks.named("check") {
+   dependsOn("pixel2Api30DebugAndroidTest")
+}
+
 dependencies {
    implementation(projects.kotestFramework.kotestFrameworkEngine)
    implementation(projects.kotestRunner.kotestRunnerJunit4)
@@ -65,4 +96,5 @@ dependencies {
    androidTestImplementation(libs.androidx.junit)
    androidTestImplementation(libs.androidx.test.runner)
    androidTestImplementation(libs.androidx.ui.test.junit4)
+   debugImplementation(libs.androidx.ui.test.manifest)
 }

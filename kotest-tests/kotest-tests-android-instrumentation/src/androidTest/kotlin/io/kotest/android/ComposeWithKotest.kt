@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.test.junit4.ComposeContentTestRule
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.runner.junit4.KotestTestRunner
 import org.junit.Rule
@@ -27,6 +28,11 @@ open class ComposeWithKotest : FreeSpec() {
    val composeTestRule: ComposeContentTestRule = createComposeRule()
 
    init {
+
+      // ComposeContentTestRule holds a TestCoroutineScheduler that cannot be reused across tests.
+      // InstancePerTest creates a fresh spec instance (and thus a fresh composeTestRule) per root.
+      isolationMode = IsolationMode.InstancePerRoot
+
       "should have initial state of 0" {
 
          composeTestRule.setContent {
