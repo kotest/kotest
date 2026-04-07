@@ -10,7 +10,7 @@ interface BeforeInvocationListener : Extension {
     * This callback is useful if you have set a test to have multiple invocations via config and want to do
     * some setup / teardown between runs.
     *
-    * If you are running a test with the default single invocation then this callback is effectively the
+    * If you are running a test with the default single invocation then, this callback is effectively the
     * same as [beforeTest][io.kotest.core.TestConfiguration.beforeTest].
     *
     * Note: If you have set multiple invocations _and_ multiple threads, then these callbacks could be
@@ -26,7 +26,7 @@ interface AfterInvocationListener : Extension {
     * This callback is useful if you have set a test to have multiple invocations via config and want to do
     * some setup / teardown between runs.
     *
-    * If you are running a test with the default single invocation then this callback is effectively the
+    * If you are running a test with the default single invocation then, this callback is effectively the
     * same as [afterTest][io.kotest.core.TestConfiguration.afterTest].
     *
     * Note: If you have set multiple invocations _and_ multiple threads, then these callbacks could be
