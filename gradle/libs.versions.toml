@@ -14,7 +14,8 @@ allure-commons = "2.33.0"
 allure-plugin = "3.1.0"
 
 # https://developer.android.com/kotlin/multiplatform/plugin
-agp = "9.1.0"
+agp = "9.0.0-alpha06" # latest supported by IntelliJ 2026.1
+
 # https://developer.android.com/jetpack/androidx/versions/all-channel
 androidx-test-runner = "1.7.0"
 androidx-core-ktx = "1.18.0"
