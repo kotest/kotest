@@ -1,4 +1,4 @@
-package io.kotest.examples.android
+package io.kotest.android
 
 import androidx.test.platform.app.InstrumentationRegistry
 import io.kotest.core.spec.style.ShouldSpec

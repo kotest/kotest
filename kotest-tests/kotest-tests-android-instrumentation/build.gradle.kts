@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 plugins {
    id("kotest-base")
    id("com.android.library")
+   alias(libs.plugins.jetbrains.kotlin.compose)
 }
 
 val catalog: VersionCatalog = versionCatalogs.named("libs")

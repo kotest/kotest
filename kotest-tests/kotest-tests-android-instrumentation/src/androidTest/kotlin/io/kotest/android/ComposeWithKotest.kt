@@ -1,4 +1,4 @@
-package io.kotest.examples.android
+package io.kotest.android
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -49,7 +49,7 @@ open class ComposeWithKotest : FreeSpec() {
 }
 
 /**
- * Simple composable which has a counter and a button that will increase the counter
+ * Simple composable that has a counter and a button that will increase the counter
  * each time it is clicked.
  */
 @Composable
