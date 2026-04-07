@@ -13,7 +13,7 @@ import javax.sql.DataSource
 
 /**
  * A Kotest [MountableExtension] for [JdbcDatabaseContainer]s that will launch the container
- * upon install, and close after the spec has completed.
+ * upon installation, and close after the spec has completed.
  *
  * This extension will create a pooled [HikariDataSource] attached to the database and
  * return that to the user as the materialized value.
@@ -29,6 +29,7 @@ import javax.sql.DataSource
 class JdbcDatabaseContainerSpecExtension(
    private val container: JdbcDatabaseContainer<*>,
    private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
+   private val onStart: (DataSource) -> Unit = { },
 ) : MountableExtension<HikariConfig, DataSource>, AfterSpecListener {
 
    override fun mount(configure: HikariConfig.() -> Unit): DataSource {
@@ -40,6 +41,7 @@ class JdbcDatabaseContainerSpecExtension(
       config.password = container.password
       config.configure()
       val ds = HikariDataSource(config)
+      onStart(ds)
       return ds
    }
 

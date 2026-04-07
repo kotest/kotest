@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock
 class TestContainerProjectExtension<T : GenericContainer<*>>(
    private val container: T,
    private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
-   private val onStart: T.() -> Unit = {},
+   private val onStart: (T) -> Unit = {},
 ) : MountableExtension<T, T>, AfterProjectListener {
 
    private val ref = AtomicReference<T>(null)

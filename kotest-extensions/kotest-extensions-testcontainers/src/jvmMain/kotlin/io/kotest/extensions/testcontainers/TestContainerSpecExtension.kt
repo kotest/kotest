@@ -19,7 +19,7 @@ import org.testcontainers.containers.GenericContainer
 class TestContainerSpecExtension<T : GenericContainer<*>>(
    private val container: T,
    private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
-   private val onStart: T.() -> Unit = {},
+   private val onStart: (T) -> Unit = {},
 ) : MountableExtension<T, T>, AfterSpecListener, TestListener {
 
    override fun mount(configure: T.() -> Unit): T {

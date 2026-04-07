@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock
  */
 class ComposeContainerProjectExtension(
    private val container: ComposeContainer,
-   private val onStart: ComposeContainer.() -> Unit = {},
+   private val onStart: (ComposeContainer) -> Unit = {},
 ) : MountableExtension<ComposeContainer, ComposeContainer>, AfterProjectListener {
 
    companion object {
@@ -40,7 +40,7 @@ class ComposeContainerProjectExtension(
       if (t == null) {
          configure(container)
          container.start()
-         container.onStart()
+         onStart(container)
          ref.set(container)
       }
       lock.unlock()
