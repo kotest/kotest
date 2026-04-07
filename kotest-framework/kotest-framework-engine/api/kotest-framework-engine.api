@@ -1008,7 +1008,6 @@ public abstract interface class io/kotest/core/descriptors/Descriptor {
 	public fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isChildOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isEqual (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isParentOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isRootTest ()Z
@@ -1028,7 +1027,6 @@ public final class io/kotest/core/descriptors/Descriptor$DefaultImpls {
 	public static fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isChildOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
-	public static fun isEqual (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isParentOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;Lio/kotest/core/descriptors/Descriptor;)Z
 	public static fun isRootTest (Lio/kotest/core/descriptors/Descriptor;)Z
@@ -1055,7 +1053,6 @@ public final class io/kotest/core/descriptors/Descriptor$SpecDescriptor : io/kot
 	public fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isChildOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isEqual (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isParentOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isRootTest ()Z
@@ -1085,7 +1082,6 @@ public final class io/kotest/core/descriptors/Descriptor$TestDescriptor : io/kot
 	public fun isAncestorOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isChildOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isDescendentOf (Lio/kotest/core/descriptors/Descriptor;)Z
-	public fun isEqual (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isParentOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isPrefixOf (Lio/kotest/core/descriptors/Descriptor;)Z
 	public fun isRootTest ()Z
