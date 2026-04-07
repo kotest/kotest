@@ -31,32 +31,33 @@ interface ShouldSpecRootScope : RootScope {
     * Adds a top-level context scope to the spec.
     */
    fun context(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      context(name = name, xmethod = TestXMethod.NONE, test = test)
+      add(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .build { ShouldSpecContainerScope(this).test() }
+      )
    }
 
    /**
     * Adds a top-level context scope to the spec.
     */
    fun fcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      context(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+      add(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(TestXMethod.FOCUSED)
+            .build { ShouldSpecContainerScope(this).test() }
+      )
    }
 
    /**
     * Adds a top-level context scope to the spec.
     */
    fun xcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      context(name = name, xmethod = TestXMethod.DISABLED, test = test)
-   }
-
-   private fun context(
-      name: String,
-      xmethod: TestXMethod,
-      test: suspend ShouldSpecContainerScope.() -> Unit
-   ) {
       add(
          TestDefinitionBuilder
             .builder(contextName(name), TestType.Container)
-            .withXmethod(xmethod)
+            .withXmethod(TestXMethod.DISABLED)
             .build { ShouldSpecContainerScope(this).test() }
       )
    }
@@ -92,19 +93,37 @@ interface ShouldSpecRootScope : RootScope {
     * Adds a top level test, with the given name and test function, with test config supplied
     * by invoking `.config` on the return of this function.
     */
-   fun should(name: String): RootTestWithConfigBuilder = should(name, TestXMethod.NONE)
+   fun should(name: String): RootTestWithConfigBuilder {
+      return RootTestWithConfigBuilder(
+         context = this,
+         name = shouldName(name),
+         xmethod = TestXMethod.NONE,
+      )
+   }
 
    /**
     * Adds a focused top level test, with the given name and test function, with test config supplied
     * by invoking `.config` on the return of this function.
     */
-   fun fshould(name: String): RootTestWithConfigBuilder = should(name, TestXMethod.FOCUSED)
+   fun fshould(name: String): RootTestWithConfigBuilder {
+      return RootTestWithConfigBuilder(
+         context = this,
+         name = shouldName(name),
+         xmethod = TestXMethod.FOCUSED,
+      )
+   }
 
    /**
     * Adds a disabled top level test, with the given name and test function, with test config supplied
     * by invoking `.config` on the return of this function.
     */
-   fun xshould(name: String): RootTestWithConfigBuilder = should(name, TestXMethod.DISABLED)
+   fun xshould(name: String): RootTestWithConfigBuilder {
+      return RootTestWithConfigBuilder(
+         context = this,
+         name = shouldName(name),
+         xmethod = TestXMethod.DISABLED,
+      )
+   }
 
    /**
     * Adds a top-level test, with the given name and test function, with default test config.
@@ -113,7 +132,6 @@ interface ShouldSpecRootScope : RootScope {
       add(
          TestDefinitionBuilder
             .builder(shouldName(name), TestType.Test)
-            .withXmethod(TestXMethod.NONE)
             .build(test)
       )
    }
@@ -139,14 +157,6 @@ interface ShouldSpecRootScope : RootScope {
             .builder(shouldName(name), TestType.Test)
             .withXmethod(TestXMethod.DISABLED)
             .build(test)
-      )
-   }
-
-   private fun should(name: String, xmethod: TestXMethod): RootTestWithConfigBuilder {
-      return RootTestWithConfigBuilder(
-         context = this,
-         name = shouldName(name),
-         xmethod = xmethod,
       )
    }
 

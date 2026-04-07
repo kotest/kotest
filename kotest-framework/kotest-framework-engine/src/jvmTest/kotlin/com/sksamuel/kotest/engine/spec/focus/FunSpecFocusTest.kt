@@ -10,9 +10,14 @@ class FunSpecFocusTest : FunSpec() {
       val counter = AtomicInteger(0)
 
       afterSpec {
-         counter.get() shouldBe 3
+         counter.get() shouldBe 6
       }
-
+      fcontext("top level focused context") {
+         counter.incrementAndGet()
+      }
+      fcontext("top level focused context with config").config(enabled = true) {
+         counter.incrementAndGet()
+      }
       context("f:some test") {
          counter.incrementAndGet()
          test("should run") {
@@ -22,10 +27,11 @@ class FunSpecFocusTest : FunSpec() {
             counter.incrementAndGet()
          }
       }
+      context("f:some test with config").config(enabled = true) {
+         counter.incrementAndGet()
+      }
       context("other test") {
-         test("should never run") {
-            error("Boom")
-         }
+         error("Boom")
       }
    }
 }

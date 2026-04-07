@@ -12,6 +12,12 @@ class DescribeFocusTest : DescribeSpec({
       counter.get() shouldBe 2
    }
 
+   fdescribe("Foo") {
+      counter.incrementAndGet()
+   }
+   fdescribe("foo with config").config(enabled = true) {
+      counter.incrementAndGet()
+   }
    describe("f:Foo") {
       it("foo 1") {
          counter.incrementAndGet()

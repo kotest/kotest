@@ -110,52 +110,43 @@ class BehaviorSpecGivenContainerScope(
       ) { BehaviorSpecGivenContainerScope(it) }
    }
 
-   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addWhen(name, test, xmethod = TestXMethod.NONE)
+   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = When(name, test)
 
-   suspend fun `when`(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addWhen(name, test, xmethod = TestXMethod.NONE)
-
-   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addWhen(name, test, xmethod = TestXMethod.DISABLED)
-
-   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      addWhen(name, test, xmethod = TestXMethod.DISABLED)
-
-   private suspend fun addWhen(
-      name: String,
-      test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
-      xmethod: TestXMethod
-   ) {
+   suspend fun When(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) {
       registerTest(
          TestDefinitionBuilder.builder(whenName(name), TestType.Container)
-            .withXmethod(xmethod)
+            .withXmethod(TestXMethod.NONE)
             .build { BehaviorSpecWhenContainerScope(this).test() }
       )
    }
 
+   suspend fun xWhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) = xwhen(name, test)
+
+   suspend fun xwhen(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) {
+      registerTest(
+         TestDefinitionBuilder.builder(whenName(name), TestType.Container)
+            .withXmethod(TestXMethod.DISABLED)
+            .build { BehaviorSpecWhenContainerScope(this).test() }
+      )
+   }
+
+   fun `when`(name: String) = When(name)
+
    fun When(name: String) =
-      addWhen(name, xmethod = TestXMethod.NONE)
-
-   fun `when`(name: String) =
-      addWhen(name, xmethod = TestXMethod.NONE)
-
-   fun xwhen(name: String) =
-      addWhen(name, xmethod = TestXMethod.DISABLED)
-
-   fun xWhen(name: String) =
-      addWhen(name, xmethod = TestXMethod.DISABLED)
-
-   private fun addWhen(
-      name: String,
-      xmethod: TestXMethod
-   ): ContainerWithConfigBuilder<BehaviorSpecWhenContainerScope> {
-      return ContainerWithConfigBuilder(
+      ContainerWithConfigBuilder(
          name = whenName(name),
          context = this,
-         xmethod = xmethod
+         xmethod = TestXMethod.NONE
       ) { BehaviorSpecWhenContainerScope(it) }
-   }
+
+   fun xWhen(name: String) = xwhen(name)
+
+   fun xwhen(name: String) =
+      ContainerWithConfigBuilder(
+         name = whenName(name),
+         context = this,
+         xmethod = TestXMethod.DISABLED
+      ) { BehaviorSpecWhenContainerScope(it) }
 
    fun Then(name: String) = TestWithConfigBuilder(
       thenName(name),
