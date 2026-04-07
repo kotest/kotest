@@ -148,16 +148,16 @@ public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerExte
 }
 
 public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerProjectExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterProjectListener {
-	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;)V
-	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterProject (Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Lcom/zaxxer/hikari/HikariDataSource;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 }
 
 public final class io/kotest/extensions/testcontainers/JdbcDatabaseContainerSpecExtension : io/kotest/core/extensions/MountableExtension, io/kotest/core/listeners/AfterSpecListener {
-	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;)V
-	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;Lkotlin/jvm/functions/Function1;)V
+	public synthetic fun <init> (Lorg/testcontainers/containers/JdbcDatabaseContainer;Lio/kotest/extensions/testcontainers/options/ContainerExtensionConfig;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun afterSpec (Lio/kotest/core/spec/Spec;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public synthetic fun mount (Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public fun mount (Lkotlin/jvm/functions/Function1;)Ljavax/sql/DataSource;
