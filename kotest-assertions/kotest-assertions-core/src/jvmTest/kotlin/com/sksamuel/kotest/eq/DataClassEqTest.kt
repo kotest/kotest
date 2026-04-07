@@ -1,18 +1,26 @@
 package com.sksamuel.kotest.eq
 
+import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.eq.DefaultEqResolver
+import io.kotest.assertions.eq.Eq
+import io.kotest.assertions.eq.EqContext
+import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.isDataClassInstance
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
+import kotlin.time.Duration.Companion.nanoseconds
+import kotlin.time.Instant
 
 data class DataClass1(val a: Int, val b: Float)
 data class DataClass2(val x: Int, val y: Float, val z: DataClass1)
 data class DataClass3(val x: Int, val y: DataClass2, val z: Double)
 
 data class DataClassWithMultipleConstructors(val a: Int, val b: Float) {
-   private var c: String = "";
+   private var c: String = ""
 
    constructor(a: Int, b: Float, c: String) : this(a, b) {
       this.c = c
@@ -35,10 +43,52 @@ data class IntRatio(
    }
 }
 
+object InstantWithoutNanosEq : Eq<Instant> {
+   /**
+    * This custom Eq implementation compares Instant objects based on their epoch milliseconds, ignoring differences in
+    * nanoseconds.
+    */
+   override fun equals(actual: Instant, expected: Instant, context: EqContext): EqResult {
+      return if (actual.toEpochMilliseconds() == expected.toEpochMilliseconds())
+         EqResult.Success
+      else EqResult.Failure {
+         AssertionErrorBuilder.create().withMessage("Expected $actual to equal $expected").build()
+      }
+   }
+}
+
 class DataClassEqTest : StringSpec({
 
    "respects custom equals implementations in data classes" {
       IntRatio(1, 2) shouldBe IntRatio(2, 4)
+   }
+
+   "respects custom registered Eq function" {
+      val i1 = Instant.fromEpochMilliseconds(1640995200000).plus(200.nanoseconds)
+      val i2 = i1.plus(400.nanoseconds)
+
+      i1 shouldNotBe i2 // Custom eq not yet registered
+
+      DefaultEqResolver.register(Instant::class, InstantWithoutNanosEq)
+      i1 shouldBe i2
+      DefaultEqResolver.unregister(Instant::class)
+
+   }
+
+   "respects custom registered Eq function when type is a field on a data class" {
+      data class Foo(val instant: Instant)
+
+      val i1 = Instant.fromEpochMilliseconds(1640995200000).plus(200.nanoseconds)
+      val i2 = i1.plus(400.nanoseconds)
+      i1 shouldNotBe i2 // Custom eq not yet registered
+
+      val f1 = Foo(i1)
+      val f2 = Foo(i2)
+      f1 shouldNotBe f2 // Custom eq not yet registered
+
+      DefaultEqResolver.register(Instant::class, InstantWithoutNanosEq)
+      f1 shouldBe f2
+      DefaultEqResolver.unregister(Instant::class)
    }
 
    "Data class instances are determined to be dataclasses" {
@@ -152,5 +202,3 @@ class `DataClassEq AssertionConfig Tests` : StringSpec({
       throwable.message shouldBe "expected:<DataClass1(a=2, b=3.5)> but was:<DataClass1(a=1, b=3.4)>"
    }
 })
-
-data class CustomException(private val value: String) : Exception()
