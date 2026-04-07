@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.listeners.TestListener
@@ -22,7 +24,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
  * @see
  * [StartablePerTestListener]
  * */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 class StartablePerSpecListener<T : Startable>(private val startable: T) : TestListener {
    private val testLifecycleAwareListener = TestLifecycleAwareListener(startable)
 

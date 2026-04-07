@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.extensions.MountableExtension
@@ -15,7 +17,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
 import java.util.Optional
 import org.testcontainers.containers.DockerComposeContainer
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 class DockerComposeContainersExtension<T : DockerComposeContainer<*>>(
    private val container: T,
    private val lifecycleMode: LifecycleMode = LifecycleMode.Spec,

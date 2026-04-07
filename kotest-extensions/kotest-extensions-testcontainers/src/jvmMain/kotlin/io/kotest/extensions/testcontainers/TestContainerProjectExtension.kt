@@ -11,16 +11,15 @@ import java.util.concurrent.locks.ReentrantLock
 
 /**
  * A Kotest [MountableExtension] for [GenericContainer]s that will launch the container
- * upon first install, and close after the test suite has completed. This extension will only
- * launch the container once per project, and will not reset it between specs.
- *
- * Note: This extension requires Kotest 6.0+
+ * upon first installation, and close after the test suite has completed. This extension will only
+ * launch the container once per project and will not reset it between specs.
  *
  * @param container the specific test container type
  */
 class TestContainerProjectExtension<T : GenericContainer<*>>(
    private val container: T,
    private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
+   private val onStart: T.() -> Unit = {},
 ) : MountableExtension<T, T>, AfterProjectListener {
 
    private val ref = AtomicReference<T>(null)
@@ -32,6 +31,7 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
       if (t == null) {
          configure(container)
          container.start()
+         onStart(container)
          container.followOutput(config.logConsumer)
          ref.set(container)
       }
