@@ -17,44 +17,47 @@ Creating a custom spec style involves these pieces:
 
 :::tip
 If you want to see a real-world example of a custom spec style, then check out
-the [Prepared](https://prepared.opensavvy.dev/api/runner-kotest/index.html) library which offers an advanced
-fixture based DSL on top of Kotest.
+the [Prepared](https://prepared.opensavvy.dev/api/runner-kotest/index.html) library, which offers an advanced
+fixture-based DSL on top of Kotest.
 :::
 
 ## Step 1 — Define a spec base class
 
 Create a subclass of `io.kotest.core.spec.AbstractSpec` with the name of your style. In this example, we'll make a
 style we will call `SuiteSpec`, which has `suite` and `test` functions. These functions are the keywords
-of your test style – the DSL you are creating. These methods delegate to the `add` method
-provided by the `AbstractSpec` base class. When adding these root tests, use the `RootTestBuilder` class.
+of your test style – the DSL you are creating. In this example, `suite` will act as parent test containers, and `test`
+as leaf level tests.
+
+These methods will delegate to the `add` method provided by the `AbstractSpec` base class which is used to register
+tests. This `add` method expects instances of `TestDefinition` which represent the test in source code. Create these
+`TestDefinition`s by using the `TestDefinitionBuilder` builder.
 
 Tests in Kotest are of the type `suspend TestScope.() -> Unit`. These are the test bodies that are executed
-when a test is run and will be passed into the builders that create the test definition.
+when a test is run and will be passed into the builders that create the test definition. Notice in the example below
+that the `test` lambda for the `suite` fnction is actually of type `suspend SuiteScope.() -> Unit`. This is because
+suites can contain nested tests, and so we need to provide helper methods for registering nested tests using the same
+syntax as this `SuiteSpec` class. More on this in the next step.
 
 ```kotlin
 import io.kotest.core.spec.AbstractSpec
 
-abstract class SuiteSpec: AbstractSpec() {
+abstract class SuiteSpec : AbstractSpec() {
 
   @TestRunnable
   fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
     add(
-      RootTestBuilder.builder(
-        TestNameBuilder.builder(name).build(),
-        TestType.Container,
-        test = { SuiteScope(this).test() },
-      ).build()
+      TestDefinitionBuilder
+        .builder(TestNameBuilder.builder(name).build(), TestType.Container)
+        .build { SuiteScope(this).test() }
     )
   }
 
   @TestRunnable
   fun test(name: String, test: suspend TestScope.() -> Unit) {
     add(
-      RootTestBuilder.builder(
-        TestNameBuilder.builder(name).build(),
-        TestType.Test,
-        test = test,
-      ).build()
+      TestDefinitionBuilder
+        .builder(TestNameBuilder.builder(name).build(), TestType.Test)
+        .build(test)
     )
   }
 }
@@ -71,48 +74,37 @@ This parameter represents the test name and is used to display the test name in 
 ## Step 2 — Create Scope interfaces for nested tests
 
 When tests can be nested, it is recommended to extend `TestScope` to add scope-specific DSL functions. While
-`TestScope` allows nested tests via the `registerTestCase` method, you typically want to expose nested DSL
+`TestScope` allows nested tests via the `registerTest` method, you typically want to expose nested DSL
 delegates that align with your test style.
 
-Extend `io.kotest.core.test.DelegatingTestScope` and add your DSL methods. In this example, we are repeating
-what we had at the root level.
+Extend `io.kotest.core.test.AbstractTestScope` and add your DSL methods. In this example, we are repeating
+the same syntax we had at the root level. The `registerTest` method here is analagous to the `add` method
+at the root level.
 
 ```kotlin
-import io.kotest.core.test.DelegatingTestScope
-import io.kotest.core.test.TestRunnable
-import io.kotest.core.test.TestScope
-
-class SuiteScope(delegate: TestScope) : DelegatingTestScope(delegate) {
+class SuiteScope(delegate: TestScope) : AbstractTestScope(delegate) {
 
   @TestRunnable
   suspend fun suite(name: String, test: suspend SuiteScope.() -> Unit) {
-    registerTestCase(
-      NestedTest(
-        name = TestNameBuilder.builder(name).build(),
-        test = { SuiteScope(this).test() },
-        config = null,
-        type = TestType.Container,
-        source = sourceRef(),
-        factoryId = null,
-      )
+    registerTest(
+      TestDefinitionBuilder
+        .builder(TestNameBuilder.builder(name).build(), TestType.Container)
+        .build { SuiteScope(this).test() }
     )
   }
 
-   @TestRunnable
-   suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
-      registerTestCase(
-         NestedTest(
-            name = TestNameBuilder.builder(name).build(),
-            test = test,
-            config = null,
-            type = TestType.Test,
-            source = sourceRef(),
-            factoryId = null,
-         )
-      )
-   }
+  @TestRunnable
+  suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
+    registerTest(
+      TestDefinitionBuilder
+        .builder(TestNameBuilder.builder(name).build(), TestType.Test)
+        .build(test)
+        .build { SuiteScope(this).test() }
+    )
+  }
 }
 ```
+
 ## IntelliJ IDEA integration
 
 The Kotest IntelliJ plugin automatically recognises `@TestRunnable`-annotated functions inside

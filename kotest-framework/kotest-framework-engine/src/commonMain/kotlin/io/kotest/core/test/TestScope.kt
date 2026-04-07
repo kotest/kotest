@@ -34,7 +34,7 @@ interface TestScope : CoroutineScope {
     * This method is not intended for use directly, but by spec styles which use this to support their DSL.
     */
    @KotestInternal
-   @Deprecated("Use registerTest with TestDefinitionBuilder. Will be removed in 7.0")
+   @Deprecated("Use registerTest with TestDefinitionBuilder. Deprecated in 6.2. Will be removed in 7.0")
    suspend fun registerTestCase(nested: NestedTest)
 
    /**
@@ -66,7 +66,7 @@ class DefaultTestScope(
    private val onRegister: suspend (NestedTest) -> Unit,
 ) : TestScope {
 
-   @Deprecated("Use registerTestCase(TestDefinition) instead")
+   @Deprecated("Use registerTest(TestDefinition) instead. Deprecated in 6.2. Will be removed in 7.0")
    override suspend fun registerTestCase(nested: NestedTest) {
       onRegister(nested)
    }
