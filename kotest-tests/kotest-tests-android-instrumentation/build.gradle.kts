@@ -1,48 +1,67 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+@file:OptIn(ExperimentalBuildToolsApi::class)
+
+import org.jetbrains.kotlin.buildtools.api.ExperimentalBuildToolsApi
+import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-   id("kotlin-conventions")
-   alias(libs.plugins.android.library)
-   alias(libs.plugins.jetbrains.kotlin.android)
-   alias(libs.plugins.jetbrains.kotlin.compose)
+   id("kotest-base")
+   id("com.android.library")
+}
+
+val catalog: VersionCatalog = versionCatalogs.named("libs")
+
+android {
+   namespace = "io.kotest.tests.android.instrumented"
+   compileSdk = 36
+   defaultConfig {
+      minSdk = 24
+   }
 }
 
 kotlin {
-   jvm()
-   jvmToolchain { languageVersion = JavaLanguageVersion.of(21) }
-   sourceSets {
-      jvmTest {
-         dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
-            implementation(projects.kotestRunner.kotestRunnerJunit4)
-            implementation(projects.kotestAssertions.kotestAssertionsCore)
+   compilerOptions {
 
-            // sets the versions for all the compose libraries
-//            val composeBom = platform(libs.androidx.compose.bom)
-//            implementation(composeBom)
-//            testImplementation(composeBom)
-//            androidTestImplementation(composeBom)
+      freeCompilerArgs.add("-Xexpect-actual-classes")
 
-            implementation(libs.androidx.core.ktx)
-            implementation(libs.androidx.appcompat)
-            implementation(libs.material)
+      // See https://mbonnin.net/2026-02-22-kotlin-versions
+      @Suppress("OPT_IN_USAGE")
+      compilerVersion.set(catalog.findVersion("kotlin-compile-version").get().toString())
+      coreLibrariesVersion = catalog.findVersion("kotlin-core-libaries-version").get().toString()
 
-            // dependencies for device-side tests
-//            androidTestImplementation(libs.androidx.junit)
-//            androidTestImplementation(libs.androidx.test.runner)
-//            androidTestImplementation(libs.androidx.ui.test.junit4)
-         }
+      apiVersion.set(
+         KotlinVersion.fromVersion(
+            catalog.findVersion("kotlin-language-version").get().toString().substringBeforeLast('.')
+         )
+      )
+
+      languageVersion.set(
+         KotlinVersion.fromVersion(
+            catalog.findVersion("kotlin-language-version").get().toString().substringBeforeLast('.')
+         )
+      )
+
+      allWarningsAsErrors = false
+   }
+   sourceSets.configureEach {
+      languageSettings {
+         optIn("io.kotest.common.KotestInternal")
+         optIn("kotlin.contracts.ExperimentalContracts")
+         optIn("kotlin.experimental.ExperimentalTypeInference")
+         optIn("kotlin.time.ExperimentalTime")
       }
    }
 }
 
-tasks.withType<KotlinJvmCompile>().configureEach {
-   compilerOptions {
-      jvmTarget.set(JvmTarget.JVM_21)
-   }
-}
+dependencies {
+   implementation(projects.kotestFramework.kotestFrameworkEngine)
+   implementation(projects.kotestRunner.kotestRunnerJunit4)
+   implementation(projects.kotestAssertions.kotestAssertionsCore)
 
-tasks.withType<JavaCompile>().configureEach {
-   options.release.set(21)
+   implementation(libs.androidx.core.ktx)
+   implementation(libs.androidx.appcompat)
+   implementation(libs.material)
+
+   androidTestImplementation(libs.androidx.junit)
+   androidTestImplementation(libs.androidx.test.runner)
+   androidTestImplementation(libs.androidx.ui.test.junit4)
 }
