@@ -33,10 +33,10 @@ android {
       animationsDisabled = true
       managedDevices {
          localDevices {
-            create("pixel2Api30") {
-               device = "Pixel 2"
-               apiLevel = 30
-               systemImageSource = "aosp"
+            create("pixel6Api34") {
+               device = "Pixel 6"
+               apiLevel = 34
+               systemImageSource = "google"
             }
          }
       }
@@ -81,7 +81,7 @@ kotlin {
 // Use: ./gradlew pixel2Api30DebugAndroidTest
 // The managed device handles the full AVD lifecycle (download image, boot, test, shutdown).
 tasks.named("check") {
-   dependsOn("pixel2Api30DebugAndroidTest")
+   dependsOn("pixel6Api34DebugAndroidTest")
 }
 
 dependencies {

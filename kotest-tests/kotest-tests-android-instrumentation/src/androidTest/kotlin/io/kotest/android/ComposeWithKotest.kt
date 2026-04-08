@@ -3,13 +3,12 @@ package io.kotest.android
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.test.junit4.ComposeContentTestRule
-import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.onNodeWithText
-import io.kotest.core.spec.IsolationMode
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.runComposeUiTest
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.runner.junit4.KotestTestRunner
-import org.junit.Rule
 import org.junit.runner.RunWith
 
 /**
@@ -21,35 +20,29 @@ import org.junit.runner.RunWith
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
+@OptIn(ExperimentalTestApi::class)
 @RunWith(KotestTestRunner::class)
-open class ComposeWithKotest : FreeSpec() {
-
-   @get:Rule
-   val composeTestRule: ComposeContentTestRule = createComposeRule()
-
+class ComposeWithKotest : FreeSpec() {
    init {
-
-      // ComposeContentTestRule holds a TestCoroutineScheduler that cannot be reused across tests.
-      // InstancePerTest creates a fresh spec instance (and thus a fresh composeTestRule) per root.
-      isolationMode = IsolationMode.InstancePerRoot
-
       "should have initial state of 0" {
-
-         composeTestRule.setContent {
-            TestComposable()
+         runComposeUiTest {
+            setContent {
+               TestComposable()
+            }
+            onNodeWithText("0").assertExists()
+            onNodeWithText("Click me!").assertExists()
          }
-
-         composeTestRule.onNodeWithText("0").assertExists()
-         composeTestRule.onNodeWithText("Click me!").assertExists()
       }
       "should increment when clicked" {
-
-         composeTestRule.setContent {
-            TestComposable()
+         runComposeUiTest {
+            setContent {
+               TestComposable()
+            }
+            onNodeWithText("0").assertExists()
+            onNodeWithText("Click me!").assertExists()
+            onNodeWithText("Click me!").performClick()
+            onNodeWithText("1").assertExists()
          }
-
-         composeTestRule.onNodeWithText("0").assertExists()
-         composeTestRule.onNodeWithText("Click me!").assertExists()
       }
    }
 }
