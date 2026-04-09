@@ -11,14 +11,13 @@ import java.io.File
 
 /**
  * A Kotest [MountableExtension] for [ComposeContainer]s that will launch the container
- * upon first install, and close after the spec has completed.
- *
- * Note: This extension requires Kotest 6.0+
+ * upon first installation, and close after the spec has completed.
  *
  * @param container the specific test container type
  */
 class ComposeContainerSpecExtension(
    private val container: ComposeContainer,
+   private val onStart: (ComposeContainer) -> Unit = {},
 ) : MountableExtension<ComposeContainer, ComposeContainer>, AfterSpecListener, TestListener {
 
    companion object {
@@ -31,6 +30,7 @@ class ComposeContainerSpecExtension(
    override fun mount(configure: ComposeContainer.() -> Unit): ComposeContainer {
       configure(container)
       container.start()
+      onStart(container)
       return container
    }
 

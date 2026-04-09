@@ -11,15 +11,17 @@ import java.util.concurrent.locks.ReentrantLock
 
 /**
  * A Kotest [MountableExtension] for [ComposeContainer]s that will launch the container
- * upon first install, and close after the test suite has completed. This extension will only
- * launch the container once per project, and will not reset it between specs.
+ * upon first installation, and close after the test suite has completed. This extension will only
+ * initalize the container once per project and will not reset it between specs regardless of how many
+ * specs it is installed into.
  *
- * Note: This extension requires Kotest 6.0+
+ * This is thread safe, so it is safe to be used in specs that run in parallel.
  *
  * @param container the specific test container type
  */
 class ComposeContainerProjectExtension(
    private val container: ComposeContainer,
+   private val onStart: (ComposeContainer) -> Unit = {},
 ) : MountableExtension<ComposeContainer, ComposeContainer>, AfterProjectListener {
 
    companion object {
@@ -38,6 +40,7 @@ class ComposeContainerProjectExtension(
       if (t == null) {
          configure(container)
          container.start()
+         onStart(container)
          ref.set(container)
       }
       lock.unlock()
