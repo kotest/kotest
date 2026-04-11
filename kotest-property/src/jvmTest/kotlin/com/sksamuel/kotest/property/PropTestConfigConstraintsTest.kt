@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -15,6 +16,7 @@ import io.kotest.property.internal.proptest
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeSource
 
+@OptIn(ExperimentalKotest::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class PropTestConfigConstraintsTest : FunSpec() {
    init {
