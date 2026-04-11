@@ -125,8 +125,8 @@ class EventuallyTest : FunSpec() {
 
       test("fail tests that do not complete within the time allowed") {
          val config = eventuallyConfig {
-            duration = 10.milliseconds
-            interval = 1.milliseconds
+            duration = 50.milliseconds
+            interval = 5.milliseconds
          }
 
          val failure = shouldFail {
