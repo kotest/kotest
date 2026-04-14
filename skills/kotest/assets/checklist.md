@@ -23,7 +23,6 @@ Use this checklist after setting up Kotest or migrating from another test framew
 ## Test Discovery
 - [ ] Test classes extend a Kotest Spec style (e.g., `FunSpec`, `DescribeSpec`)
 - [ ] Tests are inside `init {}` block or class body lambda
-- [ ] IntelliJ shows gutter icons for running individual tests
 - [ ] Test report shows correct test names and hierarchy
 
 ## Assertions
@@ -34,7 +33,6 @@ Use this checklist after setting up Kotest or migrating from another test framew
 
 ## Property Testing (if applicable)
 - [ ] `kotest-property` dependency added
-- [ ] `forAll` / `checkAll` tests execute with default 1000 iterations
 - [ ] Custom generators produce expected value ranges
 - [ ] Shrinking produces minimal failing examples
 
@@ -49,7 +47,7 @@ Use this checklist after setting up Kotest or migrating from another test framew
 - [ ] `@BeforeEach`/`@AfterEach` converted to `beforeEach`/`afterEach`
 - [ ] `@BeforeAll`/`@AfterAll` converted to `beforeSpec`/`afterSpec`
 - [ ] `assertEquals`/`assertTrue` replaced with `shouldBe`/`shouldBeTrue()`
-- [ ] `@ParameterizedTest` replaced with `withTests(...)` data-driven testing
+- [ ] `@ParameterizedTest` replaced with `withXXX(...)` data-driven testing
 - [ ] `@Disabled` replaced with `xtest` or `.config(enabled = false)`
 - [ ] `@Tag` replaced with Kotest `Tag` objects and `.config(tags = ...)`
 
@@ -66,5 +64,4 @@ Use this checklist after setting up Kotest or migrating from another test framew
 - [ ] Concurrency settings work as expected (`SpecConcurrencyMode`, `TestConcurrencyMode`)
 - [ ] Data-driven tests generate individual test entries in the report
 - [ ] Non-deterministic helpers (`eventually`, `continually`, `retry`) work as expected
-- [ ] `autoClose` properly closes resources after spec execution
 
