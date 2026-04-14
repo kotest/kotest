@@ -73,8 +73,6 @@ dependencies {
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
 
    // Framework
-   //TODO check if we can get away in not publishing this
-   //nmcpAggregation(projects.kotestFramework.kotestFrameworkPluginBridge)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)
