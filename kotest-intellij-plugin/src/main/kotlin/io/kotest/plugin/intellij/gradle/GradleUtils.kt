@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.gradle
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
@@ -14,7 +16,6 @@ import org.jetbrains.plugins.gradle.settings.TestRunner
 import org.jetbrains.plugins.gradle.util.GradleModuleData
 import org.jetbrains.plugins.gradle.util.GradleTaskData
 
-@Suppress("DEPRECATION")
 internal object GradleUtils {
 
    /**
@@ -129,6 +130,5 @@ internal object GradleUtils {
    }
 
    fun isGradleTestRunner(module: Module?): Boolean = runner(module) != TestRunner.PLATFORM
-   fun isPlatformRunner(module: Module?): Boolean = runner(module) == TestRunner.PLATFORM
 }
 

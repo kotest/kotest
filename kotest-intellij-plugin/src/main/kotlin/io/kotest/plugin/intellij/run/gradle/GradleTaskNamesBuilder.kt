@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.run.gradle
 
 import com.intellij.openapi.module.Module
