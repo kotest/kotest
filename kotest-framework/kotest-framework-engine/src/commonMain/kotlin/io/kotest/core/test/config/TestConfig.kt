@@ -8,6 +8,7 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
+import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
@@ -112,6 +113,12 @@ data class TestConfig(
    // if set to a non-null value, then this is the delay between retries
    // if left to null, then the default provided by a spec or the project config will be used
    val retryDelay: Duration? = null,
+
+   /**
+    * Arbitrary type-safe metadata attached to this test.
+    * Use [MetadataKey] to define keys.
+    */
+   val metadata: Map<MetadataKey<*>, Any> = emptyMap(),
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }
