@@ -104,8 +104,4 @@ class ResolvedTestMetadata internal constructor(
    fun keys(): Set<MetadataKey<*>> = entries.keys
 
    fun toMap(): Map<MetadataKey<*>, Any> = entries
-
-   companion object {
-      val EMPTY = ResolvedTestMetadata(emptyMap())
-   }
 }

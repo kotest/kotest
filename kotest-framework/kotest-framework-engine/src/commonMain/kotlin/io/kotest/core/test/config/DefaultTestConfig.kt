@@ -7,8 +7,8 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.TestCaseOrder
+import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestMetadata
 import kotlin.time.Duration
 
 /**
@@ -41,5 +41,5 @@ data class DefaultTestConfig(
    val failfast: Boolean? = null,
    var retries: Int? = null,
    var retryDelay: Duration? = null,
-   val metadata: TestMetadata = TestMetadata(),
+   val metadata: Map<MetadataKey<*>, Any> = emptyMap(),
 )

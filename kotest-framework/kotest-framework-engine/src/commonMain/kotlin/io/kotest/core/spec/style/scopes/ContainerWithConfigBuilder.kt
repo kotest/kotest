@@ -5,7 +5,7 @@ import io.kotest.core.names.TestName
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
-import io.kotest.core.test.TestMetadata
+import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
@@ -32,7 +32,7 @@ class ContainerWithConfigBuilder<T>(
       timeout: Duration? = null,
       failfast: Boolean? = null,
       blockingTest: Boolean? = null,
-      metadata: TestMetadata = TestMetadata(),
+      metadata: Map<MetadataKey<*>, Any> = emptyMap(),
       test: suspend T.() -> Unit
    ) {
       val config = TestConfig(

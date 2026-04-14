@@ -6,8 +6,6 @@ import io.kotest.core.factory.TestFactory
 import io.kotest.core.listeners.AfterProjectListener
 import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.core.spec.style.scopes.RootScope
-import io.kotest.core.test.MetadataKey
-import io.kotest.core.test.TestMetadata
 import kotlin.js.JsName
 
 /**
@@ -45,12 +43,6 @@ abstract class DslDrivenSpec : Spec(), RootScope {
       if (sealed) throw InvalidDslException("Cannot add a tag after the spec has been instantiated")
       super.tags(*tags)
    }
-
-   override val metadata: TestMetadata
-      get() {
-         if (sealed) throw InvalidDslException("Cannot access metadata for mutation after the spec has been instantiated")
-         return super.metadata
-      }
 
    /**
     * Include the tests and extensions from the given [TestFactory] in this spec.

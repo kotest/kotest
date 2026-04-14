@@ -195,18 +195,17 @@ class TestConfigResolver(
       val merged = mutableMapOf<MetadataKey<*>, Any>()
 
       // lowest priority: spec defaults
-      testCase.spec.defaultTestConfig?.metadata?.entriesForMerge?.let(merged::putAll)
+      testCase.spec.defaultTestConfig?.metadata?.forEach { (k, v) -> merged[k] = v }
 
       // spec-level DSL: metadata[key] = value in spec init block
-      merged.putAll(testCase.spec.appliedMetadata().entriesForMerge)
+      merged.putAll(testCase.spec._metadata.entriesForMerge)
 
       // test/container config chain: outermost first, innermost last (child wins)
       testConfigs(testCase)
          .asReversed()
-         .forEach { merged.putAll(it.metadata.entriesForMerge) }
+         .forEach { it.metadata.forEach { (k, v) -> merged[k] = v } }
 
-      return if (merged.isEmpty()) ResolvedTestMetadata.EMPTY
-      else ResolvedTestMetadata(merged.toMap())
+      return ResolvedTestMetadata(merged.toMap())
    }
 
    fun enabled(testCase: TestCase): EnabledOrReasonIf {

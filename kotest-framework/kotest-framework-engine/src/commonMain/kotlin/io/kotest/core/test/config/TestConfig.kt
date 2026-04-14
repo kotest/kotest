@@ -8,8 +8,8 @@ import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.NestedTest
+import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestCaseSeverityLevel
-import io.kotest.core.test.TestMetadata
 import kotlin.time.Duration
 
 /**
@@ -118,7 +118,7 @@ data class TestConfig(
     * Arbitrary type-safe metadata attached to this test.
     * Use [MetadataKey] to define keys.
     */
-   val metadata: TestMetadata = TestMetadata(),
+   val metadata: Map<MetadataKey<*>, Any> = emptyMap(),
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }

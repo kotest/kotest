@@ -86,8 +86,9 @@ class TestMetadataTest : FunSpec({
       snapshot.isEmpty() shouldBe false
    }
 
-   test("ResolvedTestMetadata.EMPTY is empty") {
-      ResolvedTestMetadata.EMPTY.isEmpty() shouldBe true
-      ResolvedTestMetadata.EMPTY.keys() shouldBe emptySet()
+   test("ResolvedTestMetadata from empty TestMetadata is empty") {
+      val resolved = TestMetadata().snapshot()
+      resolved.isEmpty() shouldBe true
+      resolved.keys() shouldBe emptySet()
    }
 })

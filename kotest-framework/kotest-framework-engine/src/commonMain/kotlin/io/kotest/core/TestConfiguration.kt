@@ -52,13 +52,13 @@ abstract class TestConfiguration : Extendable() {
    internal var _tags: Set<Tag> = emptySet()
 
    @JsName("_metadata")
-   internal var _metadata: TestMetadata = TestMetadata()
+   internal val _metadata: TestMetadata = TestMetadata()
 
    /**
     * Returns the metadata container for this spec or factory.
     * Use operator syntax to set values: `metadata[key] = value`
     */
-   open val metadata: TestMetadata get() = _metadata
+   val metadata: TestMetadata get() = _metadata
 
    private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
 
@@ -86,8 +86,6 @@ abstract class TestConfiguration : Extendable() {
    }
 
    internal fun appliedTags() = _tags
-
-   internal fun appliedMetadata() = _metadata
 
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
