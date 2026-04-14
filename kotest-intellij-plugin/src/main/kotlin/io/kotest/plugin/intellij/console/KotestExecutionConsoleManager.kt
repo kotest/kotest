@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.process.ProcessEvent
@@ -142,7 +144,7 @@ class KotestExecutionConsoleManager : ExternalSystemExecutionConsoleManager<SMTR
       when (executionConsole) {
          is KotestSMTRunnerConsole -> {
             executionConsole.print(text, ConsoleViewContentType.getConsoleViewType(processOutputType))
-            executionConsole.onOutputHandler.onOutput(executionConsole, text, processOutputType)
+            executionConsole.onOutputHandler.onOutput(executionConsole, text)
          }
       }
    }
@@ -152,7 +154,7 @@ class KotestConsoleViewOnOutputHandler {
 
    private var buffer = StringBuilder()
 
-   fun onOutput(console: KotestSMTRunnerConsole, text: String, processOutputType: Key<*>) {
+   fun onOutput(console: KotestSMTRunnerConsole, text: String) {
       val startsWith = text.trim().startsWith("##teamcity[")
       val endsWith = text.trim().endsWith("]")
       if (startsWith && endsWith) {
