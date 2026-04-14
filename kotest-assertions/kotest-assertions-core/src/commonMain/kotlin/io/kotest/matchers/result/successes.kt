@@ -12,7 +12,7 @@ import io.kotest.matchers.should
  *
  * @see [shouldBeFailure]
  */
-@Deprecated("Use shouldBeFailure instead", ReplaceWith("shouldBeFailure()"))
+@Deprecated("Use shouldBeFailure instead. Deprecated since 6.0. Will be removed in 6.3", ReplaceWith("shouldBeFailure()"))
 fun <T> Result<T>.shouldNotBeSuccess(): Throwable = shouldBeFailure()
 
 /**
@@ -46,7 +46,7 @@ infix fun <T> Result<T>.shouldBeSuccess(expected: T): T {
  * }
  *
  * failure(MyException) shouldBeSuccess { value: String ->
- *   // Never gets called, as result was a failure
+ *   // Never gets called, as the result was a failure
  * }
  *
  */
