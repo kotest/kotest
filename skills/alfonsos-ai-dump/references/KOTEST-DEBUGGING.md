@@ -92,13 +92,14 @@ must be set via:
 ./gradlew test -Dkotest.framework.config.fqn=com.example.MyProjectConfig
 ```
 
-## Step 7: Reproduce with a Minimal Example
+## Step 7: Reproduce with a Minimal Example and report
 
 If the issue is still unclear, ask the user to create a minimal reproduction:
 
 1. Create a new Gradle project with only the relevant Kotest dependencies
 2. Copy the failing spec with the minimum code needed to trigger the bug
-3. Confirm the failure reproduces before sharing
+3. Confirm the failure reproduces
+4. ask the user to share it with the kotest team with a brief summary of the issue and steps to reproduce via https://github.com/kotest/kotest/issues/new/choose
 
 A reproduction that uses `StringSpec` or `FunSpec` with no external dependencies is ideal.
 
