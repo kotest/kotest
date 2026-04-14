@@ -192,6 +192,9 @@ dependencies {
       testFramework(TestFrameworkType.Plugin.Java)
    }
 
+   // pulls in the shared utils between IJ plugin and framework
+   implementation(projects.kotestFramework.kotestFrameworkPluginBridge)
+
    implementation("org.jetbrains:annotations:26.1.0")
 
    // https://youtrack.jetbrains.com/issue/IJPL-159134/JUnit5-Test-Framework-refers-to-JUnit4-java.lang.NoClassDefFoundError-junit-framework-TestCase

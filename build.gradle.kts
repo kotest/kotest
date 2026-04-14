@@ -15,8 +15,8 @@ apiValidation {
          "io.kotest.framework.multiplatform.native"
       )
    )
-   // the intellij plugin is not an API and doesn't need its api to be validated
-   ignoredProjects.addAll(listOf("kotest-intellij-plugin"))
+   // the intellij plugin and bridge module are not public APIs and don't need their api to be validated
+   ignoredProjects.addAll(listOf("kotest-intellij-plugin", "kotest-framework-plugin-bridge"))
    nonPublicMarkers.addAll(
       listOf(
          "io.kotest.common.KotestInternal",
@@ -71,6 +71,8 @@ dependencies {
    nmcpAggregation(projects.kotestExtensions.kotestExtensionsKoin)
 
    // Framework
+   //TODO check if we can get away in not publishing this
+   //nmcpAggregation(projects.kotestFramework.kotestFrameworkPluginBridge)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkEngine)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkStandalone)
    nmcpAggregation(projects.kotestFramework.kotestFrameworkSymbolProcessor)

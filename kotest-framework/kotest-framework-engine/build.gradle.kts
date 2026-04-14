@@ -17,6 +17,9 @@ kotlin {
 
       commonMain {
          dependencies {
+            // pulls in the shared utils between IJ plugin and framework
+            implementation(projects.kotestFramework.kotestFrameworkPluginBridge)
+
             // this pulls in the should DSL, which is used in the engine to track assertion usage
             implementation(projects.kotestAssertions.kotestAssertionsShared)
 

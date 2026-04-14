@@ -1,6 +1,7 @@
 package io.kotest.core.names
 
 import io.kotest.common.KotestInternal
+import io.kotest.framework.plugin.bridge.normalizeTestName
 
 /**
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
@@ -66,7 +67,7 @@ data class TestNameBuilder(
    }
 
    fun build(): TestName {
-      val trimmed = rawname.removeAllExtraWhitespaces()
+      val trimmed = rawname.normalizeTestName()
       val (focus, bang, parsedName) = when {
          trimmed.startsWith("!") -> Triple(first = false, second = true, third = trimmed.drop(1).trim())
          trimmed.startsWith("f:") -> Triple(first = true, second = false, third = trimmed.drop(2).trim())
@@ -75,6 +76,4 @@ data class TestNameBuilder(
 
       return TestName(parsedName, focus, bang, prefix, suffix, defaultAffixes)
    }
-
-   fun String.removeAllExtraWhitespaces() = this.split(Regex("\\s")).filterNot { it == "" }.joinToString(" ")
 }
