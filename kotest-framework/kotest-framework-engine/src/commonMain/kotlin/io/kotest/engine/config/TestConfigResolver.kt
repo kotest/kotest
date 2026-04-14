@@ -11,6 +11,8 @@ import io.kotest.core.spec.functionOverrideCallbacks
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.MetadataKey
+import io.kotest.core.test.ResolvedTestMetadata
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestType
@@ -183,6 +185,28 @@ class TestConfigResolver(
          testCase.spec.appliedTags() +
          (testCase.spec.defaultTestConfig?.tags ?: emptySet()) +
          testCase.spec::class.tags(projectConfig?.tagInheritance == true)
+   }
+
+   /**
+    * Resolves the metadata for a [TestCase] by merging metadata from all levels.
+    * Priority (child wins per-key): test/container config chain > spec DSL > spec defaults.
+    */
+   fun metadata(testCase: TestCase): ResolvedTestMetadata {
+      val merged = mutableMapOf<MetadataKey<*>, Any>()
+
+      // lowest priority: spec defaults
+      testCase.spec.defaultTestConfig?.metadata?.entriesForMerge?.let(merged::putAll)
+
+      // spec-level DSL: metadata[key] = value in spec init block
+      merged.putAll(testCase.spec.appliedMetadata().entriesForMerge)
+
+      // test/container config chain: outermost first, innermost last (child wins)
+      testConfigs(testCase)
+         .asReversed()
+         .forEach { merged.putAll(it.metadata.entriesForMerge) }
+
+      return if (merged.isEmpty()) ResolvedTestMetadata.EMPTY
+      else ResolvedTestMetadata(merged.toMap())
    }
 
    fun enabled(testCase: TestCase): EnabledOrReasonIf {

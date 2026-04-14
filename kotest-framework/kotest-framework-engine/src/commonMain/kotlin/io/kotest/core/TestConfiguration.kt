@@ -36,6 +36,7 @@ import io.kotest.core.spec.Spec
 import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
+import io.kotest.core.test.TestMetadata
 import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
 import kotlin.js.JsName
@@ -49,6 +50,15 @@ abstract class TestConfiguration : Extendable() {
 
    @JsName("_tags")
    internal var _tags: Set<Tag> = emptySet()
+
+   @JsName("_metadata")
+   internal var _metadata: TestMetadata = TestMetadata()
+
+   /**
+    * Returns the metadata container for this spec or factory.
+    * Use operator syntax to set values: `metadata[key] = value`
+    */
+   open val metadata: TestMetadata get() = _metadata
 
    private var _autoCloseables = emptyList<Lazy<AutoCloseable>>()
 
@@ -76,6 +86,8 @@ abstract class TestConfiguration : Extendable() {
    }
 
    internal fun appliedTags() = _tags
+
+   internal fun appliedMetadata() = _metadata
 
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
