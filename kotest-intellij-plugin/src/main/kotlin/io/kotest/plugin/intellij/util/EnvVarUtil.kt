@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.util
 
 import com.intellij.openapi.externalSystem.model.execution.ExternalSystemTaskExecutionSettings
