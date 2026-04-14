@@ -4,6 +4,7 @@ import io.kotest.core.Logger
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
+import io.kotest.core.spec.TestDefinition
 import io.kotest.core.test.NestedTest
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -217,6 +218,20 @@ internal class InstancePerTestSpecExecutor(
       private val duplicateTestNameHandler = DuplicateTestNameHandler()
       private val duplicateTestNameMode = context.specConfigResolver.duplicateTestNameMode(testCase.spec)
 
+      override suspend fun registerTest(test: TestDefinition) {
+         registerTestCase(
+            NestedTest(
+               name = test.name,
+               config = test.config,
+               type = test.type,
+               test = test.test,
+               source = test.source,
+               xmethod = test.xmethod,
+            )
+         )
+      }
+
+      @Deprecated("Use TestDefinition. Will be removed in 7.0")
       override suspend fun registerTestCase(nested: NestedTest) {
          logger.log { Pair(testCase.name.name, "Discovered nested test '${nested}'") }
 

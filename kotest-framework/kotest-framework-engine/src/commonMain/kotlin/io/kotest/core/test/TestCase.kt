@@ -48,15 +48,15 @@ data class TestCase(
    val spec: Spec,
    // a closure of the test function
    val test: suspend TestScope.() -> Unit,
-   // a reference to the source code where this test case was defined
+   // a reference to the source code where this test case was defined, only available on the JVM
    val source: SourceRef = sourceRef(),
-   // the type specifies if this test case is permitted to contain nested tests (container)
+   // the type specifies if this test case is permitted to contain nested tests (container) or if it is a leaf
    val type: TestType,
    // config values specified directly on the test itself
    val config: TestConfig? = null,
    // an optional factory id which is used to indicate which factory (if any) generated this test case.
    val factoryId: FactoryId? = null,
-   // the parent test case for this test at runtime, or null
+   // the parent test case for this test at runtime, or null if this is a root test
    val parent: TestCase? = null,
    // the state of xmethod when the test was defined
    val xmethod: TestXMethod? = null

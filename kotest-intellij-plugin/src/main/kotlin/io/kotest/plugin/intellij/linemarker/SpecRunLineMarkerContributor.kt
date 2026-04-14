@@ -28,9 +28,9 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
             // only consider tests
             if (!testMode && !ModuleUtil.hasTestSourceRoots(element.project)) return null
             if (!testMode && !element.containingFile.isTestFile()) return null
-            val spec = element.asKtClassOrObjectOrNull()
-            if (spec != null && spec.isRunnableSpec()) {
-               val fqn = spec.fqName?.asString()
+            val ktclass = element.asKtClassOrObjectOrNull() ?: return null
+            if (ktclass.isRunnableSpec()) {
+               val fqn = ktclass.fqName?.asString()
                val icon = if (fqn != null) {
                   getTestStateIcon(LineMarkerUtils.determineSpecState(element, fqn), true)
                } else {
@@ -42,7 +42,7 @@ class SpecRunLineMarkerContributor : RunLineMarkerContributor() {
                )
                // note that the run name is used for the tooltip, not the drop down
                // the drop down gets names from the created run configurations
-               { "Run ${spec.fqName?.shortName()}" }
+               { "Run ${ktclass.fqName?.shortName()}" }
             }
          }
       }

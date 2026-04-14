@@ -6,7 +6,7 @@ import io.kotest.matchers.shouldBe
 
 class StringSpecTestTypeTest : StringSpec() {
    init {
-      "context" {
+      "test" {
          this.testCase.type shouldBe TestType.Test
       }
    }

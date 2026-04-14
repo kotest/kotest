@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.engine.spec.xmethod
 
 import io.kotest.core.spec.style.FeatureSpec
+import kotlin.time.Duration.Companion.seconds
 
 class FeatureSpecXDisabledTest : FeatureSpec() {
 
@@ -11,6 +12,9 @@ class FeatureSpecXDisabledTest : FeatureSpec() {
             scenario("parent is ignored") {
                error("Boom")
             }
+            error("Boom")
+         }
+         xfeature("nested xfeature with config").config(timeout = 10.seconds) {
             error("Boom")
          }
          xscenario("nested xscenario should be ignored") {

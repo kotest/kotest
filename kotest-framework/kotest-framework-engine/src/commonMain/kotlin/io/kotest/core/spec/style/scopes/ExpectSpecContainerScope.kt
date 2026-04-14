@@ -1,9 +1,12 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -28,63 +31,51 @@ class ExpectSpecContainerScope(
 ) : AbstractContainerScope(testScope) {
 
    suspend fun context(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      context(name = name, xmethod = TestXMethod.NONE, test = test)
-   }
-
-   suspend fun fcontext(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      context(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(contextName(name), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .build { ExpectSpecContainerScope(this).test() }
+      )
    }
 
    suspend fun xcontext(name: String, test: suspend ExpectSpecContainerScope.() -> Unit) {
-      context(name = name, xmethod = TestXMethod.DISABLED, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(contextName(name), TestType.Container)
+            .withXmethod(TestXMethod.DISABLED)
+            .build { ExpectSpecContainerScope(this).test() }
+      )
    }
 
-   private suspend fun context(
-      name: String,
-      xmethod: TestXMethod,
-      test: suspend ExpectSpecContainerScope.() -> Unit
-   ) {
-      registerContainer(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
-         xmethod = xmethod,
-         config = null
-      ) { ExpectSpecContainerScope(this).test() }
-   }
-
-   suspend fun context(name: String) =
-      addContext(name = name, xmethod = TestXMethod.NONE)
-
-   suspend fun fcontext(name: String) =
-      addContext(name = name, xmethod = TestXMethod.FOCUSED)
-
-   suspend fun xcontext(name: String) =
-      addContext(name = name, xmethod = TestXMethod.DISABLED)
-
-   private suspend fun addContext(name: String, xmethod: TestXMethod) =
+   fun context(name: String) =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         name = contextName(name),
          context = this,
-         xmethod = xmethod,
+         xmethod = TestXMethod.NONE,
+      ) { ExpectSpecContainerScope(it) }
+
+   fun xcontext(name: String) =
+      ContainerWithConfigBuilder(
+         name = contextName(name),
+         context = this,
+         xmethod = TestXMethod.DISABLED,
       ) { ExpectSpecContainerScope(it) }
 
    suspend fun expect(name: String, test: suspend TestScope.() -> Unit) {
-      registerExpect(name = name, xmethod = TestXMethod.NONE, test = test)
-   }
-
-   suspend fun fexpect(name: String, test: suspend TestScope.() -> Unit) {
-      registerExpect(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(expectName(name), TestType.Test).build(test)
+      )
    }
 
    suspend fun xexpect(name: String, test: suspend TestScope.() -> Unit) {
-      registerExpect(name = name, xmethod = TestXMethod.DISABLED, test = test)
-   }
-
-   private suspend fun registerExpect(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestNameBuilder.builder(name).withPrefix("Expect: ").build(), xmethod = xmethod, config = null, test = test)
+      registerTest(
+         TestDefinitionBuilder.builder(expectName(name), TestType.Test)
+            .withXmethod(TestXMethod.DISABLED)
+            .build(test)
+      )
    }
 
    suspend fun expect(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+      val testName = expectName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(
          name = testName,
@@ -93,18 +84,8 @@ class ExpectSpecContainerScope(
       )
    }
 
-   suspend fun fexpect(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
-      TestDslState.startTest(testName)
-      return TestWithConfigBuilder(
-         name = testName,
-         context = this,
-         xmethod = TestXMethod.FOCUSED,
-      )
-   }
-
    suspend fun xexpect(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+      val testName = expectName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(
          name = testName,
@@ -112,4 +93,8 @@ class ExpectSpecContainerScope(
          xmethod = TestXMethod.DISABLED,
       )
    }
+
+   private fun expectName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
+   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").build()
 }
+

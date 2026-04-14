@@ -1,9 +1,12 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -31,12 +34,6 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
    suspend fun and(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       and(name, xmethod = TestXMethod.NONE, test)
 
-   suspend fun fand(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      and(name, xmethod = TestXMethod.FOCUSED, test)
-
-   suspend fun fAnd(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
-      and(name, xmethod = TestXMethod.FOCUSED, test)
-
    suspend fun xand(name: String, test: suspend BehaviorSpecWhenContainerScope.() -> Unit) =
       and(name, xmethod = TestXMethod.DISABLED, test)
 
@@ -48,77 +45,53 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
       xmethod: TestXMethod,
       test: suspend BehaviorSpecWhenContainerScope.() -> Unit,
    ) {
-      registerContainer(
-         name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null
-      ) {
-         BehaviorSpecWhenContainerScope(this).test()
-      }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(andName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { BehaviorSpecWhenContainerScope(this).test() }
+      )
    }
 
-   suspend fun And(name: String) =
-      addAnd(name, xmethod = TestXMethod.NONE)
+   fun And(name: String) = addAnd(name, xmethod = TestXMethod.NONE)
 
-   suspend fun and(name: String) =
-      addAnd(name, xmethod = TestXMethod.NONE)
+   fun and(name: String) = addAnd(name, xmethod = TestXMethod.NONE)
 
-   suspend fun fand(name: String) =
-      addAnd(name, xmethod = TestXMethod.FOCUSED)
+   fun xand(name: String) = addAnd(name, xmethod = TestXMethod.DISABLED)
 
-   suspend fun fAnd(name: String) =
-      addAnd(name, xmethod = TestXMethod.FOCUSED)
+   fun xAnd(name: String) = addAnd(name, xmethod = TestXMethod.DISABLED)
 
-   suspend fun xand(name: String) =
-      addAnd(name, xmethod = TestXMethod.DISABLED)
-
-   suspend fun xAnd(name: String) =
-      addAnd(name, xmethod = TestXMethod.DISABLED)
-
-   private suspend fun addAnd(
+   private fun addAnd(
       name: String,
       xmethod: TestXMethod
    ): ContainerWithConfigBuilder<BehaviorSpecWhenContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build(),
+         name = andName(name),
          context = this,
          xmethod = xmethod
       ) { BehaviorSpecWhenContainerScope(it) }
    }
 
-
    fun then(name: String) = TestWithConfigBuilder(
-      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+      thenName(name),
       this@BehaviorSpecWhenContainerScope,
       xmethod = TestXMethod.NONE,
    )
 
    fun Then(name: String) = TestWithConfigBuilder(
-      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+      thenName(name),
       this@BehaviorSpecWhenContainerScope,
       xmethod = TestXMethod.NONE,
    )
 
-   fun fthen(name: String) = TestWithConfigBuilder(
-      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
-      this@BehaviorSpecWhenContainerScope,
-      xmethod = TestXMethod.FOCUSED,
-   )
-
-   fun fThen(name: String) = TestWithConfigBuilder(
-      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
-      this@BehaviorSpecWhenContainerScope,
-      xmethod = TestXMethod.FOCUSED,
-   )
-
    fun xthen(name: String) = TestWithConfigBuilder(
-      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+      thenName(name),
       this@BehaviorSpecWhenContainerScope,
       xmethod = TestXMethod.DISABLED,
    )
 
    fun xThen(name: String) = TestWithConfigBuilder(
-      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
+      thenName(name),
       this@BehaviorSpecWhenContainerScope,
       xmethod = TestXMethod.DISABLED,
    )
@@ -137,10 +110,16 @@ class BehaviorSpecWhenContainerScope(val testScope: TestScope) :
 
    private suspend fun then(name: String, test: suspend TestScope.() -> Unit, xmethod: TestXMethod) {
       registerTest(
-         name = TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null,
-         test = test
+         TestDefinitionBuilder
+            .builder(thenName(name), TestType.Test)
+            .withXmethod(xmethod)
+            .build(test)
       )
    }
+
+   private fun andName(name: String): TestName =
+      TestNameBuilder.builder(name).withPrefix("And: ").withDefaultAffixes().build()
+
+   private fun thenName(name: String): TestName =
+      TestNameBuilder.builder(name).withPrefix("Then: ").withDefaultAffixes().build()
 }
