@@ -40,14 +40,15 @@ structured summary.
 
 ### Classify the Task
 
-| User Intent | Path |
-|-------------|------|
-| Start from scratch — new Kotest project | **Path A** — Setup & First Tests |
-| Migrate from JUnit/TestNG/Spek | **Path B** — Migration |
-| Add assertions to existing tests (any framework) | **Path C** — Assertions Only |
-| Add property-based testing | **Path D** — Property Testing |
+| User Intent                                                 | Path                                |
+|-------------------------------------------------------------|-------------------------------------|
+| Start from scratch — new Kotest project                     | **Path A** — Setup & First Tests    |
+| Migrate from JUnit/TestNG/Spek                              | **Path B** — Migration              |
+| Add assertions to existing tests (any framework)            | **Path C** — Assertions Only        |
+| Add property-based testing                                  | **Path D** — Property Testing       |
 | Configure advanced features (concurrency, extensions, tags) | **Path E** — Advanced Configuration |
-| Writing tests for Kotlin Multiplatform | **Path F** — KMP Testing |
+| Writing tests for Kotlin Multiplatform                      | **Path F** — KMP Testing            |
+| Debugging Kotest Issues                                     | **Path G** - Kotest Troubleshooting |
 
 ## Path A: Setup & First Tests
 
@@ -565,6 +566,20 @@ See [references/SETUP-REFERENCE.md](references/SETUP-REFERENCE.md) for platform-
 - On Native: Data-driven tests require at least one non-data test in the spec
 - Android instrumented tests use JUnit4 runner: `kotest-runner-junit4`
 
+## Path G: Kotest Debugging
+
+See [references/KOTEST-DEBUGGING.md](references/KOTEST-DEBUGGING.md) for the full guide.
+
+### Quick Checklist
+
+1. **Enable debug logging** — set `KOTEST_DEBUG=true` to get verbose engine output
+2. **Collect versions** — Kotest, Kotlin, Gradle, JVM, and target platform
+3. **Capture full output** — `KOTEST_DEBUG=true ./gradlew test 2>&1 | tee kotest-debug.log`
+4. **Check test reports** — `build/reports/tests/test/index.html`
+5. **Isolate the failure** — `./gradlew test --tests "com.example.MyFailingTest"`
+6. **Verify ProjectConfig** — grep debug output for `projectconfig` if config changes have no effect
+7. **Reproduce minimally** — stripped-down spec with no external dependencies
+
 ## Verification
 
 After setup or migration, verify with the [checklist](assets/checklist.md). Key checks:
@@ -603,4 +618,5 @@ See [references/KNOWN-ISSUES.md](references/KNOWN-ISSUES.md) for details. Key go
 - [Property Testing Reference](references/PROPERTY-TESTING-REFERENCE.md) — generators, config, shrinking
 - [Migration Guide](references/MIGRATION-GUIDE.md) — JUnit 4/5, TestNG, Spek migration mappings
 - [Known Issues](references/KNOWN-ISSUES.md) — common problems and workarounds
+- [Kotest Debugging](references/KOTEST-DEBUGGING.md) — how to gather diagnostic info and reproduce issues
 
