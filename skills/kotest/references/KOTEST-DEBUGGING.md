@@ -9,14 +9,16 @@ Kotest engine. This prints lifecycle events, spec discovery, extension callbacks
 resolution to stderr.
 
 **Gradle (one-off):**
+
 ```bash
 KOTEST_DEBUG=true ./gradlew test
 ```
 
 **Gradle (persistent in build file):**
+
 ```kotlin
 tasks.withType<Test>().configureEach {
-    environment("KOTEST_DEBUG", "true")
+  environment("KOTEST_DEBUG", "true")
 }
 ```
 
@@ -24,6 +26,7 @@ tasks.withType<Test>().configureEach {
 Add `KOTEST_DEBUG=true` to the environment variables field of the run configuration.
 
 The debug output will include lines such as:
+
 ```
 [kotest] loading spec io.example.MySpec
 [kotest] executing test: my test name
@@ -99,7 +102,8 @@ If the issue is still unclear, ask the user to create a minimal reproduction:
 1. Create a new Gradle project with only the relevant Kotest dependencies
 2. Copy the failing spec with the minimum code needed to trigger the bug
 3. Confirm the failure reproduces
-4. ask the user to share it with the kotest team with a brief summary of the issue and steps to reproduce via https://github.com/kotest/kotest/issues/new/choose
+4. ask the user to share it with the kotest team with a brief summary of the issue and steps to reproduce
+   via https://github.com/kotest/kotest/issues/new/choose
 
 A reproduction that uses `StringSpec` or `FunSpec` with no external dependencies is ideal.
 
@@ -112,6 +116,7 @@ KOTEST_DEBUG=true ./gradlew test 2>&1 | grep -i "spec\|discover\|scan"
 ```
 
 Check:
+
 - `useJUnitPlatform()` is present in the `test` task configuration (JVM)
 - For KMP: KSP plugin and Kotest Gradle plugin are both applied
 - The spec class is not abstract and extends a Kotest spec style
@@ -123,6 +128,7 @@ KOTEST_DEBUG=true ./gradlew test 2>&1 | grep -i "extension\|listener\|before\|af
 ```
 
 Check:
+
 - Extension is registered via `extension(...)` inside the spec, or globally in `ProjectConfig`
 - `@AutoScan` was removed in Kotest 6.0 — explicit registration is required
 
@@ -132,7 +138,7 @@ Add a short timeout to isolate the hanging test:
 
 ```kotlin
 test("my test").config(timeout = 5.seconds) {
-    // ...
+  // ...
 }
 ```
 
