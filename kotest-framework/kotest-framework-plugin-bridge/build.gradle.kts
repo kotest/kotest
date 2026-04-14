@@ -5,5 +5,6 @@ plugins {
    id("kotest-native-conventions")
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
-   id("kotest-publishing-conventions")
+   //TODO check if we can get away by not publishing this
+   //id("kotest-publishing-conventions")
 }
