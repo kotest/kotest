@@ -35,7 +35,7 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
          }
       }
       val partialMismatches =
-         describePartialMatchesInStringForPrefix(escapedPrefix.toString(), escapedValue.toString()).toString()
+         describePartialMatchesInStringForPrefix(escapedPrefix, escapedValue).toString()
       if (partialMismatches.isNotEmpty()) {
          msg = "$msg\n$partialMismatches"
       }

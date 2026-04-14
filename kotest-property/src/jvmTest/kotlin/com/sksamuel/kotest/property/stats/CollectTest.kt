@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property.stats
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -21,6 +22,7 @@ import io.kotest.property.statistics.withCoveragePercentage
 import io.kotest.property.statistics.withCoveragePercentages
 import java.math.RoundingMode
 
+@OptIn(ExperimentalKotest::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class CollectTest : FunSpec() {
    init {

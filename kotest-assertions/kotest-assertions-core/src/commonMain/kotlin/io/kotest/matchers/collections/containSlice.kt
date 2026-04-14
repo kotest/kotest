@@ -24,9 +24,9 @@ infix fun <T> Iterable<T>.shouldContainSlice(expected: Iterable<T>) =
 /**
  * Assert that a collection contains the given slice.
  * For example,
- *  listOf(1, 1, 2) shouldContainNotSlice listOf(1, 2)    // Assertion fails
- *  listOf(1, 2, 1) shouldContainNotSlice listOf(1)       // Assertion fails
- *  listOf(1) shouldContainNotSlice listOf(1, 2)          // Assertion passes
+ *  listOf(1, 1, 2) shouldNotContainSlice listOf(1, 2)    // Assertion fails
+ *  listOf(1, 2, 1) shouldNotContainSlice listOf(1)       // Assertion fails
+ *  listOf(1) shouldNotContainSlice listOf(1, 2)          // Assertion passes
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
@@ -50,9 +50,9 @@ infix fun <T> Array<T>.shouldContainSlice(expected: Iterable<T>) =
 /**
  * Assert that a collection contains the given slice.
  * For example,
- *  arrayOf(1, 1, 2) shouldContainNotSlice listOf(1, 2)    // Assertion fails
- *  arrayOf(1, 2, 1) shouldContainNotSlice listOf(1)       // Assertion fails
- *  arrayOf(1) shouldContainNotSlice listOf(1, 2)          // Assertion passes
+ *  arrayOf(1, 1, 2) shouldNotContainSlice listOf(1, 2)    // Assertion fails
+ *  arrayOf(1, 2, 1) shouldNotContainSlice listOf(1)       // Assertion fails
+ *  arrayOf(1) shouldNotContainSlice listOf(1, 2)          // Assertion passes
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
