@@ -25,19 +25,59 @@ fun FloatArray.shouldNotContainExactCopies(t: Float, copies: Int): FloatArray = 
 fun DoubleArray.shouldContainExactCopies(t: Double, copies: Int): DoubleArray = apply { asList().shouldContainExactCopies(t, copies) }
 fun DoubleArray.shouldNotContainExactCopies(t: Double, copies: Int): DoubleArray = apply { asList().shouldNotContainExactCopies(t, copies) }
 
+/**
+ * Verifies that this element is not in [array] by comparing value in
+ * exactly the specified number of copies
+ *
+ * An empty collection will always fail.
+ *
+ * @see [containExactCopies]
+ */
 fun <T, I : Iterable<T>> I.shouldNotContainExactCopies(t: T, copies: Int): I = apply {
    toList() shouldNot containExactCopies(t, copies)
 }
 
+/**
+ * Verifies that this element is not in [array] by comparing value in
+ * exactly the specified number of copies
+ *
+ * An empty collection will always fail.
+ *
+ * @see [containExactCopies]
+ */
 fun <T> Array<T>.shouldNotContainExactCopies(t: T, copies: Int): Array<T> = apply {
    asList().shouldNotContainExactCopies(t, copies)
 }
 
-// Should
+/**
+ * Verifies that this element is in [collection] by comparing value,
+ * exactly the specified number of copies
+ *
+ * Assertion to check that this element is in [collection]. This assertion checks by value, and not by reference,
+ * so even if the exact instance is not in [collection] but other instances with same value are present,
+ * in the exact amount, the test will pass.
+ *
+ * An empty collection will always fail.
+ *
+ * @see [containExactCopies]
+ */
+
 fun <T, I : Iterable<T>> I.shouldContainExactCopies(t: T, copies: Int): I = apply {
    toList() should containExactCopies(t, copies)
 }
 
+/**
+ * Verifies that this element is in [array] by comparing value,
+ * exactly the specified number of copies
+ *
+ * Assertion to check that this element is in [array]. This assertion checks by value, and not by reference,
+ * so even if the exact instance is not in [array] but other instances with same value are present,
+ * in the exact amount, the test will pass.
+ *
+ * An empty collection will always fail.
+ *
+ * @see [containExactCopies]
+ */
 fun <T> Array<T>.shouldContainExactCopies(t: T, copies: Int): Array<T> = apply {
    asList().shouldContainExactCopies(t, copies)
 }
