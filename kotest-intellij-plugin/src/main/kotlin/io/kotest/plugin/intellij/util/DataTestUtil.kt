@@ -1,8 +1,8 @@
 package io.kotest.plugin.intellij.util
 
 import com.intellij.psi.PsiElement
-import io.kotest.framework.plugin.bridge.DATA_TEST_TAG
-import io.kotest.framework.plugin.bridge.DATA_TEST_NON_JVM_TAG
+import io.kotest.framework.plugin.bridge.datatest.DATA_TEST_NON_JVM_TAG
+import io.kotest.framework.plugin.bridge.datatest.DATA_TEST_TAG
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
 import io.kotest.plugin.intellij.psi.lambdaBody
@@ -171,7 +171,7 @@ object DataTestUtil {
          baseTag
       }
 
-      val finalTag = "($jvmTag) | ${DATA_TEST_NON_JVM_TAG}"
+      val finalTag = "($jvmTag) | $DATA_TEST_NON_JVM_TAG"
 
       return DataTestInfo(finalTag, regularAncestorPath)
    }
