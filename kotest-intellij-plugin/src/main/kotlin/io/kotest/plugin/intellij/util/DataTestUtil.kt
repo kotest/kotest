@@ -1,8 +1,8 @@
 package io.kotest.plugin.intellij.util
 
 import com.intellij.psi.PsiElement
-import io.kotest.framework.plugin.bridge.datatest.DATA_TEST_TAG
-import io.kotest.framework.plugin.bridge.datatest.DTA_TEST_NON_JVM_TAG
+import io.kotest.framework.plugin.bridge.DATA_TEST_TAG
+import io.kotest.framework.plugin.bridge.DATA_TEST_NON_JVM_TAG
 import io.kotest.plugin.intellij.psi.extractStringArgForFunctionWithStringAndLambdaArgs
 import io.kotest.plugin.intellij.psi.extractStringLiteralFromLhsOfInfixFunction
 import io.kotest.plugin.intellij.psi.lambdaBody
@@ -136,7 +136,7 @@ object DataTestUtil {
       // Build the base tag expression
       val baseTag = if (ancestorChain.size == 1) {
          // No data test ancestors, this is either a root-level data test or a data test inside a regular container
-         "$DATA_TEST_TAG.$thisLine"
+         "${DATA_TEST_TAG}.$thisLine"
       } else {
          // The root ancestor is the first in the chain
          val rootLine = ancestorChain.first().second
@@ -153,11 +153,11 @@ object DataTestUtil {
 
          if (allExclusions.isEmpty()) {
             // No sibling data tests at any level, just include root
-            "$DATA_TEST_TAG.$rootLine"
+            "${DATA_TEST_TAG}.$rootLine"
          } else {
             // Include root and exclude all siblings at all levels
             val exclusions = allExclusions.joinToString(" & ") { "!kotest.data.$it" }
-            "$DATA_TEST_TAG.$rootLine & $exclusions"
+            "${DATA_TEST_TAG}.$rootLine & $exclusions"
          }
       }
 
@@ -171,7 +171,7 @@ object DataTestUtil {
          baseTag
       }
 
-      val finalTag = "($jvmTag) | $DTA_TEST_NON_JVM_TAG"
+      val finalTag = "($jvmTag) | ${DATA_TEST_NON_JVM_TAG}"
 
       return DataTestInfo(finalTag, regularAncestorPath)
    }
