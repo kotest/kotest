@@ -228,6 +228,8 @@ sourceSets {
    main {
       kotlin {
          srcDir("src/${descriptor.sourceFolder}/kotlin")
+         // framework-plugin-bridge sources compiled directly into this module
+         srcDir(rootDir.resolve("kotest-framework/kotest-framework-plugin-bridge/src/commonMain/kotlin"))
       }
       resources {
          srcDir("src/${descriptor.sourceFolder}/resources")

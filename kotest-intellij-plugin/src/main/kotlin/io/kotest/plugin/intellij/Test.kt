@@ -1,6 +1,7 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.psi.PsiElement
+import io.kotest.framework.plugin.bridge.testname.normalizeTestName
 import io.kotest.plugin.intellij.util.DataTestInfo
 import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -44,12 +45,10 @@ data class TestName(
     * Returns a flattened name that can be used for a single line ui component
     */
    fun displayName(): String {
-      val flattened = name.flattenTestName()
+      val flattened = name.normalizeTestName()
       return if (prefix == null) flattened else "$prefix$flattened"
    }
 }
-
-private fun String.flattenTestName() = this.trim().replace("\\s+".toRegex(), " ")
 // components for the path should not include prefixes
 data class TestPathEntry(val name: String)
 
@@ -97,8 +96,8 @@ data class Test private constructor(
     * The full path to this test is all parents plus this test
     */
    fun path(): List<TestPathEntry> = when (parent) {
-      null -> listOf(TestPathEntry(name.name.flattenTestName()))
-      else -> parent.path() + TestPathEntry(name.name.flattenTestName())
+      null -> listOf(TestPathEntry(name.name.normalizeTestName()))
+      else -> parent.path() + TestPathEntry(name.name.normalizeTestName())
    }
 
    /**
