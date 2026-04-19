@@ -1,7 +1,7 @@
 package io.kotest.plugin.intellij
 
 import com.intellij.psi.PsiElement
-import io.kotest.framework.plugin.bridge.normalizeTestName
+import io.kotest.framework.plugin.bridge.testname.normalizeTestName
 import io.kotest.plugin.intellij.util.DataTestInfo
 import io.kotest.plugin.intellij.util.DataTestUtil
 import org.jetbrains.kotlin.psi.KtClassOrObject

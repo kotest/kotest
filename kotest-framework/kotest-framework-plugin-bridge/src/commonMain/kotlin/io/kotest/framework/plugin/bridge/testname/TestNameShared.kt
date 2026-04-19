@@ -1,4 +1,4 @@
-package io.kotest.framework.plugin.bridge
+package io.kotest.framework.plugin.bridge.testname
 
 /**
  * Normalizes a test name by trimming leading/trailing whitespace and collapsing

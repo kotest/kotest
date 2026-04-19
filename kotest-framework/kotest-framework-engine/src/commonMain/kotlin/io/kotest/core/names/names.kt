@@ -1,7 +1,7 @@
 package io.kotest.core.names
 
 import io.kotest.common.KotestInternal
-import io.kotest.framework.plugin.bridge.normalizeTestName
+import io.kotest.framework.plugin.bridge.testname.normalizeTestName
 
 /**
  * Models the name of a [io.kotest.core.test.TestCase] as entered by a user.
