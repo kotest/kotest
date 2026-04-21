@@ -31,17 +31,17 @@ class ValueTest : FreeSpec({
       }
       "should support chars" {
          val ch = 'A'
-         cs.shouldBeLetter()
+         ch.shouldBeLetter()
 
          val ch2 = '0'
-         cs2.shouldNotBeLetter()
+         ch2.shouldNotBeLetter()
       }
       "should support nullable chars" {
          val ch: Char? = 'A'
-         cs.shouldBeLetter()
+         ch.shouldBeLetter()
 
          val ch2: Char? = '0'
-         cs2.shouldNotBeLetter()
+         ch2.shouldNotBeLetter()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {
@@ -73,17 +73,17 @@ class ValueTest : FreeSpec({
       }
       "should support chars" {
          val ch = '0'
-         cs.shouldBeDigit()
+         ch.shouldBeDigit()
 
          val ch2 = 'A'
-         cs2.shouldNotBeDigit()
+         ch2.shouldNotBeDigit()
       }
       "should support nullable chars" {
          val ch: Char? = '0'
-         cs.shouldBeDigit()
+         ch.shouldBeDigit()
 
          val ch2: Char? = 'A'
-         cs2.shouldNotBeDigit()
+         ch2.shouldNotBeDigit()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {
@@ -115,17 +115,17 @@ class ValueTest : FreeSpec({
       }
       "should support chars" {
          val ch = '0'
-         cs.shouldBeLetterOrDigit()
+         ch.shouldBeLetterOrDigit()
 
          val ch2 = ' '
-         cs2.shouldNotBeLetterOrDigit()
+         ch2.shouldNotBeLetterOrDigit()
       }
       "should support nullable chars" {
          val ch: Char? = '0'
-         cs.shouldBeLetterOrDigit()
+         ch.shouldBeLetterOrDigit()
 
          val ch2: Char? = ' '
-         cs2.shouldNotBeLetterOrDigit()
+         ch2.shouldNotBeLetterOrDigit()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {
@@ -157,17 +157,17 @@ class ValueTest : FreeSpec({
       }
       "should support chars" {
          val ch = ' '
-         cs.shouldBeWhitespace()
+         ch.shouldBeWhitespace()
 
          val ch2 = 'A'
-         cs2.shouldNotBeWhitespace()
+         ch2.shouldNotBeWhitespace()
       }
       "should support nullable chars" {
          val ch: Char? = ' '
-         cs.shouldBeWhitespace()
+         ch.shouldBeWhitespace()
 
          val ch2: Char? = 'A'
-         cs2.shouldNotBeWhitespace()
+         ch2.shouldNotBeWhitespace()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {

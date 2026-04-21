@@ -26,17 +26,17 @@ class CaseTest : FreeSpec({
       }
       "should support chars" {
          val ch = 'A'
-         cs.shouldBeUpperCaseChar()
+         ch.shouldBeUpperCaseChar()
 
          val ch2 = 'a'
-         cs2.shouldNotBeUpperCaseChar()
+         ch2.shouldNotBeUpperCaseChar()
       }
       "should support nullable chars" {
          val ch: Char? = 'A'
-         cs.shouldBeUpperCaseChar()
+         ch.shouldBeUpperCaseChar()
 
          val ch2: Char? = 'a'
-         cs2.shouldNotBeUpperCaseChar()
+         ch2.shouldNotBeUpperCaseChar()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {
@@ -66,17 +66,17 @@ class CaseTest : FreeSpec({
       }
       "should support chars" {
          val ch = 'a'
-         cs.shouldBeLowerCaseChar()
+         ch.shouldBeLowerCaseChar()
 
          val ch2 = 'A'
-         cs2.shouldNotBeLowerCaseChar()
+         ch2.shouldNotBeLowerCaseChar()
       }
       "should support nullable chars" {
          val ch: Char? = 'a'
-         cs.shouldBeLowerCaseChar()
+         ch.shouldBeLowerCaseChar()
 
          val ch2: Char? = 'A'
-         cs2.shouldNotBeLowerCaseChar()
+         ch2.shouldNotBeLowerCaseChar()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {
@@ -106,17 +106,17 @@ class CaseTest : FreeSpec({
       }
       "should support chars" {
          val ch = 'A'
-         cs.shouldBeTitleCaseChar()
+         ch.shouldBeTitleCaseChar()
 
          val ch2 = 'a'
-         cs2.shouldNotBeTitleCaseChar()
+         ch2.shouldNotBeTitleCaseChar()
       }
       "should support nullable chars" {
          val ch: Char? = 'A'
-         cs.shouldBeTitleCaseChar()
+         ch.shouldBeTitleCaseChar()
 
          val ch2: Char? = 'a'
-         cs2.shouldNotBeTitleCaseChar()
+         ch2.shouldNotBeTitleCaseChar()
       }
       "should fail if value is null" {
          shouldThrow<AssertionError> {
