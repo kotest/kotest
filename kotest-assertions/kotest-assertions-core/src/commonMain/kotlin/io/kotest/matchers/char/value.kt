@@ -14,6 +14,7 @@ import kotlin.contracts.contract
  * @see [shouldNotBeLetter]
  * @see [beLetter]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldBeLetter(): Char {
    contract {
       returns() implies (this@shouldBeLetter != null)
@@ -28,6 +29,7 @@ fun Char?.shouldBeLetter(): Char {
  * @see [shouldBeLetter]
  * @see [beLetter]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldNotBeLetter(): Char {
    contract {
       returns() implies (this@shouldNotBeLetter != null)
@@ -50,6 +52,7 @@ fun beLetter(): Matcher<Char?> = charValueMatcher("a letter") { it.isLetter() }
  * @see [shouldNotBeLetterOrDigit]
  * @see [beLetterOrDigit]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldBeLetterOrDigit(): Char {
    contract {
       returns() implies (this@shouldBeLetterOrDigit != null)
@@ -64,6 +67,7 @@ fun Char?.shouldBeLetterOrDigit(): Char {
  * @see [shouldBeLetterOrDigit]
  * @see [beLetterOrDigit]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldNotBeLetterOrDigit(): Char {
    contract {
       returns() implies (this@shouldNotBeLetterOrDigit != null)
@@ -86,6 +90,7 @@ fun beLetterOrDigit(): Matcher<Char?> = charValueMatcher("a letter or digit") { 
  * @see [shouldNotBeDigit]
  * @see [beDigit]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldBeDigit(): Char {
    contract {
       returns() implies (this@shouldBeDigit != null)
@@ -100,6 +105,7 @@ fun Char?.shouldBeDigit(): Char {
  * @see [shouldBeDigit]
  * @see [beDigit]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldNotBeDigit(): Char {
    contract {
       returns() implies (this@shouldNotBeDigit != null)
@@ -122,6 +128,7 @@ fun beDigit(): Matcher<Char?> = charValueMatcher("a digit") { it.isDigit() }
  * @see [shouldNotBeWhitespace]
  * @see [beWhitespace]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldBeWhitespace(): Char {
    contract {
       returns() implies (this@shouldBeWhitespace != null)
@@ -136,6 +143,7 @@ fun Char?.shouldBeWhitespace(): Char {
  * @see [shouldBeWhitespace]
  * @see [beWhitespace]
  */
+@OptIn(ExperimentalContracts::class)
 fun Char?.shouldNotBeWhitespace(): Char {
    contract {
       returns() implies (this@shouldNotBeWhitespace != null)
