@@ -113,6 +113,18 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 |-----------------|-----------------------------------------------------------------------------|
 | shouldIntersect | Asserts that the set has at least one element in common with the other set. |
 
+| Characters                            |                                                                          |
+|---------------------------------------|--------------------------------------------------------------------------|
+| `ch.shouldBeDigit()`                  | Asserts that the character is a digit.                                   |
+| `ch.shouldBeLetter()`                 | Asserts that the character is a letter.                                  |
+| `ch.shouldBeLetterOrDigit()`          | Asserts that the character is a letter or digit.                         |
+| `ch.shouldBeWhitespace()`             | Asserts that the character is a whitespace character.                    |
+| `ch.shouldBeLowerCaseChar()`          | Asserts that the character is lower case.                                |
+| `ch.shouldBeTitleCaseChar()`          | Asserts that the character is title case.                                |
+| `ch.shouldBeUpperCaseChar()`          | Asserts that the character is upper case.                                |
+| `ch.shouldBeInRange(range)`           | Asserts that the character is included in the given range.               |
+| `ch.shouldBeEqualToIgnoreCase(other)` | Asserts that the character is equal to another character, ignoring case. |
+
 | Strings                                              |                                                                                                                                                                                                                  |
 |------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `str.shouldBeBlank()`                                | Asserts that the string contains only whitespace, or is empty.                                                                                                                                                   |
