@@ -69,3 +69,6 @@ node_modules/
 .DS_Store
 .intellijPlatform
 yarn.lock
+
+.gemini/
+gha-creds-*.json
