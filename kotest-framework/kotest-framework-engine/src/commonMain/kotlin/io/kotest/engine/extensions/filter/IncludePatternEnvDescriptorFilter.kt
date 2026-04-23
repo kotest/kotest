@@ -13,6 +13,12 @@ internal object IncludePatternEnvDescriptorFilter : TestPatternIncludeDescriptor
    override fun filter(descriptor: Descriptor): DescriptorFilterResult {
       val env = env(INCLUDE_PATTERN_ENV)
       // if there is no include pattern, then we include everything by default
-      return if (env.isNullOrBlank()) DescriptorFilterResult.Include else filter(env, descriptor)
+      if (env.isNullOrBlank()) return DescriptorFilterResult.Include
+
+      // the Kotest Gradle plugin will merge multiple --test args to a single env var, so we must split here
+      // Gradle behavior: Cumulative Filtering: Each --tests option acts as an inclusive filter. For example, running gradle test --tests "com.packageA.*" --tests "com.packageB.*" will execute all tests in both packages
+      val args = env.split(";")
+      val any = args.any { filter(it, descriptor) == DescriptorFilterResult.Include }
+      return if (any) DescriptorFilterResult.Include else DescriptorFilterResult.Exclude(null)
    }
 }
