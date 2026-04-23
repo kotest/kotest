@@ -41,8 +41,8 @@ fun Arb.Companion.int(min: Int = Int.MIN_VALUE, max: Int = Int.MAX_VALUE) = int(
 fun Arb.Companion.int(range: IntRange = Int.MIN_VALUE..Int.MAX_VALUE): Arb<Int> {
    val edgeCases = intArrayOf(range.first, -1, 0, 1, range.last).filter { it in range }.distinct()
    return ArbitraryBuilder.create { it.random.nextInt(range) }
-      .withEdgecases(edgeCases)
       .withShrinker(IntShrinker(range))
+      .withEdgecases(edgeCases)
       .withClassifier(IntClassifier(range))
       .build()
 }
