@@ -11,11 +11,13 @@ apiValidation {
    ignoredPackages.addAll(
       listOf(
          "io.kotest.framework.multiplatform.gradle",
-         "io.kotest.framework.multiplatform.native"
+         "io.kotest.framework.multiplatform.native",
+         // bridge utilities compiled into both the engine and the plugin via srcDir, not needed in public API
+         "io.kotest.framework.plugin.bridge"
       )
    )
-   // the intellij plugin is not an API and doesn't need its api to be validated
-   ignoredProjects.addAll(listOf("kotest-intellij-plugin"))
+   // the intellij plugin and bridge module are not public APIs and don't need their api to be validated
+   ignoredProjects.addAll(listOf("kotest-intellij-plugin", "kotest-framework-plugin-bridge"))
    nonPublicMarkers.addAll(
       listOf(
          "io.kotest.common.KotestInternal",
