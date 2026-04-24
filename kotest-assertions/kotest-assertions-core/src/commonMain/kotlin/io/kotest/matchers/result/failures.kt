@@ -58,7 +58,7 @@ infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
 }
 
 /**
- * Asserts that this result is a failure of type [T]
+ * Asserts that this result is a failure of type [T], and optionally pass a [block] to assert on the typed exception [T]
  * ~~~
  * failure(MyException).shouldBeFailure<MyException>()      // Assertion passes
  * failure(MyException).shouldBeFailure<MyOtherException>() // Assertion fails
@@ -66,9 +66,9 @@ infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
  * ~~~
  */
 @JvmName("shouldBeFailureT")
-inline fun <reified T : Throwable> Result<*>.shouldBeFailure(): T {
+inline fun <reified T : Throwable> Result<*>.shouldBeFailure(block: ((T) -> Unit) = {}): T {
    this should FailureTypeMatcher(T::class)
-   return exceptionOrNull() as T
+   return (exceptionOrNull() as T).also(block)
 }
 
 internal val AnyError = object : Throwable() {}
