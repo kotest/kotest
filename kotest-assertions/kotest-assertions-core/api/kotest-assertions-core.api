@@ -1150,6 +1150,18 @@ public final class io/kotest/matchers/channels/ChannelMatchersKt {
 	public static final fun shouldReceiveAtMost (Lkotlinx/coroutines/channels/Channel;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/char/CaseKt {
+	public static final fun beLowerCaseChar ()Lio/kotest/matchers/Matcher;
+	public static final fun beTitleCaseChar ()Lio/kotest/matchers/Matcher;
+	public static final fun beUpperCaseChar ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeLowerCaseChar (Ljava/lang/Character;)C
+	public static final fun shouldBeTitleCaseChar (Ljava/lang/Character;)C
+	public static final fun shouldBeUpperCaseChar (Ljava/lang/Character;)C
+	public static final fun shouldNotBeLowerCaseChar (Ljava/lang/Character;)C
+	public static final fun shouldNotBeTitleCaseChar (Ljava/lang/Character;)C
+	public static final fun shouldNotBeUpperCaseChar (Ljava/lang/Character;)C
+}
+
 public final class io/kotest/matchers/char/CharMatchersKt {
 	public static final fun beEqualIgnoreCase (C)Lio/kotest/matchers/Matcher;
 	public static final fun beInRange (Lkotlin/ranges/CharRange;)Lio/kotest/matchers/Matcher;
@@ -1160,6 +1172,21 @@ public final class io/kotest/matchers/char/CharMatchersKt {
 	public static final fun shouldNotBeBetween (CCC)C
 	public static final fun shouldNotBeEqualToIgnoreCase (CC)C
 	public static final fun shouldNotBeInRange (CLkotlin/ranges/CharRange;)C
+}
+
+public final class io/kotest/matchers/char/ValueKt {
+	public static final fun beDigit ()Lio/kotest/matchers/Matcher;
+	public static final fun beLetter ()Lio/kotest/matchers/Matcher;
+	public static final fun beLetterOrDigit ()Lio/kotest/matchers/Matcher;
+	public static final fun beWhitespace ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeDigit (Ljava/lang/Character;)C
+	public static final fun shouldBeLetter (Ljava/lang/Character;)C
+	public static final fun shouldBeLetterOrDigit (Ljava/lang/Character;)C
+	public static final fun shouldBeWhitespace (Ljava/lang/Character;)C
+	public static final fun shouldNotBeDigit (Ljava/lang/Character;)C
+	public static final fun shouldNotBeLetter (Ljava/lang/Character;)C
+	public static final fun shouldNotBeLetterOrDigit (Ljava/lang/Character;)C
+	public static final fun shouldNotBeWhitespace (Ljava/lang/Character;)C
 }
 
 public final class io/kotest/matchers/collections/BeinKt {
