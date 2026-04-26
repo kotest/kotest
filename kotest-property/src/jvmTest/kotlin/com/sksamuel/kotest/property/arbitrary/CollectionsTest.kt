@@ -22,6 +22,7 @@ import io.kotest.property.EdgeConfig
 import io.kotest.property.Exhaustive
 import io.kotest.property.PropTestConfig
 import io.kotest.property.RandomSource
+import io.kotest.property.Sample
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.double
@@ -35,6 +36,7 @@ import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.take
+import io.kotest.property.asSample
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.of
@@ -81,10 +83,13 @@ class CollectionsTest : DescribeSpec({
       }
 
       it("include repeated elements in edge cases") {
-         val edgeCase = Arb.positiveInt().edgecases().firstOrNull()
-         Arb.list(Arb.positiveInt()).edgecases() shouldContain listOf(edgeCase, edgeCase)
-         Arb.list(Arb.positiveInt(), 4..6).edgecases() shouldContain listOf(edgeCase, edgeCase, edgeCase, edgeCase)
-
+         val arb = object : Arb<Int>() {
+            override fun edgecase(rs: RandomSource): Sample<Int> = listOf(1, 2).random().asSample()
+            override fun sample(rs: RandomSource): Sample<Int> = listOf(1, 2).random().asSample()
+         }
+         val edgeCase = arb.edgecases(1000).firstOrNull()
+         Arb.list(arb).edgecases() shouldContain listOf(edgeCase, edgeCase)
+         Arb.list(arb, 4..6).edgecases(1000) shouldContain listOf(edgeCase, edgeCase, edgeCase, edgeCase)
       }
 
       it("include empty list in edge cases") {

@@ -15,7 +15,8 @@ import java.util.UUID
 /**
  * Creates a [KafkaProducer] for the given [KafkaContainer] with a String serializer for both keys and values.
  */
-@Deprecated("Deprecated since 6.1. Will be removed in 6.2")
+@Suppress("DEPRECATION")
+@Deprecated("Deprecated since 6.1. Will be removed in 6.3")
 fun KafkaContainer.createStringStringProducer(
    configure: Properties.() -> Unit = {},
 ): KafkaProducer<String, String> {
@@ -25,7 +26,7 @@ fun KafkaContainer.createStringStringProducer(
 /**
  * Creates a [KafkaProducer] for the given [KafkaContainer] with the given serializers.
  */
-@Deprecated("Deprecated since 6.1. Will be removed in 6.2")
+@Deprecated("Deprecated since 6.1. Will be removed in 6.3")
 fun <K, V> KafkaContainer.createProducer(
    kserializer: Serializer<K>,
    vserializer: Serializer<V>,
@@ -40,7 +41,7 @@ fun <K, V> KafkaContainer.createProducer(
 /**
  * Creates a [KafkaConsumer] for the given [KafkaContainer] with a String deserializer for both keys and values.
  */
-@Deprecated("Deprecated since 6.1. Will be removed in 6.2")
+@Deprecated("Deprecated since 6.1. Will be removed in 6.3")
 fun KafkaContainer.createStringStringConsumer(
    configure: Properties.() -> Unit = {},
 ): KafkaConsumer<String, String> {
@@ -50,7 +51,7 @@ fun KafkaContainer.createStringStringConsumer(
 /**
  * Creates a [KafkaConsumer] for the given [KafkaContainer] with the given deserializers.
  */
-@Deprecated("Deprecated since 6.1. Will be removed in 6.2")
+@Deprecated("Deprecated since 6.1. Will be removed in 6.3")
 fun <K, V> KafkaContainer.createConsumer(
    kserializer: Deserializer<K>,
    vserializer: Deserializer<V>,
@@ -66,7 +67,7 @@ fun <K, V> KafkaContainer.createConsumer(
 /**
  * Creates a [AdminClient] for the given [KafkaContainer].
  */
-@Deprecated("Deprecated since 6.1. Will be removed in 6.2")
+@Deprecated("Deprecated since 6.1. Will be removed in 6.3")
 fun KafkaContainer.createAdminClient(configure: Properties.() -> Unit = {}): AdminClient {
    val props = Properties()
    props[CommonClientConfigs.BOOTSTRAP_SERVERS_CONFIG] = bootstrapServers

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.extensions.MountableExtension
@@ -48,7 +50,7 @@ import java.io.File
  * @param afterShutdown a callback that is invoked only once, just after the container is stopped.
  * If the container is never started, this callback will not be invoked.
  */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 class DockerComposeContainerExtension<T : DockerComposeContainer<*>>(
    private val container: T,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,

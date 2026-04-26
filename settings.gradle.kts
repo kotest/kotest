@@ -152,6 +152,9 @@ if (shouldRunJvmOnlyModules) {
 
       ":kotest-tests:kotest-tests-core",
 
+      // android junit4 instrumentation tests
+      ":kotest-tests:kotest-tests-android-instrumentation",
+
       // tests for Java APIs added in JDK21
       ":kotest-tests:kotest-tests-assertions-java21",
 

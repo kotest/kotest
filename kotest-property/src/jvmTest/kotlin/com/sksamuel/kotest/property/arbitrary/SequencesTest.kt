@@ -1,16 +1,21 @@
 package com.sksamuel.kotest.property.arbitrary
 
+import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.ints.shouldBeGreaterThanOrEqual
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.property.Arb
 import io.kotest.property.Exhaustive
+import io.kotest.property.RandomSource
+import io.kotest.property.Sample
 import io.kotest.property.arbitrary.double
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.int
@@ -38,16 +43,34 @@ class SequencesTest : DescribeSpec({
          }
       }
 
-      it("include repeated elements in edge cases") {
-         val edgeCase = Arb.positiveInt().edgecases().firstOrNull()
-         val a = Arb.sequence(Arb.positiveInt()).edgecases()
-         Arb.sequence(Arb.positiveInt()).edgecases().map { it.toList() } shouldContain listOf(edgeCase, edgeCase)
-         Arb.sequence(Arb.positiveInt(), 4..6).edgecases().map { it.toList() } shouldContain listOf(
-            edgeCase,
-            edgeCase,
-            edgeCase,
-            edgeCase
-         )
+      it("allow repeated elements in edge cases for default sequence size") {
+         val arb = object : Arb<Int>() {
+            override fun edgecase(rs: RandomSource): Sample<Int> {
+               return Sample(listOf(1, 2).shuffled().first())
+            }
+
+            override fun sample(rs: RandomSource): Sample<Int> {
+               return Sample(listOf(1, 2).shuffled().first())
+            }
+         }
+         // the above arb only has 2 edgecases, so the powerset has size 8, so requesting 9 will be enough to get duplicates.
+         val edgecases = Arb.sequence(arb).edgecases(9).map { it.toList() }.shouldHaveSize(9)
+         edgecases.distinct().size shouldBeLessThan 9
+      }
+
+      it("allow repeated elements in edge cases for given sequence size").config(invocations = 100) {
+         val arb = object : Arb<Int>() {
+            override fun edgecase(rs: RandomSource): Sample<Int> {
+               return Sample(listOf(1, 2).shuffled().first())
+            }
+
+            override fun sample(rs: RandomSource): Sample<Int> {
+               return Sample(listOf(1, 2).shuffled().first())
+            }
+         }
+         // this sequence has size 3..6, so edgecases are made up of sizes 3, which gives us 16 combinations, so requesting 17 will be enough to get duplicates.
+         val edgecases = Arb.sequence(arb, 3..6).edgecases(17).map { it.toList() }.shouldHaveSize(17)
+         edgecases.distinct().size shouldBeLessThan 17
       }
 
       it("include empty list in edge cases") {

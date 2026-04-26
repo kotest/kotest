@@ -89,7 +89,7 @@ suspend fun <T> retry(
       .build()
 }
 
-fun retryConfig(@BuilderInference configure: RetryConfigBuilder.() -> Unit): RetryConfig {
+fun retryConfig(configure: RetryConfigBuilder.() -> Unit): RetryConfig {
    val builder = RetryConfigBuilder()
    builder.configure()
    return builder.build()
