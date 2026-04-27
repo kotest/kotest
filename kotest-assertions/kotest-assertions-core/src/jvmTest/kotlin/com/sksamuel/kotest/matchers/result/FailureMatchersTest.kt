@@ -117,11 +117,26 @@ class FailureMatchersTest : FunSpec({
          shouldThrowAny { failure<String>(DummyException2).shouldBeFailure<DummyException3>() }
          shouldThrowAny { success("abc").shouldBeFailure<DummyException2>() }
       }
+
+      test("Should be failure with reified type and test block") {
+         failure<String>(DummyException2).shouldBeFailure<DummyException2> {
+            it.innerValue shouldBe "innerValue"
+            it.toString() shouldBe "DummyException2"
+         }
+         shouldThrowAny { failure<String>(DummyException2).shouldBeFailure<DummyException3>{
+            it.toString() shouldBe "DummyException3"
+         } }
+         shouldThrowAny { success("abc").shouldBeFailure<DummyException2>{
+            it.innerValue shouldBe "innerValue"
+            it.toString() shouldBe "DummyException2"
+         } }
+      }
    }
 })
 
 private object DummyException2 : Exception() {
    override fun toString() = "DummyException2"
+   val innerValue: String = "innerValue"
 }
 
 private object DummyException3 : Exception() {

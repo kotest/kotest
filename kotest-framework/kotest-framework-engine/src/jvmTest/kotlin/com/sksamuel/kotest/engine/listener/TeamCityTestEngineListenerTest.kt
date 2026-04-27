@@ -145,7 +145,7 @@ a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineL
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ Exception']
-a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ Exception']
+a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ Exception' message='boom']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ Exception']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
@@ -173,7 +173,7 @@ a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineL
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest ⇢ Exception']
-a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest ⇢ Exception']
+a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest ⇢ Exception' message='wobble']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest ⇢ Exception']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
@@ -238,7 +238,7 @@ a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListen
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='555' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 a[testStarted name='Exception']
-a[testFailed name='Exception']
+a[testFailed name='Exception' message='big whoop']
 a[testFinished name='Exception']
 """
       }
@@ -266,10 +266,10 @@ a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListen
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='555' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 a[testStarted name='Exception']
-a[testFailed name='Exception']
+a[testFailed name='Exception' message='big whoop']
 a[testFinished name='Exception']
 a[testStarted name='Exception']
-a[testFailed name='Exception']
+a[testFailed name='Exception' message='big whoop 2']
 a[testFinished name='Exception']
 """
       }

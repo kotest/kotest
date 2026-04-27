@@ -175,6 +175,7 @@ jobs:
                - kotest-spring-data
                - kotest-wasm
                - kotest-gradle-retry
+               - kotest-multi-module
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v6

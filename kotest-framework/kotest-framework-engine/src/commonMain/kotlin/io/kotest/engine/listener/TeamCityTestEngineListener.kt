@@ -143,17 +143,15 @@ class TeamCityTestEngineListener(
    // a dummy "test" to tag the error against that
    private fun insertPlaceholderTest(testPath: String, t: Throwable) {
 
-      val (name, cause) = ExtensionExceptionExtractor.resolve(t)
+      val (_, cause) = ExtensionExceptionExtractor.resolve(t)
 
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_STARTED) {
          name(testPath)
       }.output()
 
-      // we must print out the stack trace in between the dummy, so it appears when you click on the test name
-      cause.printStackTrace()
-
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FAILED) {
          name(testPath)
+         exception(cause, details)
       }.output()
 
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FINISHED) {
