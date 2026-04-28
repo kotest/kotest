@@ -1,9 +1,7 @@
 package io.kotest.runner.junit.platform
 
-import io.kotest.common.isIntellij
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
-import io.kotest.engine.names.LocationEmbedder
 import io.kotest.engine.test.names.DisplayNameFormatting
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestSource
@@ -76,17 +74,18 @@ internal fun createTestDescriptorWithMethodSource(
    formatter: DisplayNameFormatting,
 ): TestDescriptor {
    val id = createUniqueIdForTest(root.uniqueId, testCase.descriptor)
+   // The IntelliJ plugin used to rely on a `<kotest>...</kotest>` tag injected here to drive
+   // jump-to-source navigation. That tag was visible to anyone without the plugin installed.
+   // Newer plugins read the path from the MethodSource (className=fqn, methodName=seg/seg/...)
+   // exposed via `proxy.locationUrl` ("java:test://<fqn>/<segment>/..."), so the displayName
+   // can stay clean for everyone. See LocationEmbedder for details.
+   val name = formatter.format(testCase)
    val testDescriptor = createTestTestDescriptor(
       id = id,
-      displayName = if (isIntellij())
-         LocationEmbedder.embeddedTestName(testCase.descriptor, formatter.format(testCase))
-      else {
-         val name = formatter.format(testCase)
-         if (type == TestDescriptor.Type.CONTAINER && isTruncateTestNamesEnabled())
-            truncateTestName(name)
-         else
-            name
-      },
+      displayName = if (type == TestDescriptor.Type.CONTAINER && isTruncateTestNamesEnabled())
+         truncateTestName(name)
+      else
+         name,
       type = type,
       // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
       // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
