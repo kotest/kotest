@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.testModeKotestVersion610AndAbove
 import java.nio.file.Paths
 import java.util.Date
 
+@Suppress("UnstableApiUsage")
 class ShouldSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {

@@ -38,10 +38,16 @@ internal fun createSpecTestDescriptor(
 ): TestDescriptor {
    val id = createUniqueIdForSpec(root.uniqueId, descriptor.id)
    val source = ClassSource.from(descriptor.id.value)
-   return object : AbstractTestDescriptor(id, displayName, source) {
-      override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
-      override fun mayRegisterTests(): Boolean = true
-   }
+   return SpecTestDescriptor(id, displayName, source)
+}
+
+internal class SpecTestDescriptor(
+   id: UniqueId,
+   displayName: String,
+   source: TestSource,
+) : AbstractTestDescriptor(id, displayName, source) {
+   override fun getType(): TestDescriptor.Type = TestDescriptor.Type.CONTAINER
+   override fun mayRegisterTests(): Boolean = true
 }
 
 /**
@@ -49,7 +55,7 @@ internal fun createSpecTestDescriptor(
  *
  * Test case descriptors can be either TEST or CONTAINER depending on if they contain nested tests.
  *
- * Note: The odd name for this clas is because it is for Kotest "Test"s (not specs) and is a TestDescriptor,
+ * Note: The odd name for this class is because it is for Kotest "Test"s (not specs) and is a TestDescriptor,
  * hence the duplicated TestTest part.
  */
 internal class TestTestDescriptor(

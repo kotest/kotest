@@ -45,7 +45,7 @@ internal class EmbeddedLocationSMTRunnerEventsAdapter : SMTRunnerEventsAdapter()
          return
       }
 
-      // Strategy 2: java:test://<fqn>/<segment>/<segment> URL produced from a Kotest MethodSource
+      // Strategy 2: java:test://<fqn>/<segment>/<segment> URL produced from a JUnit MethodSource
       val fromUrl = EmbeddedLocationParser.parseLocationUrl(proxy.locationUrl, proxy.name)
       if (fromUrl != null) {
          proxy.locator = EmbeddedLocationTestLocator(fromUrl)
@@ -82,7 +82,7 @@ internal object EmbeddedLocationParser {
     *
     * Returns null if the URL is not in this form, the FQN doesn't look like a Kotlin/Java FQN,
     * or the method-name component contains no `/` (in which case it is most likely a real JVM
-    * method on a non-Kotest class and we should leave the default locator alone).
+    * method on a non-Kotest class, and we should leave the default locator alone).
     */
    fun parseLocationUrl(locationUrl: String?, displayName: String): EmbeddedLocation? {
       if (locationUrl == null) return null

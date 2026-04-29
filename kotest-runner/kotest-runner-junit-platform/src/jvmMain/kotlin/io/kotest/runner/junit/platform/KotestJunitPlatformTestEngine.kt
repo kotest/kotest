@@ -102,7 +102,7 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * to Kotest, so our job is to filter them down to only those that are relevant.
     *
     * For example, when running a single test using --tests, Gradle will add a [ClassSelector] and a
-    * [ClassMethodNameFilter] post-discovery filter.
+    * ClassMethodNameFilter (or similar) post-discovery filter.
     *
     * When executing the test task without any particular --tests filter, Gradle will include multiple
     * [ClassSelector]s, one for each test class, with no post-discovery filters.
