@@ -200,11 +200,11 @@ class JUnitTestEngineListener(
    private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable, kclass: KClass<*>) {
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
       val id = parent.uniqueId.append(Segment.Test.value, name)
-      val descriptor = createTestTestDescriptor(
+      val descriptor = TestTestDescriptor(
          id = id,
          displayName = name,
-         type = TestDescriptor.Type.TEST,
          source = getMethodSource(kclass, id),
+         type = TestDescriptor.Type.TEST,
       )
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)

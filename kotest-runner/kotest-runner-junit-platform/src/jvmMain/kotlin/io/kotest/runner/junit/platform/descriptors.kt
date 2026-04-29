@@ -45,26 +45,31 @@ internal fun createSpecTestDescriptor(
 }
 
 /**
- * Creates a [org.junit.platform.engine.TestDescriptor] for the [id], [displayName] and [source].
+ * Creates a [org.junit.platform.engine.TestDescriptor] for Kotest tests.
  *
  * Test case descriptors can be either TEST or CONTAINER depending on if they contain nested tests.
+ *
+ * Note: The odd name for this clas is because it is for Kotest "Test"s (not specs) and is a TestDescriptor,
+ * hence the duplicated TestTest part.
  */
-internal fun createTestTestDescriptor(
+internal class TestTestDescriptor(
    id: UniqueId,
    displayName: String,
-   type: TestDescriptor.Type,
    source: TestSource,
-): TestDescriptor = object : AbstractTestDescriptor(id, displayName, source) {
+   private val type: TestDescriptor.Type,
+) : AbstractTestDescriptor(id, displayName, source) {
 
-   // there is a bug in gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting or hangs the build, as it is not handled
+   // there is a bug in Gradle 4.7+ whereby CONTAINER_AND_TEST breaks test reporting or hangs the build, as it is not handled
    // see https://github.com/gradle/gradle/issues/4912
    // so we can't use CONTAINER_AND_TEST for our test scopes, but simply container
    // update jan 2020: Seems we can use CONTAINER_AND_TEST now in gradle 6, and CONTAINER is invisible in output
    // update sep 2021: Gradle 7.1 seems we can use TEST for everything but CONTAINER_AND_TEST will not show without a contained test
    // update for 5.0.0.M2 - will just dynamically add tests after they have completed, and we can see the full tree
    // update 5.0.0.M3 - if we add dynamically afterward then the timings are all messed up, seems Gradle keeps the time itself
+   // update 2026 - claim to be fixed in a recent release, can revisit once later versions of gradle become common
    override fun getType(): TestDescriptor.Type = type
    override fun mayRegisterTests(): Boolean = type == TestDescriptor.Type.CONTAINER
+
 }
 
 internal fun createTestDescriptorWithMethodSource(
@@ -80,13 +85,12 @@ internal fun createTestDescriptorWithMethodSource(
    // exposed via `proxy.locationUrl` ("java:test://<fqn>/<segment>/..."), so the displayName
    // can stay clean for everyone. See LocationEmbedder for details.
    val name = formatter.format(testCase)
-   val testDescriptor = createTestTestDescriptor(
+   val testDescriptor = TestTestDescriptor(
       id = id,
       displayName = if (type == TestDescriptor.Type.CONTAINER && isTruncateTestNamesEnabled())
          truncateTestName(name)
       else
          name,
-      type = type,
       // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
       // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
       // gradle-junit-platform hides tests if we don't send a source at all
@@ -96,6 +100,7 @@ internal fun createTestDescriptorWithMethodSource(
          TestDescriptor.Type.CONTAINER -> ClassSource.from(testCase.spec::class.java)
          else -> getMethodSource(testCase.spec::class, id)
       },
+      type = type,
    )
    return testDescriptor
 }
