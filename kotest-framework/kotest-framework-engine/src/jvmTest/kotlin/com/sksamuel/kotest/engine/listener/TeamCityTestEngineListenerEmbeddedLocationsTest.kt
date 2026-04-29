@@ -14,88 +14,44 @@ import io.kotest.matchers.shouldBe
 class TeamCityTestEngineListenerEmbeddedLocationsTest : FunSpec() {
    init {
 
-      context("!when embedded locations are enabled") {
-         val listener = TeamCityTestEngineListener(prefix = "tc", details = true)
-         val tc = TestCase(
-           TeamCityTestEngineListenerEmbeddedLocationsTest::class.toDescriptor().append("a"),
-           TestNameBuilder.builder("a").build(),
-           TeamCityTestEngineListenerEmbeddedLocationsTest(),
-           {},
-           SourceRef.None,
-           TestType.Test,
-         )
-         test("testIgnored should include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testIgnored(tc, null)
-            }
-            stdout shouldBe "tc[testIgnored name='<kotest>com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a</kotest>a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' result_status='Ignored']\n"
+      val listener = TeamCityTestEngineListener(prefix = "tc", details = true)
+      val tc = TestCase(
+         TeamCityTestEngineListenerEmbeddedLocationsTest::class.toDescriptor().append("a"),
+         TestNameBuilder.builder("a").build(),
+         TeamCityTestEngineListenerEmbeddedLocationsTest(),
+         {},
+         SourceRef.None,
+         TestType.Test,
+      )
+      test("outputTestIgnored should NOT include the embedded location") {
+         val stdout = captureStandardOut {
+            listener.testIgnored(tc, null)
          }
-         test("testStarted should include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testStarted(tc)
-            }
-            stdout shouldBe "tc[testStarted name='<kotest>com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a</kotest>a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest']\n"
-         }
-         test("testFinished should include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testFinished(tc, TestResult.Ignored(null))
-            }
-            stdout shouldBe "tc[testFinished name='<kotest>com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a</kotest>a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' duration='0' result_status='Ignored']\n"
-         }
-         test("container started should include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testStarted(tc)
-            }
-            stdout shouldBe "tc[testSuiteStarted name='<kotest>com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a</kotest>a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest']\n"
-         }
-         test("container finished should include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testFinished(tc, TestResult.Ignored(null))
-            }
-            stdout shouldBe "tc[testSuiteFinished name='<kotest>com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a</kotest>a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' duration='0' result_status='Ignored']\n"
-         }
+         stdout shouldBe "tc[testIgnored name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' result_status='Ignored']\n"
       }
-
-      context("!when embedded locations are disabled") {
-         val listener = TeamCityTestEngineListener(prefix = "tc", details = true)
-         val tc = TestCase(
-           TeamCityTestEngineListenerEmbeddedLocationsTest::class.toDescriptor().append("a"),
-           TestNameBuilder.builder("a").build(),
-           TeamCityTestEngineListenerEmbeddedLocationsTest(),
-           {},
-           SourceRef.None,
-           TestType.Test,
-         )
-         test("outputTestIgnored should NOT include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testIgnored(tc, null)
-            }
-            stdout shouldBe "tc[testIgnored name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' result_status='Ignored']\n"
+      test("outputTestStarted should NOT include the embedded location") {
+         val stdout = captureStandardOut {
+            listener.testStarted(tc)
          }
-         test("outputTestStarted should NOT include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testStarted(tc)
-            }
-            stdout shouldBe "tc[testStarted name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest']\n"
+         stdout shouldBe "tc[testStarted name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest']\n"
+      }
+      test("outputTestFinished should NOT include the embedded location") {
+         val stdout = captureStandardOut {
+            listener.testFinished(tc, TestResult.Ignored(null))
          }
-         test("outputTestFinished should NOT include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testFinished(tc, TestResult.Ignored(null))
-            }
-            stdout shouldBe "tc[testFinished name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' duration='0' result_status='Ignored']\n"
+         stdout shouldBe "tc[testFinished name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' duration='0' result_status='Ignored']\n"
+      }
+      test("outputTestSuiteStarted should NOT include the embedded location") {
+         val stdout = captureStandardOut {
+            listener.testStarted(tc)
          }
-         test("outputTestSuiteStarted should NOT include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testStarted(tc)
-            }
-            stdout shouldBe "tc[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest']\n"
+         stdout shouldBe "tc[testSuiteStarted name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest']\n"
+      }
+      test("outputTestSuiteFinished should NOT include the embedded location") {
+         val stdout = captureStandardOut {
+            listener.testFinished(tc, TestResult.Ignored(null))
          }
-         test("outputTestSuiteFinished should NOT include the embedded location") {
-            val stdout = captureStandardOut {
-              listener.testFinished(tc, TestResult.Ignored(null))
-            }
-            stdout shouldBe "tc[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' duration='0' result_status='Ignored']\n"
-         }
+         stdout shouldBe "tc[testSuiteFinished name='a' id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest/a' parent_id='com.sksamuel.kotest.engine.teamcity.TeamCityWriterJvmTest' duration='0' result_status='Ignored']\n"
       }
    }
 }
