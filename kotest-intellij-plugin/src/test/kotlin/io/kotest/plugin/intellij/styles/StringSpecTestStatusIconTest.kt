@@ -110,5 +110,44 @@ class StringSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run StringSpecExample"
    }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/stringspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.stringspec.StringSpecExample"
+
+      // Kotest 6.2+ format
+      val url = "java:test://$specFqn/test"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 1 is "test"
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[1].tooltipText shouldBe "Run test"
+   }
+
+   fun testIconShowsPassedForPassedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/stringspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.stringspec.StringSpecExample"
+
+      val url = "java:test://$specFqn/test"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 1 is "test"
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[1].tooltipText shouldBe "Run test"
+   }
 }
 

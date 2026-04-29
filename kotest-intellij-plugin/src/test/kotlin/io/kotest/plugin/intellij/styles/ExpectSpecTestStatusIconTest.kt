@@ -110,5 +110,44 @@ class ExpectSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run ExpectSpecExample"
    }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/expectspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.expect.ExpectSpecExample"
+
+      // Kotest 6.2+ format: nested path segments joined by '/' (matches engine's MethodSource)
+      val url = "java:test://$specFqn/some context/some test"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 2 is "some test"
+      gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[2].tooltipText shouldBe "Run some context some test"
+   }
+
+   fun testIconShowsPassedForPassedContainerTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/expectspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.expect.ExpectSpecExample"
+
+      val url = "java:suite://$specFqn/some context"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 1 is "some context"
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[1].tooltipText shouldBe "Run some context"
+   }
 }
 

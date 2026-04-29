@@ -110,5 +110,44 @@ class ShouldSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run ShouldSpecExample"
    }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/shouldspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.shouldspec.ShouldSpecExample"
+
+      // Kotest 6.2+ format: top-level test - single segment after fqn
+      val url = "java:test://$specFqn/top level test"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 1 is "top level test"
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[1].tooltipText shouldBe "Run top level test"
+   }
+
+   fun testIconShowsPassedForPassedContainerTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/shouldspec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.shouldspec.ShouldSpecExample"
+
+      val url = "java:suite://$specFqn/some context"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 3 is "some context"
+      gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[3].tooltipText shouldBe "Run some context"
+   }
 }
 
