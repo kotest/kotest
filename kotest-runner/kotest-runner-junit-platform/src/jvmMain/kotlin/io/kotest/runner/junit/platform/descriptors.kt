@@ -79,30 +79,34 @@ internal fun createTestDescriptorWithMethodSource(
    formatter: DisplayNameFormatting,
 ): TestDescriptor {
    val id = createUniqueIdForTest(root.uniqueId, testCase.descriptor)
+
    // The IntelliJ plugin used to rely on a `<kotest>...</kotest>` tag injected here to drive
    // jump-to-source navigation. That tag was visible to anyone without the plugin installed.
    // Newer plugins read the path from the MethodSource (className=fqn, methodName=seg/seg/...)
    // exposed via `proxy.locationUrl` ("java:test://<fqn>/<segment>/..."), so the displayName
    // can stay clean for everyone. See LocationEmbedder for details.
-   val name = formatter.format(testCase)
-   val testDescriptor = TestTestDescriptor(
+   val formattedTestName = formatter.format(testCase)
+   val displayName = when {
+      isTruncateTestNamesEnabled() && type == TestDescriptor.Type.CONTAINER -> truncateTestName(formattedTestName)
+      else -> formattedTestName
+   }
+
+   // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
+   // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
+   // gradle-junit-platform hides tests if we don't send a source at all
+   // surefire-junit-platform (maven) needs a MethodSource to separate test cases from each other
+   // and produce a more correct XML report with the test case name.
+   val source = when (type) {
+      TestDescriptor.Type.CONTAINER -> ClassSource.from(testCase.spec::class.java)
+      else -> getMethodSource(testCase.spec::class, id)
+   }
+
+   return TestTestDescriptor(
       id = id,
-      displayName = if (type == TestDescriptor.Type.CONTAINER && isTruncateTestNamesEnabled())
-         truncateTestName(name)
-      else
-         name,
-      // For CONTAINER types, use ClassSource (like v5.9.1) to ensure a proper tree structure in Android Studio.
-      // Android Studio does not display MethodSource containers correctly, hence using ClassSource for them.
-      // gradle-junit-platform hides tests if we don't send a source at all
-      // surefire-junit-platform (maven) needs a MethodSource to separate test cases from each other
-      // and produce a more correct XML report with the test case name.
-      source = when (type) {
-         TestDescriptor.Type.CONTAINER -> ClassSource.from(testCase.spec::class.java)
-         else -> getMethodSource(testCase.spec::class, id)
-      },
+      displayName = displayName,
+      source = source,
       type = type,
    )
-   return testDescriptor
 }
 
 internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = MethodSource.from(
