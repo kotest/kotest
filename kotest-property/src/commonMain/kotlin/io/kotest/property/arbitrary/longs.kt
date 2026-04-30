@@ -14,7 +14,10 @@ class LongShrinker(private val range: LongRange) : Shrinker<Long> {
       1L, -1L -> listOf(0L).filter { it in range }
       else -> {
          val a = listOf(0, 1, -1, abs(value), value / 3, value / 2, value * 2 / 3)
-         val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+         // Only include value-1..value-5 when the subtraction is safe. The previous
+         // `(1..5).map { value - it }.filter { it > 0 }` underflowed for values near
+         // Long.MIN_VALUE and surfaced wrapped Long.MAX_VALUE-area numbers as shrink candidates.
+         val b = (1..5).mapNotNull { i -> if (value > i) value - i else null }.reversed()
          (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
    }
@@ -81,7 +84,10 @@ class ULongShrinker(val range: ULongRange) : Shrinker<ULong> {
       1uL -> listOf(0uL).filter { it in range }
       else -> {
          val a = listOf(0uL, 1uL, value / 3u, value / 2u, value * 2u / 3u)
-         val b = (1u..5u).map { value - it }.reversed().filter { it > 0u }
+         // Only include value-1..value-5 when the subtraction is safe. ULong subtraction
+         // underflows silently, wrapping into the upper ULong range, which the `> 0u` filter
+         // then surfaced as bogus shrink candidates.
+         val b = (1u..5u).mapNotNull { i -> if (value > i) value - i else null }.reversed()
          (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
    }

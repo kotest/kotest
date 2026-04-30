@@ -3,6 +3,7 @@ package io.kotest.property.arbitrary
 import io.kotest.property.Arb
 import io.kotest.property.Gen
 import io.kotest.property.bimap
+import kotlin.random.nextInt
 import kotlin.random.nextUInt
 
 /**
@@ -11,7 +12,9 @@ import kotlin.random.nextUInt
  */
 fun Arb.Companion.byte(min: Byte = Byte.MIN_VALUE, max: Byte = Byte.MAX_VALUE): Arb<Byte> =
    arbitrary(byteArrayOf(min, -1, 0, 1, max).filter { it in min..max }.distinct(), ByteShrinker) {
-      generateSequence { it.random.nextBytes(1).first() }.filter { it in min..max }.first()
+      // Sample directly in [min..max] rather than drawing from the full Byte range and rejecting,
+      // which used to require ~256/(max-min+1) attempts on average for narrow ranges.
+      it.random.nextInt(min.toInt()..max.toInt()).toByte()
    }
 
 val ByteShrinker = IntShrinker(Byte.MIN_VALUE..Byte.MAX_VALUE).bimap({ it.toInt() }, { it.toByte() })

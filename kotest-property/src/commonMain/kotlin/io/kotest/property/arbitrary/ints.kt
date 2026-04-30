@@ -14,7 +14,11 @@ class IntShrinker(val range: IntRange) : Shrinker<Int> {
       1, -1 -> listOf(0).filter { it in range }
       else -> {
          val a = intArrayOf(0, 1, -1, abs(value), value / 3, value / 2, value * 2 / 3)
-         val b = (1..5).map { value - it }.reversed().filter { it > 0 }
+         // Only include value-1..value-5 when the subtraction is safe AND yields a positive
+         // number. The previous `(1..5).map { value - it }.filter { it > 0 }` underflowed for
+         // values near Int.MIN_VALUE, wrapping into the positive Int.MAX_VALUE range, and the
+         // `> 0` filter then surfaced those wrapped values as bogus shrink candidates.
+         val b = (1..5).mapNotNull { i -> if (value > i) value - i else null }.reversed()
          (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
    }
@@ -88,7 +92,10 @@ class UIntShrinker(val range: UIntRange) : Shrinker<UInt> {
       1u -> listOf(0u).filter { it in range }
       else -> {
          val a = listOf(0u, 1u, value / 3u, value / 2u, value * 2u / 3u)
-         val b = (1u..5u).map { value - it }.reversed().filter { it > 0u }
+         // Only include value-1..value-5 when the subtraction is safe. UInt subtraction
+         // underflows silently for small values (e.g. 2u - 5u wraps to UInt.MAX_VALUE - 2),
+         // which then survived the `> 0u` filter and ended up as bogus shrink candidates.
+         val b = (1u..5u).mapNotNull { i -> if (value > i) value - i else null }.reversed()
          (a + b).distinct().filterNot { it == value }.filter { it in range }
       }
    }

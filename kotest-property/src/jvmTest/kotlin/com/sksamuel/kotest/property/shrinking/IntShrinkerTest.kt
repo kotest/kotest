@@ -63,6 +63,23 @@ class IntShrinkerTest : WordSpec() {
             val candidates = shrinker.shrink(90)
             candidates.shouldContain(60)
          }
+         // regression: subtracting 1..5 from a value near Int.MIN_VALUE underflowed silently
+         // and the wrapped-positive results then survived the `> 0` filter, so the shrinker
+         // proposed values ~Int.MAX_VALUE as "shrinks" of values ~Int.MIN_VALUE.
+         // regression: subtracting 1..5 from a value near Int.MIN_VALUE underflowed silently
+         // and the wrapped-positive results then survived the `> 0` filter, so the shrinker
+         // proposed values ~Int.MAX_VALUE as "shrinks" of values ~Int.MIN_VALUE.
+         "not propose subtract-underflowed candidates when shrinking values near Int.MIN_VALUE" {
+            // Specifically check the wrapped values that were the bug. abs(value) is intended
+            // to appear and is allowed (it's a legitimate "flip the sign" shrink candidate).
+            //
+            // For value = Int.MIN_VALUE+4, the buggy code computed `value - 5 = Int.MIN_VALUE-1`
+            // which wrapped to Int.MAX_VALUE, then survived the `it > 0` filter. abs(value)
+            // for the same input is Int.MAX_VALUE - 3, so we can disambiguate.
+            shrinker.shrink(Int.MIN_VALUE + 4).shouldNotContain(Int.MAX_VALUE)
+            shrinker.shrink(Int.MIN_VALUE + 3).shouldNotContain(Int.MAX_VALUE)
+            shrinker.shrink(Int.MIN_VALUE + 3).shouldNotContain(Int.MAX_VALUE - 1)
+         }
       }
    }
 }
