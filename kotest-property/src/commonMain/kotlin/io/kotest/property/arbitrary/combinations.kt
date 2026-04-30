@@ -105,8 +105,7 @@ fun <A> Arb.Companion.shuffle(list: List<A>): Arb<List<A>> = arbitrary {
  * The returned list has the same order as the input list.
  */
 fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
-   val size = it.random.nextInt(0, list.size + 1)
-   list.take(size)
+   list.filter { _ -> it.random.nextBoolean() }
 }
 
 /**
