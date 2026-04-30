@@ -24,7 +24,7 @@ fun before(anotherInstant: Instant) = object : Matcher<Instant> {
         return MatcherResult(
             value < anotherInstant,
            { "Expected $value to be before $anotherInstant, but it's not." },
-           { "$anotherInstant is not expected to be before $value." }
+           { "$value is not expected to be before $anotherInstant." }
         )
     }
 }
@@ -46,7 +46,7 @@ fun after(anotherInstant: Instant) = object : Matcher<Instant> {
         return MatcherResult(
             value > anotherInstant,
            { "Expected $value to be after $anotherInstant, but it's not." },
-           { "$anotherInstant is not expected to be after $value." }
+           { "$value is not expected to be after $anotherInstant." }
         )
     }
 }
