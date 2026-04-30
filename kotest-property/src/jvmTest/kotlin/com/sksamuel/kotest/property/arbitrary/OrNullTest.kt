@@ -46,6 +46,21 @@ class OrNullTest : FunSpec({
       classifications["non-null"]?.shouldBeBetween(0, 0)
    }
 
+   test("Arb.orNull(nullProbability = 0.0) should never generate null values") {
+      // Pin the boundary: a probability of exactly 0.0 must mean zero nulls. The previous
+      // implementation used `nextDouble(0.0, 1.0) <= 0.0`, which would still trigger a null on
+      // the (vanishingly rare) chance that nextDouble returned exactly 0.0. The fix uses `<`,
+      // making the predicate provably false at p == 0.0 regardless of the draw.
+      val iterations = 10_000
+      val classifications =
+         forAll(iterations, Arb.int().orNull(nullProbability = 0.0)) { num ->
+            classify(num == null, "null", "non-null")
+            true
+         }.classifications()
+      classifications["null"]?.shouldBeBetween(0, 0)
+      classifications["non-null"]?.shouldBeBetween(iterations, iterations)
+   }
+
    test("null probability values can be specified") {
       retry(3, timeout = 2.seconds, delay = 0.1.seconds) {
          listOf(0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0)
