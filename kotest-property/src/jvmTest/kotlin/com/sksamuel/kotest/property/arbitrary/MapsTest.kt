@@ -10,6 +10,7 @@ import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.Codepoint
@@ -73,7 +74,7 @@ class MapsTest : FunSpec({
          val arbKey = Arb.int(1..3)
          val arbMap = Arb.map(arbKey, Arb.string(1..10), minSize = 5, maxSize = 10)
          shouldThrowWithMessage<IllegalArgumentException>(
-            "the minimum size requirement of 5 could not be satisfied after 90 consecutive samples"
+            "the minimum size requirement of 5 could not be satisfied after 60 consecutive samples"
          ) {
             arbMap.single(RandomSource.seeded(1234L))
          }
@@ -103,10 +104,24 @@ class MapsTest : FunSpec({
          val arbPair = Arb.pair(Arb.int(1..3), Arb.string(1..10, Codepoint.alphanumeric()))
          val arbMap = Arb.map(arbPair, minSize = 5, maxSize = 10)
          shouldThrowWithMessage<IllegalArgumentException>(
-            "the minimum size requirement of 5 could not be satisfied after 90 consecutive samples"
+            "the minimum size requirement of 5 could not be satisfied after 60 consecutive samples"
          ) {
             arbMap.single(RandomSource.seeded(1234L))
          }
+      }
+   }
+
+   context("Arb.map size bounds") {
+      test("should be able to produce maxSize entries") {
+         val arbMap = Arb.map(Arb.int(1..10000), Arb.int(), minSize = 5, maxSize = 10)
+         val sizes = arbMap.take(2000, RandomSource.seeded(12345L)).map { it.size }.toSet()
+         sizes shouldContainExactly (5..10).toSet()
+      }
+
+      test("should support fixed-size maps where minSize == maxSize") {
+         val arbMap = Arb.map(Arb.int(1..10000), Arb.int(), minSize = 3, maxSize = 3)
+         val maps = arbMap.take(5, RandomSource.seeded(12345L)).toList()
+         maps.forAll { it.size shouldBe 3 }
       }
    }
 

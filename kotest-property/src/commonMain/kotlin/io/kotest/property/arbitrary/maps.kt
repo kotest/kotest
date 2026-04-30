@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import io.kotest.property.Shrinker
+import kotlin.random.nextInt
 
 /**
  * Returns an [Arb] where each generated value is a map, with the entries of the map
@@ -33,7 +34,7 @@ fun <K, V> Arb.Companion.map(
    val edgecase = if (minSize == 0) listOf(emptyMap<K, V>()) else emptyList()
 
    return arbitrary(edgecase, MapShrinker(minSize)) { random ->
-      val targetSize = random.random.nextInt(minSize, maxSize)
+      val targetSize = random.random.nextInt(minSize..maxSize)
       val maxMisses = targetSize * slippage
       val map = mutableMapOf<K, V>()
       var iterations = 0
