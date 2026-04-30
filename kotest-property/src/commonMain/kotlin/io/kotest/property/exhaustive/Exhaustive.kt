@@ -40,7 +40,13 @@ fun <A> List<A>.exhaustive(): Exhaustive<A> {
  * @return the merged arg.
  */
 fun <A, B : A, C : A> Exhaustive<B>.merge(other: Exhaustive<C>): Exhaustive<A> = object : Exhaustive<A>() {
-   override val values: List<A> = this@merge.values.zip(other.values).flatMap { listOf(it.first, it.second) }
+   override val values: List<A> = run {
+      val a: List<A> = this@merge.values
+      val b: List<A> = other.values
+      (0 until maxOf(a.size, b.size)).flatMap { i ->
+         listOfNotNull(a.getOrNull(i), b.getOrNull(i))
+      }
+   }
 }
 
 /**
