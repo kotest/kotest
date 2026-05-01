@@ -42,7 +42,7 @@ class ShouldSpecContainerScope(
 
    private suspend fun context(name: String, xmethod: TestXMethod, test: suspend ShouldSpecContainerScope.() -> Unit) {
       registerContainer(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          xmethod = xmethod,
          config = null,
       ) { ShouldSpecContainerScope(this).test() }
@@ -50,7 +50,7 @@ class ShouldSpecContainerScope(
 
    fun context(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.NONE
       ) {
@@ -60,7 +60,7 @@ class ShouldSpecContainerScope(
 
    fun fcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.FOCUSED,
       ) { ShouldSpecContainerScope(it) }
@@ -68,11 +68,14 @@ class ShouldSpecContainerScope(
 
    fun xcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.DISABLED,
       ) { ShouldSpecContainerScope(it) }
    }
+
+   private fun contextName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("context ").withDefaultAffixes().build()
 
    suspend fun should(name: String): TestWithConfigBuilder {
       val testName = shouldName(name)

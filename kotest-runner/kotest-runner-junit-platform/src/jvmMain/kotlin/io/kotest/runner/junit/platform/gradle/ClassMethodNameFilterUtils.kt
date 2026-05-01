@@ -80,14 +80,18 @@ internal object ClassMethodNameFilterUtils {
 
    /**
     * Removes any include patterns on any [ClassMethodNameFilter]s added by Gradle.
+    *
+    * Both `commandLineIncludePatterns` (populated by `--tests`) and
+    * `buildScriptIncludePatterns` (populated by `tasks.test { filter { includeTestsMatching(...) } }`)
+    * are cleared, since [extractIncludePatterns] reads from both.
     */
-   fun reset(filters: List<PostDiscoveryFilter>) {
+   fun reset(filters: List<Any>) {
       resolveClassMethodNameFilters(filters).forEach {
          runCatching {
             val matcher = testMatcher(it)
             val patternHolder = resolvePatternHolder(matcher)
-            val commandLineIncludePatterns = commandLineIncludePatterns(patternHolder) as MutableList<*>
-            commandLineIncludePatterns.clear()
+            (commandLineIncludePatterns(patternHolder) as MutableList<*>).clear()
+            (buildScriptIncludePatterns(patternHolder) as MutableList<*>).clear()
          }.onFailure { e ->
             logger.log { "Failed to reset ClassMethodNameFilter via reflection: $e" }
          }

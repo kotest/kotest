@@ -87,7 +87,7 @@ infix fun URI.shouldHaveParameter(key: String) = this should haveParameter(key)
 infix fun URI.shouldNotHaveParameter(key: String) = this shouldNot haveParameter(key)
 fun haveParameter(key: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
-      value.query.split("&").any { it.split("=").first() == key },
+      value.query?.split("&")?.any { it.split("=").first() == key } == true,
       { "Uri $value should have query parameter $key" },
       {
          "Uri $value should not have query parameter $key"
@@ -101,6 +101,6 @@ fun haveFragment(fragment: String) = object : Matcher<URI> {
       value.fragment == fragment,
       { "Uri $value should have fragment $fragment" },
       {
-         "Uri $value should not fragment $fragment"
+         "Uri $value should not have fragment $fragment"
       })
 }

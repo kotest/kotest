@@ -76,7 +76,7 @@ nmcp = "1.0.2"
 xmlutil = "0.91.3"
 
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.6.2"
+decoroutinator = "2.6.4"
 pitest = "1.23.0"
 
 # https://developer.android.com/jetpack/androidx/versions/all-channel

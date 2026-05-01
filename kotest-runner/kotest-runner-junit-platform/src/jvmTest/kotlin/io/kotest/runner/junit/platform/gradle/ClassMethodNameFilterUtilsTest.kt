@@ -3,6 +3,7 @@ package io.kotest.runner.junit.platform.gradle
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.shouldBe
 import org.gradle.api.internal.tasks.testing.filter.TestFilterSpec
 import org.gradle.api.internal.tasks.testing.filter.TestSelectionMatcher
@@ -67,6 +68,33 @@ class ClassMethodNameFilterUtilsTest : FunSpec({
          "\\QClassA\\E",
          "\\QClassB.test name\\E"
       )
+   }
+
+   test("reset clears buildScript include patterns as well as command-line patterns") {
+
+      // first arg → buildScriptIncludePatterns; third arg → commandLineIncludePatterns
+      val spec = TestFilterSpec(
+         setOf("BuildScriptInclude"),
+         emptySet(),
+         setOf("CommandLineInclude"),
+      )
+
+      val matcher = TestSelectionMatcher(spec)
+
+      val filter =
+         resolveClassMethodNameFilterClass()
+            .declaredConstructors.first { it.parameterCount == 1 }.let {
+               it.isAccessible = true
+               it.newInstance(matcher)
+            }
+
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)).shouldBe(
+         listOf("\\QBuildScriptInclude\\E", "\\QCommandLineInclude\\E")
+      )
+
+      ClassMethodNameFilterUtils.reset(listOf(filter))
+
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)).shouldBeEmpty()
    }
 
 })
