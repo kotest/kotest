@@ -35,9 +35,11 @@ class IntRangeShrinker : Shrinker<IntRange> {
          return emptyList()
       }
 
+      val tailDropped = value.first until value.last
+      val headDropped = if (value.first < Int.MAX_VALUE) value.first + 1..value.last else IntRange.EMPTY
       return listOf(
-         value.first until value.last,
-         value.first + 1..value.last,
+         tailDropped,
+         headDropped,
          IntRange.EMPTY,
       ).distinct()
    }
