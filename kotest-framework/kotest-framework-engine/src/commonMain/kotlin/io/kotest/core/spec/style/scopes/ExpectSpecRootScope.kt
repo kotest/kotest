@@ -81,14 +81,15 @@ interface ExpectSpecRootScope : RootScope {
 
    private fun addExpect(
       name: String,
-      test: suspend ExpectSpecContainerScope.() -> Unit,
+      test: suspend TestScope.() -> Unit,
       xmethod: TestXMethod,
    ) {
       addTest(
          testName = TestNameBuilder.builder(name).withPrefix("Expect: ").build(),
          xmethod = xmethod,
          config = null,
-      ) { ExpectSpecContainerScope(this).test() }
+         test = test,
+      )
    }
 
    private fun addExpect(
