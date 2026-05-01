@@ -156,7 +156,7 @@ interface WordSpecRootScope : RootScope {
 
    private fun addWhen(name: String, xmethod: TestXMethod, config: TestConfig?, test: suspend WordSpecWhenContainerScope.() -> Unit) {
       addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" when").build(),
+         testName = TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build(),
          xmethod = xmethod,
          config = config
       ) { WordSpecWhenContainerScope(this).test() }
@@ -174,7 +174,7 @@ interface WordSpecRootScope : RootScope {
 
    private fun addShould(name: String, xmethod: TestXMethod, config: TestConfig?, test: suspend WordSpecShouldContainerScope.() -> Unit) {
       addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" when").build(),
+         testName = TestNameBuilder.builder(name).withSuffix(" when").withDefaultAffixes().build(),
          xmethod = xmethod,
          config = config
       ) { WordSpecShouldContainerScope(this).test() }
