@@ -64,14 +64,14 @@ class DescribeSpecContainerScope(
 
    fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          context = this,
          xmethod = TestXMethod.NONE,
       ) { DescribeSpecContainerScope(it) }
 
    fun fcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          context = this,
          xmethod = TestXMethod.FOCUSED,
       ) { DescribeSpecContainerScope(it) }
