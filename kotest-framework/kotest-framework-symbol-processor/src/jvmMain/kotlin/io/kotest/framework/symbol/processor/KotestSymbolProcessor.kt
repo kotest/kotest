@@ -35,7 +35,7 @@ class KotestFileVisitor : KSVisitorVoid() {
 
    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
       super.visitClassDeclaration(classDeclaration, data)
-      if (isPublic(classDeclaration) && isSpec(classDeclaration)) {
+      if (isPublic(classDeclaration) && !isAbstract(classDeclaration) && isSpec(classDeclaration)) {
          specs.add(classDeclaration)
       } else if (isConfig(classDeclaration)) {
          configs.add(classDeclaration)
@@ -44,6 +44,15 @@ class KotestFileVisitor : KSVisitorVoid() {
 
    internal fun isPublic(declaration: KSClassDeclaration): Boolean =
       !declaration.modifiers.contains(Modifier.PRIVATE)
+
+   /**
+    * Returns true for classes that cannot be instantiated directly (abstract or sealed).
+    * The generated entry point invokes the spec's no-arg constructor (e.g. `MySpec()`),
+    * so abstract / sealed spec subclasses must be excluded — including them produces
+    * generated code that fails to compile.
+    */
+   internal fun isAbstract(declaration: KSClassDeclaration): Boolean =
+      declaration.modifiers.contains(Modifier.ABSTRACT) || declaration.modifiers.contains(Modifier.SEALED)
 
    internal fun isSpec(declaration: KSClassDeclaration): Boolean =
       declaration.getAllSuperTypes().map { it.declaration }
