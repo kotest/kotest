@@ -43,7 +43,7 @@ junit-jupiter6 = "6.0.3"
 jimfs = "1.3.1"
 
 kaml = "0.104.0"
-koin = "4.2.0"
+koin = "4.2.1"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 kotlin-poet = "2.3.0"
