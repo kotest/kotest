@@ -275,12 +275,31 @@ class JUnitTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
 
-      // an ignored test should never be started or finished;
-      // however, an ingored test may be inside a test not yet marked as started,
-      // so we must ensure we start any parents
+      // A test can reach `testIgnored` along two routes:
+      //  - it was never started: a TestEnabledExtension returned disabled, fail-fast
+      //    short-circuited it, etc. — this is the original case.
+      //  - it WAS started, then its body threw `TestAbortedException` /
+      //    `IterationSkippedException`, which `HandleSkippedExceptionsTestInterceptor`
+      //    converts to `TestResult.Ignored` and `TestFinishedInterceptor` then
+      //    routes through `testIgnored` instead of `testFinished`.
+      // In the second case, `testStarted` already created the descriptor, fired
+      // `dynamicTestRegistered` + `executionStarted`, and tracked it in `startedTests`.
+      // Re-creating the descriptor here would produce a duplicate UniqueId child
+      // and leave the original descriptor without an `executionFinished` event.
+      // Detect that case and finalize as aborted instead.
+      if (testCase.descriptor in startedTests) {
+         val descriptor = descriptors[testCase.descriptor]
+            ?: error("startedTests contains ${testCase.descriptor} but descriptors does not")
+         logger.log { Pair(testCase.name.name, "test ignored after start; finalizing as aborted: $reason") }
+         results[testCase.descriptor] = TestResult.Ignored(reason)
+         listener.executionFinished(descriptor, TestExecutionResult.aborted(null))
+         return
+      }
+
+      // an ignored test that was never started — register a fresh descriptor and skip it.
+      // Start any parents that haven't already been marked as started.
       startParents(testCase)
 
-      // like all tests, an ignored test should be registered first
       // ignored test should be a TEST type, because an ignored test will never have child tests.
       val testDescriptor = createTestDescriptorWithMethodSource(root, testCase, TestDescriptor.Type.TEST, formatter)
       attachToParent(testCase, testDescriptor)
