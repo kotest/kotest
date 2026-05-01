@@ -167,25 +167,28 @@ class DescribeSpecContainerScope(
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("It: ").build(),
          xmethod = TestXMethod.NONE,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         config = null,
+         test = test,
+      )
    }
 
    suspend fun fit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("It: ").build(),
          xmethod = TestXMethod.FOCUSED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         config = null,
+         test = test,
+      )
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("It: ").build(),
          xmethod = TestXMethod.DISABLED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         config = null,
+         test = test,
+      )
    }
 }
