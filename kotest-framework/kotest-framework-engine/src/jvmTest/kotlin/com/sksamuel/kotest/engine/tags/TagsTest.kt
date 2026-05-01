@@ -53,6 +53,22 @@ class TagsTest : StringSpec() {
          tags.parse().isActive(NamedTag("goo")) shouldBe true
          tags.parse().isActive(Roo) shouldBe true
       }
+      "test with multiple exclude tags excludes any test having any of them" {
+         val tags = TagExpression(emptySet(), setOf(Moo, Roo))
+         tags.parse().isActive(Foo) shouldBe true
+         tags.parse().isActive(Moo) shouldBe false // moo excluded
+         tags.parse().isActive(Roo) shouldBe false // roo excluded
+         tags.parse().isActive(setOf(Foo, Moo)) shouldBe false // moo excluded
+         tags.parse().isActive(setOf(Foo, Roo)) shouldBe false // roo excluded
+         tags.parse().isActive(setOf(Moo, Roo)) shouldBe false // both excluded
+      }
+      "test with include and multiple exclude tags" {
+         val tags = TagExpression(setOf(Foo), setOf(Moo, Roo))
+         tags.parse().isActive(Foo) shouldBe true
+         tags.parse().isActive(setOf(Foo, Moo)) shouldBe false // moo excluded
+         tags.parse().isActive(setOf(Foo, Roo)) shouldBe false // roo excluded
+         tags.parse().isActive(setOf(Foo, Moo, Roo)) shouldBe false // both excluded
+      }
       "test with simple expression" {
          val tags = TagExpression("Foo")
          tags.parse().isActive(Foo) shouldBe true
