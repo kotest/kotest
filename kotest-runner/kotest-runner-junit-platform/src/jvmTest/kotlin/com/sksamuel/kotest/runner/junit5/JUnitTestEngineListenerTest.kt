@@ -10,6 +10,8 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
+import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.matchers.shouldBe
@@ -354,6 +356,40 @@ class JUnitTestEngineListenerTest : FunSpec({
          ),
       )
    }
+   test("failOnIgnoredTests should fail engine even if ignored test was in an earlier spec") {
+
+      val root2 = EngineDescriptorBuilder
+         .builder(UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID))
+         .withSpecs(listOf(SpecRef.Reference(MySpec::class), SpecRef.Reference(MySpec2::class)))
+         .build()
+
+      val track = EventTrackingEngineExecutionListener()
+      val listener = JUnitTestEngineListener(track, root2, DisplayNameFormatting(null))
+
+      val projectConfig = object : AbstractProjectConfig() {
+         override val failOnIgnoredTests: Boolean = true
+      }
+      listener.engineInitialized(TestEngineInitializedContext.empty.copy(projectConfig = projectConfig))
+      listener.engineStarted()
+
+      // first spec: an ignored test, then specFinished triggers reset()
+      listener.specStarted(SpecRef.Reference(MySpec::class))
+      listener.testIgnored(tc1, "no reason")
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
+
+      // second spec: no ignored tests
+      listener.specStarted(SpecRef.Reference(MySpec2::class))
+      listener.testStarted(tc3)
+      listener.testFinished(tc3, TestResult.Success(0.milliseconds))
+      listener.specFinished(SpecRef.Reference(MySpec2::class), TestResult.Success(0.seconds))
+
+      listener.engineFinished(emptyList())
+
+      // The root engine descriptor should be FAILED because at least one test was ignored.
+      val rootFinish = track.events.last() as EventTrackingEngineExecutionListener.Event.ExecutionFinished
+      rootFinish.status shouldBe TestExecutionResult.Status.FAILED
+   }
+
 })
 
 private class MySpec : FunSpec()

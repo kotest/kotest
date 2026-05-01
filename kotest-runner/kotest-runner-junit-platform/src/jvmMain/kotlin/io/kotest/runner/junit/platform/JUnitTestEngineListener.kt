@@ -96,6 +96,12 @@ class JUnitTestEngineListener(
 
    private var failOnIgnoredTests = false
 
+   // Whether at least one test was ignored across the whole engine run.
+   // Tracked separately from `results` because `results` is cleared per-spec
+   // by `reset()` and would otherwise be empty by the time `engineFinished`
+   // checks it.
+   private var anyTestIgnored = false
+
    private val results = mutableMapOf<Descriptor, TestResult>()
 
    private val dummies = hashSetOf<String>()
@@ -115,7 +121,7 @@ class JUnitTestEngineListener(
 
       registerExceptionPlaceholders(t)
 
-      val result = if (failOnIgnoredTests && results.values.any { it.isIgnored }) {
+      val result = if (failOnIgnoredTests && anyTestIgnored) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()
@@ -275,6 +281,7 @@ class JUnitTestEngineListener(
 
       logger.log { Pair(testCase.name.name, "test ignored $reason") }
       results[testCase.descriptor] = TestResult.Ignored(reason)
+      anyTestIgnored = true
 
       logger.log { Pair(testCase.name.name, "executionSkipped: $testDescriptor") }
       listener.executionSkipped(testDescriptor, reasonIfEnabled(reason))
