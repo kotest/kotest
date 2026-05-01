@@ -98,6 +98,7 @@ class Materializer(
          config = config,
          factoryId = parent.factoryId,
          parent = parent,
+         xmethod = nested.xmethod,
       )
    }
 }
