@@ -146,7 +146,7 @@ kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
 
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.2" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.3" }
 
 junit-platform5-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform5" }
 junit-platform5-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform5" }
