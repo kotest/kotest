@@ -69,9 +69,10 @@ internal object Discovery {
       configurationParameters: ConfigurationParameters
    ): DiscoveryFilter {
 
-      val private = if (classSelectors.size == 1 ||
-         configurationParameters.get("allow_private").isPresent
-      ) Modifier.Private else null
+      val allowPrivateConfigured = configurationParameters.get("allow_private")
+         .map { it.toBoolean() }
+         .orElse(false)
+      val private = if (classSelectors.size == 1 || allowPrivateConfigured) Modifier.Private else null
 
       val modifiers = listOfNotNull(Modifier.Public, Modifier.Internal, private)
       return DiscoveryFilter.ClassModifierDiscoveryFilter(modifiers.toSet())

@@ -23,7 +23,7 @@ class FunSpecContainerScope(
     */
    suspend fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       registerContainer(
-         TestNameBuilder.builder(name).build(),
+         contextName(name),
          xmethod = TestXMethod.NONE,
          null
       ) { FunSpecContainerScope(this).test() }
@@ -34,7 +34,7 @@ class FunSpecContainerScope(
     */
    suspend fun fcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       registerContainer(
-         TestNameBuilder.builder(name).build(),
+         contextName(name),
          xmethod = TestXMethod.FOCUSED,
          null
       ) { FunSpecContainerScope(this).test() }
@@ -45,7 +45,7 @@ class FunSpecContainerScope(
     */
    suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
       registerContainer(
-         TestNameBuilder.builder(name).build(),
+         contextName(name),
          xmethod = TestXMethod.DISABLED,
          null
       ) { FunSpecContainerScope(this).test() }
@@ -56,7 +56,7 @@ class FunSpecContainerScope(
     */
    fun context(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.NONE,
          contextFn = { FunSpecContainerScope(it) }
@@ -68,7 +68,7 @@ class FunSpecContainerScope(
     */
    fun fcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.FOCUSED,
       ) { FunSpecContainerScope(it) }
@@ -79,11 +79,14 @@ class FunSpecContainerScope(
     */
    fun xcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.DISABLED,
       ) { FunSpecContainerScope(it) }
    }
+
+   private fun contextName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("context ").build()
 
    /**
     * Adds a test case to this context, expecting config.
