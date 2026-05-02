@@ -148,7 +148,7 @@ fun <T, C : Collection<T>> containExactlyInAnyOrder(
          }
          if(possibleMatches.isNotEmpty()) {
             appendLine()
-            append("Possible matches for unexpected elements:\n$possibleMatches")
+            append("Possible matches for missing elements:\n$possibleMatches")
          }
       }
    }

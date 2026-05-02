@@ -127,7 +127,8 @@ abstract class AnnotationSpec : Spec() {
             t.unwrapIfReflectionCall()
          } ?: failNoExceptionThrown(expected)
 
-         if (thrown::class != expected) failWrongExceptionThrown(expected, thrown)
+         // Match JUnit 4 semantics: @Test(expected = X) accepts any X subclass, not only X exactly.
+         if (!expected.java.isInstance(thrown)) failWrongExceptionThrown(expected, thrown)
       }
    }
 

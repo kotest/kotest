@@ -152,9 +152,6 @@ if (shouldRunJvmOnlyModules) {
 
       ":kotest-tests:kotest-tests-core",
 
-      // android junit4 instrumentation tests
-      ":kotest-tests:kotest-tests-android-instrumentation",
-
       // tests for Java APIs added in JDK21
       ":kotest-tests:kotest-tests-assertions-java21",
 
@@ -230,6 +227,10 @@ if (shouldRunJvmOnlyModules) {
  */
 if (shouldRunLinuxOnlyModules) {
    include(
+      // android junit4 instrumentation tests; the AVD/emulator setup only runs on a
+      // Linux runner with KVM, so we keep it out of the Windows/macOS jobs.
+      ":kotest-tests:kotest-tests-android-instrumentation",
+
       // adds support for the allure reporting framework - see more https://allurereport.org/
       ":kotest-extensions:kotest-extensions-allure",
       ":kotest-extensions:kotest-extensions-blockhound",

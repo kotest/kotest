@@ -67,9 +67,9 @@ val descriptors = listOf(
    PluginDescriptor(
       since = "261.*", // this version is 2026.1.x
       until = "262.*",
-      sdkVersion = "261-EAP-SNAPSHOT",
+      sdkVersion = "2026.1.1",
       sourceFolder = "IC-261",
-      useInstaller = false,
+      useInstaller = true,
       jdkTarget = JavaVersion.VERSION_21,
       androidVersion = "261.20869.38",
       webpPlugin = "intellij.webp:261.21525.28",

@@ -47,6 +47,13 @@ internal class JUnitTestEngineListener(
       notifier.fireTestStarted(desc)
    }
 
+   override suspend fun testIgnored(testCase: TestCase, reason: String?) {
+      // Ignored tests bypass testStarted/testFinished, so JUnit4 only sees them
+      // if we forward the event explicitly here.
+      val desc = Descriptions.createTestDescription(testCase)
+      notifier.fireTestIgnored(desc)
+   }
+
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       val desc = Descriptions.createTestDescription(testCase)
       when (result) {
