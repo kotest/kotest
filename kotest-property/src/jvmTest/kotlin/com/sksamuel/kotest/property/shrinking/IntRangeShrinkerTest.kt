@@ -54,6 +54,15 @@ class IntRangeShrinkerTest : FunSpec({
       }
    }
 
+   test("IntRangeShrinker should not produce a candidate larger than the input on Int.MAX_VALUE singleton") {
+      val candidates = IntRangeShrinker().shrink(Int.MAX_VALUE..Int.MAX_VALUE)
+      candidates.forAtLeastOne { it shouldBe IntRange.EMPTY }
+      // No candidate should span the full Int range due to overflow
+      candidates.forEach { range ->
+         (range.isEmpty() || range.last.toLong() - range.first.toLong() < Int.MAX_VALUE.toLong()) shouldBe true
+      }
+   }
+
    test("IntRangeShrinker should shrink to expected value") {
       checkAll(Arb.intRange(0..10)) { range ->
          if (!range.isEmpty()) {

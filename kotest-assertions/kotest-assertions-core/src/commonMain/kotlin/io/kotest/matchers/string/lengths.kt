@@ -21,7 +21,7 @@ fun haveMaxLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
    MatcherResult(
       value.length <= length,
       { "${value.print().value} should have maximum length of $length" },
-      { "${value.print().value} should have minimum length of ${length - 1}" })
+      { "${value.print().value} should have minimum length of ${length + 1}" })
 }
 
 infix fun <A : CharSequence> A?.shouldHaveMinLength(length: Int): A {

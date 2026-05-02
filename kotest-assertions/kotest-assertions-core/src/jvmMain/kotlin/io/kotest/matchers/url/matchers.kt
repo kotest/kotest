@@ -80,7 +80,7 @@ infix fun URL.shouldHaveParameter(key: String) = this should haveParameter(key)
 infix fun URL.shouldNotHaveParameter(key: String) = this shouldNot haveParameter(key)
 fun haveParameter(key: String) = object : Matcher<URL> {
    override fun test(value: URL) = MatcherResult(
-      value.query.split("&").any { it.split("=").first() == key },
+      value.query?.split("&")?.any { it.split("=").first() == key } == true,
       { "URL $value should have query parameter $key" },
       { "URL $value should not have query parameter $key" }
    )
@@ -91,7 +91,7 @@ fun URL.shouldNotHaveParameterValue(key: String, value: String) = this shouldNot
 
 fun haveParameterValue(key: String, v: String) = object : Matcher<URL> {
    override fun test(value: URL) = MatcherResult(
-      value.query.split("&").find { it.split("=").first() == key } == "$key=$v",
+      value.query?.split("&")?.find { it.split("=").first() == key } == "$key=$v",
       { "URL $value should have query parameter $key=$v" },
       { "URL $value should not have query parameter $key=$v" }
    )
@@ -103,6 +103,6 @@ fun haveRef(ref: String) = object : Matcher<URL> {
    override fun test(value: URL) = MatcherResult(
       value.ref == ref,
       { "URL $value should have ref $ref" },
-      { "URL $value should not ref $ref" }
+      { "URL $value should not have ref $ref" }
    )
 }
