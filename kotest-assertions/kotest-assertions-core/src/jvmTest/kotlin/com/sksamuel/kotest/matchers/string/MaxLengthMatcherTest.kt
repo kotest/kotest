@@ -21,6 +21,10 @@ class MaxLengthMatcherTest : FreeSpec() {
             shouldThrow<AssertionError> {
                "12" should haveMaxLength(1)
             }.message shouldBe "\"12\" should have maximum length of 1"
+
+            shouldThrow<AssertionError> {
+               "12" shouldNot haveMaxLength(5)
+            }.message shouldBe "\"12\" should have minimum length of 6"
          }
          "should work on char seq" {
             val empty: CharSequence = ""

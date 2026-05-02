@@ -47,6 +47,19 @@ class FutureMatcherTest : StringSpec({
       val completableFuture = CompletableFuture<Int>()
       completableFuture.shouldNotBeCancelled()
    }
+   "shouldBeCancelled error message names cancellation, not completion" {
+      val completableFuture = CompletableFuture<Int>()
+      shouldThrowMessage("Future should be cancelled") {
+         completableFuture.shouldBeCancelled()
+      }
+   }
+   "shouldNotBeCancelled error message names cancellation, not completion" {
+      val completableFuture = CompletableFuture<Int>()
+      completableFuture.cancel(true)
+      shouldThrowMessage("Future should not be cancelled") {
+         completableFuture.shouldNotBeCancelled()
+      }
+   }
    "test future is completed exceptionally" {
       val completableFuture = CompletableFuture<Int>()
       runOnSeparateThread {

@@ -869,7 +869,7 @@ fun between(a: LocalDate, b: LocalDate): Matcher<LocalDate> = object : Matcher<L
       return MatcherResult(
          passed,
          { "$value should be after $a and before $b" },
-         { "$value should not be be after $a and before $b" }
+         { "$value should not be after $a and before $b" }
       )
    }
 }
@@ -956,7 +956,7 @@ fun between(a: LocalDateTime, b: LocalDateTime): Matcher<LocalDateTime> = object
       return MatcherResult(
          passed,
          { "$value should be after $a and before $b" },
-         { "$value should not be be after $a and before $b" }
+         { "$value should not be after $a and before $b" }
       )
    }
 }

@@ -24,6 +24,13 @@ class MergeTest : FunSpec({
       listOf(1, 2, 3).exhaustive().merge(listOf(4, 5, 6).exhaustive()).values shouldBe listOf(1, 4, 2, 5, 3, 6)
    }
 
+   test("merge keeps surplus elements from the longer exhaustive") {
+      listOf(1, 2, 3, 4, 5).exhaustive().merge(listOf(10, 20).exhaustive()).values shouldBe
+         listOf(1, 10, 2, 20, 3, 4, 5)
+      listOf(10, 20).exhaustive().merge(listOf(1, 2, 3, 4, 5).exhaustive()).values shouldBe
+         listOf(10, 1, 20, 2, 3, 4, 5)
+   }
+
    test("merge two exhaustive gens where neither is a subtype of the other") {
       val firstGen = listOf(Common.Foo(1), Common.Foo(2), Common.Foo(3)).exhaustive()
       val secondGen = listOf(Common.Bar(4), Common.Bar(5), Common.Bar(6)).exhaustive()

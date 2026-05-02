@@ -85,7 +85,7 @@ class FeatureSpecContainerScope(
       )
    }
 
-   suspend fun xfscenario(name: String): TestWithConfigBuilder {
+   suspend fun fscenario(name: String): TestWithConfigBuilder {
       val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(
