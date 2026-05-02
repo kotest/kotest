@@ -6,8 +6,8 @@ import io.kotest.property.RandomSource
 fun Exhaustive.Companion.azstring(range: IntRange): Exhaustive<String> {
    fun az() = ('a'..'z').map { it.toString() }
    val values = range.toList().flatMap { size ->
-      List(size) { az() }.reduce { acc, seq -> acc.flatMap { a ->
-         seq.map { b -> a + b } }
+      List(size) { az() }.fold(listOf("")) { acc, seq ->
+         acc.flatMap { a -> seq.map { b -> a + b } }
       }
    }
    return values.exhaustive()

@@ -1,6 +1,9 @@
 package io.kotest.datatest.tags
 // tests in this package all have the same structure but different style (FunSpec, FreeSpec, BehaviorSpec ...) - keep it that way so they can all be tested at once
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.core.test.config.DefaultTestConfig
 import io.kotest.datatest.withContexts
 import io.kotest.datatest.withData
 import io.kotest.datatest.withTests
@@ -10,6 +13,15 @@ import io.kotest.matchers.shouldBe
 
 
 class DataTestTagsFunSpec : FunSpec({
+
+    // Deeply nested data tests on WasmWasi node intermittently report a single
+    // leaf as failed with no failure detail (kotlin/wasm + Mocha environmental flake).
+    // The same spec is covered consistently on jvm, js, wasmJs, and native targets,
+    // so a single retry is enough to absorb the wasmWasi flake without losing coverage.
+    if (platform == Platform.WasmWasi) {
+        defaultTestConfig = DefaultTestConfig(retries = 1)
+    }
+
 
     context("parent context") {
         context("child context") {
