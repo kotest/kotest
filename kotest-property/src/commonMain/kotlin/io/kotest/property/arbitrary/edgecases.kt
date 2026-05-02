@@ -16,7 +16,7 @@ tailrec fun <A> List<Arb<A>>.edgecase(rs: RandomSource): Sample<A>? {
    if (this.isEmpty()) return null
    val shuffled = this.shuffled(rs.random)
    return when (val edge = shuffled.first().edgecase(rs)) {
-      null -> this.drop(1).edgecase(rs)
+      null -> shuffled.drop(1).edgecase(rs)
       else -> edge
    }
 }

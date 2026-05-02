@@ -26,9 +26,6 @@ internal class ExceptionCapturingInterceptor(private val timeMark: TimeMark) : T
       } catch (t: Throwable) {
          logger.log { Pair(testCase.name.name, "Throwable $t") }
          TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(t).build()
-      } catch (e: AssertionError) {
-         logger.log { Pair(testCase.name.name, "AssertionError $e") }
-         TestResultBuilder.builder().withDuration(timeMark.elapsedNow()).withError(e).build()
       }
    }
 }
