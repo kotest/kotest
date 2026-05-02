@@ -35,7 +35,7 @@ class BehaviorSpecContextContainerScope(
       test: suspend BehaviorSpecGivenContainerScope.() -> Unit,
    ) {
       registerContainer(
-         name = TestNameBuilder.builder(name).withPrefix("Given: ").build(),
+         name = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
          xmethod = xmethod,
          config = null
       ) {
@@ -78,7 +78,7 @@ class BehaviorSpecContextContainerScope(
       test: suspend BehaviorSpecContextContainerScope.() -> Unit,
    ) {
       registerContainer(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
          xmethod = xmethod,
          config = null
       ) {
