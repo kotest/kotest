@@ -114,7 +114,7 @@ class FreeSpecContainerScope(val testScope: TestScope) : AbstractContainerScope(
     * ```
     */
    suspend infix operator fun FreeSpecContextConfigBuilder.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      registerContainer(
+      registerTest(
          name = TestNameBuilder.builder(name).build(),
          xmethod = TestXMethod.NONE,
          config = config

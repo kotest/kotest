@@ -2046,7 +2046,7 @@ fun between(a: LocalDate, b: LocalDate): Matcher<LocalDate> = object : Matcher<L
          passed,
          { "$value should be after $a and before $b" },
          {
-            "$value should not be be after $a and before $b"
+            "$value should not be after $a and before $b"
          })
    }
 }
@@ -2134,7 +2134,7 @@ fun between(a: LocalDateTime, b: LocalDateTime): Matcher<LocalDateTime> = object
          passed,
          { "$value should be after $a and before $b" },
          {
-            "$value should not be be after $a and before $b"
+            "$value should not be after $a and before $b"
          })
    }
 }
@@ -2223,7 +2223,7 @@ fun between(a: ZonedDateTime, b: ZonedDateTime): Matcher<ZonedDateTime> = object
          passed,
          { "$value should be after $a and before $b" },
          {
-            "$value should not be be after $a and before $b"
+            "$value should not be after $a and before $b"
          })
    }
 }
@@ -2312,7 +2312,7 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
          passed,
          { "$value should be after $a and before $b" },
          {
-            "$value should not be be after $a and before $b"
+            "$value should not be after $a and before $b"
          })
    }
 }

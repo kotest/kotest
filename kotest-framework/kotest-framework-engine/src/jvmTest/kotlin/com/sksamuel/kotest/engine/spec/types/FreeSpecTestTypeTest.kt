@@ -19,5 +19,10 @@ class FreeSpecTestTypeTest : FreeSpec() {
       "test" {
          this.testCase.type shouldBe TestType.Test
       }
+      "container with config leaf" - {
+         "leaf with config".config(enabled = true) {
+            this.testCase.type shouldBe TestType.Test
+         }
+      }
    }
 }
