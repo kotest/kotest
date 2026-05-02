@@ -12,10 +12,12 @@ import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.choice
+import io.kotest.property.arbitrary.edgecase
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.negativeInt
 import io.kotest.property.arbitrary.positiveInt
+import io.kotest.property.arbitrary.removeEdgecases
 import io.kotest.property.arbitrary.take
 import io.kotest.property.forAll
 
@@ -81,6 +83,14 @@ class ChoiceTest : WordSpec({
             listOf(1, 2, 3, 4).contains(i)
          }
          values shouldBe setOf(1, 2, 3, 4)
+      }
+      "finds the only arb with edge cases when most have none" {
+         val arbWithEdge = arbitrary(listOf(42)) { 0 }
+         val arbWithoutEdge = arbitrary { 0 }.removeEdgecases()
+         val arbList = listOf(arbWithoutEdge, arbWithoutEdge, arbWithEdge, arbWithoutEdge)
+         repeat(20) { seed ->
+            arbList.edgecase(RandomSource.seeded(seed.toLong())) shouldNotBe null
+         }
       }
       "edge cases should not be in Arb.samples" {
          val valueSet = Arb

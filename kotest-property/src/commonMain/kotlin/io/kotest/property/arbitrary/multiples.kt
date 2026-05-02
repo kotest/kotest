@@ -27,6 +27,9 @@ class MultiplesShrinker(private val multiple: Int) : Shrinker<Int> {
    }
 }
 
-fun Arb.Companion.factor(k: Int): Arb<Int> = arbitrary {
-   generateSequence { it.random.nextInt(k) }.filter { it > 0 }.filter { k % it == 0 }.first()
+fun Arb.Companion.factor(k: Int): Arb<Int> {
+   require(k >= 1) { "k must be >= 1" }
+   return arbitrary {
+      generateSequence { it.random.nextInt(1..k) }.filter { k % it == 0 }.first()
+   }
 }

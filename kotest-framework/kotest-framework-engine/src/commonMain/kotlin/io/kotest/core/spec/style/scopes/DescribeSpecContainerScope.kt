@@ -64,14 +64,14 @@ class DescribeSpecContainerScope(
 
    fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          context = this,
          xmethod = TestXMethod.NONE,
       ) { DescribeSpecContainerScope(it) }
 
    fun fcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
          context = this,
          xmethod = TestXMethod.FOCUSED,
       ) { DescribeSpecContainerScope(it) }
@@ -167,25 +167,28 @@ class DescribeSpecContainerScope(
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("It: ").build(),
          xmethod = TestXMethod.NONE,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         config = null,
+         test = test,
+      )
    }
 
    suspend fun fit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("It: ").build(),
          xmethod = TestXMethod.FOCUSED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         config = null,
+         test = test,
+      )
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
+         name = TestNameBuilder.builder(name).withPrefix("It: ").build(),
          xmethod = TestXMethod.DISABLED,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+         config = null,
+         test = test,
+      )
    }
 }
