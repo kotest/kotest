@@ -35,7 +35,7 @@ infix fun Regex.shouldEqualRegex(anotherRegex: Regex): Regex {
    "Use `shouldNotEqualRegex` instead. Deprecated in 6.0",
    ReplaceWith("this shouldNotEqualRegex anotherRegex")
 )
-infix fun Regex.shouldNotBeRegex(anotherRegex: Regex): Regex = shouldEqualRegex(anotherRegex)
+infix fun Regex.shouldNotBeRegex(anotherRegex: Regex): Regex = shouldNotEqualRegex(anotherRegex)
 
 /**
  * Assert that [Regex] is not equal to [anotherRegex] by comparing their pattern and options([RegexOption]).

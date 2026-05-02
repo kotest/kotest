@@ -34,7 +34,7 @@ fun between(fromInstant: Instant, toInstant: Instant) = object : Matcher<Instant
       return MatcherResult(
          value.isAfter(fromInstant) && value.isBefore(toInstant),
          { "$value should be after $fromInstant and before $toInstant" },
-         { "$value should not be be after $fromInstant and before $toInstant" }
+         { "$value should not be after $fromInstant and before $toInstant" }
       )
    }
 }

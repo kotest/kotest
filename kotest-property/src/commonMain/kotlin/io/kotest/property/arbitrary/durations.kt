@@ -60,9 +60,8 @@ class DurationShrinker(
 
       return (unsafeShrinks + componentShrinks)
          .map { it.coerceIn(range) }
-         .takeIf { shrinks -> shrinks.all { it != Duration.ZERO } }
-         ?.distinct()
-         ?: emptyList()
+         .filter { it != Duration.ZERO && it != value }
+         .distinct()
    }
 
    /** Tries to shrink, but might through an [IllegalArgumentException] if the resulting duration is invalid */

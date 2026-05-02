@@ -1,6 +1,6 @@
 package com.sksamuel.kotest.property.arbitrary
 
-import io.kotest.assertions.throwables.shouldThrowWithMessage
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -10,6 +10,8 @@ import io.kotest.matchers.ints.shouldBeInRange
 import io.kotest.matchers.maps.shouldBeEmpty
 import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldStartWith
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.Codepoint
@@ -72,11 +74,10 @@ class MapsTest : FunSpec({
       test("should throw when the cardinality of the key arbitrary does not satisfy the required minimum size") {
          val arbKey = Arb.int(1..3)
          val arbMap = Arb.map(arbKey, Arb.string(1..10), minSize = 5, maxSize = 10)
-         shouldThrowWithMessage<IllegalArgumentException>(
-            "the minimum size requirement of 5 could not be satisfied after 90 consecutive samples"
-         ) {
+         val ex = shouldThrow<IllegalArgumentException> {
             arbMap.single(RandomSource.seeded(1234L))
          }
+         ex.message shouldStartWith "the minimum size requirement of 5 could not be satisfied"
       }
    }
 
@@ -102,11 +103,26 @@ class MapsTest : FunSpec({
       test("should throw when the cardinality of the key arbitrary does not satisfy the required minimum size") {
          val arbPair = Arb.pair(Arb.int(1..3), Arb.string(1..10, Codepoint.alphanumeric()))
          val arbMap = Arb.map(arbPair, minSize = 5, maxSize = 10)
-         shouldThrowWithMessage<IllegalArgumentException>(
-            "the minimum size requirement of 5 could not be satisfied after 90 consecutive samples"
-         ) {
+         val ex = shouldThrow<IllegalArgumentException> {
             arbMap.single(RandomSource.seeded(1234L))
          }
+         ex.message shouldStartWith "the minimum size requirement of 5 could not be satisfied"
+      }
+   }
+
+   // regression: Arb.map used `nextInt(minSize, maxSize)` (half-open) instead of
+   // `nextInt(minSize..maxSize)` (inclusive) so it silently capped at maxSize - 1 and threw
+   // IllegalArgumentException for minSize == maxSize.
+   context("Arb.map size bounds") {
+      test("should be able to generate maps with minSize == maxSize") {
+         val arbMap = Arb.map(Arb.int(1..1000), Arb.int(1..1000), minSize = 5, maxSize = 5)
+         arbMap.take(50, RandomSource.seeded(12345L)).toList().forAll { it.size shouldBe 5 }
+      }
+
+      test("should sometimes produce maps of exactly maxSize") {
+         val arbMap = Arb.map(Arb.int(1..1000), Arb.int(1..1000), minSize = 1, maxSize = 5)
+         val maps = arbMap.take(500, RandomSource.seeded(12345L)).toList()
+         maps.any { it.size == 5 } shouldBe true
       }
    }
 

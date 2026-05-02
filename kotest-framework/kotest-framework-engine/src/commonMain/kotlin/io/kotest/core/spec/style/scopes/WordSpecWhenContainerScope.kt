@@ -155,7 +155,7 @@ class WordSpecWhenContainerScope(
 
    private suspend fun addShould(name: String, xmethod: TestXMethod, config: TestConfig?, test: suspend WordSpecShouldContainerScope.() -> Unit) {
       registerContainer(
-         name = TestNameBuilder.builder(name).withSuffix(" when").build(),
+         name = TestNameBuilder.builder(name).withSuffix(" should").build(),
          xmethod = xmethod,
          config = config
       ) { WordSpecShouldContainerScope(this).test() }
