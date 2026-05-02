@@ -559,7 +559,7 @@ fun between(a: LocalTime, b: LocalTime): Matcher<LocalTime> = object : Matcher<L
     return MatcherResult(
        passed,
        { "$value should be after $a and before $b" },
-       { "$value should not be be after $a and before $b" }
+       { "$value should not be after $a and before $b" }
     )
   }
 }

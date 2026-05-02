@@ -57,6 +57,9 @@ class UriMatchersTest : WordSpec() {
         URI.create("https://hostname:90?a=b&c=d") should haveParameter("c")
         URI.create("https://hostname:90?a=b&c=d") shouldNot haveParameter("b")
       }
+      "fail (not NPE) when the URI has no query string" {
+        URI.create("https://hostname:90") shouldNot haveParameter("a")
+      }
     }
 
     "havePath" should {

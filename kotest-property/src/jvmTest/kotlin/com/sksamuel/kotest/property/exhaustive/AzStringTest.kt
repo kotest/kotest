@@ -28,4 +28,12 @@ class AzStringTest : ShouldSpec ({
    should("handle ranges") {
       Exhaustive.Companion.azstring(1..2).values shouldBe oneLetterPermutations + twoLetterPermutations
    }
+
+   should("include the empty string for range 0..0") {
+      Exhaustive.Companion.azstring(0..0).values shouldBe listOf("")
+   }
+
+   should("include the empty string when range starts at 0") {
+      Exhaustive.Companion.azstring(0..1).values shouldBe listOf("") + oneLetterPermutations
+   }
 })

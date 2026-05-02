@@ -93,7 +93,6 @@ interface WordSpecRootScope : RootScope {
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -174,7 +173,7 @@ interface WordSpecRootScope : RootScope {
 
    private fun addShould(name: String, xmethod: TestXMethod, config: TestConfig?, test: suspend WordSpecShouldContainerScope.() -> Unit) {
       addContainer(
-         testName = TestNameBuilder.builder(name).withSuffix(" when").build(),
+         testName = TestNameBuilder.builder(name).withSuffix(" should").build(),
          xmethod = xmethod,
          config = config
       ) { WordSpecShouldContainerScope(this).test() }
