@@ -31,7 +31,7 @@ fun beBetween(fromTimestamp: Timestamp, toTimestamp: Timestamp) = object : Match
       return MatcherResult(
          value.after(fromTimestamp) && value.before(toTimestamp),
          { "$value should be after $fromTimestamp and before $toTimestamp" },
-         { "$value should not be be after $fromTimestamp and before $toTimestamp" }
+         { "$value should not be after $fromTimestamp and before $toTimestamp" }
       )
    }
 }

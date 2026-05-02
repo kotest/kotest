@@ -42,9 +42,9 @@ fun <T> cancelled() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
       MatcherResult(
          value.isCancelled,
-         { "Future should be completed" },
+         { "Future should be cancelled" },
          {
-            "Future should not be completed"
+            "Future should not be cancelled"
          })
 }
 

@@ -1,5 +1,6 @@
 package io.kotest.matchers.kotlinx.datetime
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -82,6 +83,22 @@ class InstantTests : FreeSpec({
         val futureInstant = currentInstant.plus(30000.milliseconds)
 
         futureInstant.shouldNotBeBetween(pastInstant, currentInstant)
+    }
+
+    "shouldNotBeBefore message reports value (not anotherInstant) as the violator" {
+        val past = Instant.fromEpochMilliseconds(0)
+        val future = Instant.fromEpochMilliseconds(1000)
+        shouldThrow<AssertionError> {
+            past shouldNotBeBefore future
+        }.message shouldBe "$past is not expected to be before $future."
+    }
+
+    "shouldNotBeAfter message reports value (not anotherInstant) as the violator" {
+        val past = Instant.fromEpochMilliseconds(0)
+        val future = Instant.fromEpochMilliseconds(1000)
+        shouldThrow<AssertionError> {
+            future shouldNotBeAfter past
+        }.message shouldBe "$future is not expected to be after $past."
     }
 
 })
