@@ -115,7 +115,14 @@ val Codepoint.highSurrogate: Char
    get() = (value ushr 10).toChar() + (Char.MIN_HIGH_SURROGATE - (MIN_SUPPLEMENTARY_CODE_POINT ushr 10)).code
 
 val Codepoint.lowSurrogate: Char
-   get() = (value ushr 0x3ff).toChar() + Char.MIN_LOW_SURROGATE.code
+   // Standard UTF-16 encoding: the low 10 bits of (value - 0x10000) become the offset from
+   // MIN_LOW_SURROGATE. For values >= 0x10000 (the only ones that go through surrogate
+   // encoding), `value and 0x3ff` is equivalent to `(value - 0x10000) and 0x3ff` since
+   // 0x10000 has no overlap with the low 10 bits. The previous implementation used
+   // `ushr 0x3ff` (shift right by 1023, which Kotlin reduces to mod 32 = 31), so it was
+   // returning just the sign bit and producing 0xDC00 for almost every supplementary
+   // codepoint - corrupting surrogate-pair output for e.g. egyptianHieroglyphs().
+   get() = (value and 0x3ff).toChar() + Char.MIN_LOW_SURROGATE.code
 
 fun Codepoint.asString(): String {
    return if (isBmpCodePoint) {

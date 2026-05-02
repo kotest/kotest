@@ -84,6 +84,14 @@ class ChoiceTest : WordSpec({
          }
          values shouldBe setOf(1, 2, 3, 4)
       }
+      "finds the only arb with edge cases when most have none" {
+         val arbWithEdge = arbitrary(listOf(42)) { 0 }
+         val arbWithoutEdge = arbitrary { 0 }.removeEdgecases()
+         val arbList = listOf(arbWithoutEdge, arbWithoutEdge, arbWithEdge, arbWithoutEdge)
+         repeat(20) { seed ->
+            arbList.edgecase(RandomSource.seeded(seed.toLong())) shouldNotBe null
+         }
+      }
       "edge cases should not be in Arb.samples" {
          val valueSet = Arb
             .choice(

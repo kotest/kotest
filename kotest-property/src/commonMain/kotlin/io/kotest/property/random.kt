@@ -21,7 +21,4 @@ data class RandomSource(val random: Random, val seed: Long) {
 /**
  * Returns a [RandomSource] seeded with the given seed.
  */
-fun Long.random(): RandomSource = when (this) {
-   0L -> RandomSource(Random(0), 0)
-   else -> RandomSource(Random(this), this)
-}
+fun Long.random(): RandomSource = RandomSource(Random(this), this)

@@ -73,5 +73,34 @@ class MaterializerTest : FunSpec({
       Materializer().materialize(nested, parent).name.name shouldBe "prefixes are swallowed"
    }
 
+   test("nested xmethod should be forwarded to the materialized TestCase") {
+
+      val parent = TestCase(
+         descriptor = Descriptor.TestDescriptor(
+            parent = MaterializerTest::class.toDescriptor(),
+            id = DescriptorId(value = "parent")
+         ),
+         name = TestNameBuilder.builder("parent").build(),
+         spec = self,
+         test = {},
+         source = SourceRef.None,
+         type = TestType.Container,
+         config = null,
+         factoryId = null,
+         parent = null,
+      )
+
+      listOf(TestXMethod.NONE, TestXMethod.FOCUSED, TestXMethod.DISABLED).forEach { xmethod ->
+         val nested = NestedTest(
+            name = TestNameBuilder.builder("nested").build(),
+            test = { },
+            xmethod = xmethod,
+            config = null,
+            type = TestType.Test,
+            source = SourceRef.None,
+         )
+         Materializer().materialize(nested, parent).xmethod shouldBe xmethod
+      }
+   }
 
 })
