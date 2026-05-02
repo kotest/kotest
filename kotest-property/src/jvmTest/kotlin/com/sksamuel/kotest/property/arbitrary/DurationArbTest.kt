@@ -11,13 +11,16 @@ import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeGreaterThanOrEqualTo
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.comparables.shouldBeLessThanOrEqualTo
+import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
+import io.kotest.property.arbitrary.DurationShrinker
 import io.kotest.property.arbitrary.duration
 import io.kotest.property.arbitrary.edgecases
 import io.kotest.property.arbitrary.take
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
 
@@ -161,6 +164,13 @@ class DurationArbTest : WordSpec({
       "generate N valid Durations (no exceptions)" {
          Arb.duration().generate(RandomSource.default()).take(10_000).toList()
             .size shouldBe 10_000
+      }
+   }
+
+   "DurationShrinker" should {
+      "produce non-empty shrinks for a typical non-zero Duration" {
+         val shrinker = DurationShrinker(-Duration.INFINITE..Duration.INFINITE)
+         shrinker.shrink(1.minutes).shouldNotBeEmpty()
       }
    }
 

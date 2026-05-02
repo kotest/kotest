@@ -92,7 +92,7 @@ interface DescribeSpecRootScope : RootScope {
    ) = RootTestWithConfigBuilder(
       this,
       TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build(),
-      xmethod = TestXMethod.DISABLED
+      xmethod = xmethod
    )
 
    private fun context(

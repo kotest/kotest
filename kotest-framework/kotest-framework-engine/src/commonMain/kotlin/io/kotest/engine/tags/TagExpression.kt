@@ -20,11 +20,11 @@ data class TagExpression(val expression: String) {
        */
       operator fun invoke(included: Set<Tag>, excluded: Set<Tag>): TagExpression = when {
          included.isEmpty() && excluded.isEmpty() -> Empty
-         included.isEmpty() -> TagExpression(excluded.joinToString(" | ") { "!" + it.name })
+         included.isEmpty() -> TagExpression(excluded.joinToString(" & ") { "!" + it.name })
          excluded.isEmpty() -> TagExpression(included.joinToString(" | ") { it.name })
          else -> TagExpression(
             included.joinToString(" | ", "(", ")") { it.name } + " & " +
-               excluded.joinToString(" | ", "(", ")") { "!" + it.name }
+               excluded.joinToString(" & ", "(", ")") { "!" + it.name }
          )
       }
    }

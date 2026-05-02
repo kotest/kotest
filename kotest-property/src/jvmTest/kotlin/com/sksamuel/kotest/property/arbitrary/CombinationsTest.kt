@@ -46,6 +46,13 @@ class CombinationsTest : FunSpec({
       Arb.subsequence(listOf(1, 2, 3, 4, 5)).take(1000).toSet().shouldContain(listOf(1, 2, 3, 4, 5))
    }
 
+   test("subsequence should produce non-prefix subsequences") {
+      val samples = Arb.subsequence(listOf(1, 2, 3, 4, 5)).take(2000).toSet()
+      samples.shouldContain(listOf(2, 4))
+      samples.shouldContain(listOf(1, 3, 5))
+      samples.shouldContain(listOf(5))
+   }
+
    test("slice") {
       val actual = Arb.slice(listOf(1, 2, 3, 4, 5)).take(10000).toList()
       actual.map { it.size }.distinct().shouldContainAll(0, 1, 2, 3, 4, 5)
