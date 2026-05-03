@@ -545,7 +545,7 @@ class ShouldContainExactlyTest : WordSpec() {
             }.message
             println(message)
             message shouldContain """
-               |Possible matches for unexpected elements:
+               |Possible matches for missing elements:
                |
                | expected: Fruit(name=pear, color=green, taste=sweet),
                |  but was: Fruit(name=apple, color=green, taste=sweet),
@@ -564,7 +564,7 @@ class ShouldContainExactlyTest : WordSpec() {
             }.message
             println(message)
             message.shouldContainInOrder(
-               "Possible matches for unexpected elements:",
+               "Possible matches for missing elements:",
                """expected: <"sweet red plum">, found a similar value: <"sweet red apple">""",
                """Line[0] ="sweet red apple"""",
                """Match[0]= ++++++++++-----""",

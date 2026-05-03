@@ -99,7 +99,7 @@ class ShouldContainAllInAnyOrderTest : FunSpec({
          thrown.message.shouldContainInOrder(
             "Missing Elements:",
             "Fruit(name=pear, color=green, taste=sweet)",
-            "Possible matches for unexpected elements:",
+            "Possible matches for missing elements:",
             "expected: Fruit(name=pear, color=green, taste=sweet),",
             "but was: Fruit(name=apple, color=green, taste=sweet),",
             "The following fields did not match:",

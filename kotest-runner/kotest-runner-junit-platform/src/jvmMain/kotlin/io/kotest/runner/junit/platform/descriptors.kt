@@ -117,6 +117,13 @@ internal fun getMethodSource(kclass: KClass<*>, id: UniqueId): MethodSource = Me
 internal fun isTruncateTestNamesEnabled(): Boolean =
    System.getProperty(TRUNCATE_TEST_NAMES_ENV) == "true" || System.getenv(TRUNCATE_TEST_NAMES_ENV) == "true"
 
-internal fun truncateTestName(name: String): String =
-   if (name.length <= MAX_TRUNCATED_NAME_LENGTH) name
-   else name.take(MAX_TRUNCATED_NAME_LENGTH - 3) + "..."
+internal fun truncateTestName(name: String): String {
+   if (name.length <= MAX_TRUNCATED_NAME_LENGTH) return name
+   val take = MAX_TRUNCATED_NAME_LENGTH - 3
+   // If `take(n)` would split a UTF-16 surrogate pair (the n-1th char is a high surrogate
+   // and the nth char is a low surrogate) we'd produce an unpaired high surrogate. Drop the
+   // dangling high surrogate so the truncated string remains valid UTF-16. Result is at
+   // most one char shorter than MAX_TRUNCATED_NAME_LENGTH; never invalid.
+   val safeTake = if (name[take - 1].isHighSurrogate() && name[take].isLowSurrogate()) take - 1 else take
+   return name.take(safeTake) + "..."
+}
