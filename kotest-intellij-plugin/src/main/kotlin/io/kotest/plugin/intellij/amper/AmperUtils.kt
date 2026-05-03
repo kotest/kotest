@@ -1,0 +1,87 @@
+package io.kotest.plugin.intellij.amper
+
+import com.intellij.openapi.module.Module
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.VirtualFile
+
+/**
+ * Detection helpers for Amper-managed modules.
+ *
+ * Amper is JetBrains' alternative build tool to Gradle / Maven, configured via a
+ * `module.yaml` per module and (optionally) a `project.yaml` at the project root.
+ * See https://github.com/JetBrains/amper.
+ *
+ * The Kotest plugin needs a way to detect Amper modules so it can produce a run
+ * configuration that delegates to the `amper` wrapper instead of trying to spawn
+ * the Kotest engine launcher directly — the latter fails with `ClassNotFoundException`
+ * because Amper's classpath model doesn't line up with IntelliJ's "application + custom
+ * main class" launcher path. See https://github.com/kotest/kotest/issues/5893.
+ */
+internal object AmperUtils {
+
+   private const val MODULE_FILE = "module.yaml"
+   private const val PROJECT_FILE = "project.yaml"
+   private const val WRAPPER_UNIX = "amper"
+   private const val WRAPPER_WIN = "amper.bat"
+
+   /**
+    * Returns true if [module] is an Amper-managed module — that is, any of its content roots
+    * (or the project root above them) contains a `module.yaml` file.
+    */
+   fun isAmperModule(module: Module?): Boolean = amperModuleRoot(module) != null
+
+   /**
+    * Returns the directory containing the `module.yaml` for [module], or null if [module] is
+    * not Amper-managed.
+    *
+    * Walks each content root up to the project root looking for a `module.yaml`. Walking up
+    * is necessary because Amper's Maven-like layout puts the module file at the module root,
+    * but IntelliJ may register `src/` and `test/` as separate content roots whose direct parent
+    * is what holds `module.yaml`.
+    */
+   fun amperModuleRoot(module: Module?): VirtualFile? {
+      if (module == null) return null
+      val rootManager = ModuleRootManager.getInstance(module)
+      for (contentRoot in rootManager.contentRoots) {
+         val found = findModuleYamlFrom(contentRoot)
+         if (found != null) return found
+      }
+      return null
+   }
+
+   /**
+    * Returns the directory containing the Amper project root (the directory holding
+    * `project.yaml`, or the module root if there's no `project.yaml`). The wrapper script
+    * (`./amper`) lives at this location.
+    */
+   fun amperProjectRoot(module: Module?): VirtualFile? {
+      val moduleRoot = amperModuleRoot(module) ?: return null
+      var current: VirtualFile? = moduleRoot
+      while (current != null) {
+         if (current.findChild(PROJECT_FILE) != null) return current
+         current = current.parent
+      }
+      // No project.yaml found — for single-module projects, the module root IS the project root.
+      return moduleRoot
+   }
+
+   /**
+    * Returns the `amper` wrapper script (the platform-appropriate one) for the project root,
+    * or null if neither variant is present.
+    */
+   fun amperWrapper(module: Module?): VirtualFile? {
+      val root = amperProjectRoot(module) ?: return null
+      val isWindows = System.getProperty("os.name").startsWith("Windows", ignoreCase = true)
+      return if (isWindows) root.findChild(WRAPPER_WIN) ?: root.findChild(WRAPPER_UNIX)
+      else root.findChild(WRAPPER_UNIX) ?: root.findChild(WRAPPER_WIN)
+   }
+
+   private fun findModuleYamlFrom(start: VirtualFile): VirtualFile? {
+      var current: VirtualFile? = if (start.isDirectory) start else start.parent
+      while (current != null) {
+         if (current.findChild(MODULE_FILE) != null) return current
+         current = current.parent
+      }
+      return null
+   }
+}
