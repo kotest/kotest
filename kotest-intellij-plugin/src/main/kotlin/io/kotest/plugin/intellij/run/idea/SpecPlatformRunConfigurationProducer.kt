@@ -130,9 +130,18 @@ class SpecPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
 
       val element = context.psiLocation
       if (element != null && element is LeafPsiElement) {
-         val spec = element.asKtClassOrObjectOrNull() ?: return false
-         if (spec.isRunnableSpec()) {
-            return configuration.getTestPath().isNullOrBlank() && configuration.getSpecName() == spec.fqName?.asString()
+         // Mirror the resolution used by setupConfigurationFromContext: a click on the
+         // class/object keyword resolves via the leaf extension, anything else (eg. the
+         // class identifier, the gutter anchor) resolves via the leaf's parent. Without this
+         // the platform never matched the existing configuration when the context element
+         // wasn't the keyword leaf, so a fresh configuration was created on every run.
+         val classOrObject: KtClassOrObject = when (element.elementType) {
+            is KtKeywordToken -> element.asKtClassOrObjectOrNull()
+            is KtToken -> element.parent.asKtClassOrObjectOrNull()
+            else -> null
+         } ?: return false
+         if (classOrObject.isRunnableSpec()) {
+            return configuration.getTestPath().isNullOrBlank() && configuration.getSpecName() == classOrObject.fqName?.asString()
          }
       }
       return false

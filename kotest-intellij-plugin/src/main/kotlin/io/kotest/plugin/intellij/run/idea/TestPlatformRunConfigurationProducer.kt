@@ -121,10 +121,23 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
          val test = findTest(element)
          if (test != null) {
             val spec = element.enclosingKtClass()
-            return configuration.getTestPath() == test.testPath()
-               && configuration.getPackageName().isNullOrBlank()
-               && configuration.getInclude() == test.descriptorPath()
-               && configuration.getSpecName() == spec?.fqName?.asString()
+            if (configuration.getSpecName() != spec?.fqName?.asString()) return false
+            if (!configuration.getPackageName().isNullOrBlank()) return false
+            // Mirror the field layout produced by setupConfigurationFromContext: data tests
+            // store the ancestor path (or null) and clear the include filter, while regular
+            // tests store the full test path plus its descriptor as the include. Without
+            // these distinct branches the existing configuration never matched a data-test
+            // context and a new configuration was created on every run.
+            return when (test.isDataTest) {
+               true -> {
+                  val expectedTestPath = test.dataTestInfoMaybe()?.ancestorTestPath
+                  configuration.getTestPath() == expectedTestPath && configuration.getInclude() == null
+               }
+               false -> {
+                  configuration.getTestPath() == test.testPath()
+                     && configuration.getInclude() == test.descriptorPath()
+               }
+            }
          }
       }
       return false
