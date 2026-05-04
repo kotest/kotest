@@ -132,7 +132,7 @@ data class PropTestConfig(
    val outputClassifications: Boolean = PropertyTesting.defaultOutputClassifications,
    val classificationReporter: LabelsReporter = StandardClassificationReporter,
    val constraints: Constraints? = null,
-   val maxDiscardPercentage: Int = 20,
+   val maxDiscardPercentage: Int = PropertyTesting.maxDiscardPercentage,
    val skipTo: Int = 0,
    val outputHexForUnprintableChars: Boolean = PropertyTesting.defaultOutputHexForUnprintableChars,
 )

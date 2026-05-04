@@ -39,6 +39,7 @@ interface SpecStyle {
          ShouldSpecStyle,
          WordSpecStyle,
          AnnotationSpecStyle,
+         AbstractSpecStyle, // this must be last, because it's generic, and it would gobble all the above more specific styles
       )
 
       /**
@@ -142,7 +143,7 @@ interface SpecStyle {
 
    /**
     * Returns a test for a method with the given name, in a way that is compatible with this style.
-    * For example, a FunSpec would return a string like this: test("given name") { }
+    * For example, a FunSpec would return a string like this: `test("given name") { }`
     */
    fun generateTest(specName: String, name: String): String
 

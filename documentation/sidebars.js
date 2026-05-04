@@ -107,6 +107,7 @@ module.exports = {
     "framework/setup",
     "framework/writing_tests",
     "framework/styles",
+    "framework/custom_styles",
     {
       "type": "category",
       "label": "Conditional Evaluation",

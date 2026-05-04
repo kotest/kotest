@@ -15,6 +15,7 @@ import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestName
 import io.kotest.core.source.SourceRef
+import io.kotest.core.source.sourceRef
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
@@ -36,7 +37,7 @@ import kotlin.time.Duration
  * A [Spec] is the top most container of tests.
  *
  * It allows tests to be defined, either through DSL-methods or via annotated methods, or
- * through any user defined way by subclassing this class and implementing [rootTests].
+ * through any user defined way by subclassing this class and implementing [tests].
  *
  * Test case defaults can be specified by either assignment to the settings var's or
  * by overriding the applicable setting function and returning the required value.
@@ -77,9 +78,10 @@ import kotlin.time.Duration
 abstract class Spec : TestConfiguration() {
 
    /**
-    * Returns the [RootTest]s that are defined by this spec.
+    * Returns the root [TestDefinition]s that are defined by this spec.
     */
-   abstract fun rootTests(): List<RootTest>
+   @KotestInternal
+   abstract fun tests(): List<TestDefinition>
 
    /**
     * A [CoroutineScope] that can be used to launch spec level coroutines.
@@ -87,13 +89,14 @@ abstract class Spec : TestConfiguration() {
     * A spec will not be completed until all coroutines launched on this scope return.
     */
    @ExperimentalKotest
+   @KotestInternal
    lateinit var scope: CoroutineScope
 
    /**
     * Override this value to register [Extension]s which will be invoked during the
     * execution of this spec.
     *
-    * If you wish to register an extension for all specs then register the extension
+    * If you wish to register an extension for all specs, then register the extension
     * using project config.
     */
    @JsName("extensions_js")
@@ -262,7 +265,7 @@ abstract class Spec : TestConfiguration() {
     * Note that if this value is set to true at the spec level,
     * all tests for that spec will be executed within a `runTest` block.
     *
-    * For full details on how this affects tests see [io.kotest.core.test.config.TestConfig.coroutineTestScope].
+    * For full details on how this affects tests see [TestConfig.coroutineTestScope].
     */
    var coroutineTestScope: Boolean? = null
 
@@ -422,6 +425,10 @@ abstract class Spec : TestConfiguration() {
  * The materialization process turns a root test into a test case.
  */
 @KotestInternal
+@Deprecated(
+   "This is an internal Kotest class. Use TestDefinition instead which is part of the public API. Deprecated since 6.2",
+   ReplaceWith("TestDefinition")
+)
 data class RootTest(
    val name: TestName,
    val test: suspend TestScope.() -> Unit,
@@ -431,3 +438,49 @@ data class RootTest(
    val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
    val factoryId: FactoryId?, // if this root test was added from a factory
 )
+
+/**
+ * A [TestDefinition] contains the definition of a test in source code.
+ * Once a test is materialized at runtime, it becomes an instance of [TestCase].
+ */
+data class TestDefinition(
+   val name: TestName,
+   val test: suspend TestScope.() -> Unit,
+   val type: TestType,
+   val source: SourceRef,
+   val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
+   val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
+   val factoryId: FactoryId?, // if this root test was added from a factory
+)
+
+data class TestDefinitionBuilder(
+   val name: TestName,
+   val type: TestType,
+   val source: SourceRef,
+   val xmethod: TestXMethod, // specifies if this test is being disabled or focused via a keyword such as xtest
+   val config: TestConfig?, // if specified by the test, may be null if no config was explicitly set on the test itself
+   val factoryId: FactoryId?, // if this root test was added from a factory
+) {
+
+   companion object {
+      fun builder(name: TestName, type: TestType): TestDefinitionBuilder {
+         return TestDefinitionBuilder(name, type, sourceRef(), TestXMethod.NONE, null, null)
+      }
+   }
+
+   fun withConfig(config: TestConfig?): TestDefinitionBuilder = copy(config = config)
+   fun withXmethod(xmethod: TestXMethod): TestDefinitionBuilder = copy(xmethod = xmethod)
+   fun withFactoryId(factoryId: FactoryId): TestDefinitionBuilder = copy(factoryId = factoryId)
+
+   fun build(test: suspend TestScope.() -> Unit): TestDefinition {
+      return TestDefinition(
+         name = name,
+         test = test,
+         type = type,
+         source = source,
+         xmethod = xmethod,
+         config = config,
+         factoryId = factoryId,
+      )
+   }
+}

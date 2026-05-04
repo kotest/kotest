@@ -2,8 +2,8 @@ package io.kotest.core.spec.style
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.source.sourceRef
-import io.kotest.core.spec.RootTest
 import io.kotest.core.spec.Spec
+import io.kotest.core.spec.TestDefinition
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
@@ -57,22 +57,22 @@ abstract class AnnotationSpec : Spec() {
       if (it.isSuspend) it.callSuspend(this) else it.call(this)
    }
 
-   private fun KFunction<*>.toIgnoredRootTest(spec: AnnotationSpec): RootTest {
+   private fun KFunction<*>.toIgnoredRootTest(spec: AnnotationSpec): TestDefinition {
       return deriveRootTest(true, spec)
    }
 
-   private fun KFunction<*>.toEnabledRootTest(spec: AnnotationSpec): RootTest {
+   private fun KFunction<*>.toEnabledRootTest(spec: AnnotationSpec): TestDefinition {
       return deriveRootTest(false, spec)
    }
 
-   private fun KFunction<*>.deriveRootTest(disabled: Boolean, spec: Spec): RootTest {
+   private fun KFunction<*>.deriveRootTest(disabled: Boolean, spec: Spec): TestDefinition {
       val test = if (this.isExpectingException()) {
          val expected = this.getExpectedException()
          createTestFnExceptingException(expected, spec)
       } else {
          createTestFunctionNotExpectingException(spec)
       }
-      return RootTest(
+      return TestDefinition(
          name = TestNameBuilder.builder(name).build(),
          test = test,
          source = sourceRef(),
@@ -83,7 +83,7 @@ abstract class AnnotationSpec : Spec() {
       )
    }
 
-   override fun rootTests(): List<RootTest> {
+   override fun tests(): List<TestDefinition> {
       val tests = this::class.findRootTests()
       val nested = this::class.findNestedTests()
       return tests + nested
@@ -97,7 +97,7 @@ abstract class AnnotationSpec : Spec() {
       return annotations.filterIsInstance<Test>().first().expected
    }
 
-   private fun KClass<*>.findRootTests(): List<RootTest> {
+   private fun KClass<*>.findRootTests(): List<TestDefinition> {
       val spec = instances.getOrPut(this) { this.java.constructors.first().newInstance() as AnnotationSpec }
       return findTestFunctions().map { f ->
          f.isAccessible = true
@@ -109,7 +109,7 @@ abstract class AnnotationSpec : Spec() {
       }
    }
 
-   private fun KClass<out AnnotationSpec>.findNestedTests(): List<RootTest> {
+   private fun KClass<out AnnotationSpec>.findNestedTests(): List<TestDefinition> {
       return nestedClasses
          .filter { kclass -> kclass.annotations.map { it.annotationClass }.contains(Nested::class) }
          .flatMap { it.findRootTests() }
@@ -252,9 +252,7 @@ abstract class AnnotationSpec : Spec() {
     * ```
     */
    annotation class Test(val expected: KClass<out Throwable> = None::class) {
-      object None : Throwable() {
-         private fun readResolve(): Any = None
-      }
+      class None : Throwable()
    }
 
    /**

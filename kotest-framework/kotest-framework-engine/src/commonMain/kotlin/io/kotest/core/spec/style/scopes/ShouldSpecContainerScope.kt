@@ -2,8 +2,10 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -27,13 +29,6 @@ class ShouldSpecContainerScope(
    }
 
    /**
-    * Adds a focused nested context scope to this scope.
-    */
-   suspend fun fcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      context(name, xmethod = TestXMethod.FOCUSED, test)
-   }
-
-   /**
     * Adds a disabled nested context scope to this scope.
     */
    suspend fun xcontext(name: String, test: suspend ShouldSpecContainerScope.() -> Unit) {
@@ -41,11 +36,12 @@ class ShouldSpecContainerScope(
    }
 
    private suspend fun context(name: String, xmethod: TestXMethod, test: suspend ShouldSpecContainerScope.() -> Unit) {
-      registerContainer(
-         name = contextName(name),
-         xmethod = xmethod,
-         config = null,
-      ) { ShouldSpecContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { ShouldSpecContainerScope(this).test() }
+      )
    }
 
    fun context(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
@@ -66,6 +62,7 @@ class ShouldSpecContainerScope(
       ) { ShouldSpecContainerScope(it) }
    }
 
+
    fun xcontext(name: String): ContainerWithConfigBuilder<ShouldSpecContainerScope> {
       return ContainerWithConfigBuilder(
          name = contextName(name),
@@ -83,12 +80,6 @@ class ShouldSpecContainerScope(
       return TestWithConfigBuilder(name = testName, context = this, xmethod = TestXMethod.NONE)
    }
 
-   suspend fun fshould(name: String): TestWithConfigBuilder {
-      val testName = shouldName(name)
-      TestDslState.startTest(testName)
-      return TestWithConfigBuilder(name = testName, context = this, xmethod = TestXMethod.FOCUSED)
-   }
-
    suspend fun xshould(name: String): TestWithConfigBuilder {
       val testName = shouldName(name)
       TestDslState.startTest(testName)
@@ -96,26 +87,23 @@ class ShouldSpecContainerScope(
    }
 
    suspend fun should(name: String, test: suspend TestScope.() -> Unit) {
-      should(name, xmethod = TestXMethod.NONE, test)
-   }
-
-   suspend fun fshould(name: String, test: suspend TestScope.() -> Unit) {
-      should(name, xmethod = TestXMethod.FOCUSED, test)
+      registerTest(
+         TestDefinitionBuilder
+            .builder(shouldName(name), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .build(test)
+      )
    }
 
    suspend fun xshould(name: String, test: suspend TestScope.() -> Unit) {
-      should(name, xmethod = TestXMethod.DISABLED, test)
+      registerTest(
+         TestDefinitionBuilder
+            .builder(shouldName(name), TestType.Test)
+            .withXmethod(TestXMethod.DISABLED)
+            .build(test)
+      )
    }
 
    private fun shouldName(name: String) =
       TestNameBuilder.builder(name).withPrefix("should ").withDefaultAffixes().build()
-
-   private suspend fun should(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
-      registerTest(
-         name = shouldName(name),
-         xmethod = xmethod,
-         config = null,
-         test = test
-      )
-   }
 }

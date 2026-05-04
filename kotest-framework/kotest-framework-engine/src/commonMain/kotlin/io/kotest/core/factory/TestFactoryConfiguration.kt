@@ -1,7 +1,10 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.core.factory
 
 import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.RootTest
+import io.kotest.core.spec.TestDefinition
 import io.kotest.core.spec.style.scopes.RootScope
 
 /**
@@ -21,9 +24,22 @@ abstract class TestFactoryConfiguration : TestConfiguration(), RootScope {
    /**
     * Contains the [RootTest]s that have been added to this factory.
     */
-   internal var tests = emptyList<RootTest>()
+   internal var tests = emptyList<TestDefinition>()
 
+   @Deprecated("Use add(TestDefinition). Deprecated since 6.2. Will be removed in 7.0")
    override fun add(test: RootTest) {
+      tests = tests + TestDefinition(
+         name = test.name,
+         config = test.config,
+         type = test.type,
+         test = test.test,
+         source = test.source,
+         xmethod = test.xmethod,
+         factoryId = factoryId,
+      )
+   }
+
+   override fun add(test: TestDefinition) {
       tests = tests + test
    }
 

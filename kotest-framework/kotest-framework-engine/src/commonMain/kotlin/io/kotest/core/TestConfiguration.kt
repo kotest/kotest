@@ -10,7 +10,6 @@ import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.listeners.AfterInvocationListener
 import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.listeners.AfterTestListener
-import io.kotest.core.listeners.FinalizeSpecListener
 import io.kotest.core.listeners.BeforeContainerListener
 import io.kotest.core.listeners.BeforeEachListener
 import io.kotest.core.listeners.BeforeInvocationListener
@@ -22,7 +21,6 @@ import io.kotest.core.spec.AfterEach
 import io.kotest.core.spec.AfterInvocation
 import io.kotest.core.spec.AfterSpec
 import io.kotest.core.spec.AfterTest
-import io.kotest.core.spec.FinalizeSpec
 import io.kotest.core.spec.AroundTestFn
 import io.kotest.core.spec.AutoCloseable
 import io.kotest.core.spec.BeforeAny
@@ -37,10 +35,9 @@ import io.kotest.core.spec.TestCaseExtensionFn
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestMetadata
-import io.kotest.engine.test.TestResult
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.TestResult
 import kotlin.js.JsName
-import kotlin.reflect.KClass
 
 /**
  * An abstract base implementation for shared configuration between [Spec] and [TestFactoryConfiguration].

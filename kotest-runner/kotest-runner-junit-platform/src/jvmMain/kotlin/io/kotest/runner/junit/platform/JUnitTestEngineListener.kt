@@ -96,6 +96,12 @@ class JUnitTestEngineListener(
 
    private var failOnIgnoredTests = false
 
+   // Whether at least one test was ignored across the whole engine run.
+   // Tracked separately from `results` because `results` is cleared per-spec
+   // by `reset()` and would otherwise be empty by the time `engineFinished`
+   // checks it.
+   private var anyTestIgnored = false
+
    private val results = mutableMapOf<Descriptor, TestResult>()
 
    private val dummies = hashSetOf<String>()
@@ -115,7 +121,7 @@ class JUnitTestEngineListener(
 
       registerExceptionPlaceholders(t)
 
-      val result = if (failOnIgnoredTests && results.values.any { it.isIgnored }) {
+      val result = if (failOnIgnoredTests && anyTestIgnored) {
          TestExecutionResult.failed(RuntimeException("Build contained ignored test"))
       } else {
          TestExecutionResult.successful()
@@ -159,7 +165,8 @@ class JUnitTestEngineListener(
          t != null -> {
             val descriptor = findTestDescriptorForSpec(root, ref.descriptor())
                ?: error("Could not find TestDescriptor for spec ${ref.kclass}")
-            addPlaceholderTest(descriptor, t, ref.kclass)
+            // a single error becomes one placeholder; MultipleExceptions becomes one per cause
+            ExtensionExceptionExtractor.flatten(t).forEach { addPlaceholderTest(descriptor, it, ref.kclass) }
             logger.log { LogLine(ref.fqn, "executionFinished: $descriptor $t") }
             listener.executionFinished(descriptor, TestExecutionResult.failed(t))
          }
@@ -190,7 +197,13 @@ class JUnitTestEngineListener(
       results.clear()
       descriptors.clear()
       startedTests.clear()
+      placeholderNames.clear()
    }
+
+   // Tracks placeholder test names already attached to a parent descriptor so that
+   // multiple failures of the same callback type (eg two BeforeSpec listeners) don't
+   // produce colliding UniqueIds.
+   private val placeholderNames = hashSetOf<String>()
 
    /**
     * Dynamically registers a placeholder test with the name derived from the throwable type.
@@ -199,10 +212,12 @@ class JUnitTestEngineListener(
     */
    private fun addPlaceholderTest(parent: TestDescriptor, t: Throwable, kclass: KClass<*>) {
       val (name, cause) = ExtensionExceptionExtractor.resolve(t)
-      val id = parent.uniqueId.append(Segment.Test.value, name)
+      val unique = UniqueNames.unique(name, placeholderNames) { s, k -> "${s} ($k)" } ?: name
+      placeholderNames.add(unique)
+      val id = parent.uniqueId.append(Segment.Test.value, unique)
       val descriptor = createTestTestDescriptor(
          id = id,
-         displayName = name,
+         displayName = unique,
          type = TestDescriptor.Type.TEST,
          source = getMethodSource(kclass, id),
       )
@@ -275,6 +290,7 @@ class JUnitTestEngineListener(
 
       logger.log { Pair(testCase.name.name, "test ignored $reason") }
       results[testCase.descriptor] = TestResult.Ignored(reason)
+      anyTestIgnored = true
 
       logger.log { Pair(testCase.name.name, "executionSkipped: $testDescriptor") }
       listener.executionSkipped(testDescriptor, reasonIfEnabled(reason))

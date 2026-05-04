@@ -3,7 +3,7 @@ package io.kotest.core.spec.style
 import io.kotest.core.factory.TestFactory
 import io.kotest.core.factory.TestFactoryConfiguration
 import io.kotest.core.factory.build
-import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.AbstractSpec
 import io.kotest.core.spec.style.scopes.FeatureSpecRootScope
 
 /**
@@ -20,7 +20,7 @@ fun featureSpec(block: FeatureSpecTestFactoryConfiguration.() -> Unit): TestFact
 
 class FeatureSpecTestFactoryConfiguration : TestFactoryConfiguration(), FeatureSpecRootScope
 
-abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : DslDrivenSpec(), FeatureSpecRootScope {
+abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {}) : AbstractSpec(), FeatureSpecRootScope {
    init {
       body()
    }

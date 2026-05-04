@@ -166,6 +166,23 @@ class DiscoveryTestWithSelectors : FunSpec({
       descriptor.specs.map { it.fqn } shouldContain com.sksamuel.kotest.runner.junit5.mypackage.DummySpec2::class.java.canonicalName
    }
 
+   // Regression test for #5981: gradle test-retry / IntelliJ "Re-run Failed Tests"
+   // commonly send both a ClassSelector for the spec and a UniqueIdSelector for a test
+   // inside the same spec. Discovery used to return the spec twice, causing it to be
+   // instantiated and executed twice and producing duplicate executionStarted events.
+   test("discovery should return a spec only once when both ClassSelector and UniqueIdSelector target it") {
+      val engineId = UniqueId.forEngine(KotestJunitPlatformTestEngine.ENGINE_ID)
+      val testClass = com.sksamuel.kotest.runner.junit5.mypackage.DummySpec1::class
+      val req = LauncherDiscoveryRequestBuilder.request()
+         .selectors(
+            DiscoverySelectors.selectClass(testClass.java.name),
+            DiscoverySelectors.selectUniqueId(engineId.append(Segment.Spec.value, testClass.java.name)),
+         )
+         .build()
+      val result = Discovery.discover(engineId, req)
+      result.specs.map { it.fqn } shouldBe listOf(testClass.java.canonicalName)
+   }
+
    xtest("package selector should include packages and subpackages") {
       val req = LauncherDiscoveryRequestBuilder.request()
          .selectors(

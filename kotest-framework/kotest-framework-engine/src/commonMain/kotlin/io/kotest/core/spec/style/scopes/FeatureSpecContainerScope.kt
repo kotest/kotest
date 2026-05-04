@@ -1,9 +1,12 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A scope that allows tests to be registered using the syntax:
@@ -31,34 +34,28 @@ class FeatureSpecContainerScope(
       feature(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
-   suspend fun ffeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      feature(name = name, xmethod = TestXMethod.FOCUSED, test = test)
-   }
-
    suspend fun xfeature(name: String, test: suspend FeatureSpecContainerScope.() -> Unit) {
       feature(name = name, xmethod = TestXMethod.DISABLED, test = test)
    }
 
    private suspend fun feature(name: String, xmethod: TestXMethod, test: suspend FeatureSpecContainerScope.() -> Unit) {
-      registerContainer(
-         name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
-         xmethod = xmethod,
-         config = null
-      ) { FeatureSpecContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(featureName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { FeatureSpecContainerScope(this).test() }
+      )
    }
 
-   suspend fun feature(name: String) =
+   fun feature(name: String) =
       addFeature(name = name, xmethod = TestXMethod.NONE)
 
-   suspend fun ffeature(name: String) =
-      addFeature(name = name, xmethod = TestXMethod.FOCUSED)
-
-   suspend fun xfeature(name: String) =
+   fun xfeature(name: String) =
       addFeature(name = name, xmethod = TestXMethod.DISABLED)
 
-   private suspend fun addFeature(name: String, xmethod: TestXMethod) =
+   private fun addFeature(name: String, xmethod: TestXMethod) =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Feature: ").build(),
+         name = featureName(name),
          context = this,
          xmethod = xmethod,
       ) { FeatureSpecContainerScope(it) }
@@ -67,16 +64,12 @@ class FeatureSpecContainerScope(
       scenario(name = name, xmethod = TestXMethod.NONE, test = test)
    }
 
-   suspend fun fscenario(name: String, test: suspend TestScope.() -> Unit) {
-      scenario(name = name, xmethod = TestXMethod.FOCUSED, test = test)
-   }
-
    suspend fun xscenario(name: String, test: suspend TestScope.() -> Unit) {
       scenario(name = name, xmethod = TestXMethod.DISABLED, test = test)
    }
 
    suspend fun scenario(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+      val testName = scenarioName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(
          name = testName,
@@ -86,7 +79,7 @@ class FeatureSpecContainerScope(
    }
 
    suspend fun fscenario(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+      val testName = scenarioName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(
          name = testName,
@@ -95,8 +88,9 @@ class FeatureSpecContainerScope(
       )
    }
 
+
    suspend fun xscenario(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+      val testName = scenarioName(name)
       TestDslState.startTest(testName)
       return TestWithConfigBuilder(
          name = testName,
@@ -107,10 +101,13 @@ class FeatureSpecContainerScope(
 
    private suspend fun scenario(name: String, xmethod: TestXMethod, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).withPrefix("Scenario: ").build(),
-         xmethod = xmethod,
-         config = null,
-         test = test
+         TestDefinitionBuilder
+            .builder(scenarioName(name), TestType.Test)
+            .withXmethod(xmethod)
+            .build { WordSpecWhenContainerScope(this).test() }
       )
    }
+
+   private fun featureName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Feature: ").build()
+   private fun scenarioName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
 }

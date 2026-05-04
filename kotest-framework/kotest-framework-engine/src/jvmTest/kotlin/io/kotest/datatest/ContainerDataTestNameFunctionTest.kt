@@ -1,11 +1,11 @@
 package io.kotest.datatest
 
-import io.kotest.engine.names.WithDataTestName
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
-import io.kotest.engine.test.TestResult
+import io.kotest.engine.names.WithDataTestName
 import io.kotest.engine.stable.IsStableType
+import io.kotest.engine.test.TestResult
 import io.kotest.matchers.shouldBe
 
 class ContainerDataTestNameFunctionTest : FunSpec({

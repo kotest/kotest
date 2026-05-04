@@ -3,10 +3,12 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
@@ -16,20 +18,22 @@ interface FreeSpecRootScope : RootScope {
 
    // eg, "this test" - { } // adds a container test
    infix operator fun String.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = null
-      ) { FreeSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(this).build(), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .build { FreeSpecContainerScope(this).test() }
+      )
    }
 
    // "this test" { } // adds a leaf test
    infix operator fun String.invoke(test: suspend FreeSpecTerminalScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = null
-      ) { FreeSpecTerminalScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(this).build(), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .build { FreeSpecTerminalScope(this).test() }
+      )
    }
 
    /**
@@ -94,15 +98,17 @@ interface FreeSpecRootScope : RootScope {
     * ```
     */
    infix operator fun FreeSpecContextConfigBuilder.minus(test: suspend FreeSpecContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         config = config
-      ) { FreeSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(TestNameBuilder.builder(name).build(), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .withConfig(config)
+            .build { FreeSpecContainerScope(this).test() }
+      )
    }
 
    /**
-    * Adds a configured test to this scope as a leaf test.
+    * Adds a test with config as a leaf test.
     *
     * E.g.
     * ```
@@ -136,20 +142,22 @@ interface FreeSpecRootScope : RootScope {
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
       )
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config,
-         test = test
-      )
+      this.config(config, test)
    }
 
+   /**
+    * Adds a test with config as a leaf test.
+    *
+    * E.g.
+    * ```
+    * "this test".config(...) { }
+    * ```
+    */
    fun String.config(config: TestConfig, test: suspend TestScope.() -> Unit) {
-      addTest(
-         testName = TestNameBuilder.builder(this).build(),
-         xmethod = TestXMethod.NONE,
-         config = config,
-         test = test
+      add(
+         TestDefinitionBuilder.builder(TestNameBuilder.builder(this).build(), TestType.Test)
+            .withConfig(config)
+            .build(test)
       )
    }
 }
