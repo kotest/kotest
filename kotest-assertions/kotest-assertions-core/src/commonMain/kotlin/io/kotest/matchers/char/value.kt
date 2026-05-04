@@ -3,25 +3,17 @@ package io.kotest.matchers.char
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 /**
  * Asserts that this [Char] is a letter.
  * @see [shouldNotBeLetter]
  * @see [beLetter]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeLetter(): Char {
-   contract {
-      returns() implies (this@shouldBeLetter != null)
-   }
-
+fun Char.shouldBeLetter(): Char {
    this should beLetter()
-   return this!!
+   return this
 }
 
 /**
@@ -29,37 +21,27 @@ fun Char?.shouldBeLetter(): Char {
  * @see [shouldBeLetter]
  * @see [beLetter]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeLetter(): Char {
-   contract {
-      returns() implies (this@shouldNotBeLetter != null)
-   }
-
+fun Char.shouldNotBeLetter(): Char {
    this shouldNot beLetter()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is a letter.
+ * Matcher that verifies a given [Char] is a letter.
  * @see [beDigit]
  * @see [beLetterOrDigit]
  * @see [beWhitespace]
  */
-fun beLetter(): Matcher<Char?> = charValueMatcher("a letter") { it.isLetter() }
+fun beLetter(): Matcher<Char> = charValueMatcher("a letter") { it.isLetter() }
 
 /**
  * Asserts that this [Char] is a letter or digit.
  * @see [shouldNotBeLetterOrDigit]
  * @see [beLetterOrDigit]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeLetterOrDigit(): Char {
-   contract {
-      returns() implies (this@shouldBeLetterOrDigit != null)
-   }
-
+fun Char.shouldBeLetterOrDigit(): Char {
    this should beLetterOrDigit()
-   return this!!
+   return this
 }
 
 /**
@@ -67,37 +49,27 @@ fun Char?.shouldBeLetterOrDigit(): Char {
  * @see [shouldBeLetterOrDigit]
  * @see [beLetterOrDigit]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeLetterOrDigit(): Char {
-   contract {
-      returns() implies (this@shouldNotBeLetterOrDigit != null)
-   }
-
+fun Char.shouldNotBeLetterOrDigit(): Char {
    this shouldNot beLetterOrDigit()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is a letter or digit.
+ * Matcher that verifies a given [Char] is a letter or digit.
  * @see [beDigit]
  * @see [beLetter]
  * @see [beWhitespace]
  */
-fun beLetterOrDigit(): Matcher<Char?> = charValueMatcher("a letter or digit") { it.isLetterOrDigit() }
+fun beLetterOrDigit(): Matcher<Char> = charValueMatcher("a letter or digit") { it.isLetterOrDigit() }
 
 /**
  * Asserts that this [Char] is a digit.
  * @see [shouldNotBeDigit]
  * @see [beDigit]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeDigit(): Char {
-   contract {
-      returns() implies (this@shouldBeDigit != null)
-   }
-
+fun Char.shouldBeDigit(): Char {
    this should beDigit()
-   return this!!
+   return this
 }
 
 /**
@@ -105,37 +77,27 @@ fun Char?.shouldBeDigit(): Char {
  * @see [shouldBeDigit]
  * @see [beDigit]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeDigit(): Char {
-   contract {
-      returns() implies (this@shouldNotBeDigit != null)
-   }
-
+fun Char.shouldNotBeDigit(): Char {
    this shouldNot beDigit()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is a digit.
+ * Matcher that verifies a given [Char] is a digit.
  * @see [beLetter]
  * @see [beLetterOrDigit]
  * @see [beWhitespace]
  */
-fun beDigit(): Matcher<Char?> = charValueMatcher("a digit") { it.isDigit() }
+fun beDigit(): Matcher<Char> = charValueMatcher("a digit") { it.isDigit() }
 
 /**
  * Asserts that this [Char] is whitespace.
  * @see [shouldNotBeWhitespace]
  * @see [beWhitespace]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeWhitespace(): Char {
-   contract {
-      returns() implies (this@shouldBeWhitespace != null)
-   }
-
+fun Char.shouldBeWhitespace(): Char {
    this should beWhitespace()
-   return this!!
+   return this
 }
 
 /**
@@ -143,26 +105,21 @@ fun Char?.shouldBeWhitespace(): Char {
  * @see [shouldBeWhitespace]
  * @see [beWhitespace]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeWhitespace(): Char {
-   contract {
-      returns() implies (this@shouldNotBeWhitespace != null)
-   }
-
+fun Char.shouldNotBeWhitespace(): Char {
    this shouldNot beWhitespace()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is whitespace.
+ * Matcher that verifies a given [Char] is whitespace.
  * @see [beDigit]
  * @see [beLetter]
  * @see [beLetterOrDigit]
  */
-fun beWhitespace(): Matcher<Char?> = charValueMatcher("whitespace") { it.isWhitespace() }
+fun beWhitespace(): Matcher<Char> = charValueMatcher("whitespace") { it.isWhitespace() }
 
-private inline fun charValueMatcher(valueDescription: String, crossinline predicate: (Char) -> Boolean): Matcher<Char?> = neverNullMatcher { value ->
-   MatcherResult(
+private inline fun charValueMatcher(valueDescription: String, crossinline predicate: (Char) -> Boolean): Matcher<Char> = object : Matcher<Char> {
+   override fun test(value: Char) = MatcherResult(
       predicate(value),
       { "${value.print().value} should be $valueDescription" },
       { "${value.print().value} should not be $valueDescription" }

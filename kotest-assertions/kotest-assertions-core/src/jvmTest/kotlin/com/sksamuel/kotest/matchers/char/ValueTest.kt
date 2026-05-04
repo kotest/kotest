@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.matchers.char
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.char.beDigit
 import io.kotest.matchers.char.beLetter
@@ -43,23 +42,6 @@ class ValueTest : FreeSpec({
          val ch2: Char? = '0'
          ch2.shouldNotBeLetter()
       }
-      "should fail if value is null" {
-         shouldThrow<AssertionError> {
-            null shouldNot beLetter()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldNotBeLetter()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null should beLetter()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldBeLetter()
-         }.message shouldBe "Expecting actual not to be null"
-      }
    }
 
    "char should beDigit()" - {
@@ -77,30 +59,6 @@ class ValueTest : FreeSpec({
 
          val ch2 = 'A'
          ch2.shouldNotBeDigit()
-      }
-      "should support nullable chars" {
-         val ch: Char? = '0'
-         ch.shouldBeDigit()
-
-         val ch2: Char? = 'A'
-         ch2.shouldNotBeDigit()
-      }
-      "should fail if value is null" {
-         shouldThrow<AssertionError> {
-            null shouldNot beDigit()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldNotBeDigit()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null should beDigit()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldBeDigit()
-         }.message shouldBe "Expecting actual not to be null"
       }
    }
 
@@ -120,30 +78,6 @@ class ValueTest : FreeSpec({
          val ch2 = ' '
          ch2.shouldNotBeLetterOrDigit()
       }
-      "should support nullable chars" {
-         val ch: Char? = '0'
-         ch.shouldBeLetterOrDigit()
-
-         val ch2: Char? = ' '
-         ch2.shouldNotBeLetterOrDigit()
-      }
-      "should fail if value is null" {
-         shouldThrow<AssertionError> {
-            null shouldNot beLetterOrDigit()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldNotBeLetterOrDigit()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null should beLetterOrDigit()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldBeLetterOrDigit()
-         }.message shouldBe "Expecting actual not to be null"
-      }
    }
 
    "char should beWhitespace()" - {
@@ -161,30 +95,6 @@ class ValueTest : FreeSpec({
 
          val ch2 = 'A'
          ch2.shouldNotBeWhitespace()
-      }
-      "should support nullable chars" {
-         val ch: Char? = ' '
-         ch.shouldBeWhitespace()
-
-         val ch2: Char? = 'A'
-         ch2.shouldNotBeWhitespace()
-      }
-      "should fail if value is null" {
-         shouldThrow<AssertionError> {
-            null shouldNot beWhitespace()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldNotBeWhitespace()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null should beWhitespace()
-         }.message shouldBe "Expecting actual not to be null"
-
-         shouldThrow<AssertionError> {
-            null.shouldBeWhitespace()
-         }.message shouldBe "Expecting actual not to be null"
       }
    }
 

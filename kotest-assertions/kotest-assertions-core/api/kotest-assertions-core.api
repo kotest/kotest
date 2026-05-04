@@ -1179,14 +1179,14 @@ public final class io/kotest/matchers/char/ValueKt {
 	public static final fun beLetter ()Lio/kotest/matchers/Matcher;
 	public static final fun beLetterOrDigit ()Lio/kotest/matchers/Matcher;
 	public static final fun beWhitespace ()Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeDigit (Ljava/lang/Character;)C
-	public static final fun shouldBeLetter (Ljava/lang/Character;)C
-	public static final fun shouldBeLetterOrDigit (Ljava/lang/Character;)C
-	public static final fun shouldBeWhitespace (Ljava/lang/Character;)C
-	public static final fun shouldNotBeDigit (Ljava/lang/Character;)C
-	public static final fun shouldNotBeLetter (Ljava/lang/Character;)C
-	public static final fun shouldNotBeLetterOrDigit (Ljava/lang/Character;)C
-	public static final fun shouldNotBeWhitespace (Ljava/lang/Character;)C
+	public static final fun shouldBeDigit (C)C
+	public static final fun shouldBeLetter (C)C
+	public static final fun shouldBeLetterOrDigit (C)C
+	public static final fun shouldBeWhitespace (C)C
+	public static final fun shouldNotBeDigit (C)C
+	public static final fun shouldNotBeLetter (C)C
+	public static final fun shouldNotBeLetterOrDigit (C)C
+	public static final fun shouldNotBeWhitespace (C)C
 }
 
 public final class io/kotest/matchers/collections/BeinKt {

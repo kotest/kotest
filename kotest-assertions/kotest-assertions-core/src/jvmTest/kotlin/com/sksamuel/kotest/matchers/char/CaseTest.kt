@@ -1,6 +1,5 @@
 package com.sksamuel.kotest.matchers.char
 
-import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.char.beLowerCaseChar
 import io.kotest.matchers.char.beTitleCaseChar
