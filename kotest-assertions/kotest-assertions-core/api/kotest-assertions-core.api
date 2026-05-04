@@ -1154,12 +1154,12 @@ public final class io/kotest/matchers/char/CaseKt {
 	public static final fun beLowerCaseChar ()Lio/kotest/matchers/Matcher;
 	public static final fun beTitleCaseChar ()Lio/kotest/matchers/Matcher;
 	public static final fun beUpperCaseChar ()Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeLowerCaseChar (Ljava/lang/Character;)C
-	public static final fun shouldBeTitleCaseChar (Ljava/lang/Character;)C
-	public static final fun shouldBeUpperCaseChar (Ljava/lang/Character;)C
-	public static final fun shouldNotBeLowerCaseChar (Ljava/lang/Character;)C
-	public static final fun shouldNotBeTitleCaseChar (Ljava/lang/Character;)C
-	public static final fun shouldNotBeUpperCaseChar (Ljava/lang/Character;)C
+	public static final fun shouldBeLowerCaseChar (C)C
+	public static final fun shouldBeTitleCaseChar (C)C
+	public static final fun shouldBeUpperCaseChar (C)C
+	public static final fun shouldNotBeLowerCaseChar (C)C
+	public static final fun shouldNotBeTitleCaseChar (C)C
+	public static final fun shouldNotBeUpperCaseChar (C)C
 }
 
 public final class io/kotest/matchers/char/CharMatchersKt {

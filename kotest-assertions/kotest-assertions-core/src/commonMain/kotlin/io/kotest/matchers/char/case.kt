@@ -3,25 +3,17 @@ package io.kotest.matchers.char
 import io.kotest.assertions.print.print
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
-import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import kotlin.contracts.ExperimentalContracts
-import kotlin.contracts.contract
 
 /**
  * Asserts that this [Char] is uppercase.
  * @see [shouldNotBeUpperCaseChar]
  * @see [beUpperCaseChar]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeUpperCaseChar(): Char {
-   contract {
-      returns() implies (this@shouldBeUpperCaseChar != null)
-   }
-
+fun Char.shouldBeUpperCaseChar(): Char {
    this should beUpperCaseChar()
-   return this!!
+   return this
 }
 
 /**
@@ -29,36 +21,26 @@ fun Char?.shouldBeUpperCaseChar(): Char {
  * @see [shouldBeUpperCaseChar]
  * @see [beUpperCaseChar]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeUpperCaseChar(): Char {
-   contract {
-      returns() implies (this@shouldNotBeUpperCaseChar != null)
-   }
-
+fun Char.shouldNotBeUpperCaseChar(): Char {
    this shouldNot beUpperCaseChar()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is uppercase.
+ * Matcher that verifies a given [Char] is uppercase.
  * @see [beLowerCaseChar]
  * @see [beTitleCaseChar]
  */
-fun beUpperCaseChar(): Matcher<Char?> = charCaseMatcher("upper") { it.uppercaseChar() }
+fun beUpperCaseChar(): Matcher<Char> = charCaseMatcher("upper") { it.uppercaseChar() }
 
 /**
  * Asserts that this [Char] is lowercase.
  * @see [shouldNotBeLowerCaseChar]
  * @see [beLowerCaseChar]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeLowerCaseChar(): Char {
-   contract {
-      returns() implies (this@shouldBeLowerCaseChar != null)
-   }
-
+fun Char.shouldBeLowerCaseChar(): Char {
    this should beLowerCaseChar()
-   return this!!
+   return this
 }
 
 /**
@@ -66,36 +48,26 @@ fun Char?.shouldBeLowerCaseChar(): Char {
  * @see [shouldBeLowerCaseChar]
  * @see [beLowerCaseChar]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeLowerCaseChar(): Char {
-   contract {
-      returns() implies (this@shouldNotBeLowerCaseChar != null)
-   }
-
+fun Char.shouldNotBeLowerCaseChar(): Char {
    this shouldNot beLowerCaseChar()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is lowercase.
+ * Matcher that verifies a given [Char] is lowercase.
  * @see [beTitleCaseChar]
  * @see [beUpperCaseChar]
  */
-fun beLowerCaseChar(): Matcher<Char?> = charCaseMatcher("lower") { it.lowercaseChar() }
+fun beLowerCaseChar(): Matcher<Char> = charCaseMatcher("lower") { it.lowercaseChar() }
 
 /**
  * Asserts that this [Char] is title case.
  * @see [shouldNotBeTitleCaseChar]
  * @see [beTitleCaseChar]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldBeTitleCaseChar(): Char {
-   contract {
-      returns() implies (this@shouldBeTitleCaseChar != null)
-   }
-
+fun Char.shouldBeTitleCaseChar(): Char {
    this should beTitleCaseChar()
-   return this!!
+   return this
 }
 
 /**
@@ -103,25 +75,20 @@ fun Char?.shouldBeTitleCaseChar(): Char {
  * @see [shouldBeTitleCaseChar]
  * @see [beTitleCaseChar]
  */
-@OptIn(ExperimentalContracts::class)
-fun Char?.shouldNotBeTitleCaseChar(): Char {
-   contract {
-      returns() implies (this@shouldNotBeTitleCaseChar != null)
-   }
-
+fun Char.shouldNotBeTitleCaseChar(): Char {
    this shouldNot beTitleCaseChar()
-   return this!!
+   return this
 }
 
 /**
- * Matcher that verifies a given [Char]? is title case.
+ * Matcher that verifies a given [Char] is title case.
  * @see [beLowerCaseChar]
  * @see [beUpperCaseChar]
  */
-fun beTitleCaseChar(): Matcher<Char?> = charCaseMatcher("title") { it.titlecaseChar() }
+fun beTitleCaseChar(): Matcher<Char> = charCaseMatcher("title") { it.titlecaseChar() }
 
-private inline fun charCaseMatcher(caseName: String, crossinline caseMap: (Char) -> Char): Matcher<Char?> = neverNullMatcher { value ->
-   MatcherResult(
+private inline fun charCaseMatcher(caseName: String, crossinline caseMap: (Char) -> Char): Matcher<Char> = object : Matcher<Char> {
+   override fun test(value: Char) = MatcherResult(
       caseMap(value) == value,
       { "${value.print().value} should be $caseName case" },
       { "${value.print().value} should not be $caseName case" }
