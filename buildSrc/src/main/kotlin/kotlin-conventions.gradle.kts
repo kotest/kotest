@@ -33,6 +33,8 @@ kotlin {
    compilerOptions {
 
       freeCompilerArgs.add("-Xexpect-actual-classes")
+      freeCompilerArgs.add("-Xreturn-value-checker=full")
+      freeCompilerArgs.add("-XXLanguage:+UnnamedLocalVariables")
 
       // See https://mbonnin.net/2026-02-22-kotlin-versions
       compilerVersion.set(libs.findVersion("kotlin-compile-version").get().toString())

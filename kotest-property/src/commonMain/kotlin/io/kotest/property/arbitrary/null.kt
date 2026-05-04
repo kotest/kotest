@@ -21,7 +21,11 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
    require(nullProbability in 0.0..1.0) {
       "Please specify a null probability between 0.0 and 1.0. $nullProbability was provided."
    }
-   return orNull { rs: RandomSource -> rs.random.nextDouble(0.0, 1.0) <= nullProbability }
+   // `nextDouble(0.0, 1.0)` is half-open `[0.0, 1.0)`, so:
+   // - using `<` makes nullProbability == 0.0 produce zero nulls (vs `<=` where the rare
+   //   draw of exactly 0.0 from nextDouble would still trigger a null), and
+   // - nullProbability == 1.0 still produces 100% nulls because the draw is always < 1.0.
+   return orNull { rs: RandomSource -> rs.random.nextDouble(0.0, 1.0) < nullProbability }
 }
 
 /**

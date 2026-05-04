@@ -51,9 +51,15 @@ internal object Discovery {
          )
       )
 
-      logger.log { "${specsAfterInitialFiltering.size} specs will be returned" }
+      // Test retry tools (gradle test-retry, IntelliJ "Re-run Failed Tests") commonly send both
+      // a ClassSelector for the spec AND a UniqueIdSelector for a test inside it. Without dedup
+      // the spec would be selected twice — instantiated and executed twice — and JUnit Platform
+      // would receive duplicate executionStarted events for the same UniqueId.
+      val deduped = specsAfterInitialFiltering.distinct()
 
-      return DiscoveryResult(specsAfterInitialFiltering.map { SpecRef.Reference(it, it.java.name) })
+      logger.log { "${deduped.size} specs will be returned" }
+
+      return DiscoveryResult(deduped.map { SpecRef.Reference(it, it.java.name) })
    }
 
    /**

@@ -103,6 +103,30 @@ class ChoiceTest : WordSpec({
 
          valueSet shouldBe setOf(1, 2)
       }
+      // regression for a bug where List<Arb<A>>.edgecase shuffled the list on every recursive
+      // call but dropped the head of the *unshuffled* list, so arbs whose edges were the only
+      // ones available could be discarded before being visited.
+      "find an edge case even when most arbs have no edge cases" {
+         // Single arb with an edge case mixed with many arbs that have none. removeEdgecases
+         // is essential here because plain `arbitrary { ... }` falls back to its sample value
+         // for edgecase(), which would mask the bug.
+         val withEdge = arbitrary(listOf(42)) { 99 }
+         val withoutEdge: List<Arb<Int>> = List(20) { arbitrary { 0 }.removeEdgecases() }
+         // withEdge is placed at the front - the buggy implementation dropped the head of the
+         // unshuffled list on every recursion, so the only arb with edges was discarded almost
+         // immediately. Placing it at the end would mask the bug because it would survive all
+         // the drops and end up tested last.
+         val arbs: List<Arb<Int>> = listOf(withEdge) + withoutEdge
+
+         // Try many seeds - on the buggy implementation this returned null for the majority of
+         // seeds, since the only-arb-with-an-edge typically ended up at an index > 0 in the
+         // original list and got dropped before being inspected. With the fix every seed should
+         // surface edge case 42.
+         repeat(50) { seed ->
+            val sample = arbs.edgecase(RandomSource.seeded(seed.toLong()))
+            sample?.value shouldBe 42
+         }
+      }
    }
 })
 

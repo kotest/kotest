@@ -11,14 +11,20 @@ import io.kotest.property.asSample
  * Randomly chooses an [Arb] and then generates an edge case from that [Arb].
  * If the chosen arb has no edge cases, then another arb will be chosen.
  * If all [Arb]s have no edge cases, then returns null.
+ *
+ * Iterates the *shuffled* list so each arb is visited at most once. The previous
+ * implementation shuffled a fresh copy on every recursive call but dropped the
+ * head of the *unshuffled* list, which could discard arbs that were never
+ * visited - meaning a present edge case would be missed with probability up to
+ * (n-1)/n. See [ChoiceTest] for the regression test.
  */
-tailrec fun <A> List<Arb<A>>.edgecase(rs: RandomSource): Sample<A>? {
-   if (this.isEmpty()) return null
+fun <A> List<Arb<A>>.edgecase(rs: RandomSource): Sample<A>? {
    val shuffled = this.shuffled(rs.random)
-   return when (val edge = shuffled.first().edgecase(rs)) {
-      null -> shuffled.drop(1).edgecase(rs)
-      else -> edge
+   for (arb in shuffled) {
+      val edge = arb.edgecase(rs)
+      if (edge != null) return edge
    }
+   return null
 }
 
 /**

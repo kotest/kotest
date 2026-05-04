@@ -114,15 +114,16 @@ class MapsTest : FunSpec({
    // `nextInt(minSize..maxSize)` (inclusive) so it silently capped at maxSize - 1 and threw
    // IllegalArgumentException for minSize == maxSize.
    context("Arb.map size bounds") {
-      test("should be able to generate maps with minSize == maxSize") {
-         val arbMap = Arb.map(Arb.int(1..1000), Arb.int(1..1000), minSize = 5, maxSize = 5)
-         arbMap.take(50, RandomSource.seeded(12345L)).toList().forAll { it.size shouldBe 5 }
+      test("should be able to produce maxSize entries") {
+         val arbMap = Arb.map(Arb.int(1..10000), Arb.int(), minSize = 5, maxSize = 10)
+         val sizes = arbMap.take(2000, RandomSource.seeded(12345L)).map { it.size }.toSet()
+         sizes shouldContainExactly (5..10).toSet()
       }
 
-      test("should sometimes produce maps of exactly maxSize") {
-         val arbMap = Arb.map(Arb.int(1..1000), Arb.int(1..1000), minSize = 1, maxSize = 5)
-         val maps = arbMap.take(500, RandomSource.seeded(12345L)).toList()
-         maps.any { it.size == 5 } shouldBe true
+      test("should support fixed-size maps where minSize == maxSize") {
+         val arbMap = Arb.map(Arb.int(1..10000), Arb.int(), minSize = 3, maxSize = 3)
+         val maps = arbMap.take(5, RandomSource.seeded(12345L)).toList()
+         maps.forAll { it.size shouldBe 3 }
       }
    }
 
