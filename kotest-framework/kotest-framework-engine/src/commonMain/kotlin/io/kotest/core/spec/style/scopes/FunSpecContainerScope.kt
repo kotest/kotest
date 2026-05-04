@@ -91,7 +91,7 @@ class FunSpecContainerScope(
    }
 
    private fun contextName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("context ").withDefaultAffixes().build()
+      TestNameBuilder.builder(name).withPrefix("context ").build()
 
    /**
     * Adds a test case to this context, expecting config.

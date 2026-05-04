@@ -147,6 +147,6 @@ interface DescribeSpecRootScope : RootScope {
    }
 
    private fun itName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build()
-   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
-   private fun describeName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Describe: ").withDefaultAffixes().build()
+   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").build()
+   private fun describeName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Describe: ").build()
 }

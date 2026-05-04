@@ -108,6 +108,6 @@ class FeatureSpecContainerScope(
       )
    }
 
-   private fun featureName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Feature: ").withDefaultAffixes().build()
-   private fun scenarioName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Scenario: ").withDefaultAffixes().build()
+   private fun featureName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Feature: ").build()
+   private fun scenarioName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
 }

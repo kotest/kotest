@@ -160,11 +160,11 @@ class DescribeSpecContainerScope(
    }
 
    private fun describeName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("Describe: ").withDefaultAffixes().build()
+      TestNameBuilder.builder(name).withPrefix("Describe: ").build()
 
    private fun itName(name: String) =
       TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build()
 
    private fun contextName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
+      TestNameBuilder.builder(name).withPrefix("Context: ").build()
 }
