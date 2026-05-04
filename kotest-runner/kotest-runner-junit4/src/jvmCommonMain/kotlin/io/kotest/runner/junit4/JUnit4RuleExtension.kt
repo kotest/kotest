@@ -58,7 +58,10 @@ internal object JUnit4RuleExtension : TestCaseExtension {
 
       return try {
          statement.evaluate()
-         result ?: execute(testCase)
+         // If no rule actually invoked the inner statement (e.g. a ConditionalIgnoreRule that
+         // chooses to skip), `result` stays null. Treat that as the rule's authoritative
+         // decision to skip — running the test outside the rule chain would defeat its purpose.
+         result ?: TestResult.Ignored("JUnit4 @Rule chose not to execute the test")
       } catch (e: Throwable) {
          TestResult.Error(Duration.ZERO, e)
       }

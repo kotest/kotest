@@ -9,11 +9,13 @@ import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.assertions.assertionCounter
 import io.kotest.assertions.errorCollector
+import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainOnlyOnce
 
 private fun matcherState() = Pair(errorCollector.errors(), assertionCounter.get())
 
+@OptIn(ExperimentalKotest::class)
 @Isolate
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class OneTests : FunSpec({

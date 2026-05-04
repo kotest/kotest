@@ -71,7 +71,7 @@ internal suspend fun <A> doShrinking(
 // todo print out each step if enabled
 private fun <A> printResult(sb: StringBuilder, result: ShrinkResult<A>, count: Int) {
    if (count == 0 || result.initial == result.shrink) {
-      sb.append("Arg was not shunk\n")
+      sb.append("Arg was not shrunk\n")
    } else {
       sb.append("Shrink result (after $count shrinks) => ${result.shrink.print().value}\n\n")
 //      when (val location = stacktraces.throwableLocation(result.cause, 4)) {

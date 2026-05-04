@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.run.idea
 
 import com.intellij.execution.Executor

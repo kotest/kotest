@@ -1292,6 +1292,30 @@ public final class io/kotest/matchers/collections/ContainAllKt {
 	public static final fun shouldNotContainAll_shortArray_infix ([S[S)[S
 }
 
+public final class io/kotest/matchers/collections/ContainExactCopiesKt {
+	public static final fun containExactCopies (Ljava/lang/Object;I)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainExactCopies (Ljava/lang/Iterable;Ljava/lang/Object;I)Ljava/lang/Iterable;
+	public static final fun shouldContainExactCopies ([BBI)[B
+	public static final fun shouldContainExactCopies ([CCI)[C
+	public static final fun shouldContainExactCopies ([DDI)[D
+	public static final fun shouldContainExactCopies ([FFI)[F
+	public static final fun shouldContainExactCopies ([III)[I
+	public static final fun shouldContainExactCopies ([JJI)[J
+	public static final fun shouldContainExactCopies ([Ljava/lang/Object;Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldContainExactCopies ([SSI)[S
+	public static final fun shouldContainExactCopies ([ZZI)[Z
+	public static final fun shouldNotContainExactCopies (Ljava/lang/Iterable;Ljava/lang/Object;I)Ljava/lang/Iterable;
+	public static final fun shouldNotContainExactCopies ([BBI)[B
+	public static final fun shouldNotContainExactCopies ([CCI)[C
+	public static final fun shouldNotContainExactCopies ([DDI)[D
+	public static final fun shouldNotContainExactCopies ([FFI)[F
+	public static final fun shouldNotContainExactCopies ([III)[I
+	public static final fun shouldNotContainExactCopies ([JJI)[J
+	public static final fun shouldNotContainExactCopies ([Ljava/lang/Object;Ljava/lang/Object;I)[Ljava/lang/Object;
+	public static final fun shouldNotContainExactCopies ([SSI)[S
+	public static final fun shouldNotContainExactCopies ([ZZI)[Z
+}
+
 public final class io/kotest/matchers/collections/ContainExactlyInAnyOrderKt {
 	public static final fun containExactlyInAnyOrder (Ljava/util/Collection;)Lio/kotest/matchers/Matcher;
 	public static final fun containExactlyInAnyOrder (Ljava/util/Collection;Lio/kotest/assertions/equals/Equality;)Lio/kotest/matchers/Matcher;

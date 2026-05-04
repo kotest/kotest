@@ -17,7 +17,6 @@ import kotlin.reflect.KClass
  * and the top most parent being a [SpecDescriptor].
  *
  */
-@Suppress("DEPRECATION")
 sealed interface Descriptor {
 
    val id: DescriptorId
@@ -55,31 +54,6 @@ sealed interface Descriptor {
    fun ids(): List<DescriptorId> = when (this) {
       is SpecDescriptor -> listOf(this.id)
       is TestDescriptor -> this.parent.ids() + this.id
-   }
-
-   /**
-    * On KMP the KClass reference does not include the fully qualified name, so if the spec descriptor
-    * is just the simple class name, then we will have to compare using that only.
-    */
-   @Deprecated("This method will be removed in 6.2 as Kotest 6.1 now populates the fully qualified name")
-   fun isEqual(other: Descriptor): Boolean {
-      return when (other) {
-         is SpecDescriptor if this is SpecDescriptor -> {
-            // if both descriptors have the fully qualified name, then we can compare string equals
-            if (this.id.value.contains('.') && other.id.value.contains('.')) {
-               this.id == other.id
-            } else {
-               // if the id is not FQN, then we can only compare the simple class name
-               this.id.value.substringAfterLast('.') == other.id.value.substringAfterLast('.')
-            }
-         }
-
-         is TestDescriptor if this is TestDescriptor -> {
-            this.parent.isEqual(other.parent) && this.id == other.id
-         }
-
-         else -> false
-      }
    }
 
    /**
@@ -136,7 +110,7 @@ sealed interface Descriptor {
     */
    fun isParentOf(descriptor: Descriptor): Boolean = when (descriptor) {
       is SpecDescriptor -> false // nothing can be the parent of a spec
-      is TestDescriptor -> this.isEqual(descriptor.parent)
+      is TestDescriptor -> this == descriptor.parent
    }
 
    /**
@@ -163,7 +137,7 @@ sealed interface Descriptor {
     * Returns `true` if this [descriptor] is an ancestor of, or the same as, the given [descriptor].
     */
    fun isPrefixOf(descriptor: Descriptor): Boolean =
-      this.isEqual(descriptor) || this.isAncestorOf(descriptor)
+      this == descriptor || this.isAncestorOf(descriptor)
 
    /**
     * Returns true if this [descriptor] could be a parent or a child of the given [descriptor].
@@ -179,7 +153,7 @@ sealed interface Descriptor {
     *
     */
    fun hasSharedPath(descriptor: Descriptor): Boolean {
-      return this.isEqual(descriptor) || this.isAncestorOf(descriptor) || this.isDescendentOf(descriptor)
+      return this == descriptor || this.isAncestorOf(descriptor) || this.isDescendentOf(descriptor)
    }
 
    /**

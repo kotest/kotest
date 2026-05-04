@@ -16,11 +16,11 @@ class InspectorAliasTest : FunSpec({
    val list = listOf(1, 2, 3)
    val sequence = sequenceOf(1, 2, 3)
 
-   suspend fun dummySuspendFunction(x: Int) = x
+   fun dummySuspendFunction(x: Int) = x
 
    context("forAll") {
       fun block(x: Int) = x shouldBeGreaterThan 0
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
 
       test("array") {
          array.shouldForAll {
@@ -66,10 +66,10 @@ class InspectorAliasTest : FunSpec({
 
    context("forOne") {
       fun block(x: Int) = x shouldBe 2
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBe 2
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBe 2
 
       test("array") {
-         array.shouldForOne(::block)
+         array shouldForOne ::block
          shouldThrowAny {
             array.shouldForOne {
                it shouldBeLessThan 1
@@ -84,7 +84,7 @@ class InspectorAliasTest : FunSpec({
       test("list") {
          list.shouldForOne(::block)
          shouldThrowAny {
-            list.shouldForOne {
+            list shouldForOne {
                it shouldBeLessThan 1
             }
          }
@@ -110,7 +110,7 @@ class InspectorAliasTest : FunSpec({
 
    context("forExactly") {
       fun block(x: Int) = x shouldBeGreaterThan 1
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 1
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 1
       val n = 2
 
       test("array") {
@@ -155,10 +155,10 @@ class InspectorAliasTest : FunSpec({
 
    context("forSome") {
       fun block(x: Int) = x shouldBeGreaterThan 2
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 2
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 2
 
       test("array") {
-         array.shouldForSome(::block)
+         array shouldForSome ::block
          shouldThrowAny {
             array.shouldForSome {
                it shouldBeLessThan 1
@@ -199,7 +199,7 @@ class InspectorAliasTest : FunSpec({
 
    context("forAny") {
       fun block(x: Int) = x shouldBeGreaterThan 0
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
 
       test("array") {
          array.shouldForAny(::block)
@@ -215,9 +215,9 @@ class InspectorAliasTest : FunSpec({
       }
 
       test("list") {
-         list.shouldForAny(::block)
+         list shouldForAny ::block
          shouldThrowAny {
-            list.shouldForAny {
+            list shouldForAny {
                it shouldBeLessThan 1
             }
          }
@@ -243,7 +243,7 @@ class InspectorAliasTest : FunSpec({
 
    context("forAtLeast") {
       fun block(x: Int) = x shouldBeGreaterThan 0
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
       val n = 3
 
       test("array") {
@@ -288,12 +288,12 @@ class InspectorAliasTest : FunSpec({
 
    context("forAtLeastOne") {
       fun block(x: Int) = x shouldBeGreaterThan 0
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
 
       test("array") {
-         array.shouldForAtLeastOne(::block)
+         array shouldForAtLeastOne ::block
          shouldThrowAny {
-            array.shouldForAtLeastOne {
+            array shouldForAtLeastOne {
                it shouldBeLessThan 1
             }
          }
@@ -332,7 +332,7 @@ class InspectorAliasTest : FunSpec({
 
    context("forAtMost") {
       fun block(x: Int) = x shouldBeGreaterThan 0
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeGreaterThan 0
 
       test("array") {
          val arr = arrayOf(0, 0, 1)
@@ -380,7 +380,7 @@ class InspectorAliasTest : FunSpec({
 
    context("forNone") {
       fun block(x: Int) = x shouldBeLessThan 1
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeLessThan 1
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBeLessThan 1
 
       test("array") {
          array.shouldForNone(::block)
@@ -396,9 +396,9 @@ class InspectorAliasTest : FunSpec({
       }
 
       test("list") {
-         list.shouldForNone(::block)
+         list shouldForNone ::block
          shouldThrowAny {
-            list.shouldForNone {
+            list shouldForNone {
                it shouldBeLessThan 4
             }
          }
@@ -424,7 +424,7 @@ class InspectorAliasTest : FunSpec({
 
    context("forAtMostOne") {
       fun block(x: Int) = x shouldBe 1
-      suspend fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBe 1
+      fun suspendBlock(x: Int) = dummySuspendFunction(x) shouldBe 1
 
       test("array") {
          array.shouldForAtMostOne(::block)
@@ -435,7 +435,7 @@ class InspectorAliasTest : FunSpec({
       }
 
       test("list") {
-         list.shouldForAtMostOne(::block)
+         list shouldForAtMostOne ::block
       }
 
       test("list with suspend function") {

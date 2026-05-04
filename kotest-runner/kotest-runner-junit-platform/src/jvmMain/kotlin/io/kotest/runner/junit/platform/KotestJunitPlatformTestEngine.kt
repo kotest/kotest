@@ -121,9 +121,10 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "JUnit discovery request [configurationParameters=${request.configurationParameters}]" }
       logger.log { "JUnit discovery request [engineFilters=${request.engineFilters()}]" }
       logger.log { "JUnit discovery request [postFilters=${request.postFilters()}]" }
-      logger.log { "JUnit discovery request [classSelectors=${request.getSelectorsByType(ClassSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [classSelectors=${request.getSelectorsByType(ClassSelector::class.java).map { it.className }}]" }
+      logger.log { "JUnit discovery request [classpathRootSelectors=${request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot }}]" }
       logger.log { "JUnit discovery request [methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}]" }
-      logger.log { "JUnit discovery request [uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java)}]" }
+      logger.log { "JUnit discovery request [uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java).map { it.uniqueId.toString() } }]" }
 
       if (!isEngineIncluded(request) || !shouldRunTests(request))
          return EngineDescriptorBuilder.builder(uniqueId).build()

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.listeners.ProjectListener
@@ -19,7 +21,7 @@ import org.testcontainers.lifecycle.Startable
  * @see
  * [StartablePerTestListener]
  * */
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 class StartablePerProjectListener<T : Startable>(private val startable: T) : TestListener, ProjectListener {
 
    @Deprecated("The containerName arg is no longer used")

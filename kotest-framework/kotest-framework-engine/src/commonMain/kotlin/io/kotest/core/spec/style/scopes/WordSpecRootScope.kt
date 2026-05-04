@@ -104,7 +104,6 @@ interface WordSpecRootScope : RootScope {
    fun String.config(
       enabled: Boolean? = null,
       invocations: Int? = null,
-      threads: Int? = null,
       tags: Set<Tag>? = null,
       timeout: Duration? = null,
       extensions: List<TestCaseExtension>? = null,
@@ -175,6 +174,7 @@ interface WordSpecRootScope : RootScope {
          TestDefinitionBuilder
             .builder(whenName(name), TestType.Container)
             .withXmethod(xmethod)
+            .withConfig(config)
             .build { WordSpecWhenContainerScope(this).test() }
       )
    }
@@ -196,8 +196,9 @@ interface WordSpecRootScope : RootScope {
    ) {
       add(
          TestDefinitionBuilder
-            .builder(whenName(name), TestType.Container)
+            .builder(shouldName(name), TestType.Container)
             .withXmethod(xmethod)
+            .withConfig(config)
             .build { WordSpecShouldContainerScope(this).test() }
       )
    }

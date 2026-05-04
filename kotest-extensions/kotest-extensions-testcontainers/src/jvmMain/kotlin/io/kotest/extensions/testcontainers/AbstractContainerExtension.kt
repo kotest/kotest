@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.extensions.MountableExtension
@@ -6,7 +8,7 @@ import io.kotest.core.listeners.AfterSpecListener
 import io.kotest.core.spec.Spec
 import org.testcontainers.containers.GenericContainer
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 abstract class AbstractContainerExtension<T : GenericContainer<*>>(
    private val container: T,
    private val mode: ContainerLifecycleMode = ContainerLifecycleMode.Project,

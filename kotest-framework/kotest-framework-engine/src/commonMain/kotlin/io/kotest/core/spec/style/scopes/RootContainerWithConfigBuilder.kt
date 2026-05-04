@@ -7,6 +7,7 @@ import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
@@ -46,6 +47,7 @@ class RootContainerWithConfigBuilder<T : TestScope>(
       extensions: List<Extension>? = null,
       retries: Int? = null,
       retryDelay: Duration? = null,
+      metadata: Map<MetadataKey<*>, Any> = emptyMap(),
       test: suspend T.() -> Unit
    ) {
       val config = TestConfig(
@@ -62,6 +64,7 @@ class RootContainerWithConfigBuilder<T : TestScope>(
          retries = retries,
          retryDelay = retryDelay,
          extensions = extensions,
+         metadata = metadata,
       )
       config(config, test)
    }

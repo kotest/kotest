@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.listeners.TestListener
@@ -9,7 +11,7 @@ import org.testcontainers.lifecycle.TestLifecycleAware
 import java.net.URLEncoder
 import java.util.Optional
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 class TestLifecycleAwareListener(startable: Startable) : TestListener {
    private val testLifecycleAware = startable as? TestLifecycleAware
 
@@ -22,7 +24,7 @@ class TestLifecycleAwareListener(startable: Startable) : TestListener {
    }
 }
 
-@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.2")
+@Deprecated("Use TestContainerProjectExtension or TestContainerSpecExtension instead. Will be removed in 6.3")
 internal fun TestCase.toTestDescription() = object : TestDescription {
 
    override fun getFilesystemFriendlyName(): String {

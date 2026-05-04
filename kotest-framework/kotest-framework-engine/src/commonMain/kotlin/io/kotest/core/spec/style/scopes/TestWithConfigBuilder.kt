@@ -7,6 +7,7 @@ import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
+import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
 import io.kotest.core.test.TestType
@@ -38,6 +39,7 @@ class TestWithConfigBuilder(
       enabledOrReasonIf: EnabledOrReasonIf? = null,
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
+      metadata: Map<MetadataKey<*>, Any> = emptyMap(),
       test: suspend TestScope.() -> Unit
    ) {
       TestDslState.clear(name)
@@ -53,6 +55,7 @@ class TestWithConfigBuilder(
          severity = severity,
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
+         metadata = metadata,
       )
       config(config, test)
    }

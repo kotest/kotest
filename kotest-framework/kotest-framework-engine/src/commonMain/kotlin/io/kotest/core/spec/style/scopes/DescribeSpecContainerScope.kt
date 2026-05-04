@@ -63,10 +63,18 @@ class DescribeSpecContainerScope(
 
    fun context(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.NONE,
       ) { DescribeSpecContainerScope(it) }
+
+   fun fcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
+      ContainerWithConfigBuilder(
+         name = contextName(name),
+         context = this,
+         xmethod = TestXMethod.FOCUSED,
+      ) { DescribeSpecContainerScope(it) }
+
 
    fun xcontext(name: String): ContainerWithConfigBuilder<DescribeSpecContainerScope> =
       ContainerWithConfigBuilder(
@@ -131,24 +139,32 @@ class DescribeSpecContainerScope(
 
    suspend fun it(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         TestDefinitionBuilder.builder(TestNameBuilder.builder(name).build(), TestType.Test).build(test)
+         TestDefinitionBuilder.builder(itName(name), TestType.Test).build(test)
+      )
+   }
+
+   suspend fun fit(name: String, test: suspend TestScope.() -> Unit) {
+      registerTest(
+         TestDefinitionBuilder.builder(itName(name), TestType.Test)
+            .withXmethod(TestXMethod.FOCUSED)
+            .build(test)
       )
    }
 
    suspend fun xit(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         TestDefinitionBuilder.builder(TestNameBuilder.builder(name).build(), TestType.Test)
+         TestDefinitionBuilder.builder(itName(name), TestType.Test)
             .withXmethod(TestXMethod.DISABLED)
             .build(test)
       )
    }
 
    private fun describeName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("Describe: ").build()
+      TestNameBuilder.builder(name).withPrefix("Describe: ").withDefaultAffixes().build()
 
    private fun itName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("It: ").build()
+      TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build()
 
    private fun contextName(name: String) =
-      TestNameBuilder.builder(name).withPrefix("Context: ").build()
+      TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
 }

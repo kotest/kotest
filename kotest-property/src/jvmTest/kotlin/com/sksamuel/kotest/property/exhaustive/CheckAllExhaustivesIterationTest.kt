@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.property.exhaustive
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -11,6 +12,7 @@ import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.longs
 import io.kotest.property.exhaustive.of
 
+@OptIn(ExperimentalKotest::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class CheckAllExhaustivesIterationTest : FunSpec() {
    init {

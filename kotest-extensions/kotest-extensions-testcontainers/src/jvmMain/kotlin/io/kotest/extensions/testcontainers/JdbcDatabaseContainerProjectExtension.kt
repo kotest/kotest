@@ -29,6 +29,7 @@ import javax.sql.DataSource
 class JdbcDatabaseContainerProjectExtension(
    private val container: JdbcDatabaseContainer<*>,
    private val config: ContainerExtensionConfig = ContainerExtensionConfig(),
+   private val onStart: (DataSource) -> Unit = { },
 ) : MountableExtension<HikariConfig, DataSource>, AfterProjectListener {
 
    private val ref = AtomicReference<HikariDataSource>(null)
@@ -46,6 +47,7 @@ class JdbcDatabaseContainerProjectExtension(
          config.password = container.password
          config.configure()
          val ds = HikariDataSource(config)
+         onStart(ds)
          ref.set(ds)
       }
 

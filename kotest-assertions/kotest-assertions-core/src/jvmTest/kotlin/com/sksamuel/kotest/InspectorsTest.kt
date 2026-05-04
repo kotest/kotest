@@ -31,7 +31,7 @@ class InspectorsTest : WordSpec() {
             }
          }
          "pass if no elements pass fn test for a char sequence" {
-            charSequence.forNone {
+            charSequence forNone {
                it shouldBe 'x'
             }
          }
@@ -59,7 +59,7 @@ The following elements failed:
          }
          "fail if all elements pass fn test" {
             shouldThrow<AssertionError> {
-               list.forNone {
+               list forNone {
                   it should beGreaterThan(0)
                }
             }.message shouldBe """5 elements passed but expected 0
@@ -84,7 +84,7 @@ The following elements failed:
             }
          }
          "pass if size-1 elements pass test" {
-            list.forSome {
+            list forSome {
                it should beGreaterThan(1)
             }
          }
@@ -163,7 +163,7 @@ The following elements failed:
          }
          "fail if > 1 elements pass test" {
             shouldThrow<AssertionError> {
-               list.forOne { t ->
+               list forOne { t ->
                   t should beGreaterThan(2)
                }
             }.message shouldBe """3 elements passed but expected 1
@@ -200,7 +200,7 @@ The following elements failed:
 
       "forAny" should {
          "pass if one elements pass test" {
-            list.forAny { t ->
+            list forAny { t ->
                t shouldBe 3
             }
          }

@@ -23,5 +23,11 @@ class IntRangeTest : DescribeSpec({
             Arb.intRange(0..10).edgecases() shouldContain IntRange.EMPTY
          }
       }
+
+      it("does not overflow when domain.last == Int.MAX_VALUE") {
+         forAll(10, Arb.intRange(0..Int.MAX_VALUE)) {
+            it.first >= 0 && it.last <= Int.MAX_VALUE
+         }
+      }
    }
 })

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import io.kotest.core.extensions.MountableExtension
@@ -35,7 +37,7 @@ import org.testcontainers.containers.GenericContainer
  *
  * @since 1.3.0
  */
-@Deprecated("use ContainerExtension. Will be removed in 6.2")
+@Deprecated("use ContainerExtension. Will be removed in 6.3")
 class SharedTestContainerExtension<T : GenericContainer<*>, U>(
    private val container: T,
    private val beforeTest: suspend (T) -> Unit = {},

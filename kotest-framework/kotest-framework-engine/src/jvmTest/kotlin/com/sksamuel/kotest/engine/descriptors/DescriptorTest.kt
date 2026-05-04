@@ -23,6 +23,14 @@ class DescriptorTest : FunSpec({
    val e = d.append("e")
    val f = spec.append("f")
 
+   // descriptor tree rooted at jsSpec (simple name, no FQN) for "without FQNs" tests
+   val jsA = jsSpec.append("a")
+   val jsB = jsA.append("b")
+   val jsC = jsB.append("c")
+   val jsD = jsSpec.append("d")
+   val jsE = jsD.append("e")
+   val jsF = jsSpec.append("f")
+
    test("isTestCase") {
       spec.isTestCase() shouldBe false
       listOf(a, b, c, d, e, f).forAll {
@@ -109,16 +117,16 @@ class DescriptorTest : FunSpec({
 
    test("isDescendentOf without FQNs") {
 
-      a.isDescendentOf(b) shouldBe false
-      b.isDescendentOf(c) shouldBe false
-      b.isDescendentOf(a) shouldBe true
-      c.isDescendentOf(a) shouldBe true
-      c.isDescendentOf(b) shouldBe true
+      jsA.isDescendentOf(jsB) shouldBe false
+      jsB.isDescendentOf(jsC) shouldBe false
+      jsB.isDescendentOf(jsA) shouldBe true
+      jsC.isDescendentOf(jsA) shouldBe true
+      jsC.isDescendentOf(jsB) shouldBe true
 
-      e.isDescendentOf(d) shouldBe true
-      d.isDescendentOf(e) shouldBe false
+      jsE.isDescendentOf(jsD) shouldBe true
+      jsD.isDescendentOf(jsE) shouldBe false
 
-      listOf(a, b, c, d, e, f).forAll {
+      listOf(jsA, jsB, jsC, jsD, jsE, jsF).forAll {
          it.isDescendentOf(jsSpec) shouldBe true
          jsSpec.isDescendentOf(it) shouldBe false
       }
@@ -139,17 +147,17 @@ class DescriptorTest : FunSpec({
    }
 
    test("isPrefixOf without FQNs") {
-      jsSpec.isPrefixOf(a) shouldBe true
-      jsSpec.isPrefixOf(b) shouldBe true
-      jsSpec.isPrefixOf(c) shouldBe true
-      a.isPrefixOf(b) shouldBe true
-      a.isPrefixOf(c) shouldBe true
-      b.isPrefixOf(a) shouldBe false
-      c.isPrefixOf(a) shouldBe false
-      c.isPrefixOf(b) shouldBe false
+      jsSpec.isPrefixOf(jsA) shouldBe true
+      jsSpec.isPrefixOf(jsB) shouldBe true
+      jsSpec.isPrefixOf(jsC) shouldBe true
+      jsA.isPrefixOf(jsB) shouldBe true
+      jsA.isPrefixOf(jsC) shouldBe true
+      jsB.isPrefixOf(jsA) shouldBe false
+      jsC.isPrefixOf(jsA) shouldBe false
+      jsC.isPrefixOf(jsB) shouldBe false
 
-      d.isPrefixOf(e) shouldBe true
-      e.isPrefixOf(d) shouldBe false
+      jsD.isPrefixOf(jsE) shouldBe true
+      jsE.isPrefixOf(jsD) shouldBe false
    }
 
    test("hasSharedPath") {
@@ -175,22 +183,22 @@ class DescriptorTest : FunSpec({
 
    test("hasSharedPath without FQNs") {
 
-      listOf(a, b, c, d, e, f).forAll {
+      listOf(jsA, jsB, jsC, jsD, jsE, jsF).forAll {
          jsSpec.hasSharedPath(it) shouldBe true
       }
 
-      a.hasSharedPath(b) shouldBe true
-      a.hasSharedPath(c) shouldBe true
-      b.hasSharedPath(a) shouldBe true
-      b.hasSharedPath(c) shouldBe true
-      c.hasSharedPath(a) shouldBe true
-      c.hasSharedPath(b) shouldBe true
+      jsA.hasSharedPath(jsB) shouldBe true
+      jsA.hasSharedPath(jsC) shouldBe true
+      jsB.hasSharedPath(jsA) shouldBe true
+      jsB.hasSharedPath(jsC) shouldBe true
+      jsC.hasSharedPath(jsA) shouldBe true
+      jsC.hasSharedPath(jsB) shouldBe true
 
-      d.hasSharedPath(e) shouldBe true
-      e.hasSharedPath(d) shouldBe true
+      jsD.hasSharedPath(jsE) shouldBe true
+      jsE.hasSharedPath(jsD) shouldBe true
 
-      f.hasSharedPath(a) shouldBe false
-      f.hasSharedPath(b) shouldBe false
-      f.hasSharedPath(c) shouldBe false
+      jsF.hasSharedPath(jsA) shouldBe false
+      jsF.hasSharedPath(jsB) shouldBe false
+      jsF.hasSharedPath(jsC) shouldBe false
    }
 })

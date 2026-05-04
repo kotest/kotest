@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.extensions.testcontainers
 
 import com.zaxxer.hikari.HikariConfig
@@ -16,7 +18,7 @@ import java.sql.Connection
 
 /**
  * A Kotest [MountableExtension] for [JdbcDatabaseContainer]s that are started the first time they are
- * installed in a test, and then shared throughout the same gradle module. The container is shutdown
+ * installed in a test, and then shared throughout the same Gradle module. The container is shutdown
  * after all specs have completed.
  *
  * If no spec is executed that installs a particular container, then that container is never started.
@@ -40,7 +42,7 @@ import java.sql.Connection
  *
  * @since 1.3.0
  */
-@Deprecated("use JdbcDatabaseContainerExtension")
+@Deprecated("Use JdbcDatabaseContainerExtension. Will be removed in 6.3")
 class SharedJdbcDatabaseContainerExtension(
    private val container: JdbcDatabaseContainer<*>,
    private val beforeTest: suspend (HikariDataSource) -> Unit = {},

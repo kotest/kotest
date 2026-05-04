@@ -90,9 +90,10 @@ class SuccessMatchersTest : FunSpec({
       }
     }
 
+    @Suppress("DEPRECATION")
     test("Result.shouldNotBeSuccess") {
       failure<String>(DummyException).shouldNotBeSuccess()
-      shouldThrowAny { success("abc").shouldNotBeSuccess() }
+       shouldThrowAny { success("abc").shouldNotBeSuccess() }
     }
   }
 

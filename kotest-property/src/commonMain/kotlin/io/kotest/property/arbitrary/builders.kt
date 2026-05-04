@@ -22,21 +22,21 @@ import io.kotest.property.arbitrary.single as unboundSingle
 import io.kotest.property.arbitrary.take as unboundTake
 
 /**
- * Creates a new [Arb] that performs no shrinking, has no edge cases and
+ * Creates a new [Arb] that performs no shrinking, has no edge cases, and
  * generates values from the given function.
  */
 fun <A> arbitrary(fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder { rs -> fn(rs) }
 
 /**
- * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases and
+ * Creates a new [Arb] that performs shrinking using the supplied [Shrinker], has no edge cases, and
  * generates values from the given function.
  */
 fun <A> arbitrary(shrinker: Shrinker<A>, fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =
    arbitraryBuilder(shrinker) { rs -> fn(rs) }
 
 /**
- * Creates a new [Arb] that classifies the generated values using the supplied [Classifier], has no edge cases and
+ * Creates a new [Arb] that classifies the generated values using the supplied [Classifier], has no edge cases, and
  * generates values from the given function.
  */
 fun <A> arbitrary(classifier: Classifier<A>, fn: suspend ArbitraryBuilderContext.(RandomSource) -> A): Arb<A> =

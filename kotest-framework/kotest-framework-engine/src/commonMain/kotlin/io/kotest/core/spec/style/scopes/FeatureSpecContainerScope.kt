@@ -78,6 +78,17 @@ class FeatureSpecContainerScope(
       )
    }
 
+   suspend fun fscenario(name: String): TestWithConfigBuilder {
+      val testName = scenarioName(name)
+      TestDslState.startTest(testName)
+      return TestWithConfigBuilder(
+         name = testName,
+         context = this,
+         xmethod = TestXMethod.FOCUSED,
+      )
+   }
+
+
    suspend fun xscenario(name: String): TestWithConfigBuilder {
       val testName = scenarioName(name)
       TestDslState.startTest(testName)
@@ -97,6 +108,6 @@ class FeatureSpecContainerScope(
       )
    }
 
-   private fun featureName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Feature: ").build()
-   private fun scenarioName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Scenario: ").build()
+   private fun featureName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Feature: ").withDefaultAffixes().build()
+   private fun scenarioName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Scenario: ").withDefaultAffixes().build()
 }

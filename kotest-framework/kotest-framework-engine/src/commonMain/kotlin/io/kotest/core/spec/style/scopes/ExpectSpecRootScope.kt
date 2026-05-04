@@ -120,6 +120,6 @@ interface ExpectSpecRootScope : RootScope {
       )
    }
 
-   private fun expectName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Expect: ").build()
-   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").build()
+   private fun expectName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Expect: ").withDefaultAffixes().build()
+   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
 }

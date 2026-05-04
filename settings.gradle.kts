@@ -227,6 +227,10 @@ if (shouldRunJvmOnlyModules) {
  */
 if (shouldRunLinuxOnlyModules) {
    include(
+      // android junit4 instrumentation tests; the AVD/emulator setup only runs on a
+      // Linux runner with KVM, so we keep it out of the Windows/macOS jobs.
+      ":kotest-tests:kotest-tests-android-instrumentation",
+
       // adds support for the allure reporting framework - see more https://allurereport.org/
       ":kotest-extensions:kotest-extensions-allure",
       ":kotest-extensions:kotest-extensions-blockhound",

@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.property.proptest
 
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -15,6 +16,7 @@ import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.checkAll
 
+@OptIn(ExperimentalKotest::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class CheckAllTest : FunSpec() {
    init {

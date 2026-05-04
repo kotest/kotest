@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.testframework.sm.runner.SMTestProxy

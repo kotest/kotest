@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.ui
 
 import com.intellij.execution.ExecutionBundle

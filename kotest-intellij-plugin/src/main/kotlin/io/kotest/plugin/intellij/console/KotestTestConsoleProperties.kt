@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.plugin.intellij.console
 
 import com.intellij.execution.Executor
@@ -27,7 +29,7 @@ class KotestTestConsoleProperties(
       return sourceScope?.globalSearchScope ?: GlobalSearchScope.allScope(project)
    }
 
-   override fun createRerunFailedTestsAction(consoleView: ConsoleView): AbstractRerunFailedTestsAction? {
+   override fun createRerunFailedTestsAction(consoleView: ConsoleView): AbstractRerunFailedTestsAction {
       return RerunFailedTestsAction(consoleView, this)
    }
 }

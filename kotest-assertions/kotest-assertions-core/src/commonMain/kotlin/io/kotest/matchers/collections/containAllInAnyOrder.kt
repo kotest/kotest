@@ -57,7 +57,7 @@ fun <T, C : Collection<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neve
             append("Collection should contain the values of $expectedAsList in any order, but was $actualAsList.${comparison}")
             if(possibleMatches.isNotEmpty()) {
                appendLine()
-               append("Possible matches for unexpected elements:\n$possibleMatches")
+               append("Possible matches for missing elements:\n$possibleMatches")
             }
          }
       },

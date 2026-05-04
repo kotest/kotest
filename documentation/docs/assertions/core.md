@@ -88,6 +88,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `value.shouldBeOneOf(collection)`               | Asserts that a specific instance is contained in a collection, checking by reference, not by value.                                                                                                     |
 | `collection.shouldContainAnyOf(collection)`     | Asserts that the collection has at least one of the elements in `collection`                                                                                                                            |
 | `value.shouldBeIn(collection)`                  | Asserts that an object is contained in collection, checking by value and not by reference.                                                                                                              |
+| `collection.shouldContainExactCopies(2, copies = 1)`     | Asserts that the collection has the specified elements in `collection` specified number of times                                                                                                        |
 
 
 | Iterator                    |                                                       |

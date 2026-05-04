@@ -53,6 +53,25 @@ interface BehaviorSpecRootScope : RootScope {
       test = test
    )
 
+   /**
+    * Adds a top level focused [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun fgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.FOCUSED,
+      test = test
+   )
+
+   /**
+    * Adds a top level focused [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun fGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.FOCUSED,
+      test = test
+   )
+
    fun addGiven(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
       add(
          TestDefinitionBuilder
@@ -135,6 +154,19 @@ interface BehaviorSpecRootScope : RootScope {
    fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       addContext(name = name, xmethod = TestXMethod.DISABLED, test = test)
 
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun fcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun fContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+
    fun addContext(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
       add(
          TestDefinitionBuilder.builder(contextName(name), TestType.Container)
@@ -164,6 +196,19 @@ interface BehaviorSpecRootScope : RootScope {
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
    fun xContext(name: String) = addContext(name = name, xmethod = TestXMethod.DISABLED)
+
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun fcontext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED)
+
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun fContext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED)
 
    private fun addContext(
       name: String,

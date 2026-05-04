@@ -3,6 +3,7 @@ package com.sksamuel.kotest.property.arbitrary
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.property.Arb
@@ -28,6 +29,20 @@ class IpAddressTest : FunSpec() {
             result.groupValues[3].toInt().shouldBeBetween(0, 255)
             result.groupValues[4].toInt().shouldBeBetween(0, 255)
          }
+      }
+
+      // regression: nextInt(from, until) is half-open, so the previous `nextInt(0, 255)` only
+      // produced octets 0..254. Octet 255 (used in addresses like 192.168.1.255 and the broadcast
+      // 255.255.255.255) was never generated.
+      test("Arb.ipAddressV4 should be able to produce 255 in any octet") {
+         val octetsSeen = Array(4) { mutableSetOf<Int>() }
+         checkAll(20_000, Arb.ipAddressV4()) { ip ->
+            val parts = ip.split(".").map { it.toInt() }
+            parts.forEachIndexed { i, p -> octetsSeen[i].add(p) }
+         }
+         // The chance of not seeing 255 in any given octet over 20k samples (with 256-value range)
+         // is negligible if the generator can in fact produce it.
+         (0..3).forEach { i -> octetsSeen[i].shouldContain(255) }
       }
 
       test("Arb.ipAddressV6 should generate in a:b:c:d:e:f:g:h format") {

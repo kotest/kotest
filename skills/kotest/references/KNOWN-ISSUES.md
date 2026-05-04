@@ -140,13 +140,13 @@ class MySpec : FunSpec({
 
 **Common packages:**
 
-| Matcher | Package |
-|---------|---------|
-| `shouldBe` | `io.kotest.matchers.shouldBe` |
-| `shouldContain` (String) | `io.kotest.matchers.string.shouldContain` |
+| Matcher                      | Package                                        |
+|------------------------------|------------------------------------------------|
+| `shouldBe`                   | `io.kotest.matchers.shouldBe`                  |
+| `shouldContain` (String)     | `io.kotest.matchers.string.shouldContain`      |
 | `shouldContain` (Collection) | `io.kotest.matchers.collections.shouldContain` |
-| `shouldContain` (Map) | `io.kotest.matchers.maps.shouldContain` |
-| `shouldThrow` | `io.kotest.assertions.throwables.shouldThrow` |
+| `shouldContain` (Map)        | `io.kotest.matchers.maps.shouldContain`        |
+| `shouldThrow`                | `io.kotest.assertions.throwables.shouldThrow`  |
 
 **Fix:** Use specific imports, not star imports across multiple matcher packages.
 
@@ -182,7 +182,7 @@ dependencies {
 
 // Or disable caching for test task
 tasks.withType<Test>().configureEach {
-    outputs.upToDateWhen { false }  // NOT recommended for CI
+    outputs.upToDateWhen { false }  // NOT recommended for CI - never impose this but ask the user for preference
 }
 ```
 

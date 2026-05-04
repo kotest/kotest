@@ -38,7 +38,10 @@ abstract class NavigateToTestAction(private val direction: Direction) : AnAction
 
       val tests = flatten(alltests)
 
-      val index = tests.indexOfFirst { it.testPath() == test.testPath() }
+      val index = tests.indexOfFirst {
+         @Suppress("DEPRECATION")
+         it.testPath() == test.testPath()
+      }
       val target = when (direction) {
          Direction.Previous -> tests.getOrNull(index - 1)
          Direction.Next -> tests.getOrNull(index + 1)
