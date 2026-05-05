@@ -15,7 +15,7 @@ class TeamCityTestEngineListenerEmbeddedLocationsTest : FunSpec() {
    init {
 
       context("!when embedded locations are enabled") {
-         val listener = TeamCityTestEngineListener(prefix = "tc", details = true)
+         val listener = TeamCityTestEngineListener(prefix = "tc")
          val tc = TestCase(
            TeamCityTestEngineListenerEmbeddedLocationsTest::class.toDescriptor().append("a"),
            TestNameBuilder.builder("a").build(),
@@ -57,7 +57,7 @@ class TeamCityTestEngineListenerEmbeddedLocationsTest : FunSpec() {
       }
 
       context("!when embedded locations are disabled") {
-         val listener = TeamCityTestEngineListener(prefix = "tc", details = true)
+         val listener = TeamCityTestEngineListener(prefix = "tc")
          val tc = TestCase(
            TeamCityTestEngineListenerEmbeddedLocationsTest::class.toDescriptor().append("a"),
            TestNameBuilder.builder("a").build(),
