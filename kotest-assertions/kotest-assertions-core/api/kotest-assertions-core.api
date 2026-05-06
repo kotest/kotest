@@ -3550,6 +3550,12 @@ public final class io/kotest/matchers/string/CharSequencePreprocessorMatcher : i
 	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
 }
 
+public final class io/kotest/matchers/string/ContainExactCopiesKt {
+	public static final fun containExactCopies (Ljava/lang/String;Ljava/lang/String;IZ)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainExactCopies (Ljava/lang/String;Ljava/lang/String;IZ)Ljava/lang/String;
+	public static final fun shouldNotContainExactCopies (Ljava/lang/String;Ljava/lang/String;IZ)Ljava/lang/String;
+}
+
 public final class io/kotest/matchers/string/ContainInOrderWithoutOverlapsKt {
 	public static final fun containInOrderWithoutOverlaps ([Ljava/lang/String;)Lio/kotest/matchers/Matcher;
 	public static final fun shouldContainInOrderWithoutOverlaps (Ljava/lang/String;[Ljava/lang/String;)Ljava/lang/String;
