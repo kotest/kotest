@@ -22,5 +22,15 @@ class RemoveOverlapsInIndexesTest : StringSpec() {
             listOf(1, 3, 5), overlapLength = 2
          ) shouldContainExactly listOf(1, 3, 5)
       }
+      "removes overlap in the middle" {
+         removeOverlapsInIndexes(
+            listOf(1, 2, 5), overlapLength = 2
+         ) shouldContainExactly listOf(1, 5)
+      }
+      "removes overlap in the end" {
+         removeOverlapsInIndexes(
+            listOf(1, 4, 5), overlapLength = 2
+         ) shouldContainExactly listOf(1, 4)
+      }
    }
 }
