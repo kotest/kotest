@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldNot
 
 /**
  * Verifies that the given [String] contains the specified substring
- * the specified count of times, with or without overlaps
+ * exactly N times, with or without overlaps
  * with any characters before, after, or in between.
  *
  * For example, each of the following assertions would pass:
@@ -33,7 +33,7 @@ fun String.shouldContainExactCopies(
 
 /**
  * Verifies that the given [String] does not contain the specified substring
- * the specified count of times, with or without overlaps
+ * exactly N times, with or without overlaps
  * with any characters before, after, or in between.
  *
  * For example, each of the following assertions would pass:
