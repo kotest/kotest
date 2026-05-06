@@ -58,30 +58,31 @@ fun String.shouldNotContainExactCopies(
 }
 
 fun String.containExactCopies(
-   element: String,
+   substring: String,
    copies: Int,
    allowOverlaps: Boolean,
    ) = object : Matcher<String> {
    override fun test(value: String) : MatcherResult {
-      require(element.isNotEmpty()) { "Element should not be empty" }
+      require(substring.isNotEmpty()) { "Element should not be empty" }
       require(copies > 0) { "Copies should be positive, was $copies" }
-      val containsAtIndexes = (0..<value.length - element.length).filter { index ->
-            value.substring(index..<index + element.length) == element
-      }
+      val containsAtIndexes = substringFoundAtIndexes(
+         value,
+         substring,
+      )
       val passedAtIndexes = if(allowOverlaps) {
          containsAtIndexes
       } else {
-         removeOverlapsInIndexes(containsAtIndexes, element.length)
+         removeOverlapsInIndexes(containsAtIndexes, substring.length)
       }
       val passed = passedAtIndexes.size == copies
       return MatcherResult(
          passed,
          {
-            "String should contain $copies copies of element ${element.print().value}; " +
+            "String should contain $copies copies of element ${substring.print().value}; " +
                "but contained ${passedAtIndexes.size} copies ${if(passedAtIndexes.size > 0) "at index(es) ${passedAtIndexes.print().value}, and " else "but "}" +
                "the collection is ${value.print().value}"
          },
-         { "Collection should not contain $copies copies of element ${element.print().value}, but it did at index(es):${passedAtIndexes.print().value}" }
+         { "String should not contain $copies copies of element ${substring.print().value}, but it did at index(es):${passedAtIndexes.print().value}" }
       )
    }
 }
@@ -102,11 +103,11 @@ internal fun removeOverlapsInIndexes(
 ) : List<Int> {
    require(overlapLength > 0) { "Overlap length should be positive, was $overlapLength" }
    if (indexes.isEmpty()) return emptyList()
-   return listOf(indexes[0]) + (1 ..< indexes.size).mapNotNull { index ->
-      if(indexes[index - 1] != indexes[index] - overlapLength + 1) {
-         indexes[index]
-      } else {
-         null
+   val nonOverlappingIndexes = mutableListOf(indexes[0])
+   (1 until indexes.size).forEach { index ->
+      if(indexes[index] >= nonOverlappingIndexes.last() + overlapLength) {
+         nonOverlappingIndexes.add(indexes[index])
       }
-   }.toList()
+   }
+   return nonOverlappingIndexes.toList()
 }

@@ -12,6 +12,7 @@ class ContainExactCopiesTest : WordSpec() {
          "pass if contains exact count" {
             "Mayday".shouldContainExactCopies("ay", copies = 2, allowOverlaps = false)
             "121212".shouldContainExactCopies("1212", copies = 2, allowOverlaps = true)
+            "12121212".shouldContainExactCopies("1212", copies = 2, allowOverlaps = false)
          }
          "fail if the count does not match" {
             shouldThrow<AssertionError> {
@@ -30,7 +31,7 @@ class ContainExactCopiesTest : WordSpec() {
                "121212".shouldContainExactCopies("1212", copies = 2, allowOverlaps = false)
             }.message.shouldContainInOrder(
                "String should contain 2 copies of element \"1212\"",
-               "but contained 1 copy at index(es) [0]"
+               "but contained 1 copies at index(es) [0]"
             )
          }
       }
