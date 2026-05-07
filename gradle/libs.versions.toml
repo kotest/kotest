@@ -58,6 +58,7 @@ opentest4j = "1.3.0"
 plugin-publish = "2.1.1"
 
 rgxgen = "2.0"
+kotlin-rgxgen = "0.0.1"
 
 shadowjar = "8.1.1"
 spring-boot = "2.7.18"
@@ -145,6 +146,7 @@ kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+kotlin-rgxgen = { module = "community.flock.kotlinx.rgxgen:kotlin-rgxgen", version.ref = "kotlin-rgxgen" }
 
 jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.3" }
 
