@@ -1,3 +1,8 @@
+// Preserves the JVM facade class name from the previous file `stringsjvm.kt`,
+// so existing Java callers and pre-compiled Kotlin clients keep linking. Do not
+// remove or rename without an accompanying api dump update.
+@file:JvmName("StringsjvmKt")
+
 package io.kotest.property.arbitrary
 
 import com.github.curiousoddman.rgxgen.RgxGen
@@ -6,13 +11,7 @@ import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.util.Random
 
-/**
- * Generate strings that match the given pattern.
- *
- * The returned arb uses the [RgxGen](https://github.com/curious-odd-man/RgxGen) library to generate strings.
- * RgxGen supports a restricted subset of regular expression constructs.
- */
-fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
+actual fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
 
    val rgxgen = RgxGen.parse(pattern)
 
