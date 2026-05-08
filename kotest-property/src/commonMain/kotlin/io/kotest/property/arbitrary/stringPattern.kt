@@ -7,11 +7,7 @@ import io.kotest.property.Arb
  *
  * Backed by:
  *  - JVM: [com.github.curious-odd-man:rgxgen](https://github.com/curious-odd-man/RgxGen)
- *  - All other targets except Android Native:
- *    [community.flock.kotlinx.rgxgen:kotlin-rgxgen](https://github.com/flock-community/kotlin-rgxgen)
- *  - androidNativeX86, androidNativeX64, androidNativeArm64: not supported —
- *    calling this function throws [UnsupportedOperationException]. `kotlin-rgxgen`
- *    0.0.3 does not publish a binary for those targets.
+ *  - Every other target: [community.flock.kotlinx.rgxgen:kotlin-rgxgen](https://github.com/flock-community/kotlin-rgxgen)
  *
  * Both backing libraries support a restricted subset of regular expression
  * constructs.
