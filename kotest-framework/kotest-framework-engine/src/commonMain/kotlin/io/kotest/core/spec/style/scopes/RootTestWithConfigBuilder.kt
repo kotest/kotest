@@ -3,15 +3,20 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestCaseSeverityLevel
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
+/**
+ * Creates a builder for a top-level leaf test that can be configured.
+ */
 class RootTestWithConfigBuilder(
    private val context: RootScope,
    private val name: TestName,
@@ -22,7 +27,12 @@ class RootTestWithConfigBuilder(
       config: TestConfig,
       test: suspend TestScope.() -> Unit,
    ) {
-      context.addTest(testName = name, xmethod = xmethod, config = config, test = test)
+      context.add(
+         TestDefinitionBuilder.builder(name, TestType.Test)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build(test)
+      )
    }
 
    fun config(

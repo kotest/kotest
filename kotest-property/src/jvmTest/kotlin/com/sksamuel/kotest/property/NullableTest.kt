@@ -22,8 +22,11 @@ class NullableTest : FunSpec({
          classify(num == null, "null", "non-null")
          true
       }.classifications()
-      classifications["null"] shouldBe 493
-      classifications["non-null"] shouldBe 507
+      // Counts shifted from 493/507 → 500/500 when Arb<A>.orNull's edgecase
+      // started returning Sample(null) instead of null (bug fix in this PR):
+      // edgecase iterations now contribute null draws here too.
+      classifications["null"] shouldBe 500
+      classifications["non-null"] shouldBe 500
    }
 
    test("forNone with implicit nullable arbitraries") {
@@ -32,8 +35,8 @@ class NullableTest : FunSpec({
          classify(num == null, "null", "non-null")
          false
       }.classifications()
-      classifications["null"] shouldBe 493
-      classifications["non-null"] shouldBe 507
+      classifications["null"] shouldBe 500
+      classifications["non-null"] shouldBe 500
    }
 
    test("checkAll with implicit nullable arbitraries") {
@@ -41,8 +44,8 @@ class NullableTest : FunSpec({
       val classifications = checkAll<Int?>(iterations, PropTestConfig(seed = 1)) { num ->
          classify(num == null, "null", "non-null")
       }.classifications()
-      classifications["null"] shouldBe 493
-      classifications["non-null"] shouldBe 507
+      classifications["null"] shouldBe 500
+      classifications["non-null"] shouldBe 500
    }
 
    test("checkAll with implicit nullable arbitraries with should not be null Assumption") {

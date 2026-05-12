@@ -2,18 +2,16 @@ package io.kotest.core.test.config
 
 import io.kotest.core.Tag
 import io.kotest.core.extensions.Extension
-import io.kotest.core.spec.RootTest
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
-import io.kotest.core.test.NestedTest
 import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestCaseSeverityLevel
 import kotlin.time.Duration
 
 /**
- * Test config that is attached to a [RootTest] or [NestedTest] during compile time.
+ * Test config that is attached to a [io.kotest.core.spec.TestDefinition] during compile time.
  * Values specified here are the ultimate source of truth for configuration.
  *
  * Anything not specified here will bubble up to parent configurations following the runtime

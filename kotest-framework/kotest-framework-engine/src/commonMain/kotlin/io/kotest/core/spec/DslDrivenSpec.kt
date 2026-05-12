@@ -9,15 +9,26 @@ import io.kotest.core.spec.style.scopes.RootScope
 import kotlin.js.JsName
 
 /**
+ * Public API for creating a custom spec style.
+ *
+ * Note: There is no difference between this and the parent, but it is simply a better name and one
+ * that is being chosen as part of the public API.
+ */
+@Suppress("DEPRECATION")
+abstract class AbstractSpec : DslDrivenSpec()
+
+/**
  * Base class for specs that allow for registration of tests via a DSL.
  */
+@Deprecated("Was never intended as a public API. Use io.kotest.core.spec.AbstractSpec instead which is part of the public API. Deprecated in 6.2")
 abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
-    * Contains the [RootTest]s that have been registered on this spec.
+    * Contains the [@KotestInternal]s that have been registered on this spec.
     */
-   @JsName("rootTests_js")
-   private var rootTests = emptyList<RootTest>()
+   @Suppress("DEPRECATION")
+   @JsName("tests_js")
+   private var tests = emptyList<TestDefinition>()
 
    /**
     * Marks that this spec has been instantiated and all root tests have been registered.
@@ -25,8 +36,9 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     */
    internal var sealed = false
 
-   override fun rootTests(): List<RootTest> {
-      return rootTests
+   @Suppress("DEPRECATION")
+   override fun tests(): List<TestDefinition> {
+      return tests
    }
 
    /**
@@ -34,9 +46,25 @@ abstract class DslDrivenSpec : Spec(), RootScope {
     * This function may only be called before tests in the spec begin executing.
     * If this function is called after tests have started executing, an [InvalidDslException] will be thrown.
     */
+   @Suppress("DEPRECATION")
+   @Deprecated("Use add(TestDefinition). Deprecated since 6.2. Will be removed in 7.0")
    override fun add(test: RootTest) {
       if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
-      rootTests = rootTests + test
+      tests = tests + TestDefinition(
+         name = test.name,
+         config = test.config,
+         type = test.type,
+         test = test.test,
+         source = test.source,
+         xmethod = test.xmethod,
+         factoryId = test.factoryId,
+      )
+   }
+
+   override fun add(test: TestDefinition) {
+      if (sealed) throw InvalidDslException("Cannot add a root test after the spec has been instantiated: ${test.name.name}")
+      @Suppress("DEPRECATION")
+      tests = tests + test
    }
 
    override fun tags(vararg tags: Tag) {
@@ -46,7 +74,7 @@ abstract class DslDrivenSpec : Spec(), RootScope {
 
    /**
     * Include the tests and extensions from the given [TestFactory] in this spec.
-    * Tests are added in order from where this include was invoked using configuration and
+    * Tests are added in order from where this function was invoked using configuration and
     * settings at the time the method was invoked.
     */
    fun include(factory: TestFactory) {

@@ -34,10 +34,10 @@ class MetadataResolverTest : FunSpec({
          ) {}
       }) {}
 
-      val rootTests = spec.rootTests()
-      rootTests.size shouldBe 1
+      val tests = spec.tests()
+      tests.size shouldBe 1
 
-      val testConfig = rootTests.first().config
+      val testConfig = tests.first().config
       testConfig?.metadata?.get(Issue) shouldBe "test-issue"
    }
 })

@@ -1,8 +1,11 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A context that allows root tests to be registered using the syntax:
@@ -68,11 +71,11 @@ interface DescribeSpecRootScope : RootScope {
       xmethod: TestXMethod,
       test: suspend TestScope.() -> Unit
    ) {
-      addTest(
-         testName = TestNameBuilder.builder(name).build(),
-         xmethod = xmethod,
-         config = null,
-         test = test
+      add(
+         TestDefinitionBuilder
+            .builder(itName(name), TestType.Test)
+            .withXmethod(xmethod)
+            .build(test)
       )
    }
 
@@ -82,7 +85,6 @@ interface DescribeSpecRootScope : RootScope {
    fun fit(name: String) =
       addIt(name = name, xmethod = TestXMethod.FOCUSED)
 
-
    fun xit(name: String) =
       addIt(name = name, xmethod = TestXMethod.DISABLED)
 
@@ -91,7 +93,7 @@ interface DescribeSpecRootScope : RootScope {
       xmethod: TestXMethod
    ) = RootTestWithConfigBuilder(
       this,
-      TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build(),
+      itName(name),
       xmethod = xmethod
    )
 
@@ -100,11 +102,12 @@ interface DescribeSpecRootScope : RootScope {
       xmethod: TestXMethod,
       test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
-      addContainer(
-         TestNameBuilder.builder(name).withPrefix("Context: ").build(),
-         xmethod = xmethod,
-         config = null,
-      ) { DescribeSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { DescribeSpecContainerScope(this).test() }
+      )
    }
 
    private fun describe(
@@ -112,7 +115,7 @@ interface DescribeSpecRootScope : RootScope {
       xmethod: TestXMethod
    ): RootContainerWithConfigBuilder<DescribeSpecContainerScope> {
       return RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
+         name = describeName(name),
          xmethod = xmethod,
          context = this,
       ) { DescribeSpecContainerScope(it) }
@@ -123,21 +126,27 @@ interface DescribeSpecRootScope : RootScope {
       xmethod: TestXMethod
    ): RootContainerWithConfigBuilder<DescribeSpecContainerScope> {
       return RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").build(),
+         name = contextName(name),
          xmethod = xmethod,
          context = this,
       ) { DescribeSpecContainerScope(it) }
    }
+
 
    private fun describe(
       name: String,
       xmethod: TestXMethod,
       test: suspend DescribeSpecContainerScope.() -> Unit
    ) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withPrefix("Describe: ").build(),
-         xmethod = xmethod,
-         config = null
-      ) { DescribeSpecContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(describeName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { DescribeSpecContainerScope(this).test() }
+      )
    }
+
+   private fun itName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("It: ").withDefaultAffixes().build()
+   private fun contextName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Context: ").build()
+   private fun describeName(name: String): TestName = TestNameBuilder.builder(name).withPrefix("Describe: ").build()
 }

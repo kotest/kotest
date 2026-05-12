@@ -3,6 +3,7 @@ package io.kotest.runner.junit4
 import io.kotest.common.reflection.bestName
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
+import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.test.TestResult
 import org.junit.runner.Description
@@ -32,13 +33,16 @@ internal class JUnitTestEngineListener(
    // the runner takes care of spec started/finished from the description that is returned from the JUnit4 Runner
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
       // since JUnit4 has no support for suite level errors, if the spec had an error, we'll add a placeholder test
-      // and mark that as failed so the user can see the issue
+      // and mark that as failed so the user can see the issue. MultipleExceptions are flattened so each cause
+      // gets its own placeholder.
       val e = result.errorOrNull
       if (e != null) {
-         val d = Descriptions.createPlaceholderErrorDescription(ref.kclass, e)
-         notifier.fireTestStarted(d)
-         notifier.fireTestFailure(Failure(d, e))
-         notifier.fireTestFinished(d)
+         ExtensionExceptionExtractor.flatten(e).forEach { cause ->
+            val d = Descriptions.createPlaceholderErrorDescription(ref.kclass, cause)
+            notifier.fireTestStarted(d)
+            notifier.fireTestFailure(Failure(d, cause))
+            notifier.fireTestFinished(d)
+         }
       }
    }
 
