@@ -2,10 +2,14 @@ package io.kotest.assertions.eq
 
 /**
  * @param strictNumberEq used by number types to determine if they should be compared using == or by converting to the larger type.
+ * @param resolver resolves the [Eq] instance for each comparison; defaults to the global [DefaultEqResolver]
+ *                 but is replaced by a [LayeredEqResolver] when `withEqs { ... }` supplies per-call overrides.
  */
-class EqContext(val strictNumberEq: Boolean) {
+class EqContext(val strictNumberEq: Boolean, val resolver: EqResolver) {
 
-   constructor() : this(false)
+   constructor() : this(false, DefaultEqResolver)
+
+   constructor(strictNumberEq: Boolean) : this(strictNumberEq, DefaultEqResolver)
 
    private val visited = mutableListOf<Pair<Any?, Any?>>()
 
