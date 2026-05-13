@@ -24,7 +24,7 @@ class ValueTest : FreeSpec({
          'A' should beLetter()
          'a'.shouldBeLetter()
          ' ' shouldNot beLetter()
-         '\0'.shouldNotBeLetter()
+         '\u0000'.shouldNotBeLetter()
          '0'.shouldNotBeLetter()
          '~'.shouldNotBeLetter()
       }
@@ -83,7 +83,7 @@ class ValueTest : FreeSpec({
    "char should beWhitespace()" - {
       "should test that a character is whitespace" {
          ' ' should beWhitespace()
-         '\0'.shouldBeWhitespace()
+         '\u0000'.shouldBeWhitespace()
          'A' shouldNot beWhitespace()
          'a'.shouldNotBeWhitespace()
          '0'.shouldNotBeWhitespace()
