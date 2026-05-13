@@ -1,6 +1,5 @@
 package io.kotest.property.internal
 
-import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.print.print
 
 /**
@@ -32,6 +31,10 @@ fun throwPropertyTestAssertionError(
 /**
  * Generates an [AssertionError] for a failed property test.
  *
+ * If the failure cause carries expected/actual diff values (e.g. from a matcher backed by OpenTest4J
+ * on the JVM, or [io.kotest.assertions.KotestAssertionFailedError] on other platforms), those values
+ * are propagated to the resulting error so that IDEs such as IntelliJ display a "click to see diff" link.
+ *
  * @param e the test failure cause
  * @param attempt the iteration count at the time of failure
  * @param results the inputs that the test failed for
@@ -43,11 +46,16 @@ internal fun propertyAssertionError(
    results: List<ShrinkResult<Any?>>,
    outputHexForUnprintableChars: Boolean,
 ): Throwable {
-   return AssertionErrorBuilder.create()
-      .withMessage(propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars))
-      .withCause(e)
-      .build()
+   val finalCause = results.fold(e) { t, result -> result.cause ?: t }
+   val message = propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars)
+   return createPropertyAssertionError(message, finalCause)
 }
+
+/**
+ * Creates an [AssertionError] for a property test failure, preserving any expected/actual
+ * values present on [cause] so that IDEs can render a diff for the outer error.
+ */
+internal expect fun createPropertyAssertionError(message: String, cause: Throwable): AssertionError
 
 /**
  * Generates a property test failure message with details of the args that failed, any shrinks
