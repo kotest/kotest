@@ -32,6 +32,19 @@ class ContainExactCopiesTest : WordSpec() {
                "but contained 2 copies at index(es) [2, 3]"
             )
          }
+         "find similar element" {
+            shouldThrow<AssertionError> {
+               listOf(sweetRedApple, sweetRedCherry).shouldContainExactCopies(
+                  element = sweetGreenApple, copies = 1
+               )
+            }.message.shouldContainInOrder(
+               "PossibleMatches:",
+               "expected: Fruit(name=apple, color=green, taste=sweet)",
+               "but was: Fruit(name=apple, color=red, taste=sweet),",
+               "The following fields did not match:",
+               """"color" expected: <"green">, but was: <"red">""",
+            )
+         }
       }
       "shouldNotContainExactCopies" should {
          "fail if the count matches" {
