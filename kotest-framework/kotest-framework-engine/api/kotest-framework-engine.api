@@ -4633,8 +4633,7 @@ public final class io/kotest/engine/teamcity/TeamCityMessage {
 	public final fun build ()Ljava/lang/String;
 	public final fun details (Ljava/lang/String;)Ljava/lang/Object;
 	public final fun duration-LRDsOJo (J)V
-	public final fun exception (Ljava/lang/Throwable;Z)Lio/kotest/engine/teamcity/TeamCityMessage;
-	public static synthetic fun exception$default (Lio/kotest/engine/teamcity/TeamCityMessage;Ljava/lang/Throwable;ZILjava/lang/Object;)Lio/kotest/engine/teamcity/TeamCityMessage;
+	public final fun exception (Ljava/lang/Throwable;)Lio/kotest/engine/teamcity/TeamCityMessage;
 	public final fun expected (Ljava/lang/String;)V
 	public final fun locationHint (Ljava/lang/String;)V
 	public final fun message (Ljava/lang/String;)V

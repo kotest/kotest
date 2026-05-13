@@ -20,6 +20,9 @@ import kotlin.time.Duration.Companion.seconds
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class TeamCityTestEngineListenerTest : FunSpec() {
 
+   // Stack traces are non-deterministic; strip the details attribute so the rest of the message can be asserted exactly.
+   private fun stripDetails(output: String): String = output.replace(Regex(" details='[^']*'"), "")
+
    init {
 
       val a = TestCase(
@@ -66,7 +69,7 @@ class TeamCityTestEngineListenerTest : FunSpec() {
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
@@ -76,7 +79,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 
       test("should support errors in tests") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -91,7 +94,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' message='boom' result_status='Error']
@@ -102,7 +105,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 
       test("should support ignored tests with reason") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -116,7 +119,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' locationHint='kotest://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
@@ -125,7 +128,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 
       test("should support errors in test suites by adding a placeholder test") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -140,7 +143,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
@@ -153,7 +156,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 
       test("should support errors in specs by adding a placeholder test") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -168,7 +171,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
@@ -181,7 +184,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 
       test("should support multiline error messages") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -206,7 +209,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFailed name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' message='well this is a' result_status='Error']
@@ -217,7 +220,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 
       test("should write engine errors as top level failed tests") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -232,7 +235,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(listOf(Exception("big whoop")))
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='555' result_status='Success']
@@ -245,7 +248,7 @@ a[testFinished name='Exception']
 
       test("should write multiple engine errors") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -260,7 +263,7 @@ a[testFinished name='Exception']
             )
             listener.engineFinished(listOf(Exception("big whoop"), Exception("big whoop 2")))
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='555' result_status='Success']
@@ -276,7 +279,7 @@ a[testFinished name='Exception']
 
       test("should clear state between specs") {
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(a)
@@ -294,7 +297,7 @@ a[testFinished name='Exception']
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
@@ -311,7 +314,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          )
 
          val output = captureStandardOut {
-            val listener = TeamCityTestEngineListener("a", details = false)
+            val listener = TeamCityTestEngineListener("a")
             listener.engineStarted()
             listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
             listener.testStarted(cperiods)
@@ -322,7 +325,7 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
             )
             listener.engineFinished(emptyList())
          }
-         output shouldBe """a[enteredTheMatrix]
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c' locationHint='kotest://foo.bar.Test:17']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c' duration='124' result_status='Success']

@@ -109,22 +109,20 @@ class TeamCityMessage(
    fun result(value: TestResult) = attribute(Attributes.RESULT_STATUS, value.name)
 
    // note it seems that test-failed messages require a message to be included
-   fun exception(error: Throwable?, showDetails: Boolean = true): TeamCityMessage {
+   fun exception(error: Throwable?): TeamCityMessage {
       if (error == null) return this
 
       val line1 = error.message?.trim()?.lines()?.firstOrNull()
       val message = if (line1.isNullOrBlank()) "Test failed" else line1
       message(escapeColonsIn(message))
 
-      if (showDetails) {
-         // stackTraceToString fails if the error is created by a mocking framework, so we should catch
-         val stacktrace: String = try {
-            error.stackTraceToString()
-         } catch (_: Exception) {
-            "StackTrace unavailable (Sometimes caused by a mocked exception)"
-         }
-         details(escapeColonsIn(stacktrace)) // seems to be some limit to the details field
+      // stackTraceToString fails if the error is created by a mocking framework, so we should catch
+      val stacktrace: String = try {
+         error.stackTraceToString()
+      } catch (_: Exception) {
+         "StackTrace unavailable (Sometimes caused by a mocked exception)"
       }
+      details(escapeColonsIn(stacktrace)) // seems to be some limit to the details field
 
       return this
    }
