@@ -135,4 +135,15 @@ rates withEqs {
 An override only fires when the runtime types of `actual` and `expected` match, mirroring the
 type-match guard used by the global resolver.
 
+`withEqs` also composes with `shouldNotBe` for negative comparisons under the same overrides:
+
+```kotlin
+val a = BigDecimal("1.00")
+val b = BigDecimal("2")
+
+a withEqs {
+   register<BigDecimal>(BigDecimalIgnoreScaleEq)
+} shouldNotBe b
+```
+
 

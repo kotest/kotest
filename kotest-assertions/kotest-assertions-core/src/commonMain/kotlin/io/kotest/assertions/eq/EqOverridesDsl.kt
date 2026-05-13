@@ -1,5 +1,6 @@
 package io.kotest.assertions.eq
 
+import io.kotest.assertions.print.print
 import kotlin.reflect.KClass
 
 @DslMarker
@@ -68,5 +69,20 @@ infix fun <T> WithEqs<T>.shouldBe(expected: T?): T {
    @Suppress("UNCHECKED_CAST")
    val result = EqCompare.compare(actual, expected as T, context)
    if (result is EqResult.Failure) throw result.error()
+   return actual
+}
+
+/**
+ * Asserts that the value carried by [this] does not equal [expected] under the overrides supplied
+ * via [withEqs]. Throws an [AssertionError] when the comparison reports equality and returns the
+ * actual value otherwise.
+ */
+infix fun <T> WithEqs<T>.shouldNotBe(expected: T?): T {
+   val context = EqContext(strictNumberEq = false, resolver = LayeredEqResolver(overrides))
+   @Suppress("UNCHECKED_CAST")
+   val result = EqCompare.compare(actual, expected as T, context)
+   if (result is EqResult.Success) {
+      throw AssertionError("${expected.print().value} should not equal ${actual.print().value}")
+   }
    return actual
 }

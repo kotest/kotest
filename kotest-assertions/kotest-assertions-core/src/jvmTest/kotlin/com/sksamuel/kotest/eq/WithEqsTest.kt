@@ -6,6 +6,7 @@ import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.shouldBe
+import io.kotest.assertions.eq.shouldNotBe
 import io.kotest.assertions.eq.withEqs
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.FunSpec
@@ -113,6 +114,49 @@ class WithEqsTest : FunSpec() {
             a withEqs {
                register<BigDecimal>(BigDecimalIgnoreScaleEq)
             } shouldBe b
+         }
+      }
+
+      test("withEqs shouldNotBe throws when override reports equality, returns actual otherwise") {
+         val a = BigDecimal("1.00")
+         val b = BigDecimal("1")
+         val c = BigDecimal("2")
+
+         shouldThrowAny {
+            a withEqs {
+               register<BigDecimal>(BigDecimalIgnoreScaleEq)
+            } shouldNotBe b
+         }
+
+         a withEqs {
+            register<BigDecimal>(BigDecimalIgnoreScaleEq)
+         } shouldNotBe c
+      }
+
+      test("withEqs shouldNotBe override propagates into nested data class properties") {
+         val barA = Bar(Foo("hello"), "world", BigDecimal("1"))
+         val barB = Bar(Foo("hello"), "world", BigDecimal("1.00"))
+
+         shouldThrowAny {
+            barA withEqs {
+               register<BigDecimal>(BigDecimalIgnoreScaleEq)
+            } shouldNotBe barB
+         }
+      }
+
+      test("withEqs shouldNotBe override wins over a globally registered Eq for the same type") {
+         try {
+            DefaultEqResolver.register(BigDecimal::class, RejectAllBigDecimalsEq)
+
+            BigDecimal("1") shouldNotBe BigDecimal("1")
+
+            shouldThrowAny {
+               BigDecimal("1.00") withEqs {
+                  register<BigDecimal>(BigDecimalIgnoreScaleEq)
+               } shouldNotBe BigDecimal("1")
+            }
+         } finally {
+            DefaultEqResolver.unregister(BigDecimal::class)
          }
       }
    }
