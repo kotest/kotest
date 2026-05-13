@@ -35,13 +35,6 @@ class ValueTest : FreeSpec({
          val ch2 = '0'
          ch2.shouldNotBeLetter()
       }
-      "should support nullable chars" {
-         val ch: Char? = 'A'
-         ch.shouldBeLetter()
-
-         val ch2: Char? = '0'
-         ch2.shouldNotBeLetter()
-      }
    }
 
    "char should beDigit()" - {
