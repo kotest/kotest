@@ -1202,6 +1202,10 @@ public final class io/kotest/property/arbitrary/NullKt {
 	public static synthetic fun orNull$default (Lio/kotest/property/Arb;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lio/kotest/property/Arb;
 }
 
+public final class io/kotest/property/arbitrary/PatternKt {
+	public static final fun pattern (Lio/kotest/property/Arb$Companion;Ljava/lang/String;)Lio/kotest/property/Arb;
+}
+
 public final class io/kotest/property/arbitrary/ProvidedArbsBuilder {
 	public fun <init> ()V
 	public final fun bindClass (Lkotlin/Pair;)V

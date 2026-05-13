@@ -11,7 +11,20 @@ import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import java.util.Random
 
-actual fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
+/**
+ * Generate strings that match the given pattern.
+ *
+ * Backed by [RgxGen](https://github.com/curious-odd-man/RgxGen), which is
+ * JVM-only. Prefer the multiplatform [Arb.Companion.pattern] for new code; this
+ * function will be removed in a future release together with the `rgxgen`
+ * dependency.
+ */
+@Deprecated(
+   message = "Replaced by Arb.pattern, which works on every Kotest target.",
+   replaceWith = ReplaceWith("Arb.pattern(pattern)", "io.kotest.property.arbitrary.pattern"),
+   level = DeprecationLevel.WARNING,
+)
+fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
 
    val rgxgen = RgxGen.parse(pattern)
 

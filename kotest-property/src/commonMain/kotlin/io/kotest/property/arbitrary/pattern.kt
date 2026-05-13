@@ -6,7 +6,15 @@ import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import kotlin.random.Random
 
-actual fun Arb.Companion.stringPattern(pattern: String): Arb<String> = object : Arb<String>() {
+/**
+ * Generate strings that match the given regex pattern.
+ *
+ * Backed by [community.flock.kotlinx.rgxgen.RgxGen] (a Kotlin Multiplatform port
+ * of [RgxGen](https://github.com/curious-odd-man/RgxGen)) and therefore works on
+ * every Kotest target. The library supports a restricted subset of regular
+ * expression constructs.
+ */
+fun Arb.Companion.pattern(pattern: String): Arb<String> = object : Arb<String>() {
 
    val rgxgen = RgxGen.parse(pattern)
 
