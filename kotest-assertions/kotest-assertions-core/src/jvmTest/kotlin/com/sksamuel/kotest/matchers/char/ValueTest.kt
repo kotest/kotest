@@ -24,9 +24,10 @@ class ValueTest : FreeSpec({
          'A' should beLetter()
          'a'.shouldBeLetter()
          ' ' shouldNot beLetter()
-         '\u0000'.shouldNotBeLetter()
+         '\n'.shouldNotBeLetter()
          '0'.shouldNotBeLetter()
          '~'.shouldNotBeLetter()
+         '\u0000'.shouldNotBeLetter()
       }
       "should support chars" {
          val ch = 'A'
@@ -76,11 +77,12 @@ class ValueTest : FreeSpec({
    "char should beWhitespace()" - {
       "should test that a character is whitespace" {
          ' ' should beWhitespace()
-         '\u0000'.shouldBeWhitespace()
+         '\n'.shouldBeWhitespace()
          'A' shouldNot beWhitespace()
          'a'.shouldNotBeWhitespace()
          '0'.shouldNotBeWhitespace()
          '~'.shouldNotBeWhitespace()
+         '\u0000'.shouldNotBeWhitespace()
       }
       "should support chars" {
          val ch = ' '
