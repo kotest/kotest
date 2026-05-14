@@ -159,6 +159,16 @@ class WithEqsTest : FunSpec() {
             DefaultEqResolver.unregister(BigDecimal::class)
          }
       }
+
+      test("register can be called multiple times for the same type — last call wins") {
+         val a = BigDecimal("1.00")
+         val b = BigDecimal("1")
+
+         a withEqs {
+            register<BigDecimal>(RejectAllBigDecimalsEq)
+            register<BigDecimal>(BigDecimalIgnoreScaleEq)
+         } shouldBe b
+      }
    }
 }
 

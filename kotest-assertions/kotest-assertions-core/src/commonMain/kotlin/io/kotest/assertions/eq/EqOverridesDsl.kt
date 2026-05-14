@@ -21,6 +21,12 @@ class EqOverrides {
 
    internal val eqs: MutableMap<KClass<*>, Eq<*>> = mutableMapOf()
 
+   /**
+    * Registers an [Eq] instance for type [T] within the scope of the enclosing [withEqs] block.
+    *
+    * Calling this multiple times for the same type is allowed; the last call wins, matching the
+    * builder semantics used elsewhere in Kotest (e.g. `TestConfig`).
+    */
    inline fun <reified T : Any> register(eq: Eq<T>) {
       put(T::class, eq)
    }
