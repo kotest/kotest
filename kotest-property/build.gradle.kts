@@ -23,6 +23,7 @@ kotlin {
       jvmMain {
          dependencies {
             implementation(libs.diffutils)
+            implementation(libs.opentest4j) // used to propagate expected/actual diffs to outer property errors
             api(libs.rgxgen)
          }
       }
