@@ -12,6 +12,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.newFixedThreadPoolContext
 
+// Targets the deprecated JVM-only Arb.stringPattern intentionally — it must
+// keep working until removed. The replacement is exercised in commonTest's
+// PatternCommonTest.
+@Suppress("DEPRECATION")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class StringPatternTest : FunSpec({
 
