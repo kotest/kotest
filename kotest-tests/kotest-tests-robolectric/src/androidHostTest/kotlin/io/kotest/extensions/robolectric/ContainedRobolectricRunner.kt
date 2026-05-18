@@ -47,14 +47,40 @@ import java.lang.reflect.Method
  * Robolectric instruments classes by loading them through its own
  * [org.robolectric.internal.bytecode.SandboxClassLoader]. By default that
  * classloader acquires everything it can find on the classpath. For our
- * purposes we *must* exclude classes from `io.kotest.*` from that acquisition:
+ * purposes we *must* exclude the Kotest framework packages from acquisition:
  * if both the system classloader and the Robolectric classloader define the
  * same Kotest class, the engine will treat the spec returned from the sandbox
  * as a different type and the `is Spec` checks the engine performs against it
- * will fail. [createClassLoaderConfig] is overridden below to set that up.
+ * will fail. [createClassLoaderConfig] lists the framework packages one by one
+ * — we deliberately do NOT exclude `io.kotest` wholesale, because user code
+ * commonly lives under `io.kotest.tests.<…>` and we want those Activity / View
+ * subclasses to be acquired *and* instrumented by the sandbox.
  */
-internal class ContainedRobolectricRunner :
-   RobolectricTestRunner(PlaceholderTest::class.java) {
+internal class ContainedRobolectricRunner(
+   /**
+    * Extra package prefixes that the sandbox classloader should *instrument*
+    * (i.e. rewrite the bytecode of) when it acquires them.
+    *
+    * Robolectric instruments classes under known Android-related packages
+    * (`android.`, `dalvik.`, `libcore.`, …) by default. Application classes
+    * — your own `Activity`/`Service`/`View` subclasses — live in a project-
+    * specific package and are NOT auto-instrumented. Without instrumentation,
+    * the bytecode of those classes still references Android types from the
+    * stub `android.jar` on the parent classloader, which is incompatible
+    * with the shadowed types installed by the sandbox. The result is a
+    * `ClassCastException` like:
+    *
+    *     class com.example.MyActivity cannot be cast to class
+    *     android.app.Activity (... loader 'app'; ... loader Sandbox …)
+    *
+    * Pass the FQ package prefix(es) of your activities/views/services here
+    * so they go through the same instrumentation pipeline. This is the
+    * programmatic equivalent of `@Config(instrumentedPackages = […])` on a
+    * JUnit 4 test class or `instrumentedPackages=…` in a `robolectric.properties`
+    * file scoped to the test's package.
+    */
+   private val additionalInstrumentedPackages: List<String>,
+) : RobolectricTestRunner(PlaceholderTest::class.java) {
 
    /**
     * The placeholder `@Test` method. We never actually execute its body; we
@@ -171,9 +197,46 @@ internal class ContainedRobolectricRunner :
     * sandbox boundary.
     */
    override fun createClassLoaderConfig(method: FrameworkMethod?): InstrumentationConfiguration {
-      return InstrumentationConfiguration.Builder(super.createClassLoaderConfig(method))
-         .doNotAcquirePackage("io.kotest")
-         .build()
+      val builder = InstrumentationConfiguration.Builder(super.createClassLoaderConfig(method))
+      // Each Kotest sub-framework package must be delegated to the parent ClassLoader so
+      // the engine and the bootstrapped spec share a single copy of the Spec interface,
+      // matcher types, TestResult, etc. We deliberately list the framework packages one
+      // by one rather than excluding `io.kotest` wholesale: a blanket `io.kotest` exclusion
+      // would also catch user packages like `io.kotest.tests.<something>` and prevent
+      // their Activity / View subclasses from being acquired by the sandbox — which is
+      // exactly the scenario `additionalInstrumentedPackages` exists to enable.
+      for (pkg in KOTEST_FRAMEWORK_PACKAGES) {
+         builder.doNotAcquirePackage(pkg)
+      }
+      // Robolectric only instruments Android-framework packages by default; application
+      // classes (Activity/Service/View subclasses in the user's own package) need to be
+      // added explicitly or they end up loaded by the parent ClassLoader and cannot be
+      // cast to the sandbox-shadowed Android superclasses. See the field doc for context.
+      for (pkg in additionalInstrumentedPackages) {
+         builder.addInstrumentedPackage(pkg)
+      }
+      return builder.build()
+   }
+
+   private companion object {
+      /**
+       * Kotest framework package prefixes whose classes must be loaded by the parent
+       * ClassLoader (not the Robolectric sandbox) so that the engine and the
+       * bootstrapped spec share identity for Spec, matchers, TestResult, etc.
+       *
+       * Note: we intentionally do NOT list `io.kotest` itself, which would also catch
+       * any user code that happens to live under an `io.kotest.tests.*` package.
+       */
+      private val KOTEST_FRAMEWORK_PACKAGES = listOf(
+         "io.kotest.core.",
+         "io.kotest.engine.",
+         "io.kotest.framework.",
+         "io.kotest.assertions.",
+         "io.kotest.matchers.",
+         "io.kotest.common.",
+         "io.kotest.extensions.robolectric.",
+         "io.kotest.property.",
+      )
    }
 
    /**

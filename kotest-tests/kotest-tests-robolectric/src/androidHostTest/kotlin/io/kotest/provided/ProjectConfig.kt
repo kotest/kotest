@@ -15,5 +15,10 @@ import io.kotest.extensions.robolectric.RobolectricExtension
  * lifecycle.
  */
 class ProjectConfig : AbstractProjectConfig() {
-   override val extensions: List<Extension> = listOf(RobolectricExtension())
+   override val extensions: List<Extension> = listOf(
+      // Pass our local app package so Robolectric instruments WelcomeActivity / LoginActivity.
+      // Without this, those classes are loaded by the parent classloader and fail to cast to
+      // the sandbox-shadowed android.app.Activity at Robolectric.buildActivity().
+      RobolectricExtension(instrumentedPackages = listOf("io.kotest.tests.robolectric")),
+   )
 }

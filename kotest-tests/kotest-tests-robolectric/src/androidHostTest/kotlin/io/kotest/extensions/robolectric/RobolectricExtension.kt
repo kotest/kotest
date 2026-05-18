@@ -89,7 +89,23 @@ import kotlin.reflect.KClass
  * handled by Robolectric's own `afterTest` / `finallyAfterTest` hooks, which
  * we faithfully invoke in the `finally` of [intercept].
  */
-class RobolectricExtension : ConstructorExtension, TestCaseExtension {
+class RobolectricExtension(
+   /**
+    * Package prefixes that the Robolectric sandbox should instrument in
+    * addition to the default Android framework packages.
+    *
+    * Pass the FQ package prefix(es) of any application code that subclasses
+    * `Activity` / `Service` / `View` / etc. - without this, those classes
+    * are loaded by the parent classloader rather than the sandbox, and they
+    * fail to cast to their sandbox-shadowed superclasses with a
+    * `ClassCastException`. This is the programmatic equivalent of placing a
+    * `@Config(instrumentedPackages = […])` annotation on every spec.
+    *
+    * Defaults to an empty list, which is correct for test code that only
+    * exercises Robolectric's own shadow APIs.
+    */
+   instrumentedPackages: List<String> = emptyList(),
+) : ConstructorExtension, TestCaseExtension {
 
    /**
     * A single contained runner is held for the lifetime of this extension
@@ -100,7 +116,7 @@ class RobolectricExtension : ConstructorExtension, TestCaseExtension {
     * It is safe to share across specs because Robolectric resets all
     * per-test state in `afterTest` / `finallyAfterTest`.
     */
-   private val runner = ContainedRobolectricRunner()
+   private val runner = ContainedRobolectricRunner(instrumentedPackages)
 
    /**
     * Returns true iff [this] spec class is annotated with [RobolectricTest].
