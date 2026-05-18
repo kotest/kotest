@@ -1,9 +1,15 @@
 package com.sksamuel.kotest.robolectric
 
+import android.content.Intent
+import io.kotest.matchers.shouldBe
+import io.kotest.tests.robolectric.LoginActivity
 import io.kotest.tests.robolectric.WelcomeActivity
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.Shadows.shadowOf
 
 
 /**
