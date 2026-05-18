@@ -75,7 +75,9 @@ automatically generated too.
 
 Then we register it with Kotest, specifying the type that we want to use it for. Here we are
 using [project config](../framework/project_config.md) to set it up before any tests are run. We could do this at the
-spec level too, but bear in mind if you are running tests in parallel then the registration will be non-deterministic.
+spec level too, but bear in mind that this registration is global, so if you are running tests in parallel a per-spec
+registration will be non-deterministic. See [per-call overrides with `withEqs`](#per-call-overrides-with-witheqs) below
+for a parallel-safe alternative scoped to a single comparison.
 
 ```kotlin
 class ProjectConfig : AbstractProjectConfig() {
@@ -97,5 +99,51 @@ test("custom eq should be selected if both sides are the same type") {
 Custom `Eq` instances are only selected if both sides of the call are the type specified when registered. Also the type
 must be exact, subclasses are not selected automatically and must also be registered
 :::
+
+### Per-call overrides with `withEqs`
+
+The global `DefaultEqResolver.register(...)` API mutates a shared map, so it cannot safely express
+*"this `BigDecimal` comparison should ignore scale, but the next one should not"* — especially when
+specs run in parallel. `withEqs` provides per-call `Eq` overrides that are scoped to a single
+comparison and never touch the global resolver.
+
+```kotlin
+val a = BigDecimal("3.14")
+val b = BigDecimal("3.140")
+
+a shouldNotBe b                                          // default Eq compares with scale
+
+a withEqs {
+   register<BigDecimal>(BigDecimalIgnoreScaleEq)
+} shouldBe b                                             // ignores scale only for this line
+
+a shouldNotBe b                                          // back to default
+```
+
+Overrides propagate through nested collection, map and data-class comparisons because they ride on
+the `EqContext` that's threaded through every recursive `Eq` call:
+
+```kotlin
+val rates = mapOf("USD" to BigDecimal("3.14"), "EUR" to BigDecimal("2.99"))
+val expected = mapOf("USD" to BigDecimal("3.140"), "EUR" to BigDecimal("2.990"))
+
+rates withEqs {
+   register<BigDecimal>(BigDecimalIgnoreScaleEq)
+} shouldBe expected
+```
+
+An override only fires when the runtime types of `actual` and `expected` match, mirroring the
+type-match guard used by the global resolver.
+
+`withEqs` also composes with `shouldNotBe` for negative comparisons under the same overrides:
+
+```kotlin
+val a = BigDecimal("1.00")
+val b = BigDecimal("2")
+
+a withEqs {
+   register<BigDecimal>(BigDecimalIgnoreScaleEq)
+} shouldNotBe b
+```
 
 

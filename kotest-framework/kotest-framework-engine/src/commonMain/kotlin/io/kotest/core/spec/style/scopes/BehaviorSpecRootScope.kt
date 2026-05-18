@@ -1,7 +1,10 @@
 package io.kotest.core.spec.style.scopes
 
+import io.kotest.core.names.TestName
 import io.kotest.core.names.TestNameBuilder
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
+import io.kotest.core.test.TestType
 
 /**
  * A context that allows tests to be registered using the syntax:
@@ -50,12 +53,32 @@ interface BehaviorSpecRootScope : RootScope {
       test = test
    )
 
+   /**
+    * Adds a top level focused [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   fun fgiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.FOCUSED,
+      test = test
+   )
+
+   /**
+    * Adds a top level focused [BehaviorSpecGivenContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun fGiven(name: String, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) = addGiven(
+      name = name,
+      xmethod = TestXMethod.FOCUSED,
+      test = test
+   )
+
    fun addGiven(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecGivenContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null
-      ) { BehaviorSpecGivenContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder
+            .builder(givenName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { BehaviorSpecGivenContainerScope(this).test() }
+      )
    }
 
    /**
@@ -84,20 +107,23 @@ interface BehaviorSpecRootScope : RootScope {
       addGiven(name, TestXMethod.DISABLED)
 
    /**
-    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    * Adds a top level focused [BehaviorSpecGivenContainerScope] to this spec.
     */
    fun fgiven(name: String) =
       addGiven(name, TestXMethod.FOCUSED)
 
    /**
-    * Adds a top level disabled [BehaviorSpecGivenContainerScope] to this spec.
+    * Adds a top level focused [BehaviorSpecGivenContainerScope] to this spec.
     */
    fun fGiven(name: String) =
       addGiven(name, TestXMethod.FOCUSED)
 
-   fun addGiven(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
+   private fun addGiven(
+      name: String,
+      xmethod: TestXMethod
+   ): RootContainerWithConfigBuilder<BehaviorSpecGivenContainerScope> {
       return RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build(),
+         name = givenName(name),
          context = this@BehaviorSpecRootScope,
          xmethod = xmethod,
       ) { BehaviorSpecGivenContainerScope(it) }
@@ -128,12 +154,25 @@ interface BehaviorSpecRootScope : RootScope {
    fun xContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
       addContext(name = name, xmethod = TestXMethod.DISABLED, test = test)
 
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun fcontext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun fContext(name: String, test: suspend BehaviorSpecContextContainerScope.() -> Unit) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED, test = test)
+
    fun addContext(name: String, xmethod: TestXMethod, test: suspend BehaviorSpecContextContainerScope.() -> Unit) {
-      addContainer(
-         testName = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
-         xmethod = xmethod,
-         config = null
-      ) { BehaviorSpecContextContainerScope(this).test() }
+      add(
+         TestDefinitionBuilder.builder(contextName(name), TestType.Container)
+            .withXmethod(xmethod)
+            .build { BehaviorSpecContextContainerScope(this).test() }
+      )
    }
 
    /**
@@ -146,26 +185,45 @@ interface BehaviorSpecRootScope : RootScope {
    /**
     * Adds a top level [BehaviorSpecContextContainerScope] to this spec.
     */
-   fun context(name: String) =
-      addContext(name = name, xmethod = TestXMethod.NONE)
+   fun context(name: String) = addContext(name = name, xmethod = TestXMethod.NONE)
 
    /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
-   fun xcontext(name: String) =
-      addContext(name = name, xmethod = TestXMethod.DISABLED)
+   fun xcontext(name: String) = addContext(name = name, xmethod = TestXMethod.DISABLED)
 
    /**
     * Adds a top level disabled [BehaviorSpecContextContainerScope] to this spec.
     */
-   fun xContext(name: String) =
-      addContext(name = name, xmethod = TestXMethod.DISABLED)
+   fun xContext(name: String) = addContext(name = name, xmethod = TestXMethod.DISABLED)
 
-   fun addContext(name: String, xmethod: TestXMethod): RootContainerWithConfigBuilder<BehaviorSpecContextContainerScope> {
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   fun fcontext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED)
+
+   /**
+    * Adds a top level focused [BehaviorSpecContextContainerScope] to this spec.
+    */
+   @Suppress("FunctionName")
+   fun fContext(name: String) =
+      addContext(name = name, xmethod = TestXMethod.FOCUSED)
+
+   private fun addContext(
+      name: String,
+      xmethod: TestXMethod
+   ): RootContainerWithConfigBuilder<BehaviorSpecContextContainerScope> {
       return RootContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build(),
+         name = contextName(name),
          context = this@BehaviorSpecRootScope,
          xmethod = xmethod,
       ) { BehaviorSpecContextContainerScope(it) }
    }
+
+   private fun contextName(name: String): TestName =
+      TestNameBuilder.builder(name).withPrefix("Context: ").withDefaultAffixes().build()
+
+   private fun givenName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("Given: ").withDefaultAffixes().build()
 }

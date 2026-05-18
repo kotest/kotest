@@ -43,7 +43,7 @@ junit-jupiter6 = "6.0.3"
 jimfs = "1.3.1"
 
 kaml = "0.104.0"
-koin = "4.2.0"
+koin = "4.2.1"
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 kotlin-poet = "2.3.0"
@@ -58,6 +58,7 @@ opentest4j = "1.3.0"
 plugin-publish = "2.1.1"
 
 rgxgen = "2.0"
+kotlin-rgxgen = "0.0.6"
 
 shadowjar = "8.1.1"
 spring-boot = "2.7.18"
@@ -76,8 +77,8 @@ nmcp = "1.0.2"
 xmlutil = "0.91.3"
 
 binary-compatibility-validator = "0.18.1"
-decoroutinator = "2.6.2"
-pitest = "1.23.0"
+decoroutinator = "2.6.4"
+pitest = "1.23.1"
 
 # https://developer.android.com/jetpack/androidx/versions/all-channel
 androidx-test = "1.7.0"
@@ -145,8 +146,9 @@ kaml = { module = "com.charleskorn.kaml:kaml", version.ref = "kaml" }
 
 opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" }
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
+kotlin-rgxgen = { module = "community.flock.kotlinx.rgxgen:kotlin-rgxgen", version.ref = "kotlin-rgxgen" }
 
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.2" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.3" }
 
 junit-platform5-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform5" }
 junit-platform5-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform5" }

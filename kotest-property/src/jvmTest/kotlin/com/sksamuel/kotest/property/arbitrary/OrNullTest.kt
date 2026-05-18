@@ -10,6 +10,8 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.inspectors.forAll
 import io.kotest.matchers.doubles.plusOrMinus
 import io.kotest.matchers.ints.shouldBeBetween
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
@@ -18,6 +20,7 @@ import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.long
 import io.kotest.property.arbitrary.orNull
+import io.kotest.property.arbitrary.withEdgecases
 import io.kotest.property.forAll
 import kotlin.time.Duration.Companion.seconds
 
@@ -44,6 +47,21 @@ class OrNullTest : FunSpec({
          }.classifications()
       classifications["null"]?.shouldBeBetween(1000, 1000)
       classifications["non-null"]?.shouldBeBetween(0, 0)
+   }
+
+   test("Arb.orNull(nullProbability = 0.0) should never generate null values") {
+      // Pin the boundary: a probability of exactly 0.0 must mean zero nulls. The previous
+      // implementation used `nextDouble(0.0, 1.0) <= 0.0`, which would still trigger a null on
+      // the (vanishingly rare) chance that nextDouble returned exactly 0.0. The fix uses `<`,
+      // making the predicate provably false at p == 0.0 regardless of the draw.
+      val iterations = 10_000
+      val classifications =
+         forAll(iterations, Arb.int().orNull(nullProbability = 0.0)) { num ->
+            classify(num == null, "null", "non-null")
+            true
+         }.classifications()
+      classifications["null"]?.shouldBeBetween(0, 0)
+      classifications["non-null"]?.shouldBeBetween(iterations, iterations)
    }
 
    test("null probability values can be specified") {
@@ -77,6 +95,21 @@ class OrNullTest : FunSpec({
 
          allNull shouldBe isNextNull
       }
+   }
+
+   test("Arb.orNull edgecase yields a Sample(null) when isNextNull is true") {
+      val arb = Arb.int().orNull(isNextNull = { true })
+      val sample = arb.edgecase(RandomSource.default())
+      sample.shouldNotBeNull()
+      sample.value.shouldBeNull()
+   }
+
+   test("Arb.orNull edgecase delegates to source when isNextNull is false") {
+      val sourceArb = Arb.int().withEdgecases(42)
+      val arb = sourceArb.orNull(isNextNull = { false })
+      val sample = arb.edgecase(RandomSource.default())
+      sample.shouldNotBeNull()
+      sample.value shouldBe 42
    }
 
    test("orNull has a shrink to null") {

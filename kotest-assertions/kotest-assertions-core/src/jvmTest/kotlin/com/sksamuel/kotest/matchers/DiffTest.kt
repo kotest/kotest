@@ -65,6 +65,21 @@ class DiffTest : WordSpec() {
         """.trimMargin()
       }
 
+      "escape control characters in strings" {
+        Diff.create("a\tb", "a\nb").toString() shouldBe """
+          |expected:
+          |  "a\nb"
+          |but was:
+          |  "a\tb"
+        """.trimMargin()
+        Diff.create("x\rb", "x\bb").toString() shouldBe """
+          |expected:
+          |  "x\bb"
+          |but was:
+          |  "x\rb"
+        """.trimMargin()
+      }
+
       "test diff with nested maps" {
         val nestedMaps1 = mapOf(
             "nested" to mapOf(

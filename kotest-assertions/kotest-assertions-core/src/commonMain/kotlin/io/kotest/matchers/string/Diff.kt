@@ -138,9 +138,9 @@ private fun escapeString(s: String): String {
     .replace("\\", "\\\\")
     .replace("\"", "\\\"")
     .replace("\'", "\\\'")
-    .replace("\t", "\\\t")
-    .replace("\b", "\\\b")
-    .replace("\n", "\\\n")
-    .replace("\r", "\\\r")
+    .replace("\t", "\\t")
+    .replace("\b", "\\b")
+    .replace("\n", "\\n")
+    .replace("\r", "\\r")
     .replace("\$", "\\\$")
 }

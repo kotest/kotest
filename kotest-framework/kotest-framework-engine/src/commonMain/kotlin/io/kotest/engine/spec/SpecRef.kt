@@ -1,6 +1,6 @@
 package io.kotest.engine.spec
 
-import io.kotest.core.spec.DslDrivenSpec
+import io.kotest.core.spec.AbstractSpec
 import io.kotest.core.spec.Spec
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.config.ProjectConfigResolver
@@ -10,7 +10,7 @@ import kotlin.reflect.KClass
 
 /**
  * Returns instances of the [Spec] represented by this [SpecRef], handling lifecycle extension points,
- * and sealing the spec if it is a [DslDrivenSpec].
+ * and sealing the spec if it is a [AbstractSpec].
  */
 internal class SpecRefInflator(
    private val registry: ExtensionRegistry,
@@ -36,7 +36,7 @@ internal class SpecRefInflator(
             // any spec level AfterProjectListener extensions should now be added to the global registry
             spec.afterProjectListeners().forEach { registry.add(it) }
             // seal the spec to detect adding root tests after execution has started
-            if (spec is DslDrivenSpec) {
+            if (spec is AbstractSpec) {
                spec.sealed = true
             }
          }

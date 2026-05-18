@@ -2,15 +2,17 @@ package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.names.TestNameBuilder
 import io.kotest.core.spec.KotestTestScope
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 
 /**
  * A context that allows tests to be registered using the syntax:
  *
- * context("some context")
- * test("some test")
- * test("some test").config(...)
+ * `context("some context")`
+ * `test("some test")`
+ * `test("some test").config(...)`
  *
  */
 @KotestTestScope
@@ -22,33 +24,36 @@ class FunSpecContainerScope(
     * Adds a 'context' container test as a child of the current test case.
     */
    suspend fun context(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(
-         TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.NONE,
-         null
-      ) { FunSpecContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(TestXMethod.NONE)
+            .build { FunSpecContainerScope(this).test() }
+      )
    }
 
    /**
-    * Adds a disabled container test to this context.
+    * Adds a focused container test to this context.
     */
    suspend fun fcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(
-         TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.FOCUSED,
-         null
-      ) { FunSpecContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(TestXMethod.FOCUSED)
+            .build { FunSpecContainerScope(this).test() }
+      )
    }
 
    /**
     * Adds a disabled container test to this context.
     */
    suspend fun xcontext(name: String, test: suspend FunSpecContainerScope.() -> Unit) {
-      registerContainer(
-         TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.DISABLED,
-         null
-      ) { FunSpecContainerScope(this).test() }
+      registerTest(
+         TestDefinitionBuilder
+            .builder(contextName(name), TestType.Container)
+            .withXmethod(TestXMethod.DISABLED)
+            .build { FunSpecContainerScope(this).test() }
+      )
    }
 
    /**
@@ -56,7 +61,7 @@ class FunSpecContainerScope(
     */
    fun context(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.NONE,
          contextFn = { FunSpecContainerScope(it) }
@@ -64,11 +69,11 @@ class FunSpecContainerScope(
    }
 
    /**
-    * Adds a disabled container to this context, expecting config.
+    * Adds a focused container to this context, expecting config.
     */
    fun fcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.FOCUSED,
       ) { FunSpecContainerScope(it) }
@@ -79,11 +84,14 @@ class FunSpecContainerScope(
     */
    fun xcontext(name: String): ContainerWithConfigBuilder<FunSpecContainerScope> {
       return ContainerWithConfigBuilder(
-         name = TestNameBuilder.builder(name).build(),
+         name = contextName(name),
          context = this,
          xmethod = TestXMethod.DISABLED,
       ) { FunSpecContainerScope(it) }
    }
+
+   private fun contextName(name: String) =
+      TestNameBuilder.builder(name).withPrefix("context ").build()
 
    /**
     * Adds a test case to this context, expecting config.
@@ -95,19 +103,6 @@ class FunSpecContainerScope(
          name = testName,
          context = this,
          xmethod = TestXMethod.NONE,
-      )
-   }
-
-   /**
-    * Adds a focused test case to this context, expecting config.
-    */
-   suspend fun ftest(name: String): TestWithConfigBuilder {
-      val testName = TestNameBuilder.builder(name).build()
-      TestDslState.startTest(testName)
-      return TestWithConfigBuilder(
-         name = testName,
-         context = this,
-         xmethod = TestXMethod.FOCUSED,
       )
    }
 
@@ -128,18 +123,10 @@ class FunSpecContainerScope(
     * Adds a test case to this context.
     */
    suspend fun test(name: String, test: suspend TestScope.() -> Unit) {
-      registerTest(name = TestNameBuilder.builder(name).build(), xmethod = TestXMethod.NONE, config = null, test = test)
-   }
-
-   /**
-    * Adds a focused test case to this context.
-    */
-   suspend fun ftest(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.FOCUSED,
-         config = null,
-         test = test
+         TestDefinitionBuilder.builder(TestNameBuilder.builder(name).build(), TestType.Test)
+            .withXmethod(TestXMethod.NONE)
+            .build(test)
       )
    }
 
@@ -148,10 +135,9 @@ class FunSpecContainerScope(
     */
    suspend fun xtest(name: String, test: suspend TestScope.() -> Unit) {
       registerTest(
-         name = TestNameBuilder.builder(name).build(),
-         xmethod = TestXMethod.DISABLED,
-         config = null,
-         test = test
+         TestDefinitionBuilder.builder(TestNameBuilder.builder(name).build(), TestType.Test)
+            .withXmethod(TestXMethod.DISABLED)
+            .build(test)
       )
    }
 }

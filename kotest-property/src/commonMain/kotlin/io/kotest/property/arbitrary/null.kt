@@ -21,7 +21,11 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
    require(nullProbability in 0.0..1.0) {
       "Please specify a null probability between 0.0 and 1.0. $nullProbability was provided."
    }
-   return orNull { rs: RandomSource -> rs.random.nextDouble(0.0, 1.0) <= nullProbability }
+   // `nextDouble(0.0, 1.0)` is half-open `[0.0, 1.0)`, so:
+   // - using `<` makes nullProbability == 0.0 produce zero nulls (vs `<=` where the rare
+   //   draw of exactly 0.0 from nextDouble would still trigger a null), and
+   // - nullProbability == 1.0 still produces 100% nulls because the draw is always < 1.0.
+   return orNull { rs: RandomSource -> rs.random.nextDouble(0.0, 1.0) < nullProbability }
 }
 
 /**
@@ -35,7 +39,7 @@ fun <A> Arb<A>.orNull(nullProbability: Double): Arb<A?> {
  */
 fun <A> Arb<A>.orNull(isNextNull: (RandomSource) -> Boolean = { it.random.nextBoolean() }): Arb<A?> =
    object : Arb<A?>() {
-      override fun edgecase(rs: RandomSource): Sample<A>? = if (isNextNull(rs)) null else this@orNull.edgecase(rs)
+      override fun edgecase(rs: RandomSource): Sample<A?>? = if (isNextNull(rs)) Sample(null) else this@orNull.edgecase(rs)
 
       override fun sample(rs: RandomSource): Sample<A?> {
          val baseSample = if (isNextNull(rs)) Sample(null) else this@orNull.sample(rs)

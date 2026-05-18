@@ -84,6 +84,24 @@ class JUnitTestEngineListenerTest : FunSpec({
       listener.failures.single().message shouldBe "boom"
    }
 
+   test("ignored tests should fire testIgnored on the JUnit4 RunNotifier") {
+
+      val tc = TestCase(
+         JUnitTestEngineListenerTest::class.toDescriptor().append("ignored test"),
+         TestNameBuilder.builder("ignored test").build(),
+         JUnitTestEngineListenerTest(),
+         {},
+         SourceRef.None,
+         TestType.Test
+      )
+
+      val notifier = RunNotifier()
+      val listener = CollectingRunListener()
+      notifier.addListener(listener)
+      JUnitTestEngineListener(notifier).testIgnored(tc, "no reason")
+      listener.testsIgnored.single().methodName shouldBe "ignored test"
+   }
+
 })
 
 class CollectingRunListener : RunListener() {
@@ -91,6 +109,7 @@ class CollectingRunListener : RunListener() {
    val testsStarted = mutableListOf<Description>()
    val testsSuiteStarted = mutableListOf<Description>()
    val testsFinished = mutableListOf<Description>()
+   val testsIgnored = mutableListOf<Description>()
    val failures = mutableListOf<Failure>()
 
    override fun testStarted(description: Description) {
@@ -103,6 +122,10 @@ class CollectingRunListener : RunListener() {
 
    override fun testFinished(description: Description) {
       testsFinished.add(description)
+   }
+
+   override fun testIgnored(description: Description) {
+      testsIgnored.add(description)
    }
 
    override fun testFailure(failure: Failure) {

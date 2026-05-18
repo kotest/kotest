@@ -111,7 +111,7 @@ private fun ShrinkingMode.isShrinking(count: Int): Boolean = when (this) {
 
 private fun <A> result(sb: StringBuilder, result: StepResult<A>?, count: Int) {
    if (count == 0 || result == null) {
-      sb.append("Arg was not shunk\n")
+      sb.append("Arg was not shrunk\n")
    } else {
       sb.append("Shrink result (after $count shrinks) => ${result.failed.print().value}\n\n")
       when (val location = stacktraces.throwableLocation(result.cause, 4)) {

@@ -79,4 +79,51 @@ class KotestFileVisitorTest : FunSpec({
          )
       ) shouldBe false
    }
+
+   test("isAbstract returns true for abstract spec classes") {
+      KotestFileVisitor().isAbstract(
+         SimpleKSClassDeclaration(
+            className = "com.sksamuel.AbstractSpec",
+            modifiers = setOf(Modifier.ABSTRACT),
+         )
+      ) shouldBe true
+   }
+
+   test("isAbstract returns true for sealed spec classes") {
+      KotestFileVisitor().isAbstract(
+         SimpleKSClassDeclaration(
+            className = "com.sksamuel.SealedSpec",
+            modifiers = setOf(Modifier.SEALED),
+         )
+      ) shouldBe true
+   }
+
+   test("isAbstract returns false for plain classes") {
+      KotestFileVisitor().isAbstract(
+         SimpleKSClassDeclaration(
+            className = "com.sksamuel.MySpec",
+         )
+      ) shouldBe false
+   }
+
+   test("abstract spec subclasses are excluded from visitor.specs") {
+      val visitor = KotestFileVisitor()
+      visitor.visitClassDeclaration(
+         SimpleKSClassDeclaration(
+            className = "com.sksamuel.AbstractSpec",
+            supers = listOf(
+               SimpleKSTypeReference(
+                  SimpleKSType(
+                     declaration = SimpleKSClassDeclaration(
+                        className = FunSpec::class.qualifiedName!!,
+                     )
+                  )
+               )
+            ),
+            modifiers = setOf(Modifier.ABSTRACT),
+         ),
+         Unit
+      )
+      visitor.specs shouldBe emptyList()
+   }
 })

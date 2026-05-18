@@ -1,7 +1,15 @@
 package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
-import java.util.*
+
+/**
+ * Platform-specific UUID type. Aliases `java.util.UUID` on JVM and
+ * `kotlin.uuid.Uuid` on every other Kotest target. Shared code can only rely
+ * on members common to both (e.g. [toString], [equals], [hashCode]).
+ */
+expect class PlatformUuid
+
+internal expect fun String.toPlatformUuid(): PlatformUuid
 
 enum class UUIDVersion(
    val uuidRegex: Regex
@@ -17,9 +25,9 @@ enum class UUIDVersion(
 fun Arb.Companion.uuid(
    uuidVersion: UUIDVersion = UUIDVersion.V4,
    allowNilValue: Boolean = true
-): Arb<UUID> {
+): Arb<PlatformUuid> {
    val edgeCases = if (allowNilValue)
-      listOf(UUID.fromString("00000000-0000-0000-0000-000000000000"))
+      listOf("00000000-0000-0000-0000-000000000000".toPlatformUuid())
    else emptyList()
 
    val arb = when (uuidVersion) {
@@ -33,15 +41,15 @@ fun Arb.Companion.uuid(
 
    return arbitrary(edgeCases) {
       val value = arb.next(it)
-      UUID.fromString(value)
+      value.toPlatformUuid()
    }
 }
 
 // UUID regex patterns are predictable.
 // The reason we put these Arbs here is so that RgxGen instances can be reused for better performance
-private val arbUuidAny = Arb.stringPattern(UUIDVersion.ANY.uuidRegex.pattern)
-private val arbV1 = Arb.stringPattern(UUIDVersion.V1.uuidRegex.pattern)
-private val arbV2 = Arb.stringPattern(UUIDVersion.V2.uuidRegex.pattern)
-private val arbV3 = Arb.stringPattern(UUIDVersion.V3.uuidRegex.pattern)
-private val arbV4 = Arb.stringPattern(UUIDVersion.V4.uuidRegex.pattern)
-private val arbV5 = Arb.stringPattern(UUIDVersion.V5.uuidRegex.pattern)
+private val arbUuidAny = Arb.pattern(UUIDVersion.ANY.uuidRegex.pattern)
+private val arbV1 = Arb.pattern(UUIDVersion.V1.uuidRegex.pattern)
+private val arbV2 = Arb.pattern(UUIDVersion.V2.uuidRegex.pattern)
+private val arbV3 = Arb.pattern(UUIDVersion.V3.uuidRegex.pattern)
+private val arbV4 = Arb.pattern(UUIDVersion.V4.uuidRegex.pattern)
+private val arbV5 = Arb.pattern(UUIDVersion.V5.uuidRegex.pattern)

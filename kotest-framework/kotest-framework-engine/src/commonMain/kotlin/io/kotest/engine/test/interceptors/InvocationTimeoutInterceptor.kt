@@ -1,5 +1,7 @@
 package io.kotest.engine.test.interceptors
 
+import io.kotest.common.Platform
+import io.kotest.common.platform
 import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestScope
@@ -32,8 +34,10 @@ internal class InvocationTimeoutInterceptor(private val testConfigResolver: Test
          logger.log { Pair(testCase.name.name, "Switching context to add invocationTimeout $timeout") }
 
          // D8's setTimeout fires callbacks in registration order (ignoring delay values), so
-         // withTimeout would fire before any delay() in the test body. Skip timeout on D8.
-         if (isD8Runtime()) {
+         // withTimeout would fire before any delay() in the test body. WasmWasi also hangs
+         // with withTimeout for unrelated reasons. Skip the timeout on those runtimes — same
+         // exclusions as TimeoutInterceptor.
+         if (platform == Platform.WasmWasi || isD8Runtime()) {
             return test(testCase, scope.withCoroutineContext(currentCoroutineContext()))
          }
 

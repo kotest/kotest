@@ -3,6 +3,7 @@ package io.kotest.engine.errors
 import io.kotest.common.KotestInternal
 import io.kotest.core.listeners.ContextAwareListener
 import io.kotest.engine.extensions.ExtensionException
+import io.kotest.engine.extensions.MultipleExceptions
 
 /**
  * Given a callback exception, will return an appropriate test name for a placeholder error, as
@@ -17,6 +18,15 @@ import io.kotest.engine.extensions.ExtensionException
  */
 @KotestInternal
 object ExtensionExceptionExtractor {
+
+   /**
+    * Flattens [MultipleExceptions] into its constituent causes so each can be reported as a
+    * distinct placeholder test. Non-multi exceptions are returned as a single-element list.
+    */
+   fun flatten(t: Throwable): List<Throwable> = when (t) {
+      is MultipleExceptions -> t.causes
+      else -> listOf(t)
+   }
 
    fun resolve(t: Throwable): Pair<String, Throwable> {
       val cause = t.cause ?: t

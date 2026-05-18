@@ -62,6 +62,17 @@ class LongShrinkerTest : WordSpec() {
             val candidates = shrinker.shrink(90)
             candidates.shouldContain(60)
          }
+         // regression: subtracting 1..5 from a value near Long.MIN_VALUE underflowed silently
+         // and the wrapped-positive results survived the `> 0` filter, so the shrinker proposed
+         // values ~Long.MAX_VALUE as "shrinks" of values ~Long.MIN_VALUE.
+         "not propose subtract-underflowed candidates when shrinking values near Long.MIN_VALUE" {
+            // abs(value) is allowed (legitimate sign-flip candidate). We check the specific
+            // wrapped values from the bug. For value = Long.MIN_VALUE + 4, the buggy code
+            // computed `value - 5 = Long.MIN_VALUE - 1` which wrapped to Long.MAX_VALUE.
+            shrinker.shrink(Long.MIN_VALUE + 4L).shouldNotContain(Long.MAX_VALUE)
+            shrinker.shrink(Long.MIN_VALUE + 3L).shouldNotContain(Long.MAX_VALUE)
+            shrinker.shrink(Long.MIN_VALUE + 3L).shouldNotContain(Long.MAX_VALUE - 1L)
+         }
       }
    }
 }

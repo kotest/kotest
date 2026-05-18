@@ -3,11 +3,13 @@ package io.kotest.core.spec.style.scopes
 import io.kotest.core.Tag
 import io.kotest.core.extensions.Extension
 import io.kotest.core.names.TestName
+import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
 import io.kotest.core.test.EnabledIf
 import io.kotest.core.test.EnabledOrReasonIf
 import io.kotest.core.test.MetadataKey
 import io.kotest.core.test.TestScope
+import io.kotest.core.test.TestType
 import io.kotest.core.test.config.TestConfig
 import kotlin.time.Duration
 
@@ -22,11 +24,13 @@ class RootContainerWithConfigBuilder<T : TestScope>(
       config: TestConfig,
       test: suspend T.() -> Unit,
    ) {
-      context.addContainer(
-         testName = name,
-         xmethod = xmethod,
-         config = config
-      ) { contextFn(this).test() }
+      context.add(
+         TestDefinitionBuilder
+            .builder(name, TestType.Container)
+            .withXmethod(xmethod)
+            .withConfig(config)
+            .build { contextFn(this).test() }
+      )
    }
 
    fun config(

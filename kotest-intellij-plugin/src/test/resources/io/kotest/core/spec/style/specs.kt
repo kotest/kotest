@@ -18,6 +18,8 @@ abstract class FeatureSpec(body: FeatureSpec.() -> Unit = {})
 
 abstract class ShouldSpec(body: ShouldSpec.() -> Unit = {})
 
+abstract class CustomSpec
+
 abstract class AnnotationSpec() {
    annotation class Test
    annotation class BeforeEach

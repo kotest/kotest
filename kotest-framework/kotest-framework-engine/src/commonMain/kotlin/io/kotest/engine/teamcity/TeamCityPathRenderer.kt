@@ -2,7 +2,6 @@ package io.kotest.engine.teamcity
 
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
-import io.kotest.engine.teamcity.TeamCityTestNameEscaper
 import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
 

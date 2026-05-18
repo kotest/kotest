@@ -8,9 +8,9 @@ import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.extensions.MultipleExceptions
+import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessage
 import io.kotest.engine.teamcity.TeamCityPathRenderer
-import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
@@ -40,13 +40,11 @@ import kotlin.reflect.KClass
 @KotestInternal
 class TeamCityTestEngineListener(
    private val prefix: String = TeamCityMessage.TEAM_CITY_PREFIX,
-   private val details: Boolean = true,
 ) : TestEngineListener {
 
    private val logger = Logger(TeamCityTestEngineListener::class)
    private var renderer = TeamCityPathRenderer(DisplayNameFormatting(null))
    private val results = mutableMapOf<Descriptor, TestResult>()
-
 
    override suspend fun engineStarted() {
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_REPORTER_ATTACHED) {}.output()
@@ -116,7 +114,7 @@ class TeamCityTestEngineListener(
          if (result.isErrorOrFailure) {
             TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FAILED) {
                name(renderer.testPath(testCase))
-               exception(result.errorOrNull, details)
+               exception(result.errorOrNull)
                result(result)
             }.output()
          }
@@ -151,7 +149,7 @@ class TeamCityTestEngineListener(
 
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FAILED) {
          name(testPath)
-         exception(cause, details)
+         exception(cause)
       }.output()
 
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FINISHED) {
