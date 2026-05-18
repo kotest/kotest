@@ -8,6 +8,7 @@ import io.kotest.assertions.shouldFailWithMessage
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 
 class StringEqTest : FunSpec({
@@ -49,5 +50,21 @@ class StringEqTest : FunSpec({
          val unixString = "Windows\nUnix\nOldMac\n"
          mixedString shouldBe unixString
       }
+   }
+
+   // Regression test for #5944: when StringEq picks the large-string diff path it must surface
+   // the per-chunk "[Change at line N] ..." output produced by `diffLargeString`, not the original
+   // strings. Previously both branches of the `if/else` in `diff()` used the original strings, so
+   // multi-line mismatches over `largeStringDiffMinSize` lines silently lost the diff output.
+   // Gate to Linux GitHub CI: `useDiff` early-returns false when running inside IntelliJ
+   // (sets idea.active or similar), so the diff-path is only reachable on plain JVM CI runs.
+   test("StringEq.equals should surface diffLargeString chunk output for large multi-line mismatches").config(
+      enabledIf = { System.getenv("CI") == "true" && System.getProperty("idea.active") == null }
+   ) {
+      val expected = (1..60).joinToString("\n") { "expected line $it" }
+      val actual = (1..60).joinToString("\n") { if (it == 30) "MUTATED line 30" else "expected line $it" }
+
+      val result = StringEq.equals(actual, expected, EqContext()) as EqResult.Failure
+      result.error().message shouldContain "[Change at line"
    }
 })
