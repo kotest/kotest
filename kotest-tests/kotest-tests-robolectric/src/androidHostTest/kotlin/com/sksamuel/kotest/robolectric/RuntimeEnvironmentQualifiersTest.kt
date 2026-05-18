@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package com.sksamuel.kotest.robolectric
 
 import io.kotest.core.extensions.ApplyExtension
