@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.testModeKotestVersion610AndAbove
 import java.nio.file.Paths
 import java.util.Date
 
+@Suppress("UnstableApiUsage")
 class FeatureSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
@@ -108,6 +109,45 @@ class FeatureSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run FeatureSpecExample"
+   }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/featurespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.feature.FeatureSpecExample"
+
+      // Kotest 6.2+ format: nested path segments joined by '/' (matches engine's MethodSource)
+      val url = "java:test://$specFqn/some feature/some scenario"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 3 is "some feature some scenario"
+      gutters[3].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[3].tooltipText shouldBe "Run some feature some scenario"
+   }
+
+   fun testIconShowsPassedForPassedContainerTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/featurespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.feature.FeatureSpecExample"
+
+      val url = "java:suite://$specFqn/some feature"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 2 is "some feature"
+      gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[2].tooltipText shouldBe "Run some feature"
    }
 }
 

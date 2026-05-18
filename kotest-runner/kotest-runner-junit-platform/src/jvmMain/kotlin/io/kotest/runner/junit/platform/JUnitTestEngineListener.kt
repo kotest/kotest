@@ -32,10 +32,10 @@ import kotlin.reflect.KClass
  * This is not thread safe and should only be invoked by one spec at a time or
  * wrapped in a [SynchronizedEngineExecutionListener].
  *
- * JUnit platform supports out of order notification of tests, in that sibling
- * tests can be executing in parallel and updating JUnit out of order. However the gradle test
+ * JUnit platform supports out-of-order notification of tests, in that sibling
+ * tests can be executed in parallel and updating JUnit out of order. However, the Gradle test
  * task gets confused if we are executing two or more tests directly under the root at once.
- * Therefore we must queue up notifications until each spec is completed.
+ * Therefore, we must queue up notifications until each spec is completed.
  *
  * Gradle test run observations:
  *
@@ -44,13 +44,13 @@ import kotlin.reflect.KClass
  * TestDescriptor.Type.CONTAINER_AND_TEST appear as siblings of their nested tests if not added as a child
  * Add child first, then register dynamic test, then start the test
  *
- * Top level descriptors must have a source attached or the execution will fail with a parent attached exception.
+ * Top level descriptors must have a source attached, or the execution will fail with a parent-attached exception.
  * Type.CONTAINER_TEST doesn't seem to work as a top level descriptor, it will hang
- * leaf tests do not need to be completed but they will be marked as uncomplete in intellij.
+ * leaf tests do not need to be completed, but they will be marked as uncomplete in intellij.
  * Dynamic test can be called after or before addChild.
  * A Type.TEST can be a child of a Type.TEST.
  * Intermediate Type.CONTAINER seem to be ignored in output.
- * Intermediate containers can have same class source as parent.
+ * Intermediate containers can have the same class source as parent.
  * Type.TEST as top level seems to hang.
  * A TEST doesn't seem to be able to have the same source as a parent, or hang.
  * A TEST seems to hang if it has a ClassSource.
@@ -71,13 +71,13 @@ import kotlin.reflect.KClass
  * Nested tests are outputted as nested.
  * Child failures will not fail containing TEST.
  * child failures will fail a containing CONTAINER.
- * Call addChild _before_ registering test otherwise will appear in the display out of order.
- * Must start tests after their parent or they can go missing.
+ * Call addChild _before_ registering test otherwise it will appear in the display out of order.
+ * Must start tests after their parent, or they can go missing.
  * Sibling containers can start and finish in parallel.
  *
  * Observations from 1.13.4
  *
- * TestDescriptor.Type.CONTAINER that do not contain TESTs are ignored in intellij's tree output
+ * TestDescriptor.Type.CONTAINER that does not contain TESTs is ignored in intellij's tree output
  *
  */
 @KotestInternal
@@ -184,7 +184,7 @@ class JUnitTestEngineListener(
    override suspend fun specIgnored(kclass: KClass<*>, reason: String?) {
 
       // an ignored spec will not have been started
-      // also, if using --tests then the spec would not have been registered, in that case
+      // also, if using `--tests`, then the spec would not have been registered, in that case
       // instead of showing all tests minus the one we are running as ignored, we'll just skip
 
       logger.log { LogLine(kclass.bestName(), "specIgnored") }
@@ -215,11 +215,11 @@ class JUnitTestEngineListener(
       val unique = UniqueNames.unique(name, placeholderNames) { s, k -> "${s} ($k)" } ?: name
       placeholderNames.add(unique)
       val id = parent.uniqueId.append(Segment.Test.value, unique)
-      val descriptor = createTestTestDescriptor(
+      val descriptor = TestTestDescriptor(
          id = id,
          displayName = unique,
-         type = TestDescriptor.Type.TEST,
          source = getMethodSource(kclass, id),
+         type = TestDescriptor.Type.TEST,
       )
       parent.addChild(descriptor)
       listener.dynamicTestRegistered(descriptor)
@@ -243,7 +243,7 @@ class JUnitTestEngineListener(
       if (testCase.parent != null)
          startParents(testCase)
 
-      // if the test is a Kotest TEST type then its definitely a leaf test, so we can start it immediately
+      // if the test is a Kotest TEST type, then it's definitely a leaf test, so we can start it immediately
       if (testCase.type == TestType.Test) {
          startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
       }
@@ -275,7 +275,7 @@ class JUnitTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
 
-      // an ignored test should never be started or finished,
+      // an ignored test should never be started or finished;
       // however, an ingored test may be inside a test not yet marked as started,
       // so we must ensure we start any parents
       startParents(testCase)

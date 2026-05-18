@@ -4,7 +4,8 @@ import io.kotest.engine.test.TestResult
 import org.junit.platform.engine.TestExecutionResult
 
 /**
- * Returns a JUnit [org.junit.platform.engine.TestExecutionResult] populated from the values of the Kotest [io.kotest.engine.test.TestResult].
+ * Returns a JUnit [org.junit.platform.engine.TestExecutionResult] populated from the values of the
+ * Kotest [io.kotest.engine.test.TestResult].
  */
 internal fun TestResult.toTestExecutionResult(): TestExecutionResult = when (this) {
    is TestResult.Ignored -> error("An ignored test cannot reach this state")
