@@ -60,6 +60,8 @@ plugin-publish = "2.1.1"
 rgxgen = "2.0"
 kotlin-rgxgen = "0.0.6"
 
+robolectric = "4.16.1"
+
 shadowjar = "8.1.1"
 spring-boot = "2.7.18"
 spring = "5.3.39"
@@ -202,6 +204,8 @@ mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mordant = { module = "com.github.ajalt.mordant:mordant", version.ref = "mordant" }
 
 pitest = { module = "org.pitest:pitest", version.ref = "pitest" }
+
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 spring-beans = { group = "org.springframework", name = "spring-beans", version.ref = "spring" }
 spring-context = { group = "org.springframework", name = "spring-context", version.ref = "spring" }
