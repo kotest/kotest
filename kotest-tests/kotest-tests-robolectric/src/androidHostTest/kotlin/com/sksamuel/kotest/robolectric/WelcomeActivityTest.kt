@@ -2,8 +2,8 @@ package com.sksamuel.kotest.robolectric
 
 import android.content.Intent
 import io.kotest.matchers.shouldBe
-import io.kotest.tests.robolectric.LoginActivity
-import io.kotest.tests.robolectric.WelcomeActivity
+import com.sksamuel.kotest.tests.robolectric.LoginActivity
+import com.sksamuel.kotest.tests.robolectric.WelcomeActivity
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Robolectric

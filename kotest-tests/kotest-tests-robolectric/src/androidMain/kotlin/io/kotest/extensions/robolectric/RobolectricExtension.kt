@@ -1,11 +1,13 @@
 package io.kotest.extensions.robolectric
 
+import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.runBlocking
+import org.robolectric.annotation.Config
 import java.util.concurrent.Callable
 import kotlin.reflect.KClass
 
@@ -60,34 +62,63 @@ import kotlin.reflect.KClass
  *   to load the spec class through the sandbox classloader so that
  *   references in the spec body (Activities, Views, system services) bind
  *   against Robolectric's instrumented Android types rather than the stub
- *   `android.jar` on the regular classpath. Returning `null` from this method
- *   tells the engine "we have no opinion on this spec" — the next
- *   `ConstructorExtension` (or the default reflection-based path) takes over.
+ *   `android.jar` on the regular classpath.
  *
  * - [TestCaseExtension.intercept] — called by the engine around every test
  *   execution. We use it to (a) make sure we're on the sandbox's main
  *   thread, (b) install the sandbox classloader as the thread context
  *   classloader, (c) run Robolectric's before/after lifecycle around the
- *   test body. Specs without [RobolectricTest] are passed straight through
- *   to [execute].
+ *   test body.
  *
- * ## Opt-in via [RobolectricTest]
+ * ## Opt-in via [ApplyExtension]
  *
- * The extension is conservative: only specs annotated with [RobolectricTest]
- * get the sandbox treatment. This mirrors how JUnit 4 users opt in with
- * `@RunWith(RobolectricTestRunner::class)`, and — critically — means that
- * registering this extension globally does not punish specs that don't need
- * Android instrumentation. Sandbox construction takes seconds; we don't
- * want to pay that cost on every spec in a mixed project.
+ * Spec opt-in is delegated entirely to Kotest's own [ApplyExtension]
+ * mechanism — the engine only invokes us for specs annotated with
+ * `@ApplyExtension(RobolectricExtension::class)`. This mirrors how JUnit 4
+ * users opt in with `@RunWith(RobolectricTestRunner::class)`, and means
+ * specs that don't need Android instrumentation don't pay the (expensive)
+ * sandbox bootstrap cost.
+ *
+ * Example:
+ *
+ * ```kotlin
+ * @ApplyExtension(RobolectricExtension::class)
+ * @Config(instrumentedPackages = ["com.example.app"])
+ * class MyActivityTest : FunSpec({
+ *    test("activity should start") {
+ *       Robolectric.buildActivity(MyActivity::class.java).use { ... }
+ *    }
+ * })
+ * ```
+ *
+ * ## Configuring instrumented packages
+ *
+ * Robolectric only instruments the Android framework packages by default
+ * (`android.`, `dalvik.`, `libcore.`, …); application code that subclasses
+ * `Activity` / `View` / `Service` etc. needs to be explicitly named, or it
+ * is loaded by the parent classloader and its cast to the sandbox-shadowed
+ * superclass throws [ClassCastException].
+ *
+ * Packages can be supplied in two ways:
+ *
+ * - The standard Robolectric [`@Config(instrumentedPackages = […])`][org.robolectric.annotation.Config]
+ *   annotation on the spec class — read directly here so the same opt-in
+ *   form you would use with `@RunWith(RobolectricTestRunner::class)` keeps
+ *   working.
+ * - The [instrumentedPackages] constructor parameter, for callers who
+ *   prefer to register a pre-configured [RobolectricExtension] via
+ *   [io.kotest.core.config.AbstractProjectConfig.extensions]. The two
+ *   sources are unioned when the sandbox is built.
  *
  * ## Sandbox lifetime
  *
  * Building an [`AndroidSandbox`][org.robolectric.internal.AndroidSandbox]
  * is one of the most expensive things Robolectric does. The
- * [ContainedRobolectricRunner] held in [runner] caches its sandbox lazily
- * and reuses it across every test invocation. Reset between tests is
- * handled by Robolectric's own `afterTest` / `finallyAfterTest` hooks, which
- * we faithfully invoke in the `finally` of [intercept].
+ * [ContainedRobolectricRunner] held in [runner] is created lazily on first
+ * use (so we can read [Config] from the actual spec class) and reuses its
+ * sandbox across every test invocation. Reset between tests is handled by
+ * Robolectric's own `afterTest` / `finallyAfterTest` hooks, which we
+ * faithfully invoke in the `finally` of [intercept].
  */
 class RobolectricExtension(
    /**
@@ -98,64 +129,78 @@ class RobolectricExtension(
     * `Activity` / `Service` / `View` / etc. - without this, those classes
     * are loaded by the parent classloader rather than the sandbox, and they
     * fail to cast to their sandbox-shadowed superclasses with a
-    * `ClassCastException`. This is the programmatic equivalent of placing a
+    * [ClassCastException]. This is the programmatic equivalent of placing a
     * `@Config(instrumentedPackages = […])` annotation on every spec.
     *
-    * Defaults to an empty list, which is correct for test code that only
-    * exercises Robolectric's own shadow APIs.
+    * Unioned with packages declared via [`@Config`][Config] on the spec
+    * class itself. Defaults to an empty list, which makes the extension
+    * usable as `@ApplyExtension(RobolectricExtension::class)` with no
+    * parameters — packages then come solely from `@Config` on the spec.
     */
-   instrumentedPackages: List<String> = emptyList(),
+   private val instrumentedPackages: List<String> = emptyList(),
 ) : ConstructorExtension, TestCaseExtension {
 
    /**
-    * A single contained runner is held for the lifetime of this extension
-    * instance. The runner's [ContainedRobolectricRunner.sdkEnvironment]
-    * sandbox is what we load spec classes through and what owns the main
-    * thread we hop tests onto.
+    * The contained runner is created lazily on first use. We defer creation
+    * so we can read [`@Config`][Config] from the actual spec class — neither
+    * [instantiate] nor [intercept] has access to the spec class until they
+    * are called by the engine, and the runner's sandbox needs the full set
+    * of instrumented packages at construction time (the
+    * [org.robolectric.internal.bytecode.InstrumentationConfiguration] inside
+    * a sandbox is immutable once built).
     *
-    * It is safe to share across specs because Robolectric resets all
-    * per-test state in `afterTest` / `finallyAfterTest`.
+    * Once initialised, the same runner — and therefore the same sandbox —
+    * is reused for every test on this extension instance. Reset between
+    * tests is Robolectric's own job via `afterTest` / `finallyAfterTest`.
     */
-   private val runner = ContainedRobolectricRunner(instrumentedPackages)
+   private var runner: ContainedRobolectricRunner? = null
 
    /**
-    * Returns true iff [this] spec class is annotated with [RobolectricTest].
+    * Returns a runner configured for [specClass], creating it on first use.
     *
-    * Uses plain Java reflection (`java.lang.Class.isAnnotationPresent`) rather
-    * than `kotlin.reflect.full.findAnnotation` so the extension does not need
-    * to pull `kotlin-reflect` onto the classpath - that library is large and
-    * not something you want forced into an Android host-test runtime.
+    * Packages to instrument are taken from:
+    *  - the [instrumentedPackages] constructor argument (typically supplied
+    *    when this extension is registered globally via [io.kotest.core.config.AbstractProjectConfig]);
+    *  - the [`@Config(instrumentedPackages = […])`][Config] annotation on
+    *    the spec class itself (the usual JUnit 4 / Robolectric idiom).
     *
-    * [RobolectricTest] is `@Retention(RUNTIME)` and targets classes, so the
-    * Java reflection path is sufficient.
+    * The two sources are unioned, so a globally-registered extension can be
+    * augmented per-spec via `@Config`.
     */
-   private fun <T : Spec> KClass<T>.isRobolectricSpec(): Boolean =
-      java.isAnnotationPresent(RobolectricTest::class.java)
+   private fun runnerFor(specClass: Class<*>): ContainedRobolectricRunner {
+      runner?.let { return it }
+      val fromAnnotation = specClass.getAnnotation(Config::class.java)
+         ?.instrumentedPackages?.toList()
+         ?: emptyList()
+      // LinkedHashSet preserves insertion order; constructor packages first, then any
+      // additional ones from @Config. Deterministic order isn't strictly required by
+      // Robolectric but it makes debug output reproducible.
+      val merged = LinkedHashSet<String>(instrumentedPackages).apply { addAll(fromAnnotation) }
+      val newRunner = ContainedRobolectricRunner(merged.toList())
+      runner = newRunner
+      return newRunner
+   }
 
    /**
-    * Bootstraps a [RobolectricTest]-marked spec class through Robolectric's
-    * instrumented classloader and instantiates it.
+    * Bootstraps the spec class through Robolectric's instrumented classloader
+    * and instantiates it.
     *
-    * Non-Robolectric specs return `null`, which is the engine-defined "I
-    * have nothing to say" sentinel for [ConstructorExtension]s. The engine
-    * will then either consult another [ConstructorExtension] or fall back to
-    * its default reflection-based instantiation.
-    *
-    * Note that the returned [Spec] instance lives in a *different*
-    * classloader than the engine's `Spec` type. The two only line up
-    * because [ContainedRobolectricRunner.createClassLoaderConfig] excludes
-    * `io.kotest.*` from sandbox acquisition — the engine and the bootstrapped
-    * spec therefore share a single `Spec` symbol. If that exclusion is ever
-    * removed, the `as Spec` cast below will fail at runtime.
+    * The returned [Spec] instance lives in a *different* classloader than
+    * the engine's `Spec` type. The two only line up because
+    * [ContainedRobolectricRunner.createClassLoaderConfig] delegates the Kotest
+    * framework packages to the parent classloader — the engine and the
+    * bootstrapped spec therefore share a single `Spec` symbol. If that
+    * delegation is ever removed, the `as Spec` cast below will fail at
+    * runtime.
     */
    override fun <T : Spec> instantiate(clazz: KClass<T>): Spec? {
-      if (!clazz.isRobolectricSpec()) return null
+      val r = runnerFor(clazz.java)
 
       // Load the spec class through the Robolectric sandbox classloader. The
       // returned Class<*> has the same fully-qualified name as the original
       // but lives in the sandbox classloader, so any Activity/View references
       // in its body resolve against Robolectric's shadowed Android stack.
-      val bootstrapped = runner.bootstrap(clazz.java)
+      val bootstrapped = r.bootstrap(clazz.java)
 
       // No-arg constructor. Specs always have one (DslDrivenSpec subclasses
       // typically take a configuration lambda with a default value, which the
@@ -166,8 +211,7 @@ class RobolectricExtension(
    /**
     * Wraps each [TestCase] in Robolectric's per-test lifecycle.
     *
-    * Specs without [RobolectricTest] are passed straight through to
-    * [execute] with no overhead. Annotated specs have their body executed:
+    * The body is executed:
     *
     *  1. ... on Robolectric's sandbox main thread (via [org.robolectric.internal.bytecode.Sandbox.runOnMainThread])
     *  2. ... with the thread's context classloader switched to the sandbox
@@ -180,9 +224,9 @@ class RobolectricExtension(
     * ### Thread / coroutine bridging
     *
     * The Kotest engine invokes this method from a coroutine on whatever
-    * dispatcher the engine is using. Robolectric's [Sandbox.runOnMainThread]
+    * dispatcher the engine is using. Robolectric's `Sandbox.runOnMainThread`
     * is a blocking [Callable]-taking method: there is no suspending variant.
-    * To bridge the two we call [runOnMainThread] with a [Callable] that
+    * To bridge the two we call `runOnMainThread` with a [Callable] that
     * [runBlocking]s into [execute].
     *
     * For the typical Robolectric test (synchronous Android lifecycle code)
@@ -198,25 +242,20 @@ class RobolectricExtension(
     * outside this method — ServiceLoader, Class.forName, JNDI, and a
     * surprising amount of test infrastructure all consult it. We restore
     * the previous value in a `finally` so we don't leave the sandbox
-    * classloader installed on a thread that the engine reuses for a
-    * non-Robolectric spec later.
+    * classloader installed on a thread that the engine reuses for an
+    * unrelated spec later.
     */
    override suspend fun intercept(
       testCase: TestCase,
       execute: suspend (TestCase) -> TestResult,
    ): TestResult {
-
-      // Cheap rejection for specs that are not opting in. Without this the
-      // extension would be a no-op tax on every test in the project.
-      if (!testCase.spec::class.isRobolectricSpec()) {
-         return execute(testCase)
-      }
+      val r = runnerFor(testCase.spec::class.java)
 
       // Hand control to the sandbox's main thread. Robolectric's lifecycle
       // hooks and the majority of its public APIs (Robolectric.buildActivity,
       // ShadowLooper.idle*, etc.) assert they're running on the thread that
       // owns the main Looper, which is the one runOnMainThread dispatches to.
-      return runner.sdkEnvironment.runOnMainThread(
+      return r.sdkEnvironment.runOnMainThread(
          Callable<TestResult> {
 
             // Install the sandbox classloader as the *context* classloader on
@@ -226,12 +265,12 @@ class RobolectricExtension(
             // when looking up classes — ServiceLoader, reflection-based
             // factories, and so on.
             val previousLoader = Thread.currentThread().contextClassLoader
-            Thread.currentThread().contextClassLoader = runner.sdkEnvironment.robolectricClassLoader
+            Thread.currentThread().contextClassLoader = r.sdkEnvironment.robolectricClassLoader
 
             // beforeTest sets up the Application, main Looper, shadow registry,
             // etc. This must happen *after* the context classloader is set and
             // *before* the test body runs.
-            runner.containedBefore()
+            r.containedBefore()
             try {
                // Bridge the suspending `execute` lambda to the blocking world
                // of Sandbox.runOnMainThread. `runBlocking` runs `execute` to
@@ -244,7 +283,7 @@ class RobolectricExtension(
                   // Even if the test threw, tear down so the next test starts
                   // from a clean state. afterTest + finallyAfterTest together
                   // are what RobolectricTestRunner runs in its own finally.
-                  runner.containedAfter()
+                  r.containedAfter()
                } finally {
                   // Always restore the original context classloader, even if
                   // teardown threw, so we don't leave the sandbox classloader
