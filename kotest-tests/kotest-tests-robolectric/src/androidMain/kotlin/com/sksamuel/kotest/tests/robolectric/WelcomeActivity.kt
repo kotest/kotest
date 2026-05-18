@@ -1,4 +1,4 @@
-package io.kotest.tests.robolectric
+package com.sksamuel.kotest.tests.robolectric
 
 import android.app.Activity
 import android.content.Intent
