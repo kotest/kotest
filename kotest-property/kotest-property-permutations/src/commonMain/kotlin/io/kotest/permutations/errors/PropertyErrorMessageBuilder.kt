@@ -53,7 +53,7 @@ data class PropertyErrorMessageBuilder(
 
       if (inputs.isNotEmpty()) {
          sb.appendLine("Inputs:")
-         inputs.withIndex().map { (index, input) ->
+         inputs.withIndex().forEach { (index, input) ->
             val name = input.name ?: index
             sb.appendLine("$name) ${input.value}")
          }

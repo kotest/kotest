@@ -1,5 +1,6 @@
 package io.kotest.extensions.robolectric
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.extensions.ApplyExtension
 import io.kotest.core.extensions.ConstructorExtension
 import io.kotest.core.extensions.TestCaseExtension
@@ -120,6 +121,7 @@ import kotlin.reflect.KClass
  * Robolectric's own `afterTest` / `finallyAfterTest` hooks, which we
  * faithfully invoke in the `finally` of [intercept].
  */
+@ExperimentalKotest
 class RobolectricExtension(
    /**
     * Package prefixes that the Robolectric sandbox should instrument in
