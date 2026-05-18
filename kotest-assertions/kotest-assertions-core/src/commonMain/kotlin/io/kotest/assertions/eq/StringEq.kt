@@ -81,7 +81,7 @@ object StringEq : Eq<String> {
             .build()
       else
          AssertionErrorBuilder.create()
-            .withValues(Expected(StringPrint.printUnquoted(expected)), Actual(StringPrint.printUnquoted(actual)))
+            .withValues(Expected(Printed(result.first)), Actual(Printed(result.second)))
             .build()
    }
 
