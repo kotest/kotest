@@ -113,5 +113,44 @@ class FreeSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run FreeSpecExample"
    }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/freespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.freespec.FreeSpecExample"
+
+      // Kotest 6.2+ format: nested path segments joined by '/' (matches engine's MethodSource)
+      val url = "java:test://$specFqn/some context/more context/as many as you want/then a test"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 4 is "then a test"
+      gutters[4].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[4].tooltipText shouldBe "Run some context more context as many as you want then a test"
+   }
+
+   fun testIconShowsPassedForPassedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/freespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.freespec.FreeSpecExample"
+
+      val url = "java:suite://$specFqn/another context"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 5 is "another context"
+      gutters[5].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[5].tooltipText shouldBe "Run another context"
+   }
 }
 

@@ -10,6 +10,7 @@ import io.kotest.core.test.TestType
 import io.kotest.engine.test.names.DisplayNameFormatting
 import io.kotest.extensions.system.withSystemProperty
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldNotContain
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.UniqueId
@@ -98,6 +99,154 @@ class CreateTestDescriptorWithMethodSourceTest : FunSpec({
       val methodSource = descriptor.source.get() as MethodSource
       methodSource.className shouldBe DummySpec::class.qualifiedName
       methodSource.methodName shouldBe "container test"
+   }
+
+   // The IntelliJ plugin parses `proxy.locationUrl = "java:test://<fqn>/<seg>/<seg>"` to drive
+   // jump-to-source. That URL is built by IntelliJ's JUnit5 launcher from this MethodSource, so
+   // the methodName MUST join nested-test path segments with a single `/` (and never with the
+   // legacy ` -- ` separator). The tests below pin that contract.
+   context("nested tests use '/' as the path separator in methodName") {
+
+      test("two levels - methodName is 'outer/leaf'") {
+         val descriptor = createTestDescriptorWithMethodSource(
+            root = root,
+            testCase = leafTestCase,
+            type = TestDescriptor.Type.TEST,
+            formatter = DisplayNameFormatting(null),
+         )
+
+         val methodSource = descriptor.source.get() as MethodSource
+         methodSource.className shouldBe DummySpec::class.qualifiedName
+         methodSource.methodName shouldBe "container test/leaf test"
+      }
+
+      test("three levels - methodName is 'outer/middle/leaf'") {
+         val middle = TestCase(
+            containerTestCase.descriptor.append("middle context"),
+            TestNameBuilder.builder("middle context").build(),
+            containerTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Container,
+            parent = containerTestCase,
+         )
+         val deepLeaf = TestCase(
+            middle.descriptor.append("deep leaf"),
+            TestNameBuilder.builder("deep leaf").build(),
+            containerTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Test,
+            parent = middle,
+         )
+
+         val descriptor = createTestDescriptorWithMethodSource(
+            root = root,
+            testCase = deepLeaf,
+            type = TestDescriptor.Type.TEST,
+            formatter = DisplayNameFormatting(null),
+         )
+
+         val methodSource = descriptor.source.get() as MethodSource
+         methodSource.methodName shouldBe "container test/middle context/deep leaf"
+      }
+
+      test("four levels deep - methodName joins all segments with '/'") {
+         val l2 = TestCase(
+            containerTestCase.descriptor.append("l2"),
+            TestNameBuilder.builder("l2").build(),
+            containerTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Container,
+            parent = containerTestCase,
+         )
+         val l3 = TestCase(
+            l2.descriptor.append("l3"),
+            TestNameBuilder.builder("l3").build(),
+            containerTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Container,
+            parent = l2,
+         )
+         val l4 = TestCase(
+            l3.descriptor.append("l4 leaf"),
+            TestNameBuilder.builder("l4 leaf").build(),
+            containerTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Test,
+            parent = l3,
+         )
+
+         val descriptor = createTestDescriptorWithMethodSource(
+            root = root,
+            testCase = l4,
+            type = TestDescriptor.Type.TEST,
+            formatter = DisplayNameFormatting(null),
+         )
+
+         val methodSource = descriptor.source.get() as MethodSource
+         methodSource.methodName shouldBe "container test/l2/l3/l4 leaf"
+      }
+
+      test("test names with spaces and punctuation are preserved verbatim around the '/'") {
+         val parent = TestCase(
+            DummySpec::class.toDescriptor().append("a context with spaces"),
+            TestNameBuilder.builder("a context with spaces").build(),
+            DummySpec(),
+            { },
+            SourceRef.None,
+            TestType.Container,
+         )
+         val child = TestCase(
+            parent.descriptor.append("when X happens, then Y"),
+            TestNameBuilder.builder("when X happens, then Y").build(),
+            parent.spec,
+            { },
+            SourceRef.None,
+            TestType.Test,
+            parent = parent,
+         )
+
+         val descriptor = createTestDescriptorWithMethodSource(
+            root = root,
+            testCase = child,
+            type = TestDescriptor.Type.TEST,
+            formatter = DisplayNameFormatting(null),
+         )
+
+         val methodSource = descriptor.source.get() as MethodSource
+         methodSource.methodName shouldBe "a context with spaces/when X happens, then Y"
+         // sanity: no legacy ` -- ` separator leaked into the methodName
+         methodSource.methodName shouldNotContain " -- "
+      }
+
+      test("nested CONTAINER descriptors still use ClassSource (not MethodSource)") {
+         // CONTAINER descriptors use ClassSource for Android Studio rendering. The MethodSource
+         // path encoding only applies to leaves and CONTAINER_AND_TEST nodes. This test pins that
+         // distinction so a future refactor doesn't accidentally start writing slash-paths into
+         // CONTAINER descriptors and confuse the IDE tree.
+         val middle = TestCase(
+            containerTestCase.descriptor.append("middle"),
+            TestNameBuilder.builder("middle").build(),
+            containerTestCase.spec,
+            { },
+            SourceRef.None,
+            TestType.Container,
+            parent = containerTestCase,
+         )
+
+         val descriptor = createTestDescriptorWithMethodSource(
+            root = root,
+            testCase = middle,
+            type = TestDescriptor.Type.CONTAINER,
+            formatter = DisplayNameFormatting(null),
+         )
+
+         descriptor.source.get().shouldBeInstanceOf<ClassSource>()
+      }
    }
 
    context("display name truncation") {

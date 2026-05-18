@@ -10,6 +10,7 @@ import io.kotest.plugin.intellij.testModeKotestVersion610AndAbove
 import java.nio.file.Paths
 import java.util.Date
 
+@Suppress("UnstableApiUsage")
 class DescribeSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
 
    override fun getTestDataPath(): String {
@@ -108,6 +109,45 @@ class DescribeSpecTestStatusIconTest : LightJavaCodeInsightFixtureTestCase() {
 
       gutters[0].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
       gutters[0].tooltipText shouldBe "Run DescribeSpecExample"
+   }
+
+   fun testIconShowsFailedForFailedTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/describespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.describe.DescribeSpecExample"
+
+      // Kotest 6.2+ format: nested path segments joined by '/' (matches engine's MethodSource)
+      val url = "java:test://$specFqn/describe block/it block"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.FAILED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 2 is "it block"
+      gutters[2].icon shouldBe AllIcons.RunConfigurations.TestState.Red2
+      gutters[2].tooltipText shouldBe "Run describe block it block"
+   }
+
+   fun testIconShowsPassedForPassedContainerTestWithoutKotestTags() {
+      myFixture.configureByFiles(
+         "/describespec.kt",
+         "/io/kotest/core/spec/style/specs.kt"
+      )
+
+      val storage = TestStateStorage.getInstance(project)
+      val specFqn = "com.sksamuel.kotest.specs.describe.DescribeSpecExample"
+
+      val url = "java:suite://$specFqn/describe block"
+      storage.writeState(url, TestStateStorage.Record(TestStateInfo.Magnitude.PASSED_INDEX.value, Date(), 0, 0, "", "", ""))
+
+      val gutters = myFixture.findAllGutters()
+
+      // index 1 is "describe block"
+      gutters[1].icon shouldBe AllIcons.RunConfigurations.TestState.Green2
+      gutters[1].tooltipText shouldBe "Run describe block"
    }
 }
 

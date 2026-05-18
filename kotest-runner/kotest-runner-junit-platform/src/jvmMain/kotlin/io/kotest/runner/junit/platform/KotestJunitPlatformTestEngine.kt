@@ -22,6 +22,7 @@ import org.junit.platform.engine.discovery.ClasspathRootSelector
 import org.junit.platform.engine.discovery.MethodSelector
 import org.junit.platform.engine.discovery.UniqueIdSelector
 import java.util.Optional
+import kotlin.jvm.optionals.getOrNull
 import kotlin.reflect.KClass
 
 /**
@@ -42,7 +43,13 @@ class KotestJunitPlatformTestEngine : TestEngine {
 
    override fun execute(request: ExecutionRequest) {
       logger.log {
-         "ExecutionRequest[${request::class.java.name}@${request.hashCode()}] [configurationParameters=${request.configurationParameters}; rootTestDescriptor=${request.rootTestDescriptor}]"
+         buildString {
+            append("Executing request [${request::class.java.name}@${request.hashCode()}]")
+            append("[")
+            append("configurationParameters=${request.configurationParameters};")
+            append("rootTestDescriptor=${request.rootTestDescriptor}")
+            append("]")
+         }
       }
       logger.log { "Root request children ${request.rootTestDescriptor.children.joinToString(" ,") { it.uniqueId.toString() }}" }
       val root = request.rootTestDescriptor as KotestEngineDescriptor
@@ -90,12 +97,12 @@ class KotestJunitPlatformTestEngine : TestEngine {
     * This method is invoked by build systems that support JUnit Platform, to return a [TestDescriptor] that
     * contains any matching tests given the [EngineDiscoveryRequest].
     *
-    * The [EngineDiscoveryRequest] contains a list of [DiscoverySelector]s which provide information
-    * on the tests that have been discovered by the build system. The tests may or may not be relevant
+    * The [EngineDiscoveryRequest] contains a list of [org.junit.platform.engine.DiscoverySelector]s which
+    * provide information on how tests should be selected by the engine. The tests may or may not be relevant
     * to Kotest, so our job is to filter them down to only those that are relevant.
     *
     * For example, when running a single test using --tests, Gradle will add a [ClassSelector] and a
-    * [ClassMethodNameFilter] post-discovery filter.
+    * ClassMethodNameFilter (or similar) post-discovery filter.
     *
     * When executing the test task without any particular --tests filter, Gradle will include multiple
     * [ClassSelector]s, one for each test class, with no post-discovery filters.
@@ -121,10 +128,22 @@ class KotestJunitPlatformTestEngine : TestEngine {
       logger.log { "JUnit discovery request [configurationParameters=${request.configurationParameters}]" }
       logger.log { "JUnit discovery request [engineFilters=${request.engineFilters()}]" }
       logger.log { "JUnit discovery request [postFilters=${request.postFilters()}]" }
-      logger.log { "JUnit discovery request [classSelectors=${request.getSelectorsByType(ClassSelector::class.java).map { it.className }}]" }
-      logger.log { "JUnit discovery request [classpathRootSelectors=${request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot }}]" }
+      logger.log {
+         "JUnit discovery request [classSelectors=${
+            request.getSelectorsByType(ClassSelector::class.java).map { it.className }
+         }]"
+      }
+      logger.log {
+         "JUnit discovery request [classpathRootSelectors=${
+            request.getSelectorsByType(ClasspathRootSelector::class.java).map { it.classpathRoot }
+         }]"
+      }
       logger.log { "JUnit discovery request [methodSelectors=${request.getSelectorsByType(MethodSelector::class.java)}]" }
-      logger.log { "JUnit discovery request [uniqueIdSelectors=${request.getSelectorsByType(UniqueIdSelector::class.java).map { it.uniqueId.toString() } }]" }
+      logger.log {
+         "JUnit discovery request [uniqueIdSelectors=${
+            request.getSelectorsByType(UniqueIdSelector::class.java).map { it.uniqueId.toString() }
+         }]"
+      }
 
       if (!isEngineIncluded(request) || !shouldRunTests(request))
          return EngineDescriptorBuilder.builder(uniqueId).build()
@@ -159,8 +178,8 @@ class KotestJunitPlatformTestEngine : TestEngine {
     */
    @Suppress("UNCHECKED_CAST")
    private fun configurationParameterExtensions(request: EngineDiscoveryRequest): List<Extension> {
-      return request.configurationParameters.get("kotest.extensions").orElse("")
-         .split(',')
+      val param = request.configurationParameters.get("kotest.extensions").getOrNull() ?: ""
+      return param.split(',')
          .map { it.trim() }
          .filter { it.isNotBlank() }
          .map { instantiations.newInstanceNoArgConstructorOrObjectInstance(Class.forName(it).kotlin as KClass<Extension>) }
