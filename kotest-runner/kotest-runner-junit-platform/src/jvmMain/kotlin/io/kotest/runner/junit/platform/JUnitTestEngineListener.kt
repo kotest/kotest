@@ -215,10 +215,9 @@ class JUnitTestEngineListener(
       val unique = UniqueNames.unique(name, placeholderNames) { s, k -> "${s} ($k)" } ?: name
       placeholderNames.add(unique)
       val id = parent.uniqueId.append(Segment.Test.value, unique)
-      val descriptor = createTestTestDescriptor(
+      val descriptor = TestTestDescriptor(
          id = id,
          displayName = unique,
-         type = TestDescriptor.Type.TEST,
          source = getMethodSource(kclass, id),
          type = TestDescriptor.Type.TEST,
       )
