@@ -162,6 +162,7 @@ junit-platform6-engine = { module = "org.junit.platform:junit-platform-engine", 
 junit-platform6-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform6" }
 junit-platform6-api = { module = "org.junit.platform:junit-platform-suite-api", version.ref = "junit-platform6" }
 
+junit-vintage-engine = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit-jupiter5" }
 junit-jupiter5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter5" }
 junit-jupiter6-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit-jupiter6" }
 

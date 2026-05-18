@@ -24,7 +24,7 @@ kotlin {
             implementation(libs.junit4)
             implementation(libs.robolectric)
             // JUnit Vintage Engine runs JUnit4 @RunWith tests via the JUnit Platform
-//            runtimeOnly(libs.junit.vintage.engine)
+            runtimeOnly(libs.junit.vintage.engine)
             runtimeOnly(libs.junit.platform5.launcher)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
