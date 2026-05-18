@@ -149,10 +149,10 @@ public final class io/kotest/assertions/eq/CollectionEq : io/kotest/assertions/e
 	public fun equals (Ljava/util/Collection;Ljava/util/Collection;Lio/kotest/assertions/eq/EqContext;)Lio/kotest/assertions/eq/EqResult;
 }
 
-public final class io/kotest/assertions/eq/DefaultEqResolver {
+public final class io/kotest/assertions/eq/DefaultEqResolver : io/kotest/assertions/eq/EqResolver {
 	public static final field INSTANCE Lio/kotest/assertions/eq/DefaultEqResolver;
 	public final fun register (Lkotlin/reflect/KClass;Lio/kotest/assertions/eq/Eq;)V
-	public final fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
+	public fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
 	public final fun unregister (Lkotlin/reflect/KClass;)V
 }
 
@@ -169,6 +169,8 @@ public final class io/kotest/assertions/eq/EqContext {
 	public static final field MAX_DEPTH I
 	public fun <init> ()V
 	public fun <init> (Z)V
+	public fun <init> (ZLio/kotest/assertions/eq/EqResolver;)V
+	public final fun getResolver ()Lio/kotest/assertions/eq/EqResolver;
 	public final fun getStrictNumberEq ()Z
 	public final fun isVisited (Ljava/lang/Object;Ljava/lang/Object;)Z
 	public final fun pop ()Lkotlin/Pair;
@@ -184,6 +186,20 @@ public final class io/kotest/assertions/eq/EqMatcher : io/kotest/matchers/Matche
 	public fun invert ()Lio/kotest/matchers/Matcher;
 	public fun invertIf (Z)Lio/kotest/matchers/Matcher;
 	public fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
+public final class io/kotest/assertions/eq/EqOverrides {
+	public fun <init> ()V
+	public final fun put (Lkotlin/reflect/KClass;Lio/kotest/assertions/eq/Eq;)V
+}
+
+public abstract interface annotation class io/kotest/assertions/eq/EqOverridesDsl : java/lang/annotation/Annotation {
+}
+
+public final class io/kotest/assertions/eq/EqOverridesDslKt {
+	public static final fun shouldBe (Lio/kotest/assertions/eq/WithEqs;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBe (Lio/kotest/assertions/eq/WithEqs;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun withEqs (Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/eq/WithEqs;
 }
 
 public abstract interface class io/kotest/assertions/eq/EqResolver {
@@ -220,6 +236,12 @@ public final class io/kotest/assertions/eq/IsOrderedSetKt {
 	public static final fun isOrderedSet (Ljava/lang/Iterable;)Z
 }
 
+public final class io/kotest/assertions/eq/LayeredEqResolver : io/kotest/assertions/eq/EqResolver {
+	public fun <init> (Ljava/util/Map;Lio/kotest/assertions/eq/EqResolver;)V
+	public synthetic fun <init> (Ljava/util/Map;Lio/kotest/assertions/eq/EqResolver;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun resolve (Ljava/lang/Object;Ljava/lang/Object;)Lio/kotest/assertions/eq/Eq;
+}
+
 public final class io/kotest/assertions/eq/NumberEq : io/kotest/assertions/eq/Eq {
 	public static final field INSTANCE Lio/kotest/assertions/eq/NumberEq;
 	public fun equals (Ljava/lang/Number;Ljava/lang/Number;Lio/kotest/assertions/eq/EqContext;)Lio/kotest/assertions/eq/EqResult;
@@ -242,6 +264,9 @@ public final class io/kotest/assertions/eq/ThrowableEq : io/kotest/assertions/eq
 	public static final field INSTANCE Lio/kotest/assertions/eq/ThrowableEq;
 	public synthetic fun equals (Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/eq/EqContext;)Lio/kotest/assertions/eq/EqResult;
 	public fun equals (Ljava/lang/Throwable;Ljava/lang/Throwable;Lio/kotest/assertions/eq/EqContext;)Lio/kotest/assertions/eq/EqResult;
+}
+
+public final class io/kotest/assertions/eq/WithEqs {
 }
 
 public final class io/kotest/assertions/equals/CommutativeEquality : io/kotest/assertions/equals/Equality {
@@ -1150,6 +1175,18 @@ public final class io/kotest/matchers/channels/ChannelMatchersKt {
 	public static final fun shouldReceiveAtMost (Lkotlinx/coroutines/channels/Channel;ILkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public final class io/kotest/matchers/char/CaseKt {
+	public static final fun beLowerCaseChar ()Lio/kotest/matchers/Matcher;
+	public static final fun beTitleCaseChar ()Lio/kotest/matchers/Matcher;
+	public static final fun beUpperCaseChar ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeLowerCaseChar (C)C
+	public static final fun shouldBeTitleCaseChar (C)C
+	public static final fun shouldBeUpperCaseChar (C)C
+	public static final fun shouldNotBeLowerCaseChar (C)C
+	public static final fun shouldNotBeTitleCaseChar (C)C
+	public static final fun shouldNotBeUpperCaseChar (C)C
+}
+
 public final class io/kotest/matchers/char/CharMatchersKt {
 	public static final fun beEqualIgnoreCase (C)Lio/kotest/matchers/Matcher;
 	public static final fun beInRange (Lkotlin/ranges/CharRange;)Lio/kotest/matchers/Matcher;
@@ -1160,6 +1197,21 @@ public final class io/kotest/matchers/char/CharMatchersKt {
 	public static final fun shouldNotBeBetween (CCC)C
 	public static final fun shouldNotBeEqualToIgnoreCase (CC)C
 	public static final fun shouldNotBeInRange (CLkotlin/ranges/CharRange;)C
+}
+
+public final class io/kotest/matchers/char/ValueKt {
+	public static final fun beDigit ()Lio/kotest/matchers/Matcher;
+	public static final fun beLetter ()Lio/kotest/matchers/Matcher;
+	public static final fun beLetterOrDigit ()Lio/kotest/matchers/Matcher;
+	public static final fun beWhitespace ()Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeDigit (C)C
+	public static final fun shouldBeLetter (C)C
+	public static final fun shouldBeLetterOrDigit (C)C
+	public static final fun shouldBeWhitespace (C)C
+	public static final fun shouldNotBeDigit (C)C
+	public static final fun shouldNotBeLetter (C)C
+	public static final fun shouldNotBeLetterOrDigit (C)C
+	public static final fun shouldNotBeWhitespace (C)C
 }
 
 public final class io/kotest/matchers/collections/BeinKt {
@@ -3548,6 +3600,12 @@ public final class io/kotest/matchers/string/CharSequencePreprocessorMatcher : i
 	public fun invertIf (Z)Lio/kotest/matchers/Matcher;
 	public fun test (Ljava/lang/CharSequence;)Lio/kotest/matchers/MatcherResult;
 	public synthetic fun test (Ljava/lang/Object;)Lio/kotest/matchers/MatcherResult;
+}
+
+public final class io/kotest/matchers/string/ContainExactCopiesKt {
+	public static final fun containExactCopies (Ljava/lang/String;Ljava/lang/String;IZ)Lio/kotest/matchers/Matcher;
+	public static final fun shouldContainExactCopies (Ljava/lang/String;Ljava/lang/String;IZ)Ljava/lang/String;
+	public static final fun shouldNotContainExactCopies (Ljava/lang/String;Ljava/lang/String;IZ)Ljava/lang/String;
 }
 
 public final class io/kotest/matchers/string/ContainInOrderWithoutOverlapsKt {

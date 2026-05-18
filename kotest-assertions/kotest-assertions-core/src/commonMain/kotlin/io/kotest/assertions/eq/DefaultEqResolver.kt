@@ -12,7 +12,7 @@ import kotlin.reflect.KClass
  * [Eq] instance available for that type.
  */
 @Suppress("DEPRECATION")
-object DefaultEqResolver {
+object DefaultEqResolver : EqResolver {
 
    private val customEqInstances = mutableMapOf<KClass<*>, Eq<*>>()
 
@@ -28,7 +28,7 @@ object DefaultEqResolver {
     * Returns the [Eq] to use for comparison for the given values.
     * If both values are nullable, then [NullEq] will be returned.
     */
-   fun resolve(actual: Any?, expected: Any?): Eq<out Any?> {
+   override fun resolve(actual: Any?, expected: Any?): Eq<out Any?> {
       // if we have null and non-null, usually that's a failure, but people can override equals to allow it
       return when {
          actual == null || expected == null -> NullEq
