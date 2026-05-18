@@ -7,6 +7,7 @@ sidebar_label: Blogs and Articles
 
 
 These blogs and articles can be useful in addition to the official docs to show how people are using Kotest in the wild.
+* [How to Write Unit Tests with Kotest in Kotlin (2026)](https://oneuptime.com/blog/post/2026-02-02-kotlin-kotest-unit-tests/view)
 * [Setting up Kotest on KMP 2025](https://alyssoncirilo.com/blog/kotest-kmp-setup)
 * [Property-based testing with Kotlin and Kotest: the Christmas edition (2025)](https://xebia.com/blog/property-based-testing-with-kotlin-and-kotest-the-christmas-edition)
 * [Kotest : Modern Testing in Kotlin: Test Styles, Mocking and Writing Tests on Android (2025)](https://proandroiddev.com/kotest-modern-testing-in-kotlin-test-styles-mocking-and-writing-tests-on-android-857a1f0beed6)
