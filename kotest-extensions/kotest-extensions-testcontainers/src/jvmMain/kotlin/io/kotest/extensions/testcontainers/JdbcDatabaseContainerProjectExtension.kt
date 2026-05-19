@@ -14,8 +14,8 @@ import javax.sql.DataSource
 
 /**
  * A Kotest [MountableExtension] for [JdbcDatabaseContainer]s that will launch the container
- * upon first install, and close after the test suite has completed. This extension will only
- * launch the container once per project, and will not reset it between specs.
+ * upon first installation, and close after the test suite has completed. This extension will only
+ * launch the container once per project and will not reset it between specs.
  *
  * This extension will create a pooled [HikariDataSource] attached to the database and
  * return that to the user as the materialized value.
