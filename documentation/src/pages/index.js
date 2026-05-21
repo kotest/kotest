@@ -58,7 +58,7 @@ const features = [
             It supports generating values for over 100 types, failure shrinking, compose and extend generators,
             exhaustive checks, repeatable random seeds, coverage metrics, and more.
             <br/><br/>
-            <a href="/docs/proptesframeworkt/property-based-testing.html">Read more</a>
+            <a href="/docs/proptest/property-based-testing.html">Read more</a>
          </>
       ),
    },
