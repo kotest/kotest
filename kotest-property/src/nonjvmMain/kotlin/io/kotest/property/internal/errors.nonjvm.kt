@@ -9,8 +9,8 @@ internal actual fun createPropertyAssertionError(message: String, cause: Throwab
       is KotestAssertionFailedError -> KotestAssertionFailedError(
          message = message,
          cause = cause,
-         expected = kotestCause.expected,
-         actual = kotestCause.actual,
+         expected = cause.expected,
+         actual = cause.actual,
       )
       else -> AssertionError(message, cause)
    }
