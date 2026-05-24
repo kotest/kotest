@@ -13,18 +13,16 @@ kotlin {
 
       commonMain {
          dependencies {
-            implementation(libs.kotlin.reflect)
             api(projects.kotestCommon)
             api(projects.kotestAssertions.kotestAssertionsShared)
-            api(projects.kotestProperty)
-            implementation(libs.kotlinx.coroutines.core)
             implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(libs.kotlin.reflect)
+            implementation(libs.kotlinx.coroutines.core)
          }
       }
 
       jvmTest {
          dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
             implementation(projects.kotestAssertions.kotestAssertionsCore)
          }
       }
