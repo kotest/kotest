@@ -29,7 +29,7 @@ class PersistSeedsTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 2344324
-            forEach {
+            check {
                1 shouldBe 0
             }
          }
@@ -43,7 +43,7 @@ class PersistSeedsTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 623515
-            forEach {
+            check {
                1 shouldBe 0
             }
          }
@@ -59,7 +59,7 @@ class PersistSeedsTest : FunSpec({
          permutations {
             writeFailedSeed = false
             seed = 12345
-            forEach { error("boom") }
+            check { error("boom") }
          }
       }
       seedDirectory().shouldNotExist()
@@ -69,7 +69,7 @@ class PersistSeedsTest : FunSpec({
       clearSeedDirectory()
       permutations {
          seed = 12345
-         forEach { }
+         check { }
       }
       seedDirectory().shouldNotExist()
    }

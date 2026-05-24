@@ -21,7 +21,7 @@ class MinSuccessTest : FunSpec({
             minSuccess = 999
             maxFailures = 1000
             val a by gen { Exhaustive.ints(0..10) }
-            forEach {
+            check {
                a shouldBeLessThan 8
             }
          }

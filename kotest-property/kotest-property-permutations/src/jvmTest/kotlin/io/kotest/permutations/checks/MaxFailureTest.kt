@@ -19,7 +19,7 @@ class MaxFailureTest : FunSpec({
             seed = 1900646515
             maxFailures = 5
             val a by gen { Exhaustive.ints(0..10) }
-            forEach {
+            check {
                a shouldBeLessThan 8
             }
          }

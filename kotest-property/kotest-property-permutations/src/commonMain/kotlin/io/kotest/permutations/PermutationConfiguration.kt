@@ -22,15 +22,17 @@ class PermutationConfiguration {
    /**
     * Use iteration based [Constraints]
     */
-   var iterations: Int = PropertyTesting.defaultIterationCount
+   var iterations: Int = PermutationTesting.defaultIterationCount
 
    /**
-    * Use duration based [Constraints], if not null will override [iterations]
+    * Use duration based [Constraints].
+    * If this is specified, it will override [iterations].
     */
    var duration: Duration? = null
 
    /**
-    * Specify custom [Constraints], if not null will override [iterations] and [duration]
+    * Specify custom [Constraints].
+    * If this is specified, it will override [iterations] and [duration]
     */
    var constraints: Constraints? = null
 
@@ -93,19 +95,29 @@ class PermutationConfiguration {
    var requiredCoveragePercentages: Map<Any?, Double> = emptyMap()
 
    /**
-    * Registers the permutation test to execute.
+    * Registers the test logic to execute.
     */
-   fun forEach(test: suspend Permutation.() -> Unit) {
+   fun check(test: suspend Permutation.() -> Unit) {
       if (this.test != null) error("forEach has already been set")
       this.test = test
    }
 
-   fun beforePermutation(fn: suspend () -> Unit) {
+   /**
+    * Registers a callback to be invoked before each permutation iteration.
+    *
+    * Can only be set once; calling this method more than once will throw an error.
+    */
+   fun before(fn: suspend () -> Unit) {
       if (this.beforePermutation != null) error("beforePermutation has already been set")
       beforePermutation = fn
    }
 
-   fun afterPermutation(fn: suspend () -> Unit) {
+   /**
+    * Registers a callback to be invoked after each permutation iteration.
+    *
+    * Can only be set once; calling this method more than once will throw an error.
+    */
+   fun after(fn: suspend () -> Unit) {
       if (this.afterPermutation != null) error("afterPermutation has already been set")
       afterPermutation = fn
    }

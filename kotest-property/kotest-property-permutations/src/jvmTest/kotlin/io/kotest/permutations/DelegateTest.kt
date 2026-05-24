@@ -19,7 +19,7 @@ class DelegateTest : FunSpec() {
             val a by gen { Arb.int() }
             val b by gen { Exhaustive.ints(0..10) }
 
-            forEach {
+            check {
                a + b shouldBe a + b
                a + b shouldBe a + b
                a + b shouldBe a + b
@@ -32,7 +32,7 @@ class DelegateTest : FunSpec() {
          permutations {
             iterations = 5
             val a by gen { Exhaustive.ints(1..5) }
-            forEach {
+            check {
                values.add(a)
             }
          }

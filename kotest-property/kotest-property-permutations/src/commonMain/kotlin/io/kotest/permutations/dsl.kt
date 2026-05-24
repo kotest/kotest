@@ -15,7 +15,8 @@ fun permutationConfiguration(configure: PermutationConfiguration.() -> Unit): Pe
 }
 
 /**
- * The entry point to running a permutation test. This function takes a lambda that configures the permutation.
+ * The entry point to defining a permutation test.
+ * This function takes a lambda that configures the permutation.
  *
  * Once the [configure] callback has completed, the permutations are executed.
  */

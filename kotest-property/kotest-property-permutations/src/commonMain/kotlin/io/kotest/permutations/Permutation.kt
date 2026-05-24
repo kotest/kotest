@@ -18,6 +18,7 @@ class Permutation(
     * Adds an assumption to the test by checking for an [AssertionError].
     *
     * If the [assumptions] function throws an [AssertionError] that permutation is discarded.
+    * For example, any Kotest assertion functions can be used inside this function to validate values.
     */
    fun assume(assumptions: () -> Unit) {
       try {

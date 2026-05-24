@@ -14,7 +14,7 @@ class FailOnSeedTest : FunSpec() {
             permutations {
                failOnSeed = true
                seed = 1234
-               forEach {
+               check {
                   1 shouldBe 1
                }
             }

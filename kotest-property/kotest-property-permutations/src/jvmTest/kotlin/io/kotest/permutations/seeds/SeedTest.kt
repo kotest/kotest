@@ -32,12 +32,12 @@ class SeedTest : FunSpec({
       var seed1 = 0L
       var seed2 = 0L
       permutations {
-         forEach {
+         check {
             seed1 = rs.seed
          }
       }
       permutations {
-         forEach {
+         check {
             seed2 = rs.seed
          }
       }
@@ -48,7 +48,7 @@ class SeedTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 12345
-            forEach {
+            check {
                1 shouldBe 0
             }
          }
@@ -59,7 +59,7 @@ class SeedTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 12345
-            forEach {
+            check {
                error("boom")
             }
          }

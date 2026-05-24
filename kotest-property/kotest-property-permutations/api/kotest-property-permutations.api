@@ -54,9 +54,9 @@ public final class io/kotest/permutations/Permutation {
 
 public final class io/kotest/permutations/PermutationConfiguration {
 	public fun <init> ()V
-	public final fun afterPermutation (Lkotlin/jvm/functions/Function1;)V
-	public final fun beforePermutation (Lkotlin/jvm/functions/Function1;)V
-	public final fun forEach (Lkotlin/jvm/functions/Function2;)V
+	public final fun after (Lkotlin/jvm/functions/Function1;)V
+	public final fun before (Lkotlin/jvm/functions/Function1;)V
+	public final fun check (Lkotlin/jvm/functions/Function2;)V
 	public final fun from (Lio/kotest/permutations/PermutationConfiguration;)V
 	public final fun gen (Lkotlin/jvm/functions/Function0;)Lio/kotest/permutations/delegates/GenDelegate;
 	public final fun getConstraints ()Lio/kotest/permutations/constraints/Constraints;
@@ -183,6 +183,54 @@ public final class io/kotest/permutations/PermutationResult {
 	public final fun getSuccesses ()I
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class io/kotest/permutations/PermutationTesting {
+	public static final field INSTANCE Lio/kotest/permutations/PermutationTesting;
+	public final fun getDefaultCollectionsRange ()Lkotlin/ranges/IntRange;
+	public final fun getDefaultEdgecasesGenerationProbability ()D
+	public final fun getDefaultIterationCount ()I
+	public final fun getDefaultListeners ()Ljava/util/List;
+	public final fun getDefaultMaxFailure ()I
+	public final fun getDefaultMinSuccess ()I
+	public final fun getDefaultOutputClassifications ()Z
+	public final fun getDefaultOutputHexForUnprintableChars ()Z
+	public final fun getDefaultSeed ()Ljava/lang/Long;
+	public final fun getDefaultShrinkingMode ()Lio/kotest/property/ShrinkingMode;
+	public final fun getDiscardCheckThreshold ()I
+	public final fun getEdgecasesBindDeterminism ()D
+	public final fun getFailOnSeed ()Z
+	public final fun getLabelOrder ()Lio/kotest/property/LabelOrder;
+	public final fun getMaxDiscardPercentage ()I
+	public final fun getMaxFilterAttempts ()I
+	public final fun getShouldPrintConfig ()Z
+	public final fun getShouldPrintGeneratedValues ()Z
+	public final fun getShouldPrintShrinkSteps ()Z
+	public final fun getStatisticsReportMode ()Lio/kotest/property/statistics/StatisticsReportMode;
+	public final fun getStatisticsReporter ()Lio/kotest/property/statistics/StatisticsReporter;
+	public final fun getWriteFailedSeed ()Z
+	public final fun setDefaultCollectionsRange (Lkotlin/ranges/IntRange;)V
+	public final fun setDefaultEdgecasesGenerationProbability (D)V
+	public final fun setDefaultIterationCount (I)V
+	public final fun setDefaultListeners (Ljava/util/List;)V
+	public final fun setDefaultMaxFailure (I)V
+	public final fun setDefaultMinSuccess (I)V
+	public final fun setDefaultOutputClassifications (Z)V
+	public final fun setDefaultOutputHexForUnprintableChars (Z)V
+	public final fun setDefaultSeed (Ljava/lang/Long;)V
+	public final fun setDefaultShrinkingMode (Lio/kotest/property/ShrinkingMode;)V
+	public final fun setDiscardCheckThreshold (I)V
+	public final fun setEdgecasesBindDeterminism (D)V
+	public final fun setFailOnSeed (Z)V
+	public final fun setLabelOrder (Lio/kotest/property/LabelOrder;)V
+	public final fun setMaxDiscardPercentage (I)V
+	public final fun setMaxFilterAttempts (I)V
+	public final fun setShouldPrintConfig (Z)V
+	public final fun setShouldPrintGeneratedValues (Z)V
+	public final fun setShouldPrintShrinkSteps (Z)V
+	public final fun setStatisticsReportMode (Lio/kotest/property/statistics/StatisticsReportMode;)V
+	public final fun setStatisticsReporter (Lio/kotest/property/statistics/StatisticsReporter;)V
+	public final fun setWriteFailedSeed (Z)V
 }
 
 public abstract interface class io/kotest/permutations/constraints/Constraints {

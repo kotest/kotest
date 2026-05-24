@@ -15,11 +15,11 @@ class SharedConfigTest : FunSpec() {
          }
 
          permutations(context) {
-            forEach { }
+            check { }
          }.attempts shouldBe 42
 
          permutations(context) {
-            forEach { }
+            check { }
          }.attempts shouldBe 42
       }
    }

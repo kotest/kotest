@@ -1,8 +1,8 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
 package io.kotest.permutations
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -20,7 +20,7 @@ import io.kotest.property.exhaustive.constant
 import io.kotest.property.exhaustive.ints
 import io.kotest.property.exhaustive.of
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
+@OptIn(ExperimentalKotest::class)
 class AssumptionsTest : FunSpec() {
    init {
 
@@ -33,9 +33,9 @@ class AssumptionsTest : FunSpec() {
             val a by gen { Exhaustive.ints(0..10) }
             val b by gen { Exhaustive.constant(9) }
 
-            forEach {
+            check {
                assume(a != b)
-               // without the assume, this would throw, because of the 9 == 9 combination would fail
+               // without the assume this would throw, because of the 9 == 9 combination would fail
                a.compareTo(b) shouldNotBe 0
             }
          }
@@ -50,9 +50,9 @@ class AssumptionsTest : FunSpec() {
             val a by gen { Exhaustive.ints(0..10) }
             val b by gen { Exhaustive.constant(9) }
 
-            forEach {
+            check {
                assume { a shouldNotBe b }
-               // without the assume, this would throw, because of the 9 == 9 combination would fail
+               // without the `assume` this would throw, because of the 9 == 9 combination would fail
                a.compareTo(b) shouldNotBe 0
             }
          }
@@ -61,7 +61,7 @@ class AssumptionsTest : FunSpec() {
       test("assume(boolean) that always filters should not deadlock due to maxDiscardPercentage") {
          shouldThrowAny {
             permutations {
-               forEach {
+               check {
                   assume(false)
                }
             }
@@ -71,7 +71,7 @@ class AssumptionsTest : FunSpec() {
       test("assume(function) that always filters should not deadlock due to maxDiscardPercentage") {
          shouldThrowAny {
             permutations {
-               forEach {
+               check {
                   assume { error("boom") }
                }
             }
@@ -84,7 +84,7 @@ class AssumptionsTest : FunSpec() {
             val a by gen { Arb.string(2, Codepoint.az()) }
             val b by gen { Arb.string(2, Codepoint.az()) }
 
-            forEach {
+            check {
                assume {
                   a shouldNotBe b
                   a shouldHaveLength b.length
@@ -105,7 +105,7 @@ class AssumptionsTest : FunSpec() {
                val a by gen { Arb.int(0..2) }
                val b by gen { Arb.int(0..2) }
 
-               forEach {
+               check {
                   assume(a != b)
                }
             }
@@ -119,7 +119,7 @@ class AssumptionsTest : FunSpec() {
                maxDiscardPercentage = 10
                val a by gen { Arb.int(0..2) }
                val b by gen { Arb.int(0..2) }
-               forEach {
+               check {
                   assume(a != b)
                }
             }
@@ -133,7 +133,7 @@ class AssumptionsTest : FunSpec() {
             seed = 43512
             val a by gen { Arb.constant("a") }
             val b by gen { Arb.constant("b") }
-            forEach {
+            check {
                println(a)
                println(b)
                assume(a != b)
@@ -145,7 +145,7 @@ class AssumptionsTest : FunSpec() {
             iterations = 26
             val a by gen { Exhaustive.char('a'..'z') }
             val b by gen { Exhaustive.of('b') }
-            forEach {
+            check {
                println(a)
                println(b)
                assume(a != b)

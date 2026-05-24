@@ -1,21 +1,20 @@
 package io.kotest.permutations.constraints
 
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
-import kotlin.time.Duration.Companion.milliseconds
 import io.kotest.permutations.permutations
+import kotlin.time.Duration.Companion.milliseconds
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
+@OptIn(ExperimentalKotest::class)
 class ConstraintsTest : FunSpec() {
    init {
       test("iterations should be used by default") {
          var counter = 0
          permutations {
             iterations = 3
-            forEach {
+            check {
                counter++
             }
          }
@@ -27,7 +26,7 @@ class ConstraintsTest : FunSpec() {
          permutations {
             iterations = 3
             duration = 100.milliseconds
-            forEach {
+            check {
                counter++
             }
          }
@@ -40,7 +39,7 @@ class ConstraintsTest : FunSpec() {
             iterations = 3
             duration = 100.milliseconds
             constraints = Constraints.iterations(5)
-            forEach {
+            check {
                counter++
             }
          }

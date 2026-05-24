@@ -16,7 +16,7 @@ class ShouldPrintGeneratedValuesTest : FunSpec() {
                failOnSeed = true
                val someprop by gen { Exhaustive.of(192, 568) }
                iterations = 2
-               forEach {
+               check {
                   someprop shouldNotBe null
                }
             }
