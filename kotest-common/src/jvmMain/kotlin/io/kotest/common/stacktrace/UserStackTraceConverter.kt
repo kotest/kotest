@@ -16,10 +16,10 @@ object UserStackTraceConverter {
    * returned.
    */
   private fun Array<StackTraceElement>.dropUntilUserClass(): Array<StackTraceElement> {
-    return toList().dropUntilFirstKotestClass().dropUntilFirstNonKotestClass().toTypedArray()
+    return dropUntilFirstKotestClass().dropUntilFirstNonKotestClass().toTypedArray()
   }
 
-  private fun List<StackTraceElement>.dropUntilFirstKotestClass(): List<StackTraceElement> {
+  private fun Array<StackTraceElement>.dropUntilFirstKotestClass(): List<StackTraceElement> {
     return dropWhile {
       it.isNotKotestClass()
     }
