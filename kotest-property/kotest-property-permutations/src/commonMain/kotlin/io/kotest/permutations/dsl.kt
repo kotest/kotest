@@ -3,11 +3,11 @@ package io.kotest.permutations
 import io.kotest.common.ExperimentalKotest
 
 /**
- * The [permutationConfiguration] builder is used to configure various settings for permutation tests
+ * The [permconfig] builder is used to configure various settings for permutation tests
  * that can be reused across different permutations.
  */
 @ExperimentalKotest
-fun permutationConfiguration(configure: PermutationConfiguration.() -> Unit): PermutationConfiguration {
+fun permconfig(configure: PermutationConfiguration.() -> Unit): PermutationConfiguration {
    val configuration = PermutationConfiguration()
    configuration.configure()
    return configuration
@@ -15,7 +15,7 @@ fun permutationConfiguration(configure: PermutationConfiguration.() -> Unit): Pe
 
 /**
  * The entry point to defining a permutation test.
- * This function takes a lambda that configures the permutation.
+ * This function accepts a [configure] lambda that configures the permutation.
  *
  * Once the [configure] callback has completed, the permutations are executed.
  */
@@ -27,7 +27,8 @@ suspend fun permutations(
 }
 
 /**
- * The entry point to running a permutation test. This function takes a lambda that configures the permutation.
+ * The entry point to running a permutation test.
+ * This variation also accepts a default configuration applied before any overrides in the [configure] lambda.
  *
  * Once the [configure] callback has completed, the permutations are executed.
  */

@@ -14,7 +14,8 @@ class SharedConfigTest : FunSpec() {
    init {
       test("shared config should be used when passed to the permutation function") {
 
-         val context = permutationConfiguration {
+         // create a shared configuration
+         val context = permconfig {
             iterations = 42 // run this property test 42 times
          }
 
