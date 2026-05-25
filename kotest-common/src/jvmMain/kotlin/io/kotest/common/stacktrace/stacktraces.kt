@@ -33,12 +33,7 @@ object JvmStacktraces : StackTraces {
 
    override fun root(t: Throwable): Throwable {
       // cause can error if the throwable is mocked
-      return try {
-         val cause = t.cause
-         if (cause == null) t else root(cause)
-      } catch (_: Throwable) {
-         t
-      }
+      return generateSequence(t) { runCatching { it.cause }.getOrNull() }.last()
    }
 }
 
