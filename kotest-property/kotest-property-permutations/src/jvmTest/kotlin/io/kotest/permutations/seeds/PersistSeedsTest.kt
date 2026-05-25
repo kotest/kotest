@@ -4,8 +4,6 @@ package io.kotest.permutations.seeds
 
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
@@ -17,7 +15,6 @@ import kotlin.io.path.deleteRecursively
 import kotlin.io.path.readText
 
 @OptIn(ExperimentalKotest::class)
-@EnabledIf(LinuxOnlyGithubCondition::class)
 class PersistSeedsTest : FunSpec({
 
    fun clearSeedDirectory() {

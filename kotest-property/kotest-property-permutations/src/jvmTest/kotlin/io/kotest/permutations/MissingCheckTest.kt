@@ -4,15 +4,12 @@ package io.kotest.permutations
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.ExperimentalKotest
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.int
 
 @OptIn(ExperimentalKotest::class)
-@EnabledIf(LinuxOnlyGithubCondition::class)
 class MissingCheckTest : FunSpec() {
    init {
 
