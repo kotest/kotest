@@ -8,6 +8,7 @@ import io.kotest.permutations.constraints.ConstraintsBuilder
 import io.kotest.permutations.delegates.GenDelegate
 import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.seeds.SeedOperations
+import io.kotest.permutations.statistics.CoverageConfiguration
 import io.kotest.permutations.statistics.DefaultStatisticsReporter
 import io.kotest.permutations.statistics.StatisticsReporter
 import io.kotest.property.Gen
@@ -88,18 +89,22 @@ class PermutationConfiguration {
    internal var beforePermutation: (suspend () -> Unit)? = null
    internal var afterPermutation: (suspend () -> Unit)? = null
 
+   internal var coverage: (CoverageConfiguration.() -> Unit)? = null
+
    // the main test
    internal var test: (suspend Permutation.() -> Unit)? = null
-
-   var requiredCoverageCounts: Map<Any?, Int> = emptyMap()
-   var requiredCoveragePercentages: Map<Any?, Double> = emptyMap()
 
    /**
     * Registers the test logic to execute.
     */
    fun check(test: suspend Permutation.() -> Unit) {
-      if (this.test != null) error("forEach has already been set")
+      if (this.test != null) error("check has already been set")
       this.test = test
+   }
+
+   fun coverage(fn: CoverageConfiguration.() -> Unit) {
+      if (this.coverage != null) error("coverage has already been set")
+      this.coverage = fn
    }
 
    /**
@@ -108,7 +113,7 @@ class PermutationConfiguration {
     * Can only be set once; calling this method more than once will throw an error.
     */
    fun before(fn: suspend () -> Unit) {
-      if (this.beforePermutation != null) error("beforePermutation has already been set")
+      if (this.beforePermutation != null) error("before has already been set")
       beforePermutation = fn
    }
 
@@ -118,7 +123,7 @@ class PermutationConfiguration {
     * Can only be set once; calling this method more than once will throw an error.
     */
    fun after(fn: suspend () -> Unit) {
-      if (this.afterPermutation != null) error("afterPermutation has already been set")
+      if (this.afterPermutation != null) error("after has already been set")
       afterPermutation = fn
    }
 
@@ -129,101 +134,6 @@ class PermutationConfiguration {
       val delegate = GenDelegate(fn(), shouldPrintGeneratedValues)
       registry.add(delegate)
       return delegate
-   }
-
-   /**
-    * Asserts that the given [classification] was applied to at least [percentage] number of permutations.
-    *
-    * For example, to check that at least 25% of the iterations where classified as 'even':
-    *
-    *       requireCoveragePercentage("even", 25.0)
-    *
-    *       forEach {
-    *          classify(a % 2 == 0, "even")
-    *          a + a == 2 * a
-    *       }
-    *
-    */
-   fun requireCoveragePercentage(
-      classification: Any?,
-      percentage: Double,
-   ) {
-      requireCoveragePercentages(mapOf(classification to percentage))
-   }
-
-   /**
-    * Asserts that the given classifications percentages were statisfied.
-    *
-    * For example, to check that at least 25% of the iterations where classified as 'even':
-    *
-    *       requireCoveragePercentages("even", 25.0)
-    *
-    *       forEach {
-    *          classify(a % 2 == 0, "even")
-    *          a + a == 2 * a
-    *       }
-    *
-    */
-   fun requireCoveragePercentages(
-      classifications: Map<Any?, Double>,
-   ) {
-      requiredCoveragePercentages = requiredCoveragePercentages + classifications
-//      val stats = context.statistics()[null] ?: emptyMap()
-//      classifications.forEach { (classification, min) ->
-//         val count = stats[classification] ?: 0
-//         val attempts = context.attempts()
-//         val actual = (count.toDouble() / attempts.toDouble()) * 100.0
-//         if (actual < min)
-//           AssertionErrorBuilder.fail("Required coverage of $min% for [${classification}] but was [${actual.toInt()}%]")
-//      }
-//      return context
-   }
-
-   /**
-    * Asserts that the given [classification] was applied to at least [count] number of permutations.
-    *
-    * For example, to check that at least 150 of the iterations were classified as 'even':
-    *
-    *       requireCoverageCount("even", 150)
-    *
-    *       forEach {
-    *             classify(a % 2 == 0, "even")
-    *             a + a == 2 * a
-    *       }
-    *
-    */
-   fun requireCoverageCount(
-      classification: Any?,
-      count: Int,
-   ) {
-      requireCoverageCounts(mapOf(classification to count))
-   }
-
-   /**
-    * Asserts that the given classifications were statisfied.
-    *
-    * For example, to check that at least 150 of the iterations were classified as 'even', and 200 were 'positive':
-    *
-    *       requireCoverageCounts("even", 150, "positive", 200)
-    *
-    *       forEach {
-    *             classify(a % 2 == 0, "even")
-    *             a + a == 2 * a
-    *       }
-    *
-    */
-   fun requireCoverageCounts(
-      classifications: Map<Any?, Int>,
-   ) {
-      requiredCoverageCounts = requiredCoverageCounts + classifications
-//      val context = f()
-//      val stats = context.statistics()[null] ?: emptyMap()
-//      classifications.forEach { (classification, min) ->
-//         val actual = stats[classification] ?: 0
-//         if (actual < min)
-//           AssertionErrorBuilder.fail("Required coverage of $min for [${classification}] but was [${actual}]")
-//      }
-//      return context
    }
 
    /**
@@ -240,8 +150,6 @@ class PermutationConfiguration {
       this.outputStatistics = other.outputStatistics
       this.statisticsReporter = other.statisticsReporter
       this.statisticsReportMode = other.statisticsReportMode
-      this.requiredCoveragePercentages = other.requiredCoveragePercentages
-      this.requiredCoverageCounts = other.requiredCoverageCounts
       this.shouldPrintConfig = other.shouldPrintConfig
       this.failOnSeed = other.failOnSeed
       this.writeFailedSeed = other.writeFailedSeed
@@ -268,14 +176,13 @@ suspend fun PermutationConfiguration.toContext(): PermutationContext {
       outputStatistics = outputStatistics,
       statisticsReporter = statisticsReporter ?: DefaultStatisticsReporter,
       statisticsReportMode = statisticsReportMode,
-      requiredCoveragePercentages = requiredCoveragePercentages,
-      requiredCoverageCounts = requiredCoverageCounts,
       printConfig = shouldPrintConfig,
       customSeed = this.seed != null,
       failOnSeed = failOnSeed,
       writeFailedSeed = writeFailedSeed,
       rs = SeedOperations.createRandomSource(this),
       registry = registry,
+      coverage = coverage?.let { CoverageConfiguration().apply(it) } ?: CoverageConfiguration(),
       beforePermutation = beforePermutation ?: {},
       afterPermutation = afterPermutation ?: {},
       test = test ?: error("test has not been set"),

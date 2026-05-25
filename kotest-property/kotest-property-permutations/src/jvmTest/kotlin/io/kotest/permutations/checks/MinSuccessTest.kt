@@ -1,8 +1,8 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.checks
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.string.shouldContain
@@ -10,7 +10,7 @@ import io.kotest.permutations.permutations
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.ints
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
+@Suppress("OPT_IN_USAGE")
 class MinSuccessTest : FunSpec({
 
    test("forAll with minSuccess") {

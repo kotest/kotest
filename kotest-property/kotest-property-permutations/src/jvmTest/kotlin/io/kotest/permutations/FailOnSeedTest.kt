@@ -1,12 +1,13 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
+@OptIn(ExperimentalKotest::class)
 class FailOnSeedTest : FunSpec() {
    init {
       test("property test should fail if seed is specified when failOnSeed is true") {
