@@ -378,7 +378,7 @@ sealed class SingleShotArbContinuation<F : BaseArbitraryBuilderSyntax, A>(
       // bind() never actually suspends, so this should never be called in normal usage.
       // If it is called it means some code inside the builder block triggered a real suspension,
       // which is not supported.  Propagate any exception so the failure is visible.
-      result.getOrThrow()
+      result.exceptionOrNull()?.let { throw it }
    }
 
    override suspend fun <T> Arb<T>.bind(): T = when (generationMode) {
