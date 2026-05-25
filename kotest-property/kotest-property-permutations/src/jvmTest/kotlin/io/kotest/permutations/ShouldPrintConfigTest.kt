@@ -1,5 +1,8 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldNotBe
@@ -8,6 +11,7 @@ import io.kotest.matchers.string.shouldNotContain
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.of
 
+@OptIn(ExperimentalKotest::class)
 class ShouldPrintConfigTest : FunSpec() {
    init {
       test("should print config when enabled") {

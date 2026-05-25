@@ -35,7 +35,7 @@ class AssumptionsTest : FunSpec() {
 
             check {
                assume(a != b)
-               // without the assume this would throw, because of the 9 == 9 combination would fail
+               // without the `assume` this would throw, because of the 9 == 9 combination would fail
                a.compareTo(b) shouldNotBe 0
             }
          }
@@ -134,8 +134,6 @@ class AssumptionsTest : FunSpec() {
             val a by gen { Arb.constant("a") }
             val b by gen { Arb.constant("b") }
             check {
-               println(a)
-               println(b)
                assume(a != b)
             }
          }
@@ -146,8 +144,6 @@ class AssumptionsTest : FunSpec() {
             val a by gen { Exhaustive.char('a'..'z') }
             val b by gen { Exhaustive.of('b') }
             check {
-               println(a)
-               println(b)
                assume(a != b)
             }
          }

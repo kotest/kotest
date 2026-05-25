@@ -6,9 +6,10 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.maps.shouldContainExactly
 import io.kotest.matchers.shouldBe
+import io.kotest.permutations.Classifications
+import io.kotest.permutations.Label
 import io.kotest.permutations.Permutation
 import io.kotest.property.RandomSource
-import io.kotest.property.statistics.Label
 
 @OptIn(ExperimentalKotest::class)
 class ClassifyTest : FunSpec() {

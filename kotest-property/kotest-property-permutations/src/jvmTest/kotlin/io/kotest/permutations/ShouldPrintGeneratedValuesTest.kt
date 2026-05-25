@@ -1,5 +1,8 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldNotBe
@@ -7,6 +10,7 @@ import io.kotest.matchers.string.shouldContain
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.of
 
+@OptIn(ExperimentalKotest::class)
 class ShouldPrintGeneratedValuesTest : FunSpec() {
    init {
       test("should print generated values when enabled") {
