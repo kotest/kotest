@@ -63,6 +63,14 @@ public final class io/kotest/permutations/Label$Companion {
 	public final fun getDefault ()Lio/kotest/permutations/Label;
 }
 
+public final class io/kotest/permutations/LabelOrder : java/lang/Enum {
+	public static final field Lexicographic Lio/kotest/permutations/LabelOrder;
+	public static final field Quantity Lio/kotest/permutations/LabelOrder;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/permutations/LabelOrder;
+	public static fun values ()[Lio/kotest/permutations/LabelOrder;
+}
+
 public final class io/kotest/permutations/Permutation {
 	public fun <init> (ILio/kotest/property/RandomSource;Lio/kotest/permutations/Classifications;)V
 	public final fun assume (Lkotlin/jvm/functions/Function0;)V
@@ -86,7 +94,6 @@ public final class io/kotest/permutations/PermutationConfiguration {
 	public final fun getConstraints ()Lio/kotest/permutations/constraints/Constraints;
 	public final fun getDiscardCheckThreshold ()I
 	public final fun getDuration-FghU774 ()Lkotlin/time/Duration;
-	public final fun getEdgecasesGenerationProbability ()D
 	public final fun getFailOnSeed ()Z
 	public final fun getIterations ()I
 	public final fun getMaxDiscardPercentage ()I
@@ -103,7 +110,6 @@ public final class io/kotest/permutations/PermutationConfiguration {
 	public final fun setConstraints (Lio/kotest/permutations/constraints/Constraints;)V
 	public final fun setDiscardCheckThreshold (I)V
 	public final fun setDuration-BwNAW2A (Lkotlin/time/Duration;)V
-	public final fun setEdgecasesGenerationProbability (D)V
 	public final fun setFailOnSeed (Z)V
 	public final fun setIterations (I)V
 	public final fun setMaxDiscardPercentage (I)V
@@ -124,22 +130,21 @@ public final class io/kotest/permutations/PermutationConfigurationKt {
 }
 
 public final class io/kotest/permutations/PermutationContext {
-	public fun <init> (Lio/kotest/permutations/constraints/Constraints;IILio/kotest/property/ShrinkingMode;ZZZZZZLio/kotest/property/RandomSource;DIIZLio/kotest/permutations/Classifications;Lio/kotest/permutations/statistics/CoverageConfiguration;Lio/kotest/property/statistics/StatisticsReportMode;Lio/kotest/permutations/delegates/GenDelegateRegistry;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
+	public fun <init> (Lio/kotest/permutations/constraints/Constraints;IILio/kotest/property/ShrinkingMode;ZZZZZZLio/kotest/property/RandomSource;IIZLio/kotest/permutations/Classifications;Lio/kotest/permutations/statistics/CoverageConfiguration;Lio/kotest/property/statistics/StatisticsReportMode;Lio/kotest/permutations/delegates/GenDelegateRegistry;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)V
 	public final fun component1 ()Lio/kotest/permutations/constraints/Constraints;
 	public final fun component10 ()Z
 	public final fun component11 ()Lio/kotest/property/RandomSource;
-	public final fun component12 ()D
+	public final fun component12 ()I
 	public final fun component13 ()I
-	public final fun component14 ()I
-	public final fun component15 ()Z
-	public final fun component16 ()Lio/kotest/permutations/Classifications;
-	public final fun component17 ()Lio/kotest/permutations/statistics/CoverageConfiguration;
-	public final fun component18 ()Lio/kotest/property/statistics/StatisticsReportMode;
-	public final fun component19 ()Lio/kotest/permutations/delegates/GenDelegateRegistry;
+	public final fun component14 ()Z
+	public final fun component15 ()Lio/kotest/permutations/Classifications;
+	public final fun component16 ()Lio/kotest/permutations/statistics/CoverageConfiguration;
+	public final fun component17 ()Lio/kotest/property/statistics/StatisticsReportMode;
+	public final fun component18 ()Lio/kotest/permutations/delegates/GenDelegateRegistry;
+	public final fun component19 ()Lkotlin/jvm/functions/Function1;
 	public final fun component2 ()I
 	public final fun component20 ()Lkotlin/jvm/functions/Function1;
-	public final fun component21 ()Lkotlin/jvm/functions/Function1;
-	public final fun component22 ()Lkotlin/jvm/functions/Function2;
+	public final fun component21 ()Lkotlin/jvm/functions/Function2;
 	public final fun component3 ()I
 	public final fun component4 ()Lio/kotest/property/ShrinkingMode;
 	public final fun component5 ()Z
@@ -147,8 +152,8 @@ public final class io/kotest/permutations/PermutationContext {
 	public final fun component7 ()Z
 	public final fun component8 ()Z
 	public final fun component9 ()Z
-	public final fun copy (Lio/kotest/permutations/constraints/Constraints;IILio/kotest/property/ShrinkingMode;ZZZZZZLio/kotest/property/RandomSource;DIIZLio/kotest/permutations/Classifications;Lio/kotest/permutations/statistics/CoverageConfiguration;Lio/kotest/property/statistics/StatisticsReportMode;Lio/kotest/permutations/delegates/GenDelegateRegistry;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lio/kotest/permutations/PermutationContext;
-	public static synthetic fun copy$default (Lio/kotest/permutations/PermutationContext;Lio/kotest/permutations/constraints/Constraints;IILio/kotest/property/ShrinkingMode;ZZZZZZLio/kotest/property/RandomSource;DIIZLio/kotest/permutations/Classifications;Lio/kotest/permutations/statistics/CoverageConfiguration;Lio/kotest/property/statistics/StatisticsReportMode;Lio/kotest/permutations/delegates/GenDelegateRegistry;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lio/kotest/permutations/PermutationContext;
+	public final fun copy (Lio/kotest/permutations/constraints/Constraints;IILio/kotest/property/ShrinkingMode;ZZZZZZLio/kotest/property/RandomSource;IIZLio/kotest/permutations/Classifications;Lio/kotest/permutations/statistics/CoverageConfiguration;Lio/kotest/property/statistics/StatisticsReportMode;Lio/kotest/permutations/delegates/GenDelegateRegistry;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;)Lio/kotest/permutations/PermutationContext;
+	public static synthetic fun copy$default (Lio/kotest/permutations/PermutationContext;Lio/kotest/permutations/constraints/Constraints;IILio/kotest/property/ShrinkingMode;ZZZZZZLio/kotest/property/RandomSource;IIZLio/kotest/permutations/Classifications;Lio/kotest/permutations/statistics/CoverageConfiguration;Lio/kotest/property/statistics/StatisticsReportMode;Lio/kotest/permutations/delegates/GenDelegateRegistry;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function2;ILjava/lang/Object;)Lio/kotest/permutations/PermutationContext;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getAfterPermutation ()Lkotlin/jvm/functions/Function1;
 	public final fun getBeforePermutation ()Lkotlin/jvm/functions/Function1;
@@ -157,7 +162,6 @@ public final class io/kotest/permutations/PermutationContext {
 	public final fun getCoverage ()Lio/kotest/permutations/statistics/CoverageConfiguration;
 	public final fun getCustomSeed ()Z
 	public final fun getDiscardCheckThreshold ()I
-	public final fun getEdgecasesGenerationProbability ()D
 	public final fun getFailOnSeed ()Z
 	public final fun getMaxDiscardPercentage ()I
 	public final fun getMaxFailures ()I
@@ -204,9 +208,7 @@ public final class io/kotest/permutations/PermutationResult {
 public final class io/kotest/permutations/PermutationTesting {
 	public static final field INSTANCE Lio/kotest/permutations/PermutationTesting;
 	public final fun getDefaultCollectionsRange ()Lkotlin/ranges/IntRange;
-	public final fun getDefaultEdgecasesGenerationProbability ()D
 	public final fun getDefaultIterationCount ()I
-	public final fun getDefaultListeners ()Ljava/util/List;
 	public final fun getDefaultMaxFailure ()I
 	public final fun getDefaultMinSuccess ()I
 	public final fun getDefaultOutputClassifications ()Z
@@ -214,21 +216,16 @@ public final class io/kotest/permutations/PermutationTesting {
 	public final fun getDefaultSeed ()Ljava/lang/Long;
 	public final fun getDefaultShrinkingMode ()Lio/kotest/property/ShrinkingMode;
 	public final fun getDiscardCheckThreshold ()I
-	public final fun getEdgecasesBindDeterminism ()D
 	public final fun getFailOnSeed ()Z
-	public final fun getLabelOrder ()Lio/kotest/property/LabelOrder;
+	public final fun getLabelOrder ()Lio/kotest/permutations/LabelOrder;
 	public final fun getMaxDiscardPercentage ()I
-	public final fun getMaxFilterAttempts ()I
 	public final fun getShouldPrintConfig ()Z
 	public final fun getShouldPrintGeneratedValues ()Z
 	public final fun getShouldPrintShrinkSteps ()Z
 	public final fun getStatisticsReportMode ()Lio/kotest/property/statistics/StatisticsReportMode;
-	public final fun getStatisticsReporter ()Lio/kotest/property/statistics/StatisticsReporter;
 	public final fun getWriteFailedSeed ()Z
 	public final fun setDefaultCollectionsRange (Lkotlin/ranges/IntRange;)V
-	public final fun setDefaultEdgecasesGenerationProbability (D)V
 	public final fun setDefaultIterationCount (I)V
-	public final fun setDefaultListeners (Ljava/util/List;)V
 	public final fun setDefaultMaxFailure (I)V
 	public final fun setDefaultMinSuccess (I)V
 	public final fun setDefaultOutputClassifications (Z)V
@@ -236,16 +233,13 @@ public final class io/kotest/permutations/PermutationTesting {
 	public final fun setDefaultSeed (Ljava/lang/Long;)V
 	public final fun setDefaultShrinkingMode (Lio/kotest/property/ShrinkingMode;)V
 	public final fun setDiscardCheckThreshold (I)V
-	public final fun setEdgecasesBindDeterminism (D)V
 	public final fun setFailOnSeed (Z)V
-	public final fun setLabelOrder (Lio/kotest/property/LabelOrder;)V
+	public final fun setLabelOrder (Lio/kotest/permutations/LabelOrder;)V
 	public final fun setMaxDiscardPercentage (I)V
-	public final fun setMaxFilterAttempts (I)V
 	public final fun setShouldPrintConfig (Z)V
 	public final fun setShouldPrintGeneratedValues (Z)V
 	public final fun setShouldPrintShrinkSteps (Z)V
 	public final fun setStatisticsReportMode (Lio/kotest/property/statistics/StatisticsReportMode;)V
-	public final fun setStatisticsReporter (Lio/kotest/property/statistics/StatisticsReporter;)V
 	public final fun setWriteFailedSeed (Z)V
 }
 
