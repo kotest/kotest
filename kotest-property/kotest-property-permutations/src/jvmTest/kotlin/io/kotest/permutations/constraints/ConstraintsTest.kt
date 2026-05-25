@@ -46,5 +46,18 @@ class ConstraintsTest : FunSpec() {
          }
          counter shouldBe 5
       }
+
+      test("a custom constraint that always returns false should never execute the property check") {
+         var counter = 0
+         permutations {
+            iterations = 3
+            duration = 100.milliseconds
+            constraints = Constraints { false }
+            forEach {
+               counter++
+            }
+         }
+         counter shouldBe 0
+      }
    }
 }
