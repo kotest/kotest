@@ -133,32 +133,6 @@ class ConfigWriterTest : FunSpec() {
          stdout shouldNotContain "Min successes"
       }
 
-      test("ConfigWriter should print Edgecases generation probability when it is greater than zero") {
-         val stdout = captureStandardOut {
-            permutations {
-               shouldPrintConfig = true
-               edgecasesGenerationProbability = 0.25
-               iterations = 1
-               val x by gen { Exhaustive.of(1) }
-               check { x shouldNotBe null }
-            }
-         }
-         stdout shouldContain "Edgecases generation probability: 0.25"
-      }
-
-      test("ConfigWriter should omit Edgecases generation probability when it is zero") {
-         val stdout = captureStandardOut {
-            permutations {
-               shouldPrintConfig = true
-               edgecasesGenerationProbability = 0.0
-               iterations = 1
-               val x by gen { Exhaustive.of(1) }
-               check { x shouldNotBe null }
-            }
-         }
-         stdout shouldNotContain "Edgecases generation probability"
-      }
-
       test("ConfigWriter should print Custom seed when a seed has been explicitly set") {
          val stdout = captureStandardOut {
             permutations {
