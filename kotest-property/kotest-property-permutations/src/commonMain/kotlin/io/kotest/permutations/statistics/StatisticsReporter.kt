@@ -4,8 +4,8 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.common.TestNameContextElement
 import io.kotest.permutations.Classifications
 import io.kotest.permutations.Label
-import io.kotest.permutations.PermutationTesting
 import io.kotest.property.LabelOrder
+import io.kotest.property.PropertyTesting
 import kotlinx.coroutines.currentCoroutineContext
 import kotlin.math.max
 import kotlin.math.roundToInt
@@ -36,7 +36,7 @@ internal object DefaultStatisticsReporter : StatisticsReporter {
 
    private fun stats(stats: Map<Any, Int>, iterations: Int) {
       val countPad = iterations.toString().length
-      val sorted = when (PermutationTesting.labelOrder) {
+      val sorted = when (PropertyTesting.labelOrder) {
          LabelOrder.Quantity -> stats.toList().sortedByDescending { it.second }
          LabelOrder.Lexicographic -> stats.toList().sortedBy { it.first.toString() }
       }

@@ -10,6 +10,7 @@ import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.CoverageConfiguration
 import io.kotest.property.Gen
+import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.statistics.StatisticsReportMode
 import kotlin.time.Duration
@@ -20,7 +21,7 @@ class PermutationConfiguration {
    /**
     * Use iteration based [Constraints]
     */
-   var iterations: Int = PermutationTesting.defaultIterationCount
+   var iterations: Int = PropertyTesting.defaultIterationCount
 
    /**
     * Use duration based [Constraints].
@@ -37,45 +38,45 @@ class PermutationConfiguration {
    // The minSuccess variable is used to specify the minimum number of successful permutations that must be achieved
    // during property testing. This ensures that a certain number of tests pass before the test suite
    // considers the property test successful.
-   var minSuccess: Int = PermutationTesting.defaultMinSuccess
+   var minSuccess: Int = PropertyTesting.defaultMinSuccess
 
    // The maxFailure variable is used to specify the maximum number of allowable permutations failures during
    // property testing. This ensures that the property test will fail if the number of failed tests exceeds
    // this threshold. It is useful for controlling the tolerance for flaky tests or tests that are expected to
    // have some level of failure.
-   var maxFailures: Int = PermutationTesting.defaultMaxFailure
+   var maxFailures: Int = PropertyTesting.defaultMaxFailure
 
    // The edgecasesGenerationProbability is used to determine the likelihood that a generated
    // value will be an edge case rather than a random sample. This probability is used within
    // the generate method of the Gen class to bias the generation of values towards edge cases.
-   var edgecasesGenerationProbability = PermutationTesting.defaultEdgecasesGenerationProbability
+   var edgecasesGenerationProbability = PropertyTesting.defaultEdgecasesGenerationProbability
 
-   var shouldPrintShrinkSteps = PermutationTesting.shouldPrintShrinkSteps
+   var shouldPrintShrinkSteps = PropertyTesting.shouldPrintShrinkSteps
 
-   var shrinkingMode: ShrinkingMode = PermutationTesting.defaultShrinkingMode
+   var shrinkingMode: ShrinkingMode = PropertyTesting.defaultShrinkingMode
 
-   var maxDiscardPercentage: Int = PermutationTesting.maxDiscardPercentage
+   var maxDiscardPercentage: Int = PropertyTesting.maxDiscardPercentage
 
-   var discardCheckThreshold: Int = PermutationTesting.discardCheckThreshold
+   var discardCheckThreshold: Int = PropertyTesting.discardCheckThreshold
 
    // output each generated value
-   var shouldPrintGeneratedValues: Boolean = PermutationTesting.shouldPrintGeneratedValues
+   var shouldPrintGeneratedValues: Boolean = PropertyTesting.shouldPrintGeneratedValues
 
-   var outputStatistics: Boolean = PermutationTesting.defaultOutputClassifications
+   var outputStatistics: Boolean = PropertyTesting.defaultOutputClassifications
 
    // The shouldPrintConfig variable is used to specify whether the configuration of the property test is printed
-   var shouldPrintConfig: Boolean = PermutationTesting.shouldPrintConfig
+   var shouldPrintConfig: Boolean = PropertyTesting.shouldPrintConfig
 
    // The failOnSeed variable is used to specify whether a property test should fail if a seed is set.
-   var failOnSeed: Boolean = PermutationTesting.failOnSeed
+   var failOnSeed: Boolean = PropertyTesting.failOnSeed
 
    // used to specify whether a seed should be written to the test output if a test fails.
-   var writeFailedSeed: Boolean = PermutationTesting.writeFailedSeed
+   var writeFailedSeed: Boolean = PropertyTesting.writeFailedSeed
 
    // Custom seed to use for this property test. If null, a random seed will be used.
    var seed: Long? = null
 
-   var statisticsReportMode: StatisticsReportMode = PermutationTesting.statisticsReportMode
+   var statisticsReportMode: StatisticsReportMode = PropertyTesting.statisticsReportMode
 
    internal val registry = GenDelegateRegistry()
 

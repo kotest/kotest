@@ -18,11 +18,10 @@ fun <A> Arb<A>.filter(predicate: (A) -> Boolean): Arb<A> = trampoline { sampleA 
          sequenceOf(sampleA)
             .plus(generateSequence { this@filter.edgecase(rs) })
             .take(PropertyTesting.maxFilterAttempts)
-            .filter { predicate(it.value) }
-            .firstOrNull()
+            .firstOrNull { predicate(it.value) }
 
       override fun sample(rs: RandomSource): Sample<A> {
-         val sample = sequenceOf(sampleA).plus(this@filter.samples(rs)).filter { predicate(it.value) }.first()
+         val sample = sequenceOf(sampleA).plus(this@filter.samples(rs)).first { predicate(it.value) }
          return Sample(sample.value, sample.shrinks.filter(predicate) ?: RTree({ sample.value }))
       }
    }

@@ -7,8 +7,8 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
-import io.kotest.permutations.PermutationTesting
 import io.kotest.permutations.permutations
+import io.kotest.property.PropertyTesting
 import io.kotest.property.seed.seedDirectory
 import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.deleteRecursively
@@ -23,7 +23,7 @@ class PersistSeedsTest : FunSpec({
    }
 
    beforeTest {
-      PermutationTesting.writeFailedSeed = true
+      PropertyTesting.writeFailedSeed = true
    }
 
    test("failed tests should persist seeds") {

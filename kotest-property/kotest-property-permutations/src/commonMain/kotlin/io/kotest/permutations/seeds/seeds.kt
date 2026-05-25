@@ -4,7 +4,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.core.descriptors.DescriptorPath
 import io.kotest.core.descriptors.DescriptorPathContextElement
 import io.kotest.permutations.PermutationConfiguration
-import io.kotest.permutations.PermutationTesting
+import io.kotest.property.PropertyTesting
 import io.kotest.property.RandomSource
 import io.kotest.property.random
 import kotlinx.coroutines.currentCoroutineContext
@@ -17,13 +17,13 @@ internal object SeedOperations {
    }
 
    private suspend fun getFailedSeed(): Long? {
-      if (!PermutationTesting.writeFailedSeed) return null
+      if (!PropertyTesting.writeFailedSeed) return null
       val path = currentCoroutineContext()[DescriptorPathContextElement]?.path ?: return null
       return readSeed(path)
    }
 
    /**
-    * Writes the seed to the test output if [PermutationTesting.writeFailedSeed] is enabled.
+    * Writes the seed to the test output if [PropertyTesting.writeFailedSeed] is enabled.
     */
    suspend fun writeFailedSeed(writeFailedSeed: Boolean, seed: Long) {
       if (writeFailedSeed) {
