@@ -2,27 +2,20 @@ package io.kotest.permutations
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.sysprop
-import io.kotest.property.LabelOrder
-import io.kotest.property.PropTestListener
 import io.kotest.property.ShrinkingMode
-import io.kotest.property.statistics.DefaultStatisticsReporter
 import io.kotest.property.statistics.StatisticsReportMode
-import io.kotest.property.statistics.StatisticsReporter
 
 /**
  * Global object containing settings for permutation testing.
  */
+@ExperimentalKotest
 object PermutationTesting {
-
-   var maxFilterAttempts: Int = 10
 
    var shouldPrintShrinkSteps: Boolean = sysprop("kotest.proptest.output.shrink-steps", true)
 
    var shouldPrintGeneratedValues: Boolean = sysprop("kotest.proptest.output.generated-values", false)
 
    var shouldPrintConfig: Boolean = sysprop("kotest.proptest.output.config", false)
-
-   var edgecasesBindDeterminism: Double = sysprop("kotest.proptest.arb.edgecases-bind-determinism", 0.9)
 
    /**
     * The maximum percentage of discards allowed before the test aborts to avoid infinite loops.
@@ -51,11 +44,6 @@ object PermutationTesting {
          else -> error("Invalid shrinking mode: $mode")
       }
 
-   var defaultListeners: List<PropTestListener> = listOf()
-
-   var defaultEdgecasesGenerationProbability: Double =
-      sysprop("kotest.proptest.arb.edgecases-generation-probability", 0.02)
-
    var defaultOutputClassifications: Boolean = sysprop("kotest.proptest.arb.output.classifications", false)
 
    var failOnSeed: Boolean = sysprop("kotest.proptest.seed.fail-if-set", false)
@@ -64,14 +52,18 @@ object PermutationTesting {
 
    var labelOrder: LabelOrder = LabelOrder.Quantity
 
-   @ExperimentalKotest
-   var statisticsReporter: StatisticsReporter = DefaultStatisticsReporter
-
-   @ExperimentalKotest
    var statisticsReportMode: StatisticsReportMode = StatisticsReportMode.ON
 
    var defaultOutputHexForUnprintableChars: Boolean =
       sysprop("kotest.proptest.arb.string.output-hex-for-unprintable-chars", false)
 
    var defaultCollectionsRange: IntRange = 0..100
+}
+
+/**
+ * Controls the order in which classifications are sorted when written by the statistics reporter.
+ */
+enum class LabelOrder {
+   Quantity,
+   Lexicographic,
 }
