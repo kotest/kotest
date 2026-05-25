@@ -1,5 +1,6 @@
 package io.kotest.permutations.seeds
 
+import io.kotest.assertions.print.print
 import io.kotest.core.descriptors.DescriptorPath
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -20,7 +21,7 @@ internal actual fun readSeed(path: DescriptorPath): Long? {
          ?.toLongOrNull()
    } catch (e: Exception) {
       println("Error reading seed for $path")
-      e.printStackTrace()
+      e.print()
       null
    }
 }
