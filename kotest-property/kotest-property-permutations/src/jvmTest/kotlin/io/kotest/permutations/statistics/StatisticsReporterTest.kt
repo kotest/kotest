@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.statistics
 
 import io.kotest.common.ExperimentalKotest
@@ -15,8 +17,8 @@ class StatisticsReporterTest : FunSpec() {
       test("DefaultStatisticsReporter should print a section header for each label") {
          val classifications = Classifications(
             mutableMapOf(
-               Label("parity") to mutableMapOf<Any, Int>("even" to 5, "odd" to 5),
-               Label("sign") to mutableMapOf<Any, Int>("positive" to 7, "negative" to 3),
+               Label("parity") to mutableMapOf("even" to 5, "odd" to 5),
+               Label("sign") to mutableMapOf("positive" to 7, "negative" to 3),
             )
          )
 
@@ -33,7 +35,7 @@ class StatisticsReporterTest : FunSpec() {
       test("DefaultStatisticsReporter should print each classification with its count and percentage") {
          val classifications = Classifications(
             mutableMapOf(
-               Label("parity") to mutableMapOf<Any, Int>("even" to 3, "odd" to 7),
+               Label("parity") to mutableMapOf("even" to 3, "odd" to 7),
             )
          )
 
@@ -52,7 +54,7 @@ class StatisticsReporterTest : FunSpec() {
       test("DefaultStatisticsReporter should use the default label header when no custom label was set") {
          val classifications = Classifications(
             mutableMapOf(
-               Label.Default to mutableMapOf<Any, Int>("yes" to 4, "no" to 6),
+               Label.Default to mutableMapOf("yes" to 4, "no" to 6),
             )
          )
 
@@ -68,7 +70,7 @@ class StatisticsReporterTest : FunSpec() {
       test("DefaultStatisticsReporter should round small percentages up to at least 1%") {
          val classifications = Classifications(
             mutableMapOf(
-               Label.Default to mutableMapOf<Any, Int>("rare" to 1),
+               Label.Default to mutableMapOf("rare" to 1),
             )
          )
 
