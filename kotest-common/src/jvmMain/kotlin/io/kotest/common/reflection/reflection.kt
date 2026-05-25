@@ -75,7 +75,7 @@ object JvmReflection : Reflection {
 
    override fun <T : Any> primaryConstructorMembers(klass: KClass<T>): List<Property> {
       // gets the parameters for the primary constructor and then associates them with the member callable
-      val constructorParams = klass::primaryConstructor.get()?.parameters ?: emptyList()
+      val constructorParams = klass.primaryConstructor?.parameters ?: emptyList()
       val membersByName = getPropertiesByName(klass)
       return constructorParams.mapNotNull { param ->
          membersByName[param.name]?.let { callable ->
@@ -87,7 +87,7 @@ object JvmReflection : Reflection {
       }
    }
 
-   internal fun <T : Any> getPropertiesByName(klass: KClass<T>) = klass::members.get()
+   internal fun <T : Any> getPropertiesByName(klass: KClass<T>) = klass.members
       .filterIsInstance<KProperty<*>>()
       .associateBy(KCallable<*>::name)
 }
