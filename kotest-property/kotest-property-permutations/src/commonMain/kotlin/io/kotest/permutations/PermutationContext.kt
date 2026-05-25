@@ -12,6 +12,10 @@ import io.kotest.property.statistics.StatisticsReportMode
 
 /**
  * The immutable state of a permutation test.
+ *
+ * This class combines the configuration supplied by a user from a [PermutationConfiguration] object,
+ * along with defaults for anything not specified, and includes additional information required
+ * by the permutation executor - such as the random source, and classifications tracking.
  */
 data class PermutationContext(
    val constraints: Constraints,
