@@ -6,7 +6,6 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.permutations.constraints.Constraints
 import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.statistics.CoverageConfiguration
-import io.kotest.permutations.statistics.StatisticsReporter
 import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.statistics.StatisticsReportMode
@@ -30,8 +29,8 @@ data class PermutationContext(
    val minSuccess: Int,
    val maxFailures: Int,
    val outputStatistics: Boolean,
+   val classifications: Classifications,
    val coverage: CoverageConfiguration,
-   val statisticsReporter: StatisticsReporter,
    val statisticsReportMode: StatisticsReportMode,
    val registry: GenDelegateRegistry,
    val beforePermutation: suspend () -> Unit,

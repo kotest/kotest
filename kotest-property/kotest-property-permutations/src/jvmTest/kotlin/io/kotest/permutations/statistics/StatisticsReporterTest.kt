@@ -1,79 +1,91 @@
-@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
-
 package io.kotest.permutations.statistics
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.shouldBe
-import io.kotest.permutations.permutations
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.int
-import io.kotest.property.statistics.Label
-import io.kotest.property.statistics.StatisticsReportMode
+import io.kotest.extensions.system.captureStandardOut
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.string.shouldNotContain
+import io.kotest.permutations.Classifications
+import io.kotest.permutations.Label
 
 @OptIn(ExperimentalKotest::class)
 class StatisticsReporterTest : FunSpec() {
    init {
 
-      test("the statistics reporter should receive classifications recorded under the default label") {
-         val captor = CapturingStatisticsReporter()
-         permutations {
-            iterations = 10
-            statisticsReporter = captor
-            statisticsReportMode = StatisticsReportMode.ON
-            val a by gen { Arb.int(0..100) }
-            check {
-               classify(a % 2 == 0, "even", "odd")
-            }
+      test("DefaultStatisticsReporter should print a section header for each label") {
+         val classifications = Classifications(
+            mutableMapOf(
+               Label("parity") to mutableMapOf<Any, Int>("even" to 5, "odd" to 5),
+               Label("sign") to mutableMapOf<Any, Int>("positive" to 7, "negative" to 3),
+            )
+         )
+
+         val stdout = captureStandardOut {
+            DefaultStatisticsReporter.output(10, classifications)
          }
 
-         captor.received shouldHaveSize 1
-         val counts = captor.received.single().counts[Label.Default] ?: error("missing default-label counts")
-         counts.keys shouldBe setOf("even", "odd")
-         counts.values.sum() shouldBe 10
+         stdout shouldContain "Statistics:"
+         stdout shouldContain "(10 iterations)"
+         stdout shouldContain "[parity]"
+         stdout shouldContain "[sign]"
       }
 
-      test("the statistics reporter should receive classifications keyed by custom label") {
-         val captor = CapturingStatisticsReporter()
-         permutations {
-            iterations = 6
-            statisticsReporter = captor
-            statisticsReportMode = StatisticsReportMode.ON
-            val a by gen { Arb.int(-50..50) }
-            check {
-               classify("parity", a % 2 == 0, "even", "odd")
-               classify("sign", a >= 0, "non-negative", "negative")
-            }
+      test("DefaultStatisticsReporter should print each classification with its count and percentage") {
+         val classifications = Classifications(
+            mutableMapOf(
+               Label("parity") to mutableMapOf<Any, Int>("even" to 3, "odd" to 7),
+            )
+         )
+
+         val stdout = captureStandardOut {
+            DefaultStatisticsReporter.output(10, classifications)
          }
 
-         captor.received shouldHaveSize 1
-         val classifications = captor.received.single()
-         classifications.counts.keys shouldBe setOf(Label("parity"), Label("sign"))
-         classifications.counts.getValue(Label("parity")).values.sum() shouldBe 6
-         classifications.counts.getValue(Label("sign")).values.sum() shouldBe 6
+         stdout shouldContain "even"
+         stdout shouldContain "odd"
+         stdout shouldContain "3"
+         stdout shouldContain "7"
+         stdout shouldContain "(30%)"
+         stdout shouldContain "(70%)"
       }
 
-      test("the statistics reporter should not be invoked when the report mode is OFF") {
-         val captor = CapturingStatisticsReporter()
-         permutations {
-            iterations = 5
-            statisticsReporter = captor
-            statisticsReportMode = StatisticsReportMode.OFF
-            val a by gen { Arb.int(0..10) }
-            check {
-               classify(a % 2 == 0, "even", "odd")
-            }
+      test("DefaultStatisticsReporter should use the default label header when no custom label was set") {
+         val classifications = Classifications(
+            mutableMapOf(
+               Label.Default to mutableMapOf<Any, Int>("yes" to 4, "no" to 6),
+            )
+         )
+
+         val stdout = captureStandardOut {
+            DefaultStatisticsReporter.output(10, classifications)
          }
 
-         captor.received shouldHaveSize 0
+         stdout shouldContain "[${Label.Default.value}]"
+         stdout shouldContain "yes"
+         stdout shouldContain "no"
       }
-   }
 
-   private class CapturingStatisticsReporter : StatisticsReporter {
-      val received = mutableListOf<Classifications>()
-      override suspend fun output(classifications: Classifications) {
-         received += classifications
+      test("DefaultStatisticsReporter should round small percentages up to at least 1%") {
+         val classifications = Classifications(
+            mutableMapOf(
+               Label.Default to mutableMapOf<Any, Int>("rare" to 1),
+            )
+         )
+
+         val stdout = captureStandardOut {
+            DefaultStatisticsReporter.output(1000, classifications)
+         }
+
+         stdout shouldContain "rare"
+         stdout shouldContain "(1%)"
+      }
+
+      test("DefaultStatisticsReporter should produce no output for an empty Classifications") {
+         val stdout = captureStandardOut {
+            DefaultStatisticsReporter.output(5, Classifications())
+         }
+
+         stdout shouldNotContain "Statistics:"
       }
    }
 }

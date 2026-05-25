@@ -15,7 +15,8 @@ import io.kotest.permutations.statistics.CoverageCheck
 import kotlin.time.TimeSource
 
 /**
- * The [PermutationExecutor] is responsible for executing a single permutation test with the given [PermutationContext].
+ * The [PermutationExecutor] is responsible for executing a single iteration of a permutation test
+ * with the given [PermutationContext].
  */
 internal class PermutationExecutor(
    private val context: PermutationContext,
@@ -32,41 +33,45 @@ internal class PermutationExecutor(
       // delegates are registered
       context.registry.delegates.forEach { it.initialize(context.rs) }
 
-      var iterations = 0
+      var invocations = 0
+      var attempts = 0
       var discards = 0
       var successes = 0
       var failures = 0
       val mark = TimeSource.Monotonic.markNow()
 
-      while (context.constraints.evaluate(Iteration(iterations, mark))) {
+      while (context.constraints.evaluate(Iteration(invocations, mark))) {
 
          try {
+
+            // always includes everything, including discarded
+            invocations++
 
             context.registry.reset()
             context.beforePermutation()
             test(context)
             context.afterPermutation()
 
-            iterations++
-            successes++
+            successes++ // we know the test was successful
+            attempts++ // since the test was successful, it wasn't skipped
 
          } catch (_: IterationSkippedException) {
 
             MaxDiscardCheck.ensureConfigured(context.maxDiscardPercentage)
 
-            // we don't mark failed assumptions as errors or attempts but we do increase discard count
+            // we don't mark failed assumptions as errors or attempts, but we do increase discard count
             discards++
 
             // once discards have hit the discard threshold, we start to test the max discard percentage check
-            MaxDiscardCheck.check(context, discards, iterations)
+            MaxDiscardCheck.check(context, discards, invocations)
 
          } catch (e: Throwable) {
 
-            iterations++
-            failures++
+            failures++ // we know the test failed
+            attempts++ // since the test failed, it wasn't skipped
 
             val result = IterationFailure(
-               iteration = iterations,
+               iteration = invocations,
                success = false,
                successes = successes,
                failures = failures,
@@ -75,30 +80,32 @@ internal class PermutationExecutor(
                error = e,
             )
 
-            // we might be able to tolerate this failure, if max failure is set > 0 and we haven't hit it yet
-            // otherwise, this test will now throw an exception and do the failure state operations
+            // we might be able to tolerate this failure if maxFailures is > 0, and we haven't hit that limit yet
+            // otherwise, this permutation test will now terminate, and we invoke the failure state operations
             if (failures > context.maxFailures) {
                SeedOperations.writeFailedSeed(context.writeFailedSeed, context.rs.seed)
-               ClassificationsWriter.writeIfEnabled(context, true)
+               ClassificationsWriter.writeIfEnabled(context, false, attempts, context.classifications)
                FailureHandler.handleFailure(context, result)
             }
          }
       }
 
       val result = PermutationResult(
-         attempts = iterations,
+         invocations = invocations,
+         attempts = attempts,
          successes = successes,
          failures = failures,
          discards = discards,
          duration = mark.elapsedNow(),
          shrinks = emptyList(),
+         classifications = Classifications(),
       )
 
-      ClassificationsWriter.writeIfEnabled(context, true)
+      ClassificationsWriter.writeIfEnabled(context, true, attempts, context.classifications)
       MinSuccessCheck.check(context, result)
       CoverageCheck.check(context, result)
 
-      // at this point the test can't fail, so we can clear the seed
+      // at this point the test didn't fail, so we can clear any previous written seeds
       SeedOperations.clearFailedSeed()
 
       return result

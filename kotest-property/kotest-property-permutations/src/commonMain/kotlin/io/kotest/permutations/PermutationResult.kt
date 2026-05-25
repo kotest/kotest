@@ -3,15 +3,17 @@ package io.kotest.permutations
 import kotlin.time.Duration
 
 /**
- * Models the overall result of a property test.
+ * Models the final result of a property test.
  */
 data class PermutationResult(
-   val attempts: Int, // total number of iterations regardless of success or failure
-   val successes: Int, // total number of iterations that were successful
-   val failures: Int, // total number of iterations that failed
-   val discards: Int, // total number of iterations that were discarded due to failed assumptions
+   val invocations: Int, // number of times we entered the check function, so includes success, failure and discards.
+   val attempts: Int, // number of iterations including success, failure, but excluding discarded.
+   val successes: Int, // number of iterations that were successful
+   val failures: Int, // number of iterations that failed
+   val discards: Int, // number of iterations that were discarded due to skipped assumptions
    val duration: Duration, // the duration of the test
-   val shrinks: List<Any?>, // the shrunk values
+   val shrinks: List<Any?>, // the shrunk values if any
+   val classifications: Classifications, // the collected classifications
 )
 
 data class IterationFailure(

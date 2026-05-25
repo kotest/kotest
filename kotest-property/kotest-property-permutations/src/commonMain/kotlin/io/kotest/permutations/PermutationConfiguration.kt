@@ -9,8 +9,6 @@ import io.kotest.permutations.delegates.GenDelegate
 import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.CoverageConfiguration
-import io.kotest.permutations.statistics.DefaultStatisticsReporter
-import io.kotest.permutations.statistics.StatisticsReporter
 import io.kotest.property.Gen
 import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
@@ -78,9 +76,6 @@ class PermutationConfiguration {
    // Custom seed to use for this property test. If null, a random seed will be used.
    var seed: Long? = null
 
-   // override the reporter used for statistics
-   var statisticsReporter: StatisticsReporter? = null
-
    var statisticsReportMode: StatisticsReportMode = PropertyTesting.statisticsReportMode
 
    internal val registry = GenDelegateRegistry()
@@ -102,6 +97,12 @@ class PermutationConfiguration {
       this.test = test
    }
 
+   /**
+    * Registers a set of coverage checks for this permutation test.
+    * Can only be set once; calling this method more than once will throw an error.
+    *
+    * The coverage checks specifed in the provided lambda will be executed once all permutations have completed.
+    */
    fun coverage(fn: CoverageConfiguration.() -> Unit) {
       if (this.coverage != null) error("coverage has already been set")
       this.coverage = fn
@@ -148,7 +149,6 @@ class PermutationConfiguration {
       this.maxDiscardPercentage = other.maxDiscardPercentage
       this.shouldPrintGeneratedValues = other.shouldPrintGeneratedValues
       this.outputStatistics = other.outputStatistics
-      this.statisticsReporter = other.statisticsReporter
       this.statisticsReportMode = other.statisticsReportMode
       this.shouldPrintConfig = other.shouldPrintConfig
       this.failOnSeed = other.failOnSeed
@@ -161,6 +161,9 @@ class PermutationConfiguration {
 
 /**
  * Returns an immutable [PermutationContext] from this configuration.
+ *
+ * This immutable object will be used by the [PermutationExecutor] to execute
+ * each permutation with the provided configuration.
  */
 suspend fun PermutationConfiguration.toContext(): PermutationContext {
    return PermutationContext(
@@ -174,7 +177,6 @@ suspend fun PermutationConfiguration.toContext(): PermutationContext {
       discardCheckThreshold = discardCheckThreshold,
       printGeneratedValues = shouldPrintGeneratedValues,
       outputStatistics = outputStatistics,
-      statisticsReporter = statisticsReporter ?: DefaultStatisticsReporter,
       statisticsReportMode = statisticsReportMode,
       printConfig = shouldPrintConfig,
       customSeed = this.seed != null,
@@ -183,6 +185,7 @@ suspend fun PermutationConfiguration.toContext(): PermutationContext {
       rs = SeedOperations.createRandomSource(this),
       registry = registry,
       coverage = coverage?.let { CoverageConfiguration().apply(it) } ?: CoverageConfiguration(),
+      classifications = Classifications(),
       beforePermutation = beforePermutation ?: {},
       afterPermutation = afterPermutation ?: {},
       test = test ?: error("test has not been set"),

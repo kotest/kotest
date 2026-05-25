@@ -87,6 +87,9 @@ data class Label(val value: String) {
    }
 }
 
+/**
+ * Tracks the counts of classifications for each label and value as provided by `classify` calls.
+ */
 class Classifications(
    val counts: MutableMap<Label, MutableMap<Any, Int>> = mutableMapOf()
 )
