@@ -10,7 +10,6 @@ import io.kotest.permutations.delegates.GenDelegateRegistry
 import io.kotest.permutations.seeds.SeedOperations
 import io.kotest.permutations.statistics.CoverageConfiguration
 import io.kotest.property.Gen
-import io.kotest.property.PropertyTesting
 import io.kotest.property.ShrinkingMode
 import io.kotest.property.statistics.StatisticsReportMode
 import kotlin.time.Duration
@@ -38,45 +37,45 @@ class PermutationConfiguration {
    // The minSuccess variable is used to specify the minimum number of successful permutations that must be achieved
    // during property testing. This ensures that a certain number of tests pass before the test suite
    // considers the property test successful.
-   var minSuccess: Int = PropertyTesting.defaultMinSuccess
+   var minSuccess: Int = PermutationTesting.defaultMinSuccess
 
    // The maxFailure variable is used to specify the maximum number of allowable permutations failures during
    // property testing. This ensures that the property test will fail if the number of failed tests exceeds
    // this threshold. It is useful for controlling the tolerance for flaky tests or tests that are expected to
    // have some level of failure.
-   var maxFailures: Int = PropertyTesting.defaultMaxFailure
+   var maxFailures: Int = PermutationTesting.defaultMaxFailure
 
    // The edgecasesGenerationProbability is used to determine the likelihood that a generated
    // value will be an edge case rather than a random sample. This probability is used within
    // the generate method of the Gen class to bias the generation of values towards edge cases.
-   var edgecasesGenerationProbability = PropertyTesting.defaultEdgecasesGenerationProbability
+   var edgecasesGenerationProbability = PermutationTesting.defaultEdgecasesGenerationProbability
 
-   var shouldPrintShrinkSteps = PropertyTesting.shouldPrintShrinkSteps
+   var shouldPrintShrinkSteps = PermutationTesting.shouldPrintShrinkSteps
 
-   var shrinkingMode: ShrinkingMode = PropertyTesting.defaultShrinkingMode
+   var shrinkingMode: ShrinkingMode = PermutationTesting.defaultShrinkingMode
 
-   var maxDiscardPercentage: Int = PropertyTesting.maxDiscardPercentage
+   var maxDiscardPercentage: Int = PermutationTesting.maxDiscardPercentage
 
-   var discardCheckThreshold: Int = PropertyTesting.discardCheckThreshold
+   var discardCheckThreshold: Int = PermutationTesting.discardCheckThreshold
 
    // output each generated value
-   var shouldPrintGeneratedValues: Boolean = PropertyTesting.shouldPrintGeneratedValues
+   var shouldPrintGeneratedValues: Boolean = PermutationTesting.shouldPrintGeneratedValues
 
-   var outputStatistics: Boolean = PropertyTesting.defaultOutputClassifications
+   var outputStatistics: Boolean = PermutationTesting.defaultOutputClassifications
 
    // The shouldPrintConfig variable is used to specify whether the configuration of the property test is printed
-   var shouldPrintConfig: Boolean = PropertyTesting.shouldPrintConfig
+   var shouldPrintConfig: Boolean = PermutationTesting.shouldPrintConfig
 
    // The failOnSeed variable is used to specify whether a property test should fail if a seed is set.
-   var failOnSeed: Boolean = PropertyTesting.failOnSeed
+   var failOnSeed: Boolean = PermutationTesting.failOnSeed
 
    // used to specify whether a seed should be written to the test output if a test fails.
-   var writeFailedSeed: Boolean = PropertyTesting.writeFailedSeed
+   var writeFailedSeed: Boolean = PermutationTesting.writeFailedSeed
 
    // Custom seed to use for this property test. If null, a random seed will be used.
    var seed: Long? = null
 
-   var statisticsReportMode: StatisticsReportMode = PropertyTesting.statisticsReportMode
+   var statisticsReportMode: StatisticsReportMode = PermutationTesting.statisticsReportMode
 
    internal val registry = GenDelegateRegistry()
 
