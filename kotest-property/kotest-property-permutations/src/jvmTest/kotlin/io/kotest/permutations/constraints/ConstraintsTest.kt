@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.constraints
 
 import io.kotest.common.ExperimentalKotest
@@ -44,6 +46,19 @@ class ConstraintsTest : FunSpec() {
             }
          }
          counter shouldBe 5
+      }
+
+      test("a custom constraint that always returns false should never execute the property check") {
+         var counter = 0
+         permutations {
+            iterations = 3
+            duration = 100.milliseconds
+            constraints = Constraints { false }
+            check {
+               counter++
+            }
+         }
+         counter shouldBe 0
       }
    }
 }
