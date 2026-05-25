@@ -25,7 +25,6 @@ data class PermutationContext(
    val writeFailedSeed: Boolean,
    val customSeed: Boolean, // true if the seed was set programmatically
    val rs: RandomSource, // the final random source, either from custom seed or random seed
-   val edgecasesGenerationProbability: Double,
    val minSuccess: Int,
    val maxFailures: Int,
    val outputStatistics: Boolean,
