@@ -105,7 +105,7 @@ internal class PermutationExecutor(
       MinSuccessCheck.check(context, result)
       CoverageCheck.check(context, result)
 
-      // at this point the test didn't fail, so we can clear any previous written seeds
+      // at this point the test didn't fail, and all checks have completed, so we can clear the written seed
       SeedOperations.clearFailedSeed()
 
       return result
