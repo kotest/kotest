@@ -5,7 +5,7 @@ slug: property-test-permutations.html
 sidebar_label: Permutations
 ---
 
-The permutations DSL is a newer property-testing API introduced in Kotest 6.0. Rather than passing generators as
+The permutations DSL is a newer property-testing API introduced in Kotest 6.2. Rather than passing generators as
 positional parameters to `forAll` or `checkAll`, generators are declared inline as named properties using a `gen { ... }`
 delegate, and the test body is declared in a `check { ... }` block. This produces a more readable test as the inputs
 have meaningful names and the configuration is expressed declaratively at the call site.
@@ -223,6 +223,31 @@ inputs. This makes flaky property-test failures easier to investigate. To opt ou
 permutations {
    failOnSeed = true
    seed = 1234L // this will now fail the test
+   check { /* ... */ }
+}
+```
+
+In practice you usually want to keep hardcoded seeds working locally - so you can reproduce a failure - while
+forbidding them on CI. Gate `failOnSeed` on an environment variable that CI sets:
+
+```kotlin
+permutations {
+   failOnSeed = System.getenv("CI") != null
+   seed = 1234L // OK locally, fails on CI
+   check { /* ... */ }
+}
+```
+
+This is typically set once via shared config (`permconfig`) so the policy applies to every permutation test in the
+project:
+
+```kotlin
+val ciSafe = permconfig {
+   failOnSeed = System.getenv("CI") != null
+}
+
+permutations(ciSafe) {
+   seed = 1234L
    check { /* ... */ }
 }
 ```
