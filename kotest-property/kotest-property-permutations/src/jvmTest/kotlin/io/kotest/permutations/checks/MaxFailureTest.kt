@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.checks
 
 import io.kotest.assertions.throwables.shouldThrowAny
@@ -10,6 +12,7 @@ import io.kotest.permutations.permutations
 import io.kotest.property.Exhaustive
 import io.kotest.property.exhaustive.ints
 
+@Suppress("OPT_IN_USAGE")
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class MaxFailureTest : FunSpec({
 
@@ -19,7 +22,7 @@ class MaxFailureTest : FunSpec({
             seed = 1900646515
             maxFailures = 5
             val a by gen { Exhaustive.ints(0..10) }
-            forEach {
+            check {
                a shouldBeLessThan 8
             }
          }

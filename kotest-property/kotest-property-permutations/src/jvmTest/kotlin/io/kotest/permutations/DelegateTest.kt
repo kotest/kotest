@@ -1,5 +1,8 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations
 
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
@@ -9,6 +12,7 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.arbitrary.int
 import io.kotest.property.exhaustive.ints
 
+@OptIn(ExperimentalKotest::class)
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class DelegateTest : FunSpec() {
    init {
@@ -19,7 +23,7 @@ class DelegateTest : FunSpec() {
             val a by gen { Arb.int() }
             val b by gen { Exhaustive.ints(0..10) }
 
-            forEach {
+            check {
                a + b shouldBe a + b
                a + b shouldBe a + b
                a + b shouldBe a + b
@@ -32,7 +36,7 @@ class DelegateTest : FunSpec() {
          permutations {
             iterations = 5
             val a by gen { Exhaustive.ints(1..5) }
-            forEach {
+            check {
                values.add(a)
             }
          }

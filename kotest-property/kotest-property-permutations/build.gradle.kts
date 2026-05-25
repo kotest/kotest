@@ -5,7 +5,6 @@ plugins {
    id("kotest-watchos-device-conventions")
    id("kotest-native-conventions")
    id("kotest-publishing-conventions")
-
 }
 
 kotlin {
