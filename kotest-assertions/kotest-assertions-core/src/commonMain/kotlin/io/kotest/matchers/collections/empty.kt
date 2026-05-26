@@ -142,21 +142,34 @@ internal fun <T> beEmpty(name: String?): Matcher<Iterable<T>> = object : Matcher
       val name = name ?: value.containerName()
       val passed: Boolean
       val sizeReport: String
+      // Captured from the same iterator used for the emptiness check so dynamic iterables
+      // (whose iterator() may return different elements on subsequent calls) don't fail with
+      // NoSuchElementException when the failure message lambda re-iterates.
+      val firstValue: T?
 
       when (value) {
          is Collection -> {
             passed = value.isEmpty()
             sizeReport = "${value.size} elements"
+            firstValue = if (passed) null else value.first()
          }
 
          else -> {
-            passed = !value.iterator().hasNext()
-            sizeReport = "at least one element"
+            val iterator = value.iterator()
+            if (iterator.hasNext()) {
+               passed = false
+               firstValue = iterator.next()
+               sizeReport = "at least one element"
+            } else {
+               passed = true
+               firstValue = null
+               sizeReport = "0 elements"
+            }
          }
       }
       return MatcherResult(
          passed,
-         { "$name should be empty but has $sizeReport, first being: ${value.first().print().value}" },
+         { "$name should be empty but has $sizeReport, first being: ${firstValue.print().value}" },
          { "$name should not be empty" }
       )
    }
