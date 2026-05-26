@@ -5,9 +5,9 @@ package io.kotest.common.reflection
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.allSuperclasses
 import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.primaryConstructor
-import kotlin.reflect.full.superclasses
 import kotlin.reflect.jvm.isAccessible
 import kotlin.reflect.jvm.jvmName
 
@@ -31,16 +31,12 @@ object JvmReflection : Reflection {
       includeSuperclasses: Boolean,
       includeAnnotations: Boolean
    ): List<Annotation> {
-      val classes = listOf(kclass) + if (includeSuperclasses) supers(kclass) else emptyList()
+      val classes = listOf(kclass) + if (includeSuperclasses) kclass.allSuperclasses else emptyList()
       return if (includeAnnotations) {
          classes.flatMap(::composedAnnotations)
       } else {
          classes.flatMap { it.annotationsSafe() }
       }
-   }
-
-   private fun supers(kclass: KClass<*>): Iterable<KClass<*>> {
-      return kclass.superclasses + kclass.superclasses.flatMap { supers(it) }
    }
 
    private fun composedAnnotations(kclass: KClass<*>, checked: Set<String> = emptySet()): List<Annotation> {
