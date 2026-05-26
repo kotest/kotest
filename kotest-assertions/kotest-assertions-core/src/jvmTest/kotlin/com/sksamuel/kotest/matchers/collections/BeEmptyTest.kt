@@ -140,6 +140,30 @@ class BeEmptyTest : WordSpec() {
             }.message shouldBe "Range should be empty but has at least one element, first being: 1"
          }
 
+         "fail with a meaningful message for a dynamic iterable whose iterator() returns different elements on subsequent calls" {
+            // regression test for https://github.com/kotest/kotest/issues/6005
+            val iterable: Iterable<Int> = object : Iterable<Int> {
+               private var numbers = listOf(1, 2, 3)
+
+               override fun iterator(): Iterator<Int> {
+                  val currentNumbers = numbers
+                  numbers = emptyList()
+                  return currentNumbers.iterator()
+               }
+            }
+            shouldThrowAny {
+               iterable.shouldBeEmpty()
+            }.message shouldBe "Iterable should be empty but has at least one element, first being: 1"
+         }
+
+         "succeed for a dynamic iterable that is empty on the first iterator() call" {
+            // companion to the above: the empty branch should not need a second iterator() call.
+            val iterable: Iterable<Int> = object : Iterable<Int> {
+               override fun iterator(): Iterator<Int> = emptyList<Int>().iterator()
+            }
+            iterable.shouldBeEmpty()
+         }
+
          "fail for null list reference" {
             val maybeList: List<String>? = null
             shouldThrowAny {
