@@ -155,22 +155,30 @@ class ContinuallyTest : FunSpec() {
          }
       }
 
-      test("continually should pass if function completes at least once and then possibly times out").config(
+      test("continually should pass if function completes at least once and then times out").config(
          coroutineTestScope = false
       ) {
+         // First call delays 10ms (well within the 100ms duration so iter 0 succeeds);
+         // subsequent calls delay 1s so continually's remaining-time withTimeout cancels
+         // them before completion. Result: exactly one successful pass followed by a
+         // timed-out second pass.
          val config = continuallyConfig<Int> {
             duration = 100.milliseconds
             intervalFn = DurationFn { 0.milliseconds }
          }
+         val delayFn: (Int) -> Duration = { iteration ->
+            if (iteration == 0) 10.milliseconds else 1.seconds
+         }
          var iteration = 0
          val result = testContinually(config) {
-            delay(59.milliseconds)
+            delay(delayFn(iteration))
             iteration++
-            iteration shouldBeEqual iteration
+            iteration
          }
          assertSoftly {
-            result.invocationTimes.size shouldBeAtLeast 2
-            result.invocationTimes.shouldForAll { it <= 100.milliseconds }
+            result.value shouldBe 1
+            result.invocationTimes shouldHaveSize 2
+            result.invocationTimes.shouldForAll { it <= config.duration }
          }
       }
 

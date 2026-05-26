@@ -7,7 +7,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.property.RandomSource
 import io.kotest.property.ShrinkingMode
 import io.kotest.permutations.delegates.GenDelegate
-import io.kotest.permutations.statistics.Classifications
+import io.kotest.permutations.Classifications
 import io.kotest.property.internal.Counter
 import io.kotest.property.internal.ShrinkResult
 

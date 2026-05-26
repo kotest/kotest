@@ -1,8 +1,9 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.seeds
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.paths.shouldNotExist
 import io.kotest.matchers.shouldBe
@@ -13,7 +14,7 @@ import kotlin.io.path.ExperimentalPathApi
 import kotlin.io.path.deleteRecursively
 import kotlin.io.path.readText
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
+@OptIn(ExperimentalKotest::class)
 class PersistSeedsTest : FunSpec({
 
    fun clearSeedDirectory() {
@@ -29,7 +30,7 @@ class PersistSeedsTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 2344324
-            forEach {
+            check {
                1 shouldBe 0
             }
          }
@@ -43,7 +44,7 @@ class PersistSeedsTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 623515
-            forEach {
+            check {
                1 shouldBe 0
             }
          }
@@ -59,7 +60,7 @@ class PersistSeedsTest : FunSpec({
          permutations {
             writeFailedSeed = false
             seed = 12345
-            forEach { error("boom") }
+            check { error("boom") }
          }
       }
       seedDirectory().shouldNotExist()
@@ -69,7 +70,7 @@ class PersistSeedsTest : FunSpec({
       clearSeedDirectory()
       permutations {
          seed = 12345
-         forEach { }
+         check { }
       }
       seedDirectory().shouldNotExist()
    }

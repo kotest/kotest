@@ -2,38 +2,41 @@ package io.kotest.permutations.statistics
 
 import io.kotest.common.ExperimentalKotest
 import io.kotest.common.TestNameContextElement
-import io.kotest.property.LabelOrder
-import io.kotest.property.PropertyTesting
-import io.kotest.property.statistics.Label
+import io.kotest.permutations.Classifications
+import io.kotest.permutations.Label
+import io.kotest.permutations.LabelOrder
+import io.kotest.permutations.PermutationTesting
 import kotlinx.coroutines.currentCoroutineContext
 import kotlin.math.max
 import kotlin.math.roundToInt
 
 /**
  * Pluggable interface for outputting input value labels used in property testing.
+ *
+ * This is internal for the first release, we will open this up once we are happy that the API is final.
  */
-interface StatisticsReporter {
-   suspend fun output(classifications: Classifications)
+internal interface StatisticsReporter {
+   suspend fun output(iterations: Int, classifications: Classifications)
 }
 
 @OptIn(ExperimentalKotest::class)
-object DefaultStatisticsReporter : StatisticsReporter {
+internal object DefaultStatisticsReporter : StatisticsReporter {
 
    private fun row(classification: Any?, count: Int, iterations: Int, countPad: Int) {
       val percentage = max(((count / iterations.toDouble() * 100.0)).roundToInt(), 1)
       println("${classification.toString().padEnd(60, ' ')} ${count.toString().padStart(countPad, ' ')} ($percentage%)")
    }
 
-   private suspend fun header(iterations: Int, args: Int, label: Label?): String {
+   private suspend fun header(iterations: Int, label: Label): String {
       val testName = currentCoroutineContext()[TestNameContextElement]?.testName
       val prefix = if (testName == null) "" else "[$testName]"
-      val suffix = if (label == null) "" else "[${label.value}]"
-      return "Statistics: $prefix ($iterations iterations, $args args) $suffix"
+      val suffix = "[${label.value}]"
+      return "Statistics: $prefix ($iterations iterations) $suffix"
    }
 
-   private fun stats(stats: Map<Any?, Int>, iterations: Int) {
+   private fun stats(stats: Map<Any, Int>, iterations: Int) {
       val countPad = iterations.toString().length
-      val sorted = when (PropertyTesting.labelOrder) {
+      val sorted = when (PermutationTesting.labelOrder) {
          LabelOrder.Quantity -> stats.toList().sortedByDescending { it.second }
          LabelOrder.Lexicographic -> stats.toList().sortedBy { it.first.toString() }
       }
@@ -42,26 +45,14 @@ object DefaultStatisticsReporter : StatisticsReporter {
       }
    }
 
-   override suspend fun output(classifications: Classifications) {
-//      val unlabelled = statistics.statistics[null]
-//      if (unlabelled != null && unlabelled.isNotEmpty()) {
-//         val header = header(statistics.iterations, statistics.args, null)
-//         println()
-//         println(header)
-//         println()
-//         stats(unlabelled, statistics.iterations)
-//         println()
-//      }
-//
-//      statistics.statistics.forEach { (label, stats) ->
-//         if (label != null) {
-//            val header = header(statistics.iterations, statistics.args, label)
-//            println()
-//            println(header)
-//            println()
-//            stats(stats, statistics.iterations)
-//            println()
-//         }
-//      }
+   override suspend fun output(iterations: Int, classifications: Classifications) {
+      classifications.counts.forEach { (label, counts) ->
+         val header = header(iterations, label)
+         println()
+         println(header)
+         println()
+         stats(counts, iterations)
+         println()
+      }
    }
 }

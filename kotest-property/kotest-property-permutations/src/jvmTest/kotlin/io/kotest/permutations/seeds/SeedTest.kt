@@ -1,8 +1,9 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.seeds
 
 import io.kotest.assertions.throwables.shouldThrowAny
-import io.kotest.core.annotation.EnabledIf
-import io.kotest.core.annotation.LinuxOnlyGithubCondition
+import io.kotest.common.ExperimentalKotest
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -17,7 +18,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.random
 import kotlin.random.Random
 
-@EnabledIf(LinuxOnlyGithubCondition::class)
+@OptIn(ExperimentalKotest::class)
 class SeedTest : FunSpec({
 
    test("seeds should result in consistent randoms") {
@@ -32,12 +33,12 @@ class SeedTest : FunSpec({
       var seed1 = 0L
       var seed2 = 0L
       permutations {
-         forEach {
+         check {
             seed1 = rs.seed
          }
       }
       permutations {
-         forEach {
+         check {
             seed2 = rs.seed
          }
       }
@@ -48,7 +49,7 @@ class SeedTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 12345
-            forEach {
+            check {
                1 shouldBe 0
             }
          }
@@ -59,7 +60,7 @@ class SeedTest : FunSpec({
       shouldThrowAny {
          permutations {
             seed = 12345
-            forEach {
+            check {
                error("boom")
             }
          }

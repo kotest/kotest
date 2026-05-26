@@ -17,6 +17,7 @@ module.exports = {
     "proptest/shrinking",
     "proptest/statistics",
     "proptest/globalconfig",
+    "proptest/permutations",
     "proptest/arrow",
     "proptest/date_gens",
     "proptest/extra_arbs",

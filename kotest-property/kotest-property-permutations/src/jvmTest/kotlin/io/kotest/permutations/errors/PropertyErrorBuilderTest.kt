@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.permutations.errors
 
 import io.kotest.core.spec.style.FunSpec
