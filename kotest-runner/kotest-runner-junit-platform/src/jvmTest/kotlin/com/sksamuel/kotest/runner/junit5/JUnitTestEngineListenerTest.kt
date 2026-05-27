@@ -163,6 +163,67 @@ class JUnitTestEngineListenerTest : FunSpec({
       )
    }
 
+   test("a leaf root test that was started and then ignored should be finalized as ABORTED without a duplicate descriptor") {
+      // Mirrors what HandleSkippedExceptionsTestInterceptor does for `TestAbortedException`:
+      // testStarted has already fired, then testIgnored arrives instead of testFinished.
+      val leaf = TestCase(
+         MySpec::class.toDescriptor().append("foo"),
+         TestNameBuilder.builder("foo").build(),
+         MySpec(),
+         {},
+         SourceRef.None,
+         TestType.Test,
+      )
+      val track = EventTrackingEngineExecutionListener()
+      val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
+      listener.specStarted(SpecRef.Reference(MySpec::class))
+      listener.testStarted(leaf)
+      listener.testIgnored(leaf, "TestAbortedException")
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
+      track.events shouldBe listOf(
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("MySpec"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "foo",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo"
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.ABORTED),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "MySpec",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
+      )
+   }
+
+   test("a nested test that was started and then ignored should be finalized as ABORTED without a duplicate descriptor") {
+      val track = EventTrackingEngineExecutionListener()
+      val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
+      listener.specStarted(SpecRef.Reference(MySpec::class))
+      listener.testStarted(tc1)
+      listener.testStarted(tc2)
+      listener.testIgnored(tc2, "TestAbortedException")
+      listener.testFinished(tc1, TestResult.Success(7.milliseconds))
+      listener.specFinished(SpecRef.Reference(MySpec::class), TestResult.Success(0.seconds))
+      track.events shouldBe listOf(
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("MySpec"),
+         EventTrackingEngineExecutionListener.Event.TestRegistered("foo", TestDescriptor.Type.CONTAINER),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("foo"),
+         EventTrackingEngineExecutionListener.Event.TestCaseRegistered(
+            "bar",
+            "com.sksamuel.kotest.runner.junit5.MySpec",
+            "foo/bar"
+         ),
+         EventTrackingEngineExecutionListener.Event.ExecutionStarted("bar"),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("bar", TestExecutionResult.Status.ABORTED),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished("foo", TestExecutionResult.Status.SUCCESSFUL),
+         EventTrackingEngineExecutionListener.Event.ExecutionFinished(
+            "MySpec",
+            TestExecutionResult.Status.SUCCESSFUL
+         ),
+      )
+   }
+
    test("a successful nested test should be marked as SUCCESSFUL with type TEST") {
       val track = EventTrackingEngineExecutionListener()
       val listener = JUnitTestEngineListener(track, root, DisplayNameFormatting(null))
