@@ -137,4 +137,10 @@
       <supportsKotlinPluginMode supportsK2="true"/>
    </extensions>
 
+   <extensions defaultExtensionNs="org.jetbrains.kotlin.idea">
+      <!-- Lets the Amper IntelliJ plugin recognise Kotest specs via its existing
+           AmperKotlinTestConfigurationProducer, which iterates this extension point. -->
+      <testFrameworkProvider implementation="io.kotest.plugin.intellij.amper.KotestKotlinTestFrameworkProvider"/>
+   </extensions>
+
 </idea-plugin>
