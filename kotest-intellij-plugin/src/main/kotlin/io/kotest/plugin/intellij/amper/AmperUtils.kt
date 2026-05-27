@@ -65,17 +65,6 @@ internal object AmperUtils {
       return moduleRoot
    }
 
-   /**
-    * Returns the `amper` wrapper script (the platform-appropriate one) for the project root,
-    * or null if neither variant is present.
-    */
-   fun amperWrapper(module: Module?): VirtualFile? {
-      val root = amperProjectRoot(module) ?: return null
-      val isWindows = System.getProperty("os.name").startsWith("Windows", ignoreCase = true)
-      return if (isWindows) root.findChild(WRAPPER_WIN) ?: root.findChild(WRAPPER_UNIX)
-      else root.findChild(WRAPPER_UNIX) ?: root.findChild(WRAPPER_WIN)
-   }
-
    private fun findModuleYamlFrom(start: VirtualFile): VirtualFile? {
       var current: VirtualFile? = if (start.isDirectory) start else start.parent
       while (current != null) {
