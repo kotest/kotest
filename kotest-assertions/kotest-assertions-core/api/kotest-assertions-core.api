@@ -1824,6 +1824,9 @@ public final class io/kotest/matchers/collections/SingletonKt {
 	public static final fun shouldBeSingleton (Ljava/util/Collection;Lkotlin/jvm/functions/Function1;)Ljava/util/Collection;
 	public static final fun shouldBeSingleton ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldBeSingleton ([Ljava/lang/Object;Lkotlin/jvm/functions/Function1;)[Ljava/lang/Object;
+	public static final fun shouldNotBeSingle (Ljava/lang/Iterable;)Ljava/lang/Iterable;
+	public static final fun shouldNotBeSingle (Ljava/util/Collection;)Ljava/util/Collection;
+	public static final fun shouldNotBeSingle ([Ljava/lang/Object;)[Ljava/lang/Object;
 	public static final fun shouldNotBeSingleton (Ljava/lang/Iterable;)Ljava/lang/Iterable;
 	public static final fun shouldNotBeSingleton (Ljava/util/Collection;)Ljava/util/Collection;
 	public static final fun shouldNotBeSingleton ([Ljava/lang/Object;)[Ljava/lang/Object;

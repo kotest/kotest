@@ -89,6 +89,37 @@ fun <T> Array<T>.shouldBeSingle(): T = asList().shouldBeSingle()
 
 
 /**
+ * Verifies this collection does not contain exactly one element.
+ *
+ * This will pass for empty collections and for collections with two or more elements.
+ * Mirrors the negated form of [shouldBeSingle]; returns the receiver to allow chaining.
+ *
+ * ```
+ * listOf<Int>().shouldNotBeSingle()   // Assertion passes
+ * listOf(1, 2).shouldNotBeSingle()    // Assertion passes
+ * listOf(1).shouldNotBeSingle()       // Assertion fails
+ * ```
+ *
+ * @see [shouldBeSingle]
+ * @see [shouldNotBeSingleton]
+ */
+fun <T, C : Collection<T>> C.shouldNotBeSingle(): C {
+   this shouldNotHaveSize 1
+   return this
+}
+
+fun <T, I : Iterable<T>> I.shouldNotBeSingle(): I {
+   toList().shouldNotBeSingle()
+   return this
+}
+
+fun <T> Array<T>.shouldNotBeSingle(): Array<T> {
+   asList().shouldNotBeSingle()
+   return this
+}
+
+
+/**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
 inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {

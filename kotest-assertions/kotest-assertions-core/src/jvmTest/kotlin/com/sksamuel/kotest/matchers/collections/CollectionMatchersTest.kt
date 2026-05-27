@@ -29,6 +29,7 @@ import io.kotest.matchers.collections.shouldBeLargerThan
 import io.kotest.matchers.collections.shouldBeSameSizeAs
 import io.kotest.matchers.collections.shouldBeSingle
 import io.kotest.matchers.collections.shouldBeSingleton
+import io.kotest.matchers.collections.shouldNotBeSingle
 import io.kotest.matchers.collections.shouldBeSmallerThan
 import io.kotest.matchers.collections.shouldContainAnyOf
 import io.kotest.matchers.collections.shouldContainNoNulls
@@ -488,6 +489,46 @@ expected:<1> but was:<2>"""
             // compile-time check: the returned value retains the element type
             val s: String = listOf("hello").shouldBeSingle()
             s shouldBe "hello"
+         }
+      }
+
+      "shouldNotBeSingle" should {
+         "pass for collection with 0 elements" {
+            listOf<Int>().shouldNotBeSingle()
+         }
+
+         "pass for collection with 2+ elements" {
+            listOf(1, 2).shouldNotBeSingle()
+            listOf(1, 2, 3, 4).shouldNotBeSingle()
+         }
+
+         "pass for array with 0 or 2+ elements" {
+            emptyArray<Int>().shouldNotBeSingle()
+            arrayOf(1, 2).shouldNotBeSingle()
+         }
+
+         "pass for iterable with 0 or 2+ elements" {
+            val empty: Iterable<Int> = Iterable { emptyList<Int>().iterator() }
+            val many: Iterable<Int> = Iterable { listOf(1, 2, 3).iterator() }
+            empty.shouldNotBeSingle()
+            many.shouldNotBeSingle()
+         }
+
+         "fail for collection with a single element" {
+            shouldThrow<AssertionError> {
+               listOf(1).shouldNotBeSingle()
+            }.shouldHaveMessage("Collection should not have size 1. Values: [1]")
+         }
+
+         "fail for array with a single element" {
+            shouldThrow<AssertionError> {
+               arrayOf("only").shouldNotBeSingle()
+            }.shouldHaveMessage("Collection should not have size 1. Values: [\"only\"]")
+         }
+
+         "return the receiver for chaining" {
+            val list = listOf(1, 2)
+            list.shouldNotBeSingle() shouldBe list
          }
       }
 
