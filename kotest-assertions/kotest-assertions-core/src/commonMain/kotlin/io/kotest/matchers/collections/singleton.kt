@@ -65,6 +65,30 @@ fun <T> Array<T>.shouldNotBeSingleton(): Array<T> {
 
 
 /**
+ * Verifies this collection contains exactly one element and returns it.
+ *
+ * Analogous to the standard library's [Collection.single], but raises an
+ * assertion error rather than a [NoSuchElementException] / [IllegalArgumentException]
+ * when the collection is empty or contains more than one element.
+ *
+ * ```
+ * val only = listOf(1).shouldBeSingle() // returns 1
+ * listOf(1, 2).shouldBeSingle()         // Assertion fails
+ * ```
+ *
+ * @see [shouldBeSingleton]
+ */
+fun <T, C : Collection<T>> C.shouldBeSingle(): T {
+   this shouldHaveSize 1
+   return this.first()
+}
+
+fun <T, I : Iterable<T>> I.shouldBeSingle(): T = toList().shouldBeSingle()
+
+fun <T> Array<T>.shouldBeSingle(): T = asList().shouldBeSingle()
+
+
+/**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
 inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {

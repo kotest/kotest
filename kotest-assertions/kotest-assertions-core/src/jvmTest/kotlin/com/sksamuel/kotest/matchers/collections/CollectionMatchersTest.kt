@@ -27,6 +27,7 @@ import io.kotest.matchers.collections.matchInOrderSubset
 import io.kotest.matchers.collections.shouldBeIn
 import io.kotest.matchers.collections.shouldBeLargerThan
 import io.kotest.matchers.collections.shouldBeSameSizeAs
+import io.kotest.matchers.collections.shouldBeSingle
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.collections.shouldBeSmallerThan
 import io.kotest.matchers.collections.shouldContainAnyOf
@@ -431,6 +432,62 @@ expected:<1> but was:<4>"""
             shouldThrow<AssertionError> {
                listOf(1).shouldNotBeSingleton()
             }.shouldHaveMessage("Collection should not have size 1. Values: [1]")
+         }
+      }
+
+      "shouldBeSingle" should {
+         "return the single element of a collection with one element" {
+            listOf(42).shouldBeSingle() shouldBe 42
+            setOf("only").shouldBeSingle() shouldBe "only"
+         }
+
+         "return the single element of an array with one element" {
+            arrayOf("only").shouldBeSingle() shouldBe "only"
+         }
+
+         "return the single element of an iterable with one element" {
+            val iterable: Iterable<Int> = Iterable { listOf(7).iterator() }
+            iterable.shouldBeSingle() shouldBe 7
+         }
+
+         "fail for collection with 0 elements" {
+            shouldThrow<AssertionError> {
+               listOf<Int>().shouldBeSingle()
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 0. Values: []
+expected:<1> but was:<0>"""
+            )
+         }
+
+         "fail for collection with 2+ elements" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2).shouldBeSingle()
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 2. Values: [1, 2]
+expected:<1> but was:<2>"""
+            )
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3, 4).shouldBeSingle()
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 4. Values: [1, 2, 3, 4]
+expected:<1> but was:<4>"""
+            )
+         }
+
+         "fail for array with 2+ elements" {
+            shouldThrow<AssertionError> {
+               arrayOf(1, 2).shouldBeSingle()
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 2. Values: [1, 2]
+expected:<1> but was:<2>"""
+            )
+         }
+
+         "preserve the element type in the return value" {
+            // compile-time check: the returned value retains the element type
+            val s: String = listOf("hello").shouldBeSingle()
+            s shouldBe "hello"
          }
       }
 
