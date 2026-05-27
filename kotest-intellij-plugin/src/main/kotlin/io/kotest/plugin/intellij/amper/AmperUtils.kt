@@ -20,9 +20,6 @@ import com.intellij.openapi.vfs.VirtualFile
 internal object AmperUtils {
 
    private const val MODULE_FILE = "module.yaml"
-   private const val PROJECT_FILE = "project.yaml"
-   private const val WRAPPER_UNIX = "amper"
-   private const val WRAPPER_WIN = "amper.bat"
 
    /**
     * Returns true if [module] is an Amper-managed module — that is, any of its content roots
@@ -47,22 +44,6 @@ internal object AmperUtils {
          if (found != null) return found
       }
       return null
-   }
-
-   /**
-    * Returns the directory containing the Amper project root (the directory holding
-    * `project.yaml`, or the module root if there's no `project.yaml`). The wrapper script
-    * (`./amper`) lives at this location.
-    */
-   fun amperProjectRoot(module: Module?): VirtualFile? {
-      val moduleRoot = amperModuleRoot(module) ?: return null
-      var current: VirtualFile? = moduleRoot
-      while (current != null) {
-         if (current.findChild(PROJECT_FILE) != null) return current
-         current = current.parent
-      }
-      // No project.yaml found — for single-module projects, the module root IS the project root.
-      return moduleRoot
    }
 
    private fun findModuleYamlFrom(start: VirtualFile): VirtualFile? {
