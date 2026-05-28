@@ -143,4 +143,19 @@ object KotestEngineProperties {
     * tests marked as disabled (via @Ignored, @DisabledIf, tags, etc.) are still executed.
     */
    const val KOTEST_TEST_ENABLED_OVERRIDE = "KOTEST_TEST_ENABLED_OVERRIDE"
+
+   /**
+    * When set to the path of the regular (non-data-test) container that directly encloses a
+    * data test (e.g. `"parent context -- child context"`), containers with no explicit tags whose
+    * own path-from-root is a prefix of — or exactly equals — this value are allowed to bypass tag
+    * filtering so the engine can traverse them and discover their data test children.
+    *
+    * The path uses `" -- "` as a level separator and consists of raw container names as written by
+    * the user (no spec-style prefixes like `"Given: "`).
+    *
+    * This is set by the IntelliJ plugin run producers when the user clicks to run a specific data
+    * test that is nested inside one or more regular containers. Only the exact ancestors are allowed
+    * through; sibling containers at every level remain excluded by tag filtering.
+    */
+   internal const val KOTEST_DATA_TEST_ANCESTOR_PATH = "KOTEST_DATA_TEST_ANCESTOR_PATH"
 }
