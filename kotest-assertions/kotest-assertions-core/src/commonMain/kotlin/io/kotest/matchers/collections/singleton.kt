@@ -16,17 +16,17 @@ package io.kotest.matchers.collections
  * @see [shouldHaveSingleElement]
  */
 fun <T, C : Collection<T>> C.shouldBeSingleton(): C {
-   this shouldHaveSize 1
+   val _ = this shouldHaveSize 1
    return this
 }
 
 fun <T, I : Iterable<T>> I.shouldBeSingleton(): I {
-   toList().shouldBeSingleton()
+   val _ = toList().shouldBeSingleton()
    return this
 }
 
 fun <T> Array<T>.shouldBeSingleton(): Array<T> {
-   asList().shouldBeSingleton()
+   val _ = asList().shouldBeSingleton()
    return this
 }
 
@@ -48,18 +48,18 @@ fun <T> Array<T>.shouldBeSingleton(): Array<T> {
  * @see [shouldNotHaveSingleElement]
  */
 fun <T, C : Collection<T>> C.shouldNotBeSingleton(): C {
-   this shouldNotHaveSize 1
+   val _ = this shouldNotHaveSize 1
    return this
 }
 
 fun <T, I : Iterable<T>> I.shouldNotBeSingleton(): I {
-   toList().shouldNotBeSingleton()
+   val _ = toList().shouldNotBeSingleton()
    return this
 
 }
 
 fun <T> Array<T>.shouldNotBeSingleton(): Array<T> {
-   asList().shouldNotBeSingleton()
+   val _ = asList().shouldNotBeSingleton()
    return this
 }
 
@@ -79,8 +79,8 @@ fun <T> Array<T>.shouldNotBeSingleton(): Array<T> {
  * @see [shouldBeSingleton]
  */
 fun <T, C : Collection<T>> C.shouldBeSingle(): T {
-   this shouldHaveSize 1
-   return this.first()
+   val _ = this shouldHaveSize 1
+   return this.single()
 }
 
 fun <T, I : Iterable<T>> I.shouldBeSingle(): T = toList().shouldBeSingle()
@@ -104,17 +104,17 @@ fun <T> Array<T>.shouldBeSingle(): T = asList().shouldBeSingle()
  * @see [shouldNotBeSingleton]
  */
 fun <T, C : Collection<T>> C.shouldNotBeSingle(): C {
-   this shouldNotHaveSize 1
+   val _ = this shouldNotHaveSize 1
    return this
 }
 
 fun <T, I : Iterable<T>> I.shouldNotBeSingle(): I {
-   toList().shouldNotBeSingle()
+   val _ = toList().shouldNotBeSingle()
    return this
 }
 
 fun <T> Array<T>.shouldNotBeSingle(): Array<T> {
-   asList().shouldNotBeSingle()
+   val _ = asList().shouldNotBeSingle()
    return this
 }
 
@@ -123,7 +123,7 @@ fun <T> Array<T>.shouldNotBeSingle(): Array<T> {
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
 inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
-   this.shouldBeSingleton()
+   val _ = this.shouldBeSingleton()
    fn(this.first())
    return this
 }
@@ -132,7 +132,7 @@ inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
 inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
-   toList().shouldBeSingleton(fn)
+   val _ = toList().shouldBeSingleton(fn)
    return this
 }
 
@@ -140,7 +140,7 @@ inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
 inline fun <T> Array<T>.shouldBeSingleton(fn: (T) -> Unit): Array<T> {
-   asList().shouldBeSingleton(fn)
+   val _ = asList().shouldBeSingleton(fn)
    return this
 }
 
