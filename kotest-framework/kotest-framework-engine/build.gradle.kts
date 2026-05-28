@@ -59,6 +59,9 @@ kotlin {
 
             // used to install the debug probes for coroutines
             api(libs.kotlinx.coroutines.debug)
+
+            // used by the launcher to scan the classpath for Spec subclasses
+            implementation(libs.classgraph)
          }
       }
 
