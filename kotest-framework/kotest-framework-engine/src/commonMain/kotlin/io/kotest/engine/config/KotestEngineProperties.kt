@@ -90,8 +90,6 @@ object KotestEngineProperties {
     */
    const val PROJECT_CONFIGURATION_FQN = "kotest.framework.config.fqn"
 
-   internal const val ALLOW_MULTILINE_TEST_NAME = "kotest.framework.testname.multiline"
-
    /**
     *  If set -> filter testCases by this severity level and higher, else running all
     */

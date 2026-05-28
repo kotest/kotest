@@ -24,7 +24,6 @@ interface SystemPropertyConfiguration {
    fun timeout(): Duration?
    fun invocationTimeout(): Duration?
    fun projectTimeout(): Duration?
-   fun allowMultilineTestName(): Boolean?
    fun globalAssertSoftly(): Boolean?
    fun testNameAppendTags(): Boolean?
    fun tagInheritance(): Boolean?
