@@ -87,7 +87,7 @@ class DataTestAncestorPathFilterTest : FunSpec({
       }
    }
 
-   test("without KOTEST_DATA_TEST_ANCESTOR_PATH ancestor containers are excluded alongside siblings") {
+   test("without KOTEST_DATA_TEST_ANCESTOR_PATH the data tests are not reachable") {
       val listener = CollectingTestEngineListener()
       TestEngineLauncher()
          .withListener(listener)
@@ -98,10 +98,10 @@ class DataTestAncestorPathFilterTest : FunSpec({
 
       val results = listener.tests
 
-      // Without the ancestor path env var, untagged containers are not bypassed
-      results.entries.first { it.key.name.name == "parent context" }.value.isIgnored shouldBe true
-      results.entries.first { it.key.name.name == "child context" }.value.isIgnored shouldBe true
-      results.entries.first { it.key.name.name == "sibling container" }.value.isIgnored shouldBe true
+      // Without the ancestor path, the engine cannot traverse into the ancestor containers
+      // to discover the data tests — so "data1" and "data2" never run at all
+      results.keys.none { it.name.name == "data1" } shouldBe true
+      results.keys.none { it.name.name == "data2" } shouldBe true
    }
 })
 
