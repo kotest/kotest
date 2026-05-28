@@ -64,13 +64,18 @@ class ArrayTest : DescribeSpec({
       }
 
       it("include repeated elements in edge cases") {
+         // The inner arb threads `rs.random` through `listOf(1, 2).random(...)` so that
+         // both the captured edgeCase and the membership check use the seeded source.
+         // The original used the unseeded `Random.Default`, which made both the
+         // captured value and whether the all-edgeCase list happened to appear flaky.
          val arb = object : Arb<Int>() {
-            override fun edgecase(rs: RandomSource): Sample<Int> = listOf(1, 2).random().asSample()
-            override fun sample(rs: RandomSource): Sample<Int> = listOf(1, 2).random().asSample()
+            override fun edgecase(rs: RandomSource): Sample<Int> = listOf(1, 2).random(rs.random).asSample()
+            override fun sample(rs: RandomSource): Sample<Int> = listOf(1, 2).random(rs.random).asSample()
          }
-         val edgeCase = arb.edgecases(1000).firstOrNull()
-         Arb.list(arb).edgecases() shouldContain listOf(edgeCase, edgeCase)
-         Arb.list(arb, 4..6).edgecases(1000) shouldContain listOf(edgeCase, edgeCase, edgeCase, edgeCase)
+         val edgeCase = arb.edgecases(1000, RandomSource.seeded(1234L)).first()
+         Arb.list(arb).edgecases(1000, RandomSource.seeded(1234L)) shouldContain listOf(edgeCase, edgeCase)
+         Arb.list(arb, 4..6).edgecases(1000, RandomSource.seeded(1234L)) shouldContain
+            listOf(edgeCase, edgeCase, edgeCase, edgeCase)
       }
 
       it("include empty array in edge cases") {
