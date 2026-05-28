@@ -72,3 +72,5 @@ yarn.lock
 
 .gemini/
 gha-creds-*.json
+
+.claude/*.lock
