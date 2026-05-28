@@ -23,10 +23,10 @@ import io.kotest.engine.tags.parse
  * Note: tags are attached to tests either through test config or at the spec level.
  *
  * **Data test ancestor path bypass**: when [KotestEngineProperties.KOTEST_DATA_TEST_ANCESTOR_PATH] is set
- * (by the IntelliJ plugin when running a specific data test nested inside regular containers), containers
- * with no explicit tags whose path-from-root is a prefix of — or exactly equals — that value are allowed
- * through despite failing the tag filter. This ensures the engine traverses the ancestor containers needed
- * to discover the target data test, without also running sibling containers at any level.
+ * (by the IntelliJ plugin when running a specific data test nested inside regular containers), a container
+ * with no explicit tags that fails the tag filter is still allowed to run if it is one of the containers
+ * named in that path. i.e. it lies on the direct route from the spec root to the target data test.
+ * Sibling containers at every level remain excluded by tag filtering.
  */
 internal class TagsEnabledExtension(
    private val tags: TagExpression,
