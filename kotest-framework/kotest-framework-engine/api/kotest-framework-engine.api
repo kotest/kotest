@@ -3815,7 +3815,6 @@ public final class io/kotest/engine/config/SpecConfigResolver {
 }
 
 public abstract interface class io/kotest/engine/config/SystemPropertyConfiguration {
-	public abstract fun allowMultilineTestName ()Ljava/lang/Boolean;
 	public abstract fun assertionMode ()Lio/kotest/core/test/AssertionMode;
 	public abstract fun concurrencyOrder ()Lio/kotest/engine/concurrency/ConcurrencyOrder;
 	public abstract fun coroutineDebugProbes ()Ljava/lang/Boolean;
