@@ -33,9 +33,6 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
    override fun invocationTimeout(): Duration? =
       sysprop(KotestEngineProperties.INVOCATION_TIMEOUT)?.toLong()?.milliseconds
 
-   override fun allowMultilineTestName(): Boolean? =
-      sysprop(KotestEngineProperties.ALLOW_MULTILINE_TEST_NAME)?.let { it.uppercase() == "TRUE" }
-
    override fun globalAssertSoftly(): Boolean? =
       sysprop(KotestEngineProperties.GLOBAL_ASSERT_SOFTLY)?.let { it.uppercase() == "TRUE" }
 
