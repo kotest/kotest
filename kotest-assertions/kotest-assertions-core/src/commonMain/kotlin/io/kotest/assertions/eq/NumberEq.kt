@@ -60,9 +60,19 @@ object NumberEq : Eq<Number> {
             else -> a == b
          }
          is Short -> when (b) {
+            is Double -> a.toDouble() == b
+            is Float -> a.toFloat() == b
             is Long -> a.toLong() == b
             is Int -> a.toInt() == b
             is Byte -> a == b.toShort()
+            else -> a == b
+         }
+         is Byte -> when (b) {
+            is Double -> a.toDouble() == b
+            is Float -> a.toFloat() == b
+            is Long -> a.toLong() == b
+            is Int -> a.toInt() == b
+            is Short -> a.toShort() == b
             else -> a == b
          }
          else -> a == b
