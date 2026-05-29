@@ -41,6 +41,17 @@ class ShouldBeNumericTests : WordSpec({
          42F shouldBe v7
       }
 
+      "support cross-type widening for Double/Long, Float/Long, Float/Short and Float/Byte" {
+         42.0 shouldBe 42L
+         42L shouldBe 42.0
+         42F shouldBe 42L
+         42L shouldBe 42F
+         42F shouldBe 42.toShort()
+         42.toShort() shouldBe 42F
+         42F shouldBe 42.toByte()
+         42.toByte() shouldBe 42F
+      }
+
       "Prints type information on mismatching types" {
          shouldFail {
             1 shouldBe BigInteger.ONE

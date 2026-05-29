@@ -35,12 +35,16 @@ object NumberEq : Eq<Number> {
          }
          is Float -> when (b) {
             is Double -> a.toDouble() == b
+            is Long -> a.toDouble() == b.toDouble()
             is Int -> a == b.toFloat()
+            is Short -> a == b.toFloat()
+            is Byte -> a == b.toFloat()
             is Float -> a == b
             else -> a == b
          }
          is Double -> when (b) {
             is Float -> a == b.toDouble()
+            is Long -> a == b.toDouble()
             is Int -> a == b.toDouble()
             is Short -> a == b.toDouble()
             is Byte -> a == b.toDouble()
@@ -48,6 +52,8 @@ object NumberEq : Eq<Number> {
             else -> a == b
          }
          is Long -> when (b) {
+            is Double -> a.toDouble() == b
+            is Float -> a.toDouble() == b.toDouble()
             is Int -> a == b.toLong()
             is Short -> a == b.toLong()
             is Byte -> a == b.toLong()
