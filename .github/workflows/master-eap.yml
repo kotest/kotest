@@ -18,6 +18,7 @@ jobs:
       if: github.event_name == 'schedule' && github.repository == 'kotest/kotest'
       continue-on-error: false
       strategy:
+         fail-fast: false
          matrix:
             include:
                # JVM-only

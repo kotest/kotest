@@ -7,6 +7,7 @@ jobs:
    release:
 
       strategy:
+         fail-fast: false
          matrix:
             product: [ "IC-251", "IC-252", "IC-253", "IC-261" ]
          max-parallel: 1
