@@ -22,7 +22,7 @@ internal fun Parser.not(): Expression {
 internal fun Parser.and(): Expression {
    var left = not()
    while (skipIf(TokenType.Ampersand)) {
-      val right = expression()
+      val right = not()
       left = Expression.And(left, right)
    }
    return left
@@ -31,7 +31,7 @@ internal fun Parser.and(): Expression {
 internal fun Parser.or(): Expression {
    var left = and()
    while (skipIf(TokenType.Pipe)) {
-      val right = expression()
+      val right = and()
       left = Expression.Or(left, right)
    }
    return left
