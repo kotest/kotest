@@ -3921,6 +3921,7 @@ public final class io/kotest/engine/extensions/DefaultExtensionRegistry : io/kot
 	public fun get (Lkotlin/reflect/KClass;)Ljava/util/List;
 	public fun isEmpty ()Z
 	public fun isNotEmpty ()Z
+	public fun markAfterProjectListenersRegistered (Lkotlin/reflect/KClass;)Z
 	public fun remove (Lio/kotest/core/extensions/Extension;)V
 	public fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
@@ -3934,6 +3935,7 @@ public final class io/kotest/engine/extensions/EmptyExtensionRegistry : io/kotes
 	public fun get (Lkotlin/reflect/KClass;)Ljava/util/List;
 	public fun isEmpty ()Z
 	public fun isNotEmpty ()Z
+	public fun markAfterProjectListenersRegistered (Lkotlin/reflect/KClass;)Z
 	public fun remove (Lio/kotest/core/extensions/Extension;)V
 	public fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
@@ -4013,6 +4015,7 @@ public abstract interface class io/kotest/engine/extensions/ExtensionRegistry {
 	public abstract fun get (Lkotlin/reflect/KClass;)Ljava/util/List;
 	public abstract fun isEmpty ()Z
 	public abstract fun isNotEmpty ()Z
+	public abstract fun markAfterProjectListenersRegistered (Lkotlin/reflect/KClass;)Z
 	public abstract fun remove (Lio/kotest/core/extensions/Extension;)V
 	public abstract fun remove (Lio/kotest/core/extensions/Extension;Lkotlin/reflect/KClass;)V
 }
