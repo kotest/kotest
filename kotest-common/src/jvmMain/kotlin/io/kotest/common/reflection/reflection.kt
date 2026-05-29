@@ -16,13 +16,20 @@ object JvmReflection : Reflection {
    private val fqns = mutableMapOf<KClass<*>, String?>()
    private val annotations = mutableMapOf<Pair<KClass<*>, Set<AnnotationSearchParameter>>, List<Annotation>>()
 
-   override fun fqn(kclass: KClass<*>): String? = fqns.getOrPut(kclass) { kclass.qualifiedName }
+   // these caches are accessed concurrently during spec discovery/ordering/enabled-checks, so each
+   // read-modify-write must be guarded to avoid HashMap corruption. fqns stores nullable values
+   // (qualifiedName can be null) so ConcurrentHashMap is not usable here.
+   override fun fqn(kclass: KClass<*>): String? = synchronized(fqns) {
+      fqns.getOrPut(kclass) { kclass.qualifiedName }
+   }
 
    override fun annotations(kclass: KClass<*>, parameters: Set<AnnotationSearchParameter>): List<Annotation> {
-      return annotations.getOrPut(kclass to parameters) {
-         val includeSuperclasses = parameters.contains(IncludingSuperclasses)
-         val includeAnnotations = parameters.contains(IncludingAnnotations)
-         annotations(kclass, includeSuperclasses, includeAnnotations)
+      return synchronized(annotations) {
+         annotations.getOrPut(kclass to parameters) {
+            val includeSuperclasses = parameters.contains(IncludingSuperclasses)
+            val includeAnnotations = parameters.contains(IncludingAnnotations)
+            annotations(kclass, includeSuperclasses, includeAnnotations)
+         }
       }
    }
 
