@@ -113,9 +113,13 @@ fun <A> Arb.Companion.subsequence(list: List<A>): Arb<List<A>> = arbitrary {
  * The returned list has the same order as the input list.
  */
 fun <A> Arb.Companion.slice(list: List<A>): Arb<List<A>> = arbitrary {
-   val startIndex = it.random.nextInt(0, list.size)
-   val size = it.random.nextInt(0, list.size + 1)
-   list.drop(startIndex).take(size)
+   if (list.isEmpty()) {
+      emptyList()
+   } else {
+      val startIndex = it.random.nextInt(0, list.size)
+      val size = it.random.nextInt(0, list.size + 1)
+      list.drop(startIndex).take(size)
+   }
 }
 
 /**
