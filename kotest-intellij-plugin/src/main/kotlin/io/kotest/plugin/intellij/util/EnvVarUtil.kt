@@ -11,6 +11,7 @@ object EnvVarUtil {
    const val KOTEST_IDEA_PLUGIN = "KOTEST_IDEA_PLUGIN"
    const val KOTEST_TAGS = "KOTEST_TAGS"
    const val KOTEST_INVOCATION_COUNT = "KOTEST_INVOCATION_COUNT"
+   const val KOTEST_DATA_TEST_ANCESTOR_PATH = "KOTEST_DATA_TEST_ANCESTOR_PATH"
 
    fun setKotestTestEnabledOverride(settings : ExternalSystemTaskExecutionSettings) {
       settings.env = settings.env + mapOf(KOTEST_TEST_ENABLED_OVERRIDE to "true")
@@ -44,6 +45,22 @@ object EnvVarUtil {
       with(kotestRunConfiguration.envs){
          remove(KOTEST_TAGS)
       }
+   }
+
+   fun setKotestDataTestAncestorPath(settings: ExternalSystemTaskExecutionSettings, ancestorPath: String) {
+      settings.env = settings.env + mapOf(KOTEST_DATA_TEST_ANCESTOR_PATH to ancestorPath)
+   }
+
+   fun setKotestDataTestAncestorPath(kotestRunConfiguration: KotestRunConfiguration, ancestorPath: String) {
+      kotestRunConfiguration.envs[KOTEST_DATA_TEST_ANCESTOR_PATH] = ancestorPath
+   }
+
+   fun removeKotestDataTestAncestorPath(settings: ExternalSystemTaskExecutionSettings) {
+      settings.env.remove(KOTEST_DATA_TEST_ANCESTOR_PATH)
+   }
+
+   fun removeKotestDataTestAncestorPath(kotestRunConfiguration: KotestRunConfiguration) {
+      kotestRunConfiguration.envs.remove(KOTEST_DATA_TEST_ANCESTOR_PATH)
    }
 
    fun setInvocationCount(settings : ExternalSystemTaskExecutionSettings, invocationCount: Int, resetAction: () -> Unit) {
