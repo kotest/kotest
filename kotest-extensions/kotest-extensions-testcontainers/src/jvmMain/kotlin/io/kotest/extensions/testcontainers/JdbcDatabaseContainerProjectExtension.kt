@@ -57,6 +57,7 @@ class JdbcDatabaseContainerProjectExtension(
 
    override suspend fun afterProject() {
       runInterruptible(Dispatchers.IO) {
+         ref.getAndSet(null)?.close()
          container.stop()
       }
    }
