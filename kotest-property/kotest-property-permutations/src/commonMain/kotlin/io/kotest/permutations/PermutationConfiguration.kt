@@ -140,6 +140,7 @@ class PermutationConfiguration {
       this.shouldPrintShrinkSteps = other.shouldPrintShrinkSteps
       this.shrinkingMode = other.shrinkingMode
       this.maxDiscardPercentage = other.maxDiscardPercentage
+      this.discardCheckThreshold = other.discardCheckThreshold
       this.shouldPrintGeneratedValues = other.shouldPrintGeneratedValues
       this.outputStatistics = other.outputStatistics
       this.statisticsReportMode = other.statisticsReportMode
@@ -149,6 +150,7 @@ class PermutationConfiguration {
       this.seed = other.seed
       this.constraints = other.constraints
       this.iterations = other.iterations
+      this.duration = other.duration
    }
 }
 
