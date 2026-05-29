@@ -16,6 +16,9 @@ kotlin {
    sourceSets {
 
       commonMain {
+         // framework-plugin-bridge sources compiled directly into this module
+         kotlin.srcDir(rootDir.resolve("kotest-framework/kotest-framework-plugin-bridge/src/commonMain/kotlin"))
+
          dependencies {
             // this pulls in the should DSL, which is used in the engine to track assertion usage
             implementation(projects.kotestAssertions.kotestAssertionsShared)

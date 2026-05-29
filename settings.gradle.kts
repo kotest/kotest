@@ -43,6 +43,9 @@ dependencyResolutionManagement {
 include(
    ":kotest-common",
 
+   // shared utilities between the framework engine and the intellij plugin
+   ":kotest-framework:kotest-framework-plugin-bridge",
+
    // contains the execution engine implementation for jvm, js, native
    // brings in the API dependency
    ":kotest-framework:kotest-framework-engine",
