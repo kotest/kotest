@@ -29,13 +29,17 @@ class JUnitXmlReportGenerator(
    }
 
    private fun generate(spec: KClass<*>, tests: Map<TestCase, TestResult>): TestSuite {
+      // Instant.toString() is ISO-8601 in UTC, always ending in 'Z', and only contains a '.' when there
+      // is a sub-second component. Drop fractional seconds while preserving the 'Z' UTC designator.
+      val now = clock.now().toString()
+      val timestamp = if (now.contains('.')) now.substringBefore('.') + "Z" else now
       return TestSuite(
          name = spec.bestName(),
          tests = tests.size,
          failures = tests.filter { it.value.isFailure }.count(),
          errors = tests.filter { it.value.isError }.count(),
          skipped = tests.filter { it.value.isIgnored }.count(),
-         timestamp = clock.now().toString().substringBeforeLast("."), // time without nanos
+         timestamp = timestamp,
          hostname = hostname ?: "",
          time = tests.map { it.value.duration.inWholeMilliseconds / 1_000.0 }.sum(),
          cases = tests.map { (test, result) ->
