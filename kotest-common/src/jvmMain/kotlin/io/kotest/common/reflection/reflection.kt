@@ -2,6 +2,7 @@
 
 package io.kotest.common.reflection
 
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KCallable
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
@@ -13,23 +14,26 @@ import kotlin.reflect.jvm.jvmName
 
 object JvmReflection : Reflection {
 
-   private val fqns = mutableMapOf<KClass<*>, String?>()
-   private val annotations = mutableMapOf<Pair<KClass<*>, Set<AnnotationSearchParameter>>, List<Annotation>>()
+   // these caches are accessed concurrently during spec discovery/ordering/enabled-checks, so they
+   // use ConcurrentHashMap to avoid the data races a plain HashMap would suffer under concurrency.
+   private val fqns = ConcurrentHashMap<KClass<*>, String>()
+   private val annotations = ConcurrentHashMap<Pair<KClass<*>, Set<AnnotationSearchParameter>>, List<Annotation>>()
 
-   // these caches are accessed concurrently during spec discovery/ordering/enabled-checks, so each
-   // read-modify-write must be guarded to avoid HashMap corruption. fqns stores nullable values
-   // (qualifiedName can be null) so ConcurrentHashMap is not usable here.
-   override fun fqn(kclass: KClass<*>): String? = synchronized(fqns) {
-      fqns.getOrPut(kclass) { kclass.qualifiedName }
+   override fun fqn(kclass: KClass<*>): String? {
+      // ConcurrentHashMap cannot store null values, and qualifiedName is null for local/anonymous
+      // classes, so those are simply not cached (recomputing is cheap). get and put are each atomic;
+      // concurrent computation of the same key just recomputes an identical value, which is harmless.
+      fqns[kclass]?.let { return it }
+      val name = kclass.qualifiedName ?: return null
+      fqns[kclass] = name
+      return name
    }
 
    override fun annotations(kclass: KClass<*>, parameters: Set<AnnotationSearchParameter>): List<Annotation> {
-      return synchronized(annotations) {
-         annotations.getOrPut(kclass to parameters) {
-            val includeSuperclasses = parameters.contains(IncludingSuperclasses)
-            val includeAnnotations = parameters.contains(IncludingAnnotations)
-            annotations(kclass, includeSuperclasses, includeAnnotations)
-         }
+      return annotations.computeIfAbsent(kclass to parameters) {
+         val includeSuperclasses = parameters.contains(IncludingSuperclasses)
+         val includeAnnotations = parameters.contains(IncludingAnnotations)
+         annotations(kclass, includeSuperclasses, includeAnnotations)
       }
    }
 
