@@ -2,6 +2,7 @@ package io.kotest.engine.test.enabled
 
 import io.kotest.common.syspropOrEnv
 import io.kotest.core.Logger
+import io.kotest.core.descriptors.DescriptorPaths
 import io.kotest.core.test.Enabled
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
@@ -47,8 +48,8 @@ internal class TagsEnabledExtension(
             && testCase.type == TestType.Container
             && testCase.config?.tags.isNullOrEmpty()
          ) {
-            val containerPath = buildContainerPath(testCase)
-            if (ancestorPath == containerPath || ancestorPath.startsWith("$containerPath -- ")) {
+            val containerPath = testCase.descriptor.testParts().joinToString(DescriptorPaths.TEST_DELIMITER)
+            if (ancestorPath == containerPath || ancestorPath.startsWith("$containerPath${DescriptorPaths.TEST_DELIMITER}")) {
                return Enabled.enabled
             }
          }
@@ -59,24 +60,4 @@ internal class TagsEnabledExtension(
       return Enabled.enabled
    }
 
-   /**
-    * Builds a path string for [testCase] by walking up the [TestCase.parent] chain and joining
-    * [io.kotest.core.names.TestName.name] values with `" -- "`.
-    *
-    * Raw names (no spec-style prefix/suffix such as `"Given: "`) are used intentionally so the result
-    * matches the path the IntelliJ plugin builds from PSI source — which also extracts only the string
-    * literal passed to the container function.
-    *
-    * Example: `context("child context")` nested inside `context("parent context")` → `"parent context -- child context"`.
-    * TODO: this is a good candidate for the shared module between IJ plugin and Framework - as this code is done times and times again
-    */
-   private fun buildContainerPath(testCase: TestCase): String {
-      val parts = mutableListOf<String>()
-      var current: TestCase? = testCase
-      while (current != null) {
-         parts.add(0, current.name.name)
-         current = current.parent
-      }
-      return parts.joinToString(" -- ")
-   }
 }

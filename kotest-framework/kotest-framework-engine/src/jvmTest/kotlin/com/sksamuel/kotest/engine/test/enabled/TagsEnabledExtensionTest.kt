@@ -34,7 +34,7 @@ class TagsEnabledExtensionTest : FunSpec({
    )
 
    fun makeContainer(name: String, parent: TestCase? = null) = TestCase(
-      descriptor = TagsEnabledExtensionSpec::class.toDescriptor().append(name),
+      descriptor = (parent?.descriptor ?: TagsEnabledExtensionSpec::class.toDescriptor()).append(name),
       name = TestNameBuilder.builder(name).build(),
       spec = spec,
       test = { },
