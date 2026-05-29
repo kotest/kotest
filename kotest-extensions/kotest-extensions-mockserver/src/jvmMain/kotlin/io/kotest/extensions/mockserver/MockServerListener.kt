@@ -34,6 +34,9 @@ class MockServerListener(
 
    override suspend fun afterSpec(spec: Spec) {
       mockServer?.stop()
+      // clear the reference so a fresh server is created on the next beforeSpec/beforeTest
+      // if this listener instance is reused across specs
+      mockServer = null
    }
 
    override fun close() {
