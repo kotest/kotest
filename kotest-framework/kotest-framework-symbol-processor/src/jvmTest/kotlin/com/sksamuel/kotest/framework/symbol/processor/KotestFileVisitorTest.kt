@@ -16,7 +16,7 @@ import io.kotest.matchers.shouldBe
 
 class KotestFileVisitorTest : FunSpec({
 
-   context("isSpec should detect all spec types") {
+   context("isSpec should detect subclasses of Spec via any spec style") {
       withTests(
          FunSpec::class,
          DescribeSpec::class,
@@ -28,6 +28,7 @@ class KotestFileVisitorTest : FunSpec({
          StringSpec::class,
          BehaviorSpec::class
       ) { type ->
+         // models com.sksamuel.MySpec -> <spec style> -> io.kotest.core.spec.Spec
          KotestFileVisitor().isSpec(
             SimpleKSClassDeclaration(
                className = "com.sksamuel.MySpec",
@@ -36,6 +37,15 @@ class KotestFileVisitorTest : FunSpec({
                      SimpleKSType(
                         declaration = SimpleKSClassDeclaration(
                            className = type.qualifiedName!!,
+                           supers = listOf(
+                              SimpleKSTypeReference(
+                                 SimpleKSType(
+                                    declaration = SimpleKSClassDeclaration(
+                                       className = "io.kotest.core.spec.Spec",
+                                    )
+                                 )
+                              )
+                           ),
                         )
                      )
                   )
@@ -43,6 +53,40 @@ class KotestFileVisitorTest : FunSpec({
             )
          ) shouldBe true
       }
+   }
+
+   test("isSpec should detect a direct subclass of Spec") {
+      KotestFileVisitor().isSpec(
+         SimpleKSClassDeclaration(
+            className = "com.sksamuel.MySpec",
+            supers = listOf(
+               SimpleKSTypeReference(
+                  SimpleKSType(
+                     declaration = SimpleKSClassDeclaration(
+                        className = "io.kotest.core.spec.Spec",
+                     )
+                  )
+               )
+            ),
+         )
+      ) shouldBe true
+   }
+
+   test("isSpec should return false for classes that do not extend Spec") {
+      KotestFileVisitor().isSpec(
+         SimpleKSClassDeclaration(
+            className = "com.sksamuel.NotASpec",
+            supers = listOf(
+               SimpleKSTypeReference(
+                  SimpleKSType(
+                     declaration = SimpleKSClassDeclaration(
+                        className = "kotlin.Any",
+                     )
+                  )
+               )
+            ),
+         )
+      ) shouldBe false
    }
 
    test("isConfig should detect subclasses of AbstractProjectConfig") {
@@ -116,6 +160,15 @@ class KotestFileVisitorTest : FunSpec({
                   SimpleKSType(
                      declaration = SimpleKSClassDeclaration(
                         className = FunSpec::class.qualifiedName!!,
+                        supers = listOf(
+                           SimpleKSTypeReference(
+                              SimpleKSType(
+                                 declaration = SimpleKSClassDeclaration(
+                                    className = "io.kotest.core.spec.Spec",
+                                 )
+                              )
+                           )
+                        ),
                      )
                   )
                )
