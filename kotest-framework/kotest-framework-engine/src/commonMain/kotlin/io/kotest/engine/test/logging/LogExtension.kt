@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.test.logging
 
 import io.kotest.common.ExperimentalKotest
@@ -10,6 +12,7 @@ import io.kotest.core.test.TestCase
  *
  * Users can use testId on [TestCase.descriptor] to cross-reference the [TestResult] with the provided logs.
  */
+@Deprecated(LOGGING_DEPRECATION_MESSAGE)
 @ExperimentalKotest
 interface LogExtension : Extension {
    suspend fun handleLogs(testCase: TestCase, logs: List<LogEntry>)

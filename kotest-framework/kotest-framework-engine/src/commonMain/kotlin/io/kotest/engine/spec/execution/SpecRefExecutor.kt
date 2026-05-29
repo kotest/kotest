@@ -90,11 +90,15 @@ internal class SpecRefExecutor(
             context.registry.add(it, ref.kclass)
          }
 
-         invokeSpecRefExtensions(ref)
-
-         extensions.forEach {
-            logger.log { LogLine(ref.fqn, "Removing extension $it") }
-            context.registry.remove(it, ref.kclass)
+         // the registered extensions must always be removed, even if invoking the spec ref extensions
+         // throws, otherwise they would leak into all subsequently executed specs.
+         try {
+            invokeSpecRefExtensions(ref)
+         } finally {
+            extensions.forEach {
+               logger.log { LogLine(ref.fqn, "Removing extension $it") }
+               context.registry.remove(it, ref.kclass)
+            }
          }
 
       } catch (t: Throwable) {

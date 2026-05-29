@@ -177,7 +177,7 @@ class AllureWriter(private val jvmSuiteName: String?) {
       allure.scheduleTestCase(result)
       allure.startTestCase(uuid.toString())
 
-      val instanceError = (t.cause as InvocationTargetException).targetException
+      val instanceError = (t.cause as? InvocationTargetException)?.targetException ?: t.cause ?: t
 
       val details = StatusDetails()
       details.message = instanceError?.message ?: "Unknown error"

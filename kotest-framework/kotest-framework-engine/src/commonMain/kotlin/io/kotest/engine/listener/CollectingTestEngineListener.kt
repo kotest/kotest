@@ -9,6 +9,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlin.concurrent.Volatile
 import kotlin.reflect.KClass
 
 /**
@@ -23,6 +24,12 @@ class CollectingTestEngineListener : AbstractTestEngineListener(), Mutex by Mute
    val specs = mutableMapOf<KClass<*>, TestResult>()
    val tests = mutableMapOf<TestCaseKey, TestResult>()
    val names = mutableListOf<String>()
+
+   // Written under [withLock] from test-execution coroutines but read without the lock from
+   // other threads (e.g. the launcher deciding the process exit code, and the scheduler
+   // checking projectWideFailFast after execution), so it must be @Volatile to guarantee the
+   // read observes the latest write rather than a stale cached value.
+   @Volatile
    var errors = false
 
    fun result(descriptor: Descriptor.TestDescriptor): TestResult? = tests.mapKeys { it.key.descriptor }[descriptor]

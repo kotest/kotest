@@ -1,6 +1,7 @@
 // Copyright 2000-2025 JetBrains s.r.o. and contributors. Use of this source code is governed by the Apache 2.0 license.
 package io.kotest.plugin.intellij.breadcrumbs
 
+import com.intellij.testFramework.DumbModeTestUtils
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 
 /**
@@ -110,6 +111,17 @@ class KotestBreadcrumbsCollectorTest : LightJavaCodeInsightFixtureTestCase() {
             """.trimIndent(),
             true,
         )
+    }
+
+    fun `test handlesFile returns false while in dumb mode`() {
+        myFixture.configureByText("KotestSpec.kt", "class MyTests : FunSpec({ })")
+        val virtualFile = myFixture.file.virtualFile
+        // sanity check: the file is handled when indexes are available
+        assertTrue("Expected file to be handled when not in dumb mode", collector().handlesFile(virtualFile))
+        // while indexing (dumb mode) the collector must not attempt to resolve specs
+        DumbModeTestUtils.runInDumbModeSynchronously(project) {
+            assertFalse("Expected file not to be handled while in dumb mode", collector().handlesFile(virtualFile))
+        }
     }
 
     // -------------------------------------------------------------------------
