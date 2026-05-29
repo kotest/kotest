@@ -32,7 +32,7 @@ data class TagExpression(val expression: String) {
    fun combine(other: TagExpression): TagExpression = when {
       this.expression == "" -> other
       other.expression == "" -> this
-      else -> TagExpression(this.expression + " & " + other.expression)
+      else -> TagExpression("(" + this.expression + ") & (" + other.expression + ")")
    }
 
    /**
