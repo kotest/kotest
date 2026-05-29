@@ -34,6 +34,16 @@ interface ExtensionRegistry {
    fun remove(extension: Extension)
    fun remove(extension: Extension, kclass: KClass<*>)
 
+   /**
+    * Atomically marks the given spec [kclass] as having had its spec-level afterProject listeners
+    * registered, returning true only the first time it is called for a given class.
+    *
+    * This allows spec-level afterProject listeners to be registered globally exactly once per spec
+    * class, even when (under InstancePerRoot/InstancePerLeaf/InstancePerTest isolation) many fresh
+    * instances of the same spec are inflated, each building new afterProject listener objects.
+    */
+   fun markAfterProjectListenersRegistered(kclass: KClass<*>): Boolean
+
    fun clear()
    fun isEmpty(): Boolean
    fun isNotEmpty(): Boolean
@@ -42,6 +52,10 @@ interface ExtensionRegistry {
 class DefaultExtensionRegistry : ExtensionRegistry {
 
    private val extensions = mutableListOf<Pair<Extension, KClass<*>?>>()
+
+   // tracks which spec classes have already had their spec-level afterProject listeners registered,
+   // so that subsequent instances of the same spec class do not re-register (and thus re-run) them.
+   private val afterProjectRegisteredClasses = mutableSetOf<KClass<*>>()
 
    override fun all(): List<Extension> = extensions.map { it.first }
 
@@ -65,8 +79,12 @@ class DefaultExtensionRegistry : ExtensionRegistry {
       extensions.remove(Pair(extension, kclass))
    }
 
+   override fun markAfterProjectListenersRegistered(kclass: KClass<*>): Boolean =
+      afterProjectRegisteredClasses.add(kclass)
+
    override fun clear() {
       extensions.clear()
+      afterProjectRegisteredClasses.clear()
    }
 
    override fun isEmpty(): Boolean = extensions.isEmpty()
@@ -91,6 +109,8 @@ object EmptyExtensionRegistry : ExtensionRegistry {
 
    override fun remove(extension: Extension, kclass: KClass<*>) {
    }
+
+   override fun markAfterProjectListenersRegistered(kclass: KClass<*>): Boolean = true
 
    override fun clear() {
    }

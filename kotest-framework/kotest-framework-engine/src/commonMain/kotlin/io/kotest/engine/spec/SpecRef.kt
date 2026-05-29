@@ -33,8 +33,16 @@ internal class SpecRefInflator(
          .onFailure { extensions.specInstantiationError(ref.kclass, it) }
          .flatMap { spec -> extensions.specInstantiated(spec).map { spec } }
          .onSuccess { spec ->
-            // any spec level AfterProjectListener extensions should now be added to the global registry
-            spec.afterProjectListeners().forEach { registry.add(it) }
+            // Any spec level AfterProjectListener extensions should now be added to the global registry.
+            // The registry is engine-wide and add() does not dedupe, so under InstancePerRoot/
+            // InstancePerLeaf/InstancePerTest isolation - where inflate() runs once per fresh spec
+            // instance and each instance builds new afterProject listener objects - we would otherwise
+            // register (and therefore run) a spec-body afterProject{} block once per instance instead of
+            // once per project. We dedupe by spec class so these listeners are registered at most once,
+            // regardless of how many instances are created (and exactly once for SingleInstance mode).
+            if (registry.markAfterProjectListenersRegistered(ref.kclass)) {
+               spec.afterProjectListeners().forEach { registry.add(it) }
+            }
             // seal the spec to detect adding root tests after execution has started
             if (spec is AbstractSpec) {
                spec.sealed = true
