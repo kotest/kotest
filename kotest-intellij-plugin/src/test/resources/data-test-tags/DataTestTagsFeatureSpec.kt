@@ -13,21 +13,21 @@ class DataTestTagsFeatureSpec : FeatureSpec({
 
    feature("parent context") {
       feature("child context") {
-         withFeatures("firstChildOfChildContext1", "firstChildOfChildContext2") { // tags: "((kotest.data.16) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
-            withFeatures("firstChildOfFirstChildOfChildContext1", "firstChildOfFirstChildOfChildContext2") { // tags: "((kotest.data.16 & !kotest.data.20) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+         withFeatures("firstChildOfChildContext1", "firstChildOfChildContext2") { // tags: "(kotest.data.16) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+            withFeatures("firstChildOfFirstChildOfChildContext1", "firstChildOfFirstChildOfChildContext2") { // tags: "(kotest.data.16 & !kotest.data.20) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
                1 + 1 shouldBe 2
             }
-            withFeatures("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // tags: "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
-               withFeatures("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // tags: "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context" (same as parent, no siblings)
+            withFeatures("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // tags: "(kotest.data.16 & !kotest.data.17) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+               withFeatures("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // tags: "(kotest.data.16 & !kotest.data.17) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context" (same as parent, no siblings)
                   1 + 1 shouldBe 2
                }
             }
          }
-         withScenarios("secondChildOfChildContext1", "secondChildOfChildContext2") { // tags: "((kotest.data.26) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+         withScenarios("secondChildOfChildContext1", "secondChildOfChildContext2") { // tags: "(kotest.data.26) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
             1 + 1 shouldBe 2
          }
       }
-      withScenarios("firstChildOfParentContext1", "firstChildOfParentContext2") { // tags: "((kotest.data.30) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context"
+      withScenarios("firstChildOfParentContext1", "firstChildOfParentContext2") { // tags: "(kotest.data.30) | kotest.data.nonJvm" - ancestorTestPath: "parent context"
          1 + 1 shouldBe 2
       }
    }
