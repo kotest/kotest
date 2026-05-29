@@ -38,6 +38,9 @@ jobs:
    build-primary:
       needs: validate-api
       strategy:
+         # don't cancel the other matrix legs when one fails, so a single (often flaky)
+         # platform failure doesn't cancel the build/publish of the rest
+         fail-fast: false
          matrix:
             include:
                # KMP+JVM
