@@ -37,22 +37,25 @@ class JdbcDatabaseContainerProjectExtension(
 
    override fun mount(configure: HikariConfig.() -> Unit): HikariDataSource {
       lock.lockInterruptibly()
-      val t = ref.get()
-      if (t == null) {
-         container.start()
-         container.followOutput(config.logConsumer)
-         val config = HikariConfig()
-         config.jdbcUrl = container.jdbcUrl
-         config.username = container.username
-         config.password = container.password
-         config.configure()
-         val ds = HikariDataSource(config)
-         onStart(ds)
-         ref.set(ds)
-      }
+      try {
+         val t = ref.get()
+         if (t == null) {
+            container.start()
+            container.followOutput(config.logConsumer)
+            val config = HikariConfig()
+            config.jdbcUrl = container.jdbcUrl
+            config.username = container.username
+            config.password = container.password
+            config.configure()
+            val ds = HikariDataSource(config)
+            onStart(ds)
+            ref.set(ds)
+         }
 
-      lock.unlock()
-      return ref.get()
+         return ref.get()
+      } finally {
+         lock.unlock()
+      }
    }
 
    override suspend fun afterProject() {
