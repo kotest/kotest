@@ -134,7 +134,7 @@ class UntilConfigurationBuilder {
     *
     * This function is applied in addition to the values specified by [expectedExceptions].
     */
-   var expectedExceptionsFn: (Throwable) -> Boolean = { true }
+   var expectedExceptionsFn: (Throwable) -> Boolean = { false }
 
    /**
     * A listener that is invoked after each failed invocation, with the iteration count,
