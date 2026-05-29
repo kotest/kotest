@@ -62,7 +62,12 @@ class HtmlReporter(
    }
 
    private fun getTestResults(): Sequence<File> {
-      return File(DEFAULT_RESULTS_LOCATION)
+      val buildDir = System.getProperty(BUILD_DIR_KEY)
+      val resultsDir = if (buildDir != null)
+         Paths.get(buildDir).resolve("test-results/test").toFile()
+      else
+         File(DEFAULT_RESULTS_LOCATION)
+      return resultsDir
          .walk()
          .filter { Files.isRegularFile(it.toPath())}
          .filter { it.toString().endsWith(".xml") }
