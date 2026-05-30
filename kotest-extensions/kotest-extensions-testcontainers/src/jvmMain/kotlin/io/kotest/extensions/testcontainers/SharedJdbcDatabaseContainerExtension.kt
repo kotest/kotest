@@ -69,6 +69,7 @@ class SharedJdbcDatabaseContainerExtension(
    }
 
    override suspend fun afterProject() {
+      ds?.close()
       if (container.isRunning) container.stop()
    }
 
@@ -107,7 +108,9 @@ class SharedJdbcDatabaseContainerExtension(
       config.password = container.password
       config.configure()
       val ds = HikariDataSource(config)
-      runInitScripts(ds.connection, config.dbInitScripts)
+      ds.connection.use { connection ->
+         runInitScripts(connection, config.dbInitScripts)
+      }
       return ds
    }
 }

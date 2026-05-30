@@ -13,19 +13,6 @@ import com.google.devtools.ksp.symbol.Modifier
 
 class KotestFileVisitor : KSVisitorVoid() {
 
-   private val specTypes = setOf(
-      "AnnotationSpec",
-      "BehaviorSpec",
-      "DescribeSpec",
-      "ExpectSpec",
-      "FeatureSpec",
-      "FreeSpec",
-      "FunSpec",
-      "ShouldSpec",
-      "StringSpec",
-      "WordSpec",
-   )
-
    internal val specs = mutableListOf<KSClassDeclaration>()
    internal val configs = mutableListOf<KSClassDeclaration>()
 
@@ -54,10 +41,16 @@ class KotestFileVisitor : KSVisitorVoid() {
    internal fun isAbstract(declaration: KSClassDeclaration): Boolean =
       declaration.modifiers.contains(Modifier.ABSTRACT) || declaration.modifiers.contains(Modifier.SEALED)
 
+   /**
+    * Returns true for subclasses of [io.kotest.core.spec.Spec]. Every spec style
+    * (FunSpec, StringSpec, AnnotationSpec, ...) ultimately extends Spec, so this
+    * detects them all — including user-defined intermediate base specs — without
+    * having to enumerate the built-in style names.
+    */
    internal fun isSpec(declaration: KSClassDeclaration): Boolean =
       declaration.getAllSuperTypes().map { it.declaration }
          .filterIsInstance<KSClassDeclaration>()
-         .any { specTypes.contains(it.simpleName.asString()) }
+         .any { it.qualifiedName?.asString() == "io.kotest.core.spec.Spec" }
 
    internal fun isConfig(declaration: KSClassDeclaration): Boolean {
       return declaration.getAllSuperTypes().map { it.declaration }

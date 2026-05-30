@@ -31,13 +31,26 @@ internal fun compareObjects(
 
       // when using strict order mode, the order of elements in json matters, normally, we don't care
       when (options.propertyOrder) {
-         PropertyOrder.Strict ->
-            if(expected.elements.keys == actual.elements.keys) {
+         PropertyOrder.Strict -> {
+            if (expected.elements.keys == actual.elements.keys) {
                expected.elements.entries.withIndex().zip(actual.elements.entries).forEach { (e, a) ->
                   if (a.key != e.value.key) add(JsonError.NameOrderDiff(path, e.index, e.value.key, a.key))
                   addAll(compare(path + a.key, e.value.value, a.value, options))
                }
+            } else {
+               // The key sets (or their order) differ. The key-set differences are already reported
+               // above when FieldComparison.Strict is in effect. We still report positional name-order
+               // differences and, crucially, compare the values of keys present in both objects so that
+               // genuine value mismatches are not hidden by the key-order / key-set error.
+               expected.elements.entries.withIndex().zip(actual.elements.entries).forEach { (e, a) ->
+                  if (a.key != e.value.key) add(JsonError.NameOrderDiff(path, e.index, e.value.key, a.key))
+               }
+               expected.elements.entries.forEach { (name, e) ->
+                  val a = actual.elements[name]
+                  if (a != null) addAll(compare(path + name, e, a, options))
+               }
             }
+         }
 
          PropertyOrder.Lenient -> {
             expected.elements.entries.forEach { (name, e) ->

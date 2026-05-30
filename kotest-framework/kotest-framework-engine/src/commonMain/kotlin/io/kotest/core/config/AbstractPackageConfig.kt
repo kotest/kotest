@@ -10,10 +10,10 @@ import io.kotest.engine.concurrency.TestExecutionMode
 import kotlin.time.Duration
 
 /**
- * Concrete implementations of this class with the name `KotestPackageConfig` will be detected at runtime and
+ * Concrete implementations of this class with the name `PackageConfig` will be detected at runtime and
  * used to configure the test engine for specs running in the same or a child package of that spec.
  *
- * For example, creating an instance `com.sksamuel.foo.KotestPackageConfig` will
+ * For example, creating an instance `com.sksamuel.foo.PackageConfig` will
  * mean any tests residing in packages `com.sksamuel.foo`, `com.sksamuel.foo.bar`, `com.sksamuel.foo.baz` and
  * so on will have this config applied.
  *

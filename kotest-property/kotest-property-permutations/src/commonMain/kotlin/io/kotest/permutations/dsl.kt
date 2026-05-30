@@ -45,7 +45,9 @@ suspend fun permutations(
 
    val context = configuration.toContext()
    val executor = PermutationExecutor(context)
-   val result = executor.execute { context.test.invoke(Permutation(0, context.rs, context.classifications)) }
+   val result = executor.execute { iteration ->
+      context.test.invoke(Permutation(iteration, context.rs, context.classifications))
+   }
    return result
 }
 
