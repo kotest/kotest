@@ -11,7 +11,7 @@ import io.kotest.property.PropertyContext
  *
  *       withCoveragePercentage("even", 25.0) {
  *          forAll(Arb.int()) { a ->
- *             classify(a % 2 == 0, "even")
+ *             if (a % 2 == 0) collect("even")
  *             a + a == 2 * a
  *          }
  *       }
@@ -48,7 +48,7 @@ suspend fun withCoveragePercentages(
  *
  *       withCoverageCount("even", 150) {
  *          forAll(Arb.int()) { a ->
- *             classify(a % 2 == 0, "even")
+ *             if (a % 2 == 0) collect("even")
  *             a + a == 2 * a
  *          }
  *       }
@@ -66,9 +66,10 @@ suspend fun withCoverageCount(
  *
  * For example, to check that at least 150 of the iterations were classified as 'even', and 200 were 'positive':
  *
- *       withCoverageCounts("even", 150, "positive", 200) {
+ *       withCoverageCounts(mapOf("even" to 150, "positive" to 200)) {
  *          forAll(Arb.int()) { a ->
- *             classify(a % 2 == 0, "even")
+ *             if (a % 2 == 0) collect("even")
+ *             if (a > 0) collect("positive")
  *             a + a == 2 * a
  *          }
  *       }
