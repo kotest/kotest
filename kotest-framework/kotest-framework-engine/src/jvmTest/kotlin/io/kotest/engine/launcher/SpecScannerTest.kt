@@ -18,14 +18,17 @@ private class PrivateConcreteSpecForScannerTest : FunSpec()
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class SpecScannerTest : FunSpec() {
+
+   // scan the classpath once and reuse the result across all tests
+   private val specs = SpecScanner.scan()
+
    init {
 
       test("scan should discover concrete, public subclasses of Spec") {
-         SpecScanner.scan() shouldContain PublicConcreteSpecForScannerTest::class
+         specs shouldContain PublicConcreteSpecForScannerTest::class
       }
 
       test("scan should not return abstract subclasses of Spec") {
-         val specs = SpecScanner.scan()
          specs shouldNotContain AbstractSpecForScannerTest::class
          // the built in spec styles are themselves abstract subclasses of Spec
          specs shouldNotContain FunSpec::class
@@ -33,7 +36,7 @@ class SpecScannerTest : FunSpec() {
       }
 
       test("scan should not return private subclasses of Spec") {
-         SpecScanner.scan() shouldNotContain PrivateConcreteSpecForScannerTest::class
+         specs shouldNotContain PrivateConcreteSpecForScannerTest::class
       }
    }
 }
