@@ -13,10 +13,11 @@ infix fun Path.shouldNotContainNFiles(n: Int) = this shouldNot containNFiles(n)
 
 fun containNFiles(n: Int): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
-      val count = Files.newDirectoryStream(value).use { it.count() }
+      val isDir = value.isDirectory()
+      val count = if (isDir) Files.newDirectoryStream(value).use { it.count() } else 0
       return MatcherResult(
-         value.isDirectory() && count == n,
-         { "$value should be a directory and contain $n files (isDir = ${value.isDirectory()}; file count = $count)" },
+         isDir && count == n,
+         { "$value should be a directory and contain $n files (isDir = $isDir; file count = $count)" },
          { "$value should not be a directory containing $n files" }
       )
    }

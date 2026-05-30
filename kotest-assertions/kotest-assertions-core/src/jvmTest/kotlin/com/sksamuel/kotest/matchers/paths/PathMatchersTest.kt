@@ -92,5 +92,26 @@ class PathMatchersTest : FunSpec({
 
          fs.close()
       }
+
+      test("should fail gracefully for a non-directory (isDir = false) instead of throwing") {
+         val fs = Jimfs.newFileSystem(Configuration.unix())
+
+         // a regular file is not a directory
+         val file = fs.getPath("/file.txt")
+         Files.createFile(file)
+         // a non-directory does not contain N files, so shouldNotContainNFiles passes
+         // (before the fix this threw NotDirectoryException from newDirectoryStream)
+         file.shouldNotContainNFiles(0)
+         file.shouldNotContainNFiles(3)
+         // shouldContainNFiles produces a clean failed assertion, not a thrown IOException
+         shouldThrow<AssertionError> { file.shouldContainNFiles(0) }
+
+         // a path that does not exist is likewise not a directory
+         val missing = fs.getPath("/does-not-exist")
+         missing.shouldNotContainNFiles(0)
+         shouldThrow<AssertionError> { missing.shouldContainNFiles(1) }
+
+         fs.close()
+      }
    }
 })
