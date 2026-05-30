@@ -99,25 +99,27 @@ object DataTestUtil {
 
 
    /**
-    * Returns [DataTestInfo] for this data test.
+    * Returns [DataTestInfo] for this data test, or null if this is not a data test or the line number
+    * cannot be determined.
     *
-    * - For root data tests: returns with simple tag `kotest.data.{lineNumber}` and no ancestor path - as these test path is the same as the Spec.
-    * - For nested data tests within other data tests: returns with tag `kotest.data.{parentDataTestLineNumber} & !kotest.data.{siblingLineNumber} and no ancestor path
-    *   builds a chain from the root parent down to this data test, excluding siblings at every level.
-    * - For data tests inside regular containers (like `context("...")`): returns with
-    *   tag expression wrapped in parenthesis with an additional (outside the parenthesis) `| !kotest.data` to allow parent container to run
-    *   effectively excluding all data tests except those in the parenthesis; and the ancestor test path so the filter can target the specific container.
-    * - To support `nonJvm`, where we are unable to attach a `lineNumber` tag at the framework level, because of the lack of `stackTrace`,
-    *   it returns the same tag expression structure as above, and adds `| kotest.data.nonJvm` at the end, so that at least users are able to run all data tests within a block.
+    * **Tag expression** ([DataTestInfo.tag]):
+    * - Root data tests: `(kotest.data.{lineNumber}) | kotest.data.nonJvm`
+    * - Nested inside other data tests: root ancestor tag ANDed with `!kotest.data.{siblingLine}` exclusions
+    *   at every nesting level, e.g. `(kotest.data.10 & !kotest.data.15 & !kotest.data.20) | kotest.data.nonJvm`.
+    * - The `| kotest.data.nonJvm` suffix supports platforms that cannot attach line-number tags (no stack trace),
+    *   allowing users to run all data tests within a block on those targets.
     *
-    * This allows running a specific data test, nested, at any level, by including all ancestors
-    * (if necessary - so they execute and discover children) while excluding sibling data test blocks at each level.
-    *
-    * Returns null early if this is not a data test or line number cannot be determined.
+    * **Ancestor test path** ([DataTestInfo.ancestorTestPath]):
+    * - Non-null only when the data test is nested inside one or more regular (non-data-test) containers
+    *   such as `context("...")` or `describe("...")`. In that case it holds the ` -- ` separated path of
+    *   those containers, e.g. `"parent context -- child context"`.
+    * - The run producers store this value in the `KOTEST_DATA_TEST_ANCESTOR_PATH` environment variable.
+    *   The engine's [io.kotest.engine.test.enabled.TagsEnabledExtension] uses it to allow only the direct
+    *   ancestor containers through tag filtering, so the engine can discover the target data test without
+    *   also running sibling containers or sibling regular tests at any level.
     *
     * @see <a href="https://github.com/kotest/kotest/blob/081125c5f6b0a90d8201b9acea2b698a388984d6/kotest-intellij-plugin/src/test/resources/data-test-tags/DataTestTagsBehaviorSpec.kt">
     * Example for full details of the various DataTestInfo generated for different data test nesting scenarios</a>
-    *
     */
    fun dataTestInfoMaybe(isDataTest: Boolean, currentTestPsi: PsiElement): DataTestInfo? {
       if (!isDataTest) return null
@@ -159,17 +161,7 @@ object DataTestUtil {
          }
       }
 
-      // If inside a regular container, we need to add "| !kotest.data"
-      // to allow the parent container to think it is going to run (and therefore generate) all tests within it,
-      // as this data test will have the full container test path, set via regularAncestorPath + this specific data test tag
-      // that will be defined by the baseTag setter above
-      val jvmTag = if (isInsideRegularContainer) {
-         "($baseTag) | !kotest.data"
-      } else {
-         baseTag
-      }
-
-      val finalTag = "($jvmTag) | kotest.data.nonJvm"
+      val finalTag = "($baseTag) | kotest.data.nonJvm"
 
       return DataTestInfo(finalTag, regularAncestorPath)
    }
