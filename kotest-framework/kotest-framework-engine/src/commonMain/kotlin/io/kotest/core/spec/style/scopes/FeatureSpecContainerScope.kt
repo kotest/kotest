@@ -104,7 +104,7 @@ class FeatureSpecContainerScope(
          TestDefinitionBuilder
             .builder(scenarioName(name), TestType.Test)
             .withXmethod(xmethod)
-            .build { WordSpecWhenContainerScope(this).test() }
+            .build(test)
       )
    }
 
