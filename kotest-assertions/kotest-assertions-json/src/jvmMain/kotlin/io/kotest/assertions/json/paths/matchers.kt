@@ -39,7 +39,8 @@ infix fun Path.shouldNotEqualJson(@Language("json") expected: String): Path {
 infix fun Path.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): Path {
    val options = CompareJsonOptions()
    val expected = configureAndProvideExpected(options)
-   this shouldNot (exist() and aFile() and equalJson(expected, options).contramap<Path> { it.readText() }.invert())
+   this should (exist() and aFile())
+   this.readText() shouldNot equalJson(expected, options)
    return this
 }
 
