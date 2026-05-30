@@ -68,7 +68,11 @@ internal class GradleClassMethodRegexTestFilter(private val patterns: Set<String
       // matches a spec descriptor when we have a spec + method pattern
       val isSpecPrefix by lazy {
          if (descriptor !is Descriptor.SpecDescriptor) false
-         else pattern.removePrefix("\\Q").removeSuffix("\\E").startsWith(descriptor.id.value)
+         else {
+            val p = pattern.removePrefix("\\Q").removeSuffix("\\E")
+            val id = descriptor.id.value
+            p == id || p.startsWith("$id.")
+         }
       }
 
       val isSpecMatched by lazy { descriptor.spec().id.value.matches(regexPattern) } // *.SomeTest
