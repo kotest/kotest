@@ -19,12 +19,20 @@ import io.kotest.property.isEmpty
  * Once all values from a shrink step pass, we return the previous value as the "smallest" failing case
  * along with the reason for the failure.
  *
+ * If [replayPath] is provided, the search is skipped and the recorded path is followed directly to
+ * the shrunk value via [doReplay]. This lets a user re-run a previously discovered failure without
+ * paying for the full shrink search — see issue
+ * [#3076](https://github.com/kotest/kotest/issues/3076).
  */
+@JvmOverloads
 suspend fun <A> doShrinking(
    initial: RTree<A>,
    mode: ShrinkingMode,
+   replayPath: List<Int>? = null,
    test: suspend (A) -> Unit
 ): ShrinkResult<A> {
+
+   if (replayPath != null) return doReplay(initial, replayPath, test)
 
    if (initial.isEmpty()) return ShrinkResult(initial.value(), initial.value(), null)
 
@@ -121,6 +129,75 @@ suspend fun <A> doStep(
 
    return null
 }
+
+/**
+ * Replays a previously-recorded shrink path on the given [RTree] without running the full shrink
+ * search. Walks [path] by indexing into [RTree.children] at each level, then runs [test] once on
+ * the final node's value to obtain the failure.
+ *
+ * Replay is strict by design: if the path can no longer be followed (an index is out of bounds
+ * because the [io.kotest.property.Shrinker] changed since the path was recorded), or if the final
+ * value no longer reproduces the failure, this throws [ReplayShrinkPathException] rather than
+ * silently falling back. Silent fallback would otherwise label a non-failing value as if it were
+ * the shrunk counterexample, defeating the point of replay.
+ *
+ * The thrown exception is caught by [handleException] and surfaced as a normal property-test
+ * failure with a "replay was skipped" note, so users can just rerun without `shrinkPaths` to
+ * perform a full shrink.
+ */
+internal suspend fun <A> doReplay(
+   initial: RTree<A>,
+   path: List<Int>,
+   test: suspend (A) -> Unit
+): ShrinkResult<A> {
+   var current = initial
+   for ((step, idx) in path.withIndex()) {
+      val children = current.children.value
+      if (idx < 0 || idx >= children.size) {
+         throw ReplayShrinkPathException(
+            "Replay shrink path $path is invalid at step $step: index $idx is out of range for " +
+               "children of size ${children.size}. The Shrinker for this type may have changed " +
+               "since the path was recorded; rerun without shrinkPaths to perform a full shrink."
+         )
+      }
+      current = children[idx]
+   }
+
+   val finalValue = current.value()
+   val cause: Throwable? = try {
+      test(finalValue)
+      null
+   } catch (e: IterationSkippedException) {
+      throw ReplayShrinkPathException(
+         "Replay shrink path $path did not reproduce a failure: the test was skipped by assume() " +
+            "on the replayed value ${finalValue.print().value}. The property's assumptions may have " +
+            "changed since the path was recorded; rerun without shrinkPaths to perform a full shrink.",
+         e
+      )
+   } catch (t: Throwable) {
+      t
+   }
+   if (cause == null) {
+      throw ReplayShrinkPathException(
+         "Replay shrink path $path did not reproduce a failure: the test passed on the replayed " +
+            "value ${finalValue.print().value}. The Shrinker or the property under test may have " +
+            "changed since the path was recorded; rerun without shrinkPaths to perform a full shrink."
+      )
+   }
+   return ShrinkResult(initial.value(), finalValue, cause, path)
+}
+
+/**
+ * Thrown by [doReplay] when a [io.kotest.property.PropTestConfig.shrinkPaths] entry can no longer
+ * be followed to a genuine failure — either an index is out of range for the current tree, or the
+ * final replayed value no longer reproduces the original failure.
+ *
+ * Kept `internal` so the type does not enter the public ABI. It is caught by [handleException]
+ * during the shrink phase: a `Note: shrink replay was skipped — ...` line is printed, and the
+ * property test still fails through the normal failure path so users see seed, eval index, and
+ * the original cause.
+ */
+internal class ReplayShrinkPathException(message: String, cause: Throwable? = null) : RuntimeException(message, cause)
 
 /**
  * Returns true if we should continue shrinking given the count.

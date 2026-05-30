@@ -89,6 +89,7 @@ class ForAll2Test : FunSpec({
       }.message shouldBe """Property failed after 6 attempts
 
 Repeat this test by using seed 1900646515
+Eval index: 6
 
 Caused by: Property failed 6 times (maxFailure rate was 5)
 Last error was caused by args:
@@ -122,6 +123,7 @@ Caused by: Property passed 8 times (minSuccess rate was 9)"""
 	Arg 1: "r" (shrunk from "rDi")
 
 Repeat this test by using seed 1234
+Eval index: 1
 Shrink paths: [[0], [0, 0]]
 
 Caused by IllegalArgumentException: something unexpected happened"""
@@ -137,6 +139,7 @@ Caused by IllegalArgumentException: something unexpected happened"""
       }.message shouldBe """Property failed after 8 attempts
 
 Repeat this test by using seed 5847062201763421121
+Eval index: 12
 
 Caused by AssertionFailedError: expected:<true> but was:<false>"""
    }
