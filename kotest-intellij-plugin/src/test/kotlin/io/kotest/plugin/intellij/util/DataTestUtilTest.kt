@@ -45,7 +45,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
          val firstChildOfChildContext = allDataTestCalls.find { getLineNumber(it) == 16 }.shouldNotBeNull()
          DataTestUtil.dataTestInfoMaybe(isDataTest = true, firstChildOfChildContext).apply {
             this.shouldNotBeNull()
-            tag shouldBe "((kotest.data.16) | !kotest.data) | kotest.data.nonJvm"
+            tag shouldBe "(kotest.data.16) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context -- child context"
          }
 
@@ -54,7 +54,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
          val firstChildOfFirstChildOfChildContext = allDataTestCalls.find { getLineNumber(it) == 17 }.shouldNotBeNull()
          DataTestUtil.dataTestInfoMaybe(isDataTest = true, firstChildOfFirstChildOfChildContext).apply {
             this.shouldNotBeNull()
-            tag shouldBe "((kotest.data.16 & !kotest.data.20) | !kotest.data) | kotest.data.nonJvm"
+            tag shouldBe "(kotest.data.16 & !kotest.data.20) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context -- child context"
          }
 
@@ -63,7 +63,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
          val secondChildOfFirstChildOfChildContext = allDataTestCalls.find { getLineNumber(it) == 20 }.shouldNotBeNull()
          DataTestUtil.dataTestInfoMaybe(isDataTest = true, secondChildOfFirstChildOfChildContext).apply {
             this.shouldNotBeNull()
-            tag shouldBe "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm"
+            tag shouldBe "(kotest.data.16 & !kotest.data.17) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context -- child context"
          }
 
@@ -73,7 +73,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
             allDataTestCalls.find { getLineNumber(it) == 21 }.shouldNotBeNull()
          DataTestUtil.dataTestInfoMaybe(isDataTest = true, firstChildOfSecondChildOfFirstChildOfChildContext).apply {
             this.shouldNotBeNull()
-            tag shouldBe "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm"
+            tag shouldBe "(kotest.data.16 & !kotest.data.17) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context -- child context"
          }
 
@@ -81,7 +81,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
          val secondChildOfChildContext = allDataTestCalls.find { getLineNumber(it) == 26 }.shouldNotBeNull()
          DataTestUtil.dataTestInfoMaybe(isDataTest = true, secondChildOfChildContext).apply {
             this.shouldNotBeNull()
-            tag shouldBe "((kotest.data.26) | !kotest.data) | kotest.data.nonJvm"
+            tag shouldBe "(kotest.data.26) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context -- child context"
          }
 
@@ -89,7 +89,7 @@ class DataTestUtilTest : LightJavaCodeInsightFixtureTestCase() {
          val firstChildOfParentContext = allDataTestCalls.find { getLineNumber(it) == 30 }.shouldNotBeNull()
          DataTestUtil.dataTestInfoMaybe(isDataTest = true, firstChildOfParentContext).apply {
             this.shouldNotBeNull()
-            tag shouldBe "((kotest.data.30) | !kotest.data) | kotest.data.nonJvm"
+            tag shouldBe "(kotest.data.30) | kotest.data.nonJvm"
             ancestorTestPath shouldBe "parent context"
          }
 

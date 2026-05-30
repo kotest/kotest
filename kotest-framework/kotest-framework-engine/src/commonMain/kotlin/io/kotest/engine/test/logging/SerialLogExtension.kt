@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package io.kotest.engine.test.logging
 
 import io.kotest.common.ExperimentalKotest

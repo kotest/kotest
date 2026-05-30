@@ -154,6 +154,7 @@ internal class TestExtensions(
    /**
     * Returns the [LogExtension]s applicable to this [TestCase].
     */
+   @Suppress("DEPRECATION")
    fun logExtensions(testCase: TestCase): List<LogExtension> {
       return testConfigResolver.extensions(testCase, ExtensionsOrder.LOCAL_FIRST)
          .filterIsInstance<LogExtension>()

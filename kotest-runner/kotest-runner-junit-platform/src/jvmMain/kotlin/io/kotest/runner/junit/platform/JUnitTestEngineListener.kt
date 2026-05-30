@@ -292,6 +292,10 @@ class JUnitTestEngineListener(
             ?: error("startedTests contains ${testCase.descriptor} but descriptors does not")
          logger.log { Pair(testCase.name.name, "test ignored after start; finalizing as aborted: $reason") }
          results[testCase.descriptor] = TestResult.Ignored(reason)
+         // this test was skipped (via TestAbortedException / assumption), so it must be
+         // accounted for in the ignored-tests tracking that drives failOnIgnoredTests,
+         // consistent with the never-started ignored path below.
+         anyTestIgnored = true
          listener.executionFinished(descriptor, TestExecutionResult.aborted(null))
          return
       }

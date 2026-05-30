@@ -21,12 +21,12 @@ internal object MapEq : Eq<Map<*, *>> {
       try {
          val haveUnequalKeys = EqCompare.compare(actual.keys, expected.keys, context)
          return when (haveUnequalKeys) {
-            is EqResult.Failure -> EqResult.Failure { generateError(actual, expected) }
+            is EqResult.Failure -> EqResult.Failure { generateError(actual, expected, context) }
             EqResult.Success -> {
                val hasDifferentValue = actual.keys.any { key ->
                   EqCompare.compare(actual[key], expected[key], context) is EqResult.Failure
                }
-               if (hasDifferentValue) EqResult.Failure { generateError(actual, expected) }
+               if (hasDifferentValue) EqResult.Failure { generateError(actual, expected, context) }
                else EqResult.Success
             }
          }
@@ -36,17 +36,19 @@ internal object MapEq : Eq<Map<*, *>> {
    }
 }
 
-private fun generateError(actual: Map<*, *>?, expected: Map<*, *>?): Throwable {
+private fun generateError(actual: Map<*, *>?, expected: Map<*, *>?, context: EqContext): Throwable {
    return AssertionErrorBuilder.create()
-      .withMessage(buildFailureMessage(actual, expected))
+      .withMessage(buildFailureMessage(actual, expected, context))
       .withValues(Expected(print(expected)), Actual(print(actual)))
       .build()
 }
 
-private fun buildFailureMessage(actual: Map<*, *>?, expected: Map<*, *>?): String {
+private fun buildFailureMessage(actual: Map<*, *>?, expected: Map<*, *>?, context: EqContext): String {
    return when {
       actual != null && expected != null -> {
-         val keysHavingDifferentValues = actual.keys.filterNot { expected[it] == actual[it] }
+         val keysHavingDifferentValues = actual.keys.filter {
+            EqCompare.compare(actual[it], expected[it], context) is EqResult.Failure
+         }
          "Values differed at keys ${keysHavingDifferentValues.joinToString(limit = AssertionsConfig.mapDiffLimit)}\n"
       }
 
