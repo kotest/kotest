@@ -73,5 +73,5 @@ internal object SpringJavaCompatibility {
 
    private val ignoreFinalWarning =
       ignoreSpringListenerOnFinalClassWarning ||
-         !System.getProperty(Properties.SPRING_IGNORE_WARNING, "false").toBoolean()
+         System.getProperty(Properties.SPRING_IGNORE_WARNING, "false").toBoolean()
 }
