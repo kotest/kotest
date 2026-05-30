@@ -43,6 +43,8 @@ class JunitXmlReportTestEngineListener(
       val testFile = "TEST-${specName}.xml"
       val xml = generator.xml(ref.kclass, results)
       writeFile(testReportsDir, testFile, xml)
+      // clear the accumulated results so the next spec's report only contains its own tests
+      results.clear()
    }
 
    override suspend fun testStarted(testCase: TestCase) {}

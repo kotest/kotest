@@ -32,6 +32,8 @@ class JdbcDatabaseContainerSpecExtension(
    private val onStart: (DataSource) -> Unit = { },
 ) : MountableExtension<HikariConfig, DataSource>, AfterSpecListener {
 
+   private var dataSource: HikariDataSource? = null
+
    override fun mount(configure: HikariConfig.() -> Unit): DataSource {
       container.start()
       container.followOutput(config.logConsumer)
@@ -41,12 +43,14 @@ class JdbcDatabaseContainerSpecExtension(
       config.password = container.password
       config.configure()
       val ds = HikariDataSource(config)
+      dataSource = ds
       onStart(ds)
       return ds
    }
 
    override suspend fun afterSpec(spec: Spec) {
       runInterruptible(Dispatchers.IO) {
+         dataSource?.close()
          container.stop()
       }
    }

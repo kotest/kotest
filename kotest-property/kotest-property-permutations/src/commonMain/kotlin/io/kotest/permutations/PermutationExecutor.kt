@@ -23,7 +23,7 @@ internal class PermutationExecutor(
 ) {
 
    internal suspend fun execute(
-      test: suspend PermutationContext.() -> Unit
+      test: suspend PermutationContext.(iteration: Int) -> Unit
    ): PermutationResult {
 
       ConfigWriter.writeIfEnabled(context)
@@ -49,7 +49,7 @@ internal class PermutationExecutor(
 
             context.registry.reset()
             context.beforePermutation()
-            test(context)
+            test(context, invocations - 1)
             context.afterPermutation()
 
             successes++ // we know the test was successful

@@ -46,7 +46,7 @@ internal class TestResults {
     * Returns true if for a given test case, all started child tests have been completed.
     */
    fun isSubtreeComplete(testCase: TestCase): Boolean {
-      return children(testCase).all { result(testCase) != null }
+      return children(testCase).all { result(it) != null }
    }
 
    fun roots(): Map<TestCase, TestResult?> {

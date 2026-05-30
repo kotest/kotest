@@ -62,6 +62,9 @@ jobs:
       if: ${{ github.repository == 'kotest/kotest' && needs.determine-workflows-to-run.outputs.run_tests == 'true' }}
       needs: [ determine-workflows-to-run, validate-api ]
       strategy:
+         # don't cancel the other matrix legs when one fails, so a single (often flaky)
+         # platform failure doesn't mask the real status of the rest
+         fail-fast: false
          matrix:
             include:
                # JVM-only
