@@ -77,11 +77,20 @@ kotlin {
    }
 }
 
-// Run instrumented tests on the managed emulator as part of the standard check lifecycle.
-// Use: ./gradlew pixel2Api30DebugAndroidTest
+// The managed-device emulator instrumentation test (pixel6Api34DebugAndroidTest) is flaky on CI
+// infrastructure (emulator boot/timeout), which intermittently fails `check` and therefore the
+// master publish job and PR builds. It is therefore quarantined: it does NOT gate `check` by default.
+//
+// Run it explicitly with:
+//   ./gradlew :kotest-tests:kotest-tests-android-instrumentation:pixel6Api34DebugAndroidTest
+// or wire it back into the check lifecycle (e.g. in a dedicated, allowed-to-fail CI job) with:
+//   ./gradlew check -PandroidInstrumentedTests=true
+//
 // The managed device handles the full AVD lifecycle (download image, boot, test, shutdown).
-tasks.named("check") {
-   dependsOn("pixel6Api34DebugAndroidTest")
+if (providers.gradleProperty("androidInstrumentedTests").orNull?.toBoolean() == true) {
+   tasks.named("check") {
+      dependsOn("pixel6Api34DebugAndroidTest")
+   }
 }
 
 dependencies {

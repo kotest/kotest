@@ -42,7 +42,7 @@ data class PropertyErrorMessageBuilder(
       val finalCause = cause
 
       // don't bother to include the exception type if it's AssertionError
-      val causedBy = when (finalCause::class) {
+      val causedBy = when (finalCause) {
          is AssertionError -> "Caused by: ${finalCause.message?.trim()}"
          else -> "Caused by ${finalCause::class.simpleName}: ${finalCause.message?.trim()}"
       }
