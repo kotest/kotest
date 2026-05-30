@@ -99,11 +99,13 @@ enum class TagExpressionResult {
    }
 
    infix fun or(other: TagExpressionResult): TagExpressionResult = when (this) {
+      // Include is absorbing for OR: if either branch is included, the whole expression is included.
       Include -> Include
-      Exclude -> if (other == Include) Include else Exclude
+      // Exclude is the identity for OR: the other branch decides whether the spec is potentially active.
+      Exclude -> other
       Inconclusive -> when (other) {
          Include -> Include
-         Exclude -> Exclude
+         Exclude -> Inconclusive
          Inconclusive -> Inconclusive
       }
    }
