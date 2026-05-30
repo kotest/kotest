@@ -50,6 +50,18 @@ class ShouldBeWithinTest : WordSpec() {
             val openEndRange: OpenEndRange<Long> = 1L until 3L
             openEndRange shouldBeWithin closedRange
          }
+
+         "not overflow for OpenEndRange inside a ClosedRange ending at Int.MAX_VALUE" {
+            val closedRange: ClosedRange<Int> = 0..Int.MAX_VALUE
+            val openEndRange: OpenEndRange<Int> = 0 until Int.MAX_VALUE
+            openEndRange shouldBeWithin closedRange
+         }
+
+         "not overflow for OpenEndRange inside a ClosedRange ending at Long.MAX_VALUE" {
+            val closedRange: ClosedRange<Long> = 0L..Long.MAX_VALUE
+            val openEndRange: OpenEndRange<Long> = 0L until Long.MAX_VALUE
+            openEndRange shouldBeWithin closedRange
+         }
       }
 
       "shouldNotBeWithin" should {

@@ -187,7 +187,12 @@ internal fun beWithinRangeOfInt(
    range: ClosedRange<Int>
 ) = object : Matcher<OpenEndRange<Int>> {
    override fun test(value: OpenEndRange<Int>): MatcherResult {
-      return resultForWithin(range, value, (range.endInclusive + 1))
+      // compute the exclusive upper bound in a wider domain to avoid overflow when endInclusive == Int.MAX_VALUE
+      return resultForWithinInDomain(
+         range,
+         value,
+         match = (range.start <= value.start) && (value.endExclusive.toLong() <= range.endInclusive.toLong() + 1L)
+      )
    }
 }
 
@@ -212,7 +217,11 @@ internal fun beWithinRangeOfLong(
    range: ClosedRange<Long>
 ) = object : Matcher<OpenEndRange<Long>> {
    override fun test(value: OpenEndRange<Long>): MatcherResult {
-      return resultForWithin(range, value, (range.endInclusive + 1L))
+      // when endInclusive == Long.MAX_VALUE the exclusive upper bound (endInclusive + 1) overflows,
+      // so special-case it: any endExclusive is within a range ending at Long.MAX_VALUE
+      val match = (range.start <= value.start) &&
+         (range.endInclusive == Long.MAX_VALUE || value.endExclusive <= range.endInclusive + 1L)
+      return resultForWithinInDomain(range, value, match)
    }
 }
 
@@ -240,6 +249,21 @@ internal fun <T : Comparable<T>> resultForWithin(
 ): MatcherResult {
    if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
    val match = (range.start <= value.start) && (value.endExclusive <= valueAfterRangeEnd)
+   val valueStr = "[${value.start}, ${value.endExclusive})"
+   val rangeStr = "[${range.start}, ${range.endInclusive}]"
+   return MatcherResult(
+      match,
+      { "Range $valueStr should be within $rangeStr, but it isn't" },
+      { "Range $valueStr should not be within $rangeStr, but it is" }
+   )
+}
+
+internal fun <T : Comparable<T>> resultForWithinInDomain(
+   range: ClosedRange<T>,
+   value: OpenEndRange<T>,
+   match: Boolean
+): MatcherResult {
+   if (range.isEmpty()) throw AssertionError("Asserting content on empty range. Use Iterable.shouldBeEmpty() instead.")
    val valueStr = "[${value.start}, ${value.endExclusive})"
    val rangeStr = "[${range.start}, ${range.endInclusive}]"
    return MatcherResult(
