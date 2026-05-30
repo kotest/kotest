@@ -13,21 +13,21 @@ class DataTestTagsFreeSpec : FreeSpec({
 
    "parent context" - {
       "child context" - {
-         withData("firstChildOfChildContext1", "firstChildOfChildContext2") { // tags: "((kotest.data.16) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
-            withTests("firstChildOfFirstChildOfChildContext1", "firstChildOfFirstChildOfChildContext2") { // tags: "((kotest.data.16 & !kotest.data.20) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+         withData("firstChildOfChildContext1", "firstChildOfChildContext2") { // tags: "(kotest.data.16) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+            withTests("firstChildOfFirstChildOfChildContext1", "firstChildOfFirstChildOfChildContext2") { // tags: "(kotest.data.16 & !kotest.data.20) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
                1 + 1 shouldBe 2
             }
-            withData("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // tags: "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
-               withTests("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // tags: "((kotest.data.16 & !kotest.data.17) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context" (same as parent, no siblings)
+            withData("secondChildOfFirstChildOfChildContext1", "secondChildOfFirstChildOfChildContext2") { // tags: "(kotest.data.16 & !kotest.data.17) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+               withTests("firstChildOfSecondChildOfFirstChildOfChildContext1", "firstChildOfSecondChildOfFirstChildOfChildContext2") { // tags: "(kotest.data.16 & !kotest.data.17) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context" (same as parent, no siblings)
                   1 + 1 shouldBe 2
                }
             }
          }
-         withTests("secondChildOfChildContext1", "secondChildOfChildContext2") { // tags: "((kotest.data.26) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
+         withTests("secondChildOfChildContext1", "secondChildOfChildContext2") { // tags: "(kotest.data.26) | kotest.data.nonJvm" - ancestorTestPath: "parent context -- child context"
             1 + 1 shouldBe 2
          }
       }
-      withContexts("firstChildOfParentContext1", "firstChildOfParentContext2") { // tags: "((kotest.data.30) | !kotest.data) | kotest.data.nonJvm" - ancestorTestPath: "parent context"
+      withContexts("firstChildOfParentContext1", "firstChildOfParentContext2") { // tags: "(kotest.data.30) | kotest.data.nonJvm" - ancestorTestPath: "parent context"
          1 + 1 shouldBe 2
       }
    }
