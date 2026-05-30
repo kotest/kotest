@@ -136,7 +136,7 @@ fun <T : Any, V: Any> beEqualToUsingFields(other: V, vararg fields: KProperty<*>
       val fieldsToBeConsidered: List<KProperty<*>> = fields.toList().takeUnless { it.isEmpty() }
          ?: value::class.memberProperties.filter { it.visibility == KVisibility.PUBLIC }
       val failed = checkEqualityOfFields(fieldsToBeConsidered, value, other)
-      val fieldsString = fields.joinToString(", ", "[", "]") { it.name }
+      val fieldsString = fieldsToBeConsidered.joinToString(", ", "[", "]") { it.name }
 
       return MatcherResult(
          failed.isEmpty(),

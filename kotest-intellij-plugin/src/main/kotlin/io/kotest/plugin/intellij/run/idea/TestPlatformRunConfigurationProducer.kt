@@ -73,9 +73,15 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
                      if (dataTestInfoMaybe != null) {
                         configuration.setTestPath(dataTestInfoMaybe.ancestorTestPath)
                         EnvVarUtil.setKotestTags(configuration, dataTestInfoMaybe.tag)
+                        if (dataTestInfoMaybe.ancestorTestPath != null) {
+                           EnvVarUtil.setKotestDataTestAncestorPath(configuration, dataTestInfoMaybe.ancestorTestPath)
+                        } else {
+                           EnvVarUtil.removeKotestDataTestAncestorPath(configuration)
+                        }
                      } else {
                         configuration.setTestPath(null)
                         EnvVarUtil.removeKotestTags(configuration)
+                        EnvVarUtil.removeKotestDataTestAncestorPath(configuration)
                      }
                      configuration.setInclude(null)
                   }
@@ -84,6 +90,7 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
                      configuration.setTestPath(test.testPath())
                      configuration.setInclude(test.descriptorPath())
                      EnvVarUtil.removeKotestTags(configuration)
+                     EnvVarUtil.removeKotestDataTestAncestorPath(configuration)
                   }
                }
                configuration.setSpecsName(ktclass.fqName?.asString().toString())
