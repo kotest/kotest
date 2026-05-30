@@ -128,9 +128,14 @@ class UntilConfigurationBuilder {
    var expectedExceptions: Set<KClass<out Throwable>> = emptySet()
 
    /**
-    * A function that is invoked to determine if a thrown exception should be ignored.
-    * By default, this function returns false for all exceptions, or in other words, no
-    * exception is ignored.
+    * A function that is invoked to determine if a thrown exception should be ignored (i.e. treated
+    * as a transient failure that should be retried rather than propagated).
+    *
+    * By default this function returns true for all exceptions, so every exception is ignored and the
+    * test is retried until it passes or the duration elapses. This default is required by [until],
+    * which is implemented on top of [eventually] as `eventually { test() shouldBe true }`: when the
+    * boolean predicate is false the `shouldBe true` assertion throws, and that failure must be ignored
+    * for `until` to keep polling.
     *
     * This function is applied in addition to the values specified by [expectedExceptions].
     */

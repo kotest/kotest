@@ -50,7 +50,7 @@ object KotestPropertiesLoader {
          logger.log { "Kotest properties file was not detected" }
          return props
       }
-      props.load(input)
+      input.use { props.load(it) }
       return props
    }
 

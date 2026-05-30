@@ -108,8 +108,12 @@ private fun validate(
             enumValue == null -> tree is JsonNode.NullNode
             enumValue is String -> tree is JsonNode.StringNode && tree.value == enumValue
             enumValue is Boolean -> tree is JsonNode.BooleanNode && tree.value == enumValue
-            enumValue is Long -> tree is JsonNode.NumberNode && tree.content.toLongOrNull() == enumValue
-            enumValue is Double -> tree is JsonNode.NumberNode && tree.content.toDoubleOrNull() == enumValue
+            // Integral enum values may arrive as any Kotlin integer type (e.g. an Int literal from the
+            // DSL or a Long from schema parsing), so compare on the common Long representation.
+            enumValue is Byte || enumValue is Short || enumValue is Int || enumValue is Long ->
+               tree is JsonNode.NumberNode && tree.content.toLongOrNull() == (enumValue as Number).toLong()
+            enumValue is Float || enumValue is Double ->
+               tree is JsonNode.NumberNode && tree.content.toDoubleOrNull() == (enumValue as Number).toDouble()
             else -> false
          }
       }
