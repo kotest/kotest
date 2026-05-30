@@ -27,7 +27,7 @@ fun <T> containsInOrder(subsequence: List<T>): Matcher<Collection<T>?> = neverNu
 
    val foundBeforeDescription = {
       if (subsequenceIndex == subsequence.size) "" else {
-         val foundBeforeAtIndexes = actual.take(subsequenceIndex).mapIndexedNotNull { index, value ->
+         val foundBeforeAtIndexes = actual.mapIndexedNotNull { index, value ->
             if (value == subsequence[subsequenceIndex]) index else null
          }
          if (foundBeforeAtIndexes.isEmpty()) "" else {

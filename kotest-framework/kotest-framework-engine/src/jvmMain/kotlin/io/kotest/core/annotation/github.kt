@@ -5,7 +5,7 @@ import io.kotest.core.spec.Spec
 import kotlin.reflect.KClass
 
 //The operating system of the runner executing the job. Possible values are Linux, Windows, or macOS.
-private fun runnerOs() = System.getenv("RUNNER_OS").lowercase()
+private fun runnerOs() = System.getenv("RUNNER_OS")?.lowercase()
 
 class LinuxRunnerOsCondition : Condition {
    override fun evaluate(kclass: KClass<out Spec>): Boolean = runnerOs() == "linux"
