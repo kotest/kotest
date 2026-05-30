@@ -229,6 +229,14 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
    ) {
       dataTestInfoMaybe?.let {
          EnvVarUtil.setKotestTags(runConfiguration.settings, it.tag)
-      } ?: EnvVarUtil.removeKotestTags(runConfiguration.settings)
+         if (it.ancestorTestPath != null) {
+            EnvVarUtil.setKotestDataTestAncestorPath(runConfiguration.settings, it.ancestorTestPath)
+         } else {
+            EnvVarUtil.removeKotestDataTestAncestorPath(runConfiguration.settings)
+         }
+      } ?: run {
+         EnvVarUtil.removeKotestTags(runConfiguration.settings)
+         EnvVarUtil.removeKotestDataTestAncestorPath(runConfiguration.settings)
+      }
    }
 }
