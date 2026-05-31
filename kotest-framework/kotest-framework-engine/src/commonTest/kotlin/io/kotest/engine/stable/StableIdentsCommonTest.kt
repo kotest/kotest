@@ -34,7 +34,20 @@ class StableIdentsCommonTest : FunSpec({
       StableIdents.getStableIdentifier(element) shouldBe "stable-name"
    }
 
+   test("getStableIdentifier should use toString() for an @IsStableType-annotated type") {
+      // @IsStableType signals the type's toString() is stable and may be used as the identifier.
+      // On the JVM this is resolved via the IsStableType annotation branch; the resulting identifier
+      // (the toString()) is the same on every platform.
+      StableIdents.getStableIdentifier(StableTypeForTest("abc")) shouldBe "stable:abc"
+      StableIdents.getStableIdentifier(StableTypeForTest("xyz")) shouldBe "stable:xyz"
+   }
+
    test("null should be stable on all platforms") {
       StableIdents.getStableIdentifier(null) shouldBe "<null>"
    }
 })
+
+@IsStableType
+private data class StableTypeForTest(val value: String) {
+   override fun toString(): String = "stable:$value"
+}
