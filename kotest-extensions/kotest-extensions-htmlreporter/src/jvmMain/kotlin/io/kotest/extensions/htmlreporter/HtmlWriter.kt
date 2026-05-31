@@ -93,7 +93,7 @@ class HtmlWriter(
          row.addContent(Element("td").setContent(Text(skipped.toString())))
 
          if ((errors + failures + skipped) == 0) row.setAttribute("class", "success")
-         if (failures > 0) row.setAttribute("class", "failure")
+         if (failures > 0 || errors > 0) row.setAttribute("class", "failure")
 
          table.addContent(row)
       }

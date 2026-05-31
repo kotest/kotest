@@ -4083,6 +4083,11 @@ public final class io/kotest/engine/launcher/MainKt {
 	public static final fun main ([Ljava/lang/String;)V
 }
 
+public final class io/kotest/engine/launcher/SpecScanner {
+	public static final field INSTANCE Lio/kotest/engine/launcher/SpecScanner;
+	public final fun scan ()Ljava/util/List;
+}
+
 public final class io/kotest/engine/launcher/TestEngineListenerBuilder {
 	public static final field Companion Lio/kotest/engine/launcher/TestEngineListenerBuilder$Companion;
 	public static final field LISTENER_CONSOLE Ljava/lang/String;
