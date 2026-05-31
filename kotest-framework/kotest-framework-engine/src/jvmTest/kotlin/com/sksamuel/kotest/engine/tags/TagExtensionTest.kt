@@ -38,9 +38,9 @@ class TagExtensionTest : StringSpec() {
             collector.tests.mapKeys { it.key.name.name }.mapValues { it.value.reasonOrNull } shouldBe
                mapOf(
                   "should be tagged with tagA and therefore included" to null,
-                  "should be untagged and therefore excluded" to "Disabled by tags: (TagA) & (!TagB) & !SpecExcluded",
+                  "should be untagged and therefore excluded" to "Disabled by tags: ((TagA) & (!TagB)) & (!SpecExcluded)",
                   "should be tagged with tagB and therefore excluded" to
-                     "Disabled by tags: (TagA) & (!TagB) & !SpecExcluded"
+                     "Disabled by tags: ((TagA) & (!TagB)) & (!SpecExcluded)"
                )
          }
       }

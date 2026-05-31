@@ -17,7 +17,7 @@ private class LazyJvmAssertionError(messageFn: () -> String) : AssertionError() 
    /** Skip the expensive native fillInStackTrace call - stack traces are never shown for per-element errors. */
    override fun fillInStackTrace(): Throwable = this
 
-   override val message: String = lazyMessage
+   override val message: String get() = lazyMessage
 }
 
 /**
