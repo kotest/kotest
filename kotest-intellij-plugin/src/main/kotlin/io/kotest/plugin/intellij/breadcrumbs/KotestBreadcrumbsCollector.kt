@@ -4,6 +4,7 @@ import com.intellij.codeInsight.breadcrumbs.FileBreadcrumbsCollector
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.editor.Editor
+import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.pom.PomManager
@@ -16,13 +17,13 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiManager
 import com.intellij.ui.components.breadcrumbs.Crumb
 import com.intellij.util.containers.ContainerUtil
+import io.kotest.plugin.intellij.Icons
 import io.kotest.plugin.intellij.psi.enclosingKtClassOrObject
 import io.kotest.plugin.intellij.psi.kotestStyleSyntactic
 import io.kotest.plugin.intellij.styles.SpecStyle
 import org.jetbrains.kotlin.psi.KtClassOrObject
 import org.jetbrains.kotlin.psi.KtFile
 import javax.swing.Icon
-import io.kotest.plugin.intellij.Icons
 
 /**
  * Provides breadcrumbs for Kotlin files that contain Kotest spec classes.
@@ -42,6 +43,7 @@ class KotestBreadcrumbsCollector(private val project: Project) : FileBreadcrumbs
     * syntactic (no type resolution required) and therefore safe to run on a background thread.
     */
    override fun handlesFile(virtualFile: VirtualFile): Boolean {
+      if (DumbService.isDumb(project)) return false
       if (virtualFile.extension != "kt") return false
       val psiFile = PsiManager.getInstance(project).findFile(virtualFile) as? KtFile ?: return false
       return psiFile.declarations.filterIsInstance<KtClassOrObject>().any { it.kotestStyleSyntactic() != null }

@@ -49,7 +49,7 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 kotlin-poet = "2.3.0"
 kotlinx-io-core = "0.9.0"
-ksp = "2.3.6"
+ksp = "2.3.9"
 ktor = "3.4.2"
 
 mockk = "1.14.9"

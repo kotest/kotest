@@ -27,15 +27,18 @@ class TestContainerProjectExtension<T : GenericContainer<*>>(
 
    override fun mount(configure: T.() -> Unit): T {
       lock.lockInterruptibly()
-      val t = ref.get()
-      if (t == null) {
-         configure(container)
-         container.start()
-         onStart(container)
-         container.followOutput(config.logConsumer)
-         ref.set(container)
+      try {
+         val t = ref.get()
+         if (t == null) {
+            configure(container)
+            container.start()
+            onStart(container)
+            container.followOutput(config.logConsumer)
+            ref.set(container)
+         }
+      } finally {
+         lock.unlock()
       }
-      lock.unlock()
       return container
    }
 

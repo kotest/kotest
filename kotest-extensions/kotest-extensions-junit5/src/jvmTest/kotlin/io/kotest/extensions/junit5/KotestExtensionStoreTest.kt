@@ -46,6 +46,35 @@ class KotestExtensionStoreTest : WordSpec({
 
          a shouldBe b
       }
+
+      "return a put value via the untyped get" {
+         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
+         val a = Person("person", 20)
+
+         store.put("person", a)
+
+         store.get("person") shouldBe a
+      }
+
+      "store the computed value so it is retrievable later" {
+         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
+         val a = Person("person", 20)
+
+         store.getOrComputeIfAbsent("person") { a }
+
+         store.get("person") shouldBe a
+         store.get("person", Person::class.java) shouldBe a
+      }
+
+      "return the existing value rather than recomputing" {
+         val store = ExtensionStore(ExtensionContext.Namespace.GLOBAL)
+         val a = Person("person", 20)
+         store.put("person", a)
+
+         val b = store.getOrComputeIfAbsent("person") { Person("other", 99) }
+
+         b shouldBe a
+      }
    }
 })
 
