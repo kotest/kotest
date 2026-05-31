@@ -69,12 +69,16 @@ fun main(args: Array<String>) {
    // It is the responsibility of the caller to pass this information.
    // In Kotest 5 a similar argument was called --spec to specify a single class but kotest 6 uses --specs
    // we need to support both so people can run kotest5 and kotest6 projects with the same plugin
+   // since Kotest 6.2 we support a special --specs scan arg which will use classpath scanning to find specs
    val specsArg = launcherArgs[LauncherArgs.ARG_SPECS]
       ?: launcherArgs[LauncherArgs.ARG_SPEC]
       ?: error("The ${LauncherArgs.ARG_SPECS} arg must be provided")
 
    @Suppress("UNCHECKED_CAST")
-   val classes = specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
+   val classes = when (specsArg) {
+      "scan" -> SpecScanner.scan()
+      else -> specsArg.split(';').map { Class.forName(it).kotlin as KClass<out Spec> }
+   }
 
    // we support --include to support an exact descriptor path as a way to run a single test
    val descriptorFilter = buildIncludeFilter(launcherArgs)
