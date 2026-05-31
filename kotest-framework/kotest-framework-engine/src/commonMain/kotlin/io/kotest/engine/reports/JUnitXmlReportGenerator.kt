@@ -7,6 +7,7 @@ import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML
 import kotlin.reflect.KClass
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 /**
  * @target the Kotlin KMP target this report is generated for. If set will be prefixed to each test name.
@@ -29,10 +30,10 @@ class JUnitXmlReportGenerator(
    }
 
    private fun generate(spec: KClass<*>, tests: Map<TestCase, TestResult>): TestSuite {
+      val now = clock.now()
       // Instant.toString() is ISO-8601 in UTC, always ending in 'Z', and only contains a '.' when there
       // is a sub-second component. Drop fractional seconds while preserving the 'Z' UTC designator.
-      val now = clock.now().toString()
-      val timestamp = if (now.contains('.')) now.substringBefore('.') + "Z" else now
+      val timestamp = Instant.fromEpochSeconds(now.epochSeconds).toString()
       return TestSuite(
          name = spec.bestName(),
          tests = tests.size,
