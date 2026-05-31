@@ -88,10 +88,12 @@ internal class TestInvocationInterceptor(
    ) {
       val executeWithBeforeAfter = NextTestExecutionInterceptor { tc, sc ->
          try {
-            testExtensions.beforeInvocation(tc, times)
+            // if any before-invocation listener fails, surface the exception and skip the test body
+            testExtensions.beforeInvocation(tc, times).getOrThrow()
             test(tc, sc)
          } finally {
-            testExtensions.afterInvocation(tc, times)
+            // if any after-invocation listener fails, surface the exception
+            testExtensions.afterInvocation(tc, times).getOrThrow()
          }
       }
 

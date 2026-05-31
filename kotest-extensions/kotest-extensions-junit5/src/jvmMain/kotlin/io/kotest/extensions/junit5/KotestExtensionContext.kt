@@ -109,7 +109,7 @@ class ExtensionStore(private val namespace: ExtensionContext.Namespace) : Extens
    private val map = mutableMapOf<Pair<ExtensionContext.Namespace, Any>, Any?>()
 
    override fun get(key: Any): Any {
-      return map[key] ?: error("Was not present")
+      return map[namespace to key] ?: error("Was not present")
    }
 
    override fun <V : Any> get(key: Any, requiredType: Class<V>): V {
@@ -123,7 +123,7 @@ class ExtensionStore(private val namespace: ExtensionContext.Namespace) : Extens
 
    override fun <K : Any, V : Any> getOrComputeIfAbsent(key: K, defaultCreator: Function<K, V>): Any {
       return when (val value = map[namespace to key]) {
-         null -> defaultCreator.apply(key)
+         null -> defaultCreator.apply(key).also { map[namespace to key] = it }
          else -> value
       }
    }
@@ -135,7 +135,7 @@ class ExtensionStore(private val namespace: ExtensionContext.Namespace) : Extens
    ): V {
       val value = map[namespace to key]
       return when {
-         value == null -> defaultCreator.apply(key)
+         value == null -> defaultCreator.apply(key).also { map[namespace to key] = it }
          value::class.java.name == requiredType.name -> value as V
          else -> error("Value is not of required type $requiredType")
       }
