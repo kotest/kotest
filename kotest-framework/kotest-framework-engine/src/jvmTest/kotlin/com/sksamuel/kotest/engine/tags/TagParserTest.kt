@@ -34,14 +34,25 @@ class TagParserTest : FunSpec() {
          Parser.from("!mytag").expression() shouldBe Expression.Not(Expression.Identifier("mytag"))
       }
 
+      // & binds tighter than |, so `a & b | c` parses as Or(And(a, b), c)
+      test("and binds tighter than or") {
+         Parser.from("a & b | c").expression() shouldBe Expression.Or(
+            Expression.And(
+               Expression.Identifier("a"),
+               Expression.Identifier("b")
+            ),
+            Expression.Identifier("c")
+         )
+      }
+
       test("advanced") {
          Parser.from("(mytag & !othertag | thistag) & thattag").expression() shouldBe Expression.And(
-            Expression.And(
-               Expression.Identifier("mytag"),
-               Expression.Or(
-                  Expression.Not(Expression.Identifier("othertag")),
-                  Expression.Identifier("thistag")
-               )
+            Expression.Or(
+               Expression.And(
+                  Expression.Identifier("mytag"),
+                  Expression.Not(Expression.Identifier("othertag"))
+               ),
+               Expression.Identifier("thistag")
             ),
             Expression.Identifier("thattag")
          )
@@ -50,12 +61,12 @@ class TagParserTest : FunSpec() {
       test("odd characters") {
          Parser.from("(my#%#e123!#!@TAG & !____9123231.... | '''',.''/'l/'l/''/'''') & thattag")
             .expression() shouldBe Expression.And(
-            Expression.And(
-               Expression.Identifier("my#%#e123!#!@TAG"),
-               Expression.Or(
-                  Expression.Not(Expression.Identifier("____9123231....")),
-                  Expression.Identifier("'''',.''/'l/'l/''/''''")
-               )
+            Expression.Or(
+               Expression.And(
+                  Expression.Identifier("my#%#e123!#!@TAG"),
+                  Expression.Not(Expression.Identifier("____9123231...."))
+               ),
+               Expression.Identifier("'''',.''/'l/'l/''/''''")
             ),
             Expression.Identifier("thattag")
          )

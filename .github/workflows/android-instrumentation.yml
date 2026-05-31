@@ -1,0 +1,27 @@
+name: android-instrumentation
+
+# The pixel6 managed-device emulator instrumentation test is flaky on CI infrastructure
+# (emulator boot/timeout), so it is quarantined out of the normal `check` / publish path
+# (see kotest-tests/kotest-tests-android-instrumentation/build.gradle.kts, gated behind
+# -PandroidInstrumentedTests=true). This dedicated workflow still exercises it on a schedule
+# (and on demand) so genuine regressions surface, WITHOUT blocking PRs or the master publish job.
+# It is intentionally not a required status check; a flaky run here is informational only.
+
+on:
+   schedule:
+      -  cron: "0 6 * * *" # daily at 06:00 UTC
+   workflow_dispatch:
+
+permissions:
+   contents: read
+
+jobs:
+   android-instrumentation:
+      if: github.repository == 'kotest/kotest'
+      uses: ./.github/workflows/run-gradle.yml
+      secrets: inherit
+      with:
+         runs-on: ubuntu-latest
+         task: >
+            -PandroidInstrumentedTests=true
+            :kotest-tests:kotest-tests-android-instrumentation:check
