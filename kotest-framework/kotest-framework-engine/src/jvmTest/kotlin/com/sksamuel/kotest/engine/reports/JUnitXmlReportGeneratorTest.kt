@@ -43,6 +43,26 @@ class JUnitXmlReportGeneratorTest : FunSpec() {
          xml shouldContain """<testcase name="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest/successful test" classname="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest" time="1.0" />"""
       }
 
+      test("should drop fractional seconds but keep the ISO-8601 Z designator in the timestamp") {
+
+         // a clock whose instant has a sub-second component, so Instant.toString() contains a '.'
+         val clock = FixedClock(Instant.parse("2023-01-01T12:00:00.123Z"))
+         val generator = JUnitXmlReportGenerator(
+            clock = clock,
+            includeStackTraces = true,
+            hostname = "localhost",
+            target = null
+         )
+
+         val testCase = createTestCase("successful test")
+         val testResult = TestResult.Success(1.seconds)
+         val tests = mapOf(testCase to testResult)
+
+         val xml = generator.xml(JUnitXmlReportGeneratorTest::class, tests)
+         xml shouldContain """timestamp="2023-01-01T12:00:00Z""""
+         xml shouldNotContain """timestamp="2023-01-01T12:00:00""""" // must not be left without the Z
+      }
+
       test("should generate XML for failed tests") {
 
          val clock = FixedClock()
