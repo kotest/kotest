@@ -123,8 +123,8 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
 
       val str = buildString {
          append("Time:    ")
-         if (duration.inWholeSeconds > 60)
-            append(consoleRenderer.bold("${duration.inWholeMinutes}m ${duration.div(60).inWholeSeconds}s"))
+         if (duration.inWholeSeconds >= 60)
+            append(consoleRenderer.bold("${duration.inWholeMinutes}m ${duration.inWholeSeconds % 60}s"))
          else
             append(consoleRenderer.bold("${duration.inWholeSeconds}s"))
       }
