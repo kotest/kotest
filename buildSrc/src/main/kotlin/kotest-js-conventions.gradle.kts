@@ -10,14 +10,39 @@ val kotestSettings = extensions.getByType<KotestBuildLogicSettings>()
 
 kotlin {
    if (!project.hasProperty(Ci.JVM_ONLY) && kotestSettings.enableKotlinJs.get()) {
+
+      // Shared Karma config (repo-root/karma.config.d) used by every browser test task. It raises the
+      // Karma disconnect / no-activity timeouts so slow or loaded CI runners don't fail with a spurious
+      // "Disconnected ... because no message in 30000 ms" while the large JS/WasmJS test bundle starts
+      // up in the headless browser.
+      val karmaConfigDir = rootDir.resolve("karma.config.d")
+
       js {
-         browser()
+         browser {
+            testTask {
+               useKarma {
+                  // providing a custom useKarma block clears the default browser, so re-add the
+                  // Chrome Headless browser the plugin would otherwise configure by default
+                  useChromeHeadless()
+                  useConfigDirectory(karmaConfigDir)
+               }
+            }
+         }
          nodejs()
       }
 
       @OptIn(ExperimentalWasmDsl::class)
       wasmJs {
-         browser()
+         browser {
+            testTask {
+               useKarma {
+                  // providing a custom useKarma block clears the default browser, so re-add the
+                  // Chrome Headless browser the plugin would otherwise configure by default
+                  useChromeHeadless()
+                  useConfigDirectory(karmaConfigDir)
+               }
+            }
+         }
          nodejs()
       }
 
