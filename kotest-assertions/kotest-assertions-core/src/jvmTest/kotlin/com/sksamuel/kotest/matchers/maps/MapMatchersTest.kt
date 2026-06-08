@@ -364,7 +364,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
           |
-          |Expected:
+          |Actual:
           |  mapOf()
           |should contain all of:
           |  mapOf("\${'$'}a" to 1)
@@ -385,7 +385,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
           |
-          |Expected:
+          |Actual:
           |  mapOf("a" to 1)
           |should contain all of:
           |  mapOf("a" to 1L)
@@ -407,7 +407,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
           |
-          |Expected:
+          |Actual:
           |  mapOf("a" to mapOf("b" to 2))
           |should contain all of:
           |  mapOf("a" to mapOf("b" to 3))
@@ -429,7 +429,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
           |
-          |Expected:
+          |Actual:
           |  mapOf("a" to 1, "b" to 2)
           |should not contain all of:
           |  mapOf("a" to 1)
@@ -450,7 +450,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
           |
-          |Expected:
+          |Actual:
           |  mapOf("a" to 1)
           |should be equal to:
           |  mapOf()
@@ -468,7 +468,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
             |
-            |Expected:
+            |Actual:
             |  mapOf(Fruit(name=apple, color=green, taste=sweet) to 1)
             |should be equal to:
             |  mapOf(Fruit(name=pear, color=green, taste=sweet) to 1)
@@ -496,7 +496,7 @@ expected:kotlin.Double<1.5> but was:java.math.BigDecimal<1.5>"""
             }
             e.message shouldBe """
           |
-          |Expected:
+          |Actual:
           |  mapOf("a" to listOf(1))
           |should not be equal to:
           |  mapOf("a" to listOf(1))
