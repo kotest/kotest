@@ -209,7 +209,7 @@ class MapContainsMatcher<K, V>(
       }
       val failureMsg = """
       |
-      |Expected:
+      |Actual:
       |  ${stringify(value)}
       |$expectMsg:
       |  ${stringify(expected)}
@@ -219,7 +219,7 @@ class MapContainsMatcher<K, V>(
       """.trimMargin()
       val negatedFailureMsg = """
       |
-      |Expected:
+      |Actual:
       |  ${stringify(value)}
       |$negatedExpectMsg:
       |  ${stringify(expected)}
