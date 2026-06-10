@@ -97,7 +97,7 @@ class TeamCityTestEngineListener(
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_IGNORED) {
-         name(testCase.descriptor.path().value)
+         name(renderer.testPath(testCase))
          locationHint(Locations.location(testCase.source))
          message(reason)
          result(TestResult.Ignored(reason))
