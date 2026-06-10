@@ -179,4 +179,43 @@ class KotestFileVisitorTest : FunSpec({
       )
       visitor.specs shouldBe emptyList()
    }
+
+   test("specs are not duplicated when the same class is visited in multiple ksp rounds") {
+      val spec = SimpleKSClassDeclaration(
+         className = "com.sksamuel.MySpec",
+         supers = listOf(
+            SimpleKSTypeReference(
+               SimpleKSType(
+                  declaration = SimpleKSClassDeclaration(
+                     className = "io.kotest.core.spec.Spec",
+                  )
+               )
+            )
+         ),
+      )
+      val visitor = KotestFileVisitor()
+      // ksp invokes process() once per round, which can visit the same declaration again
+      visitor.visitClassDeclaration(spec, Unit)
+      visitor.visitClassDeclaration(spec, Unit)
+      visitor.specs.map { it.qualifiedName?.asString() } shouldBe listOf("com.sksamuel.MySpec")
+   }
+
+   test("configs are not duplicated when the same class is visited in multiple ksp rounds") {
+      val config = SimpleKSClassDeclaration(
+         className = "com.sksamuel.ProjectConfig",
+         supers = listOf(
+            SimpleKSTypeReference(
+               SimpleKSType(
+                  declaration = SimpleKSClassDeclaration(
+                     className = "io.kotest.core.config.AbstractProjectConfig",
+                  )
+               )
+            )
+         ),
+      )
+      val visitor = KotestFileVisitor()
+      visitor.visitClassDeclaration(config, Unit)
+      visitor.visitClassDeclaration(config, Unit)
+      visitor.configs.map { it.qualifiedName?.asString() } shouldBe listOf("com.sksamuel.ProjectConfig")
+   }
 })
