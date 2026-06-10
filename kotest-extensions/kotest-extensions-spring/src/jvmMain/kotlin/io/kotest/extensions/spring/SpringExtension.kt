@@ -57,8 +57,6 @@ open class SpringExtension(
       val manager = getTestContextManager(clazz)
       val context = manager.testContext.applicationContext
 
-      println("Creating instance of $clazz")
-
       logger.log { Pair(clazz.simpleName, "Spring extension will try to create autowired instance") }
       return context.autowireCapableBeanFactory.autowire(
          clazz.java,
