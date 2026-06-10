@@ -63,7 +63,7 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = PropertyTesting.defaul
          }
          val repeatedList: List<A>? = when {
             range.last < 2 -> null // too small for repeats
-            gen is Arb -> List(max(2, range.first)) { (gen.edgecase(rs) ?: gen.sample(rs)).value }
+            gen is Arb -> (gen.edgecase(rs) ?: gen.sample(rs)).value.let { a -> List(max(2, range.first)) { a } }
             gen is Exhaustive -> gen.values.firstOrNull()?.let { a -> List(max(2, range.first)) { a } }
             else -> null
          }
