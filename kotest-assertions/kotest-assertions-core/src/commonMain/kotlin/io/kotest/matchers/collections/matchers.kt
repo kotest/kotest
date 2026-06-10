@@ -16,11 +16,15 @@ fun <T> List<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot 
 
 fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L> {
    override fun test(value: L): MatcherResult {
-      val passed = index < value.size && value[index] == element
-      val listTooShortMsg = if(index < value.size) "" else "But it is too short: only ${value.size} elements"
+      val passed = index in value.indices && value[index] == element
+      val invalidIndexMsg = when {
+         index < 0 -> "But index $index is negative"
+         index < value.size -> ""
+         else -> "But it is too short: only ${value.size} elements"
+      }
       val unexpectedElementMsg = when {
          passed -> ""
-         index < value.size -> "Expected: <${value[index].print().value}>, but was <${element.print().value}>"
+         index in value.indices -> "Expected: <${element.print().value}>, but was <${value[index].print().value}>"
          else -> ""
       }
       val indexesForElement = value.mapIndexedNotNull { index, current ->
@@ -29,7 +33,7 @@ fun <T, L : List<T>> haveElementAt(index: Int, element: T) = object : Matcher<L>
       val indexesForElementMsg = if(passed || indexesForElement.isEmpty())
          ""
       else "Element was found at index(es): ${indexesForElement.print().value}"
-      val additionalDescriptions = listOf(listTooShortMsg, unexpectedElementMsg, indexesForElementMsg).filter {
+      val additionalDescriptions = listOf(invalidIndexMsg, unexpectedElementMsg, indexesForElementMsg).filter {
          it.isNotEmpty()
       }
       val additionalDescriptionsMsg = if(additionalDescriptions.isEmpty()) ""
