@@ -12,8 +12,10 @@ import io.kotest.property.Arb
 import io.kotest.property.EdgeConfig
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.constant
 import io.kotest.property.arbitrary.distinct
 import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.single
 import io.kotest.property.arbitrary.take
 
 @OptIn(DelicateKotest::class)
@@ -54,6 +56,14 @@ class DistinctTest : FunSpec({
       }
       // +1 for the first 0, then +43 for the failures
       count shouldBe 2
+   }
+
+   test("distinct should throw a descriptive error when attempts are exhausted") {
+      val arb = Arb.constant(1).distinct(attempts = 7)
+      arb.single(RandomSource.default()) shouldBe 1
+      shouldThrow<NoSuchElementException> {
+         arb.single(RandomSource.default())
+      }.message shouldBe "the arb was unable to provide a new distinct value after 7 attempts"
    }
 
    test("distinct should also work for edgecases") {

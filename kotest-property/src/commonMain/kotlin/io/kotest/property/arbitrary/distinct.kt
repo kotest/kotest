@@ -24,7 +24,10 @@ fun <A> Arb<A>.distinct(attempts: Int = 100) = object : Arb<A>() {
       var iterations = 0
       return generateSequence {
          if (iterations++ < attempts) this@distinct.sample(rs) else null
-      }.filter { seen.add(it.value) }.first()
+      }.filter { seen.add(it.value) }.firstOrNull()
+         ?: throw NoSuchElementException(
+            "the arb was unable to provide a new distinct value after $attempts attempts"
+         )
    }
 
 }
