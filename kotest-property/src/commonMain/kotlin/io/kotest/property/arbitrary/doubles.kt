@@ -74,7 +74,8 @@ fun Arb.Companion.double(
    )).distinct() + getNonFiniteEdgeCases(range, includeNaNs),
    DoubleShrinker
 ) {
-   it.random.nextDouble(range.start, range.endInclusive)
+   if (range.start == range.endInclusive) range.start
+   else it.random.nextDouble(range.start, range.endInclusive)
 }
 
 /**
@@ -111,7 +112,7 @@ fun Arb.Companion.numericDouble(
    max: Double = Double.MAX_VALUE
 ): Arb<Double> = arbitrary(
    (numericEdgeCases.filter { it in (min..max) } + listOf(min, max)).distinct(), DoubleShrinker
-) { it.random.nextDouble(min, max) }
+) { if (min == max) min else it.random.nextDouble(min, max) }
 
 /**
  * Returns an [Arb] that produces [DoubleArray]s where [length] produces the length of the arrays and

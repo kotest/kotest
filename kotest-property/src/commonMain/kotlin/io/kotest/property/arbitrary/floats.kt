@@ -39,7 +39,8 @@ fun Arb.Companion.float(range: ClosedFloatingPointRange<Float> = -Float.MAX_VALU
       (numericEdgeCases.filter { it in range } + listOf(range.start, range.endInclusive)).distinct() + getNonFiniteEdgeCases(range, includeNaNs),
       FloatShrinker
    ) {
-      it.random.nextDouble(range.start.toDouble(), range.endInclusive.toDouble()).toFloat()
+      if (range.start == range.endInclusive) range.start
+      else it.random.nextDouble(range.start.toDouble(), range.endInclusive.toDouble()).toFloat()
    }
 
 /**
@@ -69,7 +70,7 @@ fun Arb.Companion.numericFloat(
    min: Float = -Float.MAX_VALUE,
    max: Float = Float.MAX_VALUE
 ): Arb<Float> = arbitrary((numericEdgeCases.filter { it in min..max } + listOf(min, max)).distinct(), FloatShrinker) {
-   it.random.nextDouble(min.toDouble(), max.toDouble()).toFloat()
+   if (min == max) min else it.random.nextDouble(min.toDouble(), max.toDouble()).toFloat()
 }
 
 /**
