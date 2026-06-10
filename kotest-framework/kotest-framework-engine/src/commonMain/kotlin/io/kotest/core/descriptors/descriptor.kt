@@ -94,7 +94,7 @@ sealed interface Descriptor {
     * Returns the depth of this node, where a [SpecDescriptor] has depth of 0,
     * a root test has depth 1 and so on.
     */
-   fun depth() = parents().size - 1
+   fun depth() = parents().size
 
    /**
     * Recursively returns any parent descriptors, with the [SpecDescriptor] being first in the list
