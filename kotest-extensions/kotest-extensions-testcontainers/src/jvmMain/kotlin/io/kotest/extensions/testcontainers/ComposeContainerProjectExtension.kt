@@ -36,14 +36,17 @@ class ComposeContainerProjectExtension(
 
    override fun mount(configure: ComposeContainer.() -> Unit): ComposeContainer {
       lock.lockInterruptibly()
-      val t = ref.get()
-      if (t == null) {
-         configure(container)
-         container.start()
-         onStart(container)
-         ref.set(container)
+      try {
+         val t = ref.get()
+         if (t == null) {
+            configure(container)
+            container.start()
+            onStart(container)
+            ref.set(container)
+         }
+      } finally {
+         lock.unlock()
       }
-      lock.unlock()
       return container
    }
 
