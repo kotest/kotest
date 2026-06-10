@@ -23,9 +23,22 @@ class KotestFileVisitor : KSVisitorVoid() {
    override fun visitClassDeclaration(classDeclaration: KSClassDeclaration, data: Unit) {
       super.visitClassDeclaration(classDeclaration, data)
       if (isPublic(classDeclaration) && !isAbstract(classDeclaration) && isSpec(classDeclaration)) {
-         specs.add(classDeclaration)
+         addIfAbsent(specs, classDeclaration)
       } else if (isConfig(classDeclaration)) {
-         configs.add(classDeclaration)
+         addIfAbsent(configs, classDeclaration)
+      }
+   }
+
+   /**
+    * Adds [declaration] to [declarations] unless a declaration with the same fully-qualified
+    * name has already been collected. KSP invokes [io.kotest.framework.symbol.processor.KotestSymbolProcessor.process]
+    * once per processing round, so without deduplication a class visited in more than one round
+    * would be registered multiple times in the generated entry point.
+    */
+   private fun addIfAbsent(declarations: MutableList<KSClassDeclaration>, declaration: KSClassDeclaration) {
+      val name = declaration.qualifiedName?.asString() ?: declaration.simpleName.asString()
+      if (declarations.none { (it.qualifiedName?.asString() ?: it.simpleName.asString()) == name }) {
+         declarations.add(declaration)
       }
    }
 
@@ -64,7 +77,9 @@ class KotestSymbolProcessor(private val environment: SymbolProcessorEnvironment)
    val visitor = KotestFileVisitor()
 
    override fun process(resolver: Resolver): List<KSAnnotated> {
-      resolver.getAllFiles().forEach { it.accept(visitor, Unit) }
+      // process is invoked once per KSP round, so only visit files new to this round,
+      // otherwise specs would be collected (and thus registered) once per round
+      resolver.getNewFiles().forEach { it.accept(visitor, Unit) }
       return emptyList()
    }
 
