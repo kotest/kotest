@@ -29,6 +29,9 @@ fun assume(assumptions: () -> Unit) {
 }
 
 internal fun PropertyContext.checkMaxDiscards() {
+   // we only start checking the discard percentage once we have hit the threshold of evaluations,
+   // otherwise a small number of discards early on would exceed the percentage
+   if (evals() < PropertyTesting.discardCheckThreshold) return
    if (discardPercentage() > config.maxDiscardPercentage) {
       throw MaxDiscardPercentageException(discardPercentage(), config.maxDiscardPercentage)
    }
