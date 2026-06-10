@@ -2,7 +2,7 @@ package io.kotest.assertions
 
 import io.kotest.common.KotestInternal
 import io.kotest.common.nonDeterministicTestTimeSource
-import io.kotest.common.reflection.bestName
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeout
@@ -15,6 +15,7 @@ import kotlin.time.TimeSource
  * Retry [f] until it's a success or [maxRetry]/[timeout] is reached.
  *
  * This will treat only [exceptionClass] as a failure, along with [AssertionError].
+ * A [CancellationException] is always rethrown to support cooperative coroutine cancellation.
  *
  * Retry delay will increase exponentially if you choose a [multiplier] value. For example, if you want to configure
  * 5 [maxRetry], with an initial [delay] of 1s between requests, the delay between requests will increase when you
@@ -66,19 +67,23 @@ suspend fun <T> retry(
                   ).withCause(e)
                   .build()
             }
-            // Not the kind of exceptions we were prepared to tolerate
-            e::class.simpleName != "AssertionError" &&
-               config.exceptionClass?.isInstance(e) == false &&
-               e::class.bestName() != "org.opentest4j.AssertionFailedError" &&
-               !e::class.bestName().endsWith("AssertionFailedError") -> throw e
+            // external cancellation must always propagate to support cooperative coroutine cancellation
+            e is CancellationException -> throw e
+            // assertion errors are always retried, as are instances of the configured exception class
+            e is AssertionError || config.exceptionClass?.isInstance(e) == true -> lastError = e
+            // when no exception class is configured, exceptions are retried,
+            // but errors such as OutOfMemoryError are propagated
+            config.exceptionClass == null && e is Exception -> lastError = e
+            // not the kind of failure we were prepared to tolerate
+            else -> throw e
          }
-         lastError = e
-         // else ignore and continue
       }
       attemptedRetries++
       if (attemptedRetries >= config.maxRetry || end.hasPassedNow()) break
-      delay(nextAwaitDuration)
-      delayedTime += nextAwaitDuration
+      // cap the delay at the remaining time budget so the timeout is not overshot
+      val cappedDelay = minOf(nextAwaitDuration, config.timeout - mark.elapsedNow())
+      delay(cappedDelay)
+      delayedTime += cappedDelay
       nextAwaitDuration *= config.multiplier
    }
    val underlyingCause = if (lastError == null) "" else "; underlying cause was ${lastError.message}"
@@ -100,6 +105,11 @@ class RetryConfigBuilder {
    var timeout: Duration = Duration.INFINITE
    var delay: Duration = Duration.ZERO
    var multiplier: Int = 1
+
+   /**
+    * The exception class to treat as a retryable failure, along with [AssertionError].
+    * When null, any [Exception] is retried, but [Error]s other than [AssertionError] are rethrown.
+    */
    var exceptionClass: KClass<out Throwable>? = null
 
    @KotestInternal
