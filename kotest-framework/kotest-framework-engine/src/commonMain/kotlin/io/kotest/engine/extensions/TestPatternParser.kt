@@ -28,14 +28,16 @@ internal object TestPatternParser {
       require(arg.isNotBlank())
       val parts = arg.split(".")
 
-      val packageParts = parts.takeWhile { it.first().isLowerCase() }
-      val simpleName = parts.dropWhile { it.first().isLowerCase() }.firstOrNull()
+      val packageParts = parts.takeWhile { it.firstOrNull()?.isLowerCase() == true }
+      val simpleName = parts.drop(packageParts.size).firstOrNull()
       if (simpleName === null) return TestPattern(packageParts.joinToString("."), false, null, emptyList())
       if (simpleName == "*") return TestPattern(packageParts.joinToString("."), true, null, emptyList())
 
-      val test = parts.dropWhile { it.first().isLowerCase() } // drop the package parts
+      val test = parts
+         .drop(packageParts.size) // drop the package parts
          .drop(1) // drop the class name
-         .firstOrNull()
+         .joinToString(".") // test names can contain dots, so restore them
+         .ifEmpty { null }
 
       if (test == null) return TestPattern(packageParts.joinToString("."), false, simpleName, emptyList())
 
