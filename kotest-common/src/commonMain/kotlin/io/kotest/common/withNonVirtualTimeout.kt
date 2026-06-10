@@ -55,15 +55,22 @@ internal suspend fun <T> withWallClockTimeout(
    @OptIn(DelicateCoroutinesApi::class)
    val timeoutJob = GlobalScope.launch(Dispatchers.Default) { delay(timeout) }
 
-   select {
-      blockDeferred.onAwait { result ->
-         timeoutJob.cancel()
-         result
+   try {
+      select {
+         blockDeferred.onAwait { result ->
+            timeoutJob.cancel()
+            result
+         }
+         timeoutJob.onJoin {
+            blockDeferred.cancel()
+            throw NonDeterministicRealTimeTimeoutCancellationException("Timeout after $timeout")
+         }
       }
-      timeoutJob.onJoin {
-         blockDeferred.cancel()
-         throw NonDeterministicRealTimeTimeoutCancellationException("Timeout after $timeout")
-      }
+   } finally {
+      // Ensure the watchdog coroutine is always cancelled once the guarded block finishes,
+      // whether it succeeded, threw, or timed out. Otherwise it would leak on GlobalScope
+      // until the timeout elapses (e.g. when the block throws and onAwait rethrows).
+      timeoutJob.cancel()
    }
 }
 
