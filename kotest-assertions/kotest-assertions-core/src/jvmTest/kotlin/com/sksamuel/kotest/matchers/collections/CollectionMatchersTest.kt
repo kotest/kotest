@@ -102,7 +102,7 @@ class CollectionMatchersTest : WordSpec() {
                listOf("a", "b", "c").shouldHaveElementAt(2, "d")
             }.message shouldBe """
             |Collection ["a", "b", "c"] should contain "d" at index 2
-            |Expected: <"c">, but was <"d">
+            |Expected: <"d">, but was <"c">
             """.trimMargin()
          }
          "print if element found at another index" {
@@ -110,7 +110,7 @@ class CollectionMatchersTest : WordSpec() {
                listOf("a", "b", "c").shouldHaveElementAt(2, "b")
             }.message shouldBe """
             |Collection ["a", "b", "c"] should contain "b" at index 2
-            |Expected: <"c">, but was <"b">
+            |Expected: <"b">, but was <"c">
             |Element was found at index(es): [1]
             """.trimMargin()
          }
@@ -119,8 +119,17 @@ class CollectionMatchersTest : WordSpec() {
                listOf("a", "b", "c", "b").shouldHaveElementAt(2, "b")
             }.message shouldBe """
             |Collection ["a", "b", "c", "b"] should contain "b" at index 2
-            |Expected: <"c">, but was <"b">
+            |Expected: <"b">, but was <"c">
             |Element was found at index(es): [1, 3]
+            """.trimMargin()
+         }
+         "fail with an assertion error for a negative index" {
+            shouldThrow<AssertionError> {
+               listOf("a", "b", "c").shouldHaveElementAt(-1, "a")
+            }.message shouldBe """
+            |Collection ["a", "b", "c"] should contain "a" at index -1
+            |But index -1 is negative
+            |Element was found at index(es): [0]
             """.trimMargin()
          }
       }
