@@ -18,7 +18,7 @@ import io.kotest.matchers.string.shouldStartWith
  * The engine no longer wraps test names with `<kotest>...</kotest>` location tags - jump-to-source
  * navigation now flows via the JUnit Platform `MethodSource` (and `proxy.locationUrl`).  This test
  * pins the resulting [TeamCityTestEngineListener] output: every lifecycle message names the test
- * by its plain descriptor path, with no embedded `<kotest>` tag and no legacy ` -- ` separator
+ * via the display-name renderer, with no embedded `<kotest>` tag and no legacy ` -- ` separator
  * between nested segments.
  */
 class TeamCityTestEngineListenerEmbeddedLocationsTest : FunSpec() {
@@ -54,7 +54,7 @@ class TeamCityTestEngineListenerEmbeddedLocationsTest : FunSpec() {
          stdout shouldNotContain "<kotest>"
          stdout shouldNotContain " -- "
          stdout shouldStartWith "tc[testIgnored "
-         stdout shouldContain "name='$specFqn/a'"
+         stdout shouldContain "name='$specFqn.a'"
          stdout shouldContain "result_status='Ignored'"
       }
 
