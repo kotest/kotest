@@ -83,6 +83,30 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
          }
       }
 
+      "queue specIgnored while another spec is running" {
+
+         val mock = mockk<TestEngineListener>(relaxed = true)
+         val listener = PinnedSpecTestEngineListener(mock)
+
+         val spec1 = IsolationTestSpec1()
+         val spec2 = IsolationTestSpec2()
+
+         listener.specStarted(SpecRef.Reference(spec1::class))
+         listener.specIgnored(spec2::class, "disabled")
+
+         verify(exactly = 0) { runBlocking { mock.specIgnored(spec2::class, "disabled") } }
+
+         listener.specFinished(SpecRef.Reference(spec1::class), TestResult.Success(0.seconds))
+
+         verifyOrder {
+            runBlocking {
+               mock.specStarted(SpecRef.Reference(spec1::class))
+               mock.specFinished(SpecRef.Reference(spec1::class), TestResult.Success(0.seconds))
+               mock.specIgnored(spec2::class, "disabled")
+            }
+         }
+      }
+
       "run all callbacks without race conditions" {
 
          val mock = mockk<TestEngineListener>(relaxed = true)

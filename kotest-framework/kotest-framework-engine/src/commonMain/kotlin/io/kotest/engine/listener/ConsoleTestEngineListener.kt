@@ -154,12 +154,16 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       testsIgnored++
       val str = buildString {
-         append("".padEnd(testCase.descriptor.depth() * 4, ' '))
+         append("".padEnd(indent(testCase), ' '))
          append("- ")
          append(formatter.format(testCase) + consoleRenderer.brightYellowBold(" IGNORED"))
       }
       consoleRenderer.println(str)
    }
+
+   // root tests have a depth of 1 and are printed without indentation, with each
+   // level of nesting indented by a further 4 spaces
+   private fun indent(testCase: TestCase): Int = (testCase.descriptor.depth() - 1) * 4
 
    private fun durationString(duration: Duration): String {
       return when {
@@ -173,7 +177,7 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
       // we want to output containers immediately so they appear in the correct order in the console
       if (testCase.type == TestType.Container) {
          val str = buildString {
-            append("".padEnd(testCase.descriptor.depth() * 4, ' '))
+            append("".padEnd(indent(testCase), ' '))
             append("+ ")
             append(formatter.format(testCase))
          }
@@ -202,7 +206,7 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
             is TestResult.Ignored -> consoleRenderer.brightYellow(" IGNORED")
          }
          val str = buildString {
-            append("".padEnd(testCase.descriptor.depth() * 4, ' ') + "- " + formatter.format(testCase) + r)
+            append("".padEnd(indent(testCase), ' ') + "- " + formatter.format(testCase) + r)
             if (result.duration > slow) {
                append(" ${durationString(result.duration)}")
             }
@@ -212,7 +216,7 @@ class ConsoleTestEngineListener : AbstractTestEngineListener() {
 
       if (result.errorOrNull != null) {
          consoleRenderer.println()
-         printThrowable(result.errorOrNull, testCase.descriptor.depth() * 4)
+         printThrowable(result.errorOrNull, indent(testCase))
          consoleRenderer.println()
       }
    }

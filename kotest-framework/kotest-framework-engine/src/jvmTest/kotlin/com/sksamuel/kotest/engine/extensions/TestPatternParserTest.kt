@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.extensions
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.extensions.TestPattern
 import io.kotest.engine.extensions.TestPatternParser
@@ -38,6 +39,20 @@ class TestPatternParserTest : FunSpec() {
       test("spaces in nested test names") {
          TestPatternParser.parse("io.kotest.MySpec.some method name -- more names") shouldBe
             TestPattern("io.kotest", false, "MySpec", listOf("some method name", "more names"))
+      }
+
+      test("dots in test names") {
+         TestPatternParser.parse("io.kotest.MySpec.returns 1.5 on overflow") shouldBe
+            TestPattern("io.kotest", false, "MySpec", listOf("returns 1.5 on overflow"))
+      }
+
+      test("dots in nested test names") {
+         TestPatternParser.parse("io.kotest.MySpec.returns 1.5 -- when input is 0.5") shouldBe
+            TestPattern("io.kotest", false, "MySpec", listOf("returns 1.5", "when input is 0.5"))
+      }
+
+      test("empty segments should not throw") {
+         shouldNotThrowAny { TestPatternParser.parse("io..kotest.MySpec") }
       }
    }
 }

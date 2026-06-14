@@ -75,4 +75,12 @@ class DoubleTest : FunSpec({
    test("NaNs should not be included regardless of range when includeNaNs is false") {
       Arb.double(0.0..100.0, includeNaNs = false).edgecases(1000).toList().none { it.isNaN() }
    }
+
+   test("double should support a degenerate range where min == max") {
+      Arb.double(5.0..5.0).take(100).toSet() shouldContainExactly setOf(5.0)
+   }
+
+   test("numericDouble should support a degenerate range where min == max") {
+      Arb.numericDouble(5.0, 5.0).take(100).toSet() shouldContainExactly setOf(5.0)
+   }
 })

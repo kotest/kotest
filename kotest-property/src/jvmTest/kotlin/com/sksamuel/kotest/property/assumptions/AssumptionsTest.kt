@@ -11,6 +11,7 @@ import io.kotest.matchers.string.shouldHaveLength
 import io.kotest.property.Arb
 import io.kotest.property.MaxDiscardPercentageException
 import io.kotest.property.PropTestConfig
+import io.kotest.property.PropertyTesting
 import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.az
 import io.kotest.property.arbitrary.constant
@@ -49,7 +50,7 @@ class AssumptionsTest : FunSpec() {
          blockingTest = true
       ) {
          shouldThrow<MaxDiscardPercentageException> {
-            checkAll(10, Arb.positiveInt()) {
+            checkAll(100, Arb.positiveInt()) {
                assume(false)
                yield()
             }
@@ -61,7 +62,7 @@ class AssumptionsTest : FunSpec() {
          blockingTest = true
       ) {
          shouldThrow<MaxDiscardPercentageException> {
-            checkAll(10, Arb.positiveInt()) {
+            checkAll(100, Arb.positiveInt()) {
                assume(false)
                yield()
             }
@@ -112,6 +113,34 @@ class AssumptionsTest : FunSpec() {
                withAssumptions(a != b) {
                }
             }
+         }
+      }
+
+      test("discard check should not be enforced below the discardCheckThreshold") {
+         val previousThreshold = PropertyTesting.discardCheckThreshold
+         PropertyTesting.discardCheckThreshold = 50
+         try {
+            // every input is discarded (100% > the default max of 20%), but only 10 evals
+            // occur, which is below the check threshold of 50, so no error should be raised
+            checkAll(10, Arb.positiveInt()) {
+               assume(false)
+            }
+         } finally {
+            PropertyTesting.discardCheckThreshold = previousThreshold
+         }
+      }
+
+      test("discard check should be enforced once evals reach the discardCheckThreshold") {
+         val previousThreshold = PropertyTesting.discardCheckThreshold
+         PropertyTesting.discardCheckThreshold = 10
+         try {
+            shouldThrow<MaxDiscardPercentageException> {
+               checkAll(10, Arb.positiveInt()) {
+                  assume(false)
+               }
+            }
+         } finally {
+            PropertyTesting.discardCheckThreshold = previousThreshold
          }
       }
 

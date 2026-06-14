@@ -40,9 +40,10 @@ object Ci {
 
    /**
     * We only include watchos, tvsos and ios builds if it's a non-CI build or if it's master build
-    * due to the limited availability of the github macos runners
+    * due to the limited availability of the github macos runners.
+    * Can be overridden by setting KOTEST_EXAMPLES_WORKFLOW=true (set by test-kotest-examples.yml on non-master branches).
     */
-   val shouldRunWatchTvIosModules = isLocal || isMaster
+   val shouldRunWatchTvIosModules = isLocal || isMaster || System.getenv("KOTEST_EXAMPLES_WORKFLOW").toBoolean()
    val shouldAddLinuxTargets = isLocal || isLinuxRunner
 
    /**

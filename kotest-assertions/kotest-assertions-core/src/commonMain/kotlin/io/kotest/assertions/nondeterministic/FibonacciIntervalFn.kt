@@ -1,6 +1,5 @@
 package io.kotest.assertions.nondeterministic
 
-import io.kotest.common.KotestInternal
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.milliseconds
@@ -16,7 +15,6 @@ import kotlin.time.Duration.Companion.milliseconds
  * @param base The duration that is multiplied by the fibonacci value
  * @param max the maximum duration to clamp the resulting duration to defaults to [FibonacciIntervalFn.defaultMax]
  */
-@KotestInternal
 class FibonacciIntervalFn(private val base: Duration, private val offset: Int, private val max: Duration?) : DurationFn {
 
    init {

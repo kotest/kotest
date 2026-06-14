@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.assertions
 
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.retry
 import io.kotest.assertions.retryConfig
 import io.kotest.assertions.throwables.shouldNotThrow
@@ -15,6 +16,7 @@ import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 import io.kotest.matchers.throwable.shouldHaveMessage
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
@@ -109,7 +111,7 @@ class RetryTest : StringSpec() {
             }
          }
          retryTester.calledAtTimeInstance shouldHaveSize 2
-         retryException shouldHaveMessage "Test failed after 800ms; attempted 2 times; underlying cause was expected:<true> but was:<false>"
+         retryException shouldHaveMessage "Test failed after 500ms; attempted 2 times; underlying cause was expected:<true> but was:<false>"
          retryTester.calledAtTimeInstance.shouldContainExactly(
             0.milliseconds,
             400.milliseconds,
@@ -238,7 +240,84 @@ class RetryTest : StringSpec() {
             actualMs shouldBeGreaterThan 10.milliseconds
          }
       }
+
+      "should retry when assertSoftly fails with multiple errors" {
+         var attempts = 0
+         retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds) {
+            attempts++
+            assertSoftly {
+               attempts shouldBeGreaterThan 2
+               attempts shouldBe 3
+            }
+         }
+         attempts shouldBe 3
+      }
+
+      "should retry when a custom AssertionError subclass is thrown" {
+         var attempts = 0
+         retry(maxRetry = 5, timeout = 500.milliseconds, delay = 100.milliseconds) {
+            attempts++
+            if (attempts < 3) throw CustomAssertionError("not ready yet")
+         }
+         attempts shouldBe 3
+      }
+
+      "should rethrow non-assertion errors immediately when no exception class is configured" {
+         val config = retryConfig {
+            maxRetry = 5
+            timeout = 500.milliseconds
+            delay = 100.milliseconds
+         }
+         var attempts = 0
+         shouldThrow<FatalTestError> {
+            retry(config) {
+               attempts++
+               throw FatalTestError("fatal error")
+            }
+         }
+         attempts shouldBe 1
+      }
+
+      "should propagate CancellationException when no exception class is configured" {
+         val config = retryConfig {
+            maxRetry = 5
+            timeout = 500.milliseconds
+            delay = 100.milliseconds
+         }
+         var attempts = 0
+         shouldThrow<CancellationException> {
+            retry(config) {
+               attempts++
+               throw CancellationException("cancelled")
+            }
+         }
+         attempts shouldBe 1
+      }
+
+      "should cap the backoff delay at the remaining timeout" {
+         val testTimeSource = nonDeterministicTestTimeSource()
+         val config = retryConfig {
+            maxRetry = 10
+            timeout = 500.milliseconds
+            delay = 400.milliseconds
+            multiplier = 2
+            timeSource = testTimeSource
+         }
+         val mark = testTimeSource.markNow()
+         val retryException = shouldThrow<AssertionError> {
+            retry(config) {
+               1 shouldBe 2
+            }
+         }
+         // without capping, the second delay would be 800ms and the total time would be 1200ms
+         retryException shouldHaveMessage "Test failed after 500ms; attempted 2 times; underlying cause was expected:<2> but was:<1>"
+         mark.elapsedNow() shouldBe 500.milliseconds
+      }
    }
+
+   private class CustomAssertionError(message: String) : AssertionError(message)
+
+   private class FatalTestError(message: String) : Error(message)
 
    private class RetryTester(
       private val readyAfter: Int,
