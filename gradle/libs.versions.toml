@@ -2,9 +2,9 @@
 gradleApi = "8.11.1"
 
 # https://mbonnin.net/2026-02-22-kotlin-versions/
-kotlin-gradle-plugin = "2.3.20" # always use the most recent version to leverage the latest tooling
-kotlin-compile-version = "2.2.0" # must match kotlin-language-version so KLIBs are consumable by 2.2+ users
-kotlin-core-libaries-version = "2.2.0" # the std lib version
+kotlin-gradle-plugin = "2.2.10" # pinned to minimum supported version to produce 2.2-compatible KLIBs
+kotlin-compile-version = "2.2.10"
+kotlin-core-libaries-version = "2.2.10" # the std lib version — must match kotlin-compile-version
 kotlin-language-version = "2.2.0" # the minimum version we support and what is written into kotlin metadata
 
 runtime-kotest = "4.2.0" # intellij plugin
@@ -44,11 +44,11 @@ junit-jupiter6 = "6.0.3"
 jimfs = "1.3.1"
 
 kaml = "0.104.0"
-koin = "4.2.1"
+koin = "4.1.0" # 4.2.x requires Kotlin 2.3.x KLIB ABI; 4.1.0 is the last 2.2.x-compatible release
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 kotlin-poet = "2.3.0"
-kotlinx-io-core = "0.9.0"
+kotlinx-io-core = "0.8.2" # 0.9.0 requires Kotlin 2.3.x KLIB ABI; 0.8.2 is the last 2.2.x-compiled release
 ksp = "2.3.9"
 ktor = "3.4.2"
 
