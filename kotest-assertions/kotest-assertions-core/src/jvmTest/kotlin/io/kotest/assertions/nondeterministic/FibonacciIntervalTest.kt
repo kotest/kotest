@@ -6,7 +6,9 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.minutes
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
@@ -70,6 +72,17 @@ class FibonacciIntervalTest : FunSpec() {
                u shouldBeGreaterThan max
             }
          }
+      }
+
+      // https://github.com/kotest/kotest/issues/6130
+      // The eventually docs recommend `intervalFn = 100.milliseconds.fibonacci()`. This must
+      // compile and run without any @OptIn, i.e. fibonacci() and the type it returns
+      // (FibonacciIntervalFn) are public, non-opt-in API.
+      test("fibonacci() is usable as a public eventuallyConfig intervalFn without opt-in") {
+         val config = eventuallyConfig {
+            intervalFn = 100.milliseconds.fibonacci()
+         }
+         config.intervalFn.shouldBeInstanceOf<FibonacciIntervalFn>()
       }
    }
 }
