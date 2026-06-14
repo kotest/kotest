@@ -2,9 +2,9 @@
 gradleApi = "8.11.1"
 
 # https://mbonnin.net/2026-02-22-kotlin-versions/
-kotlin-gradle-plugin = "2.2.10" # pinned to minimum supported version to produce 2.2-compatible KLIBs
-kotlin-compile-version = "2.2.10"
-kotlin-core-libaries-version = "2.2.10" # the std lib version — must match kotlin-compile-version
+kotlin-gradle-plugin = "2.2.21" # pinned to latest 2.2.x patch to produce 2.2-compatible KLIBs
+kotlin-compile-version = "2.2.21"
+kotlin-core-libaries-version = "2.2.21" # the std lib version, must match kotlin-compile-version
 kotlin-language-version = "2.2.0" # the minimum version we support and what is written into kotlin metadata
 
 runtime-kotest = "4.2.0" # intellij plugin
