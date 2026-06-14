@@ -64,7 +64,7 @@ private external fun wasmEnvironGet(
    arg1: Int,
 ): Int
 
-//@OptIn(ExperimentalWasmInterop::class)
+/*@OptIn(ExperimentalWasmInterop::class)*/
 @WasmImport("wasi_snapshot_preview1", "environ_sizes_get")
 private external fun wasmEnvironSizesGet(
    arg0: Int,
