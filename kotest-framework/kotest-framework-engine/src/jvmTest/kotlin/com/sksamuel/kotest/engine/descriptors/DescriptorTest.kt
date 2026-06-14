@@ -31,6 +31,18 @@ class DescriptorTest : FunSpec({
    val jsE = jsD.append("e")
    val jsF = jsSpec.append("f")
 
+   test("depth") {
+      // a spec has depth 0, a root test depth 1, and so on
+      spec.depth() shouldBe 0
+      listOf(a, d, f).forAll {
+         it.depth() shouldBe 1
+      }
+      listOf(b, e).forAll {
+         it.depth() shouldBe 2
+      }
+      c.depth() shouldBe 3
+   }
+
    test("isTestCase") {
       spec.isTestCase() shouldBe false
       listOf(a, b, c, d, e, f).forAll {

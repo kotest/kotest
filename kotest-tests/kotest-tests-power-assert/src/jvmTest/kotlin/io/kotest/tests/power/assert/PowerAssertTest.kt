@@ -16,8 +16,10 @@ class PowerAssertTest : FunSpec() {
          error.message!!.trim() shouldBe """
 hello.substring(1, 3) shouldBe world.substring(1, 4)
 |     |                        |     |
-|     "el"                     |     "orl"
-"Hello"                        "world!"
+|     |                        |     orl
+|     |                        world!
+|     el
+Hello
 
 expected:<orl> but was:<el>""".trim()
       }

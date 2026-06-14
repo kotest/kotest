@@ -13,6 +13,7 @@ import io.kotest.matchers.collections.exist
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldHaveAtMostSize
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
@@ -95,6 +96,17 @@ class CollectionsTest : DescribeSpec({
          Arb.list(arb).edgecases(1000, RandomSource.seeded(1234L)) shouldContain listOf(edgeCase, edgeCase)
          Arb.list(arb, 4..6).edgecases(1000, RandomSource.seeded(1234L)) shouldContain
             listOf(edgeCase, edgeCase, edgeCase, edgeCase)
+      }
+
+      it("repeat a single element in the repeated-element edge case") {
+         // for range 2..5 the empty and single-element edge cases are filtered out by the range,
+         // so every edge case is the repeated-element one and must contain a single distinct value.
+         // Previously each slot drew its own edge case, e.g. [Int.MIN_VALUE, 0] for Arb.int().
+         repeat(1000) { seed ->
+            Arb.list(Arb.int(), 2..5).edgecases(10, RandomSource.seeded(seed.toLong())).forAll { edge ->
+               edge.distinct() shouldHaveSize 1
+            }
+         }
       }
 
       it("include empty list in edge cases") {

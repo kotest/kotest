@@ -75,4 +75,12 @@ class FloatTest : FunSpec({
    test("NaNs should not be included regardless of range when includeNaNs is false") {
       Arb.float(0F..100F, includeNaNs = false).edgecases(1000).toList().none { it.isNaN() }
    }
+
+   test("float should support a degenerate range where min == max") {
+      Arb.float(5F..5F).take(100).toSet() shouldContainExactly setOf(5F)
+   }
+
+   test("numericFloat should support a degenerate range where min == max") {
+      Arb.numericFloat(5F, 5F).take(100).toSet() shouldContainExactly setOf(5F)
+   }
 })

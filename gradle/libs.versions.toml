@@ -2,9 +2,9 @@
 gradleApi = "8.11.1"
 
 # https://mbonnin.net/2026-02-22-kotlin-versions/
-kotlin-gradle-plugin = "2.4.0" # always use the most recent version to leverage the latest tooling
-kotlin-compile-version = "2.4.0" # the compiler version used to build kotest
-kotlin-core-libaries-version = "2.4.0" # the std lib version
+kotlin-gradle-plugin = "2.3.20" # always use the most recent version to leverage the latest tooling
+kotlin-compile-version = "2.3.20"
+kotlin-core-libaries-version = "2.3.20" # the std lib version
 kotlin-language-version = "2.2.0" # the minimum version we support and what is written into kotlin metadata
 
 runtime-kotest = "4.2.0" # intellij plugin
@@ -185,7 +185,7 @@ ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
 ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
 
-kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.13.0" } # 0.13.0 updates to Kotlin 2.4.0
+kotlin-compile-testing = { module = "dev.zacsweers.kctfork:core", version = "0.12.1" }
 ktor-server-testHost = { module = "io.ktor:ktor-server-test-host", version.ref = "ktor" }
 
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin-core-libaries-version" }

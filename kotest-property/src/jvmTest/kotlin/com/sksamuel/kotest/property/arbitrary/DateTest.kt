@@ -368,6 +368,17 @@ class DateTest : WordSpec({
             2
          )
       }
+
+      "generate the single YearMonth when minYearMonth equals maxYearMonth" {
+         val yearMonth = YearMonth.of(2021, 5)
+         Arb.yearMonth(yearMonth, yearMonth).take(100).toSet() shouldBe setOf(yearMonth)
+      }
+
+      "generate both YearMonths of a two-month range via random samples" {
+         val min = YearMonth.of(2021, 5)
+         val max = YearMonth.of(2021, 6)
+         Arb.yearMonth(min, max).take(1000).toSet() shouldBe setOf(min, max)
+      }
    }
 
    "Arb.offsetDateTime(minLocalDateTime, maxLocalDateTime, zoneOffset)" should {
@@ -564,6 +575,18 @@ class DateTest : WordSpec({
          timesBeforeMidnight.shouldNotBeEmpty()
          timesBeforeMidnight.min() shouldBe start
          times.filter { it > end && it < start }.shouldBeEmpty()
+      }
+
+      "generate the single LocalTime when startTime equals endTime" {
+         val time = LocalTime.of(10, 30, 15)
+         Arb.localTime(time, time).take(100).toSet() shouldBe setOf(time)
+      }
+
+      "generate the inclusive endTime via random samples for a small range" {
+         val start = LocalTime.of(10, 0)
+         val end = start.plusNanos(3)
+         val times = Arb.localTime(start, end).take(1000).toSet()
+         times shouldBe setOf(start, start.plusNanos(1), start.plusNanos(2), end)
       }
    }
    "getLocalDateArbParams" should {
