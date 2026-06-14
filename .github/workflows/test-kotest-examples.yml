@@ -3,6 +3,23 @@ name: test-kotest-examples
 on:
    schedule:
       - cron: '0 6 * * *'
+   workflow_dispatch:
+      inputs:
+         platform:
+            description: 'Platform to test (all, linux, macos, windows)'
+            required: false
+            default: 'all'
+            type: choice
+            options:
+               - all
+               - linux
+               - macos
+               - windows
+         project:
+            description: 'Specific project to test (leave empty for all)'
+            required: false
+            default: ''
+            type: string
 
 permissions:
    contents: read
@@ -159,23 +176,12 @@ jobs:
    linux:
       name: Test ${{ matrix.project }} (Linux)
       runs-on: ubuntu-latest
+      if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'linux'
       needs: [publish-local-linux, publish-local-macos, publish-local-windows]
       strategy:
          fail-fast: false
          matrix:
-            project:
-               - kotest-allure
-               - kotest-android
-               - kotest-javascript
-               - kotest-jvm
-               - kotest-maven
-               - kotest-multiplatform
-               - kotest-native
-               - kotest-spring-webflux
-               - kotest-spring-data
-               - kotest-wasm
-               - kotest-gradle-retry
-               - kotest-multi-module
+            project: ${{ fromJson(inputs.project != '' && format('["{0}"]', inputs.project) || '["kotest-allure","kotest-android","kotest-javascript","kotest-jvm","kotest-maven","kotest-multiplatform","kotest-native","kotest-spring-webflux","kotest-spring-data","kotest-wasm","kotest-gradle-retry","kotest-multi-module"]') }}
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v6
@@ -232,13 +238,12 @@ jobs:
    macos:
       name: Test ${{ matrix.project }} (macOS)
       runs-on: macos-latest
+      if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'macos'
       needs: [publish-local-linux, publish-local-macos, publish-local-windows]
       strategy:
          fail-fast: false
          matrix:
-            project:
-               - kotest-multiplatform
-               - kotest-native
+            project: ${{ fromJson(inputs.project != '' && format('["{0}"]', inputs.project) || '["kotest-multiplatform","kotest-native"]') }}
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v6
@@ -289,13 +294,12 @@ jobs:
    windows:
       name: Test ${{ matrix.project }} (Windows)
       runs-on: windows-latest
+      if: inputs.platform == '' || inputs.platform == 'all' || inputs.platform == 'windows'
       needs: [publish-local-linux, publish-local-macos, publish-local-windows]
       strategy:
          fail-fast: false
          matrix:
-            project:
-               - kotest-multiplatform
-               - kotest-native
+            project: ${{ fromJson(inputs.project != '' && format('["{0}"]', inputs.project) || '["kotest-multiplatform","kotest-native"]') }}
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v6
