@@ -23,6 +23,8 @@ build
 *.tar.gz
 *.rar
 
+.claude
+
 sandbox/
 .allure
 
