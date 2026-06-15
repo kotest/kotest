@@ -57,14 +57,14 @@ private fun environSizesGet(): Pair<Int, Int> {
    }
 }
 
-@OptIn(ExperimentalWasmInterop::class)
+/*@OptIn(ExperimentalWasmInterop::class)*/
 @WasmImport("wasi_snapshot_preview1", "environ_get")
 private external fun wasmEnvironGet(
    arg0: Int,
    arg1: Int,
 ): Int
 
-@OptIn(ExperimentalWasmInterop::class)
+/*@OptIn(ExperimentalWasmInterop::class)*/
 @WasmImport("wasi_snapshot_preview1", "environ_sizes_get")
 private external fun wasmEnvironSizesGet(
    arg0: Int,

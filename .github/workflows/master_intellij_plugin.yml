@@ -36,7 +36,10 @@ jobs:
 
          -  name: Override Kotlin version for IC-261
             if: matrix.product == 'IC-261'
-            run: sed -i 's/^kotlin = .*/kotlin = "2.3.10"/' gradle/libs.versions.toml
+            run: |
+               sed -i 's/^kotlin-gradle-plugin = "[0-9][^"]*"/kotlin-gradle-plugin = "2.3.10"/' gradle/libs.versions.toml
+               sed -i 's/^kotlin-compile-version = .*/kotlin-compile-version = "2.3.10"/' gradle/libs.versions.toml
+               sed -i 's/^kotlin-core-libaries-version = .*/kotlin-core-libaries-version = "2.3.10"/' gradle/libs.versions.toml
 
          -  name: Run tests
             run: ./gradlew :kotest-intellij-plugin:check
