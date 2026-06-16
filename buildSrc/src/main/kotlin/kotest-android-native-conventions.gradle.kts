@@ -12,6 +12,7 @@ kotlin {
       androidNativeX86()
       androidNativeX64()
       androidNativeArm64()
+      androidNativeArm32() // deprecated, will be removed when kotlin no longer supports
 
       @OptIn(ExperimentalKotlinGradlePluginApi::class)
       applyHierarchyTemplate(KotlinHierarchyTemplate.default) {
