@@ -13,6 +13,11 @@ plugins {
 // and the infix assertions in kotest-assertions-core-infix. This module re-exports them so that
 // depending on kotest-assertions-core continues to provide the full assertion API, exactly as
 // before the split.
+//
+// Tests stay in kotest-assertions-core-logic: its test source set depends on
+// kotest-framework-engine (for the spec DSL), which transitively provides the full assertion API
+// (all calling conventions), so tests can use any style while logic's *main* source depends only
+// on kotest-assertions-shared.
 kotlin {
 
    sourceSets {
