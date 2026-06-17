@@ -4,7 +4,6 @@ import com.intellij.codeInsight.daemon.ImplicitUsageProvider
 import com.intellij.psi.PsiElement
 import io.kotest.plugin.intellij.psi.isSpec
 import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 /**
@@ -22,7 +21,6 @@ class SpecImplicitUsageProvider : ImplicitUsageProvider {
    override fun isImplicitUsage(element: PsiElement): Boolean {
       val ktclass = when (element) {
          is KtClassOrObject -> element
-         is KtUltraLightClass -> element
          is KtLightClass -> when (val origin = element.kotlinOrigin) {
             is KtClassOrObject -> origin
             else -> null
