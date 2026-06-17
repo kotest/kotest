@@ -57,10 +57,29 @@ object InstantWithoutNanosEq : Eq<Instant> {
    }
 }
 
+sealed class BoolState(val bytes: ByteArray?) {
+   data object True : BoolState(byteArrayOf(1))
+   data object False : BoolState(byteArrayOf(0))
+   data object Unknown : BoolState(null)
+}
+
 class DataClassEqTest : StringSpec({
 
    "respects custom equals implementations in data classes" {
       IntRatio(1, 2) shouldBe IntRatio(2, 4)
+   }
+
+   // https://github.com/kotest/kotest/issues/6144
+   "distinct data objects must not be considered equal" {
+      isDataClassInstance(BoolState.True) shouldBe true
+
+      BoolState.True shouldNotBe BoolState.False
+      BoolState.True shouldNotBe BoolState.Unknown
+      BoolState.False shouldNotBe BoolState.Unknown
+   }
+
+   "the same data object must be considered equal to itself" {
+      BoolState.True shouldBe BoolState.True
    }
 
    "respects custom registered Eq function" {
