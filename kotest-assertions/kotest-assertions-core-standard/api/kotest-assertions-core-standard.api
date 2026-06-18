@@ -1,0 +1,7 @@
+public final class io/kotest/matchers/collections/ContainStandardKt {
+	public static final fun shouldContain (Ljava/lang/Iterable;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Ljava/lang/Iterable;
+	public static final fun shouldContain ([Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)[Ljava/lang/Object;
+	public static final fun shouldNotContain (Ljava/lang/Iterable;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)Ljava/lang/Iterable;
+	public static final fun shouldNotContain ([Ljava/lang/Object;Ljava/lang/Object;Lio/kotest/assertions/equals/Equality;)[Ljava/lang/Object;
+}
+

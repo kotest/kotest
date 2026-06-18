@@ -6,47 +6,27 @@ plugins {
    id("kotest-android-native-conventions")
    id("kotest-watchos-device-conventions")
    id("kotest-publishing-conventions")
-   id("com.google.devtools.ksp").version("2.3.9")
-   id("io.kotest").version("6.1.11")
 }
 
+// kotest-assertions-core is an aggregator artifact. The matcher implementations live in
+// kotest-assertions-core-logic, the dot-notation assertions in kotest-assertions-core-standard,
+// and the infix assertions in kotest-assertions-core-infix. This module re-exports them so that
+// depending on kotest-assertions-core continues to provide the full assertion API, exactly as
+// before the split.
+//
+// Tests stay in kotest-assertions-core-logic: its test source set depends on
+// kotest-framework-engine (for the spec DSL), which transitively provides the full assertion API
+// (all calling conventions), so tests can use any style while logic's *main* source depends only
+// on kotest-assertions-shared.
 kotlin {
 
    sourceSets {
 
       commonMain {
          dependencies {
-            // required for the base matcher interface
-            api(projects.kotestAssertions.kotestAssertionsShared)
-
-            implementation(libs.kotlin.reflect)
-            implementation(projects.kotestCommon)
-            implementation(libs.kotlinx.coroutines.core)
-         }
-      }
-
-      commonTest {
-         dependencies {
-            implementation(projects.kotestFramework.kotestFrameworkEngine)
-         }
-      }
-
-      jvmMain {
-         dependencies {
-            implementation(libs.kotlinx.coroutines.jdk8)
-            implementation(libs.diffutils) // used for diffing large strings in assertions
-         }
-      }
-
-      jvmTest {
-         dependencies {
-            implementation(projects.kotestProperty)
-            implementation(projects.kotestAssertions.kotestAssertionsTable)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.apache.commons.lang)
-            implementation(libs.mockk)
-            implementation(libs.jimfs)
+            api(projects.kotestAssertions.kotestAssertionsCoreLogic)
+            api(projects.kotestAssertions.kotestAssertionsCoreStandard)
+            api(projects.kotestAssertions.kotestAssertionsCoreInfix)
          }
       }
    }

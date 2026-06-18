@@ -69,8 +69,19 @@ include(
 
    // the core assertions that cover the basic types such as String, Int, Boolean, etc.
    // it also defines the assertion error builders that create the intellij formatted assertion errors
-   // users should depend on this if they want to use kotest assertions in tests
+   // users should depend on this if they want to use kotest assertions in tests.
+   // since 6.x this is an aggregator over -logic (matcher implementations), -standard (dot-notation
+   // assertions) and -infix (infix assertions); depending on it provides the full API as before.
    ":kotest-assertions:kotest-assertions-core",
+
+   // the matcher implementations (Matcher factories, should/shouldNot composition, equality, printing)
+   ":kotest-assertions:kotest-assertions-core-logic",
+
+   // the dot-notation assertions, e.g. collection.shouldContain(element)
+   ":kotest-assertions:kotest-assertions-core-standard",
+
+   // the infix assertions, e.g. collection shouldContain element
+   ":kotest-assertions:kotest-assertions-core-infix",
 
    // provides json matchers for comparing json strings, json objects, and json arrays
    ":kotest-assertions:kotest-assertions-json",
