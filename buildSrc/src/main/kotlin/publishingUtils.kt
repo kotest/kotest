@@ -34,26 +34,29 @@ internal fun publishPlatformArtifactsInRootModule(project: Project) {
 
    project.tasks.named<GenerateMavenPom>("generatePomFileForKotlinMultiplatformPublication").configure {
 
-      val jvmPom = jvmPomTask.map { it.destination }
+      // GenerateMavenPom.destination is now a RegularFileProperty (lazy); use flatMap so the inner
+      // provider is unwrapped to a Provider<RegularFile> rather than Provider<RegularFileProperty>.
+      val jvmPom = jvmPomTask.flatMap { it.destination }
       inputs.file(jvmPom)
          .withPropertyName("jvmPom")
          .normalizeLineEndings()
          .withPathSensitivity(NAME_ONLY)
 
       doLast("re-write KMP common POM") {
-         val original = destination.readText()
+         // destination is now a RegularFileProperty; resolve to a File inside the task action.
+         val original = destination.get().asFile.readText()
 
          val docFactory = DocumentBuilderFactory.newInstance()
          val docBuilder = docFactory.newDocumentBuilder()
 
-         val jvmPomFile = jvmPom.get()
+         val jvmPomFile = jvmPom.get().asFile
 
          val jvmDoc = docBuilder.parse(jvmPomFile)
          val jvmGroupId = jvmDoc.getElement("groupId").textContent
          val jvmArtifactId = jvmDoc.getElement("artifactId").textContent
          val jvmVersion = jvmDoc.getElement("version").textContent
 
-         val kmpPomDoc = docBuilder.parse(destination).apply {
+         val kmpPomDoc = docBuilder.parse(destination.get().asFile).apply {
             // strip whitespace, otherwise pretty-printing output has blank lines
             removeWhitespaceNodes()
             // set standalone=true to prevent `standalone="no"` in the output
@@ -91,10 +94,10 @@ internal fun publishPlatformArtifactsInRootModule(project: Project) {
             setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2")
          }
 
-         transformer.transform(DOMSource(kmpPomDoc), StreamResult(destination))
+         transformer.transform(DOMSource(kmpPomDoc), StreamResult(destination.get().asFile))
 
          if (logger.isInfoEnabled) {
-            val updated = destination.readText()
+            val updated = destination.get().asFile.readText()
             logger.info(
                """
                [$path] Re-wrote KMP POM

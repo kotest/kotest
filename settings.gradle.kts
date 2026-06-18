@@ -9,7 +9,10 @@ pluginManagement {
 }
 
 plugins {
-   id("com.gradle.develocity") version "4.4.0"
+   // The com.gradle.develocity plugin (4.4.0) is incompatible with the Gradle 10 Provider API
+   // preview distribution (NoSuchMethodError: GradleEnterprisePluginConfig.getDevelocityUrl()).
+   // Build scans are already disabled here (publishing.onlyIf { false }), so the plugin is removed
+   // for this migration. Restore when migrating against a released Gradle 10.
    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
@@ -259,13 +262,7 @@ if (shouldRunLinuxOnlyModules) {
    )
 }
 
-develocity {
-   buildScan {
-      termsOfUseUrl = "https://gradle.com/help/legal-terms-of-use"
-      termsOfUseAgree = "yes"
-      publishing.onlyIf { false }
-   }
-}
+// develocity { } block removed together with the incompatible com.gradle.develocity plugin (see above).
 
 buildCache {
    val kotestUser = providers.gradleProperty("Kotest_GradleBuildCache_user").orNull
