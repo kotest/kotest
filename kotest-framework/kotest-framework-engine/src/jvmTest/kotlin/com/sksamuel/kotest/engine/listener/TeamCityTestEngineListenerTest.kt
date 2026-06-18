@@ -121,7 +121,26 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          }
          stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
-a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' locationHint='kotest://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
+a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("should use display name rendering for nested ignored tests when parents were not started") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a")
+            listener.engineStarted()
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testIgnored(c, "skipped")
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.engineFinished(emptyList())
+         }
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33' message='skipped' result_status='Ignored']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
       }
