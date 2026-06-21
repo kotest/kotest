@@ -9,7 +9,8 @@ internal fun throwPropertyTestAssertionError(
    e: Throwable, // the underlying failure reason,
    attempts: Int,
    seed: Long,
-): Unit = throw propertyAssertionError(e, attempts, seed, emptyList(), false)
+   evalIndex: Int? = null,
+): Unit = throw propertyAssertionError(e, attempts, seed, emptyList(), false, evalIndex)
 
 /**
  * Generates an [AssertionError] for a property test with arg details and then throws it.
@@ -17,15 +18,20 @@ internal fun throwPropertyTestAssertionError(
  * @param results the reduced (shrunk) values along with the initial values
  * @param e the underlying failure reason
  * @param attempts the iteration count at the time of failure
+ * @param evalIndex the pre-assumption iteration index ([io.kotest.property.PropertyContext.evals])
+ *                  at the time of failure. Suitable for [io.kotest.property.PropTestConfig.skipTo]
+ *                  to jump back to this iteration on a rerun.
  */
+@JvmOverloads
 fun throwPropertyTestAssertionError(
    results: List<ShrinkResult<Any?>>,
    e: Throwable,
    attempts: Int,
    seed: Long,
    outputHexForUnprintableChars: Boolean,
+   evalIndex: Int? = null,
 ) {
-   throw propertyAssertionError(e, attempts, seed, results, outputHexForUnprintableChars)
+   throw propertyAssertionError(e, attempts, seed, results, outputHexForUnprintableChars, evalIndex)
 }
 
 /**
@@ -45,9 +51,10 @@ internal fun propertyAssertionError(
    seed: Long,
    results: List<ShrinkResult<Any?>>,
    outputHexForUnprintableChars: Boolean,
+   evalIndex: Int? = null,
 ): Throwable {
    val finalCause = results.fold(e) { t, result -> result.cause ?: t }
-   val message = propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars)
+   val message = propertyTestFailureMessage(attempt, results, seed, e, outputHexForUnprintableChars, evalIndex)
    return createPropertyAssertionError(message, finalCause)
 }
 
@@ -67,6 +74,7 @@ internal fun propertyTestFailureMessage(
    seed: Long,
    cause: Throwable,
    outputHexForUnprintableChars: Boolean,
+   evalIndex: Int? = null,
 ): String {
    val sb = StringBuilder()
    sb.append("Property failed after $attempt attempts\n")
@@ -90,7 +98,21 @@ internal fun propertyTestFailureMessage(
       }
    }
    sb.append("\n")
-   sb.append("Repeat this test by using seed $seed\n\n")
+   sb.append("Repeat this test by using seed $seed\n")
+   if (evalIndex != null) {
+      // Eval index is the pre-assumption iteration counter (PropertyContext.evals) at failure
+      // time. Drop it into PropTestConfig.skipTo on a rerun to jump back to this exact iteration.
+      sb.append("Eval index: $evalIndex\n")
+   }
+   // Per-arg shrink paths: positions in [RTree.children] traversed at each level. Printed only
+   // when at least one arg actually shrunk so non-shrinking cases (Exhaustive, ShrinkingMode.Off)
+   // stay quiet. Pair with the Eval index above and PropTestConfig.shrinkPaths to replay this
+   // failure directly without re-running the shrink search.
+   val shrinkPaths = results.map { it.path }
+   if (shrinkPaths.any { it.isNotEmpty() }) {
+      sb.append("Shrink paths: $shrinkPaths\n")
+   }
+   sb.append("\n")
 
    // the cause we use in the final result is the result of the last shrinking step, otherwise we use the original
    val finalCause = results.fold(cause) { t, result -> result.cause ?: t }
