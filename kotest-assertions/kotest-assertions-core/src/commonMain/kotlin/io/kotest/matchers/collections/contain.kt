@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.equals.Equality
