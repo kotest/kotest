@@ -113,6 +113,18 @@ fun haveSameInstantAs(other: OffsetDateTime) = object : Matcher<OffsetDateTime> 
          })
 }
 
+/**
+ * Matcher that checks if a [OffsetDateTime] is within the given tolerance of another [OffsetDateTime].
+ *
+ * Comparisons performed via `shouldBe` and `shouldNotBe` are based on the instant in time represented by each
+ * [ZonedDateTime], not on matching local date-time fields or offsets. This means values with different offsets
+ * still match when they represent instants that are within the specified tolerance.
+ *
+ * ```
+ *    OffsetDateTime.of(2023, 11, 14, 1, 2, 0, 0, ZoneOffset.ofHours(-2)) shouldBe
+ *       (OffsetDateTime.of(2023, 11, 14, 2, 30, 0, 0, ZoneOffset.ofHours(-1)) plusOrMinus (30.minutes and 30.seconds))
+ * ```
+ */
 infix fun OffsetDateTime.plusOrMinus(tolerance: Duration): OffsetDateTimeToleranceMatcher =
    OffsetDateTimeToleranceMatcher(this, tolerance)
 
