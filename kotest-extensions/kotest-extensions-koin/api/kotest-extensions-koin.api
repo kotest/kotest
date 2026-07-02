@@ -1,4 +1,6 @@
 public final class io/kotest/koin/KoinExtension : io/kotest/core/extensions/TestCaseExtension {
+	public fun <init> (Lio/kotest/koin/KoinLifecycleMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;)V
+	public synthetic fun <init> (Lio/kotest/koin/KoinLifecycleMode;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function0;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun <init> (Ljava/util/List;Lkotlin/jvm/functions/Function1;Lio/kotest/koin/KoinLifecycleMode;)V
