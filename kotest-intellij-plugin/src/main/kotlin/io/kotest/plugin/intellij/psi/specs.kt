@@ -8,15 +8,8 @@ import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisFromWriteAct
 import org.jetbrains.kotlin.analysis.api.permissions.KaAllowAnalysisOnEdt
 import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisFromWriteAction
 import org.jetbrains.kotlin.analysis.api.permissions.allowAnalysisOnEdt
-import org.jetbrains.kotlin.asJava.classes.KtLightClass
-import org.jetbrains.kotlin.asJava.classes.KtUltraLightClass
 import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.psi.KtCallExpression
-import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.kotlin.psi.KtLambdaArgument
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.KtObjectDeclaration
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getStrictParentOfType
 
 /**
@@ -48,18 +41,6 @@ fun KtClassOrObject.isSpecEdt(): Boolean {
       is KtClass -> this.specStyleOnEdt() != null
       else -> false
    }
-}
-
-/**
- * Returns true if this element is a kotlin class, and it is a subclass of a spec.
- *
- * See [isSpec]
- */
-fun PsiElement.isSpec(): Boolean = when (this) {
-   is KtUltraLightClass -> kotlinOrigin.isSpec()
-   is KtLightClass -> kotlinOrigin?.isSpec() ?: false
-   is KtClassOrObject -> isSpec()
-   else -> false
 }
 
 /**

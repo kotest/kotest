@@ -9,12 +9,15 @@ import java.nio.file.Path
 fun Path.shouldHaveExtension(vararg exts: String) = this should haveExtension(*exts)
 fun Path.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtension(*exts)
 fun haveExtension(vararg exts: String) = object : Matcher<Path> {
-   override fun test(value: Path) = MatcherResult(
-      exts.any { value.fileName.toString().endsWith(it) },
-      { "Path $value should end with one of ${exts.joinToString(",")}" },
-      {
-         "Path $value should not end with one of ${exts.joinToString(",")}"
-      })
+   override fun test(value: Path): MatcherResult {
+      val filename = value.fileName?.toString() ?: ""
+      return MatcherResult(
+         exts.any { filename.endsWith(it) },
+         { "Path $value should end with one of ${exts.joinToString(",")}" },
+         {
+            "Path $value should not end with one of ${exts.joinToString(",")}"
+         })
+   }
 }
 
 
@@ -22,7 +25,7 @@ infix fun Path.shouldHaveNameWithoutExtension(name: String) = this should haveNa
 infix fun Path.shouldNotHaveNameWithoutExtension(name: String) = this shouldNot haveNameWithoutExtension(name)
 fun haveNameWithoutExtension(name: String) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
-      val filename = value.fileName.toString()
+      val filename = value.fileName?.toString() ?: ""
       val actual = if (filename.contains(".")) filename.split('.').dropLast(1).joinToString(".") else filename
       return MatcherResult(
          actual == name,

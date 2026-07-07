@@ -56,8 +56,9 @@ internal object StableIdents {
    fun getStableIdentifier(t: Any?): String {
       return when {
          t == null -> "<null>"
-         t::class.hasAnnotation<IsStableType>() || platform != Platform.JVM -> t.toString()
+         t::class.hasAnnotation<IsStableType>() -> t.toString()
          t is WithDataTestName -> t.dataTestName()
+         platform != Platform.JVM -> t.toString()
          else -> {
             val psv = platformStableValue(t)
             when {

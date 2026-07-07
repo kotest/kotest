@@ -1,0 +1,372 @@
+---
+title: Setup
+slug: project-setup.html
+---
+
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+
+The Kotest test framework is supported on all targets, including JVM, JavaScript, Native and Wasm.
+To enable Kotest for multiple platforms, follow the steps for the platform you are targeting as detailed in the following tabs.
+
+:::caution[Migrating to Kotest 6]
+The Kotlin multiplatform setup in Kotest 6.0 has changed from previous versions. The Kotest Gradle plugin has been
+renamed to `io.kotest`. Also, the compiler plugin has been replaced with a more robust method using KSP.
+Please see the rest of this page for details on how to configure Kotest for KMP in Kotest 6.0 and later.
+:::
+
+:::tip
+When running the Gradle test task, Gradle will cache the output and report no tests executed if no source code has changed.
+See the section on rerunning tests for details on how to disable this behavior.
+:::
+
+<Tabs
+defaultValue="JVM"
+values={[
+{label: 'JVM', value: 'JVM'},
+{label: 'Kotlin/JS', value: 'JS'},
+{label: 'Kotlin/WasmJS', value: 'WasmJS'},
+{label: 'Kotlin/Native', value: 'Native'},
+{label: 'Android', value: 'Android'},
+{label: 'Multiplatform', value: 'Multiplatform'},
+]}>
+<TabItem value="JVM">
+
+:::tip[Example Project]
+A working project with JVM support can be found here:
+https://github.com/kotest/kotest-examples
+:::
+
+Kotest on the JVM builds atop of the [JUnit
+Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) project which is widely
+supported in the JVM ecosystem.
+
+To use the JUnit Platform support, first configure Gradle to use JUnit platform support:
+
+```kotlin
+tasks.withType<Test>().configureEach {
+   useJUnitPlatform()
+}
+```
+
+And then add the following dependency to your build:
+
+```kotlin
+dependencies {
+   testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
+}
+```
+
+And then execute the `test` task in gradle, or run tests directly from the IDE.
+
+   </TabItem>
+   <TabItem value="JS">
+
+:::tip[Example Project]
+A working JS project can be found here: https://github.com/kotest/kotest-examples
+:::
+
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+Note, place the KSP plugin before the Kotest plugin in the plugins block. This restriction will be fixed in a future release.
+
+For example:
+
+```kotlin
+plugins {
+   id("com.google.devtools.ksp").version("<ksp-version>")
+   id("io.kotest").version("<kotest-version>")
+}
+```
+
+Add the `kotest-framework-engine` dependency to your `commonTest` or `jsTest` source set:
+
+```kotlin
+kotlin {
+   js()
+   sourceSets {
+      commonTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
+         }
+      }
+   }
+}
+```
+
+Tests can be placed in either `commonTest` or `jsTest`.
+Run your tests using the `jsTest` gradle task.
+
+:::note
+The JS test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to JS code.
+:::
+
+   </TabItem>
+   <TabItem value="WasmJS">
+
+:::tip[Example Project]
+A working WasmJS project can be found here: https://github.com/kotest/kotest-examples
+:::
+
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+
+For example:
+
+```kotlin
+plugins {
+   id("io.kotest").version("<kotest-version>")
+   id("com.google.devtools.ksp").version("<ksp-version>")
+}
+```
+
+Add the `kotest-framework-engine` dependency to your `commonTest` or `wasmJsTest` source set:
+
+```kotlin
+kotlin {
+   wasmJs()
+   sourceSets {
+      commonTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
+         }
+      }
+   }
+}
+```
+
+Tests can be placed in either `commonTest` or `wasmJsTest`.
+Run your tests using the `wasmJsTest` gradle task.
+
+:::note
+The WasmJS test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to Wasm code.
+:::
+
+   </TabItem>
+   <TabItem value="Native">
+
+:::tip[Example Project]
+A working native project with Linux, Windows and MacOS targets configured, with unit and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
+:::
+
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+
+For example:
+
+```kotlin
+plugins {
+   id("io.kotest").version("<kotest-version>")
+   id("com.google.devtools.ksp").version("<ksp-version>")
+}
+```
+
+Add the `kotest-framework-engine` dependency to your `commonTest`, `nativeTest` or platform specific sourceset:
+
+```kotlin
+kotlin {
+   linuxX64() // add any supported native target
+   sourceSets {
+      commonTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
+         }
+      }
+   }
+}
+```
+
+Tests can be placed in either `commonTest` or a specific native sourceset.
+      Run your tests using the standard test tasks, for example `linuxX86Test`.
+
+:::note
+The native test engine is feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to native code.
+:::
+
+   </TabItem>
+   <TabItem value="Android">
+
+:::tip
+A working Android project with unit, instrumented and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
+:::
+
+Android supports two types of tests:
+- Unit tests, which are run on the local machine and are also referred to as "host" tests
+- Instrumented tests, which are run on an Android device or emulator and are also referred to as "device" tests
+
+For unit tests, Kotest uses the [JUnit Platform](https://junit.org/junit5/docs/current/user-guide/#running-tests-build-gradle) gradle plugin.
+This requires configuring the android test options block in your build file and then adding the Kotest JUnit5 runner dependency.
+
+```kotlin
+android.testOptions {
+   unitTests.all {
+      it.useJUnitPlatform()
+   }
+}
+```
+
+```kotlin
+dependencies {
+   testImplementation("io.kotest:kotest-runner-junit5:version")
+}
+```
+
+For instrumented tests, Kotest uses the [JUnit4 Runner](https://developer.android.com/training/testing/junit-runner).
+This requires adding the Kotest JUnit4 runner dependency to your build using the `androidTestImplementation` configuration.
+
+```kotlin
+dependencies {
+   androidTestImplementation("io.kotest:kotest-runner-junit4:version")
+}
+```
+
+When writing an instrumented test, you should use the `androidTest` source set to place your test code, and you must
+annotate your spec with `@RunWith(KotestTestRunner::class)`. For example:
+
+```kotlin
+@RunWith(KotestTestRunner::class)
+class ComposeWithKotest : FreeSpec() {
+
+  @get:Rule
+  val composeTestRule: ComposeContentTestRule = createComposeRule()
+
+  init {
+    "should have initial state of 0" {
+
+      composeTestRule.setContent {
+        TestComposable()
+      }
+
+      composeTestRule.onNodeWithText("0").assertExists()
+      composeTestRule.onNodeWithText("Click me!").assertExists()
+    }
+
+    "should increment when clicked" {
+
+      composeTestRule.setContent {
+        TestComposable()
+      }
+
+      composeTestRule.onNodeWithText("0").assertExists()
+      composeTestRule.onNodeWithText("Click me!").assertExists()
+    }
+  }
+}
+```
+
+   </TabItem>
+   <TabItem value="Multiplatform">
+
+:::tip
+A working multiplatform project with JVM, JS and native targets, and unit and data driven test examples, can be found here:
+https://github.com/kotest/kotest-examples
+:::
+
+Add the [Kotest gradle plugin](https://plugins.gradle.org/plugin/io.kotest) and Google KSP plugin to to your build.
+
+For example:
+
+```kotlin
+plugins {
+   id("io.kotest") version "<kotest-version>"
+   id("com.google.devtools.ksp") version "<kotlin-verson>-<ksp-version>"
+}
+```
+
+Add the `kotest-framework-engine` dependency to your `commonTest` source set:
+
+```kotlin
+kotlin {
+   sourceSets {
+      commonTest {
+         dependencies {
+            implementation("io.kotest:kotest-framework-engine:<kotest-version>")
+         }
+      }
+   }
+}
+```
+
+Tests can be placed in either `commonTest` or a platform specific directory such as `jsTest` or `macosX64Test` etc.
+Run your tests using the gradle `check` task, or a platform specific test task such as `macosX64Test`
+
+:::note
+The JS, Wasm and native test engines are feature limited when compared to the JVM test engine. The major restriction is that annotation
+based configuration will not work as Kotlin does not expose annotations at runtime to non-JVM platforms.
+:::
+
+   </TabItem>
+</Tabs>
+
+## IDE Support
+
+Support in your IDE is provided by the Kotest IntelliJ Plugin. By installing this Plugin, you will be able to:
+
+- Run tests from the IDE through the sidebar (gutter) run icons for all targets
+- See test results (failed or pass) directly in the editor
+- Use the Kotest Test Explorere View
+- Highlight kotest tests in the structure view
+- Kotest compatible breadcrumbs in the editor
+
+The plugin is available in the [Jetbrains marketplace](https://plugins.jetbrains.com/plugin/14080-kotest) and can be installed
+from the IDE by going to Preferences -> Plugins -> Marketplace -> Search for Kotest.
+
+For more details, see the [Intellij Plugin page](https://kotest.io/docs/intellij/intellij-plugin.html).
+
+### Enhanced IDE support
+
+For enhanced support such as jump-to-source and re-running tests from the test results tree,
+in addition to installing the Kotest Intellij Plugin into your IDE, add the
+[Kotest Gradle plugin](https://plugins.gradle.org/plugin/io.kotest) to your build.
+
+For example:
+
+```kotlin
+plugins {
+id("io.kotest").version("<kotest-version>")
+}
+```
+
+Then you can jump-to-source for tests at any level:
+
+![jump to source](./setup/jump_to_source.png)
+
+As well as re-run all failed tests:
+
+![re-run failed](./setup/rerun_failed.png)
+
+Or re-run a single test from the results tree:
+
+![re-run selected](./setup/rerun_selected_test.png)
+
+## Re-running tests
+
+By default, Gradle's incremental build will skip running tests if no source code has changed,
+marking the task as UP-TO-DATE. This can be inconvenient during debugging.
+
+To force your tests to run every time, you can temporarily add the following configuration to your build.gradle.kts file:
+
+```kotlin
+tasks.withType<Test>().configureEach {
+   logger.lifecycle("UP-TO-DATE check for $name is disabled, forcing it to run.")
+   outputs.upToDateWhen { false }
+}
+```
+
+Alternatively, if you have the Kotest Gradle Plugin installed, you can ask Kotest to do this for you:
+
+```kotlin
+kotest {
+   alwaysRerunTests = true
+}
+```
+
+Quick Alternative: For a single re-run without modifying build files, you can use the --rerun flag from the command line:
+
+```
+./gradlew test --rerun
+```

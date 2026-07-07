@@ -2,9 +2,9 @@
 gradleApi = "8.11.1"
 
 # https://mbonnin.net/2026-02-22-kotlin-versions/
-kotlin-gradle-plugin = "2.3.20" # always use the most recent version to leverage the latest tooling
-kotlin-compile-version = "2.3.20"
-kotlin-core-libaries-version = "2.3.20" # the std lib version
+kotlin-gradle-plugin = "2.2.21" # pinned to latest 2.2.x patch to produce 2.2-compatible KLIBs
+kotlin-compile-version = "2.2.21"
+kotlin-core-libaries-version = "2.2.21" # the std lib version, must match kotlin-compile-version
 kotlin-language-version = "2.2.0" # the minimum version we support and what is written into kotlin metadata
 
 runtime-kotest = "4.2.0" # intellij plugin
@@ -14,7 +14,7 @@ allure-commons = "2.33.0"
 allure-plugin = "3.1.0"
 
 # https://developer.android.com/kotlin/multiplatform/plugin
-agp = "9.0.0-alpha06" # latest supported by IntelliJ 2026.1
+agp = "9.0.0" # latest supported by IntelliJ 2026.1
 
 # https://developer.android.com/jetpack/androidx/versions/all-channel
 androidx-test-runner = "1.7.0"
@@ -24,6 +24,7 @@ arrow = "2.1.2"
 
 blockhound = "1.0.16.RELEASE"
 byte-buddy = "1.18.8"
+classgraph = "4.8.184"
 
 commons-lang3 = "3.20.0"
 gradle-test-logger-plugin = "4.0.0"
@@ -43,13 +44,13 @@ junit-jupiter6 = "6.0.3"
 jimfs = "1.3.1"
 
 kaml = "0.104.0"
-koin = "4.2.1"
+koin = "4.1.0" # 4.2.x requires Kotlin 2.3.x KLIB ABI; 4.1.0 is the last 2.2.x-compatible release
 kotlinx-coroutines = "1.10.2"
 kotlinx-serialization = "1.9.0"
 kotlin-poet = "2.3.0"
-kotlinx-io-core = "0.9.0"
+kotlinx-io-core = "0.8.2" # 0.9.0 requires Kotlin 2.3.x KLIB ABI; 0.8.2 is the last 2.2.x-compiled release
 ksp = "2.3.9"
-ktor = "3.4.2"
+ktor = "3.3.1" # 3.4.0+ requires Kotlin 2.3.x KLIB ABI; 3.3.1 is the last 2.2.x-compiled release
 
 mockk = "1.14.9"
 mordant = "3.0.2"
@@ -128,6 +129,7 @@ apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref
 
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
 byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte-buddy" }
+classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classgraph" }
 
 decoroutinator = { module = "dev.reformator.stacktracedecoroutinator:stacktrace-decoroutinator-jvm", version.ref = "decoroutinator" }
 diffutils = { module = "io.github.java-diff-utils:java-diff-utils", version.ref = "java-diff-utils" }
@@ -148,7 +150,7 @@ opentest4j = { module = "org.opentest4j:opentest4j", version.ref = "opentest4j" 
 rgxgen = { module = "com.github.curious-odd-man:rgxgen", version.ref = "rgxgen" }
 kotlin-rgxgen = { module = "community.flock.kotlinx.rgxgen:kotlin-rgxgen", version.ref = "kotlin-rgxgen" }
 
-jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.3" }
+jackson-module-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version = "2.21.4" }
 
 junit-platform5-testkit = { module = "org.junit.platform:junit-platform-testkit", version.ref = "junit-platform5" }
 junit-platform5-engine = { module = "org.junit.platform:junit-platform-engine", version.ref = "junit-platform5" }

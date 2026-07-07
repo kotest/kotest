@@ -54,23 +54,24 @@ inline fun captureStandardErr(fn: () -> Unit): String {
 class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
 
    private var buffer = ByteArrayOutputStream()
-   private var previous = System.out
+   private val previous = ArrayDeque<PrintStream>()
 
    fun output(): String = buffer.asCanonicalString()
 
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
-      previous = System.out
-      previous.flush()
+      val current = System.out
+      previous.addLast(current)
+      current.flush()
       if (tee) {
-         System.setOut(PrintStream(TeeOutputStream(previous, buffer)))
+         System.setOut(PrintStream(TeeOutputStream(current, buffer)))
       } else {
          System.setOut(PrintStream(buffer))
       }
    }
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-      System.setOut(previous)
+      previous.removeLastOrNull()?.let { System.setOut(it) }
    }
 }
 
@@ -83,23 +84,24 @@ class SystemOutWireListener(private val tee: Boolean = true) : TestListener {
 class SystemErrWireListener(private val tee: Boolean = true) : TestListener {
 
    private var buffer = ByteArrayOutputStream()
-   private var previous = System.err
+   private val previous = ArrayDeque<PrintStream>()
 
    fun output(): String = buffer.asCanonicalString()
 
    override suspend fun beforeAny(testCase: TestCase) {
       buffer = ByteArrayOutputStream()
-      previous = System.err
-      previous.flush()
+      val current = System.err
+      previous.addLast(current)
+      current.flush()
       if (tee) {
-         System.setErr(PrintStream(TeeOutputStream(previous, buffer)))
+         System.setErr(PrintStream(TeeOutputStream(current, buffer)))
       } else {
          System.setErr(PrintStream(buffer))
       }
    }
 
    override suspend fun afterAny(testCase: TestCase, result: TestResult) {
-      System.setErr(previous)
+      previous.removeLastOrNull()?.let { System.setErr(it) }
    }
 }
 

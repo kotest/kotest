@@ -57,8 +57,6 @@ open class SpringExtension(
       val manager = getTestContextManager(clazz)
       val context = manager.testContext.applicationContext
 
-      println("Creating instance of $clazz")
-
       logger.log { Pair(clazz.simpleName, "Spring extension will try to create autowired instance") }
       return context.autowireCapableBeanFactory.autowire(
          clazz.java,
@@ -92,7 +90,8 @@ open class SpringExtension(
          testContextManager().beforeTestMethod(testCase.spec, methodName)
          val result = execute(testCase)
          // the spring docs state that afterTestMethod must be called immediately after framework-specific after lifecycle callbacks
-         testContextManager().afterTestMethod(testCase.spec, methodName, null as Throwable?)
+         // forward any exception from the test result so the test context manager (and its listeners) are aware of it
+         testContextManager().afterTestMethod(testCase.spec, methodName, result.errorOrNull)
          result
       } else {
          execute(testCase)
@@ -111,7 +110,8 @@ open class SpringExtension(
       if (testCase.isApplicable()) {
          val methodName = SpringJavaCompatibility.methodHandle(testCase)
          // the spring docs state that afterTestExecution must be called before framework-specific after lifecycle callbacks
-         testContextManager().afterTestExecution(testCase.spec, methodName, null as Throwable?)
+         // forward any exception from the test result so the test context manager (and its listeners) are aware of it
+         testContextManager().afterTestExecution(testCase.spec, methodName, result.errorOrNull)
       }
    }
 

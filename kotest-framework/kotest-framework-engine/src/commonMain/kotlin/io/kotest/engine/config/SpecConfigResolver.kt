@@ -103,12 +103,14 @@ class SpecConfigResolver(
    /**
     * Returns all [Extension]s applicable to a [Spec]. This includes extensions via
     * function overrides, those registered explicitly in the spec as part of the DSL,
+    * package level extensions from [io.kotest.core.config.AbstractPackageConfig]s,
     * and project wide extensions from configuration.
     */
    fun extensions(spec: Spec): List<Extension> {
       return spec.extensions + // overriding the extensions val in the spec
          spec.functionOverrideCallbacks() + // dsl
          spec.extensions() + // added to the spec via the `extension` functions which is also called by mountable extensions
+         loadPackageConfigs(spec).flatMap { it.extensions } + // package level extensions
          (projectConfig?.extensions ?: emptyList()) + // extensions defined at the project level
          registry.all() // globals
    }

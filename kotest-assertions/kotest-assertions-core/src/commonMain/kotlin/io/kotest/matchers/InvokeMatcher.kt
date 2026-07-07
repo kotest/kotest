@@ -45,12 +45,12 @@ fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
 }
 
 internal class MatcherResultWithError(
-   val passed: Boolean,
+   val passedResult: Boolean,
    val error: () -> Throwable?,
    val failureMessageFn: (error: Throwable?) -> String,
    val negatedFailureMessageFn: (error: Throwable?) -> String,
 ) : MatcherResult {
-   override fun passed(): Boolean = passed
+   override fun passed(): Boolean = passedResult
    override fun failureMessage(): String = failureMessageFn(error())
    override fun negatedFailureMessage(): String = negatedFailureMessageFn(error())
 }

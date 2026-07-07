@@ -29,6 +29,7 @@ kotlin {
       jvmTest {
          dependencies {
             implementation(projects.kotestFramework.kotestFrameworkEngine)
+            implementation(libs.kotlinx.coroutines.debug)
          }
       }
    }

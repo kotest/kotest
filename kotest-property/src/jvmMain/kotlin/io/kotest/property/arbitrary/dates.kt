@@ -122,9 +122,10 @@ fun Arb.Companion.localTime(
    startTime: LocalTime = LocalTime.MIN,
    endTime: LocalTime = LocalTime.MAX,
 ): Arb<LocalTime> {
+   if (startTime == endTime) return Arb.constant(startTime)
    val (durationInNanoSeconds, edgeCases) = getLocalDateArbParams(startTime, endTime)
    return arbitrary(edgeCases) {
-      startTime.plus(it.random.nextLong(durationInNanoSeconds), ChronoUnit.NANOS)
+      startTime.plus(it.random.nextLong(durationInNanoSeconds + 1), ChronoUnit.NANOS)
    }
 }
 
@@ -270,11 +271,15 @@ fun Arb.Companion.yearMonth(
    minYearMonth: YearMonth = YearMonth.of(1970, 1),
    maxYearMonth: YearMonth = YearMonth.of(2030, 12)
 ): Arb<YearMonth> {
+   require(minYearMonth <= maxYearMonth) { "minYearMonth must be before or equal to maxYearMonth" }
+   if (minYearMonth == maxYearMonth) return Arb.constant(minYearMonth)
+
    val leapYears = (minYearMonth.year..maxYearMonth.year).filter { isLeap(it.toLong()) }
    val february = leapYears.map { YearMonth.of(it, 2) }
 
    return arbitrary(february + minYearMonth + maxYearMonth) {
-      minYearMonth.plusMonths(it.random.nextLong(ChronoUnit.MONTHS.between(minYearMonth, maxYearMonth)))
+      val monthsBetween = ChronoUnit.MONTHS.between(minYearMonth, maxYearMonth)
+      minYearMonth.plusMonths(it.random.nextLong(monthsBetween + 1))
    }.filter { it in minYearMonth..maxYearMonth }
 }
 

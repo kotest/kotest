@@ -18,6 +18,9 @@ kotlin {
 
       macosArm64()
 
+      @Suppress("deprecation")
+      macosX64() // deprecated, will be removed when kotlin no longer supports
+
       mingwX64()
 
       /**
@@ -32,11 +35,16 @@ kotlin {
          iosArm64()
          iosSimulatorArm64()
 
+         @Suppress("deprecation")
+         tvosX64() // deprecated, will be removed when kotlin no longer supports
          tvosArm64()
          tvosSimulatorArm64()
 
          watchosArm32()
          watchosArm64()
+
+         @Suppress("deprecation")
+         watchosX64()  // deprecated, will be removed when kotlin no longer supports
          watchosSimulatorArm64()
       }
 

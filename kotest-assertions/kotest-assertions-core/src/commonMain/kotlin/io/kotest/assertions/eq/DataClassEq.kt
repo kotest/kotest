@@ -48,7 +48,18 @@ internal object DataClassEq : Eq<Any> {
             runCatching {
                val differences = dataClassDiff(actual, expected, context = context)
                if (differences == null || differences.differences.isEmpty()) {
-                  EqResult.Success
+                  // The structural diff only compares primary constructor members. When there are
+                  // none to compare (e.g. data objects), an empty diff does not establish equality,
+                  // so we must honor the equals() result, which already determined they are not equal.
+                  if (reflection.primaryConstructorMembers(expected::class).isEmpty()) {
+                     EqResult.Failure {
+                        AssertionErrorBuilder.create()
+                           .withValues(Expected(expected.print()), Actual(actual.print()))
+                           .build()
+                     }
+                  } else {
+                     EqResult.Success
+                  }
                } else {
                   val detailedDiffMsg = runCatching {
                      formatDifferences(differences) + "\n\n"

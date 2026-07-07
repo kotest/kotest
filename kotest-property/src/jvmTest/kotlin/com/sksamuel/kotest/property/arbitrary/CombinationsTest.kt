@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.shouldBe
 import io.kotest.property.Arb
 import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.shuffle
@@ -57,5 +58,12 @@ class CombinationsTest : FunSpec({
       val actual = Arb.slice(listOf(1, 2, 3, 4, 5)).take(10000).toList()
       actual.map { it.size }.distinct().shouldContainAll(0, 1, 2, 3, 4, 5)
       actual.filter { it.isNotEmpty() }.map { it[0] }.distinct().shouldContainAll(1, 2, 3, 4, 5)
+   }
+
+   test("slice of an empty list should not throw and only produce empty lists") {
+      // Regression: previously nextInt(0, 0) threw IllegalArgumentException for an empty input.
+      val actual = Arb.slice(emptyList<Int>()).take(1000).toList()
+      actual.size shouldBe 1000
+      actual.toSet() shouldBe setOf(emptyList())
    }
 })
