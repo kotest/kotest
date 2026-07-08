@@ -22,7 +22,7 @@ androidx-core-ktx = "1.18.0"
 androidx-appcompat = "1.7.1"
 arrow = "2.1.2"
 
-blockhound = "1.0.16.RELEASE"
+blockhound = "1.0.17.RELEASE"
 byte-buddy = "1.18.8"
 classgraph = "4.8.184"
 
