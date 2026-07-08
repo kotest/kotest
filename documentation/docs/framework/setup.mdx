@@ -22,6 +22,22 @@ When running the Gradle test task, Gradle will cache the output and report no te
 See the section on rerunning tests for details on how to disable this behavior.
 :::
 
+## Kotest Gradle plugin
+
+The `io.kotest` Gradle plugin is used when Kotest needs additional Gradle integration beyond running tests
+through Gradle's standard JVM `Test` task.
+
+Its main role is on Kotlin Multiplatform test targets, where it wires the Kotest framework symbol processor into
+the relevant KSP configurations. This is used for targets such as JavaScript, WasmJS and Native, where Kotest
+relies on generated metadata for test discovery and execution rather than runtime classpath scanning.
+
+Because the plugin adds the Kotest symbol processor through KSP, projects that apply `io.kotest` should also
+apply the `com.google.devtools.ksp` Gradle plugin.
+
+For JVM-only projects that run Kotest through the JUnit Platform, the `io.kotest` Gradle plugin is usually not
+required. In those projects, configuring the standard Gradle test task with `useJUnitPlatform()` and adding the
+`kotest-runner-junit5` dependency (see the JVM tab) is enough.
+
 <Tabs
 defaultValue="JVM"
 values={[
