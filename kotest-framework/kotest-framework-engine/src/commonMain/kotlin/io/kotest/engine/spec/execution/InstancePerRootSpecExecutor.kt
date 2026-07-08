@@ -120,7 +120,7 @@ internal class InstancePerRootSpecExecutor(
       val specContext = SpecContext.create()
 
       // we switch to a new coroutine for each spec instance
-      withContext(CoroutineName("spec-scope-" + spec.hashCode())) {
+      withContext(CoroutineName("spec-scope-" + spec.hashCode()) + FailFastScopeTracker()) {
          pipeline.execute(spec, ref) {
             val result = executeTest(freshRoot, specContext)
             Result.success(mapOf(freshRoot to result))
@@ -152,5 +152,4 @@ internal class InstancePerRootSpecExecutor(
       return result
    }
 }
-
 
