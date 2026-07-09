@@ -1,10 +1,12 @@
 package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.eq.CollectionEq
 import io.kotest.assertions.eq.DefaultEqResolver
 import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.eq.EqResult
+import io.kotest.assertions.eq.MapEq
 import io.kotest.assertions.eq.isDataClassInstance
 import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.StringSpec
@@ -12,6 +14,8 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.matchers.string.shouldNotStartWith
 import io.kotest.matchers.string.shouldStartWith
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.kotest.matchers.types.shouldNotBeInstanceOf
 import kotlin.time.Duration.Companion.nanoseconds
 import kotlin.time.Instant
 
@@ -30,6 +34,18 @@ data class DataClassWithMultipleConstructors(val a: Int, val b: Float) {
 data class CircularDataClass(val num: Int, val nested: CircularDataClass?)
 
 class RegularClass(val a: Int, val b: Float)
+
+// https://github.com/kotest/kotest/issues/5202
+data class NamedMap(
+   val name: String,
+   val map: Map<String, String>,
+) : Map<String, String> by map
+
+// https://github.com/kotest/kotest/issues/5202
+data class NamedList(
+   val name: String,
+   val list: List<String>,
+) : List<String> by list
 
 data class IntRatio(
    val numerator: Int,
@@ -108,6 +124,32 @@ class DataClassEqTest : StringSpec({
       DefaultEqResolver.register(Instant::class, InstantWithoutNanosEq)
       f1 shouldBe f2
       DefaultEqResolver.unregister(Instant::class)
+   }
+
+   // https://github.com/kotest/kotest/issues/5202
+   "data class delegating to a Map is compared by its own equals, not structurally" {
+      val map1 = NamedMap("map1", mapOf("foo" to "bar"))
+      val map2 = NamedMap("map2", mapOf("foo" to "bar"))
+
+      DefaultEqResolver.resolve(map1, map2).shouldNotBeInstanceOf<MapEq>()
+      map1 shouldNotBe map2
+      map1 shouldBe NamedMap("map1", mapOf("foo" to "bar"))
+   }
+
+   // https://github.com/kotest/kotest/issues/5202
+   "data class delegating to a Collection is compared by its own equals, not structurally" {
+      val list1 = NamedList("list1", listOf("foo"))
+      val list2 = NamedList("list2", listOf("foo"))
+
+      DefaultEqResolver.resolve(list1, list2).shouldNotBeInstanceOf<CollectionEq>()
+      list1 shouldNotBe list2
+      list1 shouldBe NamedList("list1", listOf("foo"))
+   }
+
+   // a plain Map/Collection must still be compared structurally
+   "plain maps and collections are still compared structurally" {
+      DefaultEqResolver.resolve(mapOf("a" to 1), mapOf("a" to 1)).shouldBeInstanceOf<MapEq>()
+      DefaultEqResolver.resolve(listOf(1), listOf(1)).shouldBeInstanceOf<CollectionEq>()
    }
 
    "Data class instances are determined to be dataclasses" {

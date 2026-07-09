@@ -33,12 +33,16 @@ object DefaultEqResolver : EqResolver {
       return when {
          actual == null || expected == null -> NullEq
          actual::class == expected::class && customEqInstances.contains(actual::class) -> customEqInstances[actual::class]!!
-         actual is Map<*, *> && expected is Map<*, *> -> MapEq
+         // A data class that also implements a structural type such as Map or Collection
+         // (e.g. `data class Foo(val name: String, val m: Map<K, V>) : Map<K, V> by m`) must be
+         // compared using its own equals(), not by structural (entry/element) equality. Otherwise
+         // its non-delegated properties would be silently ignored. See #5202.
+         actual is Map<*, *> && expected is Map<*, *> && !isDataClassInstance(actual) -> MapEq
          actual is Map.Entry<*, *> && expected is Map.Entry<*, *> -> MapEntryEq
          actual is Regex && expected is Regex -> RegexEq
          actual is String && expected is String -> StringEq
          actual is Number && expected is Number -> NumberEq
-         actual is Collection<*> && expected is Collection<*> -> CollectionEq
+         actual is Collection<*> && expected is Collection<*> && !isDataClassInstance(actual) -> CollectionEq
          actual is Array<*> && expected is Array<*> -> ArrayEq
          actual is Sequence<*> || expected is Sequence<*> -> SequenceEq
          actual is Throwable && expected is Throwable -> ThrowableEq
