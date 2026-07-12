@@ -22,7 +22,7 @@ androidx-core-ktx = "1.18.0"
 androidx-appcompat = "1.7.1"
 arrow = "2.1.2"
 
-blockhound = "1.0.16.RELEASE"
+blockhound = "1.0.17.RELEASE"
 byte-buddy = "1.18.8"
 classgraph = "4.8.184"
 
@@ -52,7 +52,7 @@ kotlinx-io-core = "0.8.2" # 0.9.0 requires Kotlin 2.3.x KLIB ABI; 0.8.2 is the l
 ksp = "2.3.9"
 ktor = "3.3.1" # 3.4.0+ requires Kotlin 2.3.x KLIB ABI; 3.3.1 is the last 2.2.x-compiled release
 
-mockk = "1.14.9"
+mockk = "1.14.11"
 mordant = "3.0.2"
 
 opentest4j = "1.3.0"
