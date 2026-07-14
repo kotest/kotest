@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldNotBe
  *
  * @see [Double.shouldNotBeNegative]
  */
+@IgnorableReturnValue
 fun Double.shouldBePositive(): Double {
    this shouldBe positive()
    return this
@@ -38,6 +39,7 @@ fun Double.shouldBePositive(): Double {
  *
  * @see [Double.shouldBeNegative]
  */
+@IgnorableReturnValue
 fun Double.shouldNotBePositive(): Double {
    this shouldNotBe positive()
    return this

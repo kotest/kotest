@@ -4,6 +4,7 @@ package io.kotest.data
 
 import kotlin.jvm.JvmName
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G> forAll(
    vararg rows: Row7<A, B, C, D, E, F, G>,
    testfn: suspend (A, B, C, D, E, F, G) -> Unit
@@ -22,9 +23,11 @@ suspend fun <A, B, C, D, E, F, G> forAll(
 }
 
 @JvmName("forall7")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G> forAll(table: Table7<A, B, C, D, E, F, G>, testfn: (A, B, C, D, E, F, G) -> Unit) =
    table.forAll(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forAll(fn: (A, B, C, D, E, F, G) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -37,6 +40,7 @@ inline fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forAll(fn: (A, B, C
    collector.assertAll()
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G> forNone(
    vararg rows: Row7<A, B, C, D, E, F, G>,
    testfn: suspend (A, B, C, D, E, F, G) -> Unit
@@ -55,9 +59,11 @@ suspend fun <A, B, C, D, E, F, G> forNone(
 }
 
 @JvmName("fornone7")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G> forNone(table: Table7<A, B, C, D, E, F, G>, testfn: (A, B, C, D, E, F, G) -> Unit) =
    table.forNone(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G> Table7<A, B, C, D, E, F, G>.forNone(fn: (A, B, C, D, E, F, G) -> Unit) {
    for (row in rows) {
       try {

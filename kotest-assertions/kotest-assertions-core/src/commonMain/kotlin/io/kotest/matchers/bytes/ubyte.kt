@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldBe
    "UByte-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the UByte import `io.kotest.matchers.bytes.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(lower, upper)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun UByte.shouldBeBetween(lower: UByte, upper: UByte): UByte {
    this shouldBe between(lower, upper)
    return this

@@ -19,6 +19,7 @@ import kotlin.jvm.JvmName
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
 @JvmName("shouldContainExactly_iterable")
+@IgnorableReturnValue
 infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) =
    this?.toList() should containExactly(expected.toList())
 
@@ -26,29 +27,34 @@ infix fun <T> Iterable<T>?.shouldContainExactly(expected: Iterable<T>) =
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
 @JvmName("shouldContainExactly_array")
+@IgnorableReturnValue
 infix fun <T> Array<T>?.shouldContainExactly(expected: Array<T>) =
    this?.asList() should containExactly(*expected)
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
+@IgnorableReturnValue
 fun <T> Iterable<T>?.shouldContainExactly(vararg expected: T) =
    this?.toList() should containExactly(*expected)
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
+@IgnorableReturnValue
 fun <T> Array<T>?.shouldContainExactly(vararg expected: T) =
    this?.asList() should containExactly(*expected)
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
 
 /**
  * Assert that a collection contains exactly, and only, the given elements, in the same order.
  */
+@IgnorableReturnValue
 fun <T> Collection<T>?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 
 /**
@@ -182,82 +188,120 @@ internal fun<T> matchCollectionsWithVerifier(
 internal class CollectionMismatchWithCustomVerifier(message: String): Exception(message)
 
 @JvmName("shouldNotContainExactly_iterable")
+@IgnorableReturnValue
 infix fun <T> Iterable<T>?.shouldNotContainExactly(expected: Iterable<T>) =
    this?.toList() shouldNot containExactly(expected.toList())
 
 @JvmName("shouldNotContainExactly_array")
+@IgnorableReturnValue
 infix fun <T> Array<T>?.shouldNotContainExactly(expected: Array<T>) = this?.asList() shouldNot containExactly(*expected)
 
+@IgnorableReturnValue
 fun <T> Iterable<T>?.shouldNotContainExactly(vararg expected: T) = this?.toList() shouldNot containExactly(*expected)
+@IgnorableReturnValue
 fun <T> Array<T>?.shouldNotContainExactly(vararg expected: T) = this?.asList() shouldNot containExactly(*expected)
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
+@IgnorableReturnValue
 fun <T> Collection<T>?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
 
 // region Primitive array overloads
 
 @JvmName("shouldContainExactly_booleanArray")
+@IgnorableReturnValue
 infix fun BooleanArray?.shouldContainExactly(expected: BooleanArray): BooleanArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun BooleanArray?.shouldContainExactly(vararg expected: Boolean): BooleanArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_booleanArray")
+@IgnorableReturnValue
 infix fun BooleanArray?.shouldNotContainExactly(expected: BooleanArray): BooleanArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun BooleanArray?.shouldNotContainExactly(vararg expected: Boolean): BooleanArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_byteArray")
+@IgnorableReturnValue
 infix fun ByteArray?.shouldContainExactly(expected: ByteArray): ByteArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun ByteArray?.shouldContainExactly(vararg expected: Byte): ByteArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_byteArray")
+@IgnorableReturnValue
 infix fun ByteArray?.shouldNotContainExactly(expected: ByteArray): ByteArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun ByteArray?.shouldNotContainExactly(vararg expected: Byte): ByteArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_shortArray")
+@IgnorableReturnValue
 infix fun ShortArray?.shouldContainExactly(expected: ShortArray): ShortArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun ShortArray?.shouldContainExactly(vararg expected: Short): ShortArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_shortArray")
+@IgnorableReturnValue
 infix fun ShortArray?.shouldNotContainExactly(expected: ShortArray): ShortArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun ShortArray?.shouldNotContainExactly(vararg expected: Short): ShortArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_charArray")
+@IgnorableReturnValue
 infix fun CharArray?.shouldContainExactly(expected: CharArray): CharArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun CharArray?.shouldContainExactly(vararg expected: Char): CharArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_charArray")
+@IgnorableReturnValue
 infix fun CharArray?.shouldNotContainExactly(expected: CharArray): CharArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun CharArray?.shouldNotContainExactly(vararg expected: Char): CharArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_intArray")
+@IgnorableReturnValue
 infix fun IntArray?.shouldContainExactly(expected: IntArray): IntArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun IntArray?.shouldContainExactly(vararg expected: Int): IntArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_intArray")
+@IgnorableReturnValue
 infix fun IntArray?.shouldNotContainExactly(expected: IntArray): IntArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun IntArray?.shouldNotContainExactly(vararg expected: Int): IntArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_longArray")
+@IgnorableReturnValue
 infix fun LongArray?.shouldContainExactly(expected: LongArray): LongArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun LongArray?.shouldContainExactly(vararg expected: Long): LongArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_longArray")
+@IgnorableReturnValue
 infix fun LongArray?.shouldNotContainExactly(expected: LongArray): LongArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun LongArray?.shouldNotContainExactly(vararg expected: Long): LongArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_floatArray")
+@IgnorableReturnValue
 infix fun FloatArray?.shouldContainExactly(expected: FloatArray): FloatArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun FloatArray?.shouldContainExactly(vararg expected: Float): FloatArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_floatArray")
+@IgnorableReturnValue
 infix fun FloatArray?.shouldNotContainExactly(expected: FloatArray): FloatArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun FloatArray?.shouldNotContainExactly(vararg expected: Float): FloatArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 @JvmName("shouldContainExactly_doubleArray")
+@IgnorableReturnValue
 infix fun DoubleArray?.shouldContainExactly(expected: DoubleArray): DoubleArray? = apply { this?.asList() should containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun DoubleArray?.shouldContainExactly(vararg expected: Double): DoubleArray? = apply { this?.asList() should containExactly(expected.asList()) }
 
 @JvmName("shouldNotContainExactly_doubleArray")
+@IgnorableReturnValue
 infix fun DoubleArray?.shouldNotContainExactly(expected: DoubleArray): DoubleArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
+@IgnorableReturnValue
 fun DoubleArray?.shouldNotContainExactly(vararg expected: Double): DoubleArray? = apply { this?.asList() shouldNot containExactly(expected.asList()) }
 
 // endregion

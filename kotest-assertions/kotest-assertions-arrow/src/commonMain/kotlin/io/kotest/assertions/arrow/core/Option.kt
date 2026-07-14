@@ -29,6 +29,7 @@ import kotlin.contracts.contract
  * ```
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A> Option<A>.shouldBeSome(failureMessage: () -> String = { "Expected Some, but found None" }): A {
    contract {
       returns() implies (this@shouldBeSome is Some<A>)
@@ -41,9 +42,11 @@ public fun <A> Option<A>.shouldBeSome(failureMessage: () -> String = { "Expected
    }
 }
 
+@IgnorableReturnValue
 public infix fun <A> Option<A>.shouldBeSome(a: A): A =
    shouldBeSome().shouldBe(a)
 
+@IgnorableReturnValue
 public infix fun <A> Option<A>.shouldNotBeSome(a: A): A =
    shouldBeSome().shouldNotBe(a)
 
@@ -66,6 +69,7 @@ public infix fun <A> Option<A>.shouldNotBeSome(a: A): A =
  * ```
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A> Option<A>.shouldBeNone(failureMessage: (Some<A>) -> String = { "Expected None, but found Some with value ${it.value}" }): None {
    contract {
       returns() implies (this@shouldBeNone is None)

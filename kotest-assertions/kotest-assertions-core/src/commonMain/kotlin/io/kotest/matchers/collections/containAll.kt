@@ -13,12 +13,14 @@ import kotlin.jvm.JvmName
  * Verifies that the given [Iterable] contains all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T> Iterable<T>.shouldContainAll(vararg ts: T) = toList().shouldContainAll(*ts)
 
 /**
  * Verifies that the given [Array] contains all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldContainAll(vararg ts: T): Array<T> {
    asList().shouldContainAll(*ts)
    return this
@@ -28,6 +30,7 @@ fun <T> Array<T>.shouldContainAll(vararg ts: T): Array<T> {
  * Verifies that the given [Collection] contains all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T> Collection<T>.shouldContainAll(vararg ts: T): Collection<T> {
    this should containAll(*ts)
    return this
@@ -37,12 +40,14 @@ fun <T> Collection<T>.shouldContainAll(vararg ts: T): Collection<T> {
  * Verifies that the given [Iterable] contains all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldContainAll(ts: Collection<T>) = toList().shouldContainAll(ts)
 
 /**
  * Verifies that the given [Array] contains all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>): Array<T> {
    asList().shouldContainAll(ts)
    return this
@@ -52,6 +57,7 @@ infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>): Array<T> {
  * Verifies that the given [Collection] contains all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>): Collection<T> {
    this should containAll(ts)
    return this
@@ -61,6 +67,7 @@ infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>): Collection<T> {
  * Verifies that the given [Iterable] does not contain all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T): Iterable<T> {
    toList().shouldNotContainAll(*ts)
    return this
@@ -70,6 +77,7 @@ fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T): Iterable<T> {
  * Verifies that the given [Array] does not contain all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotContainAll(vararg ts: T): Array<T> {
    asList().shouldNotContainAll(*ts)
    return this
@@ -79,6 +87,7 @@ fun <T> Array<T>.shouldNotContainAll(vararg ts: T): Array<T> {
  * Verifies that the given [Collection] does not contain all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T> Collection<T>.shouldNotContainAll(vararg ts: T): Collection<T> {
    this shouldNot containAll(*ts)
    return this
@@ -88,12 +97,14 @@ fun <T> Collection<T>.shouldNotContainAll(vararg ts: T): Collection<T> {
  * Verifies that the given [Iterable] does not contain all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotContainAll(ts: Collection<T>) = toList().shouldNotContainAll(ts)
 
 /**
  * Verifies that the given [Array] does not contain all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>): Array<T> {
    asList().shouldNotContainAll(ts)
    return this
@@ -103,6 +114,7 @@ infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>): Array<T> {
  * Verifies that the given [Collection] does not contain all the specified elements in given order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>): Collection<T> {
    this shouldNot containAll(ts)
    return this
@@ -110,67 +122,99 @@ infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>): Collection<T
 
 
 // BooleanArray
+@IgnorableReturnValue
 fun BooleanArray.shouldContainAll(vararg expected: Boolean): BooleanArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_booleanArray_infix")
+@IgnorableReturnValue
 infix fun BooleanArray.shouldContainAll(expected: BooleanArray): BooleanArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun BooleanArray.shouldNotContainAll(vararg expected: Boolean): BooleanArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_booleanArray_infix")
+@IgnorableReturnValue
 infix fun BooleanArray.shouldNotContainAll(expected: BooleanArray): BooleanArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // ByteArray
+@IgnorableReturnValue
 fun ByteArray.shouldContainAll(vararg expected: Byte): ByteArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_byteArray_infix")
+@IgnorableReturnValue
 infix fun ByteArray.shouldContainAll(expected: ByteArray): ByteArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun ByteArray.shouldNotContainAll(vararg expected: Byte): ByteArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_byteArray_infix")
+@IgnorableReturnValue
 infix fun ByteArray.shouldNotContainAll(expected: ByteArray): ByteArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // ShortArray
+@IgnorableReturnValue
 fun ShortArray.shouldContainAll(vararg expected: Short): ShortArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_shortArray_infix")
+@IgnorableReturnValue
 infix fun ShortArray.shouldContainAll(expected: ShortArray): ShortArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun ShortArray.shouldNotContainAll(vararg expected: Short): ShortArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_shortArray_infix")
+@IgnorableReturnValue
 infix fun ShortArray.shouldNotContainAll(expected: ShortArray): ShortArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // CharArray
+@IgnorableReturnValue
 fun CharArray.shouldContainAll(vararg expected: Char): CharArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_charArray_infix")
+@IgnorableReturnValue
 infix fun CharArray.shouldContainAll(expected: CharArray): CharArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun CharArray.shouldNotContainAll(vararg expected: Char): CharArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_charArray_infix")
+@IgnorableReturnValue
 infix fun CharArray.shouldNotContainAll(expected: CharArray): CharArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // IntArray
+@IgnorableReturnValue
 fun IntArray.shouldContainAll(vararg expected: Int): IntArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_intArray_infix")
+@IgnorableReturnValue
 infix fun IntArray.shouldContainAll(expected: IntArray): IntArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun IntArray.shouldNotContainAll(vararg expected: Int): IntArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_intArray_infix")
+@IgnorableReturnValue
 infix fun IntArray.shouldNotContainAll(expected: IntArray): IntArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // LongArray
+@IgnorableReturnValue
 fun LongArray.shouldContainAll(vararg expected: Long): LongArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_longArray_infix")
+@IgnorableReturnValue
 infix fun LongArray.shouldContainAll(expected: LongArray): LongArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun LongArray.shouldNotContainAll(vararg expected: Long): LongArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_longArray_infix")
+@IgnorableReturnValue
 infix fun LongArray.shouldNotContainAll(expected: LongArray): LongArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // FloatArray
+@IgnorableReturnValue
 fun FloatArray.shouldContainAll(vararg expected: Float): FloatArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_floatArray_infix")
+@IgnorableReturnValue
 infix fun FloatArray.shouldContainAll(expected: FloatArray): FloatArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun FloatArray.shouldNotContainAll(vararg expected: Float): FloatArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_floatArray_infix")
+@IgnorableReturnValue
 infix fun FloatArray.shouldNotContainAll(expected: FloatArray): FloatArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 // DoubleArray
+@IgnorableReturnValue
 fun DoubleArray.shouldContainAll(vararg expected: Double): DoubleArray = apply { asList().shouldContainAll(expected.asList()) }
 @JvmName("shouldContainAll_doubleArray_infix")
+@IgnorableReturnValue
 infix fun DoubleArray.shouldContainAll(expected: DoubleArray): DoubleArray = apply { asList().shouldContainAll(expected.asList()) }
+@IgnorableReturnValue
 fun DoubleArray.shouldNotContainAll(vararg expected: Double): DoubleArray = apply { asList().shouldNotContainAll(expected.asList()) }
 @JvmName("shouldNotContainAll_doubleArray_infix")
+@IgnorableReturnValue
 infix fun DoubleArray.shouldNotContainAll(expected: DoubleArray): DoubleArray = apply { asList().shouldNotContainAll(expected.asList()) }
 
 

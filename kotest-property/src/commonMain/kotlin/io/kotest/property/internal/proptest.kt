@@ -11,6 +11,7 @@ import io.kotest.property.RandomSource
 import io.kotest.property.arbitrary.removeEdgecases
 import io.kotest.property.seed.createRandom
 
+@IgnorableReturnValue
 suspend fun <A> proptest(
    genA: Gen<A>,
    config: PropTestConfig,
@@ -72,6 +73,7 @@ suspend fun <A> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -133,6 +135,7 @@ suspend fun <A, B> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -199,6 +202,7 @@ suspend fun <A, B, C> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -265,6 +269,7 @@ suspend fun <A, B, C, D> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -353,6 +358,7 @@ suspend fun <A, B, C, D, E> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -448,6 +454,7 @@ suspend fun <A, B, C, D, E, F> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -550,6 +557,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -659,6 +667,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -775,6 +784,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -909,6 +919,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1063,6 +1074,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1226,6 +1238,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1398,6 +1411,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1579,6 +1593,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1769,6 +1784,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -1985,6 +2001,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -2211,6 +2228,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -2466,6 +2484,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -2732,6 +2751,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -3009,6 +3029,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> proptest(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -3297,6 +3318,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
    return context
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> proptest(
    genA: Gen<A>,
    genB: Gen<B>,

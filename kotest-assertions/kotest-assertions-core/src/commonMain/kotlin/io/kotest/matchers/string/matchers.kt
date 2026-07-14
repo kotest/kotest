@@ -15,11 +15,13 @@ import io.kotest.matchers.string.UUIDVersion.ANY
 import kotlin.contracts.contract
 import kotlin.text.RegexOption.IGNORE_CASE
 
+@IgnorableReturnValue
 fun String?.shouldContainOnlyDigits(): String? {
    this should containOnlyDigits()
    return this
 }
 
+@IgnorableReturnValue
 fun String?.shouldNotContainOnlyDigits(): String? {
    this shouldNot containOnlyDigits()
    return this
@@ -33,11 +35,13 @@ fun containOnlyDigits() = neverNullMatcher<String> { value ->
       { "${value.print().value} should not contain only digits" })
 }
 
+@IgnorableReturnValue
 fun String?.shouldContainADigit(): String? {
    this should containADigit()
    return this
 }
 
+@IgnorableReturnValue
 fun String?.shouldNotContainADigit(): String? {
    this shouldNot containADigit()
    return this
@@ -54,11 +58,13 @@ fun containADigit() = neverNullMatcher<String> { value ->
       { "${value.print().value} should not contain any digits$possibleFirstDigitMessage" })
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldContainOnlyOnce(substr: String): String? {
    this should containOnlyOnce(substr)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldNotContainOnlyOnce(substr: String): String? {
    this shouldNot containOnlyOnce(substr)
    return this
@@ -79,11 +85,13 @@ fun containOnlyOnce(substring: String) = neverNullMatcher<String> { value ->
       { "${value.print().value} should not contain the substring ${substring.print().value} exactly once" })
 }
 
+@IgnorableReturnValue
 fun String?.shouldBeEmpty(): String? {
    this should beEmpty()
    return this
 }
 
+@IgnorableReturnValue
 fun String?.shouldNotBeEmpty(): String? {
    this shouldNot beEmpty()
    return this
@@ -96,11 +104,13 @@ fun beEmpty() = neverNullMatcher<String> { value ->
       { "${value.print().value} should not be empty" })
 }
 
+@IgnorableReturnValue
 fun String?.shouldBeBlank(): String? {
    this should beBlank()
    return this
 }
 
+@IgnorableReturnValue
 fun String?.shouldNotBeBlank(): String? {
    this shouldNot beBlank()
    return this
@@ -115,11 +125,13 @@ fun beBlank() = neverNullMatcher<String> { value ->
    )
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldContainIgnoringCase(substr: String): String? {
    this should containIgnoringCase(substr)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldNotContainIgnoringCase(substr: String): String? {
    this shouldNot containIgnoringCase(substr)
    return this
@@ -134,11 +146,13 @@ fun containIgnoringCase(substr: String) = neverNullMatcher<String> { value ->
    )
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldContain(regex: Regex): String? {
    this should contain(regex)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldNotContain(regex: Regex): String? {
    this shouldNot contain(regex)
    return this
@@ -171,11 +185,13 @@ fun contain(regex: Regex) = neverNullMatcher<String> { value ->
  * "are you ready".shouldContainInOrder("read", "ready")
  *
  */
+@IgnorableReturnValue
 fun String?.shouldContainInOrder(vararg substrings: String): String? {
    this should containInOrder(*substrings)
    return this
 }
 
+@IgnorableReturnValue
 fun String?.shouldNotContainInOrder(vararg substrings: String): String? {
    this shouldNot containInOrder(*substrings)
    return this
@@ -290,11 +306,13 @@ internal sealed interface ContainInOrderOutcome {
    }
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldContain(substr: String): String? {
    this should contain(substr)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldNotContain(substr: String): String? {
    this shouldNot contain(substr)
    return this
@@ -302,11 +320,13 @@ infix fun String?.shouldNotContain(substr: String): String? {
 
 fun contain(substr: String) = include(substr)
 
+@IgnorableReturnValue
 infix fun String?.shouldInclude(substr: String): String? {
    this should include(substr)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String?.shouldNotInclude(substr: String): String? {
    this shouldNot include(substr)
    return this
@@ -342,6 +362,7 @@ fun include(substr: String) = neverNullMatcher<String> { value ->
  * @see [shouldNotBeEqualIgnoringCase]
  * @see [beEqualIgnoringCase]
  */
+@IgnorableReturnValue
 infix fun String?.shouldBeEqualIgnoringCase(other: String): String? {
    this should beEqualIgnoringCase(other)
    return this
@@ -364,6 +385,7 @@ infix fun String?.shouldBeEqualIgnoringCase(other: String): String? {
  * @see [shouldBeEqualIgnoringCase]
  * @see [beEqualIgnoringCase]
  */
+@IgnorableReturnValue
 infix fun String?.shouldNotBeEqualIgnoringCase(other: String): String? {
    this shouldNot beEqualIgnoringCase(other)
    return this
@@ -422,6 +444,7 @@ enum class UUIDVersion(
  *
  * See [RFC4122](https://tools.ietf.org/html/rfc4122)
  */
+@IgnorableReturnValue
 fun String.shouldBeUUID(
    version: UUIDVersion = ANY,
    considerNilValid: Boolean = true
@@ -448,6 +471,7 @@ fun String.shouldBeUUID(
  *
  * See [RFC4122](https://tools.ietf.org/html/rfc4122)
  */
+@IgnorableReturnValue
 fun String.shouldNotBeUUID(
    version: UUIDVersion = ANY,
    considerNilValid: Boolean = true
@@ -482,6 +506,7 @@ fun beUUID(
    private fun String.isNilUUID() = this == "00000000-0000-0000-0000-000000000000"
 }
 
+@IgnorableReturnValue
 fun String?.shouldBeInteger(radix: Int = 10): Int {
    contract {
       returns() implies (this@shouldBeInteger != null)

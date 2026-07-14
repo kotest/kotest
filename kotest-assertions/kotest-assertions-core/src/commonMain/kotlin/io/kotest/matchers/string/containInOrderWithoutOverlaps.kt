@@ -21,11 +21,13 @@ import io.kotest.matchers.shouldNot
  * "sourdough bread".shouldContainInOrderWithoutOverlaps("bread", "read")
  * "superstar".shouldContainInOrderWithoutOverlaps("supers", "star")
  */
+@IgnorableReturnValue
 fun String.shouldContainInOrderWithoutOverlaps(vararg substrings: String): String {
    this should containInOrderWithoutOverlaps(*substrings)
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotContainInOrderWithoutOverlaps(vararg substrings: String): String {
    this shouldNot containInOrderWithoutOverlaps(*substrings)
    return this

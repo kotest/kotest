@@ -13,6 +13,7 @@ import kotlin.io.path.writeBytes
 /**
  * Will match when given ByteArray and resource value are equal
  */
+@IgnorableReturnValue
 infix fun ByteArray.shouldMatchResource(
    path: String
 ): ByteArray {
@@ -23,6 +24,7 @@ infix fun ByteArray.shouldMatchResource(
 /**
  * Will match when given ByteArray and resource value differ
  */
+@IgnorableReturnValue
 infix fun ByteArray.shouldNotMatchResource(
    path: String
 ): ByteArray {
@@ -33,6 +35,7 @@ infix fun ByteArray.shouldNotMatchResource(
 /**
  * Will match if the given ByteArray and the resource value matches using matcher provided by [matcherProvider]
  */
+@IgnorableReturnValue
 fun ByteArray.shouldMatchResource(
    path: String,
    matcherProvider: (ByteArray) -> Matcher<ByteArray>
@@ -44,6 +47,7 @@ fun ByteArray.shouldMatchResource(
 /**
  * Will match if the given ByteArray and the resource value **not** matches using matcher provided by [matcherProvider]
  */
+@IgnorableReturnValue
 fun ByteArray.shouldNotMatchResource(
    path: String,
    matcherProvider: (ByteArray) -> Matcher<ByteArray>

@@ -8,7 +8,9 @@ import kotlin.reflect.KType
 import kotlin.reflect.full.isSubtypeOf
 import kotlin.reflect.full.starProjectedType
 
+@IgnorableReturnValue
 inline fun <reified T> KType.shouldBeOfType() = this should beOfType<T>()
+@IgnorableReturnValue
 inline fun <reified T> KType.shouldNotBeOfType() = this shouldNot beOfType<T>()
 inline fun <reified T> beOfType() = object : Matcher<KType> {
    override fun test(value: KType) = MatcherResult(

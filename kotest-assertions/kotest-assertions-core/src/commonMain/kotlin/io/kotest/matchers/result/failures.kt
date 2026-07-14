@@ -16,6 +16,7 @@ import kotlin.reflect.KClass
  * @see shouldBeSuccess
  */
 @Deprecated("Use shouldBeSuccess instead. Deprecated since 6.0", ReplaceWith("shouldBeSuccess()"))
+@IgnorableReturnValue
 fun <T> Result<T>.shouldNotBeFailure(): T = shouldBeSuccess()
 
 /**
@@ -26,6 +27,7 @@ fun <T> Result<T>.shouldNotBeFailure(): T = shouldBeSuccess()
  * ~~~
  * @see shouldNotBeSuccess
  */
+@IgnorableReturnValue
 fun Result<*>.shouldBeFailure(): Throwable {
    this should FailureMatcher()
    return exceptionOrNull()!!
@@ -39,6 +41,7 @@ fun Result<*>.shouldBeFailure(): Throwable {
  * success("abc") shouldBeFailure MyException           // Assertion fails
  * ~~~
  */
+@IgnorableReturnValue
 infix fun Result<*>.shouldBeFailure(expected: Throwable): Throwable {
    this should FailureMatcher(expected)
    return exceptionOrNull()!!
@@ -52,6 +55,7 @@ infix fun Result<*>.shouldBeFailure(expected: Throwable): Throwable {
  * }
  * ~~~
  */
+@IgnorableReturnValue
 infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
    this should FailureMatcher()
    return exceptionOrNull()!!.also { block(it) }
@@ -66,6 +70,7 @@ infix fun Result<*>.shouldBeFailure(block: ((Throwable) -> Unit)): Throwable {
  * ~~~
  */
 @JvmName("shouldBeFailureT")
+@IgnorableReturnValue
 inline fun <reified T : Throwable> Result<*>.shouldBeFailure(block: ((T) -> Unit) = {}): T {
    this should FailureTypeMatcher(T::class)
    return (exceptionOrNull() as T).also(block)

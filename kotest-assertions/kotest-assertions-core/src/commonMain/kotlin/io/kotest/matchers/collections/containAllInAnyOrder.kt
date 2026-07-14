@@ -10,9 +10,11 @@ import io.kotest.matchers.sequences.UnorderedCollectionsDifference
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
    this shouldNot containAllInAnyOrder(expected)
 
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
    this shouldNot containAllInAnyOrder(*expected)
 
@@ -20,6 +22,7 @@ fun <T, C : Collection<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) 
  * Verifies that the given [Collection] contains all the specified elements in any order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(expected: C) =
    this should containAllInAnyOrder(expected)
 
@@ -27,6 +30,7 @@ infix fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(expected: C) =
  * Verifies that the given [Collection] contains all the specified elements in any order.
  * The collection may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
    this should containAllInAnyOrder(*expected)
 

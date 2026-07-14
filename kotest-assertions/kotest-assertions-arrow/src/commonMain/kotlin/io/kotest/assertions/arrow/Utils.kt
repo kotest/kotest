@@ -3,6 +3,7 @@ package io.kotest.assertions.arrow
 import io.kotest.matchers.shouldBe as coreShouldBe
 import io.kotest.matchers.shouldNotBe as coreShouldNotBe
 
+@IgnorableReturnValue
 internal infix fun <A> A.shouldBe(a: A): A {
   this coreShouldBe a
   return this

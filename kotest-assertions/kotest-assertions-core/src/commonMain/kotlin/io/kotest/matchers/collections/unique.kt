@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldNot
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun BooleanArray.shouldBeUnique(): BooleanArray = apply { asList() should beUniqueByEquals("BooleanArray") }
 
 /**
@@ -19,6 +20,7 @@ fun BooleanArray.shouldBeUnique(): BooleanArray = apply { asList() should beUniq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun BooleanArray.shouldNotBeUnique(): BooleanArray = apply { asList() shouldNot beUniqueByEquals("BooleanArray") }
 
 /**
@@ -27,6 +29,7 @@ fun BooleanArray.shouldNotBeUnique(): BooleanArray = apply { asList() shouldNot 
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun ByteArray.shouldBeUnique(): ByteArray = apply { asList() should beUniqueByEquals("ByteArray") }
 
 /**
@@ -35,6 +38,7 @@ fun ByteArray.shouldBeUnique(): ByteArray = apply { asList() should beUniqueByEq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun ByteArray.shouldNotBeUnique(): ByteArray = apply { asList() shouldNot beUniqueByEquals("ByteArray") }
 
 /**
@@ -43,6 +47,7 @@ fun ByteArray.shouldNotBeUnique(): ByteArray = apply { asList() shouldNot beUniq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun ShortArray.shouldBeUnique(): ShortArray = apply { asList() should beUniqueByEquals("ShortArray") }
 
 /**
@@ -51,6 +56,7 @@ fun ShortArray.shouldBeUnique(): ShortArray = apply { asList() should beUniqueBy
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun ShortArray.shouldNotBeUnique(): ShortArray = apply { asList() shouldNot beUniqueByEquals("ShortArray") }
 
 /**
@@ -59,6 +65,7 @@ fun ShortArray.shouldNotBeUnique(): ShortArray = apply { asList() shouldNot beUn
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun CharArray.shouldBeUnique(): CharArray = apply { asList() should beUniqueByEquals("CharArray") }
 
 /**
@@ -67,6 +74,7 @@ fun CharArray.shouldBeUnique(): CharArray = apply { asList() should beUniqueByEq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun CharArray.shouldNotBeUnique(): CharArray = apply { asList() shouldNot beUniqueByEquals("CharArray") }
 
 /**
@@ -75,6 +83,7 @@ fun CharArray.shouldNotBeUnique(): CharArray = apply { asList() shouldNot beUniq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun IntArray.shouldBeUnique(): IntArray = apply { asList() should beUniqueByEquals("IntArray") }
 
 /**
@@ -83,6 +92,7 @@ fun IntArray.shouldBeUnique(): IntArray = apply { asList() should beUniqueByEqua
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun IntArray.shouldNotBeUnique(): IntArray = apply { asList() shouldNot beUniqueByEquals("IntArray") }
 
 /**
@@ -91,6 +101,7 @@ fun IntArray.shouldNotBeUnique(): IntArray = apply { asList() shouldNot beUnique
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun LongArray.shouldBeUnique(): LongArray = apply { asList() should beUniqueByEquals("LongArray") }
 
 /**
@@ -99,6 +110,7 @@ fun LongArray.shouldBeUnique(): LongArray = apply { asList() should beUniqueByEq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun LongArray.shouldNotBeUnique(): LongArray = apply { asList() shouldNot beUniqueByEquals("LongArray") }
 
 /**
@@ -107,6 +119,7 @@ fun LongArray.shouldNotBeUnique(): LongArray = apply { asList() shouldNot beUniq
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun FloatArray.shouldBeUnique(): FloatArray = apply { asList() should beUniqueByEquals("FloatArray") }
 
 /**
@@ -115,6 +128,7 @@ fun FloatArray.shouldBeUnique(): FloatArray = apply { asList() should beUniqueBy
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun FloatArray.shouldNotBeUnique(): FloatArray = apply { asList() shouldNot beUniqueByEquals("FloatArray") }
 
 /**
@@ -123,6 +137,7 @@ fun FloatArray.shouldNotBeUnique(): FloatArray = apply { asList() shouldNot beUn
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun DoubleArray.shouldBeUnique(): DoubleArray = apply { asList() should beUniqueByEquals("DoubleArray") }
 
 /**
@@ -131,6 +146,7 @@ fun DoubleArray.shouldBeUnique(): DoubleArray = apply { asList() should beUnique
  *
  * @return the input instance is returned for chaining
  */
+@IgnorableReturnValue
 fun DoubleArray.shouldNotBeUnique(): DoubleArray = apply { asList() shouldNot beUniqueByEquals("DoubleArray") }
 
 /**
@@ -150,6 +166,7 @@ fun DoubleArray.shouldNotBeUnique(): DoubleArray = apply { asList() shouldNot be
  *
  * @return the input instance is returned for chaining.
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldBeUnique(): Array<T> = apply { asList() should beUniqueByEquals("Array") }
 
 /**
@@ -170,6 +187,7 @@ fun <T> Array<T>.shouldBeUnique(): Array<T> = apply { asList() should beUniqueBy
  * @param comparator the [Comparator] used to compare elements for equality.
  * @return the input instance is returned for chaining.
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldBeUnique(comparator: Comparator<T>): Array<T> = apply { asList() should beUniqueByCompare("Array", comparator) }
 
 /**
@@ -189,6 +207,7 @@ fun <T> Array<T>.shouldBeUnique(comparator: Comparator<T>): Array<T> = apply { a
  *
  * @return the input instance is returned for chaining.
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotBeUnique(): Array<T> = apply { asList() shouldNot beUniqueByEquals("Array") }
 
 /**
@@ -209,6 +228,7 @@ fun <T> Array<T>.shouldNotBeUnique(): Array<T> = apply { asList() shouldNot beUn
  * @param comparator the [Comparator] used to compare elements for equality.
  * @return the input instance is returned for chaining.
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotBeUnique(comparator: Comparator<T>): Array<T> = apply { asList() shouldNot beUniqueByCompare("Array", comparator) }
 
 
@@ -230,6 +250,7 @@ fun <T> Array<T>.shouldNotBeUnique(comparator: Comparator<T>): Array<T> = apply 
  *
  * @return the input instance is returned for chaining, maintaining the input type.
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldBeUnique(): I = apply { this should beUniqueByEquals(null) }
 
 
@@ -251,6 +272,7 @@ fun <T, I : Iterable<T>> I.shouldBeUnique(): I = apply { this should beUniqueByE
  * @param comparator the [Comparator] used to compare elements for equality.
  * @return the input instance is returned for chaining, maintaining the input type.
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldBeUnique(comparator: Comparator<T>): I = apply { this should beUniqueByCompare(null, comparator) }
 
 /**
@@ -270,6 +292,7 @@ fun <T, I : Iterable<T>> I.shouldBeUnique(comparator: Comparator<T>): I = apply 
  *
  * @return the input instance is returned for chaining, maintaining the input type.
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotBeUnique(): I = apply { this shouldNot beUniqueByEquals(null) }
 
 /**
@@ -290,6 +313,7 @@ fun <T, I : Iterable<T>> I.shouldNotBeUnique(): I = apply { this shouldNot beUni
  * @param comparator the [Comparator] used to compare elements for equality.
  * @return the input instance is returned for chaining, maintaining the input type.
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotBeUnique(comparator: Comparator<T>): I = apply { this shouldNot beUniqueByCompare(null, comparator) }
 
 fun <T> beUnique(): Matcher<Iterable<T>> = beUniqueByEquals(null)

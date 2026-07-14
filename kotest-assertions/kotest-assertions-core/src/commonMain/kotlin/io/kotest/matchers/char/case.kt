@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeUpperCaseChar]
  * @see [beUpperCaseChar]
  */
+@IgnorableReturnValue
 fun Char.shouldBeUpperCaseChar(): Char {
    this should beUpperCaseChar()
    return this
@@ -21,6 +22,7 @@ fun Char.shouldBeUpperCaseChar(): Char {
  * @see [shouldBeUpperCaseChar]
  * @see [beUpperCaseChar]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeUpperCaseChar(): Char {
    this shouldNot beUpperCaseChar()
    return this
@@ -38,6 +40,7 @@ fun beUpperCaseChar(): Matcher<Char> = charCaseMatcher("upper") { it.uppercaseCh
  * @see [shouldNotBeLowerCaseChar]
  * @see [beLowerCaseChar]
  */
+@IgnorableReturnValue
 fun Char.shouldBeLowerCaseChar(): Char {
    this should beLowerCaseChar()
    return this
@@ -48,6 +51,7 @@ fun Char.shouldBeLowerCaseChar(): Char {
  * @see [shouldBeLowerCaseChar]
  * @see [beLowerCaseChar]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeLowerCaseChar(): Char {
    this shouldNot beLowerCaseChar()
    return this
@@ -65,6 +69,7 @@ fun beLowerCaseChar(): Matcher<Char> = charCaseMatcher("lower") { it.lowercaseCh
  * @see [shouldNotBeTitleCaseChar]
  * @see [beTitleCaseChar]
  */
+@IgnorableReturnValue
 fun Char.shouldBeTitleCaseChar(): Char {
    this should beTitleCaseChar()
    return this
@@ -75,6 +80,7 @@ fun Char.shouldBeTitleCaseChar(): Char {
  * @see [shouldBeTitleCaseChar]
  * @see [beTitleCaseChar]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeTitleCaseChar(): Char {
    this shouldNot beTitleCaseChar()
    return this

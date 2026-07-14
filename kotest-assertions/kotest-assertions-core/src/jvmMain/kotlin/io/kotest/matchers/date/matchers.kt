@@ -37,6 +37,7 @@ import java.time.temporal.TemporalAmount
  *     firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSameYear(date)
 
 /**
@@ -60,6 +61,7 @@ infix fun LocalDate.shouldHaveSameYearAs(date: LocalDate) = this should haveSame
  *    firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldNotHaveSameYearAs(date: LocalDate) = this shouldNot haveSameYear(date)
 
 /**
@@ -115,6 +117,7 @@ fun haveSameYear(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDa
  *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should haveSameYear(date)
 
 /**
@@ -138,6 +141,7 @@ infix fun LocalDateTime.shouldHaveSameYearAs(date: LocalDateTime) = this should 
  *    firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldNotHaveSameYearAs(date: LocalDateTime) = this shouldNot haveSameYear(date)
 
 /**
@@ -194,6 +198,7 @@ fun haveSameYear(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher
  *    firstDate shouldHaveSameYearAs secondDate   //  Assertion fails, 2018 != 1998
  * ```
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should haveSameYear(date)
 
 /**
@@ -218,6 +223,7 @@ infix fun ZonedDateTime.shouldHaveSameYearAs(date: ZonedDateTime) = this should 
  *     firstDate shouldNotHaveSameYearAs  secondDate   //  Assertion fails, 1998 == 1998, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldNotHaveSameYearAs(date: ZonedDateTime) = this shouldNot haveSameYear(date)
 
 /**
@@ -276,6 +282,7 @@ fun haveSameYear(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher
 
  * ```
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this should haveSameYear(date)
 
 /**
@@ -301,6 +308,7 @@ infix fun OffsetDateTime.shouldHaveSameYearAs(date: OffsetDateTime) = this shoul
  *
  * ```
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldNotHaveSameYearAs(date: OffsetDateTime) = this shouldNot haveSameYear(date)
 
 /**
@@ -357,6 +365,7 @@ fun haveSameYear(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Match
  *    firstDate shouldNot haveSameYear(secondDate)    //  Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSameMonth(date)
 
 /**
@@ -380,6 +389,7 @@ infix fun LocalDate.shouldHaveSameMonthAs(date: LocalDate) = this should haveSam
  *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldNotHaveSameMonthAs(date: LocalDate) = this shouldNot haveSameMonth(date)
 
 /**
@@ -435,6 +445,7 @@ fun haveSameMonth(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalD
  *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should haveSameMonth(date)
 
 /**
@@ -458,6 +469,7 @@ infix fun LocalDateTime.shouldHaveSameMonthAs(date: LocalDateTime) = this should
  *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldNotHaveSameMonthAs(date: LocalDateTime) = this shouldNot haveSameMonth(date)
 
 /**
@@ -514,6 +526,7 @@ fun haveSameMonth(date: LocalDateTime): Matcher<LocalDateTime> = object : Matche
  *    firstDate shouldNot haveSameMonth(secondDate)    //  Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should haveSameMonth(date)
 
 /**
@@ -538,6 +551,7 @@ infix fun ZonedDateTime.shouldHaveSameMonthAs(date: ZonedDateTime) = this should
  *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldNotHaveSameMonthAs(date: ZonedDateTime) = this shouldNot haveSameMonth(date)
 
 /**
@@ -595,6 +609,7 @@ fun haveSameMonth(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matche
  *    firstDate shouldHaveSameMonthAs secondDate   //  Assertion fails, 2 != 3
  * ```
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this should haveSameMonth(date)
 
 /**
@@ -619,6 +634,7 @@ infix fun OffsetDateTime.shouldHaveSameMonthAs(date: OffsetDateTime) = this shou
  *    firstDate shouldNotHaveSameMonthAs  secondDate   //  Assertion fails, 2 == 2, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldNotHaveSameMonthAs(date: OffsetDateTime) = this shouldNot haveSameMonth(date)
 
 /**
@@ -675,6 +691,7 @@ fun haveSameMonth(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matc
  *    firstDate shouldHaveSameDayAs secondDate   //  Assertion fails, 9 != 10
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameDay(date)
 
 /**
@@ -698,6 +715,7 @@ infix fun LocalDate.shouldHaveSameDayAs(date: LocalDate) = this should haveSameD
  *    firstDate shouldNotHaveSameDayAs  secondDate   //  Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldNotHaveSameDayAs(date: LocalDate) = this shouldNot haveSameDay(date)
 
 /**
@@ -753,6 +771,7 @@ fun haveSameDay(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDat
  *    firstDate shouldHaveSameDayAs secondDate   //  Assertion fails, 9 != 10
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should haveSameDay(date)
 
 /**
@@ -776,6 +795,7 @@ infix fun LocalDateTime.shouldHaveSameDayAs(date: LocalDateTime) = this should h
  *    firstDate shouldNotHaveSameDayAs  secondDate   // Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldNotHaveSameDayAs(date: LocalDateTime) = this shouldNot haveSameDay(date)
 
 /**
@@ -832,6 +852,7 @@ fun haveSameDay(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<
  *    firstDate shouldHaveSameDayAs secondDate   // Assertion fails, 9 != 10
  * ```
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should haveSameDay(date)
 
 /**
@@ -856,6 +877,7 @@ infix fun ZonedDateTime.shouldHaveSameDayAs(date: ZonedDateTime) = this should h
  *    firstDate shouldNotHaveSameDayAs  secondDate   // Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldNotHaveSameDayAs(date: ZonedDateTime) = this shouldNot haveSameDay(date)
 
 /**
@@ -913,6 +935,7 @@ fun haveSameDay(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<
  *    firstDate shouldHaveSameDayAs secondDate   // Assertion fails, 9 != 12
  * ```
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should haveSameDay(date)
 
 /**
@@ -937,6 +960,7 @@ infix fun OffsetDateTime.shouldHaveSameDayAs(date: OffsetDateTime) = this should
  *    firstDate shouldNotHaveSameDayAs  secondDate   // Assertion fails, 9 == 9, and we expected a difference
  * ```
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldNotHaveSameDayAs(date: OffsetDateTime) = this shouldNot haveSameDay(date)
 
 /**
@@ -995,6 +1019,7 @@ fun haveSameDay(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matche
  *
  * @see LocalDate.shouldNotBeAfter
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
 
 /**
@@ -1021,6 +1046,7 @@ infix fun LocalDate.shouldBeBefore(date: LocalDate) = this should before(date)
  *
  * @see LocalDate.shouldBeAfter
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldNotBeBefore(date: LocalDate) = this shouldNot before(date)
 
 /**
@@ -1076,6 +1102,7 @@ fun before(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
  *
  * @see LocalDateTime.shouldNotBeAfter
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldBeBefore(date: LocalDateTime) = this should before(date)
 
 /**
@@ -1101,6 +1128,7 @@ infix fun LocalDateTime.shouldBeBefore(date: LocalDateTime) = this should before
  *
  * @see LocalDateTime.shouldBeAfter
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldNotBeBefore(date: LocalDateTime) = this shouldNot before(date)
 
 /**
@@ -1157,6 +1185,7 @@ fun before(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<Local
  *
  * @see ZonedDateTime.shouldNotBeAfter
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldBeBefore(date: ZonedDateTime) = this should before(date)
 
 /**
@@ -1183,6 +1212,7 @@ infix fun ZonedDateTime.shouldBeBefore(date: ZonedDateTime) = this should before
  *
  * @see ZonedDateTime.shouldBeAfter
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldNotBeBefore(date: ZonedDateTime) = this shouldNot before(date)
 
 /**
@@ -1240,6 +1270,7 @@ fun before(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<Zoned
  *
  * @see OffsetDateTime.shouldNotBeAfter
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldBeBefore(date: OffsetDateTime) = this should before(date)
 
 /**
@@ -1266,6 +1297,7 @@ infix fun OffsetDateTime.shouldBeBefore(date: OffsetDateTime) = this should befo
  *
  * @see OffsetDateTime.shouldBeAfter
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldNotBeBefore(date: OffsetDateTime) = this shouldNot before(date)
 
 /**
@@ -1322,6 +1354,7 @@ fun before(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<Off
  *
  * @see LocalDate.shouldNotBeBefore
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldBeAfter(date: LocalDate) = this should after(date)
 
 /**
@@ -1347,6 +1380,7 @@ infix fun LocalDate.shouldBeAfter(date: LocalDate) = this should after(date)
  *
  * @see LocalDate.shouldBeBefore
  */
+@IgnorableReturnValue
 infix fun LocalDate.shouldNotBeAfter(date: LocalDate) = this shouldNot after(date)
 
 /**
@@ -1402,6 +1436,7 @@ fun after(date: LocalDate): Matcher<LocalDate> = object : Matcher<LocalDate> {
  *
  * @see LocalDateTime.shouldNotBeBefore
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldBeAfter(date: LocalDateTime) = this should after(date)
 
 /**
@@ -1427,6 +1462,7 @@ infix fun LocalDateTime.shouldBeAfter(date: LocalDateTime) = this should after(d
  *
  * @see LocalDateTime.shouldBeBefore
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldNotBeAfter(date: LocalDateTime) = this shouldNot after(date)
 
 /**
@@ -1483,6 +1519,7 @@ fun after(date: LocalDateTime): Matcher<LocalDateTime> = object : Matcher<LocalD
  *
  * @see ZonedDateTime.shouldNotBeBefore
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldBeAfter(date: ZonedDateTime) = this should after(date)
 
 /**
@@ -1509,6 +1546,7 @@ infix fun ZonedDateTime.shouldBeAfter(date: ZonedDateTime) = this should after(d
  *
  * @see ZonedDateTime.shouldBeBefore
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldNotBeAfter(date: ZonedDateTime) = this shouldNot after(date)
 
 /**
@@ -1566,6 +1604,7 @@ fun after(date: ZonedDateTime): Matcher<ZonedDateTime> = object : Matcher<ZonedD
  *
  * @see OffsetDateTime.shouldNotBeBefore
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldBeAfter(date: OffsetDateTime) = this should after(date)
 
 /**
@@ -1592,6 +1631,7 @@ infix fun OffsetDateTime.shouldBeAfter(date: OffsetDateTime) = this should after
  *
  * @see OffsetDateTime.shouldBeBefore
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldNotBeAfter(date: OffsetDateTime) = this shouldNot after(date)
 
 /**
@@ -1646,6 +1686,7 @@ fun after(date: OffsetDateTime): Matcher<OffsetDateTime> = object : Matcher<Offs
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
+@IgnorableReturnValue
 fun LocalDate.shouldBeWithin(period: Period, date: LocalDate) = this should within(period, date)
 
 /**
@@ -1669,6 +1710,7 @@ fun LocalDate.shouldBeWithin(period: Period, date: LocalDate) = this should with
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
+@IgnorableReturnValue
 fun LocalDate.shouldNotBeWithin(period: Period, date: LocalDate) = this shouldNot within(period, date)
 
 /**
@@ -1728,6 +1770,7 @@ fun within(period: Period, date: LocalDate): Matcher<LocalDate> = object : Match
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: LocalDateTime) = this should within(temporalAmount, date)
 
 /**
@@ -1751,6 +1794,7 @@ fun LocalDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: LocalDate
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: LocalDateTime) = this shouldNot within(temporalAmount, date)
 
 /**
@@ -1813,6 +1857,7 @@ fun within(temporalAmount: TemporalAmount, date: LocalDateTime): Matcher<LocalDa
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
+@IgnorableReturnValue
 fun ZonedDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: ZonedDateTime) = this should within(temporalAmount, date)
 
 /**
@@ -1837,6 +1882,7 @@ fun ZonedDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: ZonedDate
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
+@IgnorableReturnValue
 fun ZonedDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: ZonedDateTime) = this shouldNot within(temporalAmount, date)
 
 /**
@@ -1899,6 +1945,7 @@ fun within(temporalAmount: TemporalAmount, date: ZonedDateTime): Matcher<ZonedDa
  *     firstDate.shouldBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is not within 3 days of secondDate
  * ```
  */
+@IgnorableReturnValue
 fun OffsetDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: OffsetDateTime) = this should within(temporalAmount, date)
 
 /**
@@ -1923,6 +1970,7 @@ fun OffsetDateTime.shouldBeWithin(temporalAmount: TemporalAmount, date: OffsetDa
  *     firstDate.shouldNotBeWithin(Period.ofDays(3), secondDate)   // Assertion fails, firstDate is within 3 days of secondDate, and we expected not to
  * ```
  */
+@IgnorableReturnValue
 fun OffsetDateTime.shouldNotBeWithin(temporalAmount: TemporalAmount, date: OffsetDateTime) = this shouldNot within(temporalAmount, date)
 
 /**
@@ -1987,6 +2035,7 @@ fun within(temporalAmount: TemporalAmount, date: OffsetDateTime): Matcher<Offset
  *
  * @see LocalDate.shouldNotBeBetween
  */
+@IgnorableReturnValue
 fun LocalDate.shouldBeBetween(a: LocalDate, b: LocalDate) = this shouldBe between(a, b)
 
 /**
@@ -2013,6 +2062,7 @@ fun LocalDate.shouldBeBetween(a: LocalDate, b: LocalDate) = this shouldBe betwee
  *
  * @see LocalDate.shouldBeBetween
  */
+@IgnorableReturnValue
 fun LocalDate.shouldNotBeBetween(a: LocalDate, b: LocalDate) = this shouldNotBe between(a, b)
 
 /**
@@ -2075,6 +2125,7 @@ fun between(a: LocalDate, b: LocalDate): Matcher<LocalDate> = object : Matcher<L
  *
  * @see LocalDateTime.shouldNotBeBetween
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldBeBetween(a: LocalDateTime, b: LocalDateTime) = this shouldBe between(a, b)
 
 /**
@@ -2101,6 +2152,7 @@ fun LocalDateTime.shouldBeBetween(a: LocalDateTime, b: LocalDateTime) = this sho
  *
  * @see LocalDateTime.shouldBeBetween
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldNotBeBetween(a: LocalDateTime, b: LocalDateTime) = this shouldNotBe between(a, b)
 
 /**
@@ -2163,6 +2215,7 @@ fun between(a: LocalDateTime, b: LocalDateTime): Matcher<LocalDateTime> = object
  *
  * @see ZonedDateTime.shouldNotBeBetween
  */
+@IgnorableReturnValue
 fun ZonedDateTime.shouldBeBetween(a: ZonedDateTime, b: ZonedDateTime) = this shouldBe between(a, b)
 
 /**
@@ -2189,6 +2242,7 @@ fun ZonedDateTime.shouldBeBetween(a: ZonedDateTime, b: ZonedDateTime) = this sho
  *
  * @see ZonedDateTime.shouldBeBetween
  */
+@IgnorableReturnValue
 fun ZonedDateTime.shouldNotBeBetween(a: ZonedDateTime, b: ZonedDateTime) = this shouldNotBe between(a, b)
 
 /**
@@ -2252,6 +2306,7 @@ fun between(a: ZonedDateTime, b: ZonedDateTime): Matcher<ZonedDateTime> = object
  *
  * @see OffsetDateTime.shouldNotBeBetween
  */
+@IgnorableReturnValue
 fun OffsetDateTime.shouldBeBetween(a: OffsetDateTime, b: OffsetDateTime) = this shouldBe between(a, b)
 
 /**
@@ -2278,6 +2333,7 @@ fun OffsetDateTime.shouldBeBetween(a: OffsetDateTime, b: OffsetDateTime) = this 
  *
  * @see OffsetDateTime.shouldBeBetween
  */
+@IgnorableReturnValue
 fun OffsetDateTime.shouldNotBeBetween(a: OffsetDateTime, b: OffsetDateTime) = this shouldNotBe between(a, b)
 
 /**
@@ -2326,6 +2382,7 @@ fun between(a: OffsetDateTime, b: OffsetDateTime): Matcher<OffsetDateTime> = obj
  *    date.shouldHaveDayOfMonth(15) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveDayOfMonth(day: Int) = this.dayOfMonth shouldBe day
 
 /**
@@ -2337,6 +2394,7 @@ infix fun LocalDateTime.shouldHaveDayOfMonth(day: Int) = this.dayOfMonth shouldB
  *    date.shouldHaveDayOfYear(46) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe day
 
 /**
@@ -2349,7 +2407,9 @@ infix fun LocalDateTime.shouldHaveDayOfYear(day: Int) = this.dayOfYear shouldBe 
  *    date.shouldHaveDayOfWeek(5) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveDayOfWeek(day: Int) = this.dayOfWeek.value shouldBe day
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveDayOfWeek(day: DayOfWeek) = this.dayOfWeek shouldBe day
 
 /**
@@ -2362,7 +2422,9 @@ infix fun LocalDateTime.shouldHaveDayOfWeek(day: DayOfWeek) = this.dayOfWeek sho
  *    date.shouldHaveMonth(FEBRUARY) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveMonth(month: Int) = this.month.value shouldBe month
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveMonth(month: Month) = this.month shouldBe month
 
 /**
@@ -2374,6 +2436,7 @@ infix fun LocalDateTime.shouldHaveMonth(month: Month) = this.month shouldBe mont
  *    date.shouldHaveHour(12) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveHour(hour: Int) = this.hour shouldBe hour
 
 /**
@@ -2385,6 +2448,7 @@ infix fun LocalDateTime.shouldHaveHour(hour: Int) = this.hour shouldBe hour
  *    date.shouldHaveMinute(10) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveMinute(minute: Int) = this.minute shouldBe minute
 
 /**
@@ -2396,6 +2460,7 @@ infix fun LocalDateTime.shouldHaveMinute(minute: Int) = this.minute shouldBe min
  *    date.shouldHaveSecond(11) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe second
 
 /**
@@ -2407,6 +2472,7 @@ infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe sec
  *    date.shouldHaveNano(10) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano
 
 /**
@@ -2429,6 +2495,7 @@ infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nano shouldBe nano
  *
  * @see ZonedDateTime.shouldNotHaveSameInstantAs
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime) = this should haveSameInstantAs(other)
 
 /**
@@ -2451,6 +2518,7 @@ infix fun ZonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime) = this sho
  *
  * @see ZonedDateTime.shouldHaveSameInstantAs
  */
+@IgnorableReturnValue
 infix fun ZonedDateTime.shouldNotHaveSameInstantAs(other: ZonedDateTime) = this shouldNot haveSameInstantAs(other)
 
 /**

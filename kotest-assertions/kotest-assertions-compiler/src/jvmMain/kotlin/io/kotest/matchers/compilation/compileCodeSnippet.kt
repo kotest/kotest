@@ -187,6 +187,7 @@ fun codeSnippet(sourceFiles: List<SourceFile>): CodeSnippet {
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [String.shouldNotCompile]
  * */
+@IgnorableReturnValue
 fun String.shouldCompile() = codeSnippet(this).shouldCompile()
 
 /**
@@ -200,6 +201,7 @@ fun String.shouldCompile() = codeSnippet(this).shouldCompile()
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [String.shouldCompile]
  * */
+@IgnorableReturnValue
 fun String.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this).shouldNotCompile(expectedMessage)
 
 /**
@@ -208,6 +210,7 @@ fun String.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this)
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [Map.shouldNotCompile]
  * */
+@IgnorableReturnValue
 fun Map<String, String>.shouldCompile() = codeSnippet(
    this.map { (k, v) -> SourceFile.kotlin(k, v) }
 ).shouldCompile()
@@ -225,6 +228,7 @@ fun Map<String, String>.shouldCompile() = codeSnippet(
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [Map.shouldCompile]
  * */
+@IgnorableReturnValue
 fun Map<String, String>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
    this.map { (k, v) -> SourceFile.kotlin(k, v) }
 ).shouldNotCompile(expectedMessage)
@@ -235,6 +239,7 @@ fun Map<String, String>.shouldNotCompile(expectedMessage: String? = null) = code
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [File.shouldNotCompile]
  * */
+@IgnorableReturnValue
 fun File.shouldCompile() = codeSnippet(readText()).shouldCompile()
 
 /**
@@ -248,6 +253,7 @@ fun File.shouldCompile() = codeSnippet(readText()).shouldCompile()
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [File.shouldCompile]
  * */
+@IgnorableReturnValue
 fun File.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readText()).shouldNotCompile(expectedMessage)
 
 /**
@@ -257,6 +263,7 @@ fun File.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readTex
  * @see [List.shouldNotCompile]
  * */
 @JvmName("shouldCompileFiles")
+@IgnorableReturnValue
 fun List<File>.shouldCompile() = codeSnippet(
    this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
 ).shouldCompile()
@@ -268,6 +275,7 @@ fun List<File>.shouldCompile() = codeSnippet(
  * @see [List.shouldNotCompile]
  * */
 @JvmName("shouldCompileSourceFiles")
+@IgnorableReturnValue
 fun List<SourceFile>.shouldCompile() = codeSnippet(this).shouldCompile()
 
 /**
@@ -282,6 +290,7 @@ fun List<SourceFile>.shouldCompile() = codeSnippet(this).shouldCompile()
  * @see [List.shouldCompile]
  * */
 @JvmName("shouldNotCompileFiles")
+@IgnorableReturnValue
 fun List<File>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
    this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
 ).shouldNotCompile(expectedMessage)
@@ -298,6 +307,7 @@ fun List<File>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
  * @see [List.shouldCompile]
  * */
 @JvmName("shouldNotCompileSourceFiles")
+@IgnorableReturnValue
 fun List<SourceFile>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(this).shouldNotCompile(expectedMessage)
 
 /**
@@ -306,6 +316,7 @@ fun List<SourceFile>.shouldNotCompile(expectedMessage: String? = null) = codeSni
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [Path.shouldNotCompile]
  * */
+@IgnorableReturnValue
 fun Path.shouldCompile() = codeSnippet(readText()).shouldCompile()
 
 /**
@@ -319,6 +330,7 @@ fun Path.shouldCompile() = codeSnippet(readText()).shouldCompile()
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [Path.shouldCompile]
  * */
+@IgnorableReturnValue
 fun Path.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readText()).shouldNotCompile(expectedMessage)
 
 /**
@@ -328,6 +340,7 @@ fun Path.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(readTex
  * @see [List.shouldNotCompile]
  * */
 @JvmName("shouldCompilePaths")
+@IgnorableReturnValue
 fun List<Path>.shouldCompile() = codeSnippet(
    this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
 ).shouldCompile()
@@ -344,6 +357,7 @@ fun List<Path>.shouldCompile() = codeSnippet(
  * @see [List.shouldCompile]
  * */
 @JvmName("shouldNotCompilePaths")
+@IgnorableReturnValue
 fun List<Path>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
    this.map { file -> SourceFile.kotlin(file.name, file.readText()) }
 ).shouldNotCompile(expectedMessage)
@@ -354,6 +368,7 @@ fun List<Path>.shouldNotCompile(expectedMessage: String? = null) = codeSnippet(
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [CodeSnippet.shouldNotCompile]
  * */
+@IgnorableReturnValue
 fun CodeSnippet.shouldCompile() = this should compileMatcher
 
 /**
@@ -367,6 +382,7 @@ fun CodeSnippet.shouldCompile() = this should compileMatcher
  * so that dependencies available to the calling process are also available to the code snippet.
  * @see [CodeSnippet.shouldCompile]
  * */
+@IgnorableReturnValue
 fun CodeSnippet.shouldNotCompile(expectedMessage: String? = null) {
    if (expectedMessage == null) {
       this shouldNot compileMatcher

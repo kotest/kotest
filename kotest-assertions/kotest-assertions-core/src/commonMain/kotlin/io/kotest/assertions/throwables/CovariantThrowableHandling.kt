@@ -35,6 +35,7 @@ import io.kotest.assertions.errorCollector
  *
  * @see [shouldThrow]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrowUnit(block: () -> Unit): T = shouldThrow { block() }
 
 /**
@@ -62,6 +63,7 @@ inline fun <reified T : Throwable> shouldThrowUnit(block: () -> Unit): T = shoul
  *
  * @see [shouldThrowWithMessage]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, block: () -> Unit): T =
    shouldThrowUnit<T>(block).let {
       when (it.message) {
@@ -100,6 +102,7 @@ inline fun <reified T : Throwable> shouldThrowUnitWithMessage(message: String, b
  * @see [shouldNotThrow]
  *
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldNotThrowUnit(block: () -> Unit) = shouldNotThrow<T>(block)
 
 /**
@@ -128,6 +131,7 @@ inline fun <reified T : Throwable> shouldNotThrowUnit(block: () -> Unit) = shoul
  *
  * @see [shouldThrowUnit]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
    assertionCounter.inc()
    val expectedExceptionClass = T::class
@@ -167,6 +171,7 @@ inline fun <reified T : Throwable> shouldThrow(block: () -> Any?): T {
  * errors are only thrown at the end of the block, rather than immediately. Therefore, the signature cannot return
  * the throwable type, as in the case of a failure, there would be neither an immediate throws, nor a type to return.
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
    require(errorCollector.getCollectionMode() == ErrorCollectionMode.Soft)
 
@@ -217,6 +222,7 @@ inline fun <reified T : Throwable> shouldThrowSoftly(block: () -> Any?) {
  *
  * @see [shouldThrowUnitWithMessage]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block: () -> Any?): T =
    shouldThrow<T>(block).let {
       when (it.message) {
@@ -256,6 +262,7 @@ inline fun <reified T : Throwable> shouldThrowWithMessage(message: String, block
  *
  * @see [shouldNotThrowUnit]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldNotThrow(block: () -> Any?) {
    assertionCounter.inc()
    val thrown = tryRunning(block) ?: return

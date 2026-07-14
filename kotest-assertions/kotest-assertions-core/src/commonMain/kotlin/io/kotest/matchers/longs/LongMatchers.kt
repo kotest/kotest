@@ -42,7 +42,9 @@ fun beGreaterThanOrEqualTo(x: Long) = object : Matcher<Long> {
          { "$value should not be >= $x" })
 }
 
+@IgnorableReturnValue
 infix fun Long.shouldBeInRange(range: LongRange) = this should beInRange(range)
+@IgnorableReturnValue
 infix fun Long.shouldNotBeInRange(range: LongRange) = this shouldNot beInRange(range)
 fun beInRange(range: LongRange) = object : Matcher<Long> {
    override fun test(value: Long): MatcherResult =
@@ -68,6 +70,7 @@ fun exactly(x: Long) = object : Matcher<Long> {
  * 30.shouldBeWithinPercentageOf(100, 10.0)  // Fail
  *
  */
+@IgnorableReturnValue
 fun Long.shouldBeWithinPercentageOf(other: Long, percentage: Double) {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
@@ -81,6 +84,7 @@ fun Long.shouldBeWithinPercentageOf(other: Long, percentage: Double) {
  * 30.shouldNotBeWithinPercentageOf(100, 10.0)  // Passes
  *
  */
+@IgnorableReturnValue
 fun Long.shouldNotBeWithinPercentageOf(other: Long, percentage: Double) {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this shouldNot beWithinPercentageOf(other, percentage)

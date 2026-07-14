@@ -33,6 +33,7 @@ import kotlin.math.sqrt
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldHaveMean(value: BigDecimal, precision: Int = 4) = this should haveMean<T>(value, precision)
 
 /**
@@ -59,6 +60,7 @@ fun <T : Number> Collection<T>.shouldHaveMean(value: BigDecimal, precision: Int 
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldHaveMean(value: Double, precision: Int = 4) = this should haveMean<T>(value, precision)
 
 /**
@@ -85,6 +87,7 @@ fun <T : Number> Collection<T>.shouldHaveMean(value: Double, precision: Int = 4)
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldNotHaveMean(value: BigDecimal, precision: Int = 4) = this shouldNot haveMean<T>(value, precision)
 
 /**
@@ -109,6 +112,7 @@ fun <T : Number> Collection<T>.shouldNotHaveMean(value: BigDecimal, precision: I
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldNotHaveMean(value: Double, precision: Int = 4) = this shouldNot haveMean<T>(value, precision)
 
 /**
@@ -135,6 +139,7 @@ fun <T : Number> Collection<T>.shouldNotHaveMean(value: Double, precision: Int =
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldHaveVariance(value: BigDecimal, precision: Int = 4) = this should haveVariance<T>(value, precision)
 
 /**
@@ -159,6 +164,7 @@ fun <T : Number> Collection<T>.shouldHaveVariance(value: BigDecimal, precision: 
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldHaveVariance(value: Double, precision: Int = 4) = this should haveVariance<T>(value, precision)
 
 /**
@@ -183,6 +189,7 @@ fun <T : Number> Collection<T>.shouldHaveVariance(value: Double, precision: Int 
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldNotHaveVariance(value: BigDecimal, precision: Int = 4) = this shouldNot haveVariance<T>(value, precision)
 
 /**
@@ -207,6 +214,7 @@ fun <T : Number> Collection<T>.shouldNotHaveVariance(value: BigDecimal, precisio
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldNotHaveVariance(value: Double, precision: Int = 4) = this shouldNot haveVariance<T>(value, precision)
 
 /**
@@ -231,6 +239,7 @@ fun <T : Number> Collection<T>.shouldNotHaveVariance(value: Double, precision: I
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldHaveStandardDeviation(value: BigDecimal, precision: Int = 4) = this should haveStandardDeviation<T>(value, precision)
 
 /**
@@ -255,6 +264,7 @@ fun <T : Number> Collection<T>.shouldHaveStandardDeviation(value: BigDecimal, pr
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldHaveStandardDeviation(value: Double, precision: Int = 4) = this should haveStandardDeviation<T>(value, precision)
 
 /**
@@ -279,6 +289,7 @@ fun <T : Number> Collection<T>.shouldHaveStandardDeviation(value: Double, precis
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldNotHaveStandardDeviation(value: BigDecimal, precision: Int = 4) = this shouldNot haveStandardDeviation<T>(value, precision)
 
 /**
@@ -303,6 +314,7 @@ fun <T : Number> Collection<T>.shouldNotHaveStandardDeviation(value: BigDecimal,
  * @param precision - precision, by default - 4 digits after decimal point
  *
  */
+@IgnorableReturnValue
 fun <T : Number> Collection<T>.shouldNotHaveStandardDeviation(value: Double, precision: Int = 4) = this shouldNot haveStandardDeviation<T>(value, precision)
 
 private val defaultMathContext = MathContext(64, RoundingMode.HALF_UP)

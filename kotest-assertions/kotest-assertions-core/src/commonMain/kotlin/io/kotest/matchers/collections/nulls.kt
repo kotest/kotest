@@ -20,6 +20,7 @@ import io.kotest.matchers.shouldNot
  *
  * @return the same iterable for further assertions
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldContainOnlyNulls(): I = apply { toList() should containOnlyNulls() }
 
 /**
@@ -37,6 +38,7 @@ fun <T, I : Iterable<T>> I.shouldContainOnlyNulls(): I = apply { toList() should
  *
  * @return the same array for further assertions
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldContainOnlyNulls(): Array<T> = apply { asList().shouldContainOnlyNulls() }
 
 /**
@@ -54,6 +56,7 @@ fun <T> Array<T>.shouldContainOnlyNulls(): Array<T> = apply { asList().shouldCon
  *
  * @return the same iterable for further assertions
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotContainOnlyNulls(): I = apply { toList() shouldNot containOnlyNulls() }
 
 /**
@@ -71,6 +74,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainOnlyNulls(): I = apply { toList() sho
  *
  * @return the same array for further assertions
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotContainOnlyNulls(): Array<T> = apply { asList().shouldNotContainOnlyNulls() }
 
 /**
@@ -117,6 +121,7 @@ fun <T> containOnlyNulls() = object : Matcher<Collection<T>> {
  *
  * @return the same iterable for further assertions
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldContainNull(): I = apply { toList() should containNull() }
 
 /**
@@ -134,6 +139,7 @@ fun <T, I : Iterable<T>> I.shouldContainNull(): I = apply { toList() should cont
  *
  * @return the same array for further assertions
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldContainNull(): Array<T> = apply { asList().shouldContainNull() }
 
 
@@ -152,6 +158,7 @@ fun <T> Array<T>.shouldContainNull(): Array<T> = apply { asList().shouldContainN
  *
  * @return the same iterable for further assertions
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotContainNull(): I = apply { toList() shouldNot containNull() }
 
 /**
@@ -169,6 +176,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainNull(): I = apply { toList() shouldNo
  *
  * @return the same array for further assertions
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotContainNull(): Array<T> = apply { asList().shouldNotContainNull() }
 
 /**
@@ -215,6 +223,7 @@ fun <T> containNull() = object : Matcher<Collection<T>> {
  *
  * @return the same iterable for further assertions
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldContainNoNulls(): I = apply { toList() should containNoNulls() }
 
 /**
@@ -232,6 +241,7 @@ fun <T, I : Iterable<T>> I.shouldContainNoNulls(): I = apply { toList() should c
  *
  * @return the same array for further assertions
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldContainNoNulls(): Array<T> = apply { asList().shouldContainNoNulls() }
 
 
@@ -250,6 +260,7 @@ fun <T> Array<T>.shouldContainNoNulls(): Array<T> = apply { asList().shouldConta
  *
  * @return the same iterable for further assertions
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotContainNoNulls(): I = apply { toList() shouldNot containNoNulls() }
 
 /**
@@ -267,6 +278,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainNoNulls(): I = apply { toList() shoul
  *
  * @return the same array for further assertions
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotContainNoNulls(): Array<T> = apply { asList().shouldNotContainNoNulls() }
 
 /**

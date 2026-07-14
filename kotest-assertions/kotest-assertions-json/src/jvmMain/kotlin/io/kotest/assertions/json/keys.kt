@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldNot
 import org.intellij.lang.annotations.Language
 import kotlin.contracts.contract
 
+@IgnorableReturnValue
 infix fun String?.shouldContainJsonKey(@Language("JSONPath") path: String) {
    contract {
       returns() implies (this@shouldContainJsonKey != null)
@@ -15,6 +16,7 @@ infix fun String?.shouldContainJsonKey(@Language("JSONPath") path: String) {
    this should containJsonKey(path)
 }
 
+@IgnorableReturnValue
 infix fun String.shouldNotContainJsonKey(@Language("JSONPath") path: String) =
    this shouldNot containJsonKey(path)
 

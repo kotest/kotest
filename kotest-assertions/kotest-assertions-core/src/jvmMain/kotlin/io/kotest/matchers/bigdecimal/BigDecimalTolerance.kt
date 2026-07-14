@@ -75,6 +75,7 @@ class ToleranceMatcher(private val expected: BigDecimal?, private val tolerance:
  * BigDecimal("30.0").shouldBeWithinPercentageOf(BigDecimal("100.0:), 10.0)  // Fail
  *
  */
+@IgnorableReturnValue
 fun BigDecimal.shouldBeWithinPercentageOf(other: BigDecimal, percentage: BigDecimal) {
    require(percentage > BigDecimal.ZERO) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
@@ -88,6 +89,7 @@ fun BigDecimal.shouldBeWithinPercentageOf(other: BigDecimal, percentage: BigDeci
  * BigDecimal("30.0").shouldNotBeWithinPercentageOf(BigDecimal("100.0"), 10.0)  // Passes
  *
  */
+@IgnorableReturnValue
 fun BigDecimal.shouldNotBeWithinPercentageOf(other: BigDecimal, percentage: BigDecimal) {
    require(percentage > BigDecimal.ZERO) { "Percentage must be > 0, was: $percentage" }
    this shouldNot beWithinPercentageOf(other, percentage)

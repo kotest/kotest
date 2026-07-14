@@ -4,6 +4,7 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
+@IgnorableReturnValue
 infix fun Long?.shouldBeMultipleOf(other: Long): Long? {
    this should beMultipleOf(other)
    return this

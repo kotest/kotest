@@ -8,9 +8,13 @@ import java.io.File
 import java.nio.file.Files
 import java.nio.file.Path
 
+@IgnorableReturnValue
 infix fun Path.shouldBeLarger(other: Path) = this should beLarger(other)
+@IgnorableReturnValue
 infix fun Path.shouldBeLarger(other: File) = this should beLarger(other.toPath())
+@IgnorableReturnValue
 infix fun Path.shouldNotBeLarger(other: Path) = this shouldNot beLarger(other)
+@IgnorableReturnValue
 infix fun Path.shouldNotBeLarger(other: File) = this shouldNot beLarger(other.toPath())
 
 fun beLarger(other: Path): Matcher<Path> = object : Matcher<Path> {
@@ -24,9 +28,13 @@ fun beLarger(other: Path): Matcher<Path> = object : Matcher<Path> {
    }
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldBeSmaller(other: Path) = this should beSmaller(other)
+@IgnorableReturnValue
 infix fun Path.shouldBeSmaller(other: File) = this should beSmaller(other.toPath())
+@IgnorableReturnValue
 infix fun Path.shouldNotBeSmaller(other: Path) = this shouldNot beSmaller(other)
+@IgnorableReturnValue
 infix fun Path.shouldNotBeSmaller(other: File) = this shouldNot beSmaller(other.toPath())
 
 fun beSmaller(other: Path): Matcher<Path> = object : Matcher<Path> {

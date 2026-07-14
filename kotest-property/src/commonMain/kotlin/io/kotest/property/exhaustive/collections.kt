@@ -20,6 +20,7 @@ fun <A> Exhaustive.Companion.collection(collection: Collection<A>): Exhaustive<A
 *    listOf(1, 2, 3)
 * )
 */
+@IgnorableReturnValue
 fun <A> Exhaustive.Companion.permutations(list: List<A>, length: Int = list.size): Exhaustive<List<A>> {
    require(length in 0..list.size) { "length must be between 0 and the list size (${list.size}), but was $length." }
 

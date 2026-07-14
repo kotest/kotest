@@ -8,7 +8,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.isDirectory
 
+@IgnorableReturnValue
 infix fun Path.shouldContainNFiles(n: Int) = this should containNFiles(n)
+@IgnorableReturnValue
 infix fun Path.shouldNotContainNFiles(n: Int) = this shouldNot containNFiles(n)
 
 fun containNFiles(n: Int): Matcher<Path> = object : Matcher<Path> {

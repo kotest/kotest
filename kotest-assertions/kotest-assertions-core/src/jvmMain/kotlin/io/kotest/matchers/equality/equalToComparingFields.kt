@@ -8,12 +8,14 @@ import io.kotest.matchers.shouldNot
 import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
+@IgnorableReturnValue
 infix fun <T : Any> T.shouldBeEqualUsingFields(other: T): T {
    val config = FieldEqualityConfig()
    this should beEqualUsingFields(other, config)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T : Any> T.shouldNotBeEqualUsingFields(other: T): T {
    val config = FieldEqualityConfig()
    this shouldNot beEqualUsingFields(other, config)
@@ -60,6 +62,7 @@ infix fun <T : Any> T.shouldNotBeEqualUsingFields(other: T): T {
  *  }
  *  ```
  * */
+@IgnorableReturnValue
 infix fun <T : Any> T.shouldBeEqualUsingFields(block: FieldEqualityConfig.() -> T): T {
    val config = FieldEqualityConfig()
    val other = block.invoke(config)
@@ -67,6 +70,7 @@ infix fun <T : Any> T.shouldBeEqualUsingFields(block: FieldEqualityConfig.() -> 
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T : Any> T.shouldNotBeEqualUsingFields(block: FieldEqualityConfig.() -> T): T {
    val config = FieldEqualityConfig()
    val other = block.invoke(config)

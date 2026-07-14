@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.property.internal.proptest
 import io.kotest.property.resolution.default
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> checkAll(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -17,6 +18,7 @@ suspend fun <A, B, C, D, E, F> checkAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext = proptest<A, B, C, D, E, F>(genA, genB, genC, genD, genE, genF, PropTestConfig(), property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
@@ -28,6 +30,7 @@ suspend fun <A, B, C, D, E, F> checkAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, config, property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> checkAll(
    iterations: Int,
    genA: Gen<A>,
@@ -39,6 +42,7 @@ suspend fun <A, B, C, D, E, F> checkAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, PropTestConfig(constraints = Constraints.iterations(iterations)), property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> checkAll(
    iterations: Int,
    config: PropTestConfig,
@@ -51,6 +55,7 @@ suspend fun <A, B, C, D, E, F> checkAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, config.copy(iterations = iterations), property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> checkAll(
    noinline property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
 ) = proptest(
@@ -64,6 +69,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    property
 )
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> checkAll(
    config: PropTestConfig,
    noinline property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
@@ -78,6 +84,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    property
 )
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> checkAll(
    iterations: Int,
    noinline property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit
@@ -92,6 +99,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    property
 )
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> checkAll(
    iterations: Int,
    config: PropTestConfig,
@@ -107,6 +115,7 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    property
 )
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forAll(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -117,6 +126,7 @@ suspend fun <A, B, C, D, E, F> forAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forAll<A, B, C, D, E, F>(PropTestConfig(), genA, genB, genC, genD, genE, genF, property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forAll(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,
@@ -128,6 +138,7 @@ suspend fun <A, B, C, D, E, F> forAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = proptest<A, B, C, D, E, F>(genA, genB, genC, genD, genE, genF, config) { a, b, c, d, e, f -> property(a, b, c, d, e, f) shouldBe true }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forAll(
    iterations: Int,
    genA: Gen<A>,
@@ -139,6 +150,7 @@ suspend fun <A, B, C, D, E, F> forAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forAll<A, B, C, D, E, F>(iterations, PropTestConfig(), genA, genB, genC, genD, genE, genF, property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forAll(
    iterations: Int,
    config: PropTestConfig,
@@ -151,10 +163,12 @@ suspend fun <A, B, C, D, E, F> forAll(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forAll<A, B, C, D, E, F>(config.copy(iterations = iterations), genA, genB, genC, genD, genE, genF, property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
 ): PropertyContext = forAll<A, B, C, D, E, F>(PropTestConfig(), property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(
    config: PropTestConfig = PropTestConfig(),
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
@@ -168,17 +182,20 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    config
 ) { a, b, c, d, e, f -> property(a, b, c, d, e, f) shouldBe true }
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(
    iterations: Int,
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forAll<A, B, C, D, E, F>(iterations, PropTestConfig(), property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forAll(
    iterations: Int,
    config: PropTestConfig,
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forAll<A, B, C, D, E, F>(config.copy(iterations = iterations), property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forNone(
    genA: Gen<A>,
    genB: Gen<B>,
@@ -189,6 +206,7 @@ suspend fun <A, B, C, D, E, F> forNone(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forNone<A, B, C, D, E, F>(PropTestConfig(), genA, genB, genC, genD, genE, genF, property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forNone(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,
@@ -203,6 +221,7 @@ suspend fun <A, B, C, D, E, F> forNone(
    property(a, b, c, d, e, f) shouldBe false
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forNone(
    iterations: Int,
    genA: Gen<A>,
@@ -214,6 +233,7 @@ suspend fun <A, B, C, D, E, F> forNone(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forNone<A, B, C, D, E, F>(iterations, PropTestConfig(), genA, genB, genC, genD, genE, genF, property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F> forNone(
    iterations: Int,
    config: PropTestConfig,
@@ -226,10 +246,12 @@ suspend fun <A, B, C, D, E, F> forNone(
    property: suspend PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forNone<A, B, C, D, E, F>(config.copy(iterations = iterations), genA, genB, genC, genD, genE, genF, property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
 ): PropertyContext = forNone<A, B, C, D, E, F>(PropTestConfig(), property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(
    config: PropTestConfig = PropTestConfig(),
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
@@ -243,11 +265,13 @@ suspend inline fun <reified A, reified B, reified C, reified D, reified E, reifi
    config
 ) { a, b, c, d, e, f -> property(a, b, c, d, e, f) shouldBe false }
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(
    iterations: Int,
    crossinline property: PropertyContext.(A, B, C, D, E, F) -> Boolean
 ) = forNone<A, B, C, D, E, F>(iterations, PropTestConfig(), property)
 
+@IgnorableReturnValue
 suspend inline fun <reified A, reified B, reified C, reified D, reified E, reified F> forNone(
    iterations: Int,
    config: PropTestConfig,

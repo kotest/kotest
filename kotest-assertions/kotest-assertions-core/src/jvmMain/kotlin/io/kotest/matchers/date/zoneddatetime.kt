@@ -26,6 +26,7 @@ fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
  *      ZonedDateTime.of(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun ZonedDateTime.shouldNotBeToday() = this shouldNot beInTodayZDT()
 
 /**
@@ -35,6 +36,7 @@ fun ZonedDateTime.shouldNotBeToday() = this shouldNot beInTodayZDT()
  *      ZonedDateTime.now().shouldBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun ZonedDateTime.shouldBeToday() = this should beInTodayZDT()
 
 /**

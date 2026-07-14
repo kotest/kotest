@@ -21,6 +21,7 @@ import io.kotest.matchers.shouldNotBe
  * @see [Double.shouldBeGreaterThan]
  * @see [Double.shouldNotBeLessThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldBeGreaterThanOrEqual(x: Double): Double {
    this shouldBe gte(x)
    return this
@@ -42,6 +43,7 @@ infix fun Double.shouldBeGreaterThanOrEqual(x: Double): Double {
  * @see [Double.shouldBeGreaterThan]
  * @see [Double.shouldNotBeLessThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldBeAtLeast(x: Double): Double = shouldBeGreaterThanOrEqual(x)
 
 /**
@@ -58,6 +60,7 @@ infix fun Double.shouldBeAtLeast(x: Double): Double = shouldBeGreaterThanOrEqual
  * @see [Double.shouldNotBeGreaterThan]
  * @see [Double.shouldBeLessThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldNotBeGreaterThanOrEqual(x: Double): Double {
    this shouldNotBe gte(x)
    return this
@@ -77,6 +80,7 @@ infix fun Double.shouldNotBeGreaterThanOrEqual(x: Double): Double {
  * @see [Double.shouldNotBeAtLeast]
  * @see [Double.shouldBeLessThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldNotBeAtLeast(x: Double): Double {
    this shouldNotBe gte(x)
    return this

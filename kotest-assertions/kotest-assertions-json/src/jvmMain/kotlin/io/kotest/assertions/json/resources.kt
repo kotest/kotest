@@ -10,6 +10,7 @@ import kotlinx.serialization.json.Json
 import org.intellij.lang.annotations.Language
 import kotlin.contracts.contract
 
+@IgnorableReturnValue
 infix fun String?.shouldMatchJsonResource(@Language("file-reference") resource: String) {
    contract {
       returns() implies (this@shouldMatchJsonResource != null)
@@ -18,6 +19,7 @@ infix fun String?.shouldMatchJsonResource(@Language("file-reference") resource: 
    this should matchJsonResource(resource)
 }
 
+@IgnorableReturnValue
 fun String?.shouldMatchJsonResource(@Language("file-reference") resource: String, parser: Json) {
    contract {
       returns() implies (this@shouldMatchJsonResource != null)
@@ -26,9 +28,11 @@ fun String?.shouldMatchJsonResource(@Language("file-reference") resource: String
    this should matchJsonResource(resource, parser)
 }
 
+@IgnorableReturnValue
 infix fun String.shouldNotMatchJsonResource(@Language("file-reference") resource: String) =
    this shouldNot matchJsonResource(resource)
 
+@IgnorableReturnValue
 fun String.shouldNotMatchJsonResource(@Language("file-reference") resource: String, parser: Json) =
    this shouldNot matchJsonResource(resource, parser)
 

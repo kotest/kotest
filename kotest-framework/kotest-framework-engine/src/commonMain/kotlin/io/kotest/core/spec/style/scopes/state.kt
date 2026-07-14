@@ -9,6 +9,7 @@ object TestDslState {
    private val started = mutableSetOf<String>()
    private val mutex = Semaphore(1)
 
+   @IgnorableReturnValue
    suspend fun startTest(name: TestName) = mutex.withPermit {
       started.add(name.name)
    }

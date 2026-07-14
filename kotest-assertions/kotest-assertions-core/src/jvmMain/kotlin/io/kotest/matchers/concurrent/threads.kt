@@ -5,7 +5,9 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun Thread.shouldBeBlocked() = this should beBlocked()
+@IgnorableReturnValue
 fun Thread.shouldNotBeBlocked() = this shouldNot beBlocked()
 fun beBlocked() = object : Matcher<Thread> {
    override fun test(value: Thread) = MatcherResult(
@@ -16,7 +18,9 @@ fun beBlocked() = object : Matcher<Thread> {
       })
 }
 
+@IgnorableReturnValue
 fun Thread.shouldBeTerminated() = this should beTerminated()
+@IgnorableReturnValue
 fun Thread.shouldNotBeTerminated() = this shouldNot beTerminated()
 fun beTerminated() = object : Matcher<Thread> {
    override fun test(value: Thread) = MatcherResult(
@@ -27,7 +31,9 @@ fun beTerminated() = object : Matcher<Thread> {
       })
 }
 
+@IgnorableReturnValue
 fun Thread.shouldBeAlive() = this should beAlive()
+@IgnorableReturnValue
 fun Thread.shouldNotBeAlive() = this shouldNot beAlive()
 fun beAlive() = object : Matcher<Thread> {
    override fun test(value: Thread) = MatcherResult(
@@ -38,7 +44,9 @@ fun beAlive() = object : Matcher<Thread> {
       })
 }
 
+@IgnorableReturnValue
 fun Thread.shouldBeDaemon() = this should beDaemon()
+@IgnorableReturnValue
 fun Thread.shouldNotBeDaemon() = this shouldNot beDaemon()
 fun beDaemon() = object : Matcher<Thread> {
    override fun test(value: Thread) = MatcherResult(

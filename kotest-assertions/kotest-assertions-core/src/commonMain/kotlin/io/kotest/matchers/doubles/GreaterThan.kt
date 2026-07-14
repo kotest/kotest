@@ -21,6 +21,7 @@ import io.kotest.matchers.shouldNotBe
  * @see [Double.shouldBeGreaterThanOrEqual]
  * @see [Double.shouldNotBeLessThan]
  */
+@IgnorableReturnValue
 infix fun Double.shouldBeGreaterThan(x: Double): Double {
    this shouldBe gt(x)
    return this
@@ -39,6 +40,7 @@ infix fun Double.shouldBeGreaterThan(x: Double): Double {
  * @see [Double.shouldBeLessThan]
  * @see [Double.shouldNotBeGreaterThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldNotBeGreaterThan(x: Double): Double {
    this shouldNotBe gt(x)
    return this

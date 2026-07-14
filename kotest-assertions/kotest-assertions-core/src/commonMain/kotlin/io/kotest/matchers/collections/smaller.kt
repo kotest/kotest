@@ -24,6 +24,7 @@ import io.kotest.matchers.shouldNot
  *
  * @see ByteArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun ByteArray.shouldBeSmallerThan(other: ByteArray): ByteArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -45,6 +46,7 @@ infix fun ByteArray.shouldBeSmallerThan(other: ByteArray): ByteArray = apply {
  *
  * @see ByteArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun ByteArray.shouldNotBeSmallerThan(other: ByteArray): ByteArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -66,6 +68,7 @@ infix fun ByteArray.shouldNotBeSmallerThan(other: ByteArray): ByteArray = apply 
  *
  * @see IntArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun IntArray.shouldBeSmallerThan(other: IntArray): IntArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -87,6 +90,7 @@ infix fun IntArray.shouldBeSmallerThan(other: IntArray): IntArray = apply {
  *
  * @see IntArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun IntArray.shouldNotBeSmallerThan(other: IntArray): IntArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -108,6 +112,7 @@ infix fun IntArray.shouldNotBeSmallerThan(other: IntArray): IntArray = apply {
  *
  * @see ShortArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun ShortArray.shouldBeSmallerThan(other: ShortArray): ShortArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -129,6 +134,7 @@ infix fun ShortArray.shouldBeSmallerThan(other: ShortArray): ShortArray = apply 
  *
  * @see ShortArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun ShortArray.shouldNotBeSmallerThan(other: ShortArray): ShortArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -150,6 +156,7 @@ infix fun ShortArray.shouldNotBeSmallerThan(other: ShortArray): ShortArray = app
  *
  * @see LongArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun LongArray.shouldBeSmallerThan(other: LongArray): LongArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -172,6 +179,7 @@ infix fun LongArray.shouldBeSmallerThan(other: LongArray): LongArray = apply {
  * @see LongArray.shouldBeSmallerThan
  */
 
+@IgnorableReturnValue
 infix fun LongArray.shouldNotBeSmallerThan(other: LongArray): LongArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -193,6 +201,7 @@ infix fun LongArray.shouldNotBeSmallerThan(other: LongArray): LongArray = apply 
  *
  * @see FloatArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun FloatArray.shouldBeSmallerThan(other: FloatArray): FloatArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -214,6 +223,7 @@ infix fun FloatArray.shouldBeSmallerThan(other: FloatArray): FloatArray = apply 
  *
  * @see FloatArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun FloatArray.shouldNotBeSmallerThan(other: FloatArray): FloatArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -235,6 +245,7 @@ infix fun FloatArray.shouldNotBeSmallerThan(other: FloatArray): FloatArray = app
  *
  * @see DoubleArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun DoubleArray.shouldBeSmallerThan(other: DoubleArray): DoubleArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -256,6 +267,7 @@ infix fun DoubleArray.shouldBeSmallerThan(other: DoubleArray): DoubleArray = app
  *
  * @see DoubleArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun DoubleArray.shouldNotBeSmallerThan(other: DoubleArray): DoubleArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -277,6 +289,7 @@ infix fun DoubleArray.shouldNotBeSmallerThan(other: DoubleArray): DoubleArray = 
  *
  * @see CharArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun CharArray.shouldBeSmallerThan(other: CharArray): CharArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -298,6 +311,7 @@ infix fun CharArray.shouldBeSmallerThan(other: CharArray): CharArray = apply {
  *
  * @see CharArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun CharArray.shouldNotBeSmallerThan(other: CharArray): CharArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -319,6 +333,7 @@ infix fun CharArray.shouldNotBeSmallerThan(other: CharArray): CharArray = apply 
  *
  * @see BooleanArray.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun BooleanArray.shouldBeSmallerThan(other: BooleanArray): BooleanArray = apply {
    this.asList() shouldBeSmallerThan other.asList()
 }
@@ -340,6 +355,7 @@ infix fun BooleanArray.shouldBeSmallerThan(other: BooleanArray): BooleanArray = 
  *
  * @see BooleanArray.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun BooleanArray.shouldNotBeSmallerThan(other: BooleanArray): BooleanArray = apply {
    this.asList() shouldNotBeSmallerThan other.asList()
 }
@@ -364,6 +380,7 @@ infix fun BooleanArray.shouldNotBeSmallerThan(other: BooleanArray): BooleanArray
  *
  * @see Iterable.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun <T, U, I : Iterable<T>> I.shouldBeSmallerThan(other: Iterable<U>): I = apply {
    toList() should beSmallerThan(other)
 }
@@ -386,6 +403,7 @@ infix fun <T, U, I : Iterable<T>> I.shouldBeSmallerThan(other: Iterable<U>): I =
  *
  * @see Array.shouldNotBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Array<U>): Array<T> = apply {
    asList() should beSmallerThan(other.asList())
 }
@@ -408,6 +426,7 @@ infix fun <T, U> Array<T>.shouldBeSmallerThan(other: Array<U>): Array<T> = apply
  *
  * @see Iterable.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun <T, U, I : Iterable<T>> I.shouldNotBeSmallerThan(other: Iterable<U>): I = apply {
    toList() shouldNot beSmallerThan(other)
 }
@@ -429,6 +448,7 @@ infix fun <T, U, I : Iterable<T>> I.shouldNotBeSmallerThan(other: Iterable<U>): 
  *
  * @see Array.shouldBeSmallerThan
  */
+@IgnorableReturnValue
 infix fun <T, U> Array<T>.shouldNotBeSmallerThan(other: Array<U>): Array<T> = apply {
    asList() shouldNot beSmallerThan(other.asList())
 }

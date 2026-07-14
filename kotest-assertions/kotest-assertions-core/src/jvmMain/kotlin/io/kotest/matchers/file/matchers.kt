@@ -16,7 +16,9 @@ private fun File.safeList(): List<String> = this.list()?.toList() ?: emptyList()
 private fun File.safeListFiles(): List<File> = this.listFiles()?.toList() ?: emptyList()
 private fun File.safeListFiles(filter: FileFilter): List<File> = this.listFiles(filter)?.toList() ?: emptyList()
 
+@IgnorableReturnValue
 fun File.shouldBeEmptyDirectory() = this should beEmptyDirectory()
+@IgnorableReturnValue
 fun File.shouldNotBeEmptyDirectory() = this shouldNot beEmptyDirectory()
 fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult {
@@ -42,7 +44,9 @@ fun beEmptyDirectory(): Matcher<File> = object : Matcher<File> {
    }
 }
 
+@IgnorableReturnValue
 infix fun File.shouldContainNFiles(n: Int) = this shouldBe containNFiles(n)
+@IgnorableReturnValue
 infix fun File.shouldNotContainNFiles(n: Int) = this shouldNotBe containNFiles(n)
 fun containNFiles(n: Int): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
@@ -52,7 +56,9 @@ fun containNFiles(n: Int): Matcher<File> = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 fun File.shouldBeEmpty() = this shouldBe emptyFile()
+@IgnorableReturnValue
 fun File.shouldNotBeEmpty() = this shouldNotBe emptyFile()
 fun emptyFile(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -63,7 +69,9 @@ fun emptyFile(): Matcher<File> = object : Matcher<File> {
       )
 }
 
+@IgnorableReturnValue
 fun File.shouldExist() = this should exist()
+@IgnorableReturnValue
 fun File.shouldNotExist() = this shouldNot exist()
 fun exist() = object : Matcher<File> {
    override fun test(value: File) =
@@ -74,7 +82,9 @@ fun exist() = object : Matcher<File> {
       )
 }
 
+@IgnorableReturnValue
 infix fun File.shouldContainFile(name: String) = this should containFile(name)
+@IgnorableReturnValue
 infix fun File.shouldNotContainFile(name: String) = this shouldNot containFile(name)
 fun containFile(name: String) = object : Matcher<File> {
    override fun test(value: File): MatcherResult {
@@ -88,10 +98,14 @@ fun containFile(name: String) = object : Matcher<File> {
    }
 }
 
+@IgnorableReturnValue
 fun File.shouldBeSymbolicLink() = this.toPath() should beSymbolicLink()
+@IgnorableReturnValue
 fun File.shouldNotBeSymbolicLink() = this.toPath() shouldNot beSymbolicLink()
 
+@IgnorableReturnValue
 infix fun File.shouldHaveParent(name: String) = this should haveParent(name)
+@IgnorableReturnValue
 infix fun File.shouldNotHaveParent(name: String) = this shouldNot haveParent(name)
 fun haveParent(name: String) = object : Matcher<File> {
    private fun isParentEqualExpected(parent: File?): Boolean =
@@ -104,7 +118,9 @@ fun haveParent(name: String) = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 fun File.shouldBeADirectory() = this should aDirectory()
+@IgnorableReturnValue
 fun File.shouldNotBeADirectory() = this shouldNot aDirectory()
 fun aDirectory(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
@@ -114,7 +130,9 @@ fun aDirectory(): Matcher<File> = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 fun File.shouldBeAFile() = this should aFile()
+@IgnorableReturnValue
 fun File.shouldNotBeAFile() = this shouldNot aFile()
 fun aFile(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -124,9 +142,13 @@ fun aFile(): Matcher<File> = object : Matcher<File> {
          { "File $value should not be a file" })
 }
 
+@IgnorableReturnValue
 infix fun File.shouldBeSmaller(other: Path) = this should beSmaller(other.toFile())
+@IgnorableReturnValue
 infix fun File.shouldBeSmaller(other: File) = this should beSmaller(other)
+@IgnorableReturnValue
 infix fun File.shouldNotBeSmaller(other: Path) = this shouldNot beSmaller(other.toFile())
+@IgnorableReturnValue
 infix fun File.shouldNotBeSmaller(other: File) = this shouldNot beSmaller(other)
 
 fun beSmaller(other: File): Matcher<File> = object : Matcher<File> {
@@ -141,9 +163,13 @@ fun beSmaller(other: File): Matcher<File> = object : Matcher<File> {
    }
 }
 
+@IgnorableReturnValue
 infix fun File.shouldBeLarger(other: Path) = this should beLarger(other.toFile())
+@IgnorableReturnValue
 infix fun File.shouldBeLarger(other: File) = this should beLarger(other)
+@IgnorableReturnValue
 infix fun File.shouldNotBeLarger(other: Path) = this shouldNot beLarger(other.toFile())
+@IgnorableReturnValue
 infix fun File.shouldNotBeLarger(other: File) = this shouldNot beLarger(other)
 
 fun beLarger(other: File): Matcher<File> = object : Matcher<File> {
@@ -158,7 +184,9 @@ fun beLarger(other: File): Matcher<File> = object : Matcher<File> {
    }
 }
 
+@IgnorableReturnValue
 fun File.shouldBeCanonical() = this should beCanonicalPath()
+@IgnorableReturnValue
 fun File.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
 fun beCanonicalPath(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
@@ -168,7 +196,9 @@ fun beCanonicalPath(): Matcher<File> = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 fun File.shouldBeAbsolute() = this should beAbsolute()
+@IgnorableReturnValue
 fun File.shouldNotBeAbsolute() = this shouldNot beAbsolute()
 fun beAbsolute(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -178,7 +208,9 @@ fun beAbsolute(): Matcher<File> = object : Matcher<File> {
          { "File $value should not be absolute" })
 }
 
+@IgnorableReturnValue
 fun File.shouldBeRelative() = this should beRelative()
+@IgnorableReturnValue
 fun File.shouldNotBeRelative() = this shouldNot beRelative()
 fun beRelative(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -188,7 +220,9 @@ fun beRelative(): Matcher<File> = object : Matcher<File> {
          { "File $value should not be relative" })
 }
 
+@IgnorableReturnValue
 infix fun File.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
+@IgnorableReturnValue
 infix fun File.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
 fun haveFileSize(size: Long): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
@@ -198,7 +232,9 @@ fun haveFileSize(size: Long): Matcher<File> = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 fun File.shouldBeWriteable() = this should beWriteable()
+@IgnorableReturnValue
 fun File.shouldNotBeWriteable() = this shouldNot beWriteable()
 fun beWriteable(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -208,7 +244,9 @@ fun beWriteable(): Matcher<File> = object : Matcher<File> {
          { "File $value should not be writeable" })
 }
 
+@IgnorableReturnValue
 fun File.shouldBeExecutable() = this should beExecutable()
+@IgnorableReturnValue
 fun File.shouldNotBeExecutable() = this shouldNot beExecutable()
 fun beExecutable(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult = MatcherResult(
@@ -218,7 +256,9 @@ fun beExecutable(): Matcher<File> = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 fun File.shouldBeHidden() = this should beHidden()
+@IgnorableReturnValue
 fun File.shouldNotBeHidden() = this shouldNot beHidden()
 fun beHidden(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -228,7 +268,9 @@ fun beHidden(): Matcher<File> = object : Matcher<File> {
          { "File $value should not be hidden" })
 }
 
+@IgnorableReturnValue
 fun File.shouldBeReadable() = this should beReadable()
+@IgnorableReturnValue
 fun File.shouldNotBeReadable() = this shouldNot beReadable()
 fun beReadable(): Matcher<File> = object : Matcher<File> {
    override fun test(value: File): MatcherResult =
@@ -238,16 +280,24 @@ fun beReadable(): Matcher<File> = object : Matcher<File> {
          { "File $value should not be readable" })
 }
 
+@IgnorableReturnValue
 infix fun File.shouldStartWithPath(path: Path) = this should startWithPath(path)
+@IgnorableReturnValue
 infix fun File.shouldNotStartWithPath(path: Path) = this shouldNot startWithPath(path)
 
+@IgnorableReturnValue
 infix fun File.shouldStartWithPath(prefix: String) = this should startWithPath(prefix)
+@IgnorableReturnValue
 infix fun File.shouldNotStartWithPath(prefix: String) = this shouldNot startWithPath(prefix)
 
+@IgnorableReturnValue
 infix fun File.shouldStartWithPath(file: File) = this should startWithPath(file)
+@IgnorableReturnValue
 infix fun File.shouldNotStartWithPath(file: File) = this shouldNot startWithPath(file)
 
+@IgnorableReturnValue
 infix fun Path.shouldStartWithPath(path: Path) = this.toFile() should startWithPath(path)
+@IgnorableReturnValue
 infix fun Path.shouldNotStartWithPath(path: Path) = this.toFile() shouldNot startWithPath(path)
 
 fun startWithPath(path: Path) = startWithPath(path.toFile())
@@ -260,10 +310,12 @@ fun startWithPath(prefix: String) = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 infix fun File.shouldHaveSameStructureAs(file: File) {
    this.shouldHaveSameStructureAs(file) { _, _ -> false }
 }
 
+@IgnorableReturnValue
 fun File.shouldHaveSameStructureAs(
    file: File,
    compare: (expect: File, actual: File) -> Boolean,
@@ -290,6 +342,7 @@ fun File.shouldHaveSameStructureAs(
    }
 }
 
+@IgnorableReturnValue
 fun File.shouldHaveSameStructureAs(
    file: File,
    filterLhs: (File) -> Boolean = { false },
@@ -300,10 +353,12 @@ fun File.shouldHaveSameStructureAs(
    }
 }
 
+@IgnorableReturnValue
 infix fun File.shouldHaveSameStructureAndContentAs(file: File) {
    this.shouldHaveSameStructureAndContentAs(file) { _, _ -> false }
 }
 
+@IgnorableReturnValue
 fun File.shouldHaveSameStructureAndContentAs(
    file: File,
    compare: (expect: File, actual: File) -> Boolean,
@@ -331,6 +386,7 @@ fun File.shouldHaveSameStructureAndContentAs(
    }
 }
 
+@IgnorableReturnValue
 fun File.shouldHaveSameStructureAndContentAs(
    file: File,
    filterLhs: (File) -> Boolean = { false },

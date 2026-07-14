@@ -8,7 +8,9 @@ import java.nio.file.Files
 import java.nio.file.Path
 import kotlin.io.path.name
 
+@IgnorableReturnValue
 fun Path.shouldContainFiles(vararg files: String) = this should containFiles(files.asList())
+@IgnorableReturnValue
 fun Path.shouldNotContainFiles(vararg files: String) = this shouldNot containFiles(files.asList())
 
 fun containFiles(names: List<String>) = object : Matcher<Path> {
@@ -33,7 +35,9 @@ fun containFiles(names: List<String>) = object : Matcher<Path> {
    }
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldContainFile(name: String) = this should containFile(name)
+@IgnorableReturnValue
 infix fun Path.shouldNotContainFile(name: String) = this shouldNot containFile(name)
 
 fun containFile(name: String) = object : Matcher<Path> {

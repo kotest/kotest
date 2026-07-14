@@ -31,7 +31,9 @@ For now, the documentation should mention that infinite sequences will cause the
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldContainOnlyNulls() = this should containOnlyNulls()
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotContainOnlyNulls() = this shouldNot containOnlyNulls()
 fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
@@ -44,7 +46,9 @@ fun <T> containOnlyNulls() = object : Matcher<Sequence<T>> {
    }
 }
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldContainNull() = this should containNull()
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotContainNull() = this shouldNot containNull()
 fun <T> containNull() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
@@ -57,7 +61,9 @@ fun <T> containNull() = object : Matcher<Sequence<T>> {
    }
 }
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldHaveElementAt(index: Int, element: T) = this should haveElementAt(index, element)
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotHaveElementAt(index: Int, element: T) = this shouldNot haveElementAt(index, element)
 
 fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matcher<S> {
@@ -84,8 +90,10 @@ fun <T, S : Sequence<T>> haveElementAt(index: Int, element: T) = object : Matche
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldContainNoNulls() = this should containNoNulls()
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotContainNoNulls() = this shouldNot containNoNulls()
 fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) =
@@ -96,7 +104,9 @@ fun <T> containNoNulls() = object : Matcher<Sequence<T>> {
       )
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Sequence<T>> C.shouldContain(t: T) = this should contain(t)
+@IgnorableReturnValue
 infix fun <T, C : Sequence<T>> C.shouldNotContain(t: T) = this shouldNot contain(t)
 fun <T, C : Sequence<T>> contain(t: T) = object : Matcher<C> {
    override fun test(value: C): MatcherResult {
@@ -109,10 +119,14 @@ fun <T, C : Sequence<T>> contain(t: T) = object : Matcher<C> {
    }
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Sequence<T>> C?.shouldNotContainExactly(expected: C) = this shouldNot containExactly(expected)
+@IgnorableReturnValue
 fun <T, C : Sequence<T>> C?.shouldNotContainExactly(vararg expected: T) = this shouldNot containExactly(*expected)
 
+@IgnorableReturnValue
 infix fun <T, C : Sequence<T>> C?.shouldContainExactly(expected: C) = this should containExactly(expected)
+@IgnorableReturnValue
 fun <T, C : Sequence<T>> C?.shouldContainExactly(vararg expected: T) = this should containExactly(*expected)
 
 fun <T> containExactly(vararg expected: T): Matcher<Sequence<T>?> = containExactly(expected.asSequence())
@@ -169,9 +183,11 @@ fun <T, C : Sequence<T>> containExactly(expected: C): Matcher<C?> = neverNullMat
       { "Sequence should not contain exactly ${consumedExpectedValues.printValues(expectedIterator.hasNext())}" })
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(expected: C) =
    this shouldNot containAllInAnyOrder(expected)
 
+@IgnorableReturnValue
 fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
    this shouldNot containAllInAnyOrder(*expected)
 
@@ -179,6 +195,7 @@ fun <T, C : Sequence<T>> C?.shouldNotContainAllInAnyOrder(vararg expected: T) =
  * Verifies that the given [Sequence] contains all the specified elements in any order.
  * The sequence may additionally contain other elements.
  */
+@IgnorableReturnValue
 infix fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(expected: C) =
    this should containAllInAnyOrder(expected)
 
@@ -186,6 +203,7 @@ infix fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(expected: C) =
  * Verifies that the given [Sequence] contains all the specified elements in any order.
  * The sequence may additionally contain other elements.
  */
+@IgnorableReturnValue
 fun <T, C : Sequence<T>> C?.shouldContainAllInAnyOrder(vararg expected: T) =
    this should containAllInAnyOrder(*expected)
 
@@ -209,6 +227,7 @@ fun <T, C : Sequence<T>> containAllInAnyOrder(expected: C): Matcher<C?> = neverN
 
 internal fun <T> List<T>.counted(): Map<T, Int> = this.groupingBy { it }.eachCount()
 
+@IgnorableReturnValue
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveUpperBound(t: T) = this should haveUpperBound(t)
 
 fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher<C> {
@@ -231,6 +250,7 @@ fun <T : Comparable<T>, C : Sequence<T>> haveUpperBound(t: T) = object : Matcher
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>, C : Sequence<T>> C.shouldHaveLowerBound(t: T) = this should haveLowerBound(t)
 
 /**
@@ -259,15 +279,19 @@ fun <T : Comparable<T>, C : Sequence<T>> haveLowerBound(t: T) = object : Matcher
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldBeUnique() = this should beUnique()
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotBeUnique() = this shouldNot beUnique()
 fun <T> beUnique() = object : Matcher<Sequence<T>> {
    val delegate = beUniqueByEquals<T>("Sequence")
    override fun test(value: Sequence<T>): MatcherResult = delegate.test(value.asIterable())
 }
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldContainDuplicates() = this should containDuplicates()
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotContainDuplicates() = this shouldNot containDuplicates()
 fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>): MatcherResult {
@@ -281,8 +305,10 @@ fun <T> containDuplicates() = object : Matcher<Sequence<T>> {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldBeSorted() = this should beSorted()
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldNotBeSorted() = this shouldNot beSorted()
 
 /**
@@ -316,8 +342,10 @@ fun <T : Comparable<T>> sorted(): Matcher<Sequence<T>> = object : Matcher<Sequen
    }
 }
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldBeSortedWith(comparator: Comparator<in T>) = this should beSortedWith(comparator)
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldBeSortedWith(cmp: (T, T) -> Int) = this should beSortedWith(cmp)
 
 fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<Sequence<T>> = sortedWith(comparator)
@@ -344,13 +372,17 @@ fun <T> sortedWith(cmp: (T, T) -> Int): Matcher<Sequence<T>> = object : Matcher<
    }
 }
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotBeSortedWith(comparator: Comparator<in T>) = this shouldNot beSortedWith(comparator)
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int) = this shouldNot beSortedWith(cmp)
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveSingleElement(t: T): Sequence<T> {
    this should singleElement(t)
    return this
 }
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotHaveSingleElement(t: T): Sequence<T> {
    this shouldNot singleElement(t)
    return this
@@ -394,12 +426,16 @@ fun <T> singleElement(expectedElement: T) = object : Matcher<Sequence<T>> {
 }
 
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveCount(count: Int) = this should haveCount(count)
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotHaveCount(count: Int) = this shouldNot haveCount(
    count
 )
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveSize(size: Int) = this should haveCount(size)
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotHaveSize(size: Int) = this shouldNot haveCount(size)
 
 //fun <T> haveSize(size: Int) = haveCount(size)
@@ -417,6 +453,7 @@ fun <T> haveCount(count: Int): Matcher<Sequence<T>> = object : Matcher<Sequence<
 }
 
 
+@IgnorableReturnValue
 infix fun <T, U> Sequence<T>.shouldBeLargerThan(other: Sequence<U>) = this should beLargerThan(other)
 
 fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
@@ -431,6 +468,7 @@ fun <T, U> beLargerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    }
 }
 
+@IgnorableReturnValue
 infix fun <T, U> Sequence<T>.shouldBeSmallerThan(other: Sequence<U>) = this should beSmallerThan(other)
 
 fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
@@ -445,6 +483,7 @@ fun <T, U> beSmallerThan(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    }
 }
 
+@IgnorableReturnValue
 infix fun <T, U> Sequence<T>.shouldBeSameCountAs(other: Sequence<U>) = this should beSameCountAs(
    other
 )
@@ -461,8 +500,10 @@ fun <T, U> beSameCountAs(other: Sequence<U>) = object : Matcher<Sequence<T>> {
    }
 }
 
+@IgnorableReturnValue
 infix fun <T, U> Sequence<T>.shouldBeSameSizeAs(other: Sequence<U>) = this.shouldBeSameCountAs(other)
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveAtLeastCount(n: Int) = this shouldHave atLeastCount(n)
 
 fun <T> atLeastCount(n: Int) = object : Matcher<Sequence<T>> {
@@ -473,8 +514,10 @@ fun <T> atLeastCount(n: Int) = object : Matcher<Sequence<T>> {
    )
 }
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveAtLeastSize(n: Int) = this.shouldHaveAtLeastCount(n)
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveAtMostCount(n: Int) = this shouldHave atMostCount(n)
 fun <T> atMostCount(n: Int) = object : Matcher<Sequence<T>> {
    override fun test(value: Sequence<T>) = MatcherResult(
@@ -484,14 +527,18 @@ fun <T> atMostCount(n: Int) = object : Matcher<Sequence<T>> {
    )
 }
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldHaveAtMostSize(n: Int) = this shouldHave atMostCount(n)
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldContainInOrder(vararg ts: T) =
    this should containsInOrder(ts.asSequence())
 
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> Sequence<T>.shouldContainInOrder(expected: Sequence<T>) =
    this should containsInOrder(expected)
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldNotContainInOrder(expected: Sequence<T>) =
    this shouldNot containsInOrder(expected)
 
@@ -517,7 +564,9 @@ fun <T> containsInOrder(subsequence: Sequence<T>): Matcher<Sequence<T>?> = never
    )
 }
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldBeEmpty() = this should beEmpty()
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
 fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
    private val delegate = iterableBeEmpty<T>("Sequence")
@@ -526,12 +575,18 @@ fun <T> beEmpty(): Matcher<Sequence<T>> = object : Matcher<Sequence<T>> {
 }
 
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldContainAll(vararg ts: T) = this should containAll(ts.toList())
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldContainAll(ts: Collection<T>) = this should containAll(ts.toList())
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldContainAll(ts: Sequence<T>) = this should containAll(ts)
 
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldNotContainAll(vararg ts: T) = this shouldNot containAll(ts.asList())
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotContainAll(ts: Collection<T>) = this shouldNot containAll(ts.toList())
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotContainAll(ts: Sequence<T>) = this shouldNot containAll(ts)
 
 fun <T> containAll(ts: Sequence<T>): Matcher<Sequence<T>> = containAll(ts.toList())
@@ -556,8 +611,11 @@ fun <T> containAll(ts: List<T>): Matcher<Sequence<T>> = object : Matcher<Sequenc
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldMatchEach(vararg assertions: (T) -> Unit) = toList().shouldMatchEach(assertions.toList())
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldMatchEach(assertions: List<(T) -> Unit>) = toList().shouldMatchEach(assertions)
+@IgnorableReturnValue
 fun <T> Sequence<T>.shouldMatchEach(expected: Sequence<T>, asserter: (T, T) -> Unit) =
    toList().shouldMatchEach(expected.toList(), asserter)

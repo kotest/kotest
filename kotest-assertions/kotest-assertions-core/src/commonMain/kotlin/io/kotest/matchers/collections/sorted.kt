@@ -7,21 +7,25 @@ import io.kotest.matchers.shouldNot
 
 // SHOULD BE SORTED: empty, transform, comparator
 // Array ================================================================================================
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldBeSorted(): Array<T> {
    asList().shouldBeSorted()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, E : Comparable<E>> Array<T>.shouldBeSortedBy(transform: (T) -> E): Array<T> {
    asList().shouldBeSortedBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldBeSortedWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeSortedWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldBeSortedWith(cmp: (T, T) -> Int): Array<T> {
    asList().shouldBeSortedWith(cmp)
    return this
@@ -29,21 +33,25 @@ infix fun <T> Array<T>.shouldBeSortedWith(cmp: (T, T) -> Int): Array<T> {
 
 // List ================================================================================================
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldBeSorted(): List<T> {
    this should beSorted()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, E : Comparable<E>> List<T>.shouldBeSortedBy(transform: (T) -> E): List<T> {
    this should beSortedBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldBeSortedWith(comparator: Comparator<in T>): List<T> {
    this should beSortedWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int): List<T> {
    this should beSortedWith(cmp)
    return this
@@ -51,21 +59,25 @@ infix fun <T> List<T>.shouldBeSortedWith(cmp: (T, T) -> Int): List<T> {
 
 // Iterable ==========================================================================================
 
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeSorted(): I {
    toList().shouldBeSorted()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldBeSortedBy(transform: (T) -> E): I {
    toList().shouldBeSortedBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldBeSortedWith(comparator: Comparator<in T>): I {
    toList().shouldBeSortedWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldBeSortedWith(cmp: (T, T) -> Int): I {
    toList().shouldBeSortedWith(cmp)
    return this
@@ -75,21 +87,25 @@ infix fun <T, I : Iterable<T>> I.shouldBeSortedWith(cmp: (T, T) -> Int): I {
 // SHOULD BE SORTED: empty, transform, comparator
 // Array =============================================================================================
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldNotBeSorted(): Array<T> {
    asList().shouldNotBeSorted()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, E : Comparable<E>> Array<T>.shouldNotBeSortedBy(transform: (T) -> E): Array<T> {
    asList() shouldNotBeSortedBy transform
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotBeSortedWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeSortedWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int): Array<T> {
    asList().shouldNotBeSortedWith(cmp)
    return this
@@ -97,21 +113,25 @@ infix fun <T> Array<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int): Array<T> {
 
 // List ===============================================================================================
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldNotBeSorted(): List<T> {
    this shouldNot beSorted()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, E : Comparable<E>> List<T>.shouldNotBeSortedBy(transform: (T) -> E): List<T> {
    this shouldNot beSortedBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotBeSortedWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beSortedWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int): List<T> {
    this shouldNot beSortedWith(cmp)
    return this
@@ -119,21 +139,25 @@ infix fun <T> List<T>.shouldNotBeSortedWith(cmp: (T, T) -> Int): List<T> {
 
 // Iterable ===============================================================================================
 
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldNotBeSorted(): I {
    toList().shouldNotBeSorted()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldNotBeSortedBy(transform: (T) -> E): I {
    toList().shouldNotBeSortedBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldNotBeSortedWith(comparator: Comparator<in T>): I {
    toList().shouldNotBeSortedWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldNotBeSortedWith(cmp: (T, T) -> Int): I {
    toList().shouldNotBeSortedWith(cmp)
    return this
@@ -141,28 +165,44 @@ infix fun <T, I : Iterable<T>> I.shouldNotBeSortedWith(cmp: (T, T) -> Int): I {
 
 // Primitive Arrays ==================================================================================
 
+@IgnorableReturnValue
 fun BooleanArray.shouldBeSorted(): BooleanArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun BooleanArray.shouldNotBeSorted(): BooleanArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun ByteArray.shouldBeSorted(): ByteArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun ByteArray.shouldNotBeSorted(): ByteArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun ShortArray.shouldBeSorted(): ShortArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun ShortArray.shouldNotBeSorted(): ShortArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun CharArray.shouldBeSorted(): CharArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun CharArray.shouldNotBeSorted(): CharArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun IntArray.shouldBeSorted(): IntArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun IntArray.shouldNotBeSorted(): IntArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun LongArray.shouldBeSorted(): LongArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun LongArray.shouldNotBeSorted(): LongArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun FloatArray.shouldBeSorted(): FloatArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun FloatArray.shouldNotBeSorted(): FloatArray = apply { asList().shouldNotBeSorted() }
 
+@IgnorableReturnValue
 fun DoubleArray.shouldBeSorted(): DoubleArray = apply { asList().shouldBeSorted() }
+@IgnorableReturnValue
 fun DoubleArray.shouldNotBeSorted(): DoubleArray = apply { asList().shouldNotBeSorted() }
 
 fun <T> beSortedWith(comparator: Comparator<in T>): Matcher<List<T>> = sortedWith(comparator)

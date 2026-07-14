@@ -15,6 +15,7 @@ import kotlin.math.absoluteValue
    "Int-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Int import `io.kotest.matchers.ints.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(a, b)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
 
 /**
@@ -24,6 +25,7 @@ fun Int.shouldBeBetween(a: Int, b: Int) = this shouldBe between(a, b)
    "Int-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Int import `io.kotest.matchers.ints.shouldNotBeBetween` manually.",
    ReplaceWith("shouldNotBeBetween(a, b)", "io.kotest.matchers.comparables.shouldNotBeBetween")
 )
+@IgnorableReturnValue
 fun Int.shouldNotBeBetween(a: Int, b: Int) = this shouldNot between(a, b)
 
 /**
@@ -83,6 +85,7 @@ fun beGreaterThanOrEqualTo(x: Int) = object : Matcher<Int> {
 /**
  * Match that verifies a given integer is within the given [IntRange].
  */
+@IgnorableReturnValue
 infix fun Int.shouldBeInRange(range: IntRange): Int {
    this should beInRange(range)
    return this
@@ -91,6 +94,7 @@ infix fun Int.shouldBeInRange(range: IntRange): Int {
 /**
  * Match that verifies a given integer is not within the given [IntRange].
  */
+@IgnorableReturnValue
 infix fun Int.shouldNotBeInRange(range: IntRange): Int {
    this shouldNot beInRange(range)
    return this
@@ -124,6 +128,7 @@ fun exactly(x: Int) = object : Matcher<Int> {
  * 30.shouldBeWithinPercentageOf(100, 10.0)  // Fail
  *
  */
+@IgnorableReturnValue
 fun Int.shouldBeWithinPercentageOf(other: Int, percentage: Double): Int {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
@@ -138,6 +143,7 @@ fun Int.shouldBeWithinPercentageOf(other: Int, percentage: Double): Int {
  * 30.shouldNotBeWithinPercentageOf(100, 10.0)  // Passes
  *
  */
+@IgnorableReturnValue
 fun Int.shouldNotBeWithinPercentageOf(other: Int, percentage: Double): Int {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this shouldNot beWithinPercentageOf(other, percentage)
