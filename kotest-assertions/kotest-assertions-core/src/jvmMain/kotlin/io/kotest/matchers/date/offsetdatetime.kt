@@ -5,6 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.time.OffsetDateTime
+import java.time.ZonedDateTime
 import kotlin.time.Duration
 
 fun beInTodayODT() = object : Matcher<OffsetDateTime> {
@@ -149,3 +150,70 @@ class OffsetDateTimeToleranceMatcher(
       OffsetDateTimeToleranceMatcher(expected, tolerance)
 }
 
+/**
+ * Asserts that OffsetDateTime is at the same Instant as a ZonedDateTime
+ *
+ * ```
+ *         val date = OffsetDateTime.of(2026, 7, 14, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *         val other = ZonedDateTime.of(2026, 7, 14, 8, 0, 0, 0, ZoneId.of("America/New_York"))
+ *         date shouldHaveSameInstantAsZonedDateTime(other) //Assertion passes
+ *         shouldThrow<AssertionError> {
+ *            date shouldNotHaveSameInstantAsZonedDateTime(other) //Assertion fails
+ *         }
+ *         date.plusSeconds(1L) shouldNotHaveSameInstantAsZonedDateTime(other) //Assertion passes
+ *         shouldThrow<AssertionError> {
+ *            date.plusSeconds(1L) shouldHaveSameInstantAsZonedDateTime(other) //Assertion fails
+ *         }
+ *
+ * ```
+ */
+infix fun OffsetDateTime.shouldHaveSameInstantAsZonedDateTime(other: ZonedDateTime) = this should haveSameInstantAsZonedDateTime(other)
+
+/**
+ * Asserts that OffsetDateTime is at the same Instant as a ZonedDateTime
+ *
+ * ```
+ *         val date = OffsetDateTime.of(2026, 7, 14, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *         val other = ZonedDateTime.of(2026, 7, 14, 8, 0, 0, 0, ZoneId.of("America/New_York"))
+ *         date shouldHaveSameInstantAsZonedDateTime(other) //Assertion passes
+ *         shouldThrow<AssertionError> {
+ *            date shouldNotHaveSameInstantAsZonedDateTime(other) //Assertion fails
+ *         }
+ *         date.plusSeconds(1L) shouldNotHaveSameInstantAsZonedDateTime(other) //Assertion passes
+ *         shouldThrow<AssertionError> {
+ *            date.plusSeconds(1L) shouldHaveSameInstantAsZonedDateTime(other) //Assertion fails
+ *         }
+ *
+ * ```
+ */
+infix fun OffsetDateTime.shouldNotHaveSameInstantAsZonedDateTime(other: ZonedDateTime) = this shouldNot haveSameInstantAsZonedDateTime(other)
+
+/**
+ * Matcher that checks if OffsetDateTime is at the same Instant as a ZonedDateTime
+ *
+ * ```
+ *         val date = OffsetDateTime.of(2026, 7, 14, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+ *         val other = ZonedDateTime.of(2026, 7, 14, 8, 0, 0, 0, ZoneId.of("America/New_York"))
+ *         date should haveSameInstantAsZonedDateTime(other) //Assertion passes
+ *         shouldThrow<AssertionError> {
+ *            date shouldNot haveSameInstantAsZonedDateTime(other) //Assertion fails
+ *         }
+ *         date.plusSeconds(1L) shouldNot haveSameInstantAsZonedDateTime(other) //Assertion passes
+ *         shouldThrow<AssertionError> {
+ *            date.plusSeconds(1L) should haveSameInstantAsZonedDateTime(other) //Assertion fails
+ *         }
+ *
+ * ```
+ *
+ * @see OffsetDateTime.shouldHaveSameInstantAsZonedDateTime
+ * @see OffsetDateTime.shouldNotHaveSameInstantAsZonedDateTime
+ */
+fun haveSameInstantAsZonedDateTime(other: ZonedDateTime) = object : Matcher<OffsetDateTime> {
+   override fun test(value: OffsetDateTime): MatcherResult =
+      MatcherResult(
+         passed = value.toInstant() == other.toInstant(),
+         failureMessageFn = { "$value should be equal to $other" },
+         negatedFailureMessageFn = {
+            "$value should not be equal to $other"
+         })
+}
