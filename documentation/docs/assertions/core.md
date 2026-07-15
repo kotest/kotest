@@ -292,11 +292,12 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
 | `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)`         | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime.                             |
 
-| OffsetDateTime                                                           |                                                                                                      |
-|--------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
-| `offsetDateTime.shouldBeToday()`                                         | Asserts that the OffsetDateTime has the same day as today.                                           |
-| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`          | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
-| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`   | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
+| OffsetDateTime                                                              |                                                                                                      |
+|-----------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
+| `offsetDateTime.shouldBeToday()`                                            | Asserts that the OffsetDateTime has the same day as today.                                           |
+| `offsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime)`             | Asserts that the OffsetDateTime is equal to other OffsetDateTime using ```OffsetDateTime.isEqual```. |
+| `offsetDateTime.shouldHaveSameInstantAsZonedDateTime(other: ZonedDateTime)` | Asserts that the OffsetDateTime is equal to other ZonedDateTime converting both to ```Instant```.    |
+| `offsetDateTime.shouldBe(other: OffsetDateTime plusOrMinus 1.minutes)`      | Asserts that the OffsetDateTime is within 1 minute of other OffsetDateTime.                          |
 
 | Times                                            |                                                               |
 |--------------------------------------------------|---------------------------------------------------------------|
