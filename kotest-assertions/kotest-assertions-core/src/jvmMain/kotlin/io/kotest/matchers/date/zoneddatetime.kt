@@ -50,7 +50,21 @@ fun ZonedDateTime.atSameZone() = object : Matcher<ZonedDateTime> {
    override fun test(value: ZonedDateTime): MatcherResult = be(withZoneSameInstant(value.zone)).test(value)
 }
 
-
+/**
+ * Matcher that checks if a [ZonedDateTime] is within the given tolerance of another [ZonedDateTime].
+ *
+ * Comparisons performed via `shouldBe` and `shouldNotBe` are based on the instant in time represented by each
+ * [ZonedDateTime], not on matching local date-time fields or time zones. This means values in different time zones
+ * still match when they represent instants that are within the specified tolerance.
+ *
+ * ```
+ *    val chicagoTimeZone = ZoneId.of("America/Chicago")
+ *    val newYorkTimeZone = ZoneId.of("America/New_York")
+ *
+ *    ZonedDateTime.of(2023, 11, 14, 1, 2, 0, 0, chicagoTimeZone) shouldBe
+ *       (ZonedDateTime.of(2023, 11, 14, 2, 30, 0, 0, newYorkTimeZone) plusOrMinus (30.minutes and 30.seconds))
+ * ```
+ */
 infix fun ZonedDateTime.plusOrMinus(tolerance: Duration): ZonedDateTimeToleranceMatcher =
    ZonedDateTimeToleranceMatcher(this, tolerance)
 
@@ -74,4 +88,3 @@ class ZonedDateTimeToleranceMatcher(
    infix fun plusOrMinus(tolerance: Duration): ZonedDateTimeToleranceMatcher =
       ZonedDateTimeToleranceMatcher(expected, tolerance)
 }
-

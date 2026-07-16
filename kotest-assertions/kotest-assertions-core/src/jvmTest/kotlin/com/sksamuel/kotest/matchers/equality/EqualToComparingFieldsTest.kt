@@ -51,6 +51,7 @@ class EqualToComparingFieldsTest : FunSpec() {
    class MapContainer(val map: Map<String, Box>)
    class NullableListContainer(val list: List<Box>?)
    class NullableMapContainer(val map: Map<String, Box>?)
+   data class NullableValueMapContainer(val map: Map<String, String?>)
 
    data class CompletelyDifferent1(val field1: String, val field2: String)
    class CompletelyDifferent2(numberField: Int) {
@@ -444,6 +445,34 @@ Fields that differ:
          val a = MapContainer(emptyMap())
          val b = MapContainer(emptyMap())
          a shouldBeEqualUsingFields b
+      }
+
+      test("should compare maps with null values") {
+         val a = NullableValueMapContainer(mapOf("foo" to null))
+         val b = NullableValueMapContainer(mapOf("foo" to null))
+         a shouldBeEqualUsingFields b
+      }
+
+      test("should fail when actual map value is null but expected is not") {
+         val a = NullableValueMapContainer(mapOf("foo" to null))
+         val b = NullableValueMapContainer(mapOf("foo" to "bar"))
+         val message = shouldFail {
+            a shouldBeEqualUsingFields b
+         }.message
+         message shouldNotContain "Error using shouldBeEqualUsingFields matcher"
+         message shouldContain """Fields that differ:
+ - map[foo]  =>  Expected "bar" but actual was null"""
+      }
+
+      test("should fail when expected map value is null but actual is not") {
+         val a = NullableValueMapContainer(mapOf("foo" to "bar"))
+         val b = NullableValueMapContainer(mapOf("foo" to null))
+         val message = shouldFail {
+            a shouldBeEqualUsingFields b
+         }.message
+         message shouldNotContain "Error using shouldBeEqualUsingFields matcher"
+         message shouldContain """Fields that differ:
+ - map[foo]  =>  Expected null but actual was "bar""""
       }
 
       test("should handle nullable maps") {

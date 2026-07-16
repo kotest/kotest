@@ -15,7 +15,6 @@ import io.kotest.core.test.AssertionMode
  * Factories are useful if you want to group tests together with some callbacks and settings
  * and inject them into specs as a unit.
  */
-@KotestInternal
 data class TestFactory(
    val factoryId: FactoryId,
    val tests: List<TestDefinition>,

@@ -30,7 +30,7 @@ test.
 
 For full details on how the seed is used [click here](seed.md).
 
-### Min Failure
+### Max Failure
 
 By default, Kotest tolerates no failure. Perhaps you want to run some non-deterministic test a bunch of times, and you're happy
 to accept some small number of failures. You can specify that in config.
