@@ -187,8 +187,10 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `double.shouldBeBetween(x, y)`                  | Asserts that the double is between x and y, inclusive on both x and y                                                                     |
 | `double.shouldBeLessThan(n)`                    | Asserts that the double is less than the given value n                                                                                    |
 | `double.shouldBeLessThanOrEqual(n)`             | Asserts that the double is less or equal to than the given value n                                                                        |
+| `double.shouldBeAtMost(n)`                      | Asserts that the double is less or equal to than the given value n                                                                        |
 | `double.shouldBeGreaterThan(n)`                 | Asserts that the double is greater than the given value n                                                                                 |
 | `double.shouldBeGreaterThanOrEqual(n)`          | Asserts that the double is greater than or equal to the given value n                                                                     |
+| `double.shouldBeAtLeast(n)`                     | Asserts that the double is greater than or equal to the given value n                                                                     |
 | `double.shouldBePositive()`                     | Asserts that the double is positive                                                                                                       |
 | `double.shouldBeNegative()`                     | Asserts that the double is negative                                                                                                       |
 | `double.shouldBePositiveInfinity()`             | Asserts that the double is positive infinity                                                                                              |
