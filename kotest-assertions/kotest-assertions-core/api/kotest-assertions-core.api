@@ -2417,9 +2417,12 @@ public final class io/kotest/matchers/doubles/LessThanKt {
 }
 
 public final class io/kotest/matchers/doubles/LessThanOrEqualKt {
+	public static final fun beAtMost (D)Lio/kotest/matchers/Matcher;
 	public static final fun beLessThanOrEqualTo (D)Lio/kotest/matchers/Matcher;
 	public static final fun lte (D)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAtMost (DD)D
 	public static final fun shouldBeLessThanOrEqual (DD)D
+	public static final fun shouldNotBeAtMost (DD)D
 	public static final fun shouldNotBeLessThanOrEqual (DD)D
 }
 
