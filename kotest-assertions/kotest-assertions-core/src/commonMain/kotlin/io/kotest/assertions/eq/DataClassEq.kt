@@ -113,7 +113,7 @@ internal object DataClassEq : Eq<Any> {
                if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue)) {
                   dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
                      Pair(prop, diff)
-                  }
+                  } ?: Pair(prop, StandardDifference(result.error()))
                }
                else {
                   val error = result.error()
