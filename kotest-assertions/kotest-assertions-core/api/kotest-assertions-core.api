@@ -2333,11 +2333,14 @@ public final class io/kotest/matchers/date/OffsetDateTimeToleranceMatcher : io/k
 public final class io/kotest/matchers/date/OffsetdatetimeKt {
 	public static final fun beInTodayODT ()Lio/kotest/matchers/Matcher;
 	public static final fun haveSameInstantAs (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/Matcher;
+	public static final fun haveSameInstantAsZonedDateTime (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun plusOrMinus-HG0u8IE (Ljava/time/OffsetDateTime;J)Lio/kotest/matchers/date/OffsetDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/OffsetDateTime;)V
 	public static final fun shouldHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
+	public static final fun shouldHaveSameInstantAsZonedDateTime (Ljava/time/OffsetDateTime;Ljava/time/ZonedDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/OffsetDateTime;)V
 	public static final fun shouldNotHaveSameInstantAs (Ljava/time/OffsetDateTime;Ljava/time/OffsetDateTime;)V
+	public static final fun shouldNotHaveSameInstantAsZonedDateTime (Ljava/time/OffsetDateTime;Ljava/time/ZonedDateTime;)V
 }
 
 public final class io/kotest/matchers/date/TimestampKt {
