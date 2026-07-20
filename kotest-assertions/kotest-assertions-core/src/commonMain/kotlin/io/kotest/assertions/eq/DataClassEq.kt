@@ -98,6 +98,8 @@ internal object DataClassEq : Eq<Any> {
       }
    }
 
+   internal fun dataClassFieldCount(value: Any): Int = reflection.primaryConstructorMembers(value::class).size
+
    private fun computeMemberDifferences(
       expected: Any,
       actual: Any,
