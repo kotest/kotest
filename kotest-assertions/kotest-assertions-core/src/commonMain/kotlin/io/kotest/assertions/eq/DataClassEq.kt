@@ -98,7 +98,9 @@ internal object DataClassEq : Eq<Any> {
       }
    }
 
-   internal fun dataClassFieldCount(value: Any): Int = reflection.primaryConstructorMembers(value::class).size
+   internal fun dataClassFieldCount(value: Any?): Int = value?.let {
+      reflection.primaryConstructorMembers(it::class).size
+   } ?: 0
 
    private fun computeMemberDifferences(
       expected: Any,
@@ -113,9 +115,13 @@ internal object DataClassEq : Eq<Any> {
          when (result) {
             is EqResult.Failure -> {
                if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue)) {
-                  dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
-                     Pair(prop, diff)
-                  } ?: Pair(prop, StandardDifference(result.error()))
+                  if(dataClassFieldCount(actualPropertyValue) > 0 || dataClassFieldCount(expectedPropertyValue) > 0) {
+                     dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
+                        Pair(prop, diff)
+                     }
+                  } else {
+                     Pair(prop, StandardDifference(result.error()))
+                  }
                }
                else {
                   val error = result.error()

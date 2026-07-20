@@ -248,4 +248,7 @@ class `DataClassEq AssertionConfig Tests` : StringSpec({
    "dataClassFieldCount returns 0 for data object" {
       dataClassFieldCount(Status.Active) shouldBe 0
    }
+   "dataClassFieldCount handles null" {
+      dataClassFieldCount(null) shouldBe 0
+   }
 })
