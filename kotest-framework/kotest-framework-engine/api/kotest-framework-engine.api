@@ -2899,6 +2899,14 @@ public final class io/kotest/core/spec/style/scopes/WordSpecWhenContainerScope :
 	public final fun xwhen (Ljava/lang/String;Lkotlin/jvm/functions/Function2;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
+public abstract class io/kotest/core/test/AbstractTestScope : io/kotest/core/test/TestScope {
+	public fun <init> (Lio/kotest/core/test/TestScope;)V
+	public fun getCoroutineContext ()Lkotlin/coroutines/CoroutineContext;
+	public fun getTestCase ()Lio/kotest/core/test/TestCase;
+	public fun registerTest (Lio/kotest/core/spec/TestDefinition;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public fun registerTestCase (Lio/kotest/core/test/NestedTest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+}
+
 public final class io/kotest/core/test/AssertionMode : java/lang/Enum {
 	public static final field Error Lio/kotest/core/test/AssertionMode;
 	public static final field None Lio/kotest/core/test/AssertionMode;
