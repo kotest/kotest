@@ -1,6 +1,7 @@
 package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.eq.DataClassEq.dataClassFieldCount
 import io.kotest.assertions.eq.DefaultEqResolver
 import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqContext
@@ -239,5 +240,15 @@ class `DataClassEq AssertionConfig Tests` : StringSpec({
       val throwable = shouldThrowAny { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
 
       throwable.message shouldBe "expected:<DataClass1(a=2, b=3.5)> but was:<DataClass1(a=1, b=3.4)>"
+   }
+
+   "dataClassFieldCount counts fields for data class" {
+      dataClassFieldCount(IntRatio(3, 4)) shouldBe 2
+   }
+   "dataClassFieldCount returns 0 for data object" {
+      dataClassFieldCount(Status.Active) shouldBe 0
+   }
+   "dataClassFieldCount handles null" {
+      dataClassFieldCount(null) shouldBe 0
    }
 })
