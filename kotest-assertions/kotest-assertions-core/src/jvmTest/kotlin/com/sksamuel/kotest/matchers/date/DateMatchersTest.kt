@@ -9,6 +9,7 @@ import io.kotest.matchers.date.before
 import io.kotest.matchers.date.haveSameDay
 import io.kotest.matchers.date.haveSameHours
 import io.kotest.matchers.date.haveSameInstantAs
+import io.kotest.matchers.date.haveSameInstantAsOffsetDateTime
 import io.kotest.matchers.date.haveSameMinutes
 import io.kotest.matchers.date.haveSameMonth
 import io.kotest.matchers.date.haveSameNanos
@@ -438,6 +439,19 @@ class DateMatchersTest : StringSpec() {
         date.plusSeconds(1L) shouldNot haveSameInstantAsZonedDateTime(other)
         shouldThrow<AssertionError> {
            date.plusSeconds(1L) should haveSameInstantAsZonedDateTime(other)
+        }
+     }
+
+     "haveSameInstantAsOffsetDateTime should match OffsetDateTime and ZonedDateTime" {
+        val date = ZonedDateTime.of(2026, 7, 14, 8, 0, 0, 0, ZoneId.of("America/New_York"))
+        val other = OffsetDateTime.of(2026, 7, 14, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+        date should haveSameInstantAsOffsetDateTime(other)
+        shouldThrow<AssertionError> {
+           date shouldNot haveSameInstantAsOffsetDateTime(other)
+        }
+        date.plusSeconds(1L) shouldNot haveSameInstantAsOffsetDateTime(other)
+        shouldThrow<AssertionError> {
+           date.plusSeconds(1L) should haveSameInstantAsOffsetDateTime(other)
         }
      }
   }
