@@ -2368,9 +2368,12 @@ public final class io/kotest/matchers/date/ZonedDateTimeToleranceMatcher : io/ko
 public final class io/kotest/matchers/date/ZoneddatetimeKt {
 	public static final fun atSameZone (Ljava/time/ZonedDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun beInTodayZDT ()Lio/kotest/matchers/Matcher;
+	public static final fun haveSameInstantAsOffsetDateTime (Ljava/time/OffsetDateTime;)Lio/kotest/matchers/Matcher;
 	public static final fun plusOrMinus-HG0u8IE (Ljava/time/ZonedDateTime;J)Lio/kotest/matchers/date/ZonedDateTimeToleranceMatcher;
 	public static final fun shouldBeToday (Ljava/time/ZonedDateTime;)V
+	public static final fun shouldHaveSameInstantAsOffsetDateTime (Ljava/time/ZonedDateTime;Ljava/time/OffsetDateTime;)V
 	public static final fun shouldNotBeToday (Ljava/time/ZonedDateTime;)V
+	public static final fun shouldNotHaveSameInstantAsOffsetDateTime (Ljava/time/ZonedDateTime;Ljava/time/OffsetDateTime;)V
 }
 
 public final class io/kotest/matchers/doubles/BetweenKt {
