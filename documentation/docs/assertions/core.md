@@ -288,11 +288,12 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `date.shouldHaveNano(nao)`                    | Asserts that the date have correct nano second.                                         |
 | `date.shouldBe(value plusOrMinus(tolerance))` | Asserts that the date is equal to the given value within a tolerance range of duration. |
 
-| ZonedDateTime                                                 |                                                                                                         |
-|---------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
-| `zonedDateTime.shouldBeToday()`                               | Asserts that the ZonedDateTime has the same day as the today.                                           |
-| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)` | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
-| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)`         | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime.                             |
+| ZonedDateTime                                                                |                                                                                                         |
+|------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|
+| `zonedDateTime.shouldBeToday()`                                              | Asserts that the ZonedDateTime has the same day as the today.                                           |
+| `zonedDateTime.shouldHaveSameInstantAs(other: ZonedDateTime)`                | Asserts that the ZonedDateTime is equal to other ZonedDateTime using ```ChronoZonedDateTime.isEqual```. |
+| `zonedDateTime.shouldHaveSameInstantAsOffsetDateTime(other: OffsetDateTime)` | Asserts that the ZonedDateTime is equal to other OffsetDateTime converting both to ```Instant```.       |
+| `zonedDateTime.shouldBe(other plusOrMinus 1.minutes)`                        | Asserts that the ZonedDateTime is within 1 minute of `other` ZonedDateTime.                             |
 
 | OffsetDateTime                                                              |                                                                                                      |
 |-----------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------|
