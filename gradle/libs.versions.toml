@@ -27,6 +27,7 @@ byte-buddy = "1.18.8"
 classgraph = "4.8.184"
 
 commons-lang3 = "3.20.0"
+commons-beanutils = "1.11.0" # CVE-2025-48734 fix; pulled transitively by mockserver via json-path
 gradle-test-logger-plugin = "4.0.0"
 
 jaxbApi = "2.3.1"
@@ -126,6 +127,7 @@ arrow-functions = { module = "io.arrow-kt:arrow-functions", version.ref = "arrow
 
 asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
+apache-commons-beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "commons-beanutils" }
 
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
 byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte-buddy" }
