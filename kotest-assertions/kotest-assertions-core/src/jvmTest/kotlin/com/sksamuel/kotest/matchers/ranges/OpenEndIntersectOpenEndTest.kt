@@ -15,12 +15,20 @@ class OpenEndIntersectOpenEndTest : WordSpec() {
 
    init {
       "should" should {
-         "fail" {
+         "fail, less than other" {
             shouldThrowAny {
                val openEndRange = oneThree
                println(openEndRange)
                openEndRange shouldIntersect fourSix
-            }.message shouldBe "Range [1.0, 3.0) should intersect [4.0, 6.0), but doesn't"
+            }.message shouldBe "Range [1.0, 3.0) should intersect [4.0, 6.0), but doesn't, it was less than other"
+         }
+
+         "fail, greater than other" {
+            shouldThrowAny {
+               val openEndRange = fourSix
+               println(openEndRange)
+               openEndRange shouldIntersect oneThree
+            }.message shouldBe "Range [4.0, 6.0) should intersect [1.0, 3.0), but doesn't, it was greater than other"
          }
 
          "pass" {

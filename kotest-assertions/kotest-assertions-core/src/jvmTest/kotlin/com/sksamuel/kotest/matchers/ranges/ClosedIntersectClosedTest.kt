@@ -14,10 +14,16 @@ class ClosedIntersectClosedTest : WordSpec() {
 
    init {
       "should" should {
-         "fail" {
+         "fail because less than other" {
             shouldThrowAny {
                oneThree shouldIntersect fourSix
-            }.message shouldBe "Range [1, 3] should intersect [4, 6], but doesn't"
+            }.message shouldBe "Range [1, 3] should intersect [4, 6], but doesn't, it was less than other"
+         }
+
+         "fail because greater than other" {
+            shouldThrowAny {
+               fourSix shouldIntersect oneThree
+            }.message shouldBe "Range [4, 6] should intersect [1, 3], but doesn't, it was greater than other"
          }
 
          "pass" {
