@@ -3215,6 +3215,16 @@ public final class io/kotest/matchers/ranges/IntersectKt {
 	public static final fun shouldNotIntersect (Lkotlin/ranges/OpenEndRange;Lkotlin/ranges/OpenEndRange;)Lkotlin/ranges/OpenEndRange;
 }
 
+public final class io/kotest/matchers/ranges/IntersectResult : java/lang/Enum {
+	public static final field GREATER_THAN_OTHER Lio/kotest/matchers/ranges/IntersectResult;
+	public static final field INTERSECT Lio/kotest/matchers/ranges/IntersectResult;
+	public static final field LESS_THAN_OTHER Lio/kotest/matchers/ranges/IntersectResult;
+	public final fun getDescription ()Ljava/lang/String;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lio/kotest/matchers/ranges/IntersectResult;
+	public static fun values ()[Lio/kotest/matchers/ranges/IntersectResult;
+}
+
 public final class io/kotest/matchers/ranges/RangeKt {
 	public static final fun closedClosed (Lio/kotest/matchers/ranges/Range$Companion;Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
 	public static final fun closedOpen (Lio/kotest/matchers/ranges/Range$Companion;Ljava/lang/Comparable;Ljava/lang/Comparable;)Lio/kotest/matchers/ranges/Range;
