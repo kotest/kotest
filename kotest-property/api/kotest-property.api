@@ -1537,14 +1537,18 @@ public final class io/kotest/property/internal/ShrinkKt {
 
 public final class io/kotest/property/internal/ShrinkResult {
 	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/Object;
 	public final fun component2 ()Ljava/lang/Object;
 	public final fun component3 ()Ljava/lang/Throwable;
-	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;)Lio/kotest/property/internal/ShrinkResult;
-	public static synthetic fun copy$default (Lio/kotest/property/internal/ShrinkResult;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/property/internal/ShrinkResult;
+	public final fun component4 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;)Lio/kotest/property/internal/ShrinkResult;
+	public static synthetic fun copy$default (Lio/kotest/property/internal/ShrinkResult;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/property/internal/ShrinkResult;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCause ()Ljava/lang/Throwable;
 	public final fun getInitial ()Ljava/lang/Object;
+	public final fun getPath ()Ljava/util/List;
 	public final fun getShrink ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1577,13 +1581,17 @@ public final class io/kotest/property/internal/ShrinkfnsKt {
 
 public final class io/kotest/property/internal/StepResult {
 	public fun <init> (Ljava/lang/Object;Ljava/lang/Throwable;)V
+	public fun <init> (Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;)V
+	public synthetic fun <init> (Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun component1 ()Ljava/lang/Object;
 	public final fun component2 ()Ljava/lang/Throwable;
-	public final fun copy (Ljava/lang/Object;Ljava/lang/Throwable;)Lio/kotest/property/internal/StepResult;
-	public static synthetic fun copy$default (Lio/kotest/property/internal/StepResult;Ljava/lang/Object;Ljava/lang/Throwable;ILjava/lang/Object;)Lio/kotest/property/internal/StepResult;
+	public final fun component3 ()Ljava/util/List;
+	public final fun copy (Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;)Lio/kotest/property/internal/StepResult;
+	public static synthetic fun copy$default (Lio/kotest/property/internal/StepResult;Ljava/lang/Object;Ljava/lang/Throwable;Ljava/util/List;ILjava/lang/Object;)Lio/kotest/property/internal/StepResult;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getCause ()Ljava/lang/Throwable;
 	public final fun getFailed ()Ljava/lang/Object;
+	public final fun getPath ()Ljava/util/List;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
