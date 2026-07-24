@@ -19,12 +19,12 @@ public final class io/kotest/matchers/kotlinx/datetime/DatetimeKt {
 	public static final fun shouldBeBetween (Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/LocalDateTime;)Ljava/lang/Object;
 	public static final fun shouldHaveDayOfMonth (Lkotlinx/datetime/LocalDateTime;I)I
 	public static final fun shouldHaveDayOfWeek (Lkotlinx/datetime/LocalDateTime;I)I
-	public static final fun shouldHaveDayOfWeek (Lkotlinx/datetime/LocalDateTime;Ljava/time/DayOfWeek;)Ljava/time/DayOfWeek;
+	public static final fun shouldHaveDayOfWeek (Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/DayOfWeek;)Lkotlinx/datetime/DayOfWeek;
 	public static final fun shouldHaveDayOfYear (Lkotlinx/datetime/LocalDateTime;I)I
 	public static final fun shouldHaveHour (Lkotlinx/datetime/LocalDateTime;I)I
 	public static final fun shouldHaveMinute (Lkotlinx/datetime/LocalDateTime;I)I
 	public static final fun shouldHaveMonth (Lkotlinx/datetime/LocalDateTime;I)I
-	public static final fun shouldHaveMonth (Lkotlinx/datetime/LocalDateTime;Ljava/time/Month;)Ljava/time/Month;
+	public static final fun shouldHaveMonth (Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/Month;)Lkotlinx/datetime/Month;
 	public static final fun shouldHaveNano (Lkotlinx/datetime/LocalDateTime;I)I
 	public static final fun shouldHaveSameDayAs (Lkotlinx/datetime/LocalDate;Lkotlinx/datetime/LocalDate;)V
 	public static final fun shouldHaveSameDayAs (Lkotlinx/datetime/LocalDateTime;Lkotlinx/datetime/LocalDateTime;)V
@@ -48,15 +48,15 @@ public final class io/kotest/matchers/kotlinx/datetime/DatetimeKt {
 }
 
 public final class io/kotest/matchers/kotlinx/datetime/InstantKt {
-	public static final fun after (Lkotlinx/datetime/Instant;)Lio/kotest/matchers/Matcher;
-	public static final fun before (Lkotlinx/datetime/Instant;)Lio/kotest/matchers/Matcher;
-	public static final fun between (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Lio/kotest/matchers/Matcher;
-	public static final fun shouldBeAfter (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Ljava/lang/Object;
-	public static final fun shouldBeBefore (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Ljava/lang/Object;
-	public static final fun shouldBeBetween (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Ljava/lang/Object;
-	public static final fun shouldNotBeAfter (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)V
-	public static final fun shouldNotBeBefore (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Lkotlinx/datetime/Instant;
-	public static final fun shouldNotBeBetween (Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;Lkotlinx/datetime/Instant;)Lkotlinx/datetime/Instant;
+	public static final fun after (Lkotlin/time/Instant;)Lio/kotest/matchers/Matcher;
+	public static final fun before (Lkotlin/time/Instant;)Lio/kotest/matchers/Matcher;
+	public static final fun between (Lkotlin/time/Instant;Lkotlin/time/Instant;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBeAfter (Lkotlin/time/Instant;Lkotlin/time/Instant;)Ljava/lang/Object;
+	public static final fun shouldBeBefore (Lkotlin/time/Instant;Lkotlin/time/Instant;)Ljava/lang/Object;
+	public static final fun shouldBeBetween (Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;)Ljava/lang/Object;
+	public static final fun shouldNotBeAfter (Lkotlin/time/Instant;Lkotlin/time/Instant;)V
+	public static final fun shouldNotBeBefore (Lkotlin/time/Instant;Lkotlin/time/Instant;)Lkotlin/time/Instant;
+	public static final fun shouldNotBeBetween (Lkotlin/time/Instant;Lkotlin/time/Instant;Lkotlin/time/Instant;)Lkotlin/time/Instant;
 }
 
 public final class io/kotest/matchers/kotlinx/datetime/TodayKt {
