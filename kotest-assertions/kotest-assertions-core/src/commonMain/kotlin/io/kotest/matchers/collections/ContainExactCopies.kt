@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
+
 package io.kotest.matchers.collections
 
 import io.kotest.assertions.print.print
@@ -25,7 +27,7 @@ fun DoubleArray.shouldContainExactCopies(element: Double, copies: Int): DoubleAr
 fun DoubleArray.shouldNotContainExactCopies(element: Double, copies: Int): DoubleArray = apply { asList().shouldNotContainExactCopies(element, copies) }
 
 /**
- * Verifies that this element is not in [array] by comparing value in
+ * Verifies that this element is not in [element] by comparing value in
  * exactly the specified number of copies
  *
  * An empty collection will always fail.
@@ -37,7 +39,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainExactCopies(element: T, copies: Int):
 }
 
 /**
- * Verifies that this element is not in [array] by comparing value in
+ * Verifies that this element is not in [element] by comparing value in
  * exactly the specified number of copies
  *
  * An empty collection will always fail.
@@ -49,11 +51,11 @@ fun <T> Array<T>.shouldNotContainExactCopies(element: T, copies: Int): Array<T> 
 }
 
 /**
- * Verifies that this element is in [collection] by comparing value,
+ * Verifies that this element is in [element] by comparing value,
  * exactly the specified number of copies
  *
- * Assertion to check that this element is in [collection]. This assertion checks by value, and not by reference,
- * so even if the exact instance is not in [collection] but other instances with same value are present,
+ * Assertion to check that this element is in [element]. This assertion checks by value, and not by reference,
+ * so even if the exact instance is not in [element] but other instances with same value are present,
  * in the exact amount, the test will pass.
  *
  * An empty collection will always fail.
@@ -66,11 +68,11 @@ fun <T, I : Iterable<T>> I.shouldContainExactCopies(element: T, copies: Int): I 
 }
 
 /**
- * Verifies that this element is in [array] by comparing value,
+ * Verifies that this element is in [element] by comparing value,
  * exactly the specified number of copies
  *
- * Assertion to check that this element is in [array]. This assertion checks by value, and not by reference,
- * so even if the exact instance is not in [array] but other instances with same value are present,
+ * Assertion to check that this element is in [element]. This assertion checks by value, and not by reference,
+ * so even if the exact instance is not in [element] but other instances with same value are present,
  * in the exact amount, the test will pass.
  *
  * An empty collection will always fail.
@@ -97,7 +99,7 @@ fun <T, C : Collection<T>> containExactCopies(element: T, copies: Int) = object 
          passed,
          {
             "Collection should contain $copies copies of element ${element.print().value}; " +
-               "but contained ${passedAtIndexes.size} copies ${if(passedAtIndexes.size > 0) "at index(es) ${passedAtIndexes.print().value}, and " else "but "}" +
+               "but contained ${passedAtIndexes.size} copies ${if(passedAtIndexes.isNotEmpty()) "at index(es) ${passedAtIndexes.print().value}, and " else "but "}" +
                "the collection is ${value.print().value}${possibleMatches()}"
          },
          { "Collection should not contain $copies copies of element ${element.print().value}, but it did at index(es):${passedAtIndexes.print().value}" }
