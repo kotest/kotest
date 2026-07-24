@@ -3,7 +3,6 @@ package io.kotest.property.kotlinx.datetime
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.next
-import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -14,6 +13,7 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.random.nextInt
+import kotlin.time.Clock
 
 /**
  * Returns an [Arb] where each value is a [LocalDate], with a random day, and a year in the given range.
