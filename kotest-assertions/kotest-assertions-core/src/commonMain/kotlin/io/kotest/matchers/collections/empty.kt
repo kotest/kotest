@@ -7,120 +7,140 @@ import io.kotest.matchers.invokeMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun BooleanArray?.shouldBeEmpty(): BooleanArray {
    if (this == null) fail("BooleanArray")
    asList() should beEmpty("BooleanArray")
    return this
 }
 
+@IgnorableReturnValue
 fun BooleanArray?.shouldNotBeEmpty(): BooleanArray {
    if (this == null) fail("BooleanArray")
    asList() shouldNot beEmpty("BooleanArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ByteArray?.shouldBeEmpty(): ByteArray {
    if (this == null) fail("ByteArray")
    asList() should beEmpty("ByteArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ByteArray?.shouldNotBeEmpty(): ByteArray {
    if (this == null) fail("ByteArray")
    asList() shouldNot beEmpty("ByteArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ShortArray?.shouldBeEmpty(): ShortArray {
    if (this == null) fail("ShortArray")
    asList() should beEmpty("ShortArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ShortArray?.shouldNotBeEmpty(): ShortArray {
    if (this == null) fail("ShortArray")
    asList() shouldNot beEmpty("ShortArray")
    return this
 }
 
+@IgnorableReturnValue
 fun CharArray?.shouldBeEmpty(): CharArray {
    if (this == null) fail("CharArray")
    asList() should beEmpty("CharArray")
    return this
 }
 
+@IgnorableReturnValue
 fun CharArray?.shouldNotBeEmpty(): CharArray {
    if (this == null) fail("CharArray")
    asList() shouldNot beEmpty("CharArray")
    return this
 }
 
+@IgnorableReturnValue
 fun IntArray?.shouldBeEmpty(): IntArray {
    if (this == null) fail("IntArray")
    asList() should beEmpty("IntArray")
    return this
 }
 
+@IgnorableReturnValue
 fun IntArray?.shouldNotBeEmpty(): IntArray {
    if (this == null) fail("IntArray")
    asList() shouldNot beEmpty("IntArray")
    return this
 }
 
+@IgnorableReturnValue
 fun LongArray?.shouldBeEmpty(): LongArray {
    if (this == null) fail("LongArray")
    asList() should beEmpty("LongArray")
    return this
 }
 
+@IgnorableReturnValue
 fun LongArray?.shouldNotBeEmpty(): LongArray {
    if (this == null) fail("LongArray")
    asList() shouldNot beEmpty("LongArray")
    return this
 }
 
+@IgnorableReturnValue
 fun FloatArray?.shouldBeEmpty(): FloatArray {
    if (this == null) fail("FloatArray")
    asList() should beEmpty("FloatArray")
    return this
 }
 
+@IgnorableReturnValue
 fun FloatArray?.shouldNotBeEmpty(): FloatArray {
    if (this == null) fail("FloatArray")
    asList() shouldNot beEmpty("FloatArray")
    return this
 }
 
+@IgnorableReturnValue
 fun DoubleArray?.shouldBeEmpty(): DoubleArray {
    if (this == null) fail("DoubleArray")
    asList() should beEmpty("DoubleArray")
    return this
 }
 
+@IgnorableReturnValue
 fun DoubleArray?.shouldNotBeEmpty(): DoubleArray {
    if (this == null) fail("DoubleArray")
    asList() shouldNot beEmpty("DoubleArray")
    return this
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>?.shouldBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() should beEmpty("Array")
    return this
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>?.shouldNotBeEmpty(): Array<T> {
    if (this == null) fail("Array")
    asList() shouldNot beEmpty("Array")
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I?.shouldBeEmpty(): I {
    if (this == null) fail("Iterable")
    this should beEmpty(null)
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I?.shouldNotBeEmpty(): I {
    if (this == null) fail("Iterable")
    this shouldNot beEmpty(null)

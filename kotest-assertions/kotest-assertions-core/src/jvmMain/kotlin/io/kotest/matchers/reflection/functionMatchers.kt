@@ -7,9 +7,13 @@ import io.kotest.matchers.shouldNot
 import kotlin.reflect.KFunction
 import kotlin.reflect.full.findAnnotation
 
+@IgnorableReturnValue
 fun KFunction<*>.shouldHaveAnnotations() = this should haveFunctionAnnotations()
+@IgnorableReturnValue
 fun KFunction<*>.shouldNotHaveAnnotations() = this shouldNot haveFunctionAnnotations()
+@IgnorableReturnValue
 infix fun KFunction<*>.shouldHaveAnnotations(count: Int) = this should haveFunctionAnnotations(count)
+@IgnorableReturnValue
 infix fun KFunction<*>.shouldNotHaveAnnotations(count: Int) = this shouldNot haveFunctionAnnotations(count)
 fun haveFunctionAnnotations(count: Int = -1) = object : Matcher<KFunction<*>> {
   override fun test(value: KFunction<*>) = if (count < 0) {
@@ -29,11 +33,13 @@ fun haveFunctionAnnotations(count: Int = -1) = object : Matcher<KFunction<*>> {
   }
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Annotation> KFunction<*>.shouldBeAnnotatedWith(block: (T) -> Unit = {}) {
   this should beAnnotatedWith<T>()
   findAnnotation<T>()?.let(block)
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Annotation> KFunction<*>.shouldNotBeAnnotatedWith() = this shouldNot beAnnotatedWith<T>()
 inline fun <reified T : Annotation> beAnnotatedWith() = object : Matcher<KFunction<*>> {
    override fun test(value: KFunction<*>) = MatcherResult(
@@ -44,10 +50,14 @@ inline fun <reified T : Annotation> beAnnotatedWith() = object : Matcher<KFuncti
       })
 }
 
+@IgnorableReturnValue
 inline fun <reified T> KFunction<*>.shouldHaveReturnType() = this.returnType.shouldBeOfType<T>()
+@IgnorableReturnValue
 inline fun <reified T> KFunction<*>.shouldNotHaveReturnType() = this.returnType.shouldNotBeOfType<T>()
 
+@IgnorableReturnValue
 fun KFunction<*>.shouldBeInline() = this should beInline()
+@IgnorableReturnValue
 fun KFunction<*>.shouldNotBeInline() = this shouldNot beInline()
 fun beInline() = object : Matcher<KFunction<*>> {
    override fun test(value: KFunction<*>) = MatcherResult(
@@ -58,7 +68,9 @@ fun beInline() = object : Matcher<KFunction<*>> {
       })
 }
 
+@IgnorableReturnValue
 fun KFunction<*>.shouldBeInfix() = this should beInfix()
+@IgnorableReturnValue
 fun KFunction<*>.shouldNotBeInfix() = this shouldNot beInfix()
 fun beInfix() = object : Matcher<KFunction<*>> {
    override fun test(value: KFunction<*>) = MatcherResult(

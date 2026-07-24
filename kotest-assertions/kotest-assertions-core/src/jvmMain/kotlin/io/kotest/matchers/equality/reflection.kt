@@ -39,6 +39,7 @@ import kotlin.reflect.jvm.isAccessible
  * or if [other] is not an instance of the same class as receiver [T]
  *
  */
+@IgnorableReturnValue
 fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
    require(this::class.isInstance(other)){"other is not an instance of declaring class"}
    this should beEqualToUsingFields(other, *properties)
@@ -67,6 +68,7 @@ fun <T : Any> T.shouldBeEqualToUsingFields(other: T, vararg properties: KPropert
  * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
  *
  */
+@IgnorableReturnValue
 fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeUsingFields(other: V, vararg properties: KProperty1<T, *>) {
    this should beEqualToUsingFields(other, *properties)
 }
@@ -97,6 +99,7 @@ fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeUsingFields(other: V, vararg
  * @see [shouldNotBeEqualToIgnoringFields]
  *
  */
+@IgnorableReturnValue
 fun <T : Any> T.shouldNotBeEqualToUsingFields(other: T, vararg properties: KProperty<*>) {
    this shouldNot beEqualToUsingFields(other, *properties)
 }
@@ -169,6 +172,7 @@ fun <T : Any, V: Any> beEqualToUsingFields(other: V, vararg fields: KProperty<*>
  * ```
  *
  */
+@IgnorableReturnValue
 fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, property: KProperty<*>, vararg others: KProperty<*>) {
    require(this::class.isInstance(other)){"other is not an instance of declaring class"}
    this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
@@ -197,6 +201,7 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(other: T, property: KProperty<*>, 
  * Note: Throws [IllegalArgumentException] if [properties] contains any non-public property
  *
  */
+@IgnorableReturnValue
 fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeIgnoringFields(other: V, property: KProperty1<T, *>, vararg others: KProperty1<T, *>) {
    this should beEqualToIgnoringFields(other = other, ignorePrivateFields = true, property = property, others = others)
 }
@@ -226,6 +231,7 @@ fun <T : Any, V: Any> T.shouldBeEqualToDifferentTypeIgnoringFields(other: V, pro
  *
  */
 
+@IgnorableReturnValue
 fun <T : Any> T.shouldBeEqualToIgnoringFields(
    other: T,
    ignorePrivateFields: Boolean,
@@ -260,6 +266,7 @@ fun <T : Any> T.shouldBeEqualToIgnoringFields(
  * ```
  *
  */
+@IgnorableReturnValue
 fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, property: KProperty<*>, vararg others: KProperty<*>) =
    this shouldNot beEqualToIgnoringFields(
       other = other,
@@ -291,6 +298,7 @@ fun <T : Any> T.shouldNotBeEqualToIgnoringFields(other: T, property: KProperty<*
  * ```
  *
  */
+@IgnorableReturnValue
 fun <T : Any> T.shouldNotBeEqualToIgnoringFields(
    other: T,
    ignorePrivateFields: Boolean,
@@ -394,6 +402,7 @@ fun <T : Any> beEqualToIgnoringFields(
  *  ))
  *  ```
  * */
+@IgnorableReturnValue
 fun <T : Any> T.shouldBeEqualToComparingFields(
    other: T,
    fieldsEqualityCheckConfig: FieldsEqualityCheckConfig = FieldsEqualityCheckConfig()
@@ -401,14 +410,17 @@ fun <T : Any> T.shouldBeEqualToComparingFields(
    this should beEqualComparingFields(other, fieldsEqualityCheckConfig)
 }
 
+@IgnorableReturnValue
 infix fun <T : Any> T.shouldBeEqualToComparingFields(other: T) {
    shouldBeEqualToComparingFields(other, FieldsEqualityCheckConfig())
 }
 
+@IgnorableReturnValue
 infix fun <T : Any> T.shouldNotBeEqualToComparingFields(other: T) {
    this shouldNot beEqualComparingFields(other, FieldsEqualityCheckConfig())
 }
 
+@IgnorableReturnValue
 fun <T : Any> T.shouldNotBeEqualToComparingFields(
    other: T,
    fieldsEqualityCheckConfig: FieldsEqualityCheckConfig

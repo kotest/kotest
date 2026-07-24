@@ -28,6 +28,7 @@ import io.kotest.assertions.assertionCounter
  *
  * @see [shouldThrowExactly]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrowExactlyUnit(block: () -> Unit): T = shouldThrowExactly { block() }
 
 
@@ -57,6 +58,7 @@ inline fun <reified T : Throwable> shouldThrowExactlyUnit(block: () -> Unit): T 
  * @see [shouldNotThrowExactly]
  *
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) = shouldNotThrowExactly<T>(block)
 
 /**
@@ -88,6 +90,7 @@ inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) 
  *
  * @see [shouldThrowExactly]
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
    assertionCounter.inc()
    val expectedExceptionClass = T::class
@@ -140,6 +143,7 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  * @see [shouldNotThrowExactlyUnit]
  *
  */
+@IgnorableReturnValue
 inline fun <reified T : Throwable> shouldNotThrowExactly(block: () -> Any?) {
    assertionCounter.inc()
    val thrown = try {

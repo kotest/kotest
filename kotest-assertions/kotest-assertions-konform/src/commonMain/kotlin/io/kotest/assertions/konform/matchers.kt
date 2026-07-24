@@ -9,6 +9,7 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
 
+@IgnorableReturnValue
 infix fun <T> Validation<T>.shouldBeValid(value: T) = this should beValid(value)
 
 fun <A> beValid(a: A) = object : Matcher<Validation<A>> {
@@ -21,6 +22,7 @@ fun <A> beValid(a: A) = object : Matcher<Validation<A>> {
    }
 }
 
+@IgnorableReturnValue
 infix fun <T> Validation<T>.shouldBeInvalid(value: T) = this should beInvalid(value)
 
 fun <A> beInvalid(a: A) = object : Matcher<Validation<A>> {
@@ -33,11 +35,13 @@ fun <A> beInvalid(a: A) = object : Matcher<Validation<A>> {
    }
 }
 
+@IgnorableReturnValue
 inline fun <T> Validation<T>.shouldBeInvalid(value: T, fn: (Invalid) -> Unit) {
    this.shouldBeInvalid(value)
    fn(this(value) as Invalid)
 }
 
+@IgnorableReturnValue
 fun Invalid.shouldContainError(field: Any, error: String) {
    val list = this[field]
    list.let {
@@ -46,6 +50,7 @@ fun Invalid.shouldContainError(field: Any, error: String) {
    }
 }
 
+@IgnorableReturnValue
 fun Invalid.shouldContainError(propertyPaths: Collection<Any>, error: String) {
    val list = this.get(*propertyPaths.toTypedArray())
    list.let {

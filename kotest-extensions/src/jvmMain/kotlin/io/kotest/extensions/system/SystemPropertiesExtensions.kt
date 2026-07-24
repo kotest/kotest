@@ -21,6 +21,7 @@ import java.util.Properties
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the properties while it was
  * already changed, the result is inconsistent, as the System Properties Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withSystemProperty(key: String, value: String?, mode: OverrideMode = SetOrError, block: () -> T): T {
    return withSystemProperties(key to value, mode, block)
 }
@@ -39,6 +40,7 @@ inline fun <T> withSystemProperty(key: String, value: String?, mode: OverrideMod
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the properties while it was
  * already changed, the result is inconsistent, as the System Properties Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withSystemProperties(pair: Pair<String, String?>, mode: OverrideMode = SetOrError, block: () -> T): T {
    return withSystemProperties(mapOf(pair), mode, block)
 }
@@ -57,6 +59,7 @@ inline fun <T> withSystemProperties(pair: Pair<String, String?>, mode: OverrideM
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the properties while it was
  * already changed, the result is inconsistent, as the System Properties Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withSystemProperties(props: Properties, mode: OverrideMode = SetOrError, block: () -> T): T {
    val map = props.toStringStringMap()
    return withSystemProperties(map, mode, block)
@@ -76,6 +79,7 @@ inline fun <T> withSystemProperties(props: Properties, mode: OverrideMode = SetO
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the properties while it was
  * already changed, the result is inconsistent, as the System Properties Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withSystemProperties(props: Map<String, String?>, mode: OverrideMode = SetOrError, block: () -> T): T {
    val previous =
       Properties().apply { putAll(System.getProperties()) }.toStringStringMap()  // Safe copying to ensure immutability

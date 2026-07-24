@@ -15,16 +15,19 @@ package io.kotest.matchers.collections
  * @see [shouldNotBeSingleton]
  * @see [shouldHaveSingleElement]
  */
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C.shouldBeSingleton(): C {
    this shouldHaveSize 1
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldBeSingleton(): I {
    toList().shouldBeSingleton()
    return this
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>.shouldBeSingleton(): Array<T> {
    asList().shouldBeSingleton()
    return this
@@ -47,17 +50,20 @@ fun <T> Array<T>.shouldBeSingleton(): Array<T> {
  * @see [shouldBeSingleton]
  * @see [shouldNotHaveSingleElement]
  */
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C.shouldNotBeSingleton(): C {
    this shouldNotHaveSize 1
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotBeSingleton(): I {
    toList().shouldNotBeSingleton()
    return this
 
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotBeSingleton(): Array<T> {
    asList().shouldNotBeSingleton()
    return this
@@ -78,13 +84,16 @@ fun <T> Array<T>.shouldNotBeSingleton(): Array<T> {
  *
  * @see [shouldBeSingleton]
  */
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C.shouldBeSingle(): T {
    this shouldHaveSize 1
    return this.single()
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldBeSingle(): T = toList().shouldBeSingle()
 
+@IgnorableReturnValue
 fun <T> Array<T>.shouldBeSingle(): T = asList().shouldBeSingle()
 
 
@@ -103,16 +112,19 @@ fun <T> Array<T>.shouldBeSingle(): T = asList().shouldBeSingle()
  * @see [shouldBeSingle]
  * @see [shouldNotBeSingleton]
  */
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C.shouldNotBeSingle(): C {
    this shouldNotHaveSize 1
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotBeSingle(): I {
    toList().shouldNotBeSingle()
    return this
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotBeSingle(): Array<T> {
    asList().shouldNotBeSingle()
    return this
@@ -122,6 +134,7 @@ fun <T> Array<T>.shouldNotBeSingle(): Array<T> {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
+@IgnorableReturnValue
 inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
    this.shouldBeSingleton()
    fn(this.first())
@@ -131,6 +144,7 @@ inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
+@IgnorableReturnValue
 inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
    toList().shouldBeSingleton(fn)
    return this
@@ -139,6 +153,7 @@ inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
+@IgnorableReturnValue
 inline fun <T> Array<T>.shouldBeSingleton(fn: (T) -> Unit): Array<T> {
    asList().shouldBeSingleton(fn)
    return this

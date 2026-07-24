@@ -11,11 +11,13 @@ import io.kotest.matchers.shouldNot
 
 private val yaml = Yaml.default
 
+@IgnorableReturnValue
 fun String.shouldBeValidYaml(): String {
    this should beValidYaml()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeValidYaml(): String {
    this shouldNot beValidYaml()
    return this
@@ -40,11 +42,13 @@ fun beValidYaml() = object : Matcher<String?> {
    }
 }
 
+@IgnorableReturnValue
 infix fun String.shouldEqualYaml(expected: String): String {
    this should equalYaml(expected)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String.shouldNotEqualYaml(expected: String): String {
    this shouldNot equalYaml(expected)
    return this

@@ -22,6 +22,7 @@ import io.kotest.matchers.shouldBe
  * @see shouldThrow
  * @see shouldThrowExactly
  */
+@IgnorableReturnValue
 inline fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
 
 /**
@@ -44,6 +45,7 @@ inline fun shouldFail(block: () -> Any?): AssertionError = shouldThrow(block)
  * @see shouldThrow
  * @see shouldThrowExactly
  */
+@IgnorableReturnValue
 inline fun shouldFailWithMessage(message: String, block: () -> Any?): AssertionError =
    shouldFail(block).also { t ->
       t.message shouldBe message

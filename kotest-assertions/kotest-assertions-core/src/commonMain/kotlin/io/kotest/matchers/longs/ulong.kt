@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldBe
    "ULong-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the ULong import `io.kotest.matchers.longs.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(lower, upper)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun ULong.shouldBeBetween(lower: ULong, upper: ULong): ULong {
    this shouldBe between(lower, upper)
    return this

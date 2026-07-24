@@ -8,6 +8,7 @@ import io.kotest.matchers.shouldBe
    "UShort-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the UShort import `io.kotest.matchers.short.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(lower, upper)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun UShort.shouldBeBetween(lower: UShort, upper: UShort): UShort {
    this shouldBe between(lower, upper)
    return this

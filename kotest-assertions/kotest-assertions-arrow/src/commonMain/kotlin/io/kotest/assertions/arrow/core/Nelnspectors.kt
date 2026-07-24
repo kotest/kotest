@@ -16,6 +16,7 @@ import io.kotest.inspectors.forSome
   "use Kotest's Collection<A>.forAll.",
   ReplaceWith("forAll", "io.kotest.inspectors.forAll")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forAll(f: (A) -> Unit): Unit {
   all.forAll(f)
 }
@@ -24,6 +25,7 @@ public fun <A> NonEmptyList<A>.forAll(f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forOne.",
   ReplaceWith("forOne", "io.kotest.inspectors.forOne")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forOne(f: (A) -> Unit): Unit {
   all.forOne(f)
 }
@@ -32,6 +34,7 @@ public fun <A> NonEmptyList<A>.forOne(f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forExactly.",
   ReplaceWith("forExactly", "io.kotest.inspectors.forExactly")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forExactly(k: Int, f: (A) -> Unit): Unit {
   all.forExactly(k, f)
 }
@@ -40,6 +43,7 @@ public fun <A> NonEmptyList<A>.forExactly(k: Int, f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forSome.",
   ReplaceWith("forSome", "io.kotest.inspectors.forSome")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forSome(f: (A) -> Unit): Unit {
   all.forSome(f)
 }
@@ -48,6 +52,7 @@ public fun <A> NonEmptyList<A>.forSome(f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forAny.",
   ReplaceWith("forAny", "io.kotest.inspectors.forAny")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forAny(f: (A) -> Unit): Unit {
   all.forAny(f)
 }
@@ -56,6 +61,7 @@ public fun <A> NonEmptyList<A>.forAny(f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forAtLeastOne.",
   ReplaceWith("forAtLeastOne", "io.kotest.inspectors.forAtLeastOne")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forAtLeastOne(f: (A) -> Unit): Unit {
   all.forAtLeastOne(f)
 }
@@ -64,6 +70,7 @@ public fun <A> NonEmptyList<A>.forAtLeastOne(f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forAtLeast.",
   ReplaceWith("forAtLeast", "io.kotest.inspectors.forAtLeast")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forAtLeast(k: Int, f: (A) -> Unit): Unit {
   all.forAtLeast(k, f)
 }
@@ -72,6 +79,7 @@ public fun <A> NonEmptyList<A>.forAtLeast(k: Int, f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forAtMostOne.",
   ReplaceWith("forAtMostOne", "io.kotest.inspectors.forAtMostOne")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forAtMostOne(f: (A) -> Unit): Unit {
   all.forAtMostOne(f)
 }
@@ -80,6 +88,7 @@ public fun <A> NonEmptyList<A>.forAtMostOne(f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forAtMost.",
   ReplaceWith("forAtMost", "io.kotest.inspectors.forAtMost")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forAtMost(k: Int, f: (A) -> Unit): Unit {
   all.forAtMost(k, f)
 }
@@ -88,6 +97,7 @@ public fun <A> NonEmptyList<A>.forAtMost(k: Int, f: (A) -> Unit): Unit {
   "use Kotest's Collection<A>.forNone.",
   ReplaceWith("forNone", "io.kotest.inspectors.forNone")
 )
+@IgnorableReturnValue
 public fun <A> NonEmptyList<A>.forNone(f: (A) -> Unit): Unit {
   all.forNone(f)
 }

@@ -14,11 +14,13 @@ import org.intellij.lang.annotations.Language
 import java.nio.file.Path
 import kotlin.io.path.readText
 
+@IgnorableReturnValue
 infix fun Path.shouldEqualJson(@Language("json") expected: String): Path {
    this should (exist() and aFile() and equalJson(expected, CompareJsonOptions()).contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): Path {
    val options = CompareJsonOptions()
    val expected = configureAndProvideExpected(options)
@@ -26,16 +28,19 @@ infix fun Path.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.(
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldEqualJson(@Language("json") expected: String, parser: Json): Path {
    this should (exist() and aFile() and equalJson(expected, CompareJsonOptions(), parser).contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldNotEqualJson(@Language("json") expected: String): Path {
    this.readText() shouldNot equalJson(expected, CompareJsonOptions())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): Path {
    val options = CompareJsonOptions()
    val expected = configureAndProvideExpected(options)
@@ -44,11 +49,13 @@ infix fun Path.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOption
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotEqualJson(@Language("json") expected: String, parser: Json): Path {
    this.readText() shouldNot equalJson(expected, CompareJsonOptions(), parser)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldEqualSpecifiedJson(@Language("json") expected: String) {
    this.shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
@@ -56,6 +63,7 @@ infix fun Path.shouldEqualSpecifiedJson(@Language("json") expected: String) {
    }
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldEqualSpecifiedJsonIgnoringOrder(@Language("json") expected: String) {
    this.shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
@@ -64,6 +72,7 @@ infix fun Path.shouldEqualSpecifiedJsonIgnoringOrder(@Language("json") expected:
    }
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldNotEqualSpecifiedJson(@Language("json") expected: String) {
    this.shouldNotEqualJson {
       fieldComparison = FieldComparison.Lenient

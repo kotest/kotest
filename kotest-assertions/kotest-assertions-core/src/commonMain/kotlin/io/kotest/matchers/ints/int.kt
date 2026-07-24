@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 
+@IgnorableReturnValue
 fun Int.shouldBePositive(): Int {
    this shouldBe positive()
    return this
@@ -23,6 +24,7 @@ fun positive() = object : Matcher<Int> {
       { "$value should not be > 0" })
 }
 
+@IgnorableReturnValue
 fun Int.shouldBeNonNegative(): Int {
    this shouldBe nonNegative()
    return this
@@ -36,6 +38,7 @@ fun nonNegative() = object : Matcher<Int> {
          { "$value should not be >= 0" })
 }
 
+@IgnorableReturnValue
 fun Int.shouldBeNegative(): Int {
    this shouldBe negative()
    return this
@@ -48,6 +51,7 @@ fun negative() = object : Matcher<Int> {
       { "$value should not be < 0" })
 }
 
+@IgnorableReturnValue
 fun Int.shouldBeNonPositive(): Int {
    this shouldBe nonPositive()
    return this
@@ -61,11 +65,13 @@ fun nonPositive() = object : Matcher<Int> {
          { "$value should not be <= 0" })
 }
 
+@IgnorableReturnValue
 fun Int.shouldBeEven(): Int {
    this should beEven()
    return this
 }
 
+@IgnorableReturnValue
 fun Int.shouldNotBeEven(): Int {
    this shouldNot beEven()
    return this
@@ -79,11 +85,13 @@ fun beEven() = object : Matcher<Int> {
          { "$value should be odd" })
 }
 
+@IgnorableReturnValue
 fun Int.shouldBeOdd(): Int {
    this should beOdd()
    return this
 }
 
+@IgnorableReturnValue
 fun Int.shouldNotBeOdd(): Int {
    this shouldNot beOdd()
    return this
@@ -97,66 +105,82 @@ fun beOdd() = object : Matcher<Int> {
          { "$value should be even" })
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeLessThan(x: Int): Int {
    this shouldBe lt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldNotBeLessThan(x: Int): Int {
    this shouldNotBe lt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeLessThanOrEqual(x: Int): Int {
    this shouldBe lte(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeAtMost(x: Int): Int = this.shouldBeLessThanOrEqual(x)
+@IgnorableReturnValue
 infix fun Int.shouldNotBeAtMost(x: Int): Int = this.shouldBeGreaterThan(x)
+@IgnorableReturnValue
 infix fun Int.shouldBeAtLeast(x: Int): Int = this.shouldBeGreaterThanOrEqual(x)
+@IgnorableReturnValue
 infix fun Int.shouldNotBeAtLeast(x: Int): Int = this.shouldBeLessThan(x)
 
+@IgnorableReturnValue
 infix fun Int.shouldNotBeLessThanOrEqual(x: Int): Int {
    this shouldNotBe lte(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeGreaterThan(x: Int): Int {
    this shouldBe gt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldNotBeGreaterThan(x: Int): Int {
    this shouldNotBe gt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeGreaterThanOrEqual(x: Int): Int {
    this shouldBe gte(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldNotBeGreaterThanOrEqual(x: Int): Int {
    this shouldNotBe gte(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeExactly(x: Int): Int {
    this shouldBe exactly(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldNotBeExactly(x: Int): Int {
    this shouldNotBe exactly(x)
    return this
 }
 
+@IgnorableReturnValue
 fun Int.shouldBeZero(): Int {
    this shouldBeExactly 0
    return this
 }
 
+@IgnorableReturnValue
 fun Int.shouldNotBeZero(): Int {
    this shouldNotBeExactly 0
    return this

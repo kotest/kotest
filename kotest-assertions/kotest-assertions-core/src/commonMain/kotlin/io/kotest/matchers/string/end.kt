@@ -8,11 +8,13 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldEndWith(suffix: CharSequence): A {
    this should endWith(suffix)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotEndWith(suffix: CharSequence): A {
    this shouldNot endWith(suffix)
    return this!!
@@ -34,6 +36,7 @@ fun endWith(suffix: CharSequence): Matcher<CharSequence?> = neverNullMatcher { v
    )
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence?> A.shouldEndWith(regex: Regex): A {
    this should endWith(regex)
    return this

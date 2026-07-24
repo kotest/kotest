@@ -18,6 +18,7 @@ import io.kotest.matchers.shouldNot
  * ```
  * @see [beNaN]
  */
+@IgnorableReturnValue
 fun Double.shouldBeNaN(): Double {
    this should beNaN()
    return this
@@ -36,6 +37,7 @@ fun Double.shouldBeNaN(): Double {
  * ```
  * @see [beNaN]
  */
+@IgnorableReturnValue
 fun Double.shouldNotBeNaN(): Double {
    this shouldNot beNaN()
    return this

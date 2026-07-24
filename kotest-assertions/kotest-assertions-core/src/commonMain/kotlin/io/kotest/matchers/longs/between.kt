@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldNot
    "Long-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Long import `io.kotest.matchers.longs.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(a, b)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun Long.shouldBeBetween(a: Long, b: Long): Long {
    this shouldBe between(a, b)
    return this
@@ -24,6 +25,7 @@ fun Long.shouldBeBetween(a: Long, b: Long): Long {
    "Long-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Long import `io.kotest.matchers.longs.shouldNotBeBetween` manually.",
    ReplaceWith("shouldNotBeBetween(a, b)", "io.kotest.matchers.comparables.shouldNotBeBetween")
 )
+@IgnorableReturnValue
 fun Long.shouldNotBeBetween(a: Long, b: Long): Long {
    this shouldNot between(a, b)
    return this

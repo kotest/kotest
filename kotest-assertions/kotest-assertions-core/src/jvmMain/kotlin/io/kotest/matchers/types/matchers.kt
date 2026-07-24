@@ -6,9 +6,11 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
+@IgnorableReturnValue
 inline fun <A, reified T : Annotation> Class<A>.shouldHaveAnnotation() =
    this.shouldHaveAnnotation(T::class.java)
 
+@IgnorableReturnValue
 infix fun <A, T> Class<A>.shouldHaveAnnotation(annotationClass: Class<T>) =
    this should haveAnnotation(annotationClass)
 

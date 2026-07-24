@@ -63,43 +63,52 @@ fun beGreaterThanOrEqualTo(x: Float) = object : Matcher<Float> {
          { "$value should not be >= $x" })
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldBeLessThan(x: Float): Float {
    this shouldBe lt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldNotBeLessThan(x: Float): Float {
    this shouldNotBe lt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldBeLessThanOrEqual(x: Float): Float {
    this shouldBe lte(x)
    return this
 }
+@IgnorableReturnValue
 infix fun Float.shouldNotBeLessThanOrEqual(x: Float): Float {
    this shouldNotBe lte(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldBeGreaterThan(x: Float): Float {
    this shouldBe gt(x)
    return this
 }
+@IgnorableReturnValue
 infix fun Float.shouldNotBeGreaterThan(x: Float): Float {
    this shouldNotBe gt(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldBeGreaterThanOrEqual(x: Float): Float {
    this shouldBe gte(x)
    return this
 }
+@IgnorableReturnValue
 infix fun Float.shouldNotBeGreaterThanOrEqual(x: Float): Float {
    this shouldNotBe gte(x)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldBeExactly(x: Float): Float {
    if (AssertionsConfig.disableNaNEquality) {
       this shouldBe exactly(x)
@@ -109,6 +118,7 @@ infix fun Float.shouldBeExactly(x: Float): Float {
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldNotBeExactly(x: Float): Float {
    if (AssertionsConfig.disableNaNEquality) {
       this shouldNotBe exactly(x)
@@ -118,10 +128,12 @@ infix fun Float.shouldNotBeExactly(x: Float): Float {
    return this
 }
 
+@IgnorableReturnValue
 fun Float.shouldBeZero(): Float {
    this shouldBeExactly 0f
    return this
 }
+@IgnorableReturnValue
 fun Float.shouldNotBeZero(): Float {
    this shouldNotBeExactly 0f
    return this
@@ -136,6 +148,7 @@ fun Float.shouldNotBeZero(): Float {
  * 30.0.shouldBeWithinPercentageOf(100.0, 10.0)  // Fail
  *
  */
+@IgnorableReturnValue
 fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double): Float {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this should beWithinPercentageOf(other, percentage)
@@ -150,6 +163,7 @@ fun Float.shouldBeWithinPercentageOf(other: Float, percentage: Double): Float {
  * 30.0.shouldNotBeWithinPercentageOf(100.0, 10.0)  // Passes
  *
  */
+@IgnorableReturnValue
 fun Float.shouldNotBeWithinPercentageOf(other: Float, percentage: Double): Float {
    require(percentage > 0.0) { "Percentage must be > 0.0" }
    this shouldNot beWithinPercentageOf(other, percentage)

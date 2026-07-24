@@ -69,6 +69,7 @@ suspend fun <T> all(t: T, assertions: suspend T.(T) -> Unit): T {
    }
 }
 
+@IgnorableReturnValue
 inline fun <T> assertSoftly(t: T, assertions: T.(T) -> Unit): T {
    return withSubject(t) {
       assertSoftly {

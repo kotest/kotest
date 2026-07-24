@@ -24,6 +24,7 @@ import kotlin.time.measureTimedValue
  * }
  *
  * */
+@IgnorableReturnValue
 suspend fun <A> shouldCompleteWithin(
    duration: Duration,
    operation: suspend () -> A,
@@ -55,6 +56,7 @@ suspend fun <A> shouldCompleteWithin(
  *   (2+2) shouldBe 4
  * }
  */
+@IgnorableReturnValue
 suspend fun <A> shouldCompleteBetween(
    durationRange: ClosedRange<Duration>,
    operation: suspend () -> A,
@@ -91,6 +93,7 @@ suspend fun <A> shouldCompleteBetween(
  *   (2+2) shouldBe 4
  * }
  */
+@IgnorableReturnValue
 suspend fun shouldTimeout(
    duration: Duration,
    operation: suspend () -> Unit,

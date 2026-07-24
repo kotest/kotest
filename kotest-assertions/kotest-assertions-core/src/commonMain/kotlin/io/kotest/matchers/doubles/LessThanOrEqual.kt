@@ -21,6 +21,7 @@ import io.kotest.matchers.shouldNotBe
  * @see [Double.shouldBeLessThan]
  * @see [Double.shouldNotBeGreaterThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldBeLessThanOrEqual(x: Double): Double {
    this shouldBe lte(x)
    return this
@@ -61,6 +62,7 @@ infix fun Double.shouldBeAtMost(x: Double): Double {
  * @see [Double.shouldNotBeLessThan]
  * @see [Double.shouldBeGreaterThanOrEqual]
  */
+@IgnorableReturnValue
 infix fun Double.shouldNotBeLessThanOrEqual(x: Double): Double {
    this shouldNotBe lte(x)
    return this

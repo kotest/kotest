@@ -6,6 +6,7 @@ import io.kotest.common.ExperimentalKotest
 import io.kotest.matchers.shouldBe
 import io.kotest.property.internal.proptest
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> checkAll(
    config: PropTestConfig,
    genA: Gen<A>,
@@ -24,6 +25,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> checkAll(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit
 ): PropertyContext = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, config, property)
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,
@@ -42,6 +44,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forAll(
    property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Boolean
 ) = proptest(genA, genB, genC, genD, genE, genF, genG, genH, genI, genJ, genK, genL, genM, config) { a, b, c, d, e, f, g, h, i, j, k, l, m -> property(a, b, c, d, e, f, g, h, i, j, k, l, m) shouldBe true }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> forNone(
    config: PropTestConfig = PropTestConfig(),
    genA: Gen<A>,

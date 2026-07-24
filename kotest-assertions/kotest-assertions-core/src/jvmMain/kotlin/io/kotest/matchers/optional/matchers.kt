@@ -15,6 +15,7 @@ import java.util.Optional
  * Optional.of("A").shouldBeEmpty() // Assertion fails
  * ```
  */
+@IgnorableReturnValue
 fun <T> Optional<T>.shouldBeEmpty() = this should beEmpty()
 
 /**
@@ -26,6 +27,7 @@ fun <T> Optional<T>.shouldBeEmpty() = this should beEmpty()
  * Optional.empty().shouldNotBeEmpty() // Assertion fails
  * ```
  */
+@IgnorableReturnValue
 fun <T> Optional<T>.shouldNotBeEmpty() = this shouldNot beEmpty()
 
 /**
@@ -51,6 +53,7 @@ fun <T> beEmpty() = object : Matcher<Optional<T>> {
  *
  * ```
  */
+@IgnorableReturnValue
 infix fun <T> Optional<T>.shouldBePresent(block: T.(value: T) -> Unit): T {
     shouldBePresent()
     get().block(get())
@@ -77,6 +80,7 @@ infix fun <T> Optional<T>.shouldBePresent(block: T.(value: T) -> Unit): T {
  * ```
  *
  */
+@IgnorableReturnValue
 fun <T> Optional<T>.shouldBePresent(): T {
     this should bePresent()
     return get()
@@ -85,6 +89,7 @@ fun <T> Optional<T>.shouldBePresent(): T {
 /**
  * Verifies that this Optional contains no value
  */
+@IgnorableReturnValue
 fun <T> Optional<T>.shouldNotBePresent() = this shouldNot bePresent()
 
 /**

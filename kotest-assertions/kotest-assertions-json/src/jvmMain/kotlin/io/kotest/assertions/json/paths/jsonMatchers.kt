@@ -12,71 +12,85 @@ import kotlinx.serialization.json.Json
 import java.nio.file.Path
 import kotlin.io.path.readText
 
+@IgnorableReturnValue
 fun Path.shouldBeEmptyJsonArray(): Path {
    this should (exist() and aFile() and matchJson("[]").contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeEmptyJsonObject(): Path {
    this should (exist() and aFile() and matchJson("{}").contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeJsonArray(): Path {
    this should (exist() and aFile() and beJsonArray().contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeJsonArray(parser: Json): Path {
    this should (exist() and aFile() and beJsonArray(parser).contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotBeJsonArray(): Path {
    this should (exist() and aFile() and beJsonArray().contramap<Path> { it.readText() }.invert())
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotBeJsonArray(parser: Json): Path {
    this should (exist() and aFile() and beJsonArray(parser).contramap<Path> { it.readText() }.invert())
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeJsonObject(): Path {
    this should (exist() and aFile() and beJsonObject().contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeJsonObject(parser: Json): Path {
    this should (exist() and aFile() and beJsonObject(parser).contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotBeJsonObject(): Path {
    this should (exist() and aFile() and beJsonObject().contramap<Path> { it.readText() }.invert())
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotBeJsonObject(parser: Json): Path {
    this should (exist() and aFile() and beJsonObject(parser).contramap<Path> { it.readText() }.invert())
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeValidJson(): Path {
    this should (exist() and aFile() and beValidJson().contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeValidJson(parser: Json): Path {
    this should (exist() and aFile() and beValidJson(parser).contramap { it.readText() })
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotBeValidJson(): Path {
    this should (exist() and aFile() and beValidJson().contramap<Path> { it.readText() }.invert())
    return this
 }
 
+@IgnorableReturnValue
 fun Path.shouldNotBeValidJson(parser: Json): Path {
    this should (exist() and aFile() and beValidJson(parser).contramap<Path> { it.readText() }.invert())
    return this

@@ -22,6 +22,7 @@ import kotlin.time.measureTime
  *   (2+2) shouldBe 4
  * }
  */
+@IgnorableReturnValue
 suspend fun shouldTimeout(
    duration: Duration,
    operation: suspend () -> Unit,

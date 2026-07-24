@@ -18,6 +18,7 @@ import io.kotest.assertions.assertionCounter
  * }
  * ```
  */
+@IgnorableReturnValue
 public inline fun <reified T> shouldRaise(block: Raise<Any?>.() -> Any?): T {
    assertionCounter.inc()
 
@@ -43,6 +44,7 @@ public inline fun <reified T> shouldRaise(block: Raise<Any?>.() -> Any?): T {
  * }
  * ```
  */
+@IgnorableReturnValue
 public inline fun <T> shouldNotRaise(block: Raise<Any?>.() -> T): T {
    assertionCounter.inc()
 

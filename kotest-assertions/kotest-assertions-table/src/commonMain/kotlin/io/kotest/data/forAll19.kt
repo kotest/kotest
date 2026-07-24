@@ -4,6 +4,7 @@ package io.kotest.data
 
 import kotlin.jvm.JvmName
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(
    vararg rows: Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit
@@ -37,9 +38,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(
 }
 
 @JvmName("forall19")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forAll(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, testfn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) =
    table.forAll(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -52,6 +55,7 @@ inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, 
    collector.assertAll()
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(
    vararg rows: Row19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit
@@ -85,9 +89,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(
 }
 
 @JvmName("fornone19")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> forNone(table: Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>, testfn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) =
    table.forNone(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> Table19<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit) {
    for (row in rows) {
       try {

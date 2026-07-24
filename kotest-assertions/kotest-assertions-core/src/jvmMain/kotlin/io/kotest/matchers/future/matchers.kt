@@ -8,7 +8,9 @@ import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
 import java.util.concurrent.CompletableFuture
 
+@IgnorableReturnValue
 fun <T> CompletableFuture<T>.shouldBeCompletedExceptionally() = this shouldBe completedExceptionally<T>()
+@IgnorableReturnValue
 fun <T> CompletableFuture<T>.shouldNotBeCompletedExceptionally() = this shouldNotBe completedExceptionally<T>()
 fun <T> completedExceptionally() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
@@ -24,7 +26,9 @@ internal fun errorMessageForFailedFuture(failedFuture: CompletableFuture<*>): St
    return "Future should not be completed exceptionally, but it failed with ${exception.cause}"
 }
 
+@IgnorableReturnValue
 fun <T> CompletableFuture<T>.shouldBeCompleted() = this shouldBe completed<T>()
+@IgnorableReturnValue
 fun <T> CompletableFuture<T>.shouldNotBeCompleted() = this shouldNotBe completed<T>()
 fun <T> completed() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
@@ -36,7 +40,9 @@ fun <T> completed() = object : Matcher<CompletableFuture<T>> {
          })
 }
 
+@IgnorableReturnValue
 fun <T> CompletableFuture<T>.shouldBeCancelled() = this shouldBe cancelled<T>()
+@IgnorableReturnValue
 fun <T> CompletableFuture<T>.shouldNotBeCancelled() = this shouldNotBe cancelled<T>()
 fun <T> cancelled() = object : Matcher<CompletableFuture<T>> {
    override fun test(value: CompletableFuture<T>): MatcherResult =
@@ -48,9 +54,11 @@ fun <T> cancelled() = object : Matcher<CompletableFuture<T>> {
          })
 }
 
+@IgnorableReturnValue
 infix fun CompletableFuture<*>.shouldCompleteExceptionallyWith(throwable: Throwable) =
    this should completeExceptionallyWith(throwable)
 
+@IgnorableReturnValue
 infix fun CompletableFuture<*>.shouldNotCompleteExceptionallyWith(throwable: Throwable) =
    this shouldNot completeExceptionallyWith(throwable)
 

@@ -4,6 +4,7 @@ package io.kotest.data
 
 import kotlin.jvm.JvmName
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(
    vararg rows: Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit
@@ -36,9 +37,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(
 }
 
 @JvmName("forall18")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forAll(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, testfn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) =
    table.forAll(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -51,6 +54,7 @@ inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, 
    collector.assertAll()
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(
    vararg rows: Row18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit
@@ -83,9 +87,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(
 }
 
 @JvmName("fornone18")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> forNone(table: Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>, testfn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) =
    table.forNone(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> Table18<A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit) {
    for (row in rows) {
       try {

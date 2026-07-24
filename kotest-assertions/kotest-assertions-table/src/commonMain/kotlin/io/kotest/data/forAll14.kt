@@ -4,6 +4,7 @@ package io.kotest.data
 
 import kotlin.jvm.JvmName
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(
    vararg rows: Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit
@@ -32,9 +33,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(
 }
 
 @JvmName("forall14")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forAll(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, testfn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) =
    table.forAll(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forAll(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -47,6 +50,7 @@ inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, 
    collector.assertAll()
 }
 
+@IgnorableReturnValue
 suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(
    vararg rows: Row14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>,
    testfn: suspend (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit
@@ -75,9 +79,11 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(
 }
 
 @JvmName("fornone14")
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> forNone(table: Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>, testfn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) =
    table.forNone(testfn)
 
+@IgnorableReturnValue
 inline fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> Table14<A, B, C, D, E, F, G, H, I, J, K, L, M, N>.forNone(fn: (A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit) {
    for (row in rows) {
       try {

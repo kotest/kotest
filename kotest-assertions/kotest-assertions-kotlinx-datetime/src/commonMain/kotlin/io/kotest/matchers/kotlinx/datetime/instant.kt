@@ -11,12 +11,14 @@ import kotlinx.datetime.Instant
  * Assert that [Instant] is before [anotherInstant].
  * @see [shouldNotBeBefore]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldBeBefore(anotherInstant: Instant) = this shouldBe before(anotherInstant)
 
 /**
  * Assert that [Instant] is not before [anotherInstant].
  * @see [shouldBeBefore]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldNotBeBefore(anotherInstant: Instant) = this shouldNotBe before(anotherInstant)
 
 fun before(anotherInstant: Instant) = object : Matcher<Instant> {
@@ -33,12 +35,14 @@ fun before(anotherInstant: Instant) = object : Matcher<Instant> {
  * Assert that [Instant] is after [anotherInstant].
  * @see [shouldNotBeAfter]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldBeAfter(anotherInstant: Instant) = this shouldBe after(anotherInstant)
 
 /**
  * Assert that [Instant] is not after [anotherInstant].
  * @see [shouldNotBeAfter]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldNotBeAfter(anotherInstant: Instant) = this shouldNot after(anotherInstant)
 
 fun after(anotherInstant: Instant) = object : Matcher<Instant> {
@@ -55,12 +59,14 @@ fun after(anotherInstant: Instant) = object : Matcher<Instant> {
  * Assert that [Instant] is between [fromInstant] and [toInstant].
  * @see [shouldNotBeBetween]
  * */
+@IgnorableReturnValue
 fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldBe between(fromInstant, toInstant)
 
 /**
  * Assert that [Instant] is between [fromInstant] and [toInstant].
  * @see [shouldBeBetween]
  * */
+@IgnorableReturnValue
 fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
 
 fun between(fromInstant: Instant, toInstant: Instant) = object : Matcher<Instant> {

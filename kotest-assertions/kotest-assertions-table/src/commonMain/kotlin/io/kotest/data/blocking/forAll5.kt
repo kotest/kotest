@@ -7,6 +7,7 @@ import io.kotest.data.headers
 import io.kotest.data.paramNames
 import io.kotest.data.table
 
+@IgnorableReturnValue
 fun <A, B, C, D, E> forAll(vararg rows: Row5<A, B, C, D, E>, testfn: (A, B, C, D, E) -> Unit) {
    val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
@@ -17,6 +18,7 @@ fun <A, B, C, D, E> forAll(vararg rows: Row5<A, B, C, D, E>, testfn: (A, B, C, D
    table(headers(paramA, paramB, paramC, paramD, paramE), *rows).forAll(testfn)
 }
 
+@IgnorableReturnValue
 fun <A, B, C, D, E> forNone(vararg rows: Row5<A, B, C, D, E>, testfn: (A, B, C, D, E) -> Unit) {
    val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }

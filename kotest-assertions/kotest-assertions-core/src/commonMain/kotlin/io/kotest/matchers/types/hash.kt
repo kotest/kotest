@@ -22,6 +22,7 @@ import io.kotest.matchers.shouldNot
  *
  * @see [Any.shouldNotHaveSameHashCodeAs]
  */
+@IgnorableReturnValue
 infix fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCodeAs(other)
 
 /**
@@ -39,6 +40,7 @@ infix fun Any.shouldHaveSameHashCodeAs(other: Any) = this should haveSameHashCod
  *
  * @see [Any.shouldHaveSameHashCodeAs]
  */
+@IgnorableReturnValue
 infix fun Any.shouldNotHaveSameHashCodeAs(other: Any) = this shouldNot haveSameHashCodeAs(other)
 
 /**

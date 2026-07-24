@@ -18,6 +18,7 @@ import io.kotest.matchers.shouldNot
  * ```
  * @see [beNaN]
  */
+@IgnorableReturnValue
 fun Float.shouldBeNaN(): Float {
    this should beNaN()
    return this
@@ -36,6 +37,7 @@ fun Float.shouldBeNaN(): Float {
  * ```
  * @see [beNaN]
  */
+@IgnorableReturnValue
 fun Float.shouldNotBeNaN(): Float {
    this shouldNot beNaN()
    return this

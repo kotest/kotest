@@ -21,6 +21,7 @@ import io.kotest.matchers.should
  *
  * ```
  */
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldBeTruthy(): A {
    this should beTruthy()
    return this!!
@@ -42,6 +43,7 @@ fun <A : CharSequence> A?.shouldBeTruthy(): A {
  *
  * ```
  */
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldBeFalsy(): A {
    this should beFalsy()
    return this!!

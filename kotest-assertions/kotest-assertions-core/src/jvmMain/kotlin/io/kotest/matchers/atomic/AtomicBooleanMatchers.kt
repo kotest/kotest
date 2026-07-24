@@ -20,6 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean
  * @see [AtomicBoolean.shouldNotBeFalse]
  * @see [AtomicBoolean.shouldBeFalse]
  */
+@IgnorableReturnValue
 fun AtomicBoolean.shouldBeTrue() = get() shouldBe true
 
 /**
@@ -38,6 +39,7 @@ fun AtomicBoolean.shouldBeTrue() = get() shouldBe true
  * @see [AtomicBoolean.shouldBeFalse]
  * @see [AtomicBoolean.shouldNotBeFalse]
  */
+@IgnorableReturnValue
 fun AtomicBoolean.shouldNotBeTrue() = get() shouldNotBe true
 
 /**
@@ -56,6 +58,7 @@ fun AtomicBoolean.shouldNotBeTrue() = get() shouldNotBe true
  * @see [AtomicBoolean.shouldNotBeTrue]
  * @see [AtomicBoolean.shouldBeTrue]
  */
+@IgnorableReturnValue
 fun AtomicBoolean.shouldBeFalse() = get() shouldBe false
 
 /**
@@ -74,4 +77,5 @@ fun AtomicBoolean.shouldBeFalse() = get() shouldBe false
  * @see [AtomicBoolean.shouldBeTrue]
  * @see [AtomicBoolean.shouldNotBeTrue]
  */
+@IgnorableReturnValue
 fun AtomicBoolean.shouldNotBeFalse() = get() shouldNotBe false

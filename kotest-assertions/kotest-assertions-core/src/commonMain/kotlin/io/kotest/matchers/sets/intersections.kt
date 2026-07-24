@@ -6,11 +6,13 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <T> Set<T>.shouldIntersect(ts: Set<T>): Set<T> {
    this should intersectWith(ts)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Set<T>.shouldNotIntersect(ts: Set<T>): Set<T> {
    this shouldNot intersectWith(ts)
    return this

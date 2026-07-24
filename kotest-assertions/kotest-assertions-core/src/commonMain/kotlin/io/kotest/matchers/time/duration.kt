@@ -8,11 +8,13 @@ import io.kotest.matchers.shouldNot
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 
+@IgnorableReturnValue
 infix fun Duration.shouldHaveSeconds(seconds: Long): Duration {
    this should haveSeconds(seconds)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Duration.shouldNotHaveSeconds(seconds: Long): Duration {
    this shouldNot haveSeconds(seconds)
    return this
@@ -27,11 +29,13 @@ fun haveSeconds(seconds: Long) = neverNullMatcher<Duration> { value ->
 }
 
 
+@IgnorableReturnValue
 infix fun Duration.shouldHaveMillis(millis: Long): Duration {
    this should haveMillis(millis)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Duration.shouldNotHaveMillis(millis: Long): Duration {
    this shouldNot haveMillis(millis)
    return this
@@ -45,8 +49,10 @@ fun haveMillis(millis: Long) = neverNullMatcher<Duration> { value ->
    )
 }
 
+@IgnorableReturnValue
 infix fun Duration.shouldHaveMinutes(minutes: Long) = this should haveMinutes(minutes)
 
+@IgnorableReturnValue
 infix fun Duration.shouldNotHaveMinutes(minutes: Long) = this shouldNot haveMinutes(minutes)
 
 fun haveMinutes(minutes: Long) = neverNullMatcher<Duration> { value ->
@@ -58,8 +64,10 @@ fun haveMinutes(minutes: Long) = neverNullMatcher<Duration> { value ->
 }
 
 
+@IgnorableReturnValue
 infix fun Duration.shouldHaveHours(hours: Long) = this should haveHours(hours)
 
+@IgnorableReturnValue
 infix fun Duration.shouldNotHaveHours(hours: Long) = this shouldNot haveHours(hours)
 
 

@@ -87,12 +87,14 @@ abstract class TestConfiguration : Extendable() {
    /**
     * Registers an [AutoCloseable] to be closed when the spec is completed.
     */
+   @IgnorableReturnValue
    fun <T : AutoCloseable> autoClose(closeable: T): T =
       autoClose(lazy(LazyThreadSafetyMode.NONE) { closeable }).value
 
    /**
     * Registers a lazy [AutoCloseable] to be closed when the spec is completed.
     */
+   @IgnorableReturnValue
    fun <T : AutoCloseable> autoClose(closeable: Lazy<T>): Lazy<T> {
       _parentConfiguration?.autoClose(closeable)
       _autoCloseables = listOf(closeable) + _autoCloseables
@@ -269,6 +271,7 @@ abstract class TestConfiguration : Extendable() {
    /**
     * Register an extension callback
     */
+   @IgnorableReturnValue
    fun extension(f: TestCaseExtensionFn) {
       this@TestConfiguration.extension(object : TestCaseExtension {
          override suspend fun intercept(testCase: TestCase, execute: suspend (TestCase) -> TestResult): TestResult =
@@ -305,6 +308,7 @@ abstract class TestConfiguration : Extendable() {
     * Register a single [Extension] of type T return that listener.
     */
    @Deprecated("Use extension instead", ReplaceWith("extension"))
+   @IgnorableReturnValue
    fun <T : Extension> register(extension: T): T {
       extensions(listOf(extension))
       return extension

@@ -18,6 +18,7 @@ import kotlin.reflect.KProperty0
  * Asserts that this property has a specific value. Unlike regular [shouldBe], the name of the property
  * will be automatically added to the error message
  */
+@IgnorableReturnValue
 infix fun <T> KProperty0<T>.shouldHaveValue(expected: T): KProperty0<T> {
    this should haveValue(expected)
    return this
@@ -27,6 +28,7 @@ infix fun <T> KProperty0<T>.shouldHaveValue(expected: T): KProperty0<T> {
  * Asserts that this property does not have a specific value. Unlike regular [shouldNotBe], the name of the
  * property will be automatically added to the error message
  */
+@IgnorableReturnValue
 infix fun <T> KProperty0<T>.shouldNotHaveValue(expected: T): KProperty0<T> {
    this shouldNot haveValue(expected)
    return this
@@ -52,6 +54,7 @@ fun <T> haveValue(expected: T) = object : Matcher<KProperty0<T>> {
  *
  * The name of the property will be automatically added to the error message should any failures occur within the block.
  */
+@IgnorableReturnValue
 inline infix fun <T> KProperty0<T>.shouldMatch(block: T.() -> Unit) {
    withClue(name) {
       block(get())

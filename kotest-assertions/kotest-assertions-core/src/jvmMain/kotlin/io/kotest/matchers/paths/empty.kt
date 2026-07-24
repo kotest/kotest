@@ -10,7 +10,9 @@ import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import kotlin.io.path.isRegularFile
 
+@IgnorableReturnValue
 fun Path.shouldBeEmptyDirectory() = this should beEmptyDirectory()
+@IgnorableReturnValue
 fun Path.shouldNotBeEmptyDirectory() = this shouldNot beEmptyDirectory()
 
 fun beEmptyDirectory(): Matcher<Path> = object : Matcher<Path> {

@@ -20,6 +20,7 @@ import io.kotest.assertions.errorCollector
  *
  * @see [shouldThrowAny]
  */
+@IgnorableReturnValue
 inline fun shouldThrowAnyUnit(block: () -> Unit) = shouldThrowAny(block)
 
 /**
@@ -37,6 +38,7 @@ inline fun shouldThrowAnyUnit(block: () -> Unit) = shouldThrowAny(block)
  * @see [shouldNotThrowUnit]
  *
  */
+@IgnorableReturnValue
 inline fun shouldNotThrowAnyUnit(block: () -> Unit) {
    assertionCounter.inc()
 
@@ -80,6 +82,7 @@ inline fun shouldNotThrowAnyUnit(block: () -> Unit) {
  *
  * @see [shouldThrowAnyUnit]
  */
+@IgnorableReturnValue
 inline fun shouldThrowAny(block: () -> Any?): Throwable {
    assertionCounter.inc()
    val thrownException = try {
@@ -112,6 +115,7 @@ inline fun shouldThrowAny(block: () -> Any?): Throwable {
  * @see [shouldNotThrow]
  *
  */
+@IgnorableReturnValue
 inline fun <T> shouldNotThrowAny(block: () -> T): T {
    assertionCounter.inc()
 
@@ -133,6 +137,7 @@ inline fun <T> shouldNotThrowAny(block: () -> T): T {
  *
  * @see [shouldNotThrowMessage]
  * */
+@IgnorableReturnValue
 inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
    assertionCounter.inc()
 
@@ -158,6 +163,7 @@ inline fun <T> shouldThrowMessage(message: String, block: () -> T) {
 /**
  * Verifies that a block of code does not throws any [Throwable] with given [message].
 * */
+@IgnorableReturnValue
 inline fun <T> shouldNotThrowMessage(message: String, block: () -> T) {
    assertionCounter.inc()
 

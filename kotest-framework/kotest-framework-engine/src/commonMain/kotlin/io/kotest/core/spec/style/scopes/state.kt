@@ -10,7 +10,7 @@ object TestDslState {
    private val mutex = Semaphore(1)
 
    suspend fun startTest(name: TestName) = mutex.withPermit {
-      started.add(name.name)
+      started += name.name
    }
 
    suspend fun clear(name: TestName) = mutex.withPermit {

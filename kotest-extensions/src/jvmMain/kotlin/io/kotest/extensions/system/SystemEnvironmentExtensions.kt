@@ -22,6 +22,7 @@ import java.lang.reflect.Field
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
  * already changed, the result is inconsistent, as the System Environment Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withEnvironment(key: String, value: String?, mode: OverrideMode = SetOrError, block: () -> T): T {
    return withEnvironment(key to value, mode, block)
 }
@@ -41,6 +42,7 @@ inline fun <T> withEnvironment(key: String, value: String?, mode: OverrideMode =
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
  * already changed, the result is inconsistent, as the System Environment Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withEnvironment(environment: Pair<String, String?>, mode: OverrideMode = SetOrError, block: () -> T): T {
    return withEnvironment(mapOf(environment), mode, block)
 }
@@ -60,6 +62,7 @@ inline fun <T> withEnvironment(environment: Pair<String, String?>, mode: Overrid
  * **ATTENTION**: This code is susceptible to race conditions. If you attempt to change the environment while it was
  * already changed, the result is inconsistent, as the System Environment Map is a single map.
  */
+@IgnorableReturnValue
 inline fun <T> withEnvironment(environment: Map<String, String?>, mode: OverrideMode = SetOrError, block: () -> T): T {
    val isWindows = "windows" in System.getProperty("os.name").orEmpty().lowercase()
    val originalEnvironment = if (isWindows) {

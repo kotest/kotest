@@ -7,6 +7,7 @@ import kotlin.contracts.contract
 import kotlinx.coroutines.CancellationException
 
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun ExitCase.shouldBeCancelled(
   failureMessage: (ExitCase) -> String = { "Expected ExitCase.Cancelled, but found $it" }
 ): ExitCase.Cancelled {
@@ -21,6 +22,7 @@ public fun ExitCase.shouldBeCancelled(
 }
 
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun ExitCase.shouldBeCancelled(cancelled: CancellationException): ExitCase.Cancelled {
   contract {
     returns() implies (this@shouldBeCancelled is ExitCase.Cancelled)
@@ -31,6 +33,7 @@ public fun ExitCase.shouldBeCancelled(cancelled: CancellationException): ExitCas
 }
 
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun ExitCase.shouldBeCompleted(
   failureMessage: (ExitCase) -> String = { "Expected ExitCase.Completed, but found $it" }
 ): ExitCase.Completed {
@@ -45,6 +48,7 @@ public fun ExitCase.shouldBeCompleted(
 }
 
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun ExitCase.shouldBeFailure(
   failureMessage: (ExitCase) -> String = { "Expected ExitCase.Failure, but found $it" }
 ): ExitCase.Failure {
@@ -59,6 +63,7 @@ public fun ExitCase.shouldBeFailure(
 }
 
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun ExitCase.shouldBeFailure(throwable: Throwable): ExitCase.Failure {
   contract {
     returns() implies (this@shouldBeFailure is ExitCase.Failure)

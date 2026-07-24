@@ -17,6 +17,7 @@ import io.kotest.matchers.shouldNot
  *
  * @see [bePositiveInfinity]
  */
+@IgnorableReturnValue
 fun Float.shouldBePositiveInfinity(): Float {
    this should bePositiveInfinity()
    return this
@@ -34,6 +35,7 @@ fun Float.shouldBePositiveInfinity(): Float {
  *
  * @see [bePositiveInfinity]
  */
+@IgnorableReturnValue
 fun Float.shouldNotBePositiveInfinity(): Float {
    this shouldNot bePositiveInfinity()
    return this
@@ -68,6 +70,7 @@ fun bePositiveInfinity() = object : Matcher<Float> {
  *
  * @see [beNegativeInfinity]
  */
+@IgnorableReturnValue
 fun Float.shouldBeNegativeInfinity(): Float {
    this should beNegativeInfinity()
    return this
@@ -85,6 +88,7 @@ fun Float.shouldBeNegativeInfinity(): Float {
  *
  * @see [beNegativeInfinity]
  */
+@IgnorableReturnValue
 fun Float.shouldNotBeNegativeInfinity(): Float {
    this shouldNot beNegativeInfinity()
    return this

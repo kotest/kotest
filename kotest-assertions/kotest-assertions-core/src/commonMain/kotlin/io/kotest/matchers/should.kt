@@ -18,6 +18,7 @@ import io.kotest.assertions.withClue
  * @see [io.kotest.assertions.eq.Eq]
  */
 @Suppress("UNCHECKED_CAST")
+@IgnorableReturnValue
 infix fun <T> T.shouldBe(expected: T?): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
@@ -41,6 +42,7 @@ infix fun <T> T.shouldBe(expected: T?): T {
  * @see [io.kotest.assertions.eq.Eq]
  */
 @Suppress("UNCHECKED_CAST")
+@IgnorableReturnValue
 fun <T> T.shouldBe(expected: T?, msg: String): T {
    when (expected) {
       is Matcher<*> -> should(expected as Matcher<T>)
@@ -52,6 +54,7 @@ fun <T> T.shouldBe(expected: T?, msg: String): T {
 }
 
 @Suppress("UNCHECKED_CAST")
+@IgnorableReturnValue
 infix fun <T> T.shouldNotBe(expected: Any?): T {
    when (expected) {
       is Matcher<*> -> shouldNot(expected as Matcher<T>)
@@ -60,12 +63,16 @@ infix fun <T> T.shouldNotBe(expected: Any?): T {
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> T.shouldHave(matcher: Matcher<T>) = should(matcher)
+@IgnorableReturnValue
 infix fun <T> T.should(matcher: Matcher<T>) {
    invokeMatcher(this, matcher)
 }
 
+@IgnorableReturnValue
 infix fun <T> T.shouldNotHave(matcher: Matcher<T>) = shouldNot(matcher)
+@IgnorableReturnValue
 infix fun <T> T.shouldNot(matcher: Matcher<T>) = should(matcher.invert())
 
 /**
@@ -82,6 +89,7 @@ infix fun <T> T.shouldNot(matcher: Matcher<T>) = should(matcher.invert())
  * ```
  * @return Unit
  */
+@IgnorableReturnValue
 inline infix fun <T> T.should(matcher: (T) -> Unit) = matcher(this)
 
 fun <T> be(expected: T): Matcher<T> = EqMatcher(expected)

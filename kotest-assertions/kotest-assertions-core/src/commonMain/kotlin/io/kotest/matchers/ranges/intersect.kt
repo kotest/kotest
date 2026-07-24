@@ -16,6 +16,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) should intersect(Range.ofClosedRange(range))
    return this
@@ -31,6 +32,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldIntersect(range: ClosedRange<
  * @see [shouldIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) should intersect(Range.ofClosedRange(range))
    return this
@@ -44,6 +46,7 @@ infix fun <T : Comparable<T>> OpenEndRange<T>.shouldIntersect(range: ClosedRange
  * @see [shouldIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) should intersect(Range.ofOpenEndRange(range))
    return this
@@ -57,6 +60,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldIntersect(range: OpenEndRange
  * @see [shouldIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) should intersect(Range.ofOpenEndRange(range))
    return this
@@ -72,6 +76,7 @@ infix fun <T : Comparable<T>> OpenEndRange<T>.shouldIntersect(range: OpenEndRang
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) shouldNot intersect(Range.ofClosedRange(range))
    return this
@@ -85,6 +90,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: ClosedRan
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) shouldNot intersect(Range.ofOpenEndRange(range))
    return this
@@ -100,6 +106,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotIntersect(range: OpenEndRa
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) shouldNot intersect(Range.ofClosedRange(range))
    return this
@@ -113,6 +120,7 @@ infix fun <T : Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: ClosedRa
  * @see [shouldNotIntersect]
  * @see [intersect]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> OpenEndRange<T>.shouldNotIntersect(range: OpenEndRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) shouldNot intersect(Range.ofOpenEndRange(range))
    return this

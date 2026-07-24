@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeLetter]
  * @see [beLetter]
  */
+@IgnorableReturnValue
 fun Char.shouldBeLetter(): Char {
    this should beLetter()
    return this
@@ -21,6 +22,7 @@ fun Char.shouldBeLetter(): Char {
  * @see [shouldBeLetter]
  * @see [beLetter]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeLetter(): Char {
    this shouldNot beLetter()
    return this
@@ -39,6 +41,7 @@ fun beLetter(): Matcher<Char> = charValueMatcher("a letter") { it.isLetter() }
  * @see [shouldNotBeLetterOrDigit]
  * @see [beLetterOrDigit]
  */
+@IgnorableReturnValue
 fun Char.shouldBeLetterOrDigit(): Char {
    this should beLetterOrDigit()
    return this
@@ -49,6 +52,7 @@ fun Char.shouldBeLetterOrDigit(): Char {
  * @see [shouldBeLetterOrDigit]
  * @see [beLetterOrDigit]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeLetterOrDigit(): Char {
    this shouldNot beLetterOrDigit()
    return this
@@ -67,6 +71,7 @@ fun beLetterOrDigit(): Matcher<Char> = charValueMatcher("a letter or digit") { i
  * @see [shouldNotBeDigit]
  * @see [beDigit]
  */
+@IgnorableReturnValue
 fun Char.shouldBeDigit(): Char {
    this should beDigit()
    return this
@@ -77,6 +82,7 @@ fun Char.shouldBeDigit(): Char {
  * @see [shouldBeDigit]
  * @see [beDigit]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeDigit(): Char {
    this shouldNot beDigit()
    return this
@@ -95,6 +101,7 @@ fun beDigit(): Matcher<Char> = charValueMatcher("a digit") { it.isDigit() }
  * @see [shouldNotBeWhitespace]
  * @see [beWhitespace]
  */
+@IgnorableReturnValue
 fun Char.shouldBeWhitespace(): Char {
    this should beWhitespace()
    return this
@@ -105,6 +112,7 @@ fun Char.shouldBeWhitespace(): Char {
  * @see [shouldBeWhitespace]
  * @see [beWhitespace]
  */
+@IgnorableReturnValue
 fun Char.shouldNotBeWhitespace(): Char {
    this shouldNot beWhitespace()
    return this

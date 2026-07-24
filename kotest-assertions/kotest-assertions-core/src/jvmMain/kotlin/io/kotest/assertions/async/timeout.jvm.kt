@@ -15,6 +15,7 @@ import kotlin.time.toKotlinDuration
       "kotlin.time.toKotlinDuration",
    ),
 )
+@IgnorableReturnValue
 suspend fun <A> shouldTimeout(duration: Duration, thunk: suspend () -> A): Unit =
    shouldTimeout(duration.toKotlinDuration()) { thunk() }
 
@@ -28,6 +29,7 @@ suspend fun <A> shouldTimeout(duration: Duration, thunk: suspend () -> A): Unit 
       "java.time.Duration"
    ),
 )
+@IgnorableReturnValue
 suspend fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: suspend () -> A) {
    @Suppress("DEPRECATION")
    shouldTimeout(Duration.of(timeout, unit.ChronoUnit())) { thunk() }

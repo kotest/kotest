@@ -27,6 +27,7 @@ fun beInTodayODT() = object : Matcher<OffsetDateTime> {
  *      OffsetDateTime.now().shouldBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun OffsetDateTime.shouldBeToday() = this should beInTodayODT()
 
 
@@ -37,6 +38,7 @@ fun OffsetDateTime.shouldBeToday() = this should beInTodayODT()
  *      OffsetDateTime.of(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun OffsetDateTime.shouldNotBeToday() = this shouldNot beInTodayODT()
 
 /**
@@ -59,6 +61,7 @@ fun OffsetDateTime.shouldNotBeToday() = this shouldNot beInTodayODT()
  *
  * @see OffsetDateTime.shouldNotHaveSameInstantAs
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime) = this should haveSameInstantAs(other)
 
 /**
@@ -81,6 +84,7 @@ infix fun OffsetDateTime.shouldHaveSameInstantAs(other: OffsetDateTime) = this s
  *
  * @see OffsetDateTime.shouldHaveSameInstantAs
  */
+@IgnorableReturnValue
 infix fun OffsetDateTime.shouldNotHaveSameInstantAs(other: OffsetDateTime) = this shouldNot haveSameInstantAs(other)
 
 /**

@@ -8,26 +8,42 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldStartWith(element: T) = toList().shouldStartWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldStartWith(slice: Iterable<T>) = toList().shouldStartWith(slice.toList())
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldStartWith(slice: Array<T>) = toList().shouldStartWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldStartWith(element: T) = asList().shouldStartWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldStartWith(slice: Collection<T>) = asList().shouldStartWith(slice)
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldStartWith(slice: Array<T>) = asList().shouldStartWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldStartWith(element: T) = this should startWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldStartWith(slice: Collection<T>) = this should startWith(slice)
 
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotStartWith(element: T) = toList().shouldNotStartWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotStartWith(slice: Iterable<T>) = toList().shouldNotStartWith(slice.toList())
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotStartWith(slice: Array<T>) = toList().shouldNotStartWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotStartWith(element: T) = asList().shouldNotStartWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotStartWith(slice: Collection<T>) = asList().shouldNotStartWith(slice)
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotStartWith(slice: Array<T>) = asList().shouldNotStartWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotStartWith(element: T) = this shouldNot startWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotStartWith(slice: Collection<T>) = this shouldNot startWith(slice)
 
 fun <T> startWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
@@ -143,27 +159,44 @@ private data class SliceComparison<T>(
    }
 }
 
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldEndWith(element: T) = toList().shouldEndWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldEndWith(slice: Iterable<T>) = toList().shouldEndWith(slice.toList())
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldEndWith(slice: Array<T>) = toList().shouldEndWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldEndWith(element: T) = asList().shouldEndWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldEndWith(slice: Collection<T>) = asList().shouldEndWith(slice)
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldEndWith(slice: Array<T>) = asList().shouldEndWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldEndWith(element: T) = this.shouldEndWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldEndWith(slice: Collection<T>) = this should endWith(slice)
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldEndWith(slice: Array<T>) = this.shouldEndWith(slice.toList())
 
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotEndWith(element: T) = toList().shouldNotEndWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotEndWith(slice: Iterable<T>) = toList().shouldNotEndWith(slice.toList())
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotEndWith(slice: Array<T>) = toList().shouldNotEndWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotEndWith(element: T) = asList().shouldNotEndWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotEndWith(slice: Collection<T>) = asList().shouldNotEndWith(slice)
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotEndWith(slice: Array<T>) = asList().shouldNotEndWith(slice.asList())
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotEndWith(element: T) = this shouldNot endWith(listOf(element))
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotEndWith(slice: Collection<T>) = this shouldNot endWith(slice)
 
 fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
@@ -182,43 +215,75 @@ fun <T> endWith(expectedSlice: Collection<T>) = object : Matcher<List<T>> {
 
 // Primitive array overloads for shouldStartWith / shouldNotStartWith
 
+@IgnorableReturnValue
 infix fun BooleanArray.shouldStartWith(slice: BooleanArray): BooleanArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun BooleanArray.shouldNotStartWith(slice: BooleanArray): BooleanArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun BooleanArray.shouldEndWith(slice: BooleanArray): BooleanArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun BooleanArray.shouldNotEndWith(slice: BooleanArray): BooleanArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun ByteArray.shouldStartWith(slice: ByteArray): ByteArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun ByteArray.shouldNotStartWith(slice: ByteArray): ByteArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun ByteArray.shouldEndWith(slice: ByteArray): ByteArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun ByteArray.shouldNotEndWith(slice: ByteArray): ByteArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun ShortArray.shouldStartWith(slice: ShortArray): ShortArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun ShortArray.shouldNotStartWith(slice: ShortArray): ShortArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun ShortArray.shouldEndWith(slice: ShortArray): ShortArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun ShortArray.shouldNotEndWith(slice: ShortArray): ShortArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun CharArray.shouldStartWith(slice: CharArray): CharArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun CharArray.shouldNotStartWith(slice: CharArray): CharArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun CharArray.shouldEndWith(slice: CharArray): CharArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun CharArray.shouldNotEndWith(slice: CharArray): CharArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun IntArray.shouldStartWith(slice: IntArray): IntArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun IntArray.shouldNotStartWith(slice: IntArray): IntArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun IntArray.shouldEndWith(slice: IntArray): IntArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun IntArray.shouldNotEndWith(slice: IntArray): IntArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun LongArray.shouldStartWith(slice: LongArray): LongArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun LongArray.shouldNotStartWith(slice: LongArray): LongArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun LongArray.shouldEndWith(slice: LongArray): LongArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun LongArray.shouldNotEndWith(slice: LongArray): LongArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun FloatArray.shouldStartWith(slice: FloatArray): FloatArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun FloatArray.shouldNotStartWith(slice: FloatArray): FloatArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun FloatArray.shouldEndWith(slice: FloatArray): FloatArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun FloatArray.shouldNotEndWith(slice: FloatArray): FloatArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
+@IgnorableReturnValue
 infix fun DoubleArray.shouldStartWith(slice: DoubleArray): DoubleArray = apply { asList().shouldStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun DoubleArray.shouldNotStartWith(slice: DoubleArray): DoubleArray = apply { asList().shouldNotStartWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun DoubleArray.shouldEndWith(slice: DoubleArray): DoubleArray = apply { asList().shouldEndWith(slice.asList()) }
+@IgnorableReturnValue
 infix fun DoubleArray.shouldNotEndWith(slice: DoubleArray): DoubleArray = apply { asList().shouldNotEndWith(slice.asList()) }
 
