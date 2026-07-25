@@ -12,6 +12,7 @@ import com.intellij.psi.PsiManager
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.ClassUtil
 import io.kotest.plugin.intellij.TestElement
+import io.kotest.plugin.intellij.flattenTestName
 import io.kotest.plugin.intellij.psi.specStyleOnEdt
 import org.jetbrains.kotlin.idea.stubindex.KotlinFullClassNameIndex
 import org.jetbrains.kotlin.psi.KtClassOrObject
@@ -55,9 +56,29 @@ internal class EmbeddedLocationTestLocator(private val location: EmbeddedLocatio
    }
 
    private fun findTest(tests: List<TestElement>, contexts: List<String>): TestElement? {
-      val test = tests.find { it.test.name.name == contexts.first() } ?: return null
-      if (contexts.size == 1) return test
+      // A single-segment path is ambiguous: it's either a genuine top-level test, or a nested
+      // test whose ancestor containers were dropped upstream - IntelliJ's Gradle test event
+      // integration only carries a leaf test's own name (unlike the JUnit Platform launcher's
+      // MethodSource, which joins every ancestor segment), so a nested "foo" test running under
+      // Gradle arrives here as a single-segment path indistinguishable from a top-level "foo".
+      // Search the whole tree rather than only the top level, so nested tests still resolve -
+      // to some matching test, at least, even though we can no longer disambiguate same-named
+      // tests under different containers without the full path.
+      if (contexts.size == 1) return findByNameAtAnyDepth(tests, contexts.first())
+
+      // contexts segments come from the engine's runtime test names, which collapse internal/
+      // leading/trailing whitespace (TestNameBuilder.removeAllExtraWhitespaces) - the PSI-side
+      // raw name must be flattened the same way or an otherwise-matching test won't be found.
+      val test = tests.find { it.test.name.name.flattenTestName() == contexts.first() } ?: return null
       return findTest(test.nestedTests, contexts.drop(1))
+   }
+
+   private fun findByNameAtAnyDepth(tests: List<TestElement>, name: String): TestElement? {
+      for (test in tests) {
+         if (test.test.name.name.flattenTestName() == name) return test
+         findByNameAtAnyDepth(test.nestedTests, name)?.let { return it }
+      }
+      return null
    }
 
    private fun createPsiClassNavigable(psiClass: PsiClass): Location<PsiElement> {
