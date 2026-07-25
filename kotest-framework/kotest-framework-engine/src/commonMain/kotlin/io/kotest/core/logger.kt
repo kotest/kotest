@@ -11,8 +11,10 @@ import kotlin.time.TimeSource
 @KotestInternal
 val start by lazy { TimeSource.Monotonic.markNow() }
 
+// Cached once per process: KOTEST_DEBUG is not expected to change mid-run, and this check
+// otherwise re-read a sysprop/env var on every single log call across the whole engine.
 @PublishedApi
-internal fun isLoggingEnabled(): Boolean = syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE"
+internal val isLoggingEnabled: Boolean by lazy { syspropOrEnv("KOTEST_DEBUG")?.uppercase() == "TRUE" }
 
 @KotestInternal
 /**
@@ -30,38 +32,42 @@ class Logger(private val kclass: KClass<*>) {
       inline operator fun <reified T> invoke() = Logger(T::class)
    }
 
+   // inline so f() is never invoked, and no lambda is allocated, when logging is disabled
    @OverloadResolutionByLambdaReturnType
    @JvmName("logpair")
-   fun log(f: () -> Pair<String?, String>) {
-      log {
+   inline fun log(f: () -> Pair<String?, String>) {
+      if (isLoggingEnabled) {
          val (context, message) = f()
-         LogLine(context, message)
+         outputLog(LogLine(context, message))
       }
    }
 
+   // inline so f() is never invoked, and no lambda is allocated, when logging is disabled
    @OverloadResolutionByLambdaReturnType
-   fun log(f: () -> LogLine) {
-      outputLog {
-         val (context, message) = f()
-         listOf(
-            (kclass.simpleName ?: "").padEnd(60, ' '),
-            (context ?: "").padEnd(70, ' ').take(70),
-            message
-         ).joinToString("  ")
+   inline fun log(f: () -> LogLine) {
+      if (isLoggingEnabled) {
+         outputLog(f())
       }
    }
 
    @OverloadResolutionByLambdaReturnType
    @JvmName("logsimple")
-   fun log(f: () -> String) {
-      log { LogLine(null, f()) }
+   // inline so f() is never invoked, and no lambda is allocated, when logging is disabled
+   inline fun log(f: () -> String) {
+      if (isLoggingEnabled) {
+         outputLog(LogLine(null, f()))
+      }
    }
 
-   private fun outputLog(f: () -> String) {
-      if (isLoggingEnabled()) {
-         writeLog(start, null, f) // writes to file where possible e.g., jvm
-         println(start.elapsedNow().inWholeMilliseconds.toString().padStart(6, ' ') + "  " + f())
-      }
+   @PublishedApi
+   internal fun outputLog(line: LogLine) {
+      val message = listOf(
+         (kclass.simpleName ?: "").padEnd(60, ' '),
+         (line.context ?: "").padEnd(70, ' ').take(70),
+         line.message
+      ).joinToString("  ")
+      writeLog(start, null) { message } // writes to file where possible e.g., jvm
+      println(start.elapsedNow().inWholeMilliseconds.toString().padStart(6, ' ') + "  " + message)
    }
 }
 
