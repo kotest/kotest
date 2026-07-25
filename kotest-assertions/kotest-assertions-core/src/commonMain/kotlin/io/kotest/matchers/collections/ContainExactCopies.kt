@@ -82,7 +82,7 @@ fun <T> Array<T>.shouldContainExactCopies(element: T, copies: Int): Array<T> = a
 }
 fun <T, C : Collection<T>> containExactCopies(element: T, copies: Int) = object : Matcher<C> {
    override fun test(value: C) : MatcherResult {
-      require(copies > 0) { "Copies should be positive, was $copies" }
+      require(copies > 0) { "Copies must be at least 1, was $copies." }
       val passedAtIndexes = value.mapIndexedNotNull {
             index, it -> if(it == element) index else null
       }
