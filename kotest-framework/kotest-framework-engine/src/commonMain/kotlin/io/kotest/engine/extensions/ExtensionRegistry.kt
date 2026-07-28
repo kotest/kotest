@@ -44,7 +44,7 @@ class DefaultExtensionRegistry : ExtensionRegistry {
 
    private val extensions = mutableListOf<Pair<Extension, KClass<*>?>>()
 
-   private val lock = Lock()
+   private val synchronizer = io.kotest.common.Synchronizer()
 
    // get(kClass) is invoked twice per spec instantiation (once for constructor extensions, once
    // for post-instantiation extensions), which was previously an O(n) filter/allocation over every
@@ -59,44 +59,44 @@ class DefaultExtensionRegistry : ExtensionRegistry {
    @Volatile
    private var byClass: Map<KClass<*>?, List<Extension>> = emptyMap()
 
-   override fun all(): List<Extension> = synchronized(lock) {
+   override fun all(): List<Extension> = synchronizer.synchronized {
       extensions.map { it.first }
    }
 
-   override fun get(kClass: KClass<*>): List<Extension> = synchronized(lock) {
+   override fun get(kClass: KClass<*>): List<Extension> = synchronizer.synchronized {
       byClass[kClass] ?: emptyList()
    }
 
    override fun add(extension: Extension) {
-      synchronized(lock) {
+      synchronizer.synchronized {
          extensions.add(Pair(extension, null))
          rebuild()
       }
    }
 
    override fun add(extension: Extension, kclass: KClass<*>) {
-      synchronized(lock) {
+      synchronizer.synchronized {
          extensions.add(Pair(extension, kclass))
          rebuild()
       }
    }
 
    override fun remove(extension: Extension) {
-      synchronized(lock) {
+      synchronizer.synchronized {
          extensions.remove(Pair(extension, null))
          rebuild()
       }
    }
 
    override fun remove(extension: Extension, kclass: KClass<*>) {
-      synchronized(lock) {
+      synchronizer.synchronized {
          extensions.remove(Pair(extension, kclass))
          rebuild()
       }
    }
 
    override fun clear() {
-      synchronized(lock) {
+      synchronizer.synchronized {
          extensions.clear()
          rebuild()
       }
