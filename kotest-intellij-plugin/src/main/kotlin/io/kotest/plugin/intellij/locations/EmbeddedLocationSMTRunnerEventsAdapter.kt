@@ -139,7 +139,7 @@ internal object EmbeddedLocationParser {
       // Only bail to the default locator when the FQN genuinely isn't a Kotest spec - Kotest's
       // own single-level tests aren't real JVM methods, so the default locator can't resolve them.
       if (!segments.contains('/') && !isKotestSpec(fqn)) return null
-      val allSegments = if (segments.contains('/')) segments.split("/") else listOf(segments)
+      val allSegments = if (segments.contains('/')) segments.split("/") else ancestorNames + segments
       val path = "$fqn${DescriptorPaths.SPEC_DELIMITER}${allSegments.joinToString(DescriptorPaths.TEST_DELIMITER)}"
       return EmbeddedLocation(path, displayName)
    }
