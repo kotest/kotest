@@ -172,4 +172,68 @@ class EmbeddedLocationSMTRunnerEventsAdapterTest : LightJavaCodeInsightFixtureTe
    fun `test parseLocationUrl null returns null`() {
       EmbeddedLocationParser.parseLocationUrl(null, "anything") { false }.shouldBeNull()
    }
+
+   // -------- ancestorNames: restoring the path Gradle test events drop --------
+
+   fun `test parseLocationUrl uses ancestorNames to restore a nested path for a single segment url`() {
+      // IntelliJ's Gradle test event integration collapses "base/inner root/child1" down to just
+      // "child1" on the locationUrl - ancestorNames (from GradleParentIdParser) restores it.
+      EmbeddedLocationParser.parseLocationUrl(
+         "java:test://com.example.MySpec/child1",
+         "child1",
+         listOf("base", "inner root")
+      ) { true } shouldBe EmbeddedLocation("com.example.MySpec/base -- inner root -- child1", "child1")
+   }
+
+   fun `test parseLocationUrl ignores ancestorNames when the url already encodes a nested path`() {
+      // A multi-segment MethodSource-derived url (from the IntelliJ-native JUnit launcher) already
+      // has the full path - ancestorNames must not be appended on top of it.
+      EmbeddedLocationParser.parseLocationUrl(
+         "java:test://com.example.MySpec/outer/inner/leaf",
+         "leaf",
+         listOf("shouldNotAppear")
+      ) { false } shouldBe EmbeddedLocation("com.example.MySpec/outer -- inner -- leaf", "leaf")
+   }
+
+   fun `test parseLocationUrl with empty ancestorNames behaves as a top level test`() {
+      EmbeddedLocationParser.parseLocationUrl(
+         "java:test://com.example.MySpec/topLevel",
+         "topLevel",
+         emptyList()
+      ) { true } shouldBe EmbeddedLocation("com.example.MySpec/topLevel", "topLevel")
+   }
+
+   // -------- GradleParentIdParser --------
+
+   fun `test ancestorContextNames extracts and reverses suite names ignoring the leading id`() {
+      // real strings captured from a debugger session against GradleSMTestProxy#getParentId
+      val parentId =
+         "[-1862748639:723354132] > [Test suite 'inner root'] > [Test suite 'base'] > " +
+            "[Test class io.github.alfonsoristorato.jpaspeckotlindsl.archunit.Random] > [Task :jpa-spec-kotlin-dsl:test]"
+      GradleParentIdParser.ancestorContextNames(parentId) shouldBe listOf("base", "inner root")
+   }
+
+   fun `test ancestorContextNames for a container one level below the spec`() {
+      val parentId =
+         "[-1862748639:723354132] > [Test suite 'base'] > " +
+            "[Test class io.github.alfonsoristorato.jpaspeckotlindsl.archunit.Random] > [Task :jpa-spec-kotlin-dsl:test]"
+      GradleParentIdParser.ancestorContextNames(parentId) shouldBe listOf("base")
+   }
+
+   fun `test ancestorContextNames for a top level container directly under the spec`() {
+      val parentId =
+         "[-1862748639:723354132] > [Test class io.github.alfonsoristorato.jpaspeckotlindsl.archunit.Random] > [Task :jpa-spec-kotlin-dsl:test]"
+      GradleParentIdParser.ancestorContextNames(parentId) shouldBe emptyList()
+   }
+
+   fun `test ancestorContextNames disambiguates a second root with the same inner container name`() {
+      val parentId =
+         "[-1862748639:723354132] > [Test suite 'inner root'] > [Test suite 'base 2'] > " +
+            "[Test class io.github.alfonsoristorato.jpaspeckotlindsl.archunit.Random] > [Task :jpa-spec-kotlin-dsl:test]"
+      GradleParentIdParser.ancestorContextNames(parentId) shouldBe listOf("base 2", "inner root")
+   }
+
+   fun `test ancestorContextNames returns empty list for null parentId`() {
+      GradleParentIdParser.ancestorContextNames(null) shouldBe emptyList()
+   }
 }

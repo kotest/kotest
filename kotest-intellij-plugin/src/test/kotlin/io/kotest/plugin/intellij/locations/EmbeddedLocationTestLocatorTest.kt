@@ -3,6 +3,7 @@ package io.kotest.plugin.intellij.locations
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.testFramework.fixtures.LightJavaCodeInsightFixtureTestCase
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.ints.shouldBeGreaterThan
 import java.nio.file.Paths
 
 /**
@@ -54,5 +55,26 @@ class EmbeddedLocationTestLocatorTest : LightJavaCodeInsightFixtureTestCase() {
          "a nested test"
       )
       resolve(location) shouldHaveSize 1
+   }
+
+   fun `test resolves the correct leaf when the same name is nested under two different top level containers`() {
+      // "child1" appears twice - once under "base", once under "base 2" - a bare single-segment
+      // path can't tell these apart (see EmbeddedLocationTestLocator#findByNameAtAnyDepth), but
+      // once GradleParentIdParser restores the real ancestor chain onto the path (as
+      // EmbeddedLocationParser#parseLocationUrl now does), navigation must land on the exact one.
+      myFixture.configureByFiles("/duplicate-leaf-funspec.kt", "/io/kotest/core/spec/style/specs.kt")
+      val location = EmbeddedLocation(
+         "io.kotest.samples.gradle.DuplicateLeafFunSpecExampleTest/base 2 -- inner root -- child1",
+         "child1"
+      )
+      val results = resolve(location)
+      results shouldHaveSize 1
+
+      val fileText = results.first().psiElement.containingFile.text
+      val resolvedOffset = results.first().psiElement.textRange.startOffset
+      // the "base 2" block starts strictly after the "base" block in source, so landing after
+      // "base 2"'s own declaration (and not merely after "base"'s) proves we resolved the leaf
+      // nested under "base 2", not the identically-named one under "base".
+      resolvedOffset shouldBeGreaterThan fileText.indexOf("context(\"base 2\")")
    }
 }
