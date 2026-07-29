@@ -109,6 +109,8 @@ class DefaultExtensionRegistry : ExtensionRegistry {
    override fun isEmpty(): Boolean = synchronizer.synchronized { extensions.isEmpty() }
    override fun isNotEmpty(): Boolean = synchronizer.synchronized { extensions.isNotEmpty() }
 
+}   
+
 object EmptyExtensionRegistry : ExtensionRegistry {
 
    override fun all(): List<Extension> = emptyList()
