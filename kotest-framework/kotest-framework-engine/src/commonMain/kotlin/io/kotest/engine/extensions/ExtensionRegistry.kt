@@ -106,11 +106,8 @@ class DefaultExtensionRegistry : ExtensionRegistry {
       byClass = extensions.groupBy({ it.second }, { it.first })
    }
 
-   override fun isEmpty(): Boolean = extensions.isEmpty()
-   override fun isNotEmpty(): Boolean = extensions.isNotEmpty()
-
-   private class Lock
-}
+   override fun isEmpty(): Boolean = synchronizer.synchronized { extensions.isEmpty() }
+   override fun isNotEmpty(): Boolean = synchronizer.synchronized { extensions.isNotEmpty() }
 
 object EmptyExtensionRegistry : ExtensionRegistry {
 
