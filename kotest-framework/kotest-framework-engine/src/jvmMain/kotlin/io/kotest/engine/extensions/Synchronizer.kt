@@ -1,6 +1,6 @@
-package io.kotest.common
+package io.kotest.engine.extensions
 
-actual class Synchronizer {
+internal actual class Synchronizer {
    private val lock = Lock()
 
    actual fun<T> synchronized(block: () -> T): T {

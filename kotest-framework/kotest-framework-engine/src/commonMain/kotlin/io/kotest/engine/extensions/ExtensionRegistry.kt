@@ -44,7 +44,7 @@ class DefaultExtensionRegistry : ExtensionRegistry {
 
    private val extensions = mutableListOf<Pair<Extension, KClass<*>?>>()
 
-   private val synchronizer = io.kotest.common.Synchronizer()
+   private val synchronizer = Synchronizer()
 
    // get(kClass) is invoked twice per spec instantiation (once for constructor extensions, once
    // for post-instantiation extensions), which was previously an O(n) filter/allocation over every
