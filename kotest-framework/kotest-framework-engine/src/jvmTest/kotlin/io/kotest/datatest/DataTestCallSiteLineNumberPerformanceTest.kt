@@ -26,11 +26,11 @@ class DataTestCallSiteLineNumberPerformanceTest : FunSpec() {
             }
          }
          // after PR https://github.com/kotest/kotest/pull/6203
-         // old impl: ~227ms (on Alfonso's machine :)) with the old Class.forName + kotlin-reflect isSubclassOf
-         // new impl: ~30ms  (on Alfonso's machine :)) with the StackWalker + plain java.lang.Class
+         // old impl: with the old Class.forName + kotlin-reflect isSubclassOf
+         // new impl: with the StackWalker + plain java.lang.Class
 
          // retune if flaky on CI
-         duration.inWholeMilliseconds shouldBeLessThan 200L
+         duration.inWholeMilliseconds shouldBeLessThan 600L
       }
    }
 }

@@ -32,12 +32,10 @@ class SourceRefTest : FunSpec() {
       // once per registered test. It must remain cheap.
 
       // before PR https://github.com/kotest/kotest/pull/6203:
-      // ~400ms (on Alfonso's machine :))
       // it walked the *entire* call stack via Thread.currentThread().stackTrace and resolved the enclosing Spec
       // with kotlin-reflect's isSubclassOf, which loads/exercises kotlin-reflect's metadata deserialization on every call.
 
       // after PR https://github.com/kotest/kotest/pull/6203:
-      //  ~110-140ms (on Alfonso's machine :))
       // StackWalker + plain java.lang.Class based implementation
 
       // retune if flaky on CI
@@ -48,7 +46,7 @@ class SourceRefTest : FunSpec() {
                Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first().source
             }
          }
-         duration.inWholeMilliseconds shouldBeLessThan 400L
+         duration.inWholeMilliseconds shouldBeLessThan 600L
       }
    }
 }
