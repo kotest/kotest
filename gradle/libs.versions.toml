@@ -24,7 +24,7 @@ arrow = "2.1.2"
 
 blockhound = "1.0.17.RELEASE"
 byte-buddy = "1.18.11"
-classgraph = "4.8.184"
+classgraph = "4.8.186"
 
 commons-lang3 = "3.20.0"
 commons-beanutils = "1.11.0" # CVE-2025-48734 fix; pulled transitively by mockserver via json-path
