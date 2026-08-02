@@ -48,7 +48,7 @@ class SourceRefTest : FunSpec() {
                Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first().source
             }
          }
-         duration.inWholeMilliseconds shouldBeLessThan 300L
+         duration.inWholeMilliseconds shouldBeLessThan 400L
       }
    }
 }

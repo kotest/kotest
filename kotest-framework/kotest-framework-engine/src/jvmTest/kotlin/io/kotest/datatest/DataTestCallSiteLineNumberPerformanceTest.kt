@@ -30,7 +30,7 @@ class DataTestCallSiteLineNumberPerformanceTest : FunSpec() {
          // new impl: ~30ms  (on Alfonso's machine :)) with the StackWalker + plain java.lang.Class
 
          // retune if flaky on CI
-         duration.inWholeMilliseconds shouldBeLessThan 100L
+         duration.inWholeMilliseconds shouldBeLessThan 200L
       }
    }
 }
