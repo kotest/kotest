@@ -46,8 +46,6 @@ internal object SpringJavaCompatibility {
       }
       fallbackMethodForFinalSpecs
    } else {
-      // computeIfAbsent (not the Kotlin getOrPut extension) so concurrent first-lookups of the
-      // same test case are guaranteed to generate the fake method at most once.
       fakeMethodCache.getOrPut(testCase.descriptor) { generateFakeMethod(testCase) }
    }
 
