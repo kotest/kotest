@@ -2,6 +2,7 @@
 
 package io.kotest.extensions.spring
 
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.extensions.SpecExtension
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.spec.Spec
@@ -18,6 +19,7 @@ import org.springframework.test.context.TestContextManager
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 @Deprecated("Use SpringExtension which combines this and SpringAutowireConstructorExtension. Deprecated since 6.0")
@@ -25,6 +27,11 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
    SpecExtension {
 
    var ignoreSpringListenerOnFinalClassWarning: Boolean = false
+
+   // method() is called once per test case; the generated Method only needs to exist once per
+   // test case, not be regenerated on retries/re-lookups, so cache it instead of generating a
+   // fresh ByteBuddy subclass (and loading it into a new classloader) every time.
+   private val fakeMethodCache = ConcurrentHashMap<Descriptor.TestDescriptor, Method>()
 
    override suspend fun intercept(spec: Spec, execute: suspend (Spec) -> Unit) {
       safeClassName(spec::class)
@@ -75,6 +82,10 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
       this@SpringTestExtension::class.java.methods.firstOrNull { it.name == "intercept" }
          ?: error("Could not find method 'intercept' to attach spring lifecycle methods to")
    } else {
+      fakeMethodCache.getOrPut(testCase.descriptor) { generateFakeMethod(testCase) }
+   }
+
+   private fun generateFakeMethod(testCase: TestCase): Method {
       val methodName = methodName(testCase)
       val fakeSpec = ByteBuddy()
          .subclass(testCase.spec::class.java)
@@ -83,7 +94,7 @@ class SpringTestExtension(private val mode: SpringTestLifecycleMode = SpringTest
          .make()
          .load(this::class.java.classLoader, ClassLoadingStrategy.Default.CHILD_FIRST)
          .loaded
-      fakeSpec.getMethod(methodName)
+      return fakeSpec.getMethod(methodName)
    }
 
    /**
