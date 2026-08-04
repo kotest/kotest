@@ -49,7 +49,7 @@ data class TestName(
    }
 }
 
-private fun String.flattenTestName() = this.trim().replace("\\s+".toRegex(), " ")
+internal fun String.flattenTestName() = this.trim().replace("\\s+".toRegex(), " ")
 // components for the path should not include prefixes
 data class TestPathEntry(val name: String)
 
