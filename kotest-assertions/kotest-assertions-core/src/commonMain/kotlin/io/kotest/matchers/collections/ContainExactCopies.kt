@@ -7,21 +7,37 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun BooleanArray.shouldContainExactCopies(element: Boolean, copies: Int): BooleanArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun BooleanArray.shouldNotContainExactCopies(element: Boolean, copies: Int): BooleanArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun ByteArray.shouldContainExactCopies(element: Byte, copies: Int): ByteArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun ByteArray.shouldNotContainExactCopies(element: Byte, copies: Int): ByteArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun ShortArray.shouldContainExactCopies(element: Short, copies: Int): ShortArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun ShortArray.shouldNotContainExactCopies(element: Short, copies: Int): ShortArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun CharArray.shouldContainExactCopies(element: Char, copies: Int): CharArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun CharArray.shouldNotContainExactCopies(element: Char, copies: Int): CharArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun IntArray.shouldContainExactCopies(element: Int, copies: Int): IntArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun IntArray.shouldNotContainExactCopies(element: Int, copies: Int): IntArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun LongArray.shouldContainExactCopies(element: Long, copies: Int): LongArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun LongArray.shouldNotContainExactCopies(element: Long, copies: Int): LongArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun FloatArray.shouldContainExactCopies(element: Float, copies: Int): FloatArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun FloatArray.shouldNotContainExactCopies(element: Float, copies: Int): FloatArray = apply { asList().shouldNotContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun DoubleArray.shouldContainExactCopies(element: Double, copies: Int): DoubleArray = apply { asList().shouldContainExactCopies(element, copies) }
+@IgnorableReturnValue
 fun DoubleArray.shouldNotContainExactCopies(element: Double, copies: Int): DoubleArray = apply { asList().shouldNotContainExactCopies(element, copies) }
 
 /**
@@ -32,6 +48,7 @@ fun DoubleArray.shouldNotContainExactCopies(element: Double, copies: Int): Doubl
  *
  * @see [containExactCopies]
  */
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotContainExactCopies(element: T, copies: Int): I = apply {
    toList() shouldNot containExactCopies(element, copies)
 }
@@ -44,6 +61,7 @@ fun <T, I : Iterable<T>> I.shouldNotContainExactCopies(element: T, copies: Int):
  *
  * @see [containExactCopies]
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotContainExactCopies(element: T, copies: Int): Array<T> = apply {
    asList().shouldNotContainExactCopies(element, copies)
 }
@@ -61,6 +79,7 @@ fun <T> Array<T>.shouldNotContainExactCopies(element: T, copies: Int): Array<T> 
  * @see [containExactCopies]
  */
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldContainExactCopies(element: T, copies: Int): I = apply {
    toList() should containExactCopies(element, copies)
 }
@@ -77,6 +96,7 @@ fun <T, I : Iterable<T>> I.shouldContainExactCopies(element: T, copies: Int): I 
  *
  * @see [containExactCopies]
  */
+@IgnorableReturnValue
 fun <T> Array<T>.shouldContainExactCopies(element: T, copies: Int): Array<T> = apply {
    asList().shouldContainExactCopies(element, copies)
 }

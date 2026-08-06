@@ -7,45 +7,54 @@ import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldHaveSingleElement(t: T): I {
    toList().shouldHaveSingleElement(t)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldHaveSingleElement(t: T): Array<T> {
    asList().shouldHaveSingleElement(t)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldHaveSingleElement(p: (T) -> Boolean): I {
    toList().shouldHaveSingleElement(p)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldHaveSingleElement(p: (T) -> Boolean): Array<T> {
    asList().shouldHaveSingleElement(p)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldHaveSingleElement(t: T): C {
    this should singleElement(t)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldHaveSingleElement(p: (T) -> Boolean): C {
    this should singleElement(p)
    return this
 }
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldNotHaveSingleElement(t: T): I {
    toList().shouldNotHaveSingleElement(t)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotHaveSingleElement(t: T): Array<T> {
    asList().shouldNotHaveSingleElement(t)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldNotHaveSingleElement(t: T): C {
    this shouldNot singleElement(t)
    return this

@@ -6,10 +6,12 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.sql.ResultSet
 
+@IgnorableReturnValue
 infix fun ResultSet.shouldHaveRows(rowCount: Int) = this should haveRowCount(
    rowCount
 )
 
+@IgnorableReturnValue
 infix fun ResultSet.shouldNotHaveRows(rowCount: Int) = this shouldNot haveRowCount(
    rowCount
 )
@@ -23,10 +25,12 @@ fun haveRowCount(rowCount: Int) = object : Matcher<ResultSet> {
       )
 }
 
+@IgnorableReturnValue
 infix fun ResultSet.shouldHaveColumns(columnCount: Int) = this should haveColumnCount(
    columnCount
 )
 
+@IgnorableReturnValue
 infix fun ResultSet.shouldNotHaveColumns(columnCount: Int) = this shouldNot haveColumnCount(
    columnCount
 )
@@ -40,10 +44,12 @@ fun haveColumnCount(columnCount: Int) = object : Matcher<ResultSet> {
       )
 }
 
+@IgnorableReturnValue
 infix fun ResultSet.shouldContainColumn(columnName: String) = this should containColumn(
    columnName
 )
 
+@IgnorableReturnValue
 infix fun ResultSet.shouldNotContainColumn(columnName: String) = this shouldNot containColumn(
    columnName
 )
@@ -61,6 +67,7 @@ fun containColumn(columnName: String) = object : Matcher<ResultSet> {
 }
 
 @Suppress("UNCHECKED_CAST")
+@IgnorableReturnValue
 fun <T> ResultSet.shouldHaveColumn(columnName: String, next: (List<T>) -> Unit) {
    this shouldContainColumn columnName
    val data = mutableListOf<T>()
@@ -70,6 +77,7 @@ fun <T> ResultSet.shouldHaveColumn(columnName: String, next: (List<T>) -> Unit) 
    next(data)
 }
 
+@IgnorableReturnValue
 fun ResultSet.shouldHaveRow(rowNum: Int, next: (List<Any>) -> Unit) {
    val metaData = this.metaData
    val colCount = metaData.columnCount

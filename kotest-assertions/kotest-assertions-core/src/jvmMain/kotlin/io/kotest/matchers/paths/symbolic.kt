@@ -7,7 +7,9 @@ import io.kotest.matchers.shouldNot
 import java.nio.file.Files
 import java.nio.file.Path
 
+@IgnorableReturnValue
 fun Path.shouldBeSymbolicLink() = this should beSymbolicLink()
+@IgnorableReturnValue
 fun Path.shouldNotBeSymbolicLink() = this shouldNot beSymbolicLink()
 fun beSymbolicLink() = object : Matcher<Path> {
    override fun test(value: Path) = MatcherResult(

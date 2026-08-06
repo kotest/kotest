@@ -9,6 +9,7 @@ import kotlinx.coroutines.TimeoutCancellationException
  * @param thunk the code with assertions to be executed
  * @return the return value of the supplied [thunk]
  */
+@IgnorableReturnValue
 inline fun <R> withClue(clue: Any?, thunk: () -> R): R {
    return clue.asClue { thunk() }
 }
@@ -21,6 +22,7 @@ inline fun <R> withClue(clue: Any?, thunk: () -> R): R {
  * @param thunk the code with assertions to be executed
  * @return the return value of the supplied [thunk]
  */
+@IgnorableReturnValue
 inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
    val collector = errorCollector
    try {
@@ -56,6 +58,7 @@ inline fun <R> withClue(crossinline clue: () -> Any?, thunk: () -> R): R {
  * @return the return value of the supplied [block]
  */
 @Suppress("USELESS_CAST")
+@IgnorableReturnValue
 inline fun <T, R> T.asClue(block: (T) -> R): R =
    withClue(
       // The cast is needed to avoid calling withClue(Any)

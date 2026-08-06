@@ -11,6 +11,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * To supply more options to until, use the overload that accepts an [UntilConfiguration].
  */
+@IgnorableReturnValue
 suspend fun until(
    duration: Duration,
    test: suspend () -> Boolean,
@@ -24,6 +25,7 @@ suspend fun until(
  *
  * To supply more options to until, use the overload that accepts an [UntilConfiguration].
  */
+@IgnorableReturnValue
 suspend fun until(
    durationMs: Long,
    test: suspend () -> Boolean,
@@ -34,6 +36,7 @@ suspend fun until(
 /**
  * Runs a function [test] until it returns true, using the supplied [config].
  */
+@IgnorableReturnValue
 suspend fun until(
    config: UntilConfiguration,
    test: suspend () -> Boolean,

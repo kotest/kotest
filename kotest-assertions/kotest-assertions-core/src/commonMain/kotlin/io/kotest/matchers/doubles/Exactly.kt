@@ -21,6 +21,7 @@ import io.kotest.matchers.shouldNotBe
  * This matcher considers NaN to be equal to NaN.
  * To disable this behavior, set the system property `kotest.assertions.nan.equality.disable` to true.
  */
+@IgnorableReturnValue
 infix fun Double.shouldBeExactly(other: Double): Double {
    if (AssertionsConfig.disableNaNEquality) {
       this shouldBe exactly(other)
@@ -45,6 +46,7 @@ infix fun Double.shouldBeExactly(other: Double): Double {
  * This matcher considers NaN to be equal to NaN.
  * To disable this behavior, set the system property `kotest.assertions.nan.equality.disable` to true.
  */
+@IgnorableReturnValue
 infix fun Double.shouldNotBeExactly(other: Double): Double {
    if (AssertionsConfig.disableNaNEquality) {
       this shouldNotBe exactly(other)

@@ -6,101 +6,121 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun BooleanArray.shouldContainDuplicates(): BooleanArray {
    asList() should ContainDuplicatesMatcher("BooleanArray")
    return this
 }
 
+@IgnorableReturnValue
 fun BooleanArray.shouldNotContainDuplicates(): BooleanArray {
    asList() shouldNot ContainDuplicatesMatcher("BooleanArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ByteArray.shouldContainDuplicates(): ByteArray {
    asList() should ContainDuplicatesMatcher("ByteArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ByteArray.shouldNotContainDuplicates(): ByteArray {
    asList() shouldNot ContainDuplicatesMatcher("ByteArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ShortArray.shouldContainDuplicates(): ShortArray {
    asList() should ContainDuplicatesMatcher("ShortArray")
    return this
 }
 
+@IgnorableReturnValue
 fun ShortArray.shouldNotContainDuplicates(): ShortArray {
    asList() shouldNot ContainDuplicatesMatcher("ShortArray")
    return this
 }
 
+@IgnorableReturnValue
 fun CharArray.shouldContainDuplicates(): CharArray {
    asList() should ContainDuplicatesMatcher("CharArray")
    return this
 }
 
+@IgnorableReturnValue
 fun CharArray.shouldNotContainDuplicates(): CharArray {
    asList() shouldNot ContainDuplicatesMatcher("CharArray")
    return this
 }
 
+@IgnorableReturnValue
 fun IntArray.shouldContainDuplicates(): IntArray {
    asList() should ContainDuplicatesMatcher("IntArray")
    return this
 }
 
+@IgnorableReturnValue
 fun IntArray.shouldNotContainDuplicates(): IntArray {
    asList() shouldNot ContainDuplicatesMatcher("IntArray")
    return this
 }
 
+@IgnorableReturnValue
 fun LongArray.shouldContainDuplicates(): LongArray {
    asList() should ContainDuplicatesMatcher("LongArray")
    return this
 }
 
+@IgnorableReturnValue
 fun LongArray.shouldNotContainDuplicates(): LongArray {
    asList() shouldNot ContainDuplicatesMatcher("LongArray")
    return this
 }
 
+@IgnorableReturnValue
 fun FloatArray.shouldContainDuplicates(): FloatArray {
    asList() should ContainDuplicatesMatcher("FloatArray")
    return this
 }
 
+@IgnorableReturnValue
 fun FloatArray.shouldNotContainDuplicates(): FloatArray {
    asList() shouldNot ContainDuplicatesMatcher("FloatArray")
    return this
 }
 
+@IgnorableReturnValue
 fun DoubleArray.shouldContainDuplicates(): DoubleArray {
    asList() should ContainDuplicatesMatcher("DoubleArray")
    return this
 }
 
+@IgnorableReturnValue
 fun DoubleArray.shouldNotContainDuplicates(): DoubleArray {
    asList() shouldNot ContainDuplicatesMatcher("DoubleArray")
    return this
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>.shouldContainDuplicates(): Array<T> {
    asList() should ContainDuplicatesMatcher("Array")
    return this
 }
 
+@IgnorableReturnValue
 fun <T> Array<T>.shouldNotContainDuplicates(): Array<T> {
    asList() shouldNot ContainDuplicatesMatcher("Array")
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldContainDuplicates(): I {
    this should ContainDuplicatesMatcher(null)
    return this
 }
 
+@IgnorableReturnValue
 fun <T, I : Iterable<T>> I.shouldNotContainDuplicates(): I {
    this shouldNot ContainDuplicatesMatcher(null)
    return this

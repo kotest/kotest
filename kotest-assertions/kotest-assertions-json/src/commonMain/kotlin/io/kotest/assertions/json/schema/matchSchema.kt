@@ -13,10 +13,12 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 
 @ExperimentalKotest
+@IgnorableReturnValue
 infix fun String?.shouldMatchSchema(schema: JsonSchema) =
    this should stringJsonMatcher(schema)
 
 @ExperimentalKotest
+@IgnorableReturnValue
 infix fun String?.shouldNotMatchSchema(schema: JsonSchema) =
    this shouldNot stringJsonMatcher(schema)
 
@@ -26,9 +28,11 @@ internal fun stringJsonMatcher(schema: JsonSchema): Matcher<String?> {
 }
 
 @ExperimentalKotest
+@IgnorableReturnValue
 infix fun JsonElement.shouldMatchSchema(schema: JsonSchema) = this should matchSchema(schema)
 
 @ExperimentalKotest
+@IgnorableReturnValue
 infix fun JsonElement.shouldNotMatchSchema(schema: JsonSchema) = this shouldNot matchSchema(schema)
 
 val parseToJson = object : Matcher<String?> {

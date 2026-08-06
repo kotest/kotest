@@ -18,6 +18,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
  */
+@IgnorableReturnValue
 infix fun <T> T.shouldBeOneOf(collection: Collection<T>): T {
    this should beOneOf(collection)
    return this
@@ -35,6 +36,7 @@ infix fun <T> T.shouldBeOneOf(collection: Collection<T>): T {
  * @see [shouldBeOneOf]
  * @see [beOneOf]
  */
+@IgnorableReturnValue
 infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>): T {
    this shouldNot beOneOf(collection)
    return this
@@ -51,6 +53,7 @@ infix fun <T> T.shouldNotBeOneOf(collection: Collection<T>): T {
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
  */
+@IgnorableReturnValue
 fun <T> T.shouldBeOneOf(vararg any: T): T {
    this should beOneOf(any.toList())
    return this
@@ -68,6 +71,7 @@ fun <T> T.shouldBeOneOf(vararg any: T): T {
  * @see [shouldNotBeOneOf]
  * @see [beOneOf]
  */
+@IgnorableReturnValue
 fun <T> T.shouldNotBeOneOf(vararg any: T): T {
    this shouldNot beOneOf(any.toList())
    return this

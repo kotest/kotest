@@ -7,21 +7,25 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldMatch(regex: String): A {
    this should match(regex)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldMatch(regex: Regex): A {
    this should match(regex)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotMatch(regex: String): A {
    this shouldNot match(regex)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotMatch(regex: Regex): A {
    this shouldNot match(regex)
    return this!!

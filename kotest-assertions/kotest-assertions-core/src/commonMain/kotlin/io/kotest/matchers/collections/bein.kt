@@ -20,6 +20,7 @@ import kotlin.jvm.JvmName
  * @see [shouldNotBeIn]
  * @see [beIn]
  */
+@IgnorableReturnValue
 infix fun <T> T.shouldBeIn(collection: Collection<T>): T {
    this should beIn(collection)
    return this
@@ -37,6 +38,7 @@ infix fun <T> T.shouldBeIn(collection: Collection<T>): T {
  * @see [shouldNotBeIn]
  * @see [beIn]
  */
+@IgnorableReturnValue
 infix fun <T> T.shouldNotBeIn(collection: Collection<T>): T {
    this shouldNot beIn(collection.toList())
    return this
@@ -54,6 +56,7 @@ infix fun <T> T.shouldNotBeIn(collection: Collection<T>): T {
  * @see [shouldNotBeIn]
  * @see [beIn]
  */
+@IgnorableReturnValue
 fun <T> T.shouldBeIn(vararg any: T): T {
    this should beIn(any.toList())
    return this
@@ -71,6 +74,7 @@ fun <T> T.shouldBeIn(vararg any: T): T {
  * @see [shouldNotBeIn]
  * @see [beIn]
  */
+@IgnorableReturnValue
 fun <T> T.shouldNotBeIn(vararg any: T): T {
    this shouldNot beIn(any.toList())
    return this
@@ -90,6 +94,7 @@ fun <T> T.shouldNotBeIn(vararg any: T): T {
  * @see [beIn]
  */
 @JvmName("shouldBeInArray")
+@IgnorableReturnValue
 infix fun <T> T.shouldBeIn(array: Array<T>): T {
    this should beIn(array.toList())
    return this
@@ -108,86 +113,103 @@ infix fun <T> T.shouldBeIn(array: Array<T>): T {
  * @see [beIn]
  */
 @JvmName("shouldNotBeInArray")
+@IgnorableReturnValue
 infix fun <T> T.shouldNotBeIn(array: Array<T>): T {
    this shouldNot beIn(array.toList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldBeIn(array: IntArray): Int {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Int.shouldNotBeIn(array: IntArray): Int {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Long.shouldBeIn(array: LongArray): Long {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Long.shouldNotBeIn(array: LongArray): Long {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldBeIn(array: FloatArray): Float {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Float.shouldNotBeIn(array: FloatArray): Float {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Double.shouldBeIn(array: DoubleArray): Double {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Double.shouldNotBeIn(array: DoubleArray): Double {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Byte.shouldBeIn(array: ByteArray): Byte {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Byte.shouldNotBeIn(array: ByteArray): Byte {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Short.shouldBeIn(array: ShortArray): Short {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Short.shouldNotBeIn(array: ShortArray): Short {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Char.shouldBeIn(array: CharArray): Char {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Char.shouldNotBeIn(array: CharArray): Char {
    this shouldNot beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Boolean.shouldBeIn(array: BooleanArray): Boolean {
    this should beIn(array.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun Boolean.shouldNotBeIn(array: BooleanArray): Boolean {
    this shouldNot beIn(array.asList())
    return this

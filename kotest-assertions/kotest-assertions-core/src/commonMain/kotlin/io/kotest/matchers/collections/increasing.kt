@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldNot
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeStrictlyIncreasing(): I {
    toList().shouldBeStrictlyIncreasing()
    return this
@@ -23,6 +24,7 @@ fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeStrictlyIncreasing(): I {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing(): Array<T> {
    asList().shouldBeStrictlyIncreasing()
    return this
@@ -34,6 +36,7 @@ fun <T : Comparable<T>> Array<T>.shouldBeStrictlyIncreasing(): Array<T> {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldBeStrictlyIncreasing(): Sequence<T> {
    asIterable().shouldBeStrictlyIncreasing()
    return this
@@ -45,31 +48,37 @@ fun <T : Comparable<T>> Sequence<T>.shouldBeStrictlyIncreasing(): Sequence<T> {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldBeStrictlyIncreasing(): List<T> {
    this should beStrictlyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldNotBeStrictlyIncreasing(): I {
    toList().shouldNotBeStrictlyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldNotBeStrictlyIncreasing(): Array<T> {
    asList().shouldNotBeStrictlyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldNotBeStrictlyIncreasing(): Sequence<T> {
    asIterable().shouldNotBeStrictlyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldNotBeStrictlyIncreasing(): List<T> {
    this shouldNot beStrictlyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeMonotonicallyIncreasing(): I {
    toList().shouldBeMonotonicallyIncreasing()
    return this
@@ -81,6 +90,7 @@ fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeMonotonicallyIncreasing(): I 
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyIncreasing(): Array<T> {
    asList().shouldBeMonotonicallyIncreasing()
    return this
@@ -92,6 +102,7 @@ fun <T : Comparable<T>> Array<T>.shouldBeMonotonicallyIncreasing(): Array<T> {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldBeMonotonicallyIncreasing(): Sequence<T> {
    asIterable().shouldBeMonotonicallyIncreasing()
    return this
@@ -103,26 +114,31 @@ fun <T : Comparable<T>> Sequence<T>.shouldBeMonotonicallyIncreasing(): Sequence<
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldBeMonotonicallyIncreasing(): List<T> {
    this should beMonotonicallyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldNotBeMonotonicallyIncreasing(): I {
    toList().shouldNotBeMonotonicallyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldNotBeMonotonicallyIncreasing(): Array<T> {
    asList().shouldNotBeMonotonicallyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Sequence<T>.shouldNotBeMonotonicallyIncreasing(): Sequence<T> {
    asIterable().shouldNotBeMonotonicallyIncreasing()
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing(): List<T> {
    this shouldNot beMonotonicallyIncreasing()
    return this
@@ -134,6 +150,7 @@ fun <T : Comparable<T>> List<T>.shouldNotBeMonotonicallyIncreasing(): List<T> {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this should beMonotonicallyIncreasingWith(comparator)
    return this
@@ -145,6 +162,7 @@ infix fun <T> List<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
    asIterable().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
@@ -156,6 +174,7 @@ infix fun <T> Sequence<T>.shouldBeMonotonicallyIncreasingWith(comparator: Compar
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
@@ -167,26 +186,31 @@ infix fun <T, I : Iterable<T>> I.shouldBeMonotonicallyIncreasingWith(comparator:
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldNotBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeMonotonicallyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
    asIterable().shouldNotBeMonotonicallyIncreasingWith(comparator)
    return this
@@ -198,6 +222,7 @@ infix fun <T> Sequence<T>.shouldNotBeMonotonicallyIncreasingWith(comparator: Com
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this should beStrictlyIncreasingWith(comparator)
    return this
@@ -209,6 +234,7 @@ infix fun <T> List<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldBeStrictlyIncreasingWith(comparator)
    return this
@@ -220,6 +246,7 @@ infix fun <T, I : Iterable<T>> I.shouldBeStrictlyIncreasingWith(comparator: Comp
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldBeStrictlyIncreasingWith(comparator)
    return this
@@ -231,26 +258,31 @@ infix fun <T> Array<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in 
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldBeStrictlyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
    asIterable().shouldBeStrictlyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> List<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): List<T> {
    this shouldNot beStrictlyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): I {
    toList().shouldNotBeStrictlyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): Array<T> {
    asList().shouldNotBeStrictlyIncreasingWith(comparator)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Sequence<T>.shouldNotBeStrictlyIncreasingWith(comparator: Comparator<in T>): Sequence<T> {
    asIterable().shouldNotBeStrictlyIncreasingWith(comparator)
    return this

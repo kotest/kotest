@@ -7,11 +7,13 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldBeUpperCase(): A {
    this should beUpperCase()
    return this!!
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldNotBeUpperCase(): A {
    this shouldNot beUpperCase()
    return this!!
@@ -25,11 +27,13 @@ fun beUpperCase(): Matcher<CharSequence?> = neverNullMatcher { value ->
    )
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence?> A.shouldBeLowerCase(): A {
    this should beLowerCase()
    return this
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence?> A.shouldNotBeLowerCase(): A {
    this shouldNot beLowerCase()
    return this

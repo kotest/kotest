@@ -28,6 +28,7 @@ import io.kotest.matchers.shouldNot
  * then calling the hashCode method on each of the two objects must produce the same integer result.
  *
  */
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldContainExactlyInAnyOrder(expected: Array<T>): Array<T> {
    asList().shouldContainExactlyInAnyOrder(expected.asList())
    return this
@@ -48,6 +49,7 @@ infix fun <T> Array<T>.shouldContainExactlyInAnyOrder(expected: Array<T>): Array
  * then calling the hashCode method on each of the two objects must produce the same integer result.
  *
  */
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: Collection<T>?): C? {
    expected.shouldNotBeNull()
    this should containExactlyInAnyOrder(expected)
@@ -69,6 +71,7 @@ infix fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(expected: Col
  * then calling the hashCode method on each of the two objects must produce the same integer result.
  *
  */
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T): C? {
    this should containExactlyInAnyOrder(*expected)
    return this
@@ -92,17 +95,20 @@ fun <T, C : Collection<T>> C?.shouldContainExactlyInAnyOrder(vararg expected: T)
 fun <T> containExactlyInAnyOrder(vararg expected: T): Matcher<Collection<T>?> =
    containExactlyInAnyOrder(expected.asList())
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotContainExactlyInAnyOrder(expected: Array<T>): Array<T> {
    asList().shouldNotContainExactlyInAnyOrder(expected.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(expected: Collection<T>?): C? {
    expected.shouldNotBeNull()
    this shouldNot containExactlyInAnyOrder(expected)
    return this
 }
 
+@IgnorableReturnValue
 fun <T, C : Collection<T>> C?.shouldNotContainExactlyInAnyOrder(vararg expected: T): C? {
    this shouldNot containExactlyInAnyOrder(*expected)
    return this

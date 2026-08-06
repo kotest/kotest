@@ -9,6 +9,7 @@ import java.io.FileInputStream
 import java.io.InputStreamReader
 import java.nio.charset.Charset
 
+@IgnorableReturnValue
 fun File.shouldHaveSameContentAs(other: File, charset: Charset = Charset.forName("utf8")) =
    this should object : Matcher<File> {
       override fun test(value: File): MatcherResult {

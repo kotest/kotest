@@ -5,7 +5,9 @@ import io.kotest.matchers.*
 import java.math.BigInteger
 import java.security.MessageDigest
 
+@IgnorableReturnValue
 fun String?.shouldHaveDigest(algo: String, digest: String) = this should haveDigest(algo, digest)
+@IgnorableReturnValue
 fun String?.shouldNotHaveDigest(algo: String, digest: String) = this shouldNot haveDigest(algo, digest)
 fun haveDigest(algo: String, digest: String) : Matcher<String?> = neverNullMatcher { value ->
    val alg = MessageDigest.getInstance(algo)

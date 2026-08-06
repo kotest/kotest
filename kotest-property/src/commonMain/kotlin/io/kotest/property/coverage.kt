@@ -18,6 +18,7 @@ import io.kotest.assertions.AssertionErrorBuilder
  */
 @Suppress("DEPRECATION")
 @Deprecated("Use labels. See https://kotest.io/docs/proptest/property-test-statistics.html")
+@IgnorableReturnValue
 suspend fun checkCoverage(label: String, percentage: Double, f: suspend () -> PropertyContext): PropertyContext {
    val context = f()
    val labelled = context.classifications()[label] ?: 0
@@ -42,6 +43,7 @@ suspend fun checkCoverage(label: String, percentage: Double, f: suspend () -> Pr
  */
 @Suppress("DEPRECATION")
 @Deprecated("Use labels. See https://kotest.io/docs/proptest/property-test-statistics.html")
+@IgnorableReturnValue
 suspend fun checkCoverage(vararg pairs: Pair<String, Double>, f: suspend () -> PropertyContext): PropertyContext {
    val context = f()
    val attempts = context.attempts()

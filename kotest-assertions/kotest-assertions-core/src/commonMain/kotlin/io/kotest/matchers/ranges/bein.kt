@@ -18,11 +18,13 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeIn]
  * @see [beIn]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeIn(range: ClosedRange<T>): T {
    this should beIn(range)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeInOpenEndRange(range: OpenEndRange<T>): T {
    this should beInOpenEndRange(range)
    return this
@@ -39,11 +41,13 @@ infix fun <T : Comparable<T>> T.shouldBeInOpenEndRange(range: OpenEndRange<T>): 
  * @see [shouldNotBeIn]
  * @see [beIn]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeIn(range: ClosedRange<T>): T {
    this shouldNot beIn(range)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeInOpenEndRange(range: OpenEndRange<T>): T {
    this shouldNot beInOpenEndRange(range)
    return this

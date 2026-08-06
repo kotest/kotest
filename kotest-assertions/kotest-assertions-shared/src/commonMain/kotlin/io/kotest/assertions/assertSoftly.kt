@@ -1,5 +1,6 @@
 package io.kotest.assertions
 
+@IgnorableReturnValue
 inline fun <T> assertSoftly(assertions: () -> T): T {
    // Handle the edge case of nested calls to this function by only calling throwCollectedErrors in the
    // outermost verifyAll block

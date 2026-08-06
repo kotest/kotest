@@ -6,7 +6,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.io.File
 
+@IgnorableReturnValue
 fun File.shouldHaveExtension(vararg exts: String) = this should haveExtension(*exts)
+@IgnorableReturnValue
 fun File.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtension(*exts)
 fun haveExtension(vararg exts: String) = object : Matcher<File> {
    override fun test(value: File) = MatcherResult(
@@ -16,7 +18,9 @@ fun haveExtension(vararg exts: String) = object : Matcher<File> {
    )
 }
 
+@IgnorableReturnValue
 infix fun File.shouldHavePath(name: String) = this should havePath(name)
+@IgnorableReturnValue
 infix fun File.shouldNotHavePath(name: String) = this shouldNot havePath(name)
 fun havePath(name: String) = object : Matcher<File> {
    override fun test(value: File) =
@@ -27,7 +31,9 @@ fun havePath(name: String) = object : Matcher<File> {
       )
 }
 
+@IgnorableReturnValue
 infix fun File.shouldHaveName(name: String) = this should haveName(name)
+@IgnorableReturnValue
 infix fun File.shouldNotHaveName(name: String) = this shouldNot haveName(name)
 fun haveName(name: String) = object : Matcher<File> {
    override fun test(value: File) =
@@ -39,7 +45,9 @@ fun haveName(name: String) = object : Matcher<File> {
 }
 
 
+@IgnorableReturnValue
 infix fun File.shouldHaveNameWithoutExtension(name: String) = this should haveNameWithoutExtension(name)
+@IgnorableReturnValue
 infix fun File.shouldNotHaveNameWithoutExtension(name: String) = this shouldNot haveNameWithoutExtension(name)
 fun haveNameWithoutExtension(name: String) = object : Matcher<File> {
    override fun test(value: File): MatcherResult {

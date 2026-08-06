@@ -8,176 +8,211 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldHave
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldHaveSize(size: Int): I {
    toList().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldHaveSize(size: Int): Array<T> {
    asList().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun BooleanArray.shouldHaveSize(size: Int): BooleanArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ByteArray.shouldHaveSize(size: Int): ByteArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun CharArray.shouldHaveSize(size: Int): CharArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ShortArray.shouldHaveSize(size: Int): ShortArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun IntArray.shouldHaveSize(size: Int): IntArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun LongArray.shouldHaveSize(size: Int): LongArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun FloatArray.shouldHaveSize(size: Int): FloatArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun DoubleArray.shouldHaveSize(size: Int): DoubleArray {
    toTypedArray().shouldHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldHaveSize(size: Int): C {
    this should haveSize(size = size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldNotHaveSize(size: Int): I {
    toList().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotHaveSize(size: Int): Array<T> {
    asList().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun BooleanArray.shouldNotHaveSize(size: Int): BooleanArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ByteArray.shouldNotHaveSize(size: Int): ByteArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun CharArray.shouldNotHaveSize(size: Int): CharArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ShortArray.shouldNotHaveSize(size: Int): ShortArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun IntArray.shouldNotHaveSize(size: Int): IntArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun LongArray.shouldNotHaveSize(size: Int): LongArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun FloatArray.shouldNotHaveSize(size: Int): FloatArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun DoubleArray.shouldNotHaveSize(size: Int): DoubleArray {
    toTypedArray().shouldNotHaveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldNotHaveSize(size: Int): C {
    this shouldNot haveSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, U, I : Iterable<T>> I.shouldBeSameSizeAs(other: Collection<U>): I {
    toList().shouldBeSameSizeAs(other)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Collection<U>): Array<T> {
    asList().shouldBeSameSizeAs(other)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, U, I : Iterable<T>> I.shouldBeSameSizeAs(other: Iterable<U>): I {
    toList().shouldBeSameSizeAs(other.toList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, U> Array<T>.shouldBeSameSizeAs(other: Array<U>): Array<T> {
    asList().shouldBeSameSizeAs(other.asList())
    return this
 }
 
+@IgnorableReturnValue
 infix fun BooleanArray.shouldBeSameSizeAs(other: BooleanArray): BooleanArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun ByteArray.shouldBeSameSizeAs(other: ByteArray): ByteArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun CharArray.shouldBeSameSizeAs(other: CharArray): CharArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun ShortArray.shouldBeSameSizeAs(other: ShortArray): ShortArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun IntArray.shouldBeSameSizeAs(other: IntArray): IntArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun LongArray.shouldBeSameSizeAs(other: LongArray): LongArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun FloatArray.shouldBeSameSizeAs(other: FloatArray): FloatArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun DoubleArray.shouldBeSameSizeAs(other: DoubleArray): DoubleArray {
    toTypedArray().shouldBeSameSizeAs(other.toTypedArray())
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, U, C : Collection<T>> C.shouldBeSameSizeAs(other: Collection<U>): C {
    this should beSameSizeAs(other)
    return this
@@ -191,56 +226,67 @@ fun <T, U> beSameSizeAs(other: Collection<U>) = object : Matcher<Collection<T>> 
       .build()
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldHaveAtLeastSize(n: Int): I {
    toList().shouldHaveAtLeastSize(n)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldHaveAtLeastSize(n: Int): Array<T> {
    asList().shouldHaveAtLeastSize(n)
    return this
 }
 
+@IgnorableReturnValue
 infix fun BooleanArray.shouldHaveAtLeastSize(size: Int): BooleanArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ByteArray.shouldHaveAtLeastSize(size: Int): ByteArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun CharArray.shouldHaveAtLeastSize(size: Int): CharArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ShortArray.shouldHaveAtLeastSize(size: Int): ShortArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun IntArray.shouldHaveAtLeastSize(size: Int): IntArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun LongArray.shouldHaveAtLeastSize(size: Int): LongArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun FloatArray.shouldHaveAtLeastSize(size: Int): FloatArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun DoubleArray.shouldHaveAtLeastSize(size: Int): DoubleArray {
    toTypedArray().shouldHaveAtLeastSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldHaveAtLeastSize(n: Int): C {
    this shouldHave atLeastSize(n)
    return this
@@ -254,56 +300,67 @@ fun <T> atLeastSize(expected: Int) = object : Matcher<Collection<T>> {
       .build()
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>> I.shouldHaveAtMostSize(n: Int): I {
    toList().shouldHaveAtMostSize(n)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldHaveAtMostSize(n: Int): Array<T> {
    asList().shouldHaveAtMostSize(n)
    return this
 }
 
+@IgnorableReturnValue
 infix fun BooleanArray.shouldHaveAtMostSize(size: Int): BooleanArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ByteArray.shouldHaveAtMostSize(size: Int): ByteArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun CharArray.shouldHaveAtMostSize(size: Int): CharArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun ShortArray.shouldHaveAtMostSize(size: Int): ShortArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun IntArray.shouldHaveAtMostSize(size: Int): IntArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun LongArray.shouldHaveAtMostSize(size: Int): LongArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun FloatArray.shouldHaveAtMostSize(size: Int): FloatArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun DoubleArray.shouldHaveAtMostSize(size: Int): DoubleArray {
    toTypedArray().shouldHaveAtMostSize(size)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C.shouldHaveAtMostSize(n: Int): C {
    this shouldHave atMostSize(n)
    return this

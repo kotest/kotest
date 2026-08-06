@@ -20,6 +20,7 @@ fun permconfig(configure: PermutationConfiguration.() -> Unit): PermutationConfi
  * Once the [configure] callback has completed, the permutations are executed.
  */
 @ExperimentalKotest
+@IgnorableReturnValue
 suspend fun permutations(
    configure: suspend PermutationConfiguration.() -> Unit,
 ): PermutationResult {
@@ -33,6 +34,7 @@ suspend fun permutations(
  * Once the [configure] callback has completed, the permutations are executed.
  */
 @ExperimentalKotest
+@IgnorableReturnValue
 suspend fun permutations(
    default: PermutationConfiguration,
    configure: suspend PermutationConfiguration.() -> Unit,

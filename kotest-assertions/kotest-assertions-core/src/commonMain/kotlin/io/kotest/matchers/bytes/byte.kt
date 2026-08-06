@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldBe
    "Byte-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Byte import `io.kotest.matchers.bytes.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(lower, upper)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun Byte.shouldBeBetween(lower: Byte, upper: Byte): Byte {
    this shouldBe between(lower, upper)
    return this

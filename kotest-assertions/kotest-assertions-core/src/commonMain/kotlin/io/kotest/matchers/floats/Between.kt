@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldNotBe
  * 0.5.shouldBeBetween(0.2, 0.3, 0.1)   // Assertion fails
  * ```
  */
+@IgnorableReturnValue
 fun Float.shouldBeBetween(a: Float, b: Float, tolerance: Float): Float {
    this shouldBe between(a, b, tolerance)
    return this
@@ -43,6 +44,7 @@ fun Float.shouldBeBetween(a: Float, b: Float, tolerance: Float): Float {
  * 0.5.shouldNotBeBetween(0.2, 0.3, 0.1)   // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun Float.shouldNotBeBetween(a: Float, b: Float, tolerance: Float): Float {
    this shouldNotBe between(a, b, tolerance)
    return this

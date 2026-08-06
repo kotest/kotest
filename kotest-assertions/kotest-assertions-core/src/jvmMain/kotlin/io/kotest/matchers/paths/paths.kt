@@ -12,13 +12,19 @@ import kotlin.io.path.isRegularFile
 import kotlin.io.path.listDirectoryEntries
 import kotlin.io.path.name
 
+@IgnorableReturnValue
 infix fun Path.shouldStartWithPath(file: File) = this should startWithPath(file)
+@IgnorableReturnValue
 infix fun Path.shouldNotStartWithPath(file: File) = this shouldNot startWithPath(file)
 
+@IgnorableReturnValue
 infix fun Path.shouldStartWithPath(prefix: String) = this should startWithPath(prefix)
+@IgnorableReturnValue
 infix fun Path.shouldNotStartWithPath(prefix: String) = this shouldNot startWithPath(prefix)
 
+@IgnorableReturnValue
 infix fun Path.shouldStartWithPath(path: Path) = this should startWithPath(path)
+@IgnorableReturnValue
 infix fun Path.shouldNotStartWithPath(path: Path) = this shouldNot startWithPath(path)
 
 fun startWithPath(path: Path) = startWithPath(path.toString())
@@ -30,7 +36,9 @@ fun startWithPath(prefix: String) = object : Matcher<Path> {
       { "Path $value should not start with $prefix" })
 }
 
+@IgnorableReturnValue
 fun Path.shouldExist() = this should exist()
+@IgnorableReturnValue
 fun Path.shouldNotExist() = this shouldNot exist()
 fun exist() = object : Matcher<Path> {
    override fun test(value: Path) =
@@ -40,7 +48,9 @@ fun exist() = object : Matcher<Path> {
          { "Path $value should not exist" })
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldHaveFileSize(size: Long) = this should haveFileSize(size)
+@IgnorableReturnValue
 infix fun Path.shouldNotHaveFileSize(size: Long) = this shouldNot haveFileSize(size)
 fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
@@ -50,7 +60,9 @@ fun haveFileSize(size: Long): Matcher<Path> = object : Matcher<Path> {
 }
 
 
+@IgnorableReturnValue
 fun Path.shouldBeADirectory() = this should aDirectory()
+@IgnorableReturnValue
 fun Path.shouldNotBeADirectory() = this shouldNot aDirectory()
 fun aDirectory(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
@@ -59,7 +71,9 @@ fun aDirectory(): Matcher<Path> = object : Matcher<Path> {
       { "File $value should not be a directory" })
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeAFile() = this should aFile()
+@IgnorableReturnValue
 fun Path.shouldNotBeAFile() = this shouldNot aFile()
 fun aFile(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
@@ -68,7 +82,9 @@ fun aFile(): Matcher<Path> = object : Matcher<Path> {
       { "Path $value should not be a regular file" })
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeAbsolute() = this should beAbsolute()
+@IgnorableReturnValue
 fun Path.shouldNotBeAbsolute() = this shouldNot beAbsolute()
 fun beAbsolute(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult =
@@ -78,7 +94,9 @@ fun beAbsolute(): Matcher<Path> = object : Matcher<Path> {
          { "Path $value should not be absolute" })
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeRelative() = this should beRelative()
+@IgnorableReturnValue
 fun Path.shouldNotBeRelative() = this shouldNot beRelative()
 fun beRelative(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult =
@@ -88,7 +106,9 @@ fun beRelative(): Matcher<Path> = object : Matcher<Path> {
          { "Path $value should not be relative" })
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeReadable() = this should beReadable()
+@IgnorableReturnValue
 fun Path.shouldNotBeReadable() = this shouldNot beReadable()
 fun beReadable(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult =
@@ -99,7 +119,9 @@ fun beReadable(): Matcher<Path> = object : Matcher<Path> {
       )
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeWriteable() = this should beWriteable()
+@IgnorableReturnValue
 fun Path.shouldNotBeWriteable() = this shouldNot beWriteable()
 fun beWriteable(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult =
@@ -110,7 +132,9 @@ fun beWriteable(): Matcher<Path> = object : Matcher<Path> {
       )
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeExecutable() = this should beExecutable()
+@IgnorableReturnValue
 fun Path.shouldNotBeExecutable() = this shouldNot beExecutable()
 fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult = MatcherResult(
@@ -120,7 +144,9 @@ fun beExecutable(): Matcher<Path> = object : Matcher<Path> {
    )
 }
 
+@IgnorableReturnValue
 fun Path.shouldBeHidden() = this should beHidden()
+@IgnorableReturnValue
 fun Path.shouldNotBeHidden() = this shouldNot beHidden()
 fun beHidden(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult =
@@ -130,7 +156,9 @@ fun beHidden(): Matcher<Path> = object : Matcher<Path> {
          { "Path $value should not be hidden" })
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldContainFileDeep(name: String) = this should containFileDeep(name)
+@IgnorableReturnValue
 infix fun Path.shouldNotContainFileDeep(name: String) = this shouldNot containFileDeep(name)
 fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
 
@@ -147,7 +175,9 @@ fun containFileDeep(name: String): Matcher<Path> = object : Matcher<Path> {
    )
 }
 
+@IgnorableReturnValue
 infix fun Path.shouldHaveParent(name: String) = this should haveParent(name)
+@IgnorableReturnValue
 infix fun Path.shouldNotHaveParent(name: String) = this shouldNot haveParent(name)
 fun haveParent(name: String) = object : Matcher<Path> {
 

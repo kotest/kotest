@@ -6,7 +6,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.nio.file.Path
 
+@IgnorableReturnValue
 fun Path.shouldBeCanonical() = this should beCanonicalPath()
+@IgnorableReturnValue
 fun Path.shouldNotBeCanonical() = this shouldNot beCanonicalPath()
 fun beCanonicalPath(): Matcher<Path> = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {

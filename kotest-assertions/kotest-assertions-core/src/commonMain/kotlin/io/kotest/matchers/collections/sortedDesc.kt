@@ -5,31 +5,37 @@ import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> Array<T>.shouldBeSortedDescending(): Array<T> {
    asList().shouldBeSortedDescending()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, E : Comparable<E>> Array<T>.shouldBeSortedDescendingBy(transform: (T) -> E): Array<T> {
    asList().shouldBeSortedDescendingBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>> List<T>.shouldBeSortedDescending(): List<T> {
    this should beSortedDescending()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, E : Comparable<E>> List<T>.shouldBeSortedDescendingBy(transform: (T) -> E): List<T> {
    this should beSortedDescendingBy(transform)
    return this
 }
 
+@IgnorableReturnValue
 fun <T : Comparable<T>, I : Iterable<T>> I.shouldBeSortedDescending(): I {
    toList().shouldBeSortedDescending()
    return this
 }
 
+@IgnorableReturnValue
 infix fun <T, I : Iterable<T>, E : Comparable<E>> I.shouldBeSortedDescendingBy(transform: (T) -> E): I {
    toList().shouldBeSortedDescendingBy(transform)
    return this

@@ -88,31 +88,37 @@ fun beJsonType(kClass: KClass<*>, parser: Json): Matcher<String?> = object : Mat
    }
 }
 
+@IgnorableReturnValue
 fun String.shouldBeEmptyJsonArray(): String {
    this should matchJson("[]")
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldBeEmptyJsonObject(): String {
    this should matchJson("{}")
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldBeJsonArray(): String {
    this should beJsonArray()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldBeJsonArray(parser: Json): String {
    this should beJsonArray(parser)
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeJsonArray(): String {
    this shouldNot beJsonArray()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeJsonArray(parser: Json): String {
    this shouldNot beJsonArray(parser)
    return this
@@ -121,21 +127,25 @@ fun String.shouldNotBeJsonArray(parser: Json): String {
 fun beJsonArray(): Matcher<String?> = beJsonType(JsonArray::class)
 fun beJsonArray(parser: Json): Matcher<String?> = beJsonType(JsonArray::class, parser)
 
+@IgnorableReturnValue
 fun String.shouldBeJsonObject(): String {
    this should beJsonObject()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldBeJsonObject(parser: Json): String {
    this should beJsonObject(parser)
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeJsonObject(): String {
    this shouldNot beJsonObject()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeJsonObject(parser: Json): String {
    this shouldNot beJsonObject(parser)
    return this
@@ -144,21 +154,25 @@ fun String.shouldNotBeJsonObject(parser: Json): String {
 fun beJsonObject(): Matcher<String?> = beJsonType(JsonObject::class)
 fun beJsonObject(parser: Json): Matcher<String?> = beJsonType(JsonObject::class, parser)
 
+@IgnorableReturnValue
 fun String.shouldBeValidJson(): String {
    this should beValidJson()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldBeValidJson(parser: Json): String {
    this should beValidJson(parser)
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeValidJson(): String {
    this shouldNot beValidJson()
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotBeValidJson(parser: Json): String {
    this shouldNot beValidJson(parser)
    return this

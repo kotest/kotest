@@ -7,21 +7,25 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldBeSingleLine(): A {
    this should haveLineCount(1)
    return this!!
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldNotBeSingleLine(): A {
    this shouldNot haveLineCount(1)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldHaveLineCount(count: Int): A {
    this should haveLineCount(count)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotHaveLineCount(count: Int): A {
    this shouldNot haveLineCount(count)
    return this!!

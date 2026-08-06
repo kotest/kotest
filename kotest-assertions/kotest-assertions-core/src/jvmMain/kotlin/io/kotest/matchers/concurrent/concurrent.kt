@@ -7,10 +7,12 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.concurrent.thread
 import kotlin.time.Duration
 
+@IgnorableReturnValue
 fun <A> shouldCompleteWithin(duration: Duration, thunk: () -> A): A {
    return shouldCompleteWithin(duration.inWholeMilliseconds, TimeUnit.MILLISECONDS, thunk)
 }
 
+@IgnorableReturnValue
 fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: () -> A): A {
 
    val ref = AtomicReference<A>(null)
@@ -37,10 +39,12 @@ fun <A> shouldCompleteWithin(timeout: Long, unit: TimeUnit, thunk: () -> A): A {
    return ref.get()
 }
 
+@IgnorableReturnValue
 fun <A> shouldTimeout(duration: Duration, thunk: () -> A) {
    return shouldTimeout(duration.inWholeMilliseconds, TimeUnit.MILLISECONDS, thunk)
 }
 
+@IgnorableReturnValue
 fun <A> shouldTimeout(timeout: Long, unit: TimeUnit, thunk: () -> A) {
 
    val latch = CountDownLatch(1)

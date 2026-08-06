@@ -73,6 +73,7 @@ fun beToday() = object : Matcher<LocalDate> {
  *      LocalDateTime.now().shouldBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldBeToday() = this should beInToday()
 
 /**
@@ -82,6 +83,7 @@ fun LocalDateTime.shouldBeToday() = this should beInToday()
  *      LocalDate.now().shouldBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDate.shouldBeToday() = this should beToday()
 
 /**
@@ -91,6 +93,7 @@ fun LocalDate.shouldBeToday() = this should beToday()
  *      LocalDateTime.of(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldNotBeToday() = this shouldNot beInToday()
 
 /**
@@ -100,6 +103,7 @@ fun LocalDateTime.shouldNotBeToday() = this shouldNot beInToday()
  *      LocalDate.of(2009, Month.APRIL, 2).shouldNotBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDate.shouldNotBeToday() = this shouldNot beToday()
 
 infix fun LocalDateTime.plusOrMinus(tolerance: Duration): LocalDateTimeToleranceMatcher =

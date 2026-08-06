@@ -15,6 +15,7 @@ import kotlinx.coroutines.delay
  * Opposite of [Channel.shouldBeOpen].
  */
 @DelicateCoroutinesApi
+@IgnorableReturnValue
 fun <T> Channel<T>.shouldBeClosed() = this should beClosed()
 
 @DelicateCoroutinesApi
@@ -32,6 +33,7 @@ fun <T> beClosed() = object : Matcher<Channel<T>> {
  * Opposite of [Channel.shouldBeClosed].
  */
 @DelicateCoroutinesApi
+@IgnorableReturnValue
 fun <T> Channel<T>.shouldBeOpen() = this shouldNot beClosed()
 
 /**
@@ -39,6 +41,7 @@ fun <T> Channel<T>.shouldBeOpen() = this shouldNot beClosed()
  *
  */
 @ExperimentalCoroutinesApi
+@IgnorableReturnValue
 fun <T> Channel<T>.shouldBeEmpty() = this should beEmpty()
 
 @ExperimentalCoroutinesApi
@@ -54,6 +57,7 @@ fun <T> beEmpty() = object : Matcher<Channel<T>> {
  * Asserts that this [Channel] should receive [n] elements, then is closed.
  */
 @DelicateCoroutinesApi
+@IgnorableReturnValue
 suspend fun <T> Channel<T>.shouldHaveSize(n: Int) {
    repeat(n) {
       this@shouldHaveSize.receive()
@@ -64,6 +68,7 @@ suspend fun <T> Channel<T>.shouldHaveSize(n: Int) {
 /**
  * Asserts that this [Channel] should receive at least [n] elements.
  */
+@IgnorableReturnValue
 suspend fun <T> Channel<T>.shouldReceiveAtLeast(n: Int) {
    repeat(n) { this@shouldReceiveAtLeast.receive() }
 }
@@ -72,6 +77,7 @@ suspend fun <T> Channel<T>.shouldReceiveAtLeast(n: Int) {
  * Asserts that this [Channel] should receive at most [n] elements, then is closed.
  */
 @DelicateCoroutinesApi
+@IgnorableReturnValue
 suspend fun <T> Channel<T>.shouldReceiveAtMost(n: Int) {
    var count = 0
    for (value in this@shouldReceiveAtMost) {

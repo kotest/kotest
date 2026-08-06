@@ -70,6 +70,7 @@ fun beToday(timezone: TimeZone = TimeZone.UTC) = object : Matcher<LocalDate> {
  *      Clock.System().todayIn(TimeZone.UTC).shouldBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beInToday(timezone)
 
 /**
@@ -79,6 +80,7 @@ fun LocalDateTime.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should
  *      Clock.System().todayIn(TimeZone.UTC).date.shouldBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDate.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beToday(timezone)
 
 /**
@@ -88,6 +90,7 @@ fun LocalDate.shouldBeToday(timezone: TimeZone = TimeZone.UTC) = this should beT
  *      LocalDateTime(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDateTime.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) = this shouldNot beInToday(timezone)
 
 /**
@@ -97,6 +100,7 @@ fun LocalDateTime.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) = this sho
  *      LocalDate(2009, Month.APRIL, 2).shouldNotBeToday() // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 fun LocalDate.shouldNotBeToday(timezone: TimeZone = TimeZone.UTC) = this shouldNot beToday(timezone)
 
 

@@ -11,7 +11,9 @@ import kotlin.reflect.KVisibility
 import kotlin.reflect.full.isSupertypeOf
 import kotlin.reflect.full.starProjectedType
 
+@IgnorableReturnValue
 infix fun KCallable<*>.shouldHaveVisibility(visibility: KVisibility) = this should haveCallableVisibility(visibility)
+@IgnorableReturnValue
 infix fun KCallable<*>.shouldNotHaveVisibility(visibility: KVisibility) = this shouldNot haveCallableVisibility(visibility)
 fun haveCallableVisibility(expected: KVisibility) = object : Matcher<KCallable<*>> {
    override fun test(value: KCallable<*>) = MatcherResult(
@@ -22,7 +24,9 @@ fun haveCallableVisibility(expected: KVisibility) = object : Matcher<KCallable<*
       })
 }
 
+@IgnorableReturnValue
 fun KCallable<*>.shouldBeFinal() = this should beFinal()
+@IgnorableReturnValue
 fun KCallable<*>.shouldNotBeFinal() = this shouldNot beFinal()
 fun beFinal() = object : Matcher<KCallable<*>> {
    override fun test(value: KCallable<*>) = MatcherResult(
@@ -33,7 +37,9 @@ fun beFinal() = object : Matcher<KCallable<*>> {
       })
 }
 
+@IgnorableReturnValue
 fun KCallable<*>.shouldBeOpen() = this should beOpen()
+@IgnorableReturnValue
 fun KCallable<*>.shouldNotBeOpen() = this shouldNot beOpen()
 fun beOpen() = object : Matcher<KCallable<*>> {
    override fun test(value: KCallable<*>) = MatcherResult(
@@ -44,7 +50,9 @@ fun beOpen() = object : Matcher<KCallable<*>> {
       })
 }
 
+@IgnorableReturnValue
 fun KCallable<*>.shouldBeAbstract() = this should beAbstract()
+@IgnorableReturnValue
 fun KCallable<*>.shouldNotBeAbstract() = this shouldNot beAbstract()
 fun beAbstract() = object : Matcher<KCallable<*>> {
    override fun test(value: KCallable<*>) = MatcherResult(
@@ -55,7 +63,9 @@ fun beAbstract() = object : Matcher<KCallable<*>> {
       })
 }
 
+@IgnorableReturnValue
 fun KCallable<*>.shouldBeSuspendable() = this should beSuspendable()
+@IgnorableReturnValue
 fun KCallable<*>.shouldNotBeSuspendable() = this shouldNot beSuspendable()
 fun beSuspendable() = object : Matcher<KCallable<*>> {
    override fun test(value: KCallable<*>) = MatcherResult(
@@ -66,11 +76,14 @@ fun beSuspendable() = object : Matcher<KCallable<*>> {
       })
 }
 
+@IgnorableReturnValue
 fun KCallable<*>.shouldAcceptParameters(parameters: List<KClass<*>>, block: (List<KParameter>) -> Unit) {
   this should acceptParametersOfType(parameters)
   block(this.parameters)
 }
+@IgnorableReturnValue
 infix fun KCallable<*>.shouldAcceptParameters(parameters: List<KClass<*>>) = this should acceptParametersOfType(parameters)
+@IgnorableReturnValue
 infix fun KCallable<*>.shouldNotAcceptParameters(parameters: List<KClass<*>>) = this shouldNot acceptParametersOfType(parameters)
 fun acceptParametersOfType(parameters: List<KClass<*>>) = object : Matcher<KCallable<*>> {
    private fun validate(index: Int, acc: Boolean, parameter: KParameter): Boolean {
@@ -85,11 +98,14 @@ fun acceptParametersOfType(parameters: List<KClass<*>>) = object : Matcher<KCall
       })
 }
 
+@IgnorableReturnValue
 fun KCallable<*>.shouldHaveParametersWithName(parameters: List<String>, block: (List<KParameter>) -> Unit) {
   this should haveParametersWithName(parameters)
   block(this.parameters)
 }
+@IgnorableReturnValue
 infix fun KCallable<*>.shouldHaveParametersWithName(parameters: List<String>) = this should haveParametersWithName(parameters)
+@IgnorableReturnValue
 infix fun KCallable<*>.shouldNotHaveParametersWithName(parameters: List<String>) = this shouldNot haveParametersWithName(parameters)
 fun haveParametersWithName(parameters: List<String>) = object : Matcher<KCallable<*>> {
    private fun validate(index: Int, acc: Boolean, parameter: KParameter): Boolean {

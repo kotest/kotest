@@ -9,6 +9,7 @@ import io.kotest.assertions.collectOrThrow
 import io.kotest.assertions.createLazyAssertionError
 import io.kotest.assertions.errorCollector
 
+@IgnorableReturnValue
 fun <T> invokeMatcher(t: T, matcher: Matcher<T>): T {
    assertionCounter.inc()
    val result = matcher.test(t)

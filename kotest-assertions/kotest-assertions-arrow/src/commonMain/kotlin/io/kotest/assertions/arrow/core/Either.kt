@@ -31,6 +31,7 @@ import kotlin.contracts.contract
  * ```
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A, B> Either<A, B>.shouldBeRight(failureMessage: (A) -> String = { "Expected Either.Right, but found Either.Left with value $it" }): B {
    contract {
       returns() implies (this@shouldBeRight is Right<B>)
@@ -43,9 +44,11 @@ public fun <A, B> Either<A, B>.shouldBeRight(failureMessage: (A) -> String = { "
    }
 }
 
+@IgnorableReturnValue
 public infix fun <A, B> Either<A, B>.shouldBeRight(b: B): B =
    shouldBeRight().shouldBe(b)
 
+@IgnorableReturnValue
 public infix fun <A, B> Either<A, B>.shouldNotBeRight(b: B): B =
    shouldBeRight().shouldNotBe(b)
 
@@ -67,6 +70,7 @@ public infix fun <A, B> Either<A, B>.shouldNotBeRight(b: B): B =
  * ```
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A, B> Either<A, B>.shouldBeLeft(failureMessage: (B) -> String = { "Expected Either.Left, but found Either.Right with value $it" }): A {
    contract {
       returns() implies (this@shouldBeLeft is Left<A>)
@@ -79,9 +83,11 @@ public fun <A, B> Either<A, B>.shouldBeLeft(failureMessage: (B) -> String = { "E
    }
 }
 
+@IgnorableReturnValue
 public infix fun <A, B> Either<A, B>.shouldBeLeft(a: A): A =
    shouldBeLeft().shouldBe(a)
 
+@IgnorableReturnValue
 public infix fun <A, B> Either<A, B>.shouldNotBeLeft(a: A): A =
    shouldBeLeft().shouldNotBe(a)
 

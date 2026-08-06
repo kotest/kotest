@@ -15,6 +15,7 @@ import kotlin.jvm.JvmName
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldContainOnly_iterable")
+@IgnorableReturnValue
 infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
    this?.toList() should containOnly(expected.toList())
 
@@ -28,6 +29,7 @@ infix fun <T> Iterable<T>?.shouldContainOnly(expected: Iterable<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldContainOnly_array")
+@IgnorableReturnValue
 infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>): Array<T>? {
    this?.asList() should containOnly(*expected)
    return this
@@ -42,6 +44,7 @@ infix fun <T> Array<T>?.shouldContainOnly(expected: Array<T>): Array<T>? {
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 fun <T> Iterable<T>?.shouldContainOnly(vararg expected: T) =
    this?.toList() should containOnly(*expected)
 
@@ -54,6 +57,7 @@ fun <T> Iterable<T>?.shouldContainOnly(vararg expected: T) =
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 fun <T> Array<T>?.shouldContainOnly(vararg expected: T) =
    this?.asList() should containOnly(*expected)
 
@@ -66,6 +70,7 @@ fun <T> Array<T>?.shouldContainOnly(vararg expected: T) =
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldContainOnly(expected: C) = this should containOnly(expected)
 
 /**
@@ -77,6 +82,7 @@ infix fun <T, C : Collection<T>> C?.shouldContainOnly(expected: C) = this should
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 fun <T> Collection<T>?.shouldContainOnly(vararg expected: T) = this should containOnly(*expected)
 
 /**
@@ -136,6 +142,7 @@ fun <T, C : Collection<T>> containOnly(
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldNotContainOnly_iterable")
+@IgnorableReturnValue
 infix fun <T> Iterable<T>?.shouldNotContainOnly(expected: Iterable<T>) =
    this?.toList() shouldNot containOnly(expected.toList())
 
@@ -149,6 +156,7 @@ infix fun <T> Iterable<T>?.shouldNotContainOnly(expected: Iterable<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldNotContainOnly_array")
+@IgnorableReturnValue
 infix fun <T> Array<T>?.shouldNotContainOnly(expected: Array<T>) = this?.asList() shouldNot containOnly(*expected)
 
 /**
@@ -160,6 +168,7 @@ infix fun <T> Array<T>?.shouldNotContainOnly(expected: Array<T>) = this?.asList(
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 fun <T> Iterable<T>?.shouldNotContainOnly(vararg expected: T) = this?.toList() shouldNot containOnly(*expected)
 
 /**
@@ -171,6 +180,7 @@ fun <T> Iterable<T>?.shouldNotContainOnly(vararg expected: T) = this?.toList() s
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 fun <T> Array<T>?.shouldNotContainOnly(vararg expected: T) = this?.asList() shouldNot containOnly(*expected)
 
 /**
@@ -182,6 +192,7 @@ fun <T> Array<T>?.shouldNotContainOnly(vararg expected: T) = this?.asList() shou
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 infix fun <T, C : Collection<T>> C?.shouldNotContainOnly(expected: C) = this shouldNot containOnly(expected)
 
 /**
@@ -193,4 +204,5 @@ infix fun <T, C : Collection<T>> C?.shouldNotContainOnly(expected: C) = this sho
  *
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
+@IgnorableReturnValue
 fun <T> Collection<T>?.shouldNotContainOnly(vararg expected: T) = this shouldNot containOnly(*expected)
