@@ -196,6 +196,9 @@ if (shouldRunJvmOnlyModules) {
       ":kotest-tests:kotest-tests-timeout-sysprop",
       ":kotest-tests:kotest-tests-test-parallelism",
 
+      // tests our integration with robolectric https://robolectric.org/
+      ":kotest-tests:kotest-tests-robolectric",
+
       // tests various forms of the Gradle --tests filter
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class",
       ":kotest-tests:kotest-tests-gradle-test-filter:kotest-tests-gradle-test-filter-fully-qualified-class-root-test",
