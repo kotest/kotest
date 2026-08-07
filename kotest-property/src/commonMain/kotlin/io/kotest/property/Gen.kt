@@ -70,6 +70,15 @@ sealed class Gen<out A> {
 }
 
 /**
+ * Internal definition used to tie an [Arb] and [Shrinker] together in definitions, e.x.
+ *  [arbitrary].
+ *
+ * Used to make casts safe when implementing recursive shrinking. Should not be exposed
+ *  in the public API.
+ **/
+internal abstract class ArbDefinition<A>: Arb<A>(), Shrinker<A>
+
+/**
  * An [Arb] (short for arbitrary) is a generator of values in two categories: edge cases and samples.
  *
  * Edge cases are values that are a common source of bugs. For example, a function using ints is
