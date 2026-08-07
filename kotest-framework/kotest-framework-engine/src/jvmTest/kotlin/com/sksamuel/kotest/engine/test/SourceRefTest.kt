@@ -10,8 +10,10 @@ import io.kotest.core.spec.style.FreeSpec
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.spec.Materializer
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.longs.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.measureTime
 
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class SourceRefTest : FunSpec() {
@@ -26,11 +28,25 @@ class SourceRefTest : FunSpec() {
          )
       }
 
+      // sourceRef() computes a stack-based lookup (needed for "jump to source" and failure reporting)
+      // once per registered test. It must remain cheap.
+
+      // before PR https://github.com/kotest/kotest/pull/6203:
+      // it walked the *entire* call stack via Thread.currentThread().stackTrace and resolved the enclosing Spec
+      // with kotlin-reflect's isSubclassOf, which loads/exercises kotlin-reflect's metadata deserialization on every call.
+
+      // after PR https://github.com/kotest/kotest/pull/6203:
+      // StackWalker + plain java.lang.Class based implementation
+
+      // retune if flaky on CI
       test("source ref should be performant").config(timeout = 20.seconds) {
-         repeat(5_000) {
-            val spec = MySpecForTestCaseSourceRefTest()
-            Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first().source
+         val duration = measureTime {
+            repeat(5_000) {
+               val spec = MySpecForTestCaseSourceRefTest()
+               Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first().source
+            }
          }
+         duration.inWholeMilliseconds shouldBeLessThan 600L
       }
    }
 }
