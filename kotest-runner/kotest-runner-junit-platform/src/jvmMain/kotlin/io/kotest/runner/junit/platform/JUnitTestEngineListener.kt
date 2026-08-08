@@ -267,7 +267,9 @@ class JUnitTestEngineListener(
       // if it was not started, then it must be a Type.TEST (otherwise its children would have started it)
       startTestIfNotStarted(testCase, TestDescriptor.Type.TEST)
 
-      val descriptor = createTestDescriptorWithMethodSource(root, testCase, TestDescriptor.Type.TEST, formatter)
+      // startTestIfNotStarted guarantees a descriptor is present here - if not throw as something has gone quite wrong
+      val descriptor = descriptors[testCase.descriptor]
+         ?: error("No descriptor found for test case ${testCase.descriptor}")
 
       logger.log { Pair(testCase.name.name, "executionFinished: $descriptor") }
       listener.executionFinished(descriptor, result.toTestExecutionResult())
