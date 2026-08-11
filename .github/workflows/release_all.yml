@@ -126,5 +126,5 @@ jobs:
                  echo "kotest-skills plugin already at ${VERSION}; nothing to commit."
                else
                  git commit -m "Bump kotest-skills plugin version to ${VERSION}"
-                 git push origin "${{ inputs.branch }}"
+                 git push origin "${{ inputs.branch }}" -f
                fi
