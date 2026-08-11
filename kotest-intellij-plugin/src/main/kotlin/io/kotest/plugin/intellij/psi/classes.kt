@@ -3,6 +3,9 @@ package io.kotest.plugin.intellij.psi
 import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.util.CachedValueProvider
+import com.intellij.psi.util.CachedValuesManager
+import com.intellij.psi.util.PsiModificationTracker
 import com.intellij.psi.util.PsiTreeUtil
 
 import org.jetbrains.kotlin.analysis.api.analyze
@@ -42,7 +45,14 @@ fun PsiFile.classes(): List<KtClass> {
  * A visited set guards against infinite loops in circular (i.e. semantically invalid)
  * class hierarchies.
  */
-internal fun KtClassOrObject.kotestStyleSyntactic(): SpecStyle? = kotestStyleSyntactic(mutableSetOf())
+internal fun KtClassOrObject.kotestStyleSyntactic(): SpecStyle? {
+   // called from gutter icons, annotators, and breadcrumbs on every repaint/highlighting pass,
+   // so we cache the result per class; invalidated on any PSI change since the result also
+   // depends on other classes' supertype lists via the recursive stub-index lookup below.
+   return CachedValuesManager.getCachedValue(this) {
+      CachedValueProvider.Result.create(kotestStyleSyntactic(mutableSetOf()), PsiModificationTracker.MODIFICATION_COUNT)
+   }
+}
 
 private fun KtClassOrObject.kotestStyleSyntactic(visited: MutableSet<String>): SpecStyle? {
    val key = fqName?.asString() ?: return null
@@ -90,17 +100,23 @@ fun KtClassOrObject.takeIfRunnableSpec(): KtClassOrObject? = if (isRunnableSpec(
  * parents are included, up to the root of the class hierarchy.
  */
 fun KtClassOrObject.getAllSuperClasses(): List<FqName> {
-   return superTypeListEntries.mapNotNull { it.typeReference }
-      .flatMap { ref ->
-         analyze(this) {
-            val kaType = ref.type
-            val superTypes = (kaType.allSupertypes(false) + kaType).toList()
-            superTypes.mapNotNull {
-               val classId = it.symbol?.classId?.takeIf { id -> id != StandardClassIds.Any }
-               classId?.asSingleFqName()
+   // this resolves the full supertype chain via the Analysis API (analyze(this)), and is called
+   // from gutter icons, annotators, run-configuration construction, structure view, and more —
+   // often multiple times per user action. Cache per class, invalidated on any PSI change.
+   return CachedValuesManager.getCachedValue(this) {
+      val result = superTypeListEntries.mapNotNull { it.typeReference }
+         .flatMap { ref ->
+            analyze(this) {
+               val kaType = ref.type
+               val superTypes = (kaType.allSupertypes(false) + kaType).toList()
+               superTypes.mapNotNull {
+                  val classId = it.symbol?.classId?.takeIf { id -> id != StandardClassIds.Any }
+                  classId?.asSingleFqName()
+               }
             }
          }
-      }
+      CachedValueProvider.Result.create(result, PsiModificationTracker.MODIFICATION_COUNT)
+   }
 }
 
 /**

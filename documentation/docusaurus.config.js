@@ -80,6 +80,12 @@ module.exports = {
                position: 'left'
             },
             {
+               type: 'doc',
+               docId: 'ai/index',
+               label: 'AI',
+               position: 'left'
+            },
+            {
                type:'search',
                position: 'right'
             },
@@ -152,7 +158,7 @@ module.exports = {
             docs: {
                versions: {
                   current: {
-                     label: `6.2 🚧`,
+                     label: `6.3 🚧`,
                   },
                },
                sidebarPath: require.resolve('./sidebars.js'),

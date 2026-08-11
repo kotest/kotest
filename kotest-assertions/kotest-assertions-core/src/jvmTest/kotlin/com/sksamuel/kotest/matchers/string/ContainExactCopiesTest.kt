@@ -2,6 +2,7 @@ package com.sksamuel.kotest.matchers.string
 
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainExactCopies
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.string.shouldNotContainExactCopies
@@ -33,6 +34,11 @@ class ContainExactCopiesTest : WordSpec() {
                "String should contain 2 copies of element \"1212\"",
                "but contained 1 copies at index(es) [0]"
             )
+         }
+         "reject zero copies with a clear boundary message" {
+            shouldThrow<IllegalArgumentException> {
+               "Mayday".shouldContainExactCopies("ay", copies = 0, allowOverlaps = false)
+            }.message shouldBe "Copies must be at least 1, was 0."
          }
       }
       "shouldNotContainExactCopies" should {

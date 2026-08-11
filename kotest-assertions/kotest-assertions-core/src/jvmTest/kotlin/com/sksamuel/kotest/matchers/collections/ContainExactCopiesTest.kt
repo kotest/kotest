@@ -4,6 +4,7 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldContainExactCopies
 import io.kotest.matchers.collections.shouldNotContainExactCopies
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 
@@ -31,6 +32,11 @@ class ContainExactCopiesTest : WordSpec() {
                "Collection should contain 1 copies of element 3",
                "but contained 2 copies at index(es) [2, 3]"
             )
+         }
+         "reject zero copies with a clear boundary message" {
+            shouldThrow<IllegalArgumentException> {
+               listOf(1, 2, 3).shouldContainExactCopies(element = 4, copies = 0)
+            }.message shouldBe "Copies must be at least 1, was 0."
          }
          "find similar element" {
             shouldThrow<AssertionError> {

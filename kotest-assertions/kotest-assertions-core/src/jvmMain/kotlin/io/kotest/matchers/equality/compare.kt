@@ -139,7 +139,21 @@ private fun compareMaps(
       actual.keys.map { key ->
          val a = actual[key]
          val b = expected[key]
-         compareValue(a, b, a!!::class, "$field[$key]", config, prop)
+         val entryName = "$field[$key]"
+         when {
+            a == null && b == null -> CompareResult.empty
+            a == null -> CompareResult.single(
+               entryName,
+               AssertionErrorBuilder.create().withMessage("Expected ${b.print().value} but actual was null").build()
+            )
+
+            b == null -> CompareResult.single(
+               entryName,
+               AssertionErrorBuilder.create().withMessage("Expected null but actual was ${a.print().value}").build()
+            )
+
+            else -> compareValue(a, b, a::class, entryName, config, prop)
+         }
       }.reduce { a, op -> a.reduce(op) }
    }
 }

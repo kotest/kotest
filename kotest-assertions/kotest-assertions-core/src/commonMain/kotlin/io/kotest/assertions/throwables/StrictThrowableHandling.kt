@@ -35,7 +35,7 @@ inline fun <reified T : Throwable> shouldThrowExactlyUnit(block: () -> Unit): T 
  * Verifies that a block of code doesn't throw a Throwable of type [T], not including subclasses of [T]
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (not including) or not.
- * If [T] is thrown, this will thrown an [AssertionError]. If anything else is thrown, the throwable will be propagated.
+ * If [T] is thrown, this will throw an [AssertionError]. If anything else is thrown, the throwable will be propagated.
  * This is done so that no unexpected error is silently ignored.
  *
  * This should be used when [shouldNotThrowExactly] can't be used, such as when doing assignments (assignments are statements,
@@ -48,7 +48,7 @@ inline fun <reified T : Throwable> shouldThrowExactlyUnit(block: () -> Unit): T 
  *
  * If you don't care about the thrown exception, use [shouldNotThrowAnyUnit]
  *
- * * ```
+ * ```
  *     shouldNotThrowExactlyUnit<FooException> {
  *        throw FooException() // Fails
  *     }
@@ -77,7 +77,7 @@ inline fun <reified T : Throwable> shouldNotThrowExactlyUnit(block: () -> Unit) 
  * **Attention to assignment operations**:
  *
  * When doing an assignment to a variable, the code won't compile, because an assignment is not of type [Any], as required
- * by [block]. If you need to test that an assignment throws a [Throwable], use [shouldThrowExactlyUnit] or it's variations.
+ * by [block]. If you need to test that an assignment throws a [Throwable], use [shouldThrowExactlyUnit] or its variations.
  *
  * ```
  *     val thrown: FooException = shouldThrowExactly<FooException> {
@@ -114,7 +114,7 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  * Verifies that a block of code doesn't throw a Throwable of type [T], not including subclasses of [T]
  *
  * Use this function to wrap a block of code that you'd like to verify whether it throws [T] (not including) or not.
- * If [T] is thrown, this will thrown an [AssertionError]. If anything else is thrown, the throwable will be propagated.
+ * If [T] is thrown, this will throw an [AssertionError]. If anything else is thrown, the throwable will be propagated.
  * This is done so that no unexpected error is silently ignored.
  *
  *
@@ -128,12 +128,12 @@ inline fun <reified T : Throwable> shouldThrowExactly(block: () -> Any?): T {
  * **Attention to assignment operations**:
  *
  * When doing an assignment to a variable, the code won't compile, because an assignment is not of type [Any], as required
- * by [block]. If you need to test that an assignment doesn't throw a [Throwable], use [shouldNotThrowExactlyUnit] or it's variations.
+ * by [block]. If you need to test that an assignment doesn't throw a [Throwable], use [shouldNotThrowExactlyUnit] or its variations.
  *
  * ```
- *     val thrown: FooException = shouldThrowExactly<FooException> {
- *         // Code that we expect to throw FooException
- *         throw FooException()
+ *     shouldNotThrowExactly<FooException> {
+ *         // Code that we expect not to throw FooException
+ *         doSomethingSafe()
  *     }
  * ```
  *

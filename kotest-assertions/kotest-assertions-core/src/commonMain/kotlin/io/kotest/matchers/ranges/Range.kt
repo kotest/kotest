@@ -19,7 +19,11 @@ internal data class Range<T : Comparable<T>>(
          end.edgeType == RangeEdgeType.EXCLUSIVE
       )
 
-   fun intersect(other: Range<T>): Boolean = !this.lessThan(other) && !other.lessThan(this)
+   fun intersect(other: Range<T>): IntersectResult = when {
+      this.lessThan(other) -> IntersectResult.LESS_THAN_OTHER
+      this.greaterThan(other) -> IntersectResult.GREATER_THAN_OTHER
+      else -> IntersectResult.INTERSECT
+   }
 
    fun lessThan(other: Range<T>): Boolean {
       val endOfThis: T = this.end.value
@@ -47,6 +51,14 @@ internal data class Range<T : Comparable<T>>(
    }
 
    companion object
+}
+
+enum class IntersectResult(
+   val description: String,
+) {
+   INTERSECT("Intersected"),
+   LESS_THAN_OTHER("less than other"),
+   GREATER_THAN_OTHER("greater than other"),
 }
 
 @PublishedApi

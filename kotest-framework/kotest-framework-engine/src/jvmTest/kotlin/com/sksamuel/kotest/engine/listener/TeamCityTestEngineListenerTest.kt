@@ -121,7 +121,26 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
          }
          stripDetails(output) shouldBe """a[enteredTheMatrix]
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
-a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest/a -- b -- c' locationHint='kotest://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
+a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33' message='don|'t like it' result_status='Ignored']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("should use display name rendering for nested ignored tests when parents were not started") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a")
+            listener.engineStarted()
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testIgnored(c, "skipped")
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.engineFinished(emptyList())
+         }
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testIgnored name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33' message='skipped' result_status='Ignored']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
       }
@@ -329,6 +348,67 @@ a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngine
 a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c' locationHint='kotest://foo.bar.Test:17']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a b c' duration='124' result_status='Success']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("nestContainers should report nested containers as nested suites") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", nestContainers = true)
+            listener.engineStarted()
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(123.milliseconds))
+            listener.testFinished(b, TestResult.Success(324.milliseconds))
+            listener.testFinished(a, TestResult.Success(653.milliseconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.engineFinished(emptyList())
+         }
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' locationHint='kotest://foo.bar.Test:12']
+a[testSuiteStarted name='b' locationHint='kotest://foo.bar.Test:17']
+a[testStarted name='c' locationHint='kotest://foo.bar.Test:33']
+a[testFinished name='c' duration='123' result_status='Success']
+a[testSuiteFinished name='b']
+a[testSuiteFinished name='a']
+a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("nestContainers should insert a placeholder test within the failing container's suite") {
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a", nestContainers = true)
+            listener.engineStarted()
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testStarted(a)
+            listener.testStarted(b)
+            listener.testStarted(c)
+            listener.testFinished(c, TestResult.Success(123.milliseconds))
+            listener.testFinished(b, TestResult.Error(653.milliseconds, Exception("boom")))
+            listener.testFinished(a, TestResult.Success(324.milliseconds))
+            listener.specFinished(
+               SpecRef.Reference(TeamCityTestEngineListenerTest::class),
+               TestResult.Success(0.seconds)
+            )
+            listener.engineFinished(emptyList())
+         }
+         stripDetails(output) shouldBe """a[enteredTheMatrix]
+a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest' locationHint='kotest://com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest:1']
+a[testSuiteStarted name='a' locationHint='kotest://foo.bar.Test:12']
+a[testSuiteStarted name='b' locationHint='kotest://foo.bar.Test:17']
+a[testStarted name='c' locationHint='kotest://foo.bar.Test:33']
+a[testFinished name='c' duration='123' result_status='Success']
+a[testStarted name='Exception']
+a[testFailed name='Exception' message='boom']
+a[testFinished name='Exception']
+a[testSuiteFinished name='b']
+a[testSuiteFinished name='a']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
 """
       }

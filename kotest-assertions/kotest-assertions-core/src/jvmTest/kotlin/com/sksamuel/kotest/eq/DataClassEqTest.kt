@@ -1,12 +1,14 @@
 package com.sksamuel.kotest.eq
 
 import io.kotest.assertions.AssertionErrorBuilder
+import io.kotest.assertions.eq.DataClassEq.dataClassFieldCount
 import io.kotest.assertions.eq.DefaultEqResolver
 import io.kotest.assertions.eq.Eq
 import io.kotest.assertions.eq.EqContext
 import io.kotest.assertions.eq.EqResult
 import io.kotest.assertions.eq.isDataClassInstance
 import io.kotest.assertions.throwables.shouldThrowAny
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -57,10 +59,36 @@ object InstantWithoutNanosEq : Eq<Instant> {
    }
 }
 
+sealed class BoolState(val bytes: ByteArray?) {
+   data object True : BoolState(byteArrayOf(1))
+   data object False : BoolState(byteArrayOf(0))
+   data object Unknown : BoolState(null)
+}
+
+sealed class Status {
+   data object Active : Status()
+   data object Inactive : Status()
+}
+
+data class User(val name: String, val status: Status)
+
 class DataClassEqTest : StringSpec({
 
    "respects custom equals implementations in data classes" {
       IntRatio(1, 2) shouldBe IntRatio(2, 4)
+   }
+
+   // https://github.com/kotest/kotest/issues/6144
+   "distinct data objects must not be considered equal" {
+      isDataClassInstance(BoolState.True) shouldBe true
+
+      BoolState.True shouldNotBe BoolState.False
+      BoolState.True shouldNotBe BoolState.Unknown
+      BoolState.False shouldNotBe BoolState.Unknown
+   }
+
+   "the same data object must be considered equal to itself" {
+      BoolState.True shouldBe BoolState.True
    }
 
    "respects custom registered Eq function" {
@@ -186,6 +214,18 @@ class DataClassEqTest : StringSpec({
 
       throwable.message shouldNotStartWith "data class diff"
    }
+
+   "should detect difference in one data object field" {
+      val user1 = User("John", Status.Active)
+      val user2 = User("John", Status.Inactive)
+
+      withClue("Guardian assumption - field status is different") {
+         user1.status shouldNotBe user2.status
+      }
+
+      user1 shouldNotBe user2
+   }
+
 })
 
 class `DataClassEq AssertionConfig Tests` : StringSpec({
@@ -200,5 +240,15 @@ class `DataClassEq AssertionConfig Tests` : StringSpec({
       val throwable = shouldThrowAny { DataClass1(1, 3.4F) shouldBe DataClass1(2, 3.5F) }
 
       throwable.message shouldBe "expected:<DataClass1(a=2, b=3.5)> but was:<DataClass1(a=1, b=3.4)>"
+   }
+
+   "dataClassFieldCount counts fields for data class" {
+      dataClassFieldCount(IntRatio(3, 4)) shouldBe 2
+   }
+   "dataClassFieldCount returns 0 for data object" {
+      dataClassFieldCount(Status.Active) shouldBe 0
+   }
+   "dataClassFieldCount handles null" {
+      dataClassFieldCount(null) shouldBe 0
    }
 })

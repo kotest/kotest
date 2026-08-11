@@ -9,6 +9,7 @@ import io.kotest.matchers.date.before
 import io.kotest.matchers.date.haveSameDay
 import io.kotest.matchers.date.haveSameHours
 import io.kotest.matchers.date.haveSameInstantAs
+import io.kotest.matchers.date.haveSameInstantAsOffsetDateTime
 import io.kotest.matchers.date.haveSameMinutes
 import io.kotest.matchers.date.haveSameMonth
 import io.kotest.matchers.date.haveSameNanos
@@ -49,6 +50,7 @@ import io.kotest.matchers.date.shouldNotHaveSameNanosAs
 import io.kotest.matchers.date.shouldNotHaveSameSecondsAs
 import io.kotest.matchers.date.shouldNotHaveSameYearAs
 import io.kotest.matchers.date.within
+import io.kotest.matchers.date.haveSameInstantAsZonedDateTime
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
@@ -425,6 +427,32 @@ class DateMatchersTest : StringSpec() {
         OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldHaveSameInstantAs OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3))
         OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNot haveSameInstantAs(OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2)))
         OffsetDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) shouldNotHaveSameInstantAs OffsetDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-2))
+     }
+
+     "haveSameInstantAsZonedDateTime should match OffsetDateTime and ZonedDateTime" {
+        val date = OffsetDateTime.of(2026, 7, 14, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+        val other = ZonedDateTime.of(2026, 7, 14, 8, 0, 0, 0, ZoneId.of("America/New_York"))
+        date should haveSameInstantAsZonedDateTime(other)
+        shouldThrow<AssertionError> {
+           date shouldNot haveSameInstantAsZonedDateTime(other)
+        }
+        date.plusSeconds(1L) shouldNot haveSameInstantAsZonedDateTime(other)
+        shouldThrow<AssertionError> {
+           date.plusSeconds(1L) should haveSameInstantAsZonedDateTime(other)
+        }
+     }
+
+     "haveSameInstantAsOffsetDateTime should match OffsetDateTime and ZonedDateTime" {
+        val date = ZonedDateTime.of(2026, 7, 14, 8, 0, 0, 0, ZoneId.of("America/New_York"))
+        val other = OffsetDateTime.of(2026, 7, 14, 11, 0, 0, 0, ZoneOffset.ofHours(-1))
+        date should haveSameInstantAsOffsetDateTime(other)
+        shouldThrow<AssertionError> {
+           date shouldNot haveSameInstantAsOffsetDateTime(other)
+        }
+        date.plusSeconds(1L) shouldNot haveSameInstantAsOffsetDateTime(other)
+        shouldThrow<AssertionError> {
+           date.plusSeconds(1L) should haveSameInstantAsOffsetDateTime(other)
+        }
      }
   }
 }

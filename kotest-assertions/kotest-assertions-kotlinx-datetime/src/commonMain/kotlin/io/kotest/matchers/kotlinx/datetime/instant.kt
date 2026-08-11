@@ -5,7 +5,7 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNot
 import io.kotest.matchers.shouldNotBe
-import kotlinx.datetime.Instant
+import kotlin.time.Instant
 
 /**
  * Assert that [Instant] is before [anotherInstant].

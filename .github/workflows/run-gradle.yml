@@ -82,6 +82,9 @@ jobs:
                sudo udevadm control --reload-rules
                sudo udevadm trigger --name-match=kvm
 
+         - name: Check Gradle Wrapper
+           uses: gradle/actions/wrapper-validation@v6
+
          -  name: Gradle ${{ inputs.task }}
             run: ./gradlew ${{ inputs.task }}
             shell: bash

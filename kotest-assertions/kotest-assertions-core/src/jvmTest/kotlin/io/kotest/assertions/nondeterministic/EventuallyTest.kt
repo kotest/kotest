@@ -9,7 +9,6 @@ import io.kotest.assertions.withClue
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.comparables.shouldBeBetween
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.nulls.shouldNotBeNull
@@ -188,8 +187,6 @@ class EventuallyTest : FunSpec() {
       }
 
       test("pass tests that throws FileNotFoundException for some time") {
-         val start = TimeSource.Monotonic.markNow()
-         val end = start.plus(50.milliseconds)
          var iterations = 0
          val config = eventuallyConfig {
             duration = 5.days
@@ -197,11 +194,12 @@ class EventuallyTest : FunSpec() {
          }
          eventually(config) {
             iterations++
-            if (end.hasNotPassedNow())
+            // throw a transient exception for the first few attempts, then succeed.
+            // counting attempts rather than measuring wall-clock time keeps this deterministic.
+            if (iterations < 5)
                throw FileNotFoundException("foo")
          }
-         // the delay is 10ms so after 50ms should be approx 5 iterations
-         iterations.shouldBeBetween(3, 7)
+         iterations shouldBe 5
       }
 
       test("handle kotlin assertion errors") {

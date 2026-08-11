@@ -6,7 +6,7 @@ plugins {
    `kotlin-dsl`
    id("kotest-publishing-conventions")
    alias(libs.plugins.gradle.plugin.publish)
-   id("com.github.node-gradle.node") version "7.1.0"
+   alias(libs.plugins.node.gradle)
 }
 
 group = "io.kotest"

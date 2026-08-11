@@ -19,6 +19,7 @@ import io.kotest.matchers.doubles.lte
 import io.kotest.matchers.doubles.negative
 import io.kotest.matchers.doubles.positive
 import io.kotest.matchers.doubles.shouldBeAtLeast
+import io.kotest.matchers.doubles.shouldBeAtMost
 import io.kotest.matchers.doubles.shouldBeBetween
 import io.kotest.matchers.doubles.shouldBeGreaterThan
 import io.kotest.matchers.doubles.shouldBeGreaterThanOrEqual
@@ -32,6 +33,7 @@ import io.kotest.matchers.doubles.shouldBePositive
 import io.kotest.matchers.doubles.shouldBePositiveInfinity
 import io.kotest.matchers.doubles.shouldBeZero
 import io.kotest.matchers.doubles.shouldNotBeAtLeast
+import io.kotest.matchers.doubles.shouldNotBeAtMost
 import io.kotest.matchers.doubles.shouldNotBeBetween
 import io.kotest.matchers.doubles.shouldNotBeGreaterThan
 import io.kotest.matchers.doubles.shouldNotBeGreaterThanOrEqual
@@ -939,6 +941,7 @@ class DoubleMatchersTest : FreeSpec() {
     this should beLessThanOrEqualTo(x)
     this shouldBe lte(x)
     this shouldBeLessThanOrEqual x
+    this shouldBeAtMost x
 
     this shouldThrowExceptionOnNotLessThanOrEqual x
   }
@@ -955,6 +958,7 @@ class DoubleMatchersTest : FreeSpec() {
     this shouldNot beLessThanOrEqualTo(x)
     this shouldNotBe lte(x)
     this shouldNotBeLessThanOrEqual x
+    this shouldNotBeAtMost x
 
     this shouldThrowExceptionOnLessThanOrEqual x
   }
@@ -963,7 +967,8 @@ class DoubleMatchersTest : FreeSpec() {
     shouldThrowAssertionError("$this should be <= $x",
                               { this should beLessThanOrEqualTo(x) },
                               { this shouldBe lte(x) },
-                              { this shouldBeLessThanOrEqual x }
+                              { this shouldBeLessThanOrEqual x },
+                              { this shouldBeAtMost x }
     )
   }
 

@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.data.row
 import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.ranges.IntersectResult
 import io.kotest.matchers.ranges.Range
 import io.kotest.matchers.ranges.RangeEdge
 import io.kotest.matchers.ranges.RangeEdgeType
@@ -192,7 +193,7 @@ class RangeTest : WordSpec() {
             ) { rangeStart, rangeLength, otherStart, otherLength ->
                val range = rangeStart..(rangeStart + rangeLength)
                val other = otherStart..(otherStart + otherLength)
-               Range.ofClosedRange(range).intersect(Range.ofClosedRange(other)) == range.toSet()
+               (Range.ofClosedRange(range).intersect(Range.ofClosedRange(other)) == IntersectResult.INTERSECT) == range.toSet()
                   .intersect(other.toSet()).isNotEmpty()
             }
          }
@@ -203,7 +204,7 @@ class RangeTest : WordSpec() {
             ) { rangeStart, rangeLength, otherStart, otherLength ->
                val range = rangeStart..<(rangeStart + rangeLength)
                val other = otherStart..<(otherStart + otherLength)
-               Range.ofOpenEndRange(range).intersect(Range.ofOpenEndRange(other)) == range.toSet()
+               (Range.ofOpenEndRange(range).intersect(Range.ofOpenEndRange(other)) == IntersectResult.INTERSECT) == range.toSet()
                   .intersect(other.toSet()).isNotEmpty()
             }
          }
@@ -214,10 +215,10 @@ class RangeTest : WordSpec() {
             ) { rangeStart, rangeLength, otherStart, otherLength ->
                val range = rangeStart..(rangeStart + rangeLength)
                val other = otherStart..<(otherStart + otherLength)
-               (Range.ofClosedRange(range).intersect(Range.ofOpenEndRange(other)) == range.toSet()
+               ((Range.ofClosedRange(range).intersect(Range.ofOpenEndRange(other)) == IntersectResult.INTERSECT) == range.toSet()
                   .intersect(other.toSet()).isNotEmpty())
                   &&
-                  (Range.ofOpenEndRange(other).intersect(Range.ofClosedRange(range)) == range.toSet()
+                  ((Range.ofOpenEndRange(other).intersect(Range.ofClosedRange(range)) == IntersectResult.INTERSECT) == range.toSet()
                      .intersect(other.toSet()).isNotEmpty())
             }
          }

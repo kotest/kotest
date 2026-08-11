@@ -2,6 +2,7 @@ package io.kotest.extensions.spring
 
 import io.kotest.core.LogLine
 import io.kotest.core.Logger
+import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.test.TestCase
 import net.bytebuddy.ByteBuddy
 import net.bytebuddy.description.modifier.Visibility
@@ -10,6 +11,7 @@ import net.bytebuddy.implementation.FixedValue
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 
 internal object SpringJavaCompatibility {
@@ -17,6 +19,19 @@ internal object SpringJavaCompatibility {
    private val logger = Logger<SpringJavaCompatibility>()
 
    var ignoreSpringListenerOnFinalClassWarning: Boolean = false
+
+   // methodHandle() is called multiple times per test case (intercept/beforeAny/afterAny). Spring's
+   // TestContextManager only needs *a* Method belonging to the spec class - it doesn't need a fresh
+   // one per call - so we generate the ByteBuddy subclass once per test case and cache it here rather
+   // than re-generating and re-loading a new class into a new classloader on every call.
+   private val fakeMethodCache = ConcurrentHashMap<Descriptor.TestDescriptor, Method>()
+
+   private val fallbackMethodForFinalSpecs: Method by lazy {
+      // the method here must exist since we can't add our own
+      val methods = this@SpringJavaCompatibility::class.java.methods
+      methods.firstOrNull { it.name == "methodHandle" }
+         ?: error("Could not find a method to attach spring lifecycle methods to: ${methods.map { it.name }}")
+   }
 
    /**
     * Generates a fake [Method] for the given [TestCase].
@@ -29,11 +44,12 @@ internal object SpringJavaCompatibility {
          @Suppress("MaxLineLength")
          println("Using SpringExtension on a final class. If any Spring annotation fails to work, try making this class open.")
       }
-      // the method here must exist since we can't add our own
-      val methods = this@SpringJavaCompatibility::class.java.methods
-      methods.firstOrNull { it.name == "methodHandle" }
-         ?: error("Could not find a method to attach spring lifecycle methods to: ${methods.map { it.name }}")
+      fallbackMethodForFinalSpecs
    } else {
+      fakeMethodCache.getOrPut(testCase.descriptor) { generateFakeMethod(testCase) }
+   }
+
+   private fun generateFakeMethod(testCase: TestCase): Method {
       val methodName = methodName(testCase)
       val fakeSpec = ByteBuddy()
          .subclass(testCase.spec::class.java)
@@ -42,7 +58,7 @@ internal object SpringJavaCompatibility {
          .make()
          .load(this::class.java.classLoader, ClassLoadingStrategy.Default.CHILD_FIRST)
          .loaded
-      fakeSpec.getMethod(methodName)
+      return fakeSpec.getMethod(methodName)
    }
 
    /**

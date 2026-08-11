@@ -64,7 +64,7 @@ fun String.containExactCopies(
    ) = object : Matcher<String> {
    override fun test(value: String) : MatcherResult {
       require(substring.isNotEmpty()) { "Element should not be empty" }
-      require(copies > 0) { "Copies should be positive, was $copies" }
+      require(copies > 0) { "Copies must be at least 1, was $copies." }
       val containsAtIndexes = substringFoundAtIndexes(
          value,
          substring,
