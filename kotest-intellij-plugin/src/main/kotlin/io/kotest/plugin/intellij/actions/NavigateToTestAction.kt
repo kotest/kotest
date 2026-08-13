@@ -9,6 +9,7 @@ import io.kotest.plugin.intellij.psi.enclosingSpec
 import io.kotest.plugin.intellij.psi.specStyle
 import io.kotest.plugin.intellij.Test
 import io.kotest.plugin.intellij.TestElement
+import io.kotest.plugin.intellij.psi.AnalysisUtils
 
 enum class Direction {
    Previous, Next
@@ -25,14 +26,18 @@ abstract class NavigateToTestAction(private val direction: Direction) : AnAction
       val element = file.findElementAt(offset) ?: return
 
       // gets the spec that the element is located in
-      val spec = element.enclosingSpec() ?: return
-      val style = spec.specStyle() ?: return
+      val (spec, style) = AnalysisUtils.withEdtSafeAnalysis {
+         val spec = element.enclosingSpec()
+         Pair(spec, spec.specStyle())
+      }
+
+      if (spec == null || style == null) return
 
       // gets the test that contains the element where the action occurred.
       val test = style.findAssociatedTest(element) ?: return
       val alltests = style.tests(spec, false)
 
-      fun flatten(tests:List<TestElement>): List<Test> {
+      fun flatten(tests: List<TestElement>): List<Test> {
          return tests.flatMap { listOf(it.test) + flatten(it.nestedTests) }
       }
 
