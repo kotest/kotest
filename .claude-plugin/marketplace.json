@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Official marketplace for Kotest agent skills.",
-    "version": "6.2.4"
+    "version": "0.0.0-test-31727747755"
   },
   "plugins": [
     {
