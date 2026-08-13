@@ -44,6 +44,8 @@ class DefaultExtensionRegistry : ExtensionRegistry {
 
    private val extensions = mutableListOf<Pair<Extension, KClass<*>?>>()
 
+   private val synchronizer = Synchronizer()
+
    // get(kClass) is invoked twice per spec instantiation (once for constructor extensions, once
    // for post-instantiation extensions), which was previously an O(n) filter/allocation over every
    // registered extension on each call. Under IsolationMode.SingleInstance each spec class is only
@@ -57,42 +59,57 @@ class DefaultExtensionRegistry : ExtensionRegistry {
    @Volatile
    private var byClass: Map<KClass<*>?, List<Extension>> = emptyMap()
 
-   override fun all(): List<Extension> = extensions.map { it.first }
+   override fun all(): List<Extension> = synchronizer.synchronized {
+      extensions.map { it.first }
+   }
 
-   override fun get(kClass: KClass<*>): List<Extension> = byClass[kClass] ?: emptyList()
+   override fun get(kClass: KClass<*>): List<Extension> = synchronizer.synchronized {
+      byClass[kClass] ?: emptyList()
+   }
 
    override fun add(extension: Extension) {
-      extensions.add(Pair(extension, null))
-      rebuild()
+      synchronizer.synchronized {
+         extensions.add(Pair(extension, null))
+         rebuild()
+      }
    }
 
    override fun add(extension: Extension, kclass: KClass<*>) {
-      extensions.add(Pair(extension, kclass))
-      rebuild()
+      synchronizer.synchronized {
+         extensions.add(Pair(extension, kclass))
+         rebuild()
+      }
    }
 
    override fun remove(extension: Extension) {
-      extensions.remove(Pair(extension, null))
-      rebuild()
+      synchronizer.synchronized {
+         extensions.remove(Pair(extension, null))
+         rebuild()
+      }
    }
 
    override fun remove(extension: Extension, kclass: KClass<*>) {
-      extensions.remove(Pair(extension, kclass))
-      rebuild()
+      synchronizer.synchronized {
+         extensions.remove(Pair(extension, kclass))
+         rebuild()
+      }
    }
 
    override fun clear() {
-      extensions.clear()
-      rebuild()
+      synchronizer.synchronized {
+         extensions.clear()
+         rebuild()
+      }
    }
 
    private fun rebuild() {
       byClass = extensions.groupBy({ it.second }, { it.first })
    }
 
-   override fun isEmpty(): Boolean = extensions.isEmpty()
-   override fun isNotEmpty(): Boolean = extensions.isNotEmpty()
-}
+   override fun isEmpty(): Boolean = synchronizer.synchronized { extensions.isEmpty() }
+   override fun isNotEmpty(): Boolean = synchronizer.synchronized { extensions.isNotEmpty() }
+
+}   
 
 object EmptyExtensionRegistry : ExtensionRegistry {
 
