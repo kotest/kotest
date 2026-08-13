@@ -26,10 +26,12 @@ abstract class NavigateToTestAction(private val direction: Direction) : AnAction
       val element = file.findElementAt(offset) ?: return
 
       // gets the spec that the element is located in
-      val (spec, style) = AnalysisUtils.withEdtSafeAnalysis {
+      val sst = AnalysisUtils.withEdtSafeAnalysis {
          val spec = element.enclosingSpec()
          Pair(spec, spec.specStyle())
-      }
+      } ?: return null
+
+      val (spec, style) = sst
 
       if (spec == null || style == null) return
 
