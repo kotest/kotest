@@ -34,7 +34,7 @@ class TestPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
     */
-   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
+   override fun getConfigurationFactory(): ConfigurationFactory = getKotestConfigurationType().getFactory()
 
    /**
     * In an IntelliJ custom plugin, the [shouldReplace] method in a RunConfigurationProducer is used to

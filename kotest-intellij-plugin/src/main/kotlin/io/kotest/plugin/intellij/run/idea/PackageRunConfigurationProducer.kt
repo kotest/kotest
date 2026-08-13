@@ -36,7 +36,7 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
    /**
     * Returns the [KotestConfigurationFactory] used to create [KotestRunConfiguration]s.
     */
-   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
+   override fun getConfigurationFactory(): ConfigurationFactory = getKotestConfigurationType().getFactory()
 
    /**
     * When two configurations are created from the same context by two different producers, checks if the
@@ -91,7 +91,18 @@ class PackageRunConfigurationProducer : LazyRunConfigurationProducer<KotestRunCo
    override fun isConfigurationFromContext(
       configuration: KotestRunConfiguration,
       context: ConfigurationContext
-   ): Boolean = false
+   ): Boolean {
+
+      if (RunnerModes.mode(context.module) != RunnerMode.LEGACY) return false
+
+      val psiDirectory = context.psiLocation as? PsiJavaDirectoryImpl ?: return false
+      val index = ProjectRootManager.getInstance(context.project).fileIndex
+      if (!index.isInTestSourceContent(psiDirectory.virtualFile)) return false
+
+      val psiPackage = JavaDirectoryService.getInstance().getPackage(psiDirectory) ?: return false
+      return configuration.getPackageName() == psiPackage.qualifiedName
+         && configuration.configurationModule.module == context.module
+   }
 
    override fun setupConfigurationFromContext(
       configuration: KotestRunConfiguration,
