@@ -75,7 +75,9 @@ fun <A> arbitrary(
    shrinker: Shrinker<A>,
    fn: suspend ArbitraryBuilderContext.(RandomSource) -> A
 ): Arb<A> = object : Arb<A>() {
-   override fun edgecase(rs: RandomSource): Sample<A>? = if (edgecases.isEmpty()) null else edgecases.random(rs.random).asSample()
+   override fun edgecase(rs: RandomSource): Sample<A>? =
+      if (edgecases.isEmpty()) null else sampleOf(edgecases.random(rs.random), shrinker)
+
    override fun sample(rs: RandomSource): Sample<A> = delegate.sample(rs)
 
    private val delegate = arbitraryBuilder(shrinker) { rs -> fn(rs) }
@@ -171,7 +173,7 @@ suspend inline fun <A> generateArbitrary(
 ): Arb<A> = suspendArbitraryBuilder(
    shrinker,
    null,
-   if (edgecases.isEmpty()) null else { rs -> edgecases.random(rs.random).asSample() }
+   if (edgecases.isEmpty()) null else { rs -> sampleOf(edgecases.random(rs.random), shrinker) }
 ) { rs -> fn(rs) }
 
 /**
@@ -228,7 +230,7 @@ fun <A> arbitraryBuilder(
 
    override fun edgecase(rs: RandomSource): Sample<A> {
       val value = runBuilderFn(SingleShotGenerationMode.Edgecase, rs)
-      return edgecaseFn?.invoke(rs) ?: value.asSample()
+      return edgecaseFn?.invoke(rs) ?: if (shrinker != null) sampleOf(value, shrinker) else value.asSample()
    }
 
    /**
@@ -267,7 +269,7 @@ suspend fun <A> suspendArbitraryBuilder(
 
       override fun edgecase(rs: RandomSource): Sample<A> {
          val value = runBuilderFn(SingleShotGenerationMode.Edgecase, rs)
-         return edgecaseFn?.invoke(rs) ?: value.asSample()
+         return edgecaseFn?.invoke(rs) ?: if (shrinker != null) sampleOf(value, shrinker) else value.asSample()
       }
 
       private fun runBuilderFn(genMode: SingleShotGenerationMode, rs: RandomSource): A {
@@ -296,7 +298,10 @@ class ArbitraryBuilder<A>(
    fun withShrinker(shrinker: Shrinker<A>) = ArbitraryBuilder(sampleFn, classifier, shrinker, edgecaseFn)
    fun withEdgecaseFn(edgecaseFn: EdgecaseFn<A>) = ArbitraryBuilder(sampleFn, classifier, shrinker, edgecaseFn)
    fun withEdgecases(edgecases: List<A>) = ArbitraryBuilder(sampleFn, classifier, shrinker) {
-      if (edgecases.isEmpty()) null else edgecases.random(it.random).asSample()
+      if (edgecases.isEmpty()) null else {
+         val value = edgecases.random(it.random)
+         if (shrinker != null) sampleOf(value, shrinker) else value.asSample()
+      }
    }
 
    fun build() = object : Arb<A>() {

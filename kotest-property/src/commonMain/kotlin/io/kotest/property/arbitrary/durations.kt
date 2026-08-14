@@ -32,14 +32,14 @@ fun Arb.Companion.duration(
          .nextLong(range.start.toLong(durationUnit)..range.endInclusive.toLong(durationUnit))
          .toDuration(durationUnit)
          .coerceIn(range)
-   }.withEdgecases(
-      setOfNotNull(
-         range.start,
-         Duration.ZERO,
-         range.endInclusive,
-      ).map { it.coerceIn(range) }
-   )
-      .withShrinker(DurationShrinker(range))
+   }.withShrinker(DurationShrinker(range))
+      .withEdgecases(
+         setOfNotNull(
+            range.start,
+            Duration.ZERO,
+            range.endInclusive,
+         ).map { it.coerceIn(range) }
+      )
       .withClassifier(DurationClassifier(range))
       .build()
 
