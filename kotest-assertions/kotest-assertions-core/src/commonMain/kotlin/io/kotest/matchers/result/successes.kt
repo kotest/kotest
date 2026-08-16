@@ -13,6 +13,7 @@ import io.kotest.matchers.should
  * @see [shouldBeFailure]
  */
 @Deprecated("Use shouldBeFailure instead. Deprecated since 6.0. Will be removed in 6.3", ReplaceWith("shouldBeFailure()"))
+@IgnorableReturnValue
 fun <T> Result<T>.shouldNotBeSuccess(): Throwable = shouldBeFailure()
 
 /**
@@ -21,6 +22,7 @@ fun <T> Result<T>.shouldNotBeSuccess(): Throwable = shouldBeFailure()
  * success("abc").shouldBeSuccess()       // Assertion passes
  * failure(MyException).shouldBeSuccess() // Assertion fails
  */
+@IgnorableReturnValue
 fun <T> Result<T>.shouldBeSuccess(): T {
    this should beSuccess()
    return getOrThrow()
@@ -33,6 +35,7 @@ fun <T> Result<T>.shouldBeSuccess(): T {
  * success("abc") shouldBeSuccess "cba"       // Assertion fails
  * failure(MyException) shouldBeSuccess "abc" // Assertion fails
  */
+@IgnorableReturnValue
 infix fun <T> Result<T>.shouldBeSuccess(expected: T): T {
    this should beSuccess(expected)
    return getOrThrow()
@@ -50,6 +53,7 @@ infix fun <T> Result<T>.shouldBeSuccess(expected: T): T {
  * }
  *
  */
+@IgnorableReturnValue
 infix fun <T> Result<T>.shouldBeSuccess(block: ((T) -> Unit)): T {
    this should beSuccess()
    return getOrThrow().also { block(it) }

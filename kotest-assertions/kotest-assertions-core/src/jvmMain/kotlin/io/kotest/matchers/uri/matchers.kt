@@ -6,7 +6,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.net.URI
 
+@IgnorableReturnValue
 fun URI.shouldBeOpaque() = this should beOpaque()
+@IgnorableReturnValue
 fun URI.shouldNotBeOpaque() = this shouldNot beOpaque()
 fun beOpaque() = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -17,7 +19,9 @@ fun beOpaque() = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHaveScheme(scheme: String) = this should haveScheme(scheme)
+@IgnorableReturnValue
 infix fun URI.shouldNotHaveScheme(scheme: String) = this shouldNot haveScheme(scheme)
 fun haveScheme(scheme: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -28,7 +32,9 @@ fun haveScheme(scheme: String) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHavePort(port: Int) = this should havePort(port)
+@IgnorableReturnValue
 infix fun URI.shouldNotHavePort(port: Int) = this shouldNot havePort(port)
 fun havePort(port: Int) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -39,7 +45,9 @@ fun havePort(port: Int) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHaveHost(host: String) = this should haveHost(host)
+@IgnorableReturnValue
 infix fun URI.shouldNotHaveHost(host: String) = this shouldNot haveHost(host)
 fun haveHost(host: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -50,7 +58,9 @@ fun haveHost(host: String) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHaveQuery(q: String) = this should haveQuery(q)
+@IgnorableReturnValue
 infix fun URI.shouldNotHaveQuery(q: String) = this shouldNot haveQuery(q)
 fun haveQuery(q: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -61,7 +71,9 @@ fun haveQuery(q: String) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHaveAuthority(authority: String) = this should haveAuthority(authority)
+@IgnorableReturnValue
 infix fun URI.shouldNotHaveAuthority(authority: String) = this shouldNot haveAuthority(authority)
 fun haveAuthority(authority: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -72,7 +84,9 @@ fun haveAuthority(authority: String) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHavePath(path: String) = this should havePath(path)
+@IgnorableReturnValue
 infix fun URI.shouldNotHavePath(path: String) = this shouldNot havePath(path)
 fun havePath(path: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -83,7 +97,9 @@ fun havePath(path: String) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHaveParameter(key: String) = this should haveParameter(key)
+@IgnorableReturnValue
 infix fun URI.shouldNotHaveParameter(key: String) = this shouldNot haveParameter(key)
 fun haveParameter(key: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(
@@ -94,7 +110,9 @@ fun haveParameter(key: String) = object : Matcher<URI> {
       })
 }
 
+@IgnorableReturnValue
 infix fun URI.shouldHaveFragment(fragment: String) = this should haveFragment(fragment)
+@IgnorableReturnValue
 infix fun URI.shouldNotHaveFragment(fragment: String) = this shouldNot haveFragment(fragment)
 fun haveFragment(fragment: String) = object : Matcher<URI> {
    override fun test(value: URI) = MatcherResult(

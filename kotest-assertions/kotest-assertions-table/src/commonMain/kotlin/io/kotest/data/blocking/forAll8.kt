@@ -9,6 +9,7 @@ import io.kotest.data.headers
 import io.kotest.data.paramNames
 import io.kotest.data.table
 
+@IgnorableReturnValue
 fun <A, B, C, D, E, F, G, H> forAll(
    vararg rows: Row8<A, B, C, D, E, F, G, H>,
    testfn: (A, B, C, D, E, F, G, H) -> Unit
@@ -25,6 +26,7 @@ fun <A, B, C, D, E, F, G, H> forAll(
    table(headers(paramA, paramB, paramC, paramD, paramE, paramF, paramG, paramH), *rows).forAll(testfn)
 }
 
+@IgnorableReturnValue
 fun <A, B, C, D, E, F, G, H> forNone(
    vararg rows: Row8<A, B, C, D, E, F, G, H>,
    testfn: (A, B, C, D, E, F, G, H) -> Unit

@@ -5,11 +5,13 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun <A> Triple<A, *, *>.shouldHaveFirst(a: A): Triple<A, *, *> {
    this should haveTripleFirst(a)
    return this
 }
 
+@IgnorableReturnValue
 fun <A> Triple<A, *, *>.shouldNotHaveFirst(a: A): Triple<A, *, *> {
    this shouldNot haveTripleFirst(a)
    return this
@@ -26,11 +28,13 @@ fun <A> haveTripleFirst(a: A) = object : Matcher<Triple<A, *, *>> {
    }
 }
 
+@IgnorableReturnValue
 fun <B> Triple<*, B, *>.shouldHaveSecond(b: B): Triple<*, B, *> {
    this should haveTripleSecond(b)
    return this
 }
 
+@IgnorableReturnValue
 fun <B> Triple<*, B, *>.shouldNotHaveSecond(b: B): Triple<*, B, *> {
    this shouldNot haveTripleSecond(b)
    return this
@@ -48,11 +52,13 @@ fun <B> haveTripleSecond(b: B) = object : Matcher<Triple<*, B, *>> {
 }
 
 
+@IgnorableReturnValue
 fun <C> Triple<*, *, C>.shouldHaveThird(c: C): Triple<*, *, C> {
    this should haveTripleThird(c)
    return this
 }
 
+@IgnorableReturnValue
 fun <C> Triple<*, *, C>.shouldNotHaveThird(c: C): Triple<*, *, C> {
    this shouldNot haveTripleThird(c)
    return this

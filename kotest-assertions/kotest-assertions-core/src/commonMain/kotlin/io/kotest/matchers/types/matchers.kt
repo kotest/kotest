@@ -33,6 +33,7 @@ import kotlin.contracts.contract
  * @param block Lambda that receives typecasted instance as argument for further assertions.
  * @return The typecasted instance
  */
+@IgnorableReturnValue
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): T {
    val matcher = beInstanceOf<T>()
    this shouldBe matcher
@@ -66,6 +67,7 @@ inline fun <reified T : Any> Any?.shouldBeInstanceOf(block: (T) -> Unit = { }): 
  *
  * @return The typecasted instance
  */
+@IgnorableReturnValue
 inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
    contract {
       returns() implies (this@shouldBeInstanceOf is T)
@@ -90,6 +92,7 @@ inline fun <reified T : Any> Any?.shouldBeInstanceOf(): T {
  * list.shouldNotBeInstanceOf<LinkedList<Int>>
  * ```
  */
+@IgnorableReturnValue
 inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
    val matcher = beInstanceOf<T>()
    this shouldNotBe matcher
@@ -122,6 +125,7 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
  * @param block Lambda that receives typecasted instance  as argument for further assertions.
  * @return The typecasted instance
  */
+@IgnorableReturnValue
 inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    val matcher = beOfType<T>()
    this shouldBe matcher
@@ -129,6 +133,7 @@ inline fun <reified T : Any> Any?.shouldBeTypeOf(block: (T) -> Unit = { }): T {
    return this
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Any> Any?.shouldBeTypeOf(): T {
    contract {
       returns() implies (this@shouldBeTypeOf is T)
@@ -153,10 +158,13 @@ inline fun <reified T : Any> Any?.shouldBeTypeOf(): T {
  * list.shouldNotBeTypeOf<LinkedList<Int>>
  * ```
  */
+@IgnorableReturnValue
 inline fun <reified T : Any> Any?.shouldNotBeTypeOf() {
    val matcher = beOfType<T>()
    this shouldNotBe matcher
 }
 
+@IgnorableReturnValue
 infix fun Any?.shouldBeSameInstanceAs(ref: Any?) = this should beTheSameInstanceAs(ref)
+@IgnorableReturnValue
 infix fun Any?.shouldNotBeSameInstanceAs(ref: Any?) = this shouldNotBe beTheSameInstanceAs(ref)

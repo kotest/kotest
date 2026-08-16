@@ -70,6 +70,7 @@ infix fun <T> T.withEqs(block: EqOverrides.() -> Unit): WithEqs<T> {
  * Asserts that the value carried by [this] equals [expected] under the overrides supplied via
  * [withEqs]. Throws an [AssertionError] on mismatch and returns the actual value on success.
  */
+@IgnorableReturnValue
 infix fun <T> WithEqs<T>.shouldBe(expected: T?): T {
    val context = EqContext(strictNumberEq = false, resolver = LayeredEqResolver(overrides))
    @Suppress("UNCHECKED_CAST")
@@ -83,6 +84,7 @@ infix fun <T> WithEqs<T>.shouldBe(expected: T?): T {
  * via [withEqs]. Throws an [AssertionError] when the comparison reports equality and returns the
  * actual value otherwise.
  */
+@IgnorableReturnValue
 infix fun <T> WithEqs<T>.shouldNotBe(expected: T?): T {
    val context = EqContext(strictNumberEq = false, resolver = LayeredEqResolver(overrides))
    @Suppress("UNCHECKED_CAST")

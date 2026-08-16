@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldNotBeInRange]
  * @see [beInRange]
  * */
+@IgnorableReturnValue
 infix fun Char.shouldBeInRange(range: CharRange): Char {
    this should beInRange(range)
    return this
@@ -22,6 +23,7 @@ infix fun Char.shouldBeInRange(range: CharRange): Char {
  * @see [shouldBeInRange]
  * @see [beInRange]
  * */
+@IgnorableReturnValue
 infix fun Char.shouldNotBeInRange(range: CharRange): Char {
    this shouldNot beInRange(range)
    return this
@@ -47,6 +49,7 @@ fun beInRange(range: CharRange) = object : Matcher<Char> {
    "Char-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Char import `io.kotest.matchers.char.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(from, to)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun Char.shouldBeBetween(from: Char, to: Char): Char {
    this should between(from, to)
    return this
@@ -62,6 +65,7 @@ fun Char.shouldBeBetween(from: Char, to: Char): Char {
    "Char-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the Char import `io.kotest.matchers.char.shouldNotBeBetween` manually.",
    ReplaceWith("shouldNotBeBetween(from, to)", "io.kotest.matchers.comparables.shouldNotBeBetween")
 )
+@IgnorableReturnValue
 fun Char.shouldNotBeBetween(from: Char, to: Char): Char {
    this shouldNot between(from, to)
    return this
@@ -79,6 +83,7 @@ fun between(from: Char, to: Char): Matcher<Char> = between(from, to)
  * @see [shouldNotBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
+@IgnorableReturnValue
 infix fun Char.shouldBeEqualToIgnoreCase(other: Char): Char {
    this should beEqualIgnoreCase(other)
    return this
@@ -90,6 +95,7 @@ infix fun Char.shouldBeEqualToIgnoreCase(other: Char): Char {
  * @see [shouldBeEqualToIgnoreCase]
  * @see [beEqualIgnoreCase]
  * */
+@IgnorableReturnValue
 infix fun Char.shouldNotBeEqualToIgnoreCase(other: Char): Char {
    this shouldNot beEqualIgnoreCase(other)
    return this

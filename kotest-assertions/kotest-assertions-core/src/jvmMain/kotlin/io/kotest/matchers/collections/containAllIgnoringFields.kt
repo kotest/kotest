@@ -15,6 +15,7 @@ import io.kotest.assertions.AssertionsConfig.maxCollectionPrintSize as printSize
  * @param field ignored field in comparison
  * @param other other ignored fields in comparison
  */
+@IgnorableReturnValue
 fun <T : Any> Iterable<T>.shouldContainAllIgnoringFields(
    ts: Collection<T>,
    field: KProperty<*>,
@@ -28,6 +29,7 @@ fun <T : Any> Iterable<T>.shouldContainAllIgnoringFields(
  * @param field ignored field in comparison
  * @param other other ignored fields in comparison
  */
+@IgnorableReturnValue
 fun <T : Any> Array<T>.shouldContainAllIgnoringFields(
    ts: Collection<T>,
    field: KProperty<*>,
@@ -41,6 +43,7 @@ fun <T : Any> Array<T>.shouldContainAllIgnoringFields(
  * @param field ignored field in comparison
  * @param other other ignored fields in comparison
  */
+@IgnorableReturnValue
 fun <T : Any> Collection<T>.shouldContainAllIgnoringFields(
    ts: Collection<T>,
    field: KProperty<*>,

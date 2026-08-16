@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldNot
  * @see [beRegex]
  * */
 @Deprecated("Use `shouldEqualRegex` instead. Deprecated in 6.0", ReplaceWith("this shouldEqualRegex anotherRegex"))
+@IgnorableReturnValue
 infix fun Regex.shouldBeRegex(anotherRegex: Regex): Regex = shouldEqualRegex(anotherRegex)
 
 /**
@@ -20,6 +21,7 @@ infix fun Regex.shouldBeRegex(anotherRegex: Regex): Regex = shouldEqualRegex(ano
  * @see [shouldNotBeRegex]
  * @see [beRegex]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldEqualRegex(anotherRegex: Regex): Regex {
    this should beRegex(anotherRegex)
    return this
@@ -35,6 +37,7 @@ infix fun Regex.shouldEqualRegex(anotherRegex: Regex): Regex {
    "Use `shouldNotEqualRegex` instead. Deprecated in 6.0",
    ReplaceWith("this shouldNotEqualRegex anotherRegex")
 )
+@IgnorableReturnValue
 infix fun Regex.shouldNotBeRegex(anotherRegex: Regex): Regex = shouldNotEqualRegex(anotherRegex)
 
 /**
@@ -43,6 +46,7 @@ infix fun Regex.shouldNotBeRegex(anotherRegex: Regex): Regex = shouldNotEqualReg
  * @see [shouldBeRegex]
  * @see [beRegex]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldNotEqualRegex(anotherRegex: Regex): Regex {
    this shouldNot beRegex(anotherRegex)
    return this
@@ -64,6 +68,7 @@ fun areEqualRegexMatcher(regex: Regex) = object : Matcher<Regex> {
  * @see [shouldNotHavePattern]
  * @see [havePattern]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldHavePattern(regexPattern: String): Regex {
    this should havePattern(regexPattern)
    return this
@@ -74,6 +79,7 @@ infix fun Regex.shouldHavePattern(regexPattern: String): Regex {
  * @see [shouldHavePattern]
  * @see [havePattern]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldNotHavePattern(regexPattern: String): Regex {
    this shouldNot havePattern(regexPattern)
    return this
@@ -96,6 +102,7 @@ fun haveSamePatternMatcher(pattern: String) = object : Matcher<Regex> {
  * @see [shouldNotHaveExactRegexOptions]
  * @see [haveExactOptions]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldHaveExactRegexOptions(regexOptions: Set<RegexOption>): Regex {
    this should haveExactOptions(regexOptions)
    return this
@@ -106,6 +113,7 @@ infix fun Regex.shouldHaveExactRegexOptions(regexOptions: Set<RegexOption>): Reg
  * @see [shouldHaveExactRegexOptions]
  * @see [haveExactOptions]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldNotHaveExactRegexOptions(regexOptions: Set<RegexOption>): Regex {
    this shouldNot haveExactOptions(regexOptions)
    return this
@@ -128,6 +136,7 @@ fun haveSameRegexOptionsMatcher(options: Set<RegexOption>) = object : Matcher<Re
  * @see [shouldNotIncludeRegexOption]
  * @see [includeOption]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldIncludeRegexOption(regexOption: RegexOption): Regex {
    this should includeOption(regexOption)
    return this
@@ -138,6 +147,7 @@ infix fun Regex.shouldIncludeRegexOption(regexOption: RegexOption): Regex {
  * @see [shouldIncludeRegexOption]
  * @see [includeOption]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldNotIncludeRegexOption(regexOption: RegexOption): Regex {
    this shouldNot includeOption(regexOption)
    return this
@@ -160,6 +170,7 @@ fun haveRegexOptionMatcher(option: RegexOption) = object : Matcher<Regex> {
  * @see [shouldNotIncludeRegexOptions]
  * @see [includeOptions]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldIncludeRegexOptions(regexOptions: Set<RegexOption>): Regex {
    this should includeOptions(regexOptions)
    return this
@@ -170,6 +181,7 @@ infix fun Regex.shouldIncludeRegexOptions(regexOptions: Set<RegexOption>): Regex
  * @see [shouldIncludeRegexOptions]
  * @see [includeOptions]
  * */
+@IgnorableReturnValue
 infix fun Regex.shouldNotIncludeRegexOptions(regexOptions: Set<RegexOption>): Regex {
    this shouldNot includeOptions(regexOptions)
    return this

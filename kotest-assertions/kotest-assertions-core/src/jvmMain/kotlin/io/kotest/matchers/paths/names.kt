@@ -6,7 +6,9 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import java.nio.file.Path
 
+@IgnorableReturnValue
 fun Path.shouldHaveExtension(vararg exts: String) = this should haveExtension(*exts)
+@IgnorableReturnValue
 fun Path.shouldNotHaveExtension(vararg exts: String) = this shouldNot haveExtension(*exts)
 fun haveExtension(vararg exts: String) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {
@@ -21,7 +23,9 @@ fun haveExtension(vararg exts: String) = object : Matcher<Path> {
 }
 
 
+@IgnorableReturnValue
 infix fun Path.shouldHaveNameWithoutExtension(name: String) = this should haveNameWithoutExtension(name)
+@IgnorableReturnValue
 infix fun Path.shouldNotHaveNameWithoutExtension(name: String) = this shouldNot haveNameWithoutExtension(name)
 fun haveNameWithoutExtension(name: String) = object : Matcher<Path> {
    override fun test(value: Path): MatcherResult {

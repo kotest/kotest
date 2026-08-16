@@ -5,13 +5,19 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun Regex.shouldMatch(str: String) = this should matchString(str)
+@IgnorableReturnValue
 infix fun Regex.shouldNotMatch(str: String) = this shouldNot matchString(str)
 
+@IgnorableReturnValue
 fun Regex.shouldMatchAll(vararg strs: String) = this should matchAllStrings(*strs)
+@IgnorableReturnValue
 fun Regex.shouldNotMatchAll(vararg strs: String) = this shouldNot matchAllStrings(*strs)
 
+@IgnorableReturnValue
 fun Regex.shouldMatchAny(vararg strs: String) = this should matchAnyStrings(*strs)
+@IgnorableReturnValue
 fun Regex.shouldNotMatchAny(vararg strs: String) = this shouldNot matchAnyStrings(*strs)
 
 fun matchString(str: String) = object : Matcher<Regex> {

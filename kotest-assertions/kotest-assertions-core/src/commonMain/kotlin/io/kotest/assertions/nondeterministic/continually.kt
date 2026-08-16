@@ -15,6 +15,7 @@ import kotlin.time.Duration.Companion.seconds
  *
  * To supply more options to continually, use the overload that accepts a [ContinuallyConfiguration].
  */
+@IgnorableReturnValue
 suspend fun <T> continually(
    duration: Duration,
    test: suspend () -> T,
@@ -29,6 +30,7 @@ suspend fun <T> continually(
  *
  * To supply more options to continually, use the overload that accepts a [ContinuallyConfiguration].
  */
+@IgnorableReturnValue
 suspend fun <T> continually(
    durationMs: Long,
    test: suspend () -> T,
@@ -40,6 +42,7 @@ suspend fun <T> continually(
  * Runs the [test] function continually using the given [config], failing if an exception is
  * thrown during any invocation.
  */
+@IgnorableReturnValue
 suspend fun <T> continually(
    config: ContinuallyConfiguration<T>,
    test: suspend () -> T,

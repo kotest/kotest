@@ -17,6 +17,7 @@ import io.kotest.matchers.shouldNot
  * @see [shouldBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldBeWithin(range: ClosedRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) should beWithin(Range.ofClosedRange(range))
    return this
@@ -33,6 +34,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldBeWithin(range: ClosedRange<T
  * @see [shouldBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: ClosedRange<T>): OpenEndRange<T> {
    when (T::class) {
       Int::class -> shouldBeWithinRangeOfInt(
@@ -59,6 +61,7 @@ inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldBeWithin(rang
  * @see [shouldBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldBeWithin(range: OpenEndRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) should beWithin(Range.ofOpenEndRange(range))
    return this
@@ -73,6 +76,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldBeWithin(range: OpenEndRange<
  * @see [shouldBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: OpenEndRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) should beWithin(Range.ofOpenEndRange(range))
    return this
@@ -89,6 +93,7 @@ infix fun <T : Comparable<T>> OpenEndRange<T>.shouldBeWithin(range: OpenEndRange
  * @see [shouldNotBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: ClosedRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) shouldNot beWithin(Range.ofClosedRange(range))
    return this
@@ -103,6 +108,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: ClosedRang
  * @see [shouldNotBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: OpenEndRange<T>): ClosedRange<T> {
    Range.ofClosedRange(this) shouldNot beWithin(Range.ofOpenEndRange(range))
    return this
@@ -119,6 +125,7 @@ infix fun <T : Comparable<T>> ClosedRange<T>.shouldNotBeWithin(range: OpenEndRan
  * @see [shouldNotBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(range: ClosedRange<T>): OpenEndRange<T> {
 
    when (T::class) {
@@ -146,6 +153,7 @@ inline infix fun <reified T : Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(r
  * @see [shouldNotBeWithin]
  * @see [beWithin]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> OpenEndRange<T>.shouldNotBeWithin(range: OpenEndRange<T>): OpenEndRange<T> {
    Range.ofOpenEndRange(this) shouldNot beWithin(Range.ofOpenEndRange(range))
    return this

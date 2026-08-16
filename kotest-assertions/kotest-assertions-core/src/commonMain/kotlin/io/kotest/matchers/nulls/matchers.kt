@@ -23,6 +23,7 @@ import kotlin.contracts.contract
  *
  * ```
  */
+@IgnorableReturnValue
 fun Any?.shouldBeNull() {
   contract {
     returns() implies (this@shouldBeNull == null)
@@ -63,6 +64,7 @@ fun Any?.shouldBeNull() {
  *
  * ```
  */
+@IgnorableReturnValue
 fun <T> T?.shouldNotBeNull(): T {
    contract {
       returns() implies (this@shouldNotBeNull != null)
@@ -79,6 +81,7 @@ fun <T> T?.shouldNotBeNull(): T {
  *     length should beEven()
  * }
  */
+@IgnorableReturnValue
 inline infix fun <T : Any> T?.shouldNotBeNull(block: T.() -> Unit): T {
    contract {
       returns() implies (this@shouldNotBeNull != null)

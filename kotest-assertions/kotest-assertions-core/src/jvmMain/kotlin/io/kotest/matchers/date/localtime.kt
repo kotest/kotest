@@ -30,6 +30,7 @@ import kotlin.time.Duration
  *     firstTime shouldHaveSameHoursAs secondTime   //  Assertion fails, 23 != 16
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldHaveSameHoursAs(time: LocalTime) = this should haveSameHours(time)
 
 /**
@@ -53,6 +54,7 @@ infix fun LocalTime.shouldHaveSameHoursAs(time: LocalTime) = this should haveSam
  *     firstTime shouldNotHaveSameHoursAs secondTime   //  Assertion fails, 23 == 23
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldNotHaveSameHoursAs(time: LocalTime) = this shouldNot haveSameHours(time)
 
 /**
@@ -107,6 +109,7 @@ fun haveSameHours(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalT
  *     firstTime shouldHaveSameMinutesAs secondTime   //  Assertion fails, 59 != 1
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldHaveSameMinutesAs(time: LocalTime) = this should haveSameMinutes(time)
 
 /**
@@ -130,6 +133,7 @@ infix fun LocalTime.shouldHaveSameMinutesAs(time: LocalTime) = this should haveS
  *     firstTime shouldNotHaveSameMinutesAs secondTime   //  Assertion fails, 59 == 59
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldNotHaveSameMinutesAs(time: LocalTime) = this shouldNot haveSameMinutes(time)
 
 /**
@@ -183,6 +187,7 @@ fun haveSameMinutes(time: LocalTime): Matcher<LocalTime> = object : Matcher<Loca
  *     firstTime shouldHaveSameSecondsAs secondTime   //  Assertion fails, 30 != 25
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldHaveSameSecondsAs(time: LocalTime) = this should haveSameSeconds(time)
 
 /**
@@ -206,6 +211,7 @@ infix fun LocalTime.shouldHaveSameSecondsAs(time: LocalTime) = this should haveS
  *     firstTime shouldNotHaveSameSecondsAs secondTime   //  Assertion fails, 30 == 30
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldNotHaveSameSecondsAs(time: LocalTime) = this shouldNot haveSameSeconds(time)
 
 /**
@@ -259,6 +265,7 @@ fun haveSameSeconds(time: LocalTime): Matcher<LocalTime> = object : Matcher<Loca
  *     firstTime shouldHaveSameNanosAs nanoTime   //  Assertion fails, 1000 != 3333
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldHaveSameNanosAs(time: LocalTime) = this should haveSameNanos(time)
 
 /**
@@ -282,6 +289,7 @@ infix fun LocalTime.shouldHaveSameNanosAs(time: LocalTime) = this should haveSam
  *     firstTime shouldNotHaveSameNanosAs secondTime   //  Assertion fails, 1000 == 1000
 ```
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldNotHaveSameNanosAs(time: LocalTime) = this shouldNot haveSameNanos(time)
 
 /**
@@ -338,6 +346,7 @@ fun haveSameNanos(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalT
  *
  * @see LocalTime.shouldNotBeAfter
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldBeBefore(time: LocalTime) = this should before(time)
 
 /**
@@ -363,6 +372,7 @@ infix fun LocalTime.shouldBeBefore(time: LocalTime) = this should before(time)
  *
  * @see LocalTime.shouldBeAfter
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldNotBeBefore(time: LocalTime) = this shouldNot before(time)
 
 /**
@@ -419,6 +429,7 @@ fun before(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
  *
  * @see LocalTime.shouldNotBeBefore
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldBeAfter(time: LocalTime) = this should after(time)
 
 /**
@@ -444,6 +455,7 @@ infix fun LocalTime.shouldBeAfter(time: LocalTime) = this should after(time)
  *
  * @see LocalTime.shouldBeBefore
  */
+@IgnorableReturnValue
 infix fun LocalTime.shouldNotBeAfter(time: LocalTime) = this shouldNot after(time)
 
 /**
@@ -501,6 +513,7 @@ fun after(time: LocalTime): Matcher<LocalTime> = object : Matcher<LocalTime> {
  *
  * @see LocalTime.shouldNotBeBetween
  */
+@IgnorableReturnValue
 fun LocalTime.shouldBeBetween(a: LocalTime, b: LocalTime) = this shouldBe between(a, b)
 
 /**
@@ -527,6 +540,7 @@ fun LocalTime.shouldBeBetween(a: LocalTime, b: LocalTime) = this shouldBe betwee
  *
  * @see LocalTime.shouldBeBetween
  */
+@IgnorableReturnValue
 fun LocalTime.shouldNotBeBetween(a: LocalTime, b: LocalTime) = this shouldNotBe between(a, b)
 
 /**

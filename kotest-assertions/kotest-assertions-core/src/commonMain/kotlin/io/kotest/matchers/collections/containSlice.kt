@@ -18,6 +18,7 @@ import kotlin.jvm.JvmName
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldContainSlice_iterable")
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldContainSlice(expected: Iterable<T>) =
    this.toList() should containSlice(expected.toList())
 
@@ -31,6 +32,7 @@ infix fun <T> Iterable<T>.shouldContainSlice(expected: Iterable<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldNotContainSlice_iterable")
+@IgnorableReturnValue
 infix fun <T> Iterable<T>.shouldNotContainSlice(expected: Iterable<T>) =
    this.toList() shouldNot containSlice(expected.toList())
 
@@ -44,6 +46,7 @@ infix fun <T> Iterable<T>.shouldNotContainSlice(expected: Iterable<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldContainSlice_array")
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldContainSlice(expected: Iterable<T>) =
    this.toList() should containSlice(expected.toList())
 
@@ -57,6 +60,7 @@ infix fun <T> Array<T>.shouldContainSlice(expected: Iterable<T>) =
  *  Note: Comparison is via the standard Java equals and hash code methods.
  */
 @JvmName("shouldNotContainSlice_array")
+@IgnorableReturnValue
 infix fun <T> Array<T>.shouldNotContainSlice(expected: Iterable<T>) =
    this.toList() shouldNot containSlice(expected.toList())
 

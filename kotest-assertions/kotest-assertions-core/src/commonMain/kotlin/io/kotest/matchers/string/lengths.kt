@@ -7,11 +7,13 @@ import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldHaveMaxLength(length: Int): A {
    this should haveMaxLength(length)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotHaveMaxLength(length: Int): A {
    this shouldNot haveMaxLength(length)
    return this!!
@@ -24,11 +26,13 @@ fun haveMaxLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
       { "${value.print().value} should have minimum length of ${length + 1}" })
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldHaveMinLength(length: Int): A {
    this should haveMinLength(length)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotHaveMinLength(length: Int): A {
    this shouldNot haveMinLength(length)
    return this!!
@@ -44,6 +48,7 @@ fun haveMinLength(length: Int): Matcher<CharSequence?> = neverNullMatcher { valu
 /**
  * Match that verifies a given [CharSequence] has a length within the given [IntRange].
  */
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldHaveLengthBetween(range: IntRange): A {
    this should haveLengthBetween(range.first, range.last)
    return this!!
@@ -51,11 +56,13 @@ fun <A : CharSequence> A?.shouldHaveLengthBetween(range: IntRange): A {
 /**
  * Match that verifies a given [CharSequence] has a length between [min, max] (inclusive, inclusive).
  */
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldHaveLengthBetween(min: Int, max: Int): A {
    this should haveLengthBetween(min, max)
    return this!!
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldNotHaveLengthBetween(range: IntRange): A {
    this shouldNot haveLengthBetween(range.first, range.last)
    return this!!
@@ -64,6 +71,7 @@ fun <A : CharSequence> A?.shouldNotHaveLengthBetween(range: IntRange): A {
 /**
  * Match that verifies a given [CharSequence] does not have a length between [min, max] (inclusive, inclusive).
  */
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldNotHaveLengthBetween(min: Int, max: Int): A {
    this shouldNot haveLengthBetween(min, max)
    return this!!
@@ -82,11 +90,13 @@ fun haveLengthBetween(min: Int, max: Int): Matcher<CharSequence?> {
    }
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldHaveLengthIn(range: IntRange): A {
    this should haveLengthIn(range)
    return this!!
 }
 
+@IgnorableReturnValue
 fun <A : CharSequence> A?.shouldNotHaveLengthIn(range: IntRange): A {
    this shouldNot haveLengthIn(range)
    return this!!
@@ -102,22 +112,26 @@ fun haveLengthIn(range: IntRange): Matcher<CharSequence?> {
 }
 
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldHaveLength(length: Int): A {
    this should haveLength(length)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotHaveLength(length: Int): A {
    this shouldNot haveLength(length)
    return this!!
 }
 
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldHaveSameLengthAs(other: String): A {
    this should haveSameLengthAs(other)
    return this!!
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence> A?.shouldNotHaveSameLengthAs(other: String): A {
    this shouldNot haveSameLengthAs(other)
    return this!!

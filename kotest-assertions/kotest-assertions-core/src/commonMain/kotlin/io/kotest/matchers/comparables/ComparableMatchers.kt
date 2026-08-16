@@ -19,6 +19,7 @@ import io.kotest.matchers.shouldNotBe
  * @see [shouldNotBeLessThan]
  * @see [shouldBeLessThanOrEqualTo]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeLessThan(other: T): T {
    this shouldBe lt(other)
    return this
@@ -35,6 +36,7 @@ infix fun <T : Comparable<T>> T.shouldBeLessThan(other: T): T {
  * @see [shouldBeLessThan]
  * @see [shouldNotBeLessThanOrEqualTo]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeLessThan(other: T): T {
    this shouldNotBe lt(other)
    return this
@@ -62,6 +64,7 @@ fun <T : Comparable<T>> beLessThan(x: T) = object : Matcher<Comparable<T>> {
  * @see [shouldNotBeLessThanOrEqualTo]
  * @see [shouldBeLessThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeLessThanOrEqualTo(other: T): T {
    this shouldBe lte(other)
    return this
@@ -80,6 +83,7 @@ infix fun <T : Comparable<T>> T.shouldBeLessThanOrEqualTo(other: T): T {
  * @see [shouldNotBeLessThanOrEqualTo]
  * @see [shouldBeLessThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeAtMost(other: T): T {
    this shouldBe lte(other)
    return this
@@ -98,6 +102,7 @@ infix fun <T : Comparable<T>> T.shouldBeAtMost(other: T): T {
  * @see [shouldBeLessThanOrEqualTo]
  * @see [shouldNotBeLessThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeLessThanOrEqualTo(other: T): T {
    this shouldNotBe lte(other)
    return this
@@ -116,6 +121,7 @@ infix fun <T : Comparable<T>> T.shouldNotBeLessThanOrEqualTo(other: T): T {
  * @see [shouldBeLessThanOrEqualTo]
  * @see [shouldNotBeLessThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeAtMost(other: T): T {
    this shouldNotBe lte(other)
    return this
@@ -141,6 +147,7 @@ fun <T : Comparable<T>> beLessThanOrEqualTo(x: T) = object : Matcher<Comparable<
  * @see [shouldNotBeGreaterThan]
  * @see [shouldBeGreaterThanOrEqualTo]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeGreaterThan(other: T): T {
    this shouldBe gt(other)
    return this
@@ -157,6 +164,7 @@ infix fun <T : Comparable<T>> T.shouldBeGreaterThan(other: T): T {
  * @see [shouldBeGreaterThan]
  * @see [shouldNotBeGreaterThanOrEqualTo]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeGreaterThan(other: T) = this shouldNotBe gt(other)
 fun <T : Comparable<T>> gt(x: T) = beGreaterThan(x)
 fun <T : Comparable<T>> beGreaterThan(x: T) = object : Matcher<Comparable<T>> {
@@ -180,6 +188,7 @@ fun <T : Comparable<T>> beGreaterThan(x: T) = object : Matcher<Comparable<T>> {
  * @see [shouldNotBeGreaterThanOrEqualTo]
  * @see [shouldBeGreaterThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeGreaterThanOrEqualTo(other: T): T {
    this shouldBe gte(other)
    return this
@@ -198,6 +207,7 @@ infix fun <T : Comparable<T>> T.shouldBeGreaterThanOrEqualTo(other: T): T {
  * @see [shouldNotBeGreaterThanOrEqualTo]
  * @see [shouldBeGreaterThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeAtLeast(other: T): T {
    this shouldBe gte(other)
    return this
@@ -216,6 +226,7 @@ infix fun <T : Comparable<T>> T.shouldBeAtLeast(other: T): T {
  * @see [shouldBeGreaterThanOrEqualTo]
  * @see [shouldNotBeGreaterThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeGreaterThanOrEqualTo(other: T): T {
    this shouldNotBe gte(other)
    return this
@@ -234,6 +245,7 @@ infix fun <T : Comparable<T>> T.shouldNotBeGreaterThanOrEqualTo(other: T): T {
  * @see [shouldBeGreaterThanOrEqualTo]
  * @see [shouldNotBeGreaterThan]
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeAtLeast(other: T): T {
    this shouldNotBe gte(other)
    return this
@@ -257,6 +269,7 @@ fun <T : Comparable<T>> beGreaterThanOrEqualTo(x: T) = object : Matcher<Comparab
  * This will pass if the value is equal to [other] (compareTo returns 0).
  *
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldBeEqualComparingTo(other: T): T {
    this should beEqualComparingTo(other)
    return this
@@ -271,6 +284,7 @@ infix fun <T : Comparable<T>> T.shouldBeEqualComparingTo(other: T): T {
  * This will pass if the value is NOT equal to [other] (compareTo doesn't return 0).
  *
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> T.shouldNotBeEqualComparingTo(other: T): T {
    this shouldNot beEqualComparingTo(other)
    return this
@@ -294,6 +308,7 @@ fun <T : Comparable<T>> beEqualComparingTo(other: T) = object : Matcher<T> {
  * This will pass if the value is equal to [other] (compare returns 0).
  *
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> T.shouldBeEqualComparingTo(other: T, comparator: Comparator<T>): T {
    this should compareTo(other, comparator)
    return this
@@ -307,6 +322,7 @@ fun <T : Comparable<T>> T.shouldBeEqualComparingTo(other: T, comparator: Compara
  * This will pass if the value is NOT equal to [other] (compare doesn't return 0).
  *
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> T.shouldNotBeEqualComparingTo(other: T, comparator: Comparator<T>): T {
    this shouldNot compareTo(other, comparator)
    return this
@@ -327,6 +343,7 @@ fun <T> compareTo(other: T, comparator: Comparator<T>) = object : Matcher<T> {
  *
  * This assertion always fails if the supplied `lower > upper`.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> T.shouldBeBetween(lower: T, upper: T): T {
    this should beBetween(lower, upper)
    return this
@@ -337,6 +354,7 @@ fun <T : Comparable<T>> T.shouldBeBetween(lower: T, upper: T): T {
  *
  * This assertion always succeeds if the supplied `lower > upper`.
  */
+@IgnorableReturnValue
 fun <T : Comparable<T>> T.shouldNotBeBetween(lower: T, upper: T): T {
    this shouldNot beBetween(lower, upper)
    return this

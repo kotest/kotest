@@ -10,91 +10,109 @@ import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpProtocolVersion
 import io.ktor.http.contentType
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveETag(etag: String): HttpResponse {
    this should haveHeader(HttpHeaders.ETag, etag)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldHaveETag(): HttpResponse {
    this should haveHeader(HttpHeaders.ETag)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveETag(etag: String): HttpResponse {
    this shouldNot haveHeader(HttpHeaders.ETag, etag)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldNotHaveETag(): HttpResponse {
    this shouldNot haveHeader(HttpHeaders.ETag)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveCacheControl(cacheControl: String): HttpResponse {
    this should haveHeader(HttpHeaders.CacheControl, cacheControl)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldHaveCacheControl(): HttpResponse {
    this should haveHeader(HttpHeaders.CacheControl)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveCacheControl(cacheControl: String): HttpResponse {
    this shouldNot haveHeader(HttpHeaders.CacheControl, cacheControl)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldNotHaveCacheControl(): HttpResponse {
    this shouldNot haveHeader(HttpHeaders.CacheControl)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveContentEncoding(encoding: String): HttpResponse {
    this should haveHeader(HttpHeaders.ContentEncoding, encoding)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldHaveContentEncoding(): HttpResponse {
    this should haveHeader(HttpHeaders.ContentEncoding)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveContentEncoding(encoding: String): HttpResponse {
    this shouldNot haveHeader(HttpHeaders.ContentEncoding, encoding)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldNotHaveContentEncoding(): HttpResponse {
    this shouldNot haveHeader(HttpHeaders.ContentEncoding)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveHeader(name: String): HttpResponse {
    this should haveHeader(name)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldHaveHeader(name: String, value: String): HttpResponse {
    this should haveHeader(name, value)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveHeader(name: String): HttpResponse {
    this shouldNot haveHeader(name)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldNotHaveHeader(name: String, value: String): HttpResponse {
    this shouldNot haveHeader(name, value)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveVersion(version: HttpProtocolVersion): HttpResponse {
    this should haveVersion(version)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveVersion(version: HttpProtocolVersion): HttpResponse {
    this shouldNot haveVersion(version)
    return this
@@ -110,11 +128,13 @@ fun haveVersion(version: HttpProtocolVersion) = object : Matcher<HttpResponse> {
    }
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveContentType(contentType: ContentType): HttpResponse {
    this should haveContentType(contentType)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveContentType(contentType: ContentType): HttpResponse {
    this shouldNot haveContentType(contentType)
    return this
@@ -130,11 +150,13 @@ fun haveContentType(contentType: ContentType) = object : Matcher<HttpResponse> {
    }
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveContentTypeMatching(contentType: ContentType): HttpResponse {
    this should haveContentTypeMatching(contentType)
    return this
 }
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveContentTypeMatching(contentType: ContentType): HttpResponse {
    this shouldNot haveContentTypeMatching(contentType)
    return this

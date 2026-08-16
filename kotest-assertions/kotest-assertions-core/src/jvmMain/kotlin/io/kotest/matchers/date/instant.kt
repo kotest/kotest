@@ -55,42 +55,49 @@ fun closeTo(anotherInstant: Instant, duration: Duration) = object : Matcher<Inst
  * Assert that [Instant] is before [anotherInstant].
  * @see [shouldNotBeBefore]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldBeBefore(anotherInstant: Instant) = this shouldBe before(anotherInstant)
 
 /**
  * Assert that [Instant] is not before [anotherInstant].
  * @see [shouldBeBefore]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldNotBeBefore(anotherInstant: Instant) = this shouldNotBe before(anotherInstant)
 
 /**
  * Assert that [Instant] is after [anotherInstant].
  * @see [shouldNotBeAfter]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldBeAfter(anotherInstant: Instant) = this shouldBe after(anotherInstant)
 
 /**
  * Assert that [Instant] is not after [anotherInstant].
  * @see [shouldNotBeAfter]
  * */
+@IgnorableReturnValue
 infix fun Instant.shouldNotBeAfter(anotherInstant: Instant) = this shouldNot after(anotherInstant)
 
 /**
  * Assert that [Instant] is between [fromInstant] and [toInstant].
  * @see [shouldNotBeBetween]
  * */
+@IgnorableReturnValue
 fun Instant.shouldBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldBe between(fromInstant, toInstant)
 
 /**
  * Assert that [Instant] is not between [fromInstant] and [toInstant].
  * @see [shouldNotBeBetween]
  * */
+@IgnorableReturnValue
 fun Instant.shouldNotBeBetween(fromInstant: Instant, toInstant: Instant) = this shouldNotBe between(fromInstant, toInstant)
 
 /**
  * Assert that [Instant] is close to [anotherInstant] in range by [duration].
  * @see [shouldBeCloseTo]
  * */
+@IgnorableReturnValue
 fun Instant.shouldBeCloseTo(anotherInstant: Instant, duration: Duration) =
    this shouldBe closeTo(anotherInstant, duration)
 
@@ -98,6 +105,7 @@ fun Instant.shouldBeCloseTo(anotherInstant: Instant, duration: Duration) =
  * Assert that [Instant] is not close to [anotherInstant] in range by [duration].
  * @see [shouldNotBeCloseTo]
  * */
+@IgnorableReturnValue
 fun Instant.shouldNotBeCloseTo(anotherInstant: Instant, duration: Duration) =
    this shouldNotBe closeTo(anotherInstant, duration)
 

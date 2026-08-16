@@ -5,11 +5,13 @@ import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 fun <A> Pair<A, *>.shouldHaveFirst(a: A): Pair<A, *> {
    this should haveFirst(a)
    return this
 }
 
+@IgnorableReturnValue
 fun <A> Pair<A, *>.shouldNotHaveFirst(a: A): Pair<A, *> {
    this shouldNot haveFirst(a)
    return this
@@ -26,11 +28,13 @@ fun <A> haveFirst(a: A) = object : Matcher<Pair<A, *>> {
    }
 }
 
+@IgnorableReturnValue
 fun <B> Pair<*, B>.shouldHaveSecond(b: B): Pair<*, B> {
    this should haveSecond(b)
    return this
 }
 
+@IgnorableReturnValue
 fun <B> Pair<*, B>.shouldNotHaveSecond(b: B): Pair<*, B> {
    this shouldNot haveSecond(b)
    return this

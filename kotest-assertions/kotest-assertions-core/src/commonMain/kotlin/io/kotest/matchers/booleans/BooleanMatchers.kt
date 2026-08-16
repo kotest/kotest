@@ -25,6 +25,7 @@ import kotlin.contracts.contract
  * @see [Boolean?.shouldBeFalse]
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 fun Boolean?.shouldBeTrue(): Boolean {
    contract {
       returns() implies (this@shouldBeTrue != null)
@@ -50,6 +51,7 @@ fun Boolean?.shouldBeTrue(): Boolean {
  * @see [Boolean?.shouldBeFalse]
  * @see [Boolean?.shouldNotBeFalse]
  */
+@IgnorableReturnValue
 fun Boolean?.shouldNotBeTrue(): Boolean? {
    this shouldNot beTrue()
    return this
@@ -73,6 +75,7 @@ fun Boolean?.shouldNotBeTrue(): Boolean? {
  * @see [Boolean?.shouldBeTrue]
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 fun Boolean?.shouldBeFalse(): Boolean {
    contract {
       returns() implies (this@shouldBeFalse != null)
@@ -99,6 +102,7 @@ fun Boolean?.shouldBeFalse(): Boolean {
  * @see [Boolean?.shouldBeTrue]
  * @see [Boolean?.shouldNotBeTrue]
  */
+@IgnorableReturnValue
 fun Boolean?.shouldNotBeFalse(): Boolean? {
    this shouldNot beFalse()
    return this

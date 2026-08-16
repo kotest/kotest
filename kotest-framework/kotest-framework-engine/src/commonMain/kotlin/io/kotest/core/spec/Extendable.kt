@@ -26,6 +26,7 @@ abstract class Extendable {
    /**
     * Register a single [Extension] of type T and return that extension.
     */
+   @IgnorableReturnValue
    fun <T : Extension> extension(extension: T): T {
       extensions(extension)
       return extension

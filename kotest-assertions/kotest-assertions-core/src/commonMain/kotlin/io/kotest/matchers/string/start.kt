@@ -9,11 +9,13 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import kotlin.math.min
 
+@IgnorableReturnValue
 infix fun <A : CharSequence?> A.shouldStartWith(prefix: CharSequence): A {
    this should startWith(prefix)
    return this
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence?> A.shouldNotStartWith(prefix: CharSequence): A {
    this shouldNot startWith(prefix)
    return this
@@ -47,6 +49,7 @@ fun startWith(prefix: CharSequence): Matcher<CharSequence?> = neverNullMatcher {
    )
 }
 
+@IgnorableReturnValue
 infix fun <A : CharSequence?> A.shouldStartWith(regex: Regex): A {
    this should startWith(regex)
    return this

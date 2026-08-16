@@ -61,6 +61,7 @@ interface LazyMaterialized<MATERIALIZED> {
 }
 
 // cannot be suspending as it is used in constructors
+@IgnorableReturnValue
 fun <CONFIG, MATERIALIZED> Spec.install(
    ext: MountableExtension<CONFIG, MATERIALIZED>,
    configure: CONFIG.() -> Unit = {}
@@ -70,6 +71,7 @@ fun <CONFIG, MATERIALIZED> Spec.install(
 }
 
 // cannot be suspending as it is used in constructors
+@IgnorableReturnValue
 fun <CONFIG, MATERIALIZED> Spec.install(
    ext: LazyMountableExtension<CONFIG, MATERIALIZED>,
    configure: CONFIG.() -> Unit = {},

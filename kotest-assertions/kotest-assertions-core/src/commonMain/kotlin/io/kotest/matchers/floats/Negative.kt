@@ -18,6 +18,7 @@ import io.kotest.matchers.shouldNotBe
  *
  * @see [Float.shouldNotBePositive]
  */
+@IgnorableReturnValue
 fun Float.shouldBeNegative(): Float {
    this shouldBe negative()
    return this
@@ -37,6 +38,7 @@ fun Float.shouldBeNegative(): Float {
  *
  * @see [Float.shouldBePositive]
  */
+@IgnorableReturnValue
 fun Float.shouldNotBeNegative(): Float {
    this shouldNotBe negative()
    return this

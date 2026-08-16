@@ -22,6 +22,7 @@ import io.kotest.matchers.shouldNot
  * "Mayday".shouldContainExactCopies("ay", copies = 3, allowOverlaps = false)
  * "121212".shouldContainExactCopies("1212", copies = 2, allowOverlaps = false)
  */
+@IgnorableReturnValue
 fun String.shouldContainExactCopies(
    element: String,
    copies: Int,
@@ -48,6 +49,7 @@ fun String.shouldContainExactCopies(
  * "121212".shouldNotContainExactCopies("1212", copies = 2, allowOverlaps = true)
  *
  */
+@IgnorableReturnValue
 fun String.shouldNotContainExactCopies(
    element: String,
    copies: Int,

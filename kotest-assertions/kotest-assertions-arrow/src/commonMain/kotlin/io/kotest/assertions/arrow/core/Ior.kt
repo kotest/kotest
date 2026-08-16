@@ -18,6 +18,7 @@ import io.kotest.matchers.should
  * smart casts to [Ior.Right] and fails with [failureMessage] otherwise.
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A, B> Ior<A, B>.shouldBeRight(failureMessage: (Ior<A, B>) -> String = { "Expected Ior.Right, but found ${it::class.simpleName}" }): B {
    contract {
       returns() implies (this@shouldBeRight is Right<B>)
@@ -30,9 +31,11 @@ public fun <A, B> Ior<A, B>.shouldBeRight(failureMessage: (Ior<A, B>) -> String 
    }
 }
 
+@IgnorableReturnValue
 public infix fun <A, B> Ior<A, B>.shouldBeRight(b: B): B =
    shouldBeRight().shouldBe(b)
 
+@IgnorableReturnValue
 public infix fun <A, B> Ior<A, B>.shouldNotBeRight(b: B): B =
    shouldBeRight().shouldNotBe(b)
 
@@ -40,6 +43,7 @@ public infix fun <A, B> Ior<A, B>.shouldNotBeRight(b: B): B =
  * smart casts to [Ior.Left] and fails with [failureMessage] otherwise.
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A, B> Ior<A, B>.shouldBeLeft(failureMessage: (Ior<A, B>) -> String = { "Expected Ior.Left, but found ${it::class.simpleName}" }): A {
    contract {
       returns() implies (this@shouldBeLeft is Left<A>)
@@ -52,9 +56,11 @@ public fun <A, B> Ior<A, B>.shouldBeLeft(failureMessage: (Ior<A, B>) -> String =
    }
 }
 
+@IgnorableReturnValue
 public infix fun <A, B> Ior<A, B>.shouldBeLeft(a: A): A =
    shouldBeLeft().shouldBe(a)
 
+@IgnorableReturnValue
 public infix fun <A, B> Ior<A, B>.shouldNotBeLeft(a: A): A =
    shouldBeLeft().shouldNotBe(a)
 
@@ -70,6 +76,7 @@ public fun <A, B> beBoth(): Matcher<Ior<A, B>> = Matcher { ior ->
  * smart casts to [Ior.Both]
  */
 @OptIn(ExperimentalContracts::class)
+@IgnorableReturnValue
 public fun <A, B> Ior<A, B>.shouldBeBoth(): Ior.Both<A, B> {
    contract {
       returns() implies (this@shouldBeBoth is Ior.Both<A, B>)

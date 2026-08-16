@@ -11,6 +11,7 @@ import io.kotest.matchers.shouldBe
    "UInt-specific assertion is getting replaced with a new Comparable assertion of the same name.\nNote: If you perform the offered IDE autocorrection, you still need to remove the UInt import `io.kotest.matchers.ints.shouldBeBetween` manually.",
    ReplaceWith("shouldBeBetween(lower, upper)", "io.kotest.matchers.comparables.shouldBeBetween")
 )
+@IgnorableReturnValue
 fun UInt.shouldBeBetween(lower: UInt, upper: UInt): UInt {
    this shouldBe between(lower, upper)
    return this

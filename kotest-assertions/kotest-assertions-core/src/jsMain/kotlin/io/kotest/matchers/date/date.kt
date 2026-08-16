@@ -28,6 +28,7 @@ import kotlin.js.Date
  *     firstTime shouldHaveSameHoursAs secondTime   //  Assertion fails, 23 != 16
 ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveSameHoursAs(other: Date) = this should haveSameHours(other)
 
 /**
@@ -51,6 +52,7 @@ infix fun Date.shouldHaveSameHoursAs(other: Date) = this should haveSameHours(ot
  *     firstTime shouldNotHaveSameHoursAs secondTime   //  Assertion fails, 23 == 23
 ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldNotHaveSameHoursAs(other: Date) = this shouldNot haveSameHours(other)
 
 /**
@@ -108,6 +110,7 @@ fun haveSameHours(other: Date): Matcher<Date> = object : Matcher<Date> {
  *
  * @see Date.shouldNotBeAfter
  */
+@IgnorableReturnValue
 infix fun Date.shouldBeBefore(other: Date) = this should before(other)
 
 /**
@@ -134,6 +137,7 @@ infix fun Date.shouldBeBefore(other: Date) = this should before(other)
  *
  * @see Date.shouldBeAfter
  */
+@IgnorableReturnValue
 infix fun Date.shouldNotBeBefore(other: Date) = this shouldNot before(other)
 
 /**
@@ -192,6 +196,7 @@ fun before(date: Date): Matcher<Date> = object : Matcher<Date> {
  *
  * @see Date.shouldNotBeBefore
  */
+@IgnorableReturnValue
 infix fun Date.shouldBeAfter(other: Date) = this should after(other)
 
 /**
@@ -217,6 +222,7 @@ infix fun Date.shouldBeAfter(other: Date) = this should after(other)
  *
  * @see Date.shouldBeBefore
  */
+@IgnorableReturnValue
 infix fun Date.shouldNotBeAfter(other: Date) = this shouldNot after(other)
 
 /**
@@ -260,6 +266,7 @@ fun after(other: Date): Matcher<Date> = object : Matcher<Date> {
  *    date.shouldHaveDayOfWeek(2019) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveYear(year: Int) = this.getFullYear() shouldBe year
 
 
@@ -272,6 +279,7 @@ infix fun Date.shouldHaveYear(year: Int) = this.getFullYear() shouldBe year
  *    date.shouldHaveDayOfWeek(5) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveDayOfWeek(day: Int) = this.getDay() shouldBe day
 
 /**
@@ -283,6 +291,7 @@ infix fun Date.shouldHaveDayOfWeek(day: Int) = this.getDay() shouldBe day
  *    date.shouldHaveDayOfWeek(5) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveDayOfMonth(day: Int) = this.getDate() shouldBe day
 
 /**
@@ -294,6 +303,7 @@ infix fun Date.shouldHaveDayOfMonth(day: Int) = this.getDate() shouldBe day
  *    date.shouldHaveMonth(2) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveMonth(month: Int) = this.getMonth() shouldBe month
 
 /**
@@ -305,6 +315,7 @@ infix fun Date.shouldHaveMonth(month: Int) = this.getMonth() shouldBe month
  *    date.shouldHaveHour(12) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveHour(hour: Int) = this.getHours() shouldBe hour
 
 /**
@@ -316,6 +327,7 @@ infix fun Date.shouldHaveHour(hour: Int) = this.getHours() shouldBe hour
  *    date.shouldHaveMinute(10) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveMinute(minute: Int) = this.getMinutes() shouldBe minute
 
 /**
@@ -327,4 +339,5 @@ infix fun Date.shouldHaveMinute(minute: Int) = this.getMinutes() shouldBe minute
  *    date.shouldHaveSecond(11) // Assertion passes
  * ```
  */
+@IgnorableReturnValue
 infix fun Date.shouldHaveSecond(second: Int) = this.getSeconds() shouldBe second

@@ -7,9 +7,13 @@ import io.kotest.matchers.shouldNot
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpStatusCode
 
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveStatus(httpStatusCode: HttpStatusCode) = shouldHaveStatus(httpStatusCode.value)
+@IgnorableReturnValue
 infix fun HttpResponse.shouldHaveStatus(code: Int) = this should haveStatus(code)
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveStatus(httpStatusCode: HttpStatusCode) = shouldNotHaveStatus(httpStatusCode.value)
+@IgnorableReturnValue
 infix fun HttpResponse.shouldNotHaveStatus(code: Int) = this shouldNot haveStatus(code)
 fun haveStatus(expected: Int) = object : Matcher<HttpResponse> {
    override fun test(value: HttpResponse): MatcherResult {
@@ -21,21 +25,25 @@ fun haveStatus(expected: Int) = object : Matcher<HttpResponse> {
    }
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldBeOK(): HttpResponse {
    this.shouldHaveStatus(HttpStatusCode.OK)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldBeInternalServerError(): HttpResponse {
    this.shouldHaveStatus(HttpStatusCode.InternalServerError)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldBeBadRequest(): HttpResponse {
    this.shouldHaveStatus(HttpStatusCode.BadRequest)
    return this
 }
 
+@IgnorableReturnValue
 fun HttpResponse.shouldBeNotFound(): HttpResponse {
    this.shouldHaveStatus(HttpStatusCode.NotFound)
    return this

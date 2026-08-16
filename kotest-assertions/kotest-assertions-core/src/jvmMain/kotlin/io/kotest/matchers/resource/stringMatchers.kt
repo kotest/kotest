@@ -18,6 +18,7 @@ import kotlin.io.path.writeText
  *
  * This will ignore differences in "\r", "\n" and "\r\n", so it is not dependent on the system line separator.
  */
+@IgnorableReturnValue
 infix fun String.shouldMatchResource(
    path: String
 ): String {
@@ -30,6 +31,7 @@ infix fun String.shouldMatchResource(
  *
  * This will ignore differences in "\r", "\n" and "\r\n", so it is not dependent on the system line separator.
  */
+@IgnorableReturnValue
 infix fun String.shouldNotMatchResource(
    path: String
 ): String {
@@ -43,6 +45,7 @@ infix fun String.shouldNotMatchResource(
  * @param ignoreLineSeparators if true, will ignore differences in "\r", "\n" and "\r\n", so it is not dependent on the system line separator.
  * @param trim if true, will trim the expected and actual values before comparing them.
  */
+@IgnorableReturnValue
 fun String.shouldMatchResource(
    path: String,
    matcherProvider: (String) -> Matcher<String> = ::be,
@@ -61,6 +64,7 @@ fun String.shouldMatchResource(
 /**
  * Will match if the given String and the resource value **not** matches using matcher provided by [matcherProvider]
  */
+@IgnorableReturnValue
 fun String.shouldNotMatchResource(
    path: String,
    matcherProvider: (String) -> Matcher<String> = ::be,

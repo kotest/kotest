@@ -13,9 +13,13 @@ import kotlin.reflect.full.isSubclassOf
 import kotlin.reflect.full.isSuperclassOf
 import kotlin.reflect.full.primaryConstructor
 
+@IgnorableReturnValue
 fun KClass<*>.shouldHaveAnnotations() = this should haveClassAnnotations()
+@IgnorableReturnValue
 fun KClass<*>.shouldNotHaveAnnotations() = this shouldNot haveClassAnnotations()
+@IgnorableReturnValue
 infix fun KClass<*>.shouldHaveAnnotations(count: Int) = this should haveClassAnnotations(count)
+@IgnorableReturnValue
 infix fun KClass<*>.shouldNotHaveAnnotations(count: Int) = this shouldNot haveClassAnnotations(count)
 
 fun haveClassAnnotations(count: Int = -1) = object : Matcher<KClass<*>> {
@@ -34,11 +38,13 @@ fun haveClassAnnotations(count: Int = -1) = object : Matcher<KClass<*>> {
   }
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Annotation> KClass<*>.shouldBeAnnotatedWith(block: (T) -> Unit = {}) {
   this should beClassAnnotatedWith<T>()
   findAnnotation<T>()?.let(block)
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Annotation> KClass<*>.shouldNotBeAnnotatedWith() = this shouldNot beClassAnnotatedWith<T>()
 inline fun <reified T : Annotation> beClassAnnotatedWith() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -48,12 +54,15 @@ inline fun <reified T : Annotation> beClassAnnotatedWith() = object : Matcher<KC
    )
 }
 
+@IgnorableReturnValue
 fun KClass<*>.shouldHaveFunction(name: String, block: (KFunction<*>) -> Unit) {
   this should haveFunction(name)
   findFunction(name)?.let(block)
 }
 
+@IgnorableReturnValue
 infix fun KClass<*>.shouldHaveFunction(name: String) = this should haveFunction(name)
+@IgnorableReturnValue
 infix fun KClass<*>.shouldNotHaveFunction(name: String) = this shouldNot haveFunction(name)
 fun haveFunction(name: String) = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -63,11 +72,14 @@ fun haveFunction(name: String) = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 fun KClass<*>.shouldHaveMemberProperty(name: String, block: (KProperty<*>) -> Unit) {
   this should haveMemberProperty(name)
   findMemberProperty(name)?.let(block)
 }
+@IgnorableReturnValue
 infix fun KClass<*>.shouldHaveMemberProperty(name: String) = this should haveMemberProperty(name)
+@IgnorableReturnValue
 infix fun KClass<*>.shouldNotHaveMemberProperty(name: String) = this shouldNot haveMemberProperty(name)
 fun haveMemberProperty(name: String) = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -77,7 +89,9 @@ fun haveMemberProperty(name: String) = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 inline fun <reified T> KClass<*>.shouldBeSubtypeOf() = this should beSubtypeOf<T>()
+@IgnorableReturnValue
 inline fun <reified T> KClass<*>.shouldNotBeSubtypeOf() = this shouldNot beSubtypeOf<T>()
 inline fun <reified T> beSubtypeOf() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -87,7 +101,9 @@ inline fun <reified T> beSubtypeOf() = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 inline fun <reified T> KClass<*>.shouldBeSupertypeOf() = this should beSuperTypeOf<T>()
+@IgnorableReturnValue
 inline fun <reified T> KClass<*>.shouldNotBeSupertypeOf() = this shouldNot beSuperTypeOf<T>()
 inline fun <reified T> beSuperTypeOf() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -97,7 +113,9 @@ inline fun <reified T> beSuperTypeOf() = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 fun KClass<*>.shouldBeData() = this should beData()
+@IgnorableReturnValue
 fun KClass<*>.shouldNotBeData() = this shouldNot beData()
 fun beData() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -107,7 +125,9 @@ fun beData() = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 fun KClass<*>.shouldBeSealed() = this should beSealed()
+@IgnorableReturnValue
 fun KClass<*>.shouldNotBeSealed() = this shouldNot beSealed()
 fun beSealed() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -117,7 +137,9 @@ fun beSealed() = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 fun KClass<*>.shouldBeCompanion() = this should beCompanion()
+@IgnorableReturnValue
 fun KClass<*>.shouldNotBeCompanion() = this shouldNot beCompanion()
 fun beCompanion() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -127,7 +149,9 @@ fun beCompanion() = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 fun KClass<*>.shouldHavePrimaryConstructor() = this should havePrimaryConstructor()
+@IgnorableReturnValue
 fun KClass<*>.shouldNotHavePrimaryConstructor() = this shouldNot havePrimaryConstructor()
 fun havePrimaryConstructor() = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(
@@ -137,7 +161,9 @@ fun havePrimaryConstructor() = object : Matcher<KClass<*>> {
    )
 }
 
+@IgnorableReturnValue
 infix fun KClass<*>.shouldHaveVisibility(expected: KVisibility) = this should haveClassVisibility(expected)
+@IgnorableReturnValue
 infix fun KClass<*>.shouldNotHaveVisibility(expected: KVisibility) = this shouldNot haveClassVisibility(expected)
 fun haveClassVisibility(expected: KVisibility) = object : Matcher<KClass<*>> {
    override fun test(value: KClass<*>) = MatcherResult(

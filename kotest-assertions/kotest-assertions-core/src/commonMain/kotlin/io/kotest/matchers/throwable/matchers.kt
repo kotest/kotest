@@ -8,11 +8,13 @@ import io.kotest.matchers.MatcherResultBuilder
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 
+@IgnorableReturnValue
 infix fun Throwable.shouldHaveMessage(message: String): Throwable {
    this should haveMessage(message)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldNotHaveMessage(message: String): Throwable {
    this shouldNot haveMessage(message)
    return this
@@ -29,11 +31,13 @@ fun haveMessage(message: String) = object : Matcher<Throwable> {
       .build()
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldHaveMessage(message: Regex): Throwable {
    this should haveMessage(message)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldNotHaveMessage(message: Regex): Throwable {
    this shouldNot haveMessage(message)
    return this
@@ -47,12 +51,14 @@ fun haveMessage(regex: Regex) = object : Matcher<Throwable> {
 }
 
 
+@IgnorableReturnValue
 fun Throwable.shouldHaveCause(block: (Throwable) -> Unit = {}): Throwable {
    this should haveCause()
    block.invoke(cause!!)
    return this
 }
 
+@IgnorableReturnValue
 fun Throwable.shouldNotHaveCause(): Throwable {
    this shouldNot haveCause()
    return this
@@ -62,11 +68,13 @@ fun haveCause() = object : Matcher<Throwable> {
    override fun test(value: Throwable) = resultForThrowable(value.cause)
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldHaveStackTraceContaining(substr: String): Throwable {
    this should haveStackTraceContaining(substr)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldNotHaveStackTraceContaining(substr: String): Throwable {
    this shouldNot haveStackTraceContaining(substr)
    return this
@@ -83,11 +91,13 @@ fun haveStackTraceContaining(substr: String) = object : Matcher<Throwable> {
       { "Throwable stacktrace should not contain substring: ${substr.print().value}" })
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldHaveStackTraceContaining(regex: Regex): Throwable {
    this should haveStackTraceContaining(regex)
    return this
 }
 
+@IgnorableReturnValue
 infix fun Throwable.shouldNotHaveStackTraceContaining(regex: Regex): Throwable {
    this shouldNot haveStackTraceContaining(regex)
    return this
@@ -104,11 +114,13 @@ fun haveStackTraceContaining(regex: Regex) = object : Matcher<Throwable> {
       { "Throwable stacktrace should not contain regex: ${regex.print().value}" })
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Throwable> Throwable.shouldHaveCauseInstanceOf(): Throwable {
    this should haveCauseInstanceOf<T>()
    return this
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseInstanceOf(): Throwable {
    this shouldNot haveCauseInstanceOf<T>()
    return this
@@ -124,11 +136,13 @@ inline fun <reified T : Throwable> haveCauseInstanceOf() = object : Matcher<Thro
    }
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Throwable> Throwable.shouldHaveCauseOfType(): Throwable {
    this should haveCauseOfType<T>()
    return this
 }
 
+@IgnorableReturnValue
 inline fun <reified T : Throwable> Throwable.shouldNotHaveCauseOfType(): Throwable {
    this shouldNot haveCauseOfType<T>()
    return this

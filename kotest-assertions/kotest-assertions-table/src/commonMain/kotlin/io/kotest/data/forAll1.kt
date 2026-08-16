@@ -4,6 +4,7 @@ package io.kotest.data
 
 import kotlin.jvm.JvmName
 
+@IgnorableReturnValue
 suspend fun <A> forAll(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
    val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
@@ -11,8 +12,10 @@ suspend fun <A> forAll(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
 }
 
 @JvmName("forall1")
+@IgnorableReturnValue
 inline fun <A> forAll(table: Table1<A>, testfn: (A) -> Unit) = table.forAll(testfn)
 
+@IgnorableReturnValue
 inline fun <A> Table1<A>.forAll(fn: (A) -> Unit) {
    val collector = ErrorCollector()
    for (row in rows) {
@@ -25,6 +28,7 @@ inline fun <A> Table1<A>.forAll(fn: (A) -> Unit) {
    collector.assertAll()
 }
 
+@IgnorableReturnValue
 suspend fun <A> forNone(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
    val params = paramNames(testfn)
    val paramA = params.getOrElse(0) { "a" }
@@ -32,8 +36,10 @@ suspend fun <A> forNone(vararg rows: Row1<A>, testfn: suspend (A) -> Unit) {
 }
 
 @JvmName("fornone1")
+@IgnorableReturnValue
 inline fun <A> forNone(table: Table1<A>, testfn: (A) -> Unit) = table.forNone(testfn)
 
+@IgnorableReturnValue
 inline fun <A> Table1<A>.forNone(fn: (A) -> Unit) {
    for (row in rows) {
       try {

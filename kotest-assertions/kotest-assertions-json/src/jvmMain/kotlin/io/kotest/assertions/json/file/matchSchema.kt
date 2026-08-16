@@ -7,12 +7,14 @@ import io.kotest.common.ExperimentalKotest
 import java.io.File
 
 @ExperimentalKotest
+@IgnorableReturnValue
 infix fun File.shouldMatchSchema(schema: JsonSchema): File {
    this.toPath().shouldMatchSchema(schema)
    return this
 }
 
 @ExperimentalKotest
+@IgnorableReturnValue
 infix fun File.shouldNotMatchSchema(schema: JsonSchema): File {
    this.toPath().shouldNotMatchSchema(schema)
    return this

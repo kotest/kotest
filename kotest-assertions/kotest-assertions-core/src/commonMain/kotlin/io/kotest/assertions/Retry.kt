@@ -28,6 +28,7 @@ import kotlin.time.TimeSource
  *
  * If either [timeout] or [maxRetry] is reached, the execution will be aborted and an exception will be thrown.
  */
+@IgnorableReturnValue
 suspend fun <T> retry(
    maxRetry: Int,
    timeout: Duration,
@@ -39,6 +40,7 @@ suspend fun <T> retry(
    return retry(RetryConfig(maxRetry, timeout, delay, multiplier, exceptionClass), f)
 }
 
+@IgnorableReturnValue
 suspend fun <T> retry(
    config: RetryConfig,
    test: suspend () -> T,

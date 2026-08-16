@@ -34,8 +34,13 @@ fun beNamed(expectedName: String) = Matcher<KProperty<*>> {
    )
 }
 
+@IgnorableReturnValue
 fun KProperty<*>.shouldBeNullable() = this should beNullable()
+@IgnorableReturnValue
 fun KProperty<*>.shouldBeNotNullable() = this should beNullable().invert()
+@IgnorableReturnValue
 fun KProperty<*>.shouldBeMutable() = this should beMutable()
+@IgnorableReturnValue
 fun KProperty<*>.shouldBeImmutable() = this should beImmutable()
+@IgnorableReturnValue
 infix fun KProperty<*>.shouldBeNamed(expectedName: String) = this should beNamed(expectedName)

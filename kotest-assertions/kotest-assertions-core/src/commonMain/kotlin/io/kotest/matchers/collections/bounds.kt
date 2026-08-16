@@ -17,6 +17,7 @@ import io.kotest.matchers.should
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun ByteArray.shouldHaveUpperBound(value: Byte): ByteArray {
    asList() should haveUpperBound(value, "ByteArray")
    return this
@@ -30,6 +31,7 @@ infix fun ByteArray.shouldHaveUpperBound(value: Byte): ByteArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun ShortArray.shouldHaveUpperBound(value: Short): ShortArray {
    asList() should haveUpperBound(value, "ShortArray")
    return this
@@ -43,6 +45,7 @@ infix fun ShortArray.shouldHaveUpperBound(value: Short): ShortArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun CharArray.shouldHaveUpperBound(value: Char): CharArray {
    asList() should haveUpperBound(value, "CharArray")
    return this
@@ -56,6 +59,7 @@ infix fun CharArray.shouldHaveUpperBound(value: Char): CharArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun IntArray.shouldHaveUpperBound(value: Int): IntArray {
    asList() should haveUpperBound(value, "IntArray")
    return this
@@ -69,6 +73,7 @@ infix fun IntArray.shouldHaveUpperBound(value: Int): IntArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun LongArray.shouldHaveUpperBound(value: Long): LongArray {
    asList() should haveUpperBound(value, "LongArray")
    return this
@@ -82,6 +87,7 @@ infix fun LongArray.shouldHaveUpperBound(value: Long): LongArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun FloatArray.shouldHaveUpperBound(value: Float): FloatArray {
    asList() should haveUpperBound(value, "FloatArray")
    return this
@@ -95,6 +101,7 @@ infix fun FloatArray.shouldHaveUpperBound(value: Float): FloatArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun DoubleArray.shouldHaveUpperBound(value: Double): DoubleArray {
    asList() should haveUpperBound(value, "DoubleArray")
    return this
@@ -108,6 +115,7 @@ infix fun DoubleArray.shouldHaveUpperBound(value: Double): DoubleArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(value: T): Array<T> {
    asList() should haveUpperBound(value, "Array")
    return this
@@ -121,6 +129,7 @@ infix fun <T : Comparable<T>> Array<T>.shouldHaveUpperBound(value: T): Array<T> 
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveUpperBound(value: T): I {
    this should haveUpperBound(value, null)
    return this
@@ -159,6 +168,7 @@ private fun <T : Comparable<T>, I : Iterable<T>> haveUpperBound(t: T, name: Stri
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun ByteArray.shouldHaveLowerBound(value: Byte): ByteArray {
    asList() should haveLowerBound(value, "ByteArray")
    return this
@@ -172,6 +182,7 @@ infix fun ByteArray.shouldHaveLowerBound(value: Byte): ByteArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun ShortArray.shouldHaveLowerBound(value: Short): ShortArray {
    asList() should haveLowerBound(value, "ShortArray")
    return this
@@ -185,6 +196,7 @@ infix fun ShortArray.shouldHaveLowerBound(value: Short): ShortArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun CharArray.shouldHaveLowerBound(value: Char): CharArray {
    asList() should haveLowerBound(value, "CharArray")
    return this
@@ -198,6 +210,7 @@ infix fun CharArray.shouldHaveLowerBound(value: Char): CharArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun IntArray.shouldHaveLowerBound(value: Int): IntArray {
    asList() should haveLowerBound(value, "IntArray")
    return this
@@ -211,6 +224,7 @@ infix fun IntArray.shouldHaveLowerBound(value: Int): IntArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun LongArray.shouldHaveLowerBound(value: Long): LongArray {
    asList() should haveLowerBound(value, "LongArray")
    return this
@@ -224,6 +238,7 @@ infix fun LongArray.shouldHaveLowerBound(value: Long): LongArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun FloatArray.shouldHaveLowerBound(value: Float): FloatArray {
    asList() should haveLowerBound(value, "FloatArray")
    return this
@@ -237,6 +252,7 @@ infix fun FloatArray.shouldHaveLowerBound(value: Float): FloatArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun DoubleArray.shouldHaveLowerBound(value: Double): DoubleArray {
    asList() should haveLowerBound(value, "DoubleArray")
    return this
@@ -250,6 +266,7 @@ infix fun DoubleArray.shouldHaveLowerBound(value: Double): DoubleArray {
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(value: T): Array<T> {
    asList() should haveLowerBound(value, "Array")
    return this
@@ -263,6 +280,7 @@ infix fun <T : Comparable<T>> Array<T>.shouldHaveLowerBound(value: T): Array<T> 
  *
  * See a more detailed explanation of this logic concept in ["Vacuous truth"](https://en.wikipedia.org/wiki/Vacuous_truth) article.
  */
+@IgnorableReturnValue
 infix fun <T : Comparable<T>, I : Iterable<T>> I.shouldHaveLowerBound(value: T): I {
    this should haveLowerBound(value, null)
    return this

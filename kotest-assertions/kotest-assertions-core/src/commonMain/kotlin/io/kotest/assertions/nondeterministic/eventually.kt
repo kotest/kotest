@@ -24,6 +24,7 @@ import kotlin.time.TimeMark
  * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
  * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
+@IgnorableReturnValue
 suspend fun <T> eventually(
    test: suspend () -> T,
 ): T {
@@ -40,6 +41,7 @@ suspend fun <T> eventually(
  * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
  * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
+@IgnorableReturnValue
 suspend fun <T> eventually(
    duration: Duration,
    test: suspend () -> T,
@@ -57,6 +59,7 @@ suspend fun <T> eventually(
  * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
  * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
+@IgnorableReturnValue
 suspend fun <T> eventually(
    durationMs: Long,
    test: suspend () -> T,
@@ -71,6 +74,7 @@ suspend fun <T> eventually(
  * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
  * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
  */
+@IgnorableReturnValue
 suspend fun <T> eventually(
    config: EventuallyConfiguration,
    test: suspend () -> T,

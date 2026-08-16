@@ -40,34 +40,40 @@ fun beBetween(fromTimestamp: Timestamp, toTimestamp: Timestamp) = object : Match
  * Assert that [Timestamp] is after [anotherTimestamp].
  * @see [shouldNotBeAfter]
  * */
+@IgnorableReturnValue
 infix fun Timestamp.shouldBeAfter(anotherTimestamp: Timestamp) = this should beAfter(anotherTimestamp)
 
 /**
  * Assert that [Timestamp] is not after [anotherTimestamp].
  * @see [shouldBeAfter]
  * */
+@IgnorableReturnValue
 infix fun Timestamp.shouldNotBeAfter(anotherTimestamp: Timestamp) = this shouldNot beAfter(anotherTimestamp)
 
 /**
  * Assert that [Timestamp] is before [anotherTimestamp].
  * @see [shouldNotBeBefore]
  * */
+@IgnorableReturnValue
 infix fun Timestamp.shouldBeBefore(anotherTimestamp: Timestamp) = this should beBefore(anotherTimestamp)
 
 /**
  * Assert that [Timestamp] is not before [anotherTimestamp].
  * @see [shouldBeBefore]
  * */
+@IgnorableReturnValue
 infix fun Timestamp.shouldNotBeBefore(anotherTimestamp: Timestamp) = this shouldNot beBefore(anotherTimestamp)
 
 /**
  * Assert that [Timestamp] is between [fromTimestamp] and [toTimestamp].
  * @see [shouldNotBeBetween]
  * */
+@IgnorableReturnValue
 fun Timestamp.shouldBeBetween(fromTimestamp: Timestamp, toTimestamp: Timestamp) = this should beBetween(fromTimestamp, toTimestamp)
 
 /**
  * Assert that [Timestamp] is not between [fromTimestamp] and [toTimestamp].
  * @see [shouldNotBeBetween]
  * */
+@IgnorableReturnValue
 fun Timestamp.shouldNotBeBetween(fromTimestamp: Timestamp, toTimestamp: Timestamp) = this shouldNot beBetween(fromTimestamp, toTimestamp)

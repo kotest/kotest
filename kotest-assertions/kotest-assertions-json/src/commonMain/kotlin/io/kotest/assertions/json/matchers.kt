@@ -85,6 +85,7 @@ data class JsonTree(val root: JsonNode, val raw: String)
  *
  * To more precisely control the comparison, use [shouldEqualJson] that accepts a [CompareJsonOptions].
  */
+@IgnorableReturnValue
 infix fun String.shouldEqualJson(@Language("json") expected: String): String {
    this should equalJson(expected, CompareJsonOptions())
    return this
@@ -94,6 +95,7 @@ infix fun String.shouldEqualJson(@Language("json") expected: String): String {
  * Verifies that the recevier matches the json string returned by the given block [configureAndProvideExpected].
  * The function allows configuration of [CompareJsonOptions] before returning the expected json.
  */
+@IgnorableReturnValue
 infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): String {
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
@@ -101,11 +103,13 @@ infix fun String.shouldEqualJson(configureAndProvideExpected: CompareJsonOptions
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldEqualJson(@Language("json") expected: String, parser: Json): String {
    this should equalJson(expected, CompareJsonOptions(), parser)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String.shouldNotEqualJson(@Language("json") expected: String): String {
    this shouldNot equalJson(expected, CompareJsonOptions())
    return this
@@ -114,6 +118,7 @@ infix fun String.shouldNotEqualJson(@Language("json") expected: String): String 
 /**
  * Configures [CompareJsonOptions] with the given block, which should also return the expected value
  */
+@IgnorableReturnValue
 infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOptions.() -> String): String {
    val options = CompareJsonOptions()
    val expected = options.configureAndProvideExpected()
@@ -121,11 +126,13 @@ infix fun String.shouldNotEqualJson(configureAndProvideExpected: CompareJsonOpti
    return this
 }
 
+@IgnorableReturnValue
 fun String.shouldNotEqualJson(@Language("json") expected: String, parser: Json): String {
    this shouldNot equalJson(expected, CompareJsonOptions(), parser)
    return this
 }
 
+@IgnorableReturnValue
 infix fun String.shouldEqualSpecifiedJson(@Language("json") expected: String) {
    shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
@@ -133,6 +140,7 @@ infix fun String.shouldEqualSpecifiedJson(@Language("json") expected: String) {
    }
 }
 
+@IgnorableReturnValue
 infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(@Language("json") expected: String) {
    shouldEqualJson {
       fieldComparison = FieldComparison.Lenient
@@ -141,6 +149,7 @@ infix fun String.shouldEqualSpecifiedJsonIgnoringOrder(@Language("json") expecte
    }
 }
 
+@IgnorableReturnValue
 infix fun String.shouldNotEqualSpecifiedJson(@Language("json") expected: String) {
    shouldNotEqualJson {
       fieldComparison = FieldComparison.Lenient
