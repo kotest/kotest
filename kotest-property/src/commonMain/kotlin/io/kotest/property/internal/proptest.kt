@@ -33,7 +33,7 @@ suspend fun <A> proptest(
             .takeWhile { constraints.evaluate(context) }
             .forEach { a ->
                val contextualSeed = contextRandom.random.nextLong()
-               val shrinkfn = shrinkfn(a, property, config.shrinkingMode, contextualSeed)
+               val shrinkfn = shrinkfn(a, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
                config.listeners.forEach { it.beforeTest() }
                test(
                   context,
@@ -113,7 +113,7 @@ suspend fun <A, B> proptest(
          .takeWhile { constraints.evaluate(context) }
          .forEach { (a, b) ->
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -179,7 +179,7 @@ suspend fun <A, B, C> proptest(
          .forEach { (ab, c) ->
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -247,7 +247,7 @@ suspend fun <A, B, C, D> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context, config, shrinkfn,
@@ -327,7 +327,7 @@ suspend fun <A, B, C, D, E> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -421,7 +421,7 @@ suspend fun <A, B, C, D, E, F> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -522,7 +522,7 @@ suspend fun <A, B, C, D, E, F, G> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -630,7 +630,7 @@ suspend fun <A, B, C, D, E, F, G, H> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -745,7 +745,7 @@ suspend fun <A, B, C, D, E, F, G, H, I> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -867,7 +867,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1007,7 +1007,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1167,7 +1167,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1336,7 +1336,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1514,7 +1514,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1701,7 +1701,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -1914,7 +1914,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2137,7 +2137,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2389,7 +2389,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2652,7 +2652,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> proptest(
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -2926,7 +2926,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> proptes
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3211,7 +3211,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> prop
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
@@ -3507,7 +3507,7 @@ suspend fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> p
             val (ab, c) = abc
             val (a, b) = ab
             val contextualSeed = contextRandom.random.nextLong()
-            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, property, config.shrinkingMode, contextualSeed)
+            val shrinkfn = shrinkfn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, property, config.shrinkingMode, contextualSeed, config.shrinkPaths)
             config.listeners.forEach { it.beforeTest() }
             test(
                context,
