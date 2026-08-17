@@ -90,7 +90,15 @@ internal fun propertyTestFailureMessage(
       }
    }
    sb.append("\n")
-   sb.append("Repeat this test by using seed $seed\n\n")
+   sb.append("Repeat this test by using seed $seed\n")
+   // Per-arg shrink paths: positions in [RTree.children] traversed at each level. Printed only
+   // when at least one arg actually shrunk, so non-shrinking cases (Exhaustive, ShrinkingMode.Off)
+   // stay quiet. This lays the groundwork for replay (see #3076 follow-up).
+   val shrinkPaths = results.map { it.path }
+   if (shrinkPaths.any { it.isNotEmpty() }) {
+      sb.append("Shrink paths: $shrinkPaths\n")
+   }
+   sb.append("\n")
 
    // the cause we use in the final result is the result of the last shrinking step, otherwise we use the original
    val finalCause = results.fold(cause) { t, result -> result.cause ?: t }
