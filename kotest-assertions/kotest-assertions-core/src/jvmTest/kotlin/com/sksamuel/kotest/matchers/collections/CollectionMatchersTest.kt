@@ -428,6 +428,45 @@ expected:<1> but was:<4>"""
          }
       }
 
+      "should be singleton with infix block" should {
+         "pass for collection with a single element" {
+            listOf(1) shouldBeSingleton { it shouldBe 1 }
+         }
+
+         "pass for iterable with a single element" {
+            val iterable = Iterable { listOf(1).iterator() }
+            iterable shouldBeSingleton { it shouldBe 1 }
+         }
+
+         "pass for array with a single element" {
+            arrayOf(1) shouldBeSingleton { it shouldBe 1 }
+         }
+
+         "fail for collection with 0 elements" {
+            shouldThrow<AssertionError> {
+               listOf<Int>() shouldBeSingleton { it shouldBe 1 }
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 0. Values: []
+expected:<1> but was:<0>"""
+            )
+         }
+
+         "fail for collection with a single incorrect element" {
+            shouldThrow<AssertionError> {
+               listOf(2) shouldBeSingleton { it shouldBe 1 }
+            }.shouldHaveMessage("expected:<1> but was:<2>")
+         }
+
+         "fail for collection with 2+ elements" {
+            shouldThrow<AssertionError> {
+               listOf(1, 2) shouldBeSingleton { it shouldBe 1 }
+            }.shouldHaveMessage(
+               """Collection should have size 1 but has size 2. Values: [1, 2]
+expected:<1> but was:<2>"""
+            )
+         }
+      }
+
       "should not be singleton" should {
          "pass for collection with 0 elements" {
             listOf<Int>().shouldNotBeSingleton()

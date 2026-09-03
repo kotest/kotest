@@ -121,8 +121,13 @@ fun <T> Array<T>.shouldNotBeSingle(): Array<T> {
 
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
+ *
+ * ```
+ * listOf(1).shouldBeSingleton { it shouldBe 1 } // Assertion passes
+ * listOf(1) shouldBeSingleton { it shouldBe 1 } // Same, using the infix form
+ * ```
  */
-inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
+inline infix fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
    this.shouldBeSingleton()
    fn(this.first())
    return this
@@ -131,7 +136,7 @@ inline fun <T, C : Collection<T>> C.shouldBeSingleton(fn: (T) -> Unit): C {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
-inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
+inline infix fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
    toList().shouldBeSingleton(fn)
    return this
 }
@@ -139,7 +144,7 @@ inline fun <T, I : Iterable<T>> I.shouldBeSingleton(fn: (T) -> Unit): I {
 /**
  * Verifies this collection contains only one element and executes the given lambda against that element.
  */
-inline fun <T> Array<T>.shouldBeSingleton(fn: (T) -> Unit): Array<T> {
+inline infix fun <T> Array<T>.shouldBeSingleton(fn: (T) -> Unit): Array<T> {
    asList().shouldBeSingleton(fn)
    return this
 }
