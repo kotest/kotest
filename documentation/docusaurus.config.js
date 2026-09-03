@@ -80,6 +80,12 @@ module.exports = {
                position: 'left'
             },
             {
+               type: 'doc',
+               docId: 'ai/index',
+               label: 'AI',
+               position: 'left'
+            },
+            {
                type:'search',
                position: 'right'
             },

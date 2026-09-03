@@ -120,12 +120,17 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       val filter = GradleTestFilterBuilder.builder()
          .withSpec(testref.spec)
          .withTest(testref.test)
+         .withDataTestAncestorPath(testref.test?.dataTestInfoMaybe()?.ancestorTestPath)
          .build(false)
 
+      // onFirstRun stores the filter as a single combined task element, e.g. "--tests 'Foo.bar'",
+      // not as two separate elements ("--tests", "'Foo.bar'"). Find that element and strip the
+      // "--tests" prefix to recover the raw filter value for comparison.
       val existingFilter = configuration.settings.taskNames
-         .dropWhile { !it.startsWith("--tests") } // find the --tests filter, drop it, take whatever is after it
-         .drop(1)
-         .take(1).joinToString(" ")
+         .firstOrNull { it.startsWith("--tests") }
+         ?.removePrefix("--tests")
+         ?.trim()
+         ?: ""
       logger.info("Checking config filter [${existingFilter}] against selected test [${filter}]")
 
       return existingFilter == filter

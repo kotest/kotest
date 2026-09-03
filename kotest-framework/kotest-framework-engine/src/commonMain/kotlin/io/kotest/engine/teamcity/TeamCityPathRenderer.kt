@@ -49,4 +49,14 @@ internal class TeamCityPathRenderer(private val formatting: DisplayNameFormattin
    fun testPath(testCase: TestCase, t: Throwable): String {
       return testPath(testCase) + DELIMITER + t::class.simpleName
    }
+
+   /**
+    * Builds the display name for a single test case, without any ancestor context.
+    * Used when [io.kotest.engine.listener.TeamCityTestEngineListener] is configured to nest
+    * suites, so ancestry is conveyed by nesting testSuiteStarted/testSuiteFinished messages
+    * around this name, rather than by concatenating it with ancestor names.
+    */
+   fun localName(testCase: TestCase): String {
+      return TeamCityTestNameEscaper.escape(formatting.format(testCase))
+   }
 }

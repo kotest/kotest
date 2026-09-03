@@ -26,6 +26,7 @@ concurrency:
 
 permissions:
    contents: write
+   pull-requests: write
 
 
 jobs:
@@ -109,4 +110,32 @@ jobs:
                  echo "Creating tag ${TAG} on current commit."
                  git tag -a "${TAG}" -m "Release ${TAG}"
                  git push origin "refs/tags/${TAG}"
+               fi
+         -  name: Bump kotest-skills plugin version
+            shell: bash
+            env:
+               GH_TOKEN: ${{ github.token }}
+            run: |
+               set -euo pipefail
+               VERSION="${{ inputs.version }}"
+               BASE_BRANCH="${{ inputs.branch }}"
+               BUMP_BRANCH="release-bot/bump-kotest-skills-plugin-${VERSION}"
+               jq --arg v "$VERSION" '.version = $v' .claude-plugin/plugin.json > /tmp/plugin.json
+               mv /tmp/plugin.json .claude-plugin/plugin.json
+               jq --arg v "$VERSION" '.metadata.version = $v' .claude-plugin/marketplace.json > /tmp/marketplace.json
+               mv /tmp/marketplace.json .claude-plugin/marketplace.json
+               git config --global user.email "sam@sksamuel.com"
+               git config --global user.name "Kotest Release Bot"
+               git add .claude-plugin/plugin.json .claude-plugin/marketplace.json
+               if git diff --cached --quiet; then
+                 echo "kotest-skills plugin already at ${VERSION}; nothing to commit."
+               else
+                 git checkout -b "${BUMP_BRANCH}"
+                 git commit -m "Bump kotest-skills plugin version to ${VERSION}"
+                 git push origin "${BUMP_BRANCH}"
+                 gh pr create \
+                   --base "${BASE_BRANCH}" \
+                   --head "${BUMP_BRANCH}" \
+                   --title "Bump kotest-skills plugin version to ${VERSION}" \
+                   --body "Automated version bump for the kotest-skills plugin as part of the ${VERSION} release."
                fi

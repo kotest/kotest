@@ -33,13 +33,23 @@ import kotlin.reflect.KClass
  *
  * Decisions:
  *
- * Intermediate containers will only be output if configured
- * All tests will be output as root tests under the spec as a suite, with the path flattened.
+ * By default, intermediate containers are not output as suites: all tests are output as root
+ * tests under the spec as a suite, with the path flattened. This is because some TeamCity
+ * consumers (e.g. Native and JS) ignore containers without direct tests, so flattening guarantees
+ * every test remains visible.
+ *
+ * When [nestContainers] is enabled, containers are instead reported as nested
+ * testSuiteStarted/testSuiteFinished messages, and test names are not flattened. This gives a
+ * consumer capable of rendering nested suites (e.g. IntelliJ parsing these messages directly from
+ * a forked JVM, as our IJ plugin does for non-Gradle run configurations) a real tree instead of one flattened
+ * leaf per test. This is opt-in so that existing consumers relying on the flattened format are
+ * unaffected.
  *
  */
 @KotestInternal
 class TeamCityTestEngineListener(
    private val prefix: String = TeamCityMessage.TEAM_CITY_PREFIX,
+   private val nestContainers: Boolean = false,
 ) : TestEngineListener {
 
    private val logger = Logger(TeamCityTestEngineListener::class)
@@ -75,8 +85,10 @@ class TeamCityTestEngineListener(
       // if the spec itself has an error, we must insert a placeholder test
       when (val t = result.errorOrNull) {
          null -> Unit
-         is MultipleExceptions -> t.causes.forEach { insertPlaceholderTest(renderer.testPath(ref, it), it) }
-         else -> insertPlaceholderTest(renderer.testPath(ref, t), t)
+         is MultipleExceptions -> t.causes.forEach {
+            insertPlaceholderTest(if (nestContainers) it::class.simpleName ?: "Error" else renderer.testPath(ref, it), it)
+         }
+         else -> insertPlaceholderTest(if (nestContainers) t::class.simpleName ?: "Error" else renderer.testPath(ref, t), t)
       }
 
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_SUITE_FINISHED) {
@@ -88,16 +100,23 @@ class TeamCityTestEngineListener(
 
    override suspend fun testStarted(testCase: TestCase) {
       logger.log { Pair(testCase.name.name, "testStarted $testCase") }
-      if (testCase.type == TestType.Test)
-         TeamCityMessage(prefix, TeamCityMessage.Types.TEST_STARTED) {
-            name(renderer.testPath(testCase))
-            locationHint(Locations.location(testCase.source))
-         }.output()
+      when {
+         nestContainers && testCase.type == TestType.Container ->
+            TeamCityMessage(prefix, TeamCityMessage.Types.TEST_SUITE_STARTED) {
+               name(renderer.localName(testCase))
+               locationHint(Locations.location(testCase.source))
+            }.output()
+         testCase.type == TestType.Test ->
+            TeamCityMessage(prefix, TeamCityMessage.Types.TEST_STARTED) {
+               name(if (nestContainers) renderer.localName(testCase) else renderer.testPath(testCase))
+               locationHint(Locations.location(testCase.source))
+            }.output()
+      }
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {
       TeamCityMessage(prefix, TeamCityMessage.Types.TEST_IGNORED) {
-         name(renderer.testPath(testCase))
+         name(if (nestContainers) renderer.localName(testCase) else renderer.testPath(testCase))
          locationHint(Locations.location(testCase.source))
          message(reason)
          result(TestResult.Ignored(reason))
@@ -108,19 +127,25 @@ class TeamCityTestEngineListener(
       logger.log { Pair(testCase.name.name, "testFinished $testCase") }
       results[testCase.descriptor] = result
 
-      if (testCase.type == TestType.Container)
+      if (testCase.type == TestType.Container) {
          failTestSuiteIfError(testCase, result)
-      else {
+         if (nestContainers)
+            TeamCityMessage(prefix, TeamCityMessage.Types.TEST_SUITE_FINISHED) {
+               name(renderer.localName(testCase))
+            }.output()
+      } else {
+         val testName = if (nestContainers) renderer.localName(testCase) else renderer.testPath(testCase)
+
          if (result.isErrorOrFailure) {
             TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FAILED) {
-               name(renderer.testPath(testCase))
+               name(testName)
                exception(result.errorOrNull)
                result(result)
             }.output()
          }
 
          TeamCityMessage(prefix, TeamCityMessage.Types.TEST_FINISHED) {
-            name(renderer.testPath(testCase))
+            name(testName)
             duration(result.duration)
             result(result)
          }.output()
@@ -132,8 +157,10 @@ class TeamCityTestEngineListener(
       // test suites cannot be in a failed state, so we must insert a placeholder to hold any error
       when (val t = result.errorOrNull) {
          null -> Unit
-         is MultipleExceptions -> t.causes.forEach { insertPlaceholderTest(renderer.testPath(testCase, it), it) }
-         else -> insertPlaceholderTest(renderer.testPath(testCase, t), t)
+         is MultipleExceptions -> t.causes.forEach {
+            insertPlaceholderTest(if (nestContainers) it::class.simpleName ?: "Error" else renderer.testPath(testCase, it), it)
+         }
+         else -> insertPlaceholderTest(if (nestContainers) t::class.simpleName ?: "Error" else renderer.testPath(testCase, t), t)
       }
    }
 

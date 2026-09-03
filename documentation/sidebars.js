@@ -4,6 +4,9 @@ module.exports = {
     "release6",
     "blogs"
   ],
+  "ai": [
+    "ai/index"
+  ],
   "proptest": [
     "proptest/index",
     "proptest/testfunctions",

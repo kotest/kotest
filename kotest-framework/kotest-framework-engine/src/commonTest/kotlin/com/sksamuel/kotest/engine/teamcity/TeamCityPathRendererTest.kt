@@ -80,5 +80,27 @@ class TeamCityPathRendererTest : FreeSpec() {
          renderer.testPath(SpecRef.Reference(TeamCityPathRendererTest::class))
          renderer.testPath(tc) shouldBe "$fqn.foo bar ⇢ boo far"
       }
+      "localName should render only the test's own name, ignoring ancestors" {
+         val parent = TestCase(
+            TeamCityPathRendererTest::class.toDescriptor().append("foo"),
+            TestNameBuilder.builder("foo").build(),
+            TeamCityPathRendererTest(),
+            {},
+            SourceRef.None,
+            TestType.Test,
+            parent = null
+         )
+         val tc = TestCase(
+            parent.descriptor.append("boo.far"),
+            TestNameBuilder.builder("boo.far").build(),
+            TeamCityPathRendererTest(),
+            {},
+            SourceRef.None,
+            TestType.Test,
+            parent = parent
+         )
+         val renderer = TeamCityPathRenderer(DisplayNameFormatting(null))
+         renderer.localName(tc) shouldBe "boo far"
+      }
    }
 }

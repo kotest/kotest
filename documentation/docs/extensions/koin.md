@@ -64,3 +64,29 @@ class KotestAndKoin : KoinTest, DescribeSpec() {
   }
 }
 ```
+
+### Building fresh modules per test
+
+`KoinExtension` reuses the `Module` instances you pass to it for the whole spec. If you mutate the
+Koin context inside a test — for example with `KoinTest.declare` — reusing the same module instance
+can leak singleton state into later tests, because Koin caches instances on the factories held by the
+module (see [#6006](https://github.com/kotest/kotest/issues/6006) and the upstream
+[koin#2412](https://github.com/InsertKoinIO/koin/issues/2412)).
+
+To avoid this, pass a module *factory* lambda instead of pre-built instances. The factory is invoked
+every time Koin is started, so each test gets a brand new module (and therefore fresh singletons):
+
+```kotlin
+class KotestAndKoin : KoinTest, FunSpec() {
+  init {
+    // myModule() builds a new Module instance on each invocation
+    extension(KoinExtension { listOf(myModule()) })
+
+    test("each test gets a clean koin context") {
+      val userService by inject<UserService>()
+
+      userService.getUser().username shouldBe "LeoColman"
+    }
+  }
+}
+```

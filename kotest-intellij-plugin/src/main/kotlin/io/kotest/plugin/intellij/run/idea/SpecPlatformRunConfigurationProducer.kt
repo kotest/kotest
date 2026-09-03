@@ -30,7 +30,7 @@ class SpecPlatformRunConfigurationProducer : LazyRunConfigurationProducer<Kotest
 
    private val logger = logger<SpecPlatformRunConfigurationProducer>()
 
-   override fun getConfigurationFactory(): ConfigurationFactory = KotestConfigurationFactory(KotestConfigurationType())
+   override fun getConfigurationFactory(): ConfigurationFactory = getKotestConfigurationType().getFactory()
 
    /**
     * When two configurations are created from the same context by two different producers, checks if the

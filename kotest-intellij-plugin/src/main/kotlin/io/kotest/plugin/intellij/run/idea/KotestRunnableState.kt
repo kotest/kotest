@@ -34,6 +34,12 @@ class KotestRunnableState(
       // it is a main function that will launch the KotestConsoleRunner
       params.mainClass = launcherConfig.mainClass
 
+      // this run configuration parses TeamCity service messages directly from the forked JVM's
+      // stdout (unlike Gradle runs, where IntelliJ reads the test tree from real JUnit Platform
+      // events), so it can render nested suites. Opt in to a nested tree instead of the flattened
+      // format other TeamCity consumers rely on.
+      params.vmParametersList.addProperty("kotest.engine.listener.teamcity.nestContainers", "true")
+
       val packageName = configuration.getPackageName()
       if (!packageName.isNullOrBlank())
          params.programParametersList.add("--package", packageName)

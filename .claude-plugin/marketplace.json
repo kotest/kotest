@@ -1,0 +1,18 @@
+{
+  "name": "kotest",
+  "owner": {
+    "name": "Kotest Team",
+    "url": "https://github.com/kotest"
+  },
+  "metadata": {
+    "description": "Official marketplace for Kotest agent skills.",
+    "version": "6.2.4"
+  },
+  "plugins": [
+    {
+      "name": "kotest-skills",
+      "source": "./",
+      "description": "Agent skills for writing, migrating, and debugging Kotlin tests with Kotest."
+    }
+  ]
+}
