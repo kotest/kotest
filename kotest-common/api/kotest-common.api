@@ -49,11 +49,6 @@ public abstract interface annotation class io/kotest/common/SoftDeprecated : jav
 	public abstract fun message ()Ljava/lang/String;
 }
 
-public final class io/kotest/common/Synchronizer {
-	public fun <init> ()V
-	public final fun synchronized (Lkotlin/jvm/functions/Function0;)Ljava/lang/Object;
-}
-
 public final class io/kotest/common/TestNameContextElement : kotlin/coroutines/AbstractCoroutineContextElement {
 	public static final field Key Lio/kotest/common/TestNameContextElement$Key;
 	public fun <init> (Ljava/lang/String;)V
