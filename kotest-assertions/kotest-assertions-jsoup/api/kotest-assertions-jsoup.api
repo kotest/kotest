@@ -1,0 +1,40 @@
+public final class io/kotest/assertions/jsoup/ElementMatchersKt {
+	public static final fun bePresent ()Lio/kotest/matchers/Matcher;
+	public static final fun bePresent (I)Lio/kotest/matchers/Matcher;
+	public static final fun haveAttrValue (Ljava/lang/String;Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveAttribute (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveChildWithTag (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveText (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldBePresent (Lorg/jsoup/select/Elements;)V
+	public static final fun shouldBePresent (Lorg/jsoup/select/Elements;I)V
+	public static final fun shouldHaveAttribute (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveAttributeValue (Lorg/jsoup/nodes/Element;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun shouldHaveChildWithTag (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveText (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotBePresent (Lorg/jsoup/select/Elements;)V
+	public static final fun shouldNotBePresent (Lorg/jsoup/select/Elements;I)V
+	public static final fun shouldNotHaveAttribute (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveAttributeValue (Lorg/jsoup/nodes/Element;Ljava/lang/String;Ljava/lang/String;)V
+	public static final fun shouldNotHaveChildWithTag (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveText (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+}
+
+public final class io/kotest/assertions/jsoup/HtmlMatchersKt {
+	public static final fun haveChildWithClass (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveClass (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveElementWithId (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun haveId (Ljava/lang/String;)Lio/kotest/matchers/Matcher;
+	public static final fun shouldHaveChildWithClass (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveClass (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveElementWithId (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveHref (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveId (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldHaveSrc (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveChildWithClass (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveClass (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveElementWithId (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveHref (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveId (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+	public static final fun shouldNotHaveSrc (Lorg/jsoup/nodes/Element;Ljava/lang/String;)V
+}
+

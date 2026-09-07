@@ -7,8 +7,8 @@ sidebar_label: Jsoup
 
 
 
-This page lists all current matchers in the KotlinTest jsoup matchers extension library. To use this library
- you need to add `kotlintest-assertions-jsoup` to your build.
+This page lists all current matchers in the jsoup matchers extension library. To use this library
+ you need to add `kotest-assertions-jsoup` to your build.
 
 | Element                                         |                                                                 |
 |-------------------------------------------------|-----------------------------------------------------------------|

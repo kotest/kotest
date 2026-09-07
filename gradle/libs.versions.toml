@@ -76,6 +76,7 @@ wiremock = "3.13.2"
 mockserver = "6.0.0"
 fuel = "2.3.1"
 konform = "0.11.1"
+jsoup = "1.21.1"
 testcontainers = "2.0.4"
 asm = "9.9.1"
 nmcp = "1.0.2"
@@ -186,6 +187,8 @@ kotlinx-io-core = { module = "org.jetbrains.kotlinx:kotlinx-io-core", version.re
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 konform = { module = "io.konform:konform", version.ref = "konform" }
+
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }

@@ -88,6 +88,9 @@ include(
    // assertions for the konform validation library
    ":kotest-assertions:kotest-assertions-konform",
 
+   // matchers for jsoup elements and documents
+   ":kotest-assertions:kotest-assertions-jsoup",
+
    // base classes for property testing, plus std lib generators
    ":kotest-property",
 
