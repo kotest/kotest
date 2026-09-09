@@ -15,7 +15,6 @@ private class NoopExtension : Extension
 // TestExecutionMode.Concurrent (any platform, not JVM-gated) -- see kotest#6188.
 class DefaultExtensionRegistryConcurrencyTest : FunSpec({
 
-   // TODO this test will fail in non jvm until a sync happens for non jvm too
    test("concurrent add() calls should not lose entries") {
       val registry = DefaultExtensionRegistry()
       val count = 500
