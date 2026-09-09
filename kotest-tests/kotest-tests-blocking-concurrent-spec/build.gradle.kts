@@ -1,15 +1,12 @@
 plugins {
-   id("kotlin-conventions")
+   id("kotest-jvm-conventions")
+   id("kotest-native-conventions")
    id("com.google.devtools.ksp").version("2.3.9")
-   // using a published version // TODO do we need this for this module - will see
+   // using a published version -- required so ProjectConfig is discovered on non-JVM targets too
    id("io.kotest").version("6.1.11")
 }
 
 kotlin {
-   jvm()
-   macosArm64()
-   linuxX64()
-
    sourceSets {
       commonTest {
          dependencies {
