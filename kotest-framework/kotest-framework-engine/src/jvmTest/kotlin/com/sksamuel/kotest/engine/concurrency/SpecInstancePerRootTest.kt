@@ -4,6 +4,7 @@ import io.kotest.assertions.assertSoftly
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.concurrency.TestExecutionMode
+import io.kotest.matchers.ints.shouldBeLessThanOrEqual
 import io.kotest.matchers.maps.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import kotlin.concurrent.getOrSet
@@ -26,7 +27,10 @@ class SpecInstancePerRootTest : FunSpec({
 
    afterProject {
       assertSoftly {
-         externalMultipleThreadCounter.map shouldHaveSize 1
+         // TestExecutionMode.Concurrent may now genuinely run its 3 tests on more than one real
+         // thread (up to one per test) -- see kotest#6188. The total amount of work done (the
+         // sum) must stay 3 regardless of how many distinct threads carried it out.
+         externalMultipleThreadCounter.map.size shouldBeLessThanOrEqual 3
          externalMultipleThreadCounter.map.values.sum() shouldBe 3
       }
    }
