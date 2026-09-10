@@ -1,15 +1,9 @@
 package io.kotest.datatest
 
-import io.kotest.core.source.SourceRefUtils
+import io.kotest.core.source.findFirstStackFrame
 import io.kotest.core.spec.Spec
 
 private val specJavaClass: Class<*> = Spec::class.java
-
-// RETAIN_CLASS_REFERENCE gives us the live java.lang.Class for each frame directly,
-// avoiding a Class.forName lookup, and StackWalker.walk() lets us stop as soon as we
-// find the first user frame instead of always materializing the whole call stack
-// the way Thread.currentThread().stackTrace would do.
-private val stackWalker: StackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
 
 /**
  * JVM implementation that gets the line number from the stack trace.
@@ -17,12 +11,9 @@ private val stackWalker: StackWalker = StackWalker.getInstance(StackWalker.Optio
  * Highly (ok fully) inspired from [io.kotest.core.source.sourceRef]
  */
 internal actual fun getDataTestCallSiteLineNumber(): String {
-   val frame = stackWalker.walk { frames ->
-      frames
-         .filter { !SourceRefUtils.isExcludedFrame(it.className, excludeDataTest = false) }
-         .filter { isSpecOrNestedInSpec(it.declaringClass) }
-         .findFirst()
-   }.orElse(null)
+   val frame = findFirstStackFrame(excludeDataTest = false) {
+      it.declaringClass?.let(::isSpecOrNestedInSpec) == true
+   }
 
    return frame?.lineNumber?.takeIf { it > 0 }?.toString() ?: "unknown"
 }
@@ -40,4 +31,3 @@ private fun isSpecOrNestedInSpec(clazz: Class<*>): Boolean {
    }
    return false
 }
-

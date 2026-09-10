@@ -1,5 +1,6 @@
 plugins {
    id("kotest-jvm-conventions")
+   id("kotest-android-conventions")
    id("kotest-js-conventions")
    id("kotest-wasi-conventions")
    id("kotest-native-conventions")
@@ -13,6 +14,13 @@ plugins {
 }
 
 kotlin {
+
+   androidLibrary {
+      namespace = "io.kotest.framework.engine"
+      compileSdk = 34
+      minSdk = 24
+   }
+
    sourceSets {
 
       commonMain {
@@ -51,7 +59,8 @@ kotlin {
          }
       }
 
-      jvmMain {
+      val jvmCommonMain by creating {
+         dependsOn(commonMain.get())
          dependencies {
 
             // we use AssertionFailedError from OpenTest4J
@@ -63,6 +72,14 @@ kotlin {
             // used by the launcher to scan the classpath for Spec subclasses
             implementation(libs.classgraph)
          }
+      }
+
+      androidMain {
+         dependsOn(jvmCommonMain)
+      }
+
+      jvmMain {
+         dependsOn(jvmCommonMain)
       }
 
       commonTest {
