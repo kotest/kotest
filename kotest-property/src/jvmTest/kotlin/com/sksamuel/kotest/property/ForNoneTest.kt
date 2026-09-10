@@ -84,6 +84,7 @@ class ForNoneTest : FunSpec({
       }.message shouldBe """Property failed after 6 attempts
 
 Repeat this test by using seed 1900646515
+Eval index: 6
 
 Caused by: Property failed 6 times (maxFailure rate was 5)
 Last error was caused by args:

@@ -80,13 +80,34 @@ internal suspend fun handleException(
    config: PropTestConfig
 ) {
    writeFailedSeed(seed)
+   val evalIndex = context.evals()
    if (config.maxFailure == 0) {
       printFailureMessage(context, inputs, e)
-      throwPropertyTestAssertionError(shrinkfn(), e, context.attempts(), seed, config.outputHexForUnprintableChars)
+      val (results, replayFailureNote) = runShrinkOrCaptureReplayFailure(shrinkfn)
+      replayFailureNote?.let { println("Note: shrink replay was skipped — $it") }
+      throwPropertyTestAssertionError(results, e, context.attempts(), seed, config.outputHexForUnprintableChars, evalIndex)
    } else if (context.failures() > config.maxFailure) {
       val error = buildMaxFailureErrorMessage(context, config, inputs)
-      throwPropertyTestAssertionError(shrinkfn(), AssertionError(error), context.attempts(), seed, config.outputHexForUnprintableChars)
+      val (results, replayFailureNote) = runShrinkOrCaptureReplayFailure(shrinkfn)
+      replayFailureNote?.let { println("Note: shrink replay was skipped — $it") }
+      throwPropertyTestAssertionError(results, AssertionError(error), context.attempts(), seed, config.outputHexForUnprintableChars, evalIndex)
    }
+   // Implicit third branch (maxFailure > 0 && failures <= maxFailure): allowed failure, do NOT
+   // shrink. shrinkfn() is invoked only when about to throw, matching the pre-#3076 behavior.
+}
+
+/**
+ * Runs [shrinkfn] (which may shrink via search or via [doReplay]) and returns the produced
+ * results. If the replay path is stale or otherwise unusable, [doReplay] raises a
+ * [ReplayShrinkPathException] which is caught here so callers can surface a regular property
+ * failure with a "replay was skipped" note rather than leaking the internal exception.
+ */
+private suspend fun runShrinkOrCaptureReplayFailure(
+   shrinkfn: suspend () -> List<ShrinkResult<Any?>>
+): Pair<List<ShrinkResult<Any?>>, String?> = try {
+   shrinkfn() to null
+} catch (replayEx: ReplayShrinkPathException) {
+   emptyList<ShrinkResult<Any?>>() to replayEx.message
 }
 
 fun printFailureMessage(
