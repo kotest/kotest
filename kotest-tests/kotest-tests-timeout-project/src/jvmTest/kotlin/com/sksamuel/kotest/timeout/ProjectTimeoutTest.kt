@@ -9,6 +9,7 @@ import io.kotest.engine.ProjectTimeoutException
 import io.kotest.engine.TestEngineLauncher
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.inspectors.forOne
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
@@ -30,7 +31,10 @@ class ProjectTimeoutTest : FunSpec({
          .withProjectConfig(c)
          .execute()
 
-      result.errors.forOne { it.shouldBeInstanceOf<ProjectTimeoutException>() }
+      result.errors.forOne {
+         it.shouldBeInstanceOf<ProjectTimeoutException>()
+         it.message shouldBe "Test suite did not complete within 100ms"
+      }
    }
 })
 
