@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalKotest::class)
+@file:Suppress("RETURN_VALUE_NOT_USED")
 
 package io.kotest.property.internal
 
