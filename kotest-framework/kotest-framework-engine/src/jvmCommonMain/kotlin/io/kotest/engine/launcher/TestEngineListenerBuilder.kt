@@ -1,6 +1,7 @@
 package io.kotest.engine.launcher
 
 import io.kotest.engine.listener.ConsoleTestEngineListener
+import io.kotest.engine.listener.PinnedTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 
@@ -35,10 +36,10 @@ data class TestEngineListenerBuilder(
 
    fun build(): TestEngineListener {
       return when (type) {
-         LISTENER_TC -> TeamCityTestEngineListener(nestContainers = nestContainers())
+         LISTENER_TC -> PinnedTestEngineListener(TeamCityTestEngineListener(nestContainers = nestContainers()))
          LISTENER_CONSOLE -> ConsoleTestEngineListener()
          // if not speciifed, we'll try to detect instead
-         else if isIntellij() -> TeamCityTestEngineListener(nestContainers = nestContainers())
+         else if isIntellij() -> PinnedTestEngineListener(TeamCityTestEngineListener(nestContainers = nestContainers()))
          else -> ConsoleTestEngineListener()
       }
    }
