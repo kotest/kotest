@@ -11,7 +11,6 @@ import io.kotest.engine.test.TestResult
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldHaveLength
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
@@ -44,9 +43,11 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override suspend fun afterSpec(spec: Spec) {
       // The sum all delays is 1500 ms, but tests should run concurrently.
       start.elapsedNow() shouldBeLessThan 1499.milliseconds
-      befores.shouldHaveLength(4)
-      // beforeTest should be called in declaration order
-      befores shouldBe "abcd"
+      // beforeTest's contract is that it runs before its own test, not that hooks across
+      // different tests fire in declaration order. Once tests genuinely execute on separate
+      // threads, which test's beforeTest wins the race to run first is not deterministic -- we
+      // only assert that every hook ran exactly once.
+      befores.toList().sorted().joinToString("") shouldBe "abcd"
       // all tests should be launched together, and so the delay will decide which finishes first
       afters shouldBe "cbad"
    }
