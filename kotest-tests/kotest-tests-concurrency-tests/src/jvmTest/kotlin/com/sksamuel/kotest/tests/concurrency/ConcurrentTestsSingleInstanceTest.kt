@@ -12,6 +12,8 @@ import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
@@ -20,6 +22,11 @@ import kotlin.time.TimeSource
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrentTestsSingleInstanceTest : FunSpec() {
 
+   // beforeTest/afterTest run on separate real threads, so
+   // `befores += x` (a read-then-write of a plain `var String`) is a race: two threads can read
+   // the same value before either writes back, and the second write silently discards the
+   // first's contribution entirely.
+   private val mutex = Mutex()
    private var befores = ""
    private var afters = ""
    private lateinit var start: TimeMark
@@ -29,11 +36,15 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.name
+      mutex.withLock {
+         befores += testCase.name.name
+      }
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.name
+      mutex.withLock {
+         afters += testCase.name.name
+      }
    }
 
    override suspend fun beforeSpec(spec: Spec) {
