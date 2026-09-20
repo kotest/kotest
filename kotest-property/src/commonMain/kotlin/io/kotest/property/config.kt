@@ -119,6 +119,15 @@ fun PropTest.toPropTestConfig() =
  *                      greater.
  *
  * @param constraints controls the loop for properties. See [Constraints].
+ * @param shrinkPaths If non-null, each entry is the recorded RTree traversal for the matching
+ *                      argument (see [io.kotest.property.internal.ShrinkResult.path]). When
+ *                      provided together with a [seed] (and [skipTo] when the failing iteration
+ *                      isn't 0), the shrink search is skipped and the recorded path is followed
+ *                      directly to the shrunk value. Used to re-run a known failure without
+ *                      repeating the full search — see issue
+ *                      [#3076](https://github.com/kotest/kotest/issues/3076). Note: like [skipTo],
+ *                      this lives on [PropTestConfig] only; the higher-level [PropTest] DSL does
+ *                      not expose it.
  */
 @Suppress("DEPRECATION")
 data class PropTestConfig(
@@ -135,6 +144,7 @@ data class PropTestConfig(
    val maxDiscardPercentage: Int = PropertyTesting.maxDiscardPercentage,
    val skipTo: Int = 0,
    val outputHexForUnprintableChars: Boolean = PropertyTesting.defaultOutputHexForUnprintableChars,
+   val shrinkPaths: List<List<Int>>? = null,
 )
 
 interface PropTestListener {
