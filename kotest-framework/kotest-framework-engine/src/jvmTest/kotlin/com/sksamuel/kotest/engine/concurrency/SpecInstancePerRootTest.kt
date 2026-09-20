@@ -27,9 +27,6 @@ class SpecInstancePerRootTest : FunSpec({
 
    afterProject {
       assertSoftly {
-         // TestExecutionMode.Concurrent may now genuinely run its 3 tests on more than one real
-         // thread (up to one per test) -- see kotest#6188. The total amount of work done (the
-         // sum) must stay 3 regardless of how many distinct threads carried it out.
          externalMultipleThreadCounter.map.size shouldBeLessThanOrEqual 3
          externalMultipleThreadCounter.map.values.sum() shouldBe 3
       }

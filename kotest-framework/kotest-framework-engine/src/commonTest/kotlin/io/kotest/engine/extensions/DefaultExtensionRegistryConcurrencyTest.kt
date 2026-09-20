@@ -12,7 +12,7 @@ private class NoopExtension : Extension
 
 // DefaultExtensionRegistry.add() is invoked whenever a spec is inflated (SpecRefInflator.inflate),
 // which can happen concurrently across real threads under SpecExecutionMode.Concurrent (JVM) or
-// TestExecutionMode.Concurrent (any platform, not JVM-gated) -- see kotest#6188.
+// TestExecutionMode.Concurrent (any platform).
 class DefaultExtensionRegistryConcurrencyTest : FunSpec({
 
    test("concurrent add() calls should not lose entries") {
