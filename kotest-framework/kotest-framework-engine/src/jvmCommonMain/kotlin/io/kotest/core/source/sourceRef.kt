@@ -6,11 +6,15 @@ import io.kotest.engine.config.KotestEngineProperties
 
 private val specJavaClass: Class<*> = Spec::class.java
 
-// RETAIN_CLASS_REFERENCE gives us the live java.lang.Class for each frame directly,
-// avoiding a Class.forName lookup, and StackWalker.walk() lets us stop as soon as we
-// find the first user frame instead of always materializing the whole call stack
-// the way Thread.currentThread().stackTrace would do.
-private val stackWalker: StackWalker = StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE)
+internal data class JvmStackFrame(
+   val declaringClass: Class<*>?,
+   val lineNumber: Int,
+)
+
+internal expect fun findFirstStackFrame(
+   excludeDataTest: Boolean,
+   predicate: (JvmStackFrame) -> Boolean,
+): JvmStackFrame?
 
 /**
  * On the JVM we can create a stack trace to get the line number.
@@ -19,12 +23,16 @@ private val stackWalker: StackWalker = StackWalker.getInstance(StackWalker.Optio
 internal actual fun sourceRef(): SourceRef {
    if (sysprop(KotestEngineProperties.DISABLE_SOURCE_REF, "false") == "true") return SourceRef.None
 
-   val frame = SourceRefUtils.firstUserFrame(stackWalker) ?: return SourceRef.None
+   val frame = findFirstStackFrame(excludeDataTest = true) { true } ?: return SourceRef.None
 
    // preference is given to the class name, but we must try to find the enclosing spec
    var kclass: Class<*>? = frame.declaringClass
-   while (kclass != null && !specJavaClass.isAssignableFrom(kclass)) {
-      kclass = kclass.enclosingClass
+   try {
+      while (kclass != null && !specJavaClass.isAssignableFrom(kclass)) {
+         kclass = kclass.enclosingClass
+      }
+   } catch (_: LinkageError) {
+      return SourceRef.None
    }
 
    val lineNumber = frame.lineNumber.takeIf { it > 0 }
@@ -37,17 +45,6 @@ internal actual fun sourceRef(): SourceRef {
 }
 
 object SourceRefUtils {
-
-   /**
-    * Returns the first user-land frame from the given [StackWalker], walking the live call
-    * stack lazily so frames beyond the match are never materialized.
-    */
-   internal fun firstUserFrame(walker: StackWalker): StackWalker.StackFrame? {
-      return walker.walk { frames ->
-         frames.filter { !isExcludedFrame(it.className, excludeDataTest = true) }.findFirst()
-      }.orElse(null)
-   }
-
    /**
     * Returns the first user-land frame from the given stack trace.
     *

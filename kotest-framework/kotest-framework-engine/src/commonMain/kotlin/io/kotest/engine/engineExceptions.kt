@@ -14,4 +14,4 @@ class EmptyTestSuiteException : Exception("No specs were available to test")
  */
 @KotestInternal
 class ProjectTimeoutException(val timeout: Duration) :
-   Exception("Test suite did not complete with ${timeout / 1000} seconds")
+   Exception("Test suite did not complete within $timeout")

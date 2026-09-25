@@ -8,10 +8,10 @@ sidebar_label: Kotlinx DateTime
 Kotest provides an optional module that provides generators for [KotlinX DateTime](https://github.com/Kotlin/kotlinx-datetime).
 
 :::note
-To use, add `io.kotest.extensions:kotest-property-datetime:version` to your build.
+To use, add `io.kotest:kotest-property-datetime:version` to your build.
 :::
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-property-datetime?label=latest%20release"/>](https://search.maven.org/search?q=kotest-property-datetime)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property-datetime?label=latest%20release"/>](https://search.maven.org/search?q=kotest-property-datetime)
 
 
 | Generator                                                      | Description                                                                                                                       | JVM | JS  | Native |
