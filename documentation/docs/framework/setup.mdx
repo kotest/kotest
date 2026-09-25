@@ -30,6 +30,20 @@ For Kotlin Multiplatform test targets, the plugin wires the Kotest framework sym
 
 Because the plugin adds the Kotest symbol processor through KSP, projects that apply `io.kotest` for Kotlin Multiplatform targets should also apply the `com.google.devtools.ksp` Gradle plugin.
 
+The symbol processor added by the plugin uses the same Kotest version as the plugin itself. That version is available as `kotest.kotestVersion`, so other Kotest modules can use it instead of declaring the version again:
+
+```kotlin
+kotlin {
+   sourceSets {
+      commonTest {
+         dependencies {
+            implementation("io.kotest:kotest-assertions-core:${kotest.kotestVersion.get()}")
+         }
+      }
+   }
+}
+```
+
 The plugin is also used for enhanced IntelliJ support, such as jump-to-source and re-running tests from the test results tree. See the Enhanced IDE support section below for details.
 
 For JVM-only projects that run Kotest through the JUnit Platform, the `io.kotest` Gradle plugin is usually not required unless you want the enhanced IDE support described below. In those projects, configuring the standard Gradle test task to use the JUnit Platform and adding the Kotest JUnit5 runner dependency is enough.
