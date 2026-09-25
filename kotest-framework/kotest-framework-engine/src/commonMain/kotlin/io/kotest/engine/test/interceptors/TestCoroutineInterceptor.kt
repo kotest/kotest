@@ -13,6 +13,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.yield
@@ -51,7 +52,7 @@ internal class TestCoroutineInterceptor(private val testConfigResolver: TestConf
       //    UncaughtExceptionCaptor -- forwarding an arbitrary ambient handler would also throw.
       // Everything else -- for example Spring's SpringTestContextCoroutineContextElement, installed via
       // withContext() around spec execution -- propagates through.
-      val forwardedContext = coroutineContext
+      val forwardedContext = currentCoroutineContext()
          .minusKey(Job)
          .minusKey(ContinuationInterceptor)
          .minusKey(CoroutineExceptionHandler)
