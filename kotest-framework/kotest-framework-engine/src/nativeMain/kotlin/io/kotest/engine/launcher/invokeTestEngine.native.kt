@@ -19,6 +19,14 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
       // also, the Gradle test task will capture stdout when it receives a TCSM test-started event until it receives
       // a test-finished event, so this TCSM listener must come after the console listener, otherwise, some console
       // output will be swallowed
+      //
+      // TODO under TestExecutionMode.Concurrent/SpecExecutionMode.Concurrent, withTeamCityListener()'s
+      // PinnedTestEngineListener (see kotest#6188) can hold one test's TC node open for its whole real
+      // duration while a faster sibling finishes underneath it. Console output printed by that faster
+      // sibling in the meantime still gets attributed to whichever TC node is currently open (this test),
+      // per the "swallowed" comment above -- so a fast test's own console progress line can visibly show
+      // up nested under a slower, still-open sibling's node in Gradle/IntelliJ's output pane. Results
+      // (pass/fail/timing) are still correct; this is a console-output-attribution artifact only.
       .withTeamCityListener()
       .execute()
 
