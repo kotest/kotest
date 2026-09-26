@@ -64,6 +64,39 @@ suspend fun <T> eventually(
    return eventually(durationMs.milliseconds, test)
 }
 
+suspend fun <T> eventually(
+   configure: EventuallyConfigurationBuilder.() -> Unit,
+   test: suspend () -> T,
+): T {
+   val builder = EventuallyConfigurationBuilder()
+   configure(builder)
+   val configuration = builder.build()
+   return eventually(configuration, test)
+}
+
+/**
+ * Runs a function [test] until it doesn't throw, using the configuration accumulated in the
+ * supplied [builder].
+ *
+ * This overload supports the builder-style DSL, for example:
+ *
+ * ```
+ * eventually(within(2.seconds).checkingEvery(100.milliseconds)) {
+ *    item(newId) shouldNotBe null
+ * }
+ * ```
+ *
+ * Note: Eventually is designed to work with real-world delays, such as blocking IO calls, or Thread.sleep.
+ * Even though it will work inside virtual time dispatchers, eg if you are using runTest from `kotlin.test`,
+ * or if you have enabled coroutineTestScope in a Kotest test, the intervals will always run on wall-clock time.
+ */
+suspend fun <T> eventually(
+   builder: EventuallyConfigurationBuilder,
+   test: suspend () -> T,
+): T {
+   return eventually(builder.build(), test)
+}
+
 /**
  * Runs a function [test] until it doesn't throw, using the supplied [config].
  *
@@ -263,7 +296,122 @@ class EventuallyConfigurationBuilder {
     * This is useful for those who don't want to see the first error.
     */
    var includeFirst: Boolean = EventuallyConfigurationDefaults.includeFirst
+
+   /**
+    * Sets the total [duration] that the [eventually] function can take to complete successfully,
+    * returning this builder so that further options can be chained.
+    *
+    * For example: `within(2.seconds).checkingEvery(100.milliseconds)`.
+    */
+   fun within(duration: Duration): EventuallyConfigurationBuilder {
+      this.duration = duration
+      return this
+   }
+
+   /**
+    * Sets the [initialDelay] applied before the first invocation, returning this builder so that
+    * further options can be chained.
+    */
+   fun withInitialDelay(initialDelay: Duration): EventuallyConfigurationBuilder {
+      this.initialDelay = initialDelay
+      return this
+   }
+
+   /**
+    * Sets the [interval] between invocations, returning this builder so that further options can
+    * be chained.
+    *
+    * For example: `within(2.seconds).checkingEvery(100.milliseconds)`.
+    */
+   fun checkingEvery(interval: Duration): EventuallyConfigurationBuilder {
+      this.interval = interval
+      return this
+   }
+
+   /**
+    * Sets the [intervalFn] used to calculate the next interval, returning this builder so that
+    * further options can be chained.
+    *
+    * This can be used to implement [fibonacci] or [exponential] backoff.
+    */
+   fun checkingEvery(intervalFn: DurationFn): EventuallyConfigurationBuilder {
+      this.intervalFn = intervalFn
+      return this
+   }
+
+   /**
+    * Sets the maximum number of [retries] regardless of duration, returning this builder so that
+    * further options can be chained.
+    */
+   fun withRetries(retries: Int): EventuallyConfigurationBuilder {
+      this.retries = retries
+      return this
+   }
+
+   /**
+    * Restricts the retried exceptions to the given [exceptions], returning this builder so that
+    * further options can be chained. Any other exception will immediately fail the [eventually]
+    * function.
+    */
+   fun retryingOn(vararg exceptions: KClass<out Throwable>): EventuallyConfigurationBuilder {
+      this.expectedExceptions = exceptions.toSet()
+      return this
+   }
+
+   /**
+    * Sets a [predicate] used to determine if a thrown exception is expected and the test function
+    * retried, returning this builder so that further options can be chained.
+    *
+    * This predicate is applied only when no values are specified by [retryingOn].
+    */
+   fun retryingOn(predicate: (Throwable) -> Boolean): EventuallyConfigurationBuilder {
+      this.expectedExceptionsFn = predicate
+      return this
+   }
+
+   /**
+    * Sets the [listener] that is invoked after each failed invocation, returning this builder so
+    * that further options can be chained.
+    */
+   fun withListener(listener: EventuallyListener): EventuallyConfigurationBuilder {
+      this.listener = listener
+      return this
+   }
+
+   /**
+    * Sets a [predicate] that, when it returns `true` for a thrown exception, immediately fails the
+    * [eventually] function instead of retrying. Returns this builder so that further options can
+    * be chained.
+    */
+   fun shortCircuitOn(predicate: (Throwable) -> Boolean): EventuallyConfigurationBuilder {
+      this.shortCircuit = predicate
+      return this
+   }
+
+   /**
+    * Controls whether the first error is included in the failure message, returning this builder
+    * so that further options can be chained.
+    */
+   fun includingFirstError(includeFirst: Boolean): EventuallyConfigurationBuilder {
+      this.includeFirst = includeFirst
+      return this
+   }
 }
+
+/**
+ * Creates an [EventuallyConfigurationBuilder] configured with the given total [duration], returning
+ * it so that further options can be chained.
+ *
+ * This is the entry point for the builder-style DSL, for example:
+ *
+ * ```
+ * eventually(within(2.seconds).checkingEvery(100.milliseconds)) {
+ *    item(newId) shouldNotBe null
+ * }
+ * ```
+ */
+fun within(duration: Duration): EventuallyConfigurationBuilder =
+   EventuallyConfigurationBuilder().within(duration)
 
 typealias EventuallyListener = suspend (Int, Throwable) -> Unit
 

@@ -422,6 +422,8 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 
 public final class io/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder {
 	public fun <init> ()V
+	public final fun checkingEvery (Lio/kotest/assertions/nondeterministic/DurationFn;)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun checkingEvery-LRDsOJo (J)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
 	public final fun getDuration-UwyO8pc ()J
 	public final fun getExpectedExceptions ()Ljava/util/Set;
 	public final fun getExpectedExceptionsFn ()Lkotlin/jvm/functions/Function1;
@@ -432,6 +434,9 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun getListener ()Lkotlin/jvm/functions/Function3;
 	public final fun getRetries ()I
 	public final fun getShortCircuit ()Lkotlin/jvm/functions/Function1;
+	public final fun includingFirstError (Z)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun retryingOn (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun retryingOn ([Lkotlin/reflect/KClass;)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
 	public final fun setDuration-LRDsOJo (J)V
 	public final fun setExpectedExceptions (Ljava/util/Set;)V
 	public final fun setExpectedExceptionsFn (Lkotlin/jvm/functions/Function1;)V
@@ -442,14 +447,22 @@ public final class io/kotest/assertions/nondeterministic/EventuallyConfiguration
 	public final fun setListener (Lkotlin/jvm/functions/Function3;)V
 	public final fun setRetries (I)V
 	public final fun setShortCircuit (Lkotlin/jvm/functions/Function1;)V
+	public final fun shortCircuitOn (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun withInitialDelay-LRDsOJo (J)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun withListener (Lkotlin/jvm/functions/Function3;)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun withRetries (I)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
+	public final fun within-LRDsOJo (J)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
 }
 
 public final class io/kotest/assertions/nondeterministic/EventuallyKt {
 	public static final fun eventually (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually (Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun eventually (Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually (Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
+	public static final fun eventually (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventually-KLykuaI (JLkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static final fun eventuallyConfig (Lkotlin/jvm/functions/Function1;)Lio/kotest/assertions/nondeterministic/EventuallyConfiguration;
+	public static final fun within-LRDsOJo (J)Lio/kotest/assertions/nondeterministic/EventuallyConfigurationBuilder;
 }
 
 public final class io/kotest/assertions/nondeterministic/ExponentialIntervalFn : io/kotest/assertions/nondeterministic/DurationFn {
