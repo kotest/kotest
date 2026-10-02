@@ -82,6 +82,7 @@ abstract class KotestPlugin : Plugin<Project> {
    override fun apply(project: Project) {
 
       val extension = project.extensions.create(GRADLE_EXTENSION_NAME, KotestGradleExtension::class.java)
+      extension.kotestVersion.value(kotestVersion).disallowChanges()
 
       project.tasks.register(KOTEST_TASK_NAME) {
          onlyIf { extension.customGradleTask.get() }

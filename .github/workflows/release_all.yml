@@ -88,8 +88,16 @@ jobs:
             publishToAppropriateCentralRepository
          runs-on: ${{ matrix.os }}
 
-   tag:
+   publish_gradle_plugin:
       needs: publish
+      uses: ./.github/workflows/release_plugin_gradle.yml
+      secrets: inherit
+      with:
+         version: ${{ inputs.version }}
+         ref: refs/tags/${{ inputs.version }}
+
+   tag:
+      needs: [publish, publish_gradle_plugin]
       runs-on: ubuntu-latest
       steps:
          -  uses: actions/checkout@v6

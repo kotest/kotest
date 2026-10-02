@@ -5,11 +5,21 @@ on:
   workflow_dispatch:
     inputs:
       version:
+        description: "Ad-hoc release only - normal releases run this automatically via release_all. Leave blank for snapshot."
+        required: false
+  workflow_call:
+    inputs:
+      version:
         description: "The release version (leave blank for snapshot)"
         required: false
+        type: string
+      ref:
+        description: "The git branch, tag or SHA to checkout"
+        required: false
+        type: string
 
 env:
-  GRADLE_RELEASE: ${{ github.event.inputs.version }}
+  GRADLE_RELEASE: ${{ inputs.version }}
   GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
   GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}
 
@@ -24,6 +34,8 @@ jobs:
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref }}
 
       - name: Setup JDK
         uses: actions/setup-java@v5

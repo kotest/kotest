@@ -34,4 +34,13 @@ abstract class KotestGradleExtension {
     * Spec names (class names) are never truncated.
     */
    abstract val truncateTestNamesInGradle: Property<Boolean>
+
+   /**
+    * The version of Kotest that this plugin uses for the Kotest dependencies it adds, such as the symbol processor.
+    * Use it to add other Kotest modules with the same version, for example
+    * `testImplementation("io.kotest:kotest-assertions-json:${kotest.kotestVersion.get()}")`.
+    *
+    * This value is set by the plugin and cannot be changed.
+    */
+   abstract val kotestVersion: Property<String>
 }

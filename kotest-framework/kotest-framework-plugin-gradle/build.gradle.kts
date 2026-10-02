@@ -18,6 +18,13 @@ dependencies {
    implementation(libs.power.assert.plugin)
    implementation(libs.asm) // used to poke into classes to see if they are specs when running JVM tests
    testImplementation(libs.kotlin.gradle.plugin)
+   testImplementation(projects.kotestRunner.kotestRunnerJunit5)
+   testImplementation(projects.kotestAssertions.kotestAssertionsCore)
+}
+
+tasks.test {
+   useJUnitPlatform()
+   systemProperty("kotestVersion", version)
 }
 
 //tasks.withType<Test>().configureEach {
