@@ -9,6 +9,7 @@ import io.kotest.core.annotation.Parallel
 import io.kotest.core.project.TestSuite
 import io.kotest.core.spec.SpecRef
 import io.kotest.engine.concurrency.ConcurrencyOrder
+import io.kotest.engine.concurrency.concurrentExecutionContext
 import io.kotest.engine.concurrency.isIsolate
 import io.kotest.engine.concurrency.isParallel
 import io.kotest.engine.config.ProjectConfigResolver
@@ -74,12 +75,13 @@ internal class TestSuiteScheduler(private val context: TestEngineContext) {
    ) {
 
       val semaphore = Semaphore(concurrency)
+      val dispatchContext = concurrentExecutionContext(concurrency)
       logger.log { "Scheduling using concurrency: $concurrency" }
 
       coroutineScope { // we don't want this function to return until all specs are completed
          specs.map { ref ->
             logger.log { LogLine(ref.fqn, "Scheduling coroutine") }
-            launch {
+            launch(dispatchContext) {
                semaphore.withPermit {
                   logger.log { LogLine(ref.fqn, "Acquired permit") }
                   executeIfNotFailedFast(ref, context.collector)

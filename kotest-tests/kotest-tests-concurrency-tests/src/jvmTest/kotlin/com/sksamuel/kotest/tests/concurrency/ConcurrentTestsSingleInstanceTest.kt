@@ -11,8 +11,9 @@ import io.kotest.engine.test.TestResult
 import io.kotest.engine.concurrency.TestExecutionMode
 import io.kotest.matchers.comparables.shouldBeLessThan
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldHaveLength
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.TimeMark
 import kotlin.time.TimeSource
@@ -21,6 +22,11 @@ import kotlin.time.TimeSource
 @EnabledIf(LinuxOnlyGithubCondition::class)
 class ConcurrentTestsSingleInstanceTest : FunSpec() {
 
+   // beforeTest/afterTest run on separate real threads, so
+   // `befores += x` (a read-then-write of a plain `var String`) is a race: two threads can read
+   // the same value before either writes back, and the second write silently discards the
+   // first's contribution entirely.
+   private val mutex = Mutex()
    private var befores = ""
    private var afters = ""
    private lateinit var start: TimeMark
@@ -30,11 +36,15 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override fun testCaseOrder() = TestCaseOrder.Sequential
 
    override suspend fun beforeTest(testCase: TestCase) {
-      befores += testCase.name.name
+      mutex.withLock {
+         befores += testCase.name.name
+      }
    }
 
    override suspend fun afterTest(testCase: TestCase, result: TestResult) {
-      afters += testCase.name.name
+      mutex.withLock {
+         afters += testCase.name.name
+      }
    }
 
    override suspend fun beforeSpec(spec: Spec) {
@@ -44,9 +54,11 @@ class ConcurrentTestsSingleInstanceTest : FunSpec() {
    override suspend fun afterSpec(spec: Spec) {
       // The sum all delays is 1500 ms, but tests should run concurrently.
       start.elapsedNow() shouldBeLessThan 1499.milliseconds
-      befores.shouldHaveLength(4)
-      // beforeTest should be called in declaration order
-      befores shouldBe "abcd"
+      // beforeTest's contract is that it runs before its own test, not that hooks across
+      // different tests fire in declaration order. Once tests genuinely execute on separate
+      // threads, which test's beforeTest wins the race to run first is not deterministic -- we
+      // only assert that every hook ran exactly once.
+      befores.toList().sorted().joinToString("") shouldBe "abcd"
       // all tests should be launched together, and so the delay will decide which finishes first
       afters shouldBe "cbad"
    }
