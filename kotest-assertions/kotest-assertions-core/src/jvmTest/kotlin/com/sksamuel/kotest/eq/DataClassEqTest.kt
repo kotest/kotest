@@ -79,6 +79,14 @@ sealed interface Edge {
 
 data class Window(val start: Edge)
 
+sealed interface Fruit
+
+data class Apple(val color: String) : Fruit
+
+data class Orange(val color: String) : Fruit
+
+data class Parfait(val fruit: Fruit)
+
 class DataClassEqTest : StringSpec({
 
    "respects custom equals implementations in data classes" {
@@ -256,6 +264,15 @@ class DataClassEqTest : StringSpec({
       val throwable = shouldThrowAny { Edge.Open shouldBe Edge.At(0) }
 
       throwable.message shouldBe "expected:<At(day=0)> but was:<Open>"
+   }
+
+   "data class fields of different subtypes do not match even when their properties are equal" {
+      val throwable = shouldThrowAny { Parfait(Apple("Amber")) shouldBe Parfait(Orange("Amber")) }
+
+      throwable.message shouldStartWith """
+         data class diff for com.sksamuel.kotest.eq.Parfait
+         └ fruit: expected:<Orange(color=Amber)> but was:<Apple(color=Amber)>
+         """.trimIndent()
    }
 
 })
