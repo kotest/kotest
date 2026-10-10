@@ -3884,8 +3884,14 @@ public final class io/kotest/matchers/types/HashKt {
 }
 
 public final class io/kotest/matchers/types/MatchersKt {
+	public static final fun shouldBeInstanceOf (Ljava/lang/Object;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public static final fun shouldBeInstanceOf (Ljava/lang/Object;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
 	public static final fun shouldBeSameInstanceAs (Ljava/lang/Object;Ljava/lang/Object;)V
+	public static final fun shouldBeTypeOf (Ljava/lang/Object;Lkotlin/reflect/KClass;)Ljava/lang/Object;
+	public static final fun shouldBeTypeOf (Ljava/lang/Object;Lkotlin/reflect/KClass;Lkotlin/jvm/functions/Function1;)Ljava/lang/Object;
+	public static final fun shouldNotBeInstanceOf (Ljava/lang/Object;Lkotlin/reflect/KClass;)V
 	public static final fun shouldNotBeSameInstanceAs (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBeTypeOf (Ljava/lang/Object;Lkotlin/reflect/KClass;)V
 }
 
 public final class io/kotest/matchers/types/TypeMatchersKt {

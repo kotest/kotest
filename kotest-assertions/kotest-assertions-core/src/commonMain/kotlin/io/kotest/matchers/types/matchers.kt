@@ -5,6 +5,7 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlin.contracts.contract
+import kotlin.reflect.KClass
 
 /**
  * Verifies that this is instanceof T
@@ -96,6 +97,62 @@ inline fun <reified T : Any> Any?.shouldNotBeInstanceOf() {
 }
 
 /**
+ * Verifies that this is instanceof [expected]
+ *
+ * Verifies that this value is an instance of [expected] class, which includes any subclasses.
+ *
+ * Opposite of [shouldNotBeInstanceOf]
+ *
+ * For an exact type, use [shouldBeTypeOf]
+ *
+ * @param expected The expected class.
+ * @return The typecasted instance
+ */
+infix fun <T : Any> Any?.shouldBeInstanceOf(expected: KClass<T>): T {
+   val matcher = beInstanceOf(expected)
+   this shouldBe matcher
+   @Suppress("UNCHECKED_CAST")
+   return this as T
+}
+
+/**
+ * Verifies that this is instanceof [expected]
+ *
+ * Verifies that this value is an instance of [expected] class, which includes any subclasses, and lets you execute [block] with that
+ * value casted.
+ *
+ * Opposite of [shouldNotBeInstanceOf]
+ *
+ * For an exact type, use [shouldBeTypeOf]
+ *
+ * @param expected The expected class.
+ * @param block Lambda that receives typecasted instance as argument for further assertions.
+ * @return The typecasted instance
+ */
+fun <T : Any> Any?.shouldBeInstanceOf(expected: KClass<T>, block: (T) -> Unit): T {
+   val matcher = beInstanceOf(expected)
+   this shouldBe matcher
+   @Suppress("UNCHECKED_CAST")
+   val casted = this as T
+   block(casted)
+   return casted
+}
+
+/**
+ * Verifies that this is NOT Instanceof [expected]
+ *
+ * Verifies that this value is not an instance of [expected] class.
+ *
+ * Opposite of [shouldBeInstanceOf]
+ *
+ * For an exact type, use [shouldNotBeTypeOf]
+ */
+infix fun Any?.shouldNotBeInstanceOf(expected: KClass<*>) {
+   val matcher = beInstanceOf(expected)
+   this shouldNotBe matcher
+}
+
+/**
  * Verifies that this is exactly of type T
  *
  * Verifies that this value is exactly of type T, where no inheritance is verified. If the assertion passes, you may
@@ -155,6 +212,62 @@ inline fun <reified T : Any> Any?.shouldBeTypeOf(): T {
  */
 inline fun <reified T : Any> Any?.shouldNotBeTypeOf() {
    val matcher = beOfType<T>()
+   this shouldNotBe matcher
+}
+
+/**
+ * Verifies that this is exactly of type [expected]
+ *
+ * Verifies that this value is exactly of type [expected], where no inheritance is verified.
+ *
+ * Opposite of [shouldNotBeTypeOf]
+ *
+ * If you want to verify including inheritance, use [shouldBeInstanceOf]
+ *
+ * @param expected The expected exact class.
+ * @return The typecasted instance
+ */
+infix fun <T : Any> Any?.shouldBeTypeOf(expected: KClass<T>): T {
+   val matcher = beOfType(expected)
+   this shouldBe matcher
+   @Suppress("UNCHECKED_CAST")
+   return this as T
+}
+
+/**
+ * Verifies that this is exactly of type [expected]
+ *
+ * Verifies that this value is exactly of type [expected], where no inheritance is verified. If the assertion passes, you may
+ * use [this] as [T] inside [block].
+ *
+ * Opposite of [shouldNotBeTypeOf]
+ *
+ * If you want to verify including inheritance, use [shouldBeInstanceOf]
+ *
+ * @param expected The expected exact class.
+ * @param block Lambda that receives typecasted instance as argument for further assertions.
+ * @return The typecasted instance
+ */
+fun <T : Any> Any?.shouldBeTypeOf(expected: KClass<T>, block: (T) -> Unit): T {
+   val matcher = beOfType(expected)
+   this shouldBe matcher
+   @Suppress("UNCHECKED_CAST")
+   val casted = this as T
+   block(casted)
+   return casted
+}
+
+/**
+ * Verifies that this is NOT exactly of type [expected]
+ *
+ * Verifies that this value is not of type [expected].
+ *
+ * Opposite of [shouldBeTypeOf]
+ *
+ * If you want to consider inheritance, use [shouldNotBeInstanceOf]
+ */
+infix fun Any?.shouldNotBeTypeOf(expected: KClass<*>) {
+   val matcher = beOfType(expected)
    this shouldNotBe matcher
 }
 
