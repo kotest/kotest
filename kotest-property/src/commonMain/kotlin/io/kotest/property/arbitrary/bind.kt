@@ -6,7 +6,6 @@ import io.kotest.property.Gen
 import io.kotest.property.RTree
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
-import io.kotest.property.asSample
 
 fun <A, B, T> Arb.Companion.bind(
    genA: Gen<A>,
@@ -457,22 +456,32 @@ internal fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, T> Arb.Companion.bindN(
    return object : Arb<T>() {
 
       override fun edgecase(rs: RandomSource): Sample<T>? {
-         return bindFn(
-            arbA.edgecase(rs)?.value ?: arbA.next(rs),
-            arbB.edgecase(rs)?.value ?: arbB.next(rs),
-            arbC.edgecase(rs)?.value ?: arbC.next(rs),
-            arbD.edgecase(rs)?.value ?: arbD.next(rs),
-            arbE.edgecase(rs)?.value ?: arbE.next(rs),
-            arbF.edgecase(rs)?.value ?: arbF.next(rs),
-            arbG.edgecase(rs)?.value ?: arbG.next(rs),
-            arbH.edgecase(rs)?.value ?: arbH.next(rs),
-            arbI.edgecase(rs)?.value ?: arbI.next(rs),
-            arbJ.edgecase(rs)?.value ?: arbJ.next(rs),
-            arbK.edgecase(rs)?.value ?: arbK.next(rs),
-            arbL.edgecase(rs)?.value ?: arbL.next(rs),
-            arbM.edgecase(rs)?.value ?: arbM.next(rs),
-            arbN.edgecase(rs)?.value ?: arbN.next(rs),
-         ).asSample()
+         val sA = arbA.edgecase(rs) ?: arbA.sample(rs)
+         val sB = arbB.edgecase(rs) ?: arbB.sample(rs)
+         val sC = arbC.edgecase(rs) ?: arbC.sample(rs)
+         val sD = arbD.edgecase(rs) ?: arbD.sample(rs)
+         val sE = arbE.edgecase(rs) ?: arbE.sample(rs)
+         val sF = arbF.edgecase(rs) ?: arbF.sample(rs)
+         val sG = arbG.edgecase(rs) ?: arbG.sample(rs)
+         val sH = arbH.edgecase(rs) ?: arbH.sample(rs)
+         val sI = arbI.edgecase(rs) ?: arbI.sample(rs)
+         val sJ = arbJ.edgecase(rs) ?: arbJ.sample(rs)
+         val sK = arbK.edgecase(rs) ?: arbK.sample(rs)
+         val sL = arbL.edgecase(rs) ?: arbL.sample(rs)
+         val sM = arbM.edgecase(rs) ?: arbM.sample(rs)
+         val sN = arbN.edgecase(rs) ?: arbN.sample(rs)
+         return Sample(
+            bindFn(
+               sA.value, sB.value, sC.value, sD.value, sE.value,
+               sF.value, sG.value, sH.value, sI.value, sJ.value,
+               sK.value, sL.value, sM.value, sN.value
+            ),
+            combineShrinks(
+               sA.shrinks, sB.shrinks, sC.shrinks, sD.shrinks, sE.shrinks,
+               sF.shrinks, sG.shrinks, sH.shrinks, sI.shrinks, sJ.shrinks,
+               sK.shrinks, sL.shrinks, sM.shrinks, sN.shrinks
+            )
+         )
       }
 
       override fun sample(rs: RandomSource): Sample<T> {

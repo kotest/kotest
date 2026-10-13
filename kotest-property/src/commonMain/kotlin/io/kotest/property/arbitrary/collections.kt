@@ -5,7 +5,7 @@ import io.kotest.property.Exhaustive
 import io.kotest.property.Gen
 import io.kotest.property.PropertyTesting
 import io.kotest.property.Shrinker
-import io.kotest.property.asSample
+import io.kotest.property.sampleOf
 import kotlin.jvm.JvmOverloads
 import kotlin.math.max
 import kotlin.random.nextInt
@@ -72,7 +72,7 @@ fun <A> Arb.Companion.list(gen: Gen<A>, range: IntRange = PropertyTesting.defaul
             .takeIf { it.isNotEmpty() }
             ?.distinct()
             ?.random(rs.random)
-            ?.asSample()
+            ?.let { sampleOf(it, ListShrinker(range)) }
       },
       shrinker = ListShrinker(range),
       sampleFn = { rs ->
