@@ -5,8 +5,6 @@ slug: ktor-matchers.html
 sidebar_label: Ktor
 ---
 
-Code is kept on a [separate repository](https://github.com/kotest/kotest-assertions-ktor) and on a different group: `io.kotest.extensions`.
-
 **Full Dependency**
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-assertions-ktor.svg?label=latest%20release"/>](http://search.maven.org/#search|ga|1|kotest-assertions-ktor)
@@ -14,9 +12,9 @@ Code is kept on a [separate repository](https://github.com/kotest/kotest-asserti
 
 
 >
-> ```implementation("io.kotest.extensions:kotest-assertions-ktor:version")```
+> ```implementation("io.kotest:kotest-assertions-ktor:version")```
 >
-> ```implementation "io.kotest.extensions:kotest-assertions-ktor:version"```
+> ```implementation "io.kotest:kotest-assertions-ktor:version"```
 
 
 
