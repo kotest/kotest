@@ -50,6 +50,7 @@ dependencies {
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsCompiler)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsCore)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsJson)
+   nmcpAggregation(projects.kotestAssertions.kotestAssertionsJsoup)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKonform)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKotlinxDatetime)
    nmcpAggregation(projects.kotestAssertions.kotestAssertionsKtor)

@@ -43,6 +43,14 @@ internal object DataClassEq : Eq<Any> {
       try {
          return if (testByEquals(actual, expected)) {
             EqResult.Success
+         } else if (actual::class != expected::class) {
+            // Instances of different classes, such as two subtypes of a sealed type, have no common
+            // members to diff, so report the values themselves.
+            EqResult.Failure {
+               AssertionErrorBuilder.create()
+                  .withValues(Expected(expected.print()), Actual(actual.print()))
+                  .build()
+            }
          } else {
 
             runCatching {
@@ -114,7 +122,9 @@ internal object DataClassEq : Eq<Any> {
          val result = EqCompare.compare(actualPropertyValue, expectedPropertyValue, context)
          when (result) {
             is EqResult.Failure -> {
-               if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue)) {
+               if (isDataClassInstance(actualPropertyValue) && isDataClassInstance(expectedPropertyValue) &&
+                  actualPropertyValue!!::class == expectedPropertyValue!!::class
+               ) {
                   if(dataClassFieldCount(actualPropertyValue) > 0 || dataClassFieldCount(expectedPropertyValue) > 0) {
                      dataClassDiff(actualPropertyValue, expectedPropertyValue, depth + 1, context)?.let { diff ->
                         Pair(prop, diff)

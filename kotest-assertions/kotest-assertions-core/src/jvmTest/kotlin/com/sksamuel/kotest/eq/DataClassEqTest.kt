@@ -72,6 +72,21 @@ sealed class Status {
 
 data class User(val name: String, val status: Status)
 
+sealed interface Edge {
+   data object Open : Edge
+   data class At(val day: Int) : Edge
+}
+
+data class Window(val start: Edge)
+
+sealed interface Fruit
+
+data class Apple(val color: String) : Fruit
+
+data class Orange(val color: String) : Fruit
+
+data class Parfait(val fruit: Fruit)
+
 class DataClassEqTest : StringSpec({
 
    "respects custom equals implementations in data classes" {
@@ -224,6 +239,40 @@ class DataClassEqTest : StringSpec({
       }
 
       user1 shouldNotBe user2
+   }
+
+   // https://github.com/kotest/kotest/issues/6241
+   "a data object field does not match a data class field with properties" {
+      val throwable = shouldThrowAny { Window(Edge.At(0)) shouldBe Window(Edge.Open) }
+
+      throwable.message shouldStartWith """
+         data class diff for com.sksamuel.kotest.eq.Window
+         └ start: expected:<Open> but was:<At(day=0)>
+         """.trimIndent()
+   }
+
+   "a data class field with properties does not match a data object field" {
+      val throwable = shouldThrowAny { Window(Edge.Open) shouldBe Window(Edge.At(0)) }
+
+      throwable.message shouldStartWith """
+         data class diff for com.sksamuel.kotest.eq.Window
+         └ start: expected:<At(day=0)> but was:<Open>
+         """.trimIndent()
+   }
+
+   "data class instances of different subtypes are compared by their values" {
+      val throwable = shouldThrowAny { Edge.Open shouldBe Edge.At(0) }
+
+      throwable.message shouldBe "expected:<At(day=0)> but was:<Open>"
+   }
+
+   "data class fields of different subtypes do not match even when their properties are equal" {
+      val throwable = shouldThrowAny { Parfait(Apple("Amber")) shouldBe Parfait(Orange("Amber")) }
+
+      throwable.message shouldStartWith """
+         data class diff for com.sksamuel.kotest.eq.Parfait
+         └ fruit: expected:<Orange(color=Amber)> but was:<Apple(color=Amber)>
+         """.trimIndent()
    }
 
 })

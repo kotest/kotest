@@ -8,11 +8,11 @@ sidebar_label: Arrow Generators
 Kotest provides an optional module that provides generators for [Arrow](https://arrow-kt.io).
 
 :::note
-To use, add `io.kotest.extensions:kotest-property-arrow:version`and `io.arrow-kt:arrow-core:arrow-version` to your build.
+To use, add `io.kotest:kotest-property-arrow:version`and `io.arrow-kt:arrow-core:arrow-version` to your build.
 This holds true for the optics module `kotest-property-arrow-optics`, by adding `io.arrow-kt:arrow-optics:arrow-version`, too.
 :::
 
-[<img src="https://img.shields.io/maven-central/v/io.kotest.extensions/kotest-property-arrow?label=latest%20release"/>](https://search.maven.org/search?q=kotest-property-arrow)
+[<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-property-arrow?label=latest%20release"/>](https://search.maven.org/search?q=kotest-property-arrow)
 
 
 | Generator                          | Description                                                                                                                    |

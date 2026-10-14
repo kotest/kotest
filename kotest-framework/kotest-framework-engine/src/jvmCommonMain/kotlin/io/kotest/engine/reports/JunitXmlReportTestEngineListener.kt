@@ -6,10 +6,7 @@ import io.kotest.core.test.TestCase
 import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestResult
-import kotlinx.io.buffered
-import kotlinx.io.files.Path
-import kotlinx.io.files.SystemFileSystem
-import kotlinx.io.writeString
+import java.io.File
 import kotlin.reflect.KClass
 import kotlin.time.Clock
 
@@ -58,10 +55,8 @@ class JunitXmlReportTestEngineListener(
    }
 
    fun writeFile(baseDir: String, filename: String, contents: String) {
-      val path = Path(baseDir, filename)
-      SystemFileSystem.createDirectories(Path(baseDir))
-      val sink = SystemFileSystem.sink(path, append = false).buffered()
-      sink.writeString(contents)
-      sink.close()
+      val dir = File(baseDir)
+      dir.mkdirs()
+      File(dir, filename).writeText(contents)
    }
 }
