@@ -184,7 +184,7 @@ jobs:
       strategy:
          fail-fast: false
          matrix:
-            project: ${{ fromJson(inputs.project != '' && format('["{0}"]', inputs.project) || '["kotest-allure","kotest-android","kotest-javascript","kotest-jvm","kotest-maven","kotest-multiplatform","kotest-native","kotest-spring-webflux","kotest-spring-data","kotest-wasm","kotest-gradle-retry","kotest-multi-module"]') }}
+            project: ${{ fromJson(inputs.project != '' && format('["{0}"]', inputs.project) || '["kotest-allure","kotest-android","kotest-javascript","kotest-jvm","kotest-maven","kotest-multiplatform","kotest-native","kotest-spring-webflux","kotest-spring-data","kotest-wasm","kotest-gradle-retry","kotest-multi-module","kotest-composite-build"]') }}
       steps:
          - name: Checkout kotest-examples
            uses: actions/checkout@v6
