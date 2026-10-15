@@ -253,6 +253,8 @@ kotlin {
    compilerOptions {
       jvmToolchain(JavaLanguageVersion.of(jvmTargetVersion).asInt())
       optIn.set(listOf("org.jetbrains.kotlin.analysis.api.permissions.KaAllowProhibitedAnalyzeFromWriteAction"))
+      // use JVM default methods instead of generating stubs for platform interface defaults, which the verifier flags as internal API usage on 251/252
+      jvmDefault.set(org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY)
    }
 }
 
