@@ -1,6 +1,7 @@
 import org.jetbrains.intellij.platform.gradle.IntelliJPlatformType
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.models.ProductRelease
+import org.jetbrains.intellij.platform.gradle.tasks.VerifyPluginTask.FailureLevel
 
 data class PluginDescriptor(
    val since: String, // earliest version string this is compatible with
@@ -144,6 +145,13 @@ intellijPlatform {
          name = "Kotest"
          url = "https://kotest.io"
          email = "sam@sksamuel.com"
+      }
+   }
+
+   pluginVerification {
+      failureLevel = listOf(FailureLevel.COMPATIBILITY_PROBLEMS, FailureLevel.INTERNAL_API_USAGES)
+      ides {
+         recommended()
       }
    }
 
