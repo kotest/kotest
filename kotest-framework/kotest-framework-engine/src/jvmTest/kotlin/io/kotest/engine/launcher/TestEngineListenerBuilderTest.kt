@@ -4,6 +4,7 @@ import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.engine.listener.ConsoleTestEngineListener
+import io.kotest.engine.listener.PinnedTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.matchers.types.shouldBeInstanceOf
 
@@ -11,12 +12,15 @@ import io.kotest.matchers.types.shouldBeInstanceOf
 class TestEngineListenerBuilderTest : FunSpec() {
    init {
 
-      test("specifying teamcity should return TeamCityTestEngineListener") {
-         TestEngineListenerBuilder
+      test("specifying teamcity should return TeamCityTestEngineListener wrapped in PinnedTestEngineListener") {
+         // wrapped by PinnedTestEngineListener so concurrent sibling tests can't interleave out of the strict LIFO
+         // start/finish nesting TeamCity service messages require
+         val pinned = TestEngineListenerBuilder
             .builder()
             .withType(TestEngineListenerBuilder.LISTENER_TC)
             .build()
-            .shouldBeInstanceOf<TeamCityTestEngineListener>()
+            .shouldBeInstanceOf<PinnedTestEngineListener>()
+         pinned.listener.shouldBeInstanceOf<TeamCityTestEngineListener>()
       }
 
       test("specifying enchanced should return EnhancedConsoleTestEngineListener") {
