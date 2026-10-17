@@ -25,6 +25,8 @@ import kotlinx.coroutines.currentCoroutineContext
  *
  * If registered, will invoke [io.kotest.property.lifecycle.beforeProperty] and
  * [io.kotest.property.lifecycle.afterProperty] lifecycle methods.
+ *
+ * Invokes the [PropTestConfig.listeners] around the evaluation, and completes them before any shrinking starts.
  */
 internal suspend fun test(
    context: PropertyContext,
@@ -40,7 +42,8 @@ internal suspend fun test(
    context.markEvaluation()
    context.setupContextual(RandomSource.seeded(contextualSeed))
    if (context.evals() >= config.skipTo) {
-      try {
+      config.listeners.forEach { it.beforeTest() }
+      val error = try {
 
          inputs.indices.forEach { k ->
             val classifier = classifiers[k]
@@ -58,13 +61,21 @@ internal suspend fun test(
          testFn()
          context.markSuccess()
          currentCoroutineContext()[AfterPropertyContextElement]?.after?.invoke()
+         null
       } catch (_: IterationSkippedException) {
          // we don't mark failed assumptions as errors
+         null
       } catch (e: Throwable) {
+         e
+      } finally {
+         // each shrink run is bracketed by the listeners too, so this iteration must be finished first
+         config.listeners.forEach { it.afterTest() }
+      }
+      if (error != null) {
          // we track any throwables and try to shrink them
          context.markFailure()
          outputStatistics(context, inputs.size, false)
-         handleException(context, shrinkfn, inputs, seed, e, config)
+         handleException(context, shrinkfn, inputs, seed, error, config)
       }
    } else {
       printSkippedMessage(context, inputs)
