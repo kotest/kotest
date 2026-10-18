@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalKotest::class)
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
 
 package io.kotest.property
 
