@@ -14,7 +14,8 @@ internal object FailureHandler {
          .withInputs(result.inputs)
          .build()
 
-      throw AssertionError(message)
+      // keep the original error as the cause, so its type and stack trace are not lost
+      throw AssertionError(message, result.error)
    }
 
    fun shrinky() {
