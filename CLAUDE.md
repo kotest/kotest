@@ -48,6 +48,7 @@ kotest-assertions/
   kotest-assertions-konform/          # Konform validation matchers
   kotest-assertions-kotlinx-datetime/ # kotlinx-datetime matchers
   kotest-assertions-yaml/            # YAML matchers
+  kotest-assertions-jsoup/           # Jsoup HTML matchers
 kotest-property/                       # Property testing: Gen, Arb, Exhaustive, shrinking, seed persistence
   kotest-property-lifecycle/          # Property testing + framework lifecycle integration
   kotest-property-permutations/       # 6.0+ permutations DSL
@@ -63,6 +64,8 @@ kotest-intellij-plugin/               # IntelliJ IDEA plugin
 kotest-bom/                           # Bill of Materials
 kotest-tests/                          # Integration/regression test suites (each is a separate Gradle module)
 buildSrc/                             # Convention plugins and CI configuration
+skills/kotest/                        # User-facing AI agent skill (SKILL.md + references/), shipped via Claude marketplace
+.claude-plugin/                       # Marketplace/plugin manifests for the skill (version bumped by release workflow)
 ```
 
 ## Coding Conventions
@@ -123,14 +126,41 @@ The project uses [Kotlin Binary Compatibility Validator](https://github.com/kotl
 4. Add both `should` and `shouldNot` extension functions.
 5. Write tests in the corresponding `jvmTest` and/or `commonTest` source set.
 6. Run `./gradlew apiDump` if the matcher is public API.
+7. If broadly useful, add it to `skills/kotest/references/ASSERTIONS-REFERENCE.md` (see below).
 
 ### Adding a new extension
 1. Create a new module under `kotest-extensions/` if the dependency is substantial.
 2. Implement the appropriate extension interface from `io.kotest.core.extensions`.
 3. Consider whether it needs to be registered globally via `AbstractProjectConfig.extensions` or per-spec.
+4. Document usage in `skills/kotest/references/FRAMEWORK-REFERENCE.md` (Extensions section).
 
 ### Adding a new Arb generator
 1. Add to `kotest-property/src/commonMain/` (or `jvmMain` for JVM-specific types).
 2. Extend `Arb<A>` with `edgecase()` and `sample()` implementations.
 3. Consider providing meaningful edge cases for the type.
 4. Implement a `Shrinker<A>` if the type can be meaningfully shrunk.
+5. Add it to the generator tables in `skills/kotest/references/PROPERTY-TESTING-REFERENCE.md`.
+
+### Keeping the user-facing AI skill in sync
+`skills/kotest/` teaches users' AI agents how to write Kotest tests. Agents trust it over their (often 5.x-era)
+training data, so a wrong API name here becomes wrong code in users' projects. Update it in the same PR whenever you:
+- add, rename, deprecate, or remove user-facing API (matchers, spec DSL, config properties, `withXXX` data-test functions, Arbs);
+- change config properties, env vars/system properties, Gradle plugin `kotest { }` options, or artifact names/coordinates;
+- change behaviour that users must know (discovery rules, platform limitations, defaults).
+
+Where things go:
+- `SKILL.md` — short: workflow, writing rules, and the "6.x facts agents commonly get wrong" table. Add a row there when
+  you rename/remove something an agent is likely to still use. Keep detail out of it.
+- `references/*.md` — detail by topic (SETUP, SPEC-STYLES, ASSERTIONS, FRAMEWORK, PROPERTY-TESTING, MIGRATION,
+  KNOWN-ISSUES, KOTEST-DEBUGGING). One home per topic; link rather than duplicate.
+
+Rules:
+- Verify every name, import and signature against source, not docs or memory. Snippets must compile: include
+  non-obvious imports, use only public API (not test-source helpers), 3-space indentation.
+- To compile-check snippets, drop them in a scratch file in a JVM test source set (e.g.
+  `kotest-property/kotest-property-permutations/src/jvmTest`, which has engine + assertions-core + property), run
+  `compileTestKotlinJvm -PjvmOnly=true`, then delete the file.
+- Gradle does not forward `-D` to test JVMs; show `KOTEST_*` env vars or `systemProperty(...)` on the test task.
+- Note the version when behaviour differs between releases users are likely on (e.g. "6.2+", "≤ 6.2.6").
+- Don't bump `.claude-plugin/*.json` versions — `release_all.yml` does that on release.
+- Mirror user-facing doc fixes into `documentation/docs/` (and the latest `versioned_docs/` if it applies).

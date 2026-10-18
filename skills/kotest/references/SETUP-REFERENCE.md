@@ -1,248 +1,138 @@
-e# Kotest Setup Reference
+# Kotest Setup Reference
 
-Platform-specific dependency and configuration setup for Kotest 6.x.
+Platform-specific dependency setup for Kotest 6.x. For project config, the `kotest {}` Gradle extension, tags and
+extensions see [FRAMEWORK-REFERENCE.md](FRAMEWORK-REFERENCE.md).
 
 ---
 
 ## Version Requirements
 
-| Component | Minimum        | Recommended | Notes                                     |
-|-----------|----------------|-------------|-------------------------------------------|
-| Kotlin    | 2.2            | 2.2+        | Required for Kotest 6.x                   |
-| JDK       | 11             | 17+         | JDK 11 is minimum for Kotest 6.x          |
-| Gradle    | 8.0            | 8.5+        | For Kotlin DSL and JUnit Platform support |
-| KSP       | Matches Kotlin | —           | Required for JS/Native/WasmJS targets     |
+| Component | Minimum | Notes                                                                       |
+|-----------|---------|-----------------------------------------------------------------------------|
+| Kotlin    | 2.2     | Kotest 6.x is compiled with language version 2.2                           |
+| JDK       | 11      |                                                                             |
+| KSP       | —       | Required for JS / WasmJS / WasmWASI / Native. KSP 2.3+ is versioned independently of Kotlin; use a current KSP2 release |
 
 ---
 
-## JVM Setup
-
-### Gradle (Kotlin DSL)
+## JVM
 
 ```kotlin
 // build.gradle.kts
 plugins {
-  kotlin("jvm") version "<kotlin-version>"
-  id("io.kotest") version "<kotest-version>"  // optional, enhances IDE integration
+   kotlin("jvm") version "<kotlin-version>"
+   id("io.kotest") version "<kotest-version>" // optional: enhanced IntelliJ support, power-assert, kotest {} options
 }
 
 dependencies {
-  // Test framework (required)
-  testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
-
-  // Assertions (recommended)
-  testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
-
-  // Property testing (optional)
-  testImplementation("io.kotest:kotest-property:<kotest-version>")
+   testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
+   testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
+   testImplementation("io.kotest:kotest-property:<kotest-version>") // optional
 }
 
 tasks.withType<Test>().configureEach {
-  useJUnitPlatform()
+   useJUnitPlatform()
 }
 ```
 
-### Gradle (Groovy DSL)
+Groovy DSL is identical apart from syntax (`id 'io.kotest' version '...'`, `tasks.withType(Test).configureEach { useJUnitPlatform() }`).
 
-```groovy
-// build.gradle
-plugins {
-  id 'org.jetbrains.kotlin.jvm' version '<kotlin-version>'
-  id 'io.kotest' version '<kotest-version>'
-}
-
-dependencies {
-  testImplementation 'io.kotest:kotest-runner-junit5:<kotest-version>'
-  testImplementation 'io.kotest:kotest-assertions-core:<kotest-version>'
-  testImplementation 'io.kotest:kotest-property:<kotest-version>'
-}
-
-tasks.withType(Test).configureEach {
-  useJUnitPlatform()
-}
-```
-
-### Maven
-
-```xml
-
-<dependencies>
-  <dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-runner-junit5-jvm</artifactId>
-    <version>${kotest.version}</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-assertions-core-jvm</artifactId>
-    <version>${kotest.version}</version>
-    <scope>test</scope>
-  </dependency>
-  <dependency>
-    <groupId>io.kotest</groupId>
-    <artifactId>kotest-property-jvm</artifactId>
-    <version>${kotest.version}</version>
-    <scope>test</scope>
-  </dependency>
-</dependencies>
-```
+**Maven**: use the `-jvm` artifacts (`kotest-runner-junit5-jvm`, `kotest-assertions-core-jvm`, `kotest-property-jvm`)
+with `<scope>test</scope>`; Surefire runs them via JUnit Platform.
 
 ---
 
-## Kotlin/JS Setup
+## Kotlin Multiplatform (JVM + JS + Wasm + Native)
+
+The standalone `kotlin("js")` plugin is deprecated and there is no `kotlin("wasm-js")` plugin — always use
+`kotlin("multiplatform")` and declare targets inside it.
 
 ```kotlin
 plugins {
-  kotlin("js") version "<kotlin-version>"
-  id("com.google.devtools.ksp") version "<ksp-version>"
-  id("io.kotest") version "<kotest-version>"
+   kotlin("multiplatform") version "<kotlin-version>"
+   id("com.google.devtools.ksp") version "<ksp-version>" // apply KSP before Kotest
+   id("io.kotest") version "<kotest-version>"
 }
 
 kotlin {
-  js {
-    browser()  // or nodejs()
-  }
-  sourceSets {
-    val jsTest by getting {
-      dependencies {
-        implementation("io.kotest:kotest-framework-engine:<kotest-version>")
-        implementation("io.kotest:kotest-assertions-core:<kotest-version>")
+   jvm()
+   js { browser(); nodejs() }
+   wasmJs { browser() }
+   linuxX64()
+   macosArm64()
+   iosSimulatorArm64()
+
+   sourceSets {
+      commonTest {
+         dependencies {
+            // kotest.kotestVersion (Gradle plugin 6.2.6+) avoids repeating the version
+            implementation("io.kotest:kotest-framework-engine:${kotest.kotestVersion.get()}")
+            implementation("io.kotest:kotest-assertions-core:${kotest.kotestVersion.get()}")
+            implementation("io.kotest:kotest-property:${kotest.kotestVersion.get()}")
+         }
       }
-    }
-  }
-}
-```
-
-**Run**: `./gradlew jsTest`
-
----
-
-## Kotlin/WasmJS Setup
-
-```kotlin
-plugins {
-  kotlin("wasm-js") version "<kotlin-version>"
-  id("com.google.devtools.ksp") version "<ksp-version>"
-  id("io.kotest") version "<kotest-version>"
-}
-
-kotlin {
-  wasmJs {
-    browser()
-  }
-  sourceSets {
-    val wasmJsTest by getting {
-      dependencies {
-        implementation("io.kotest:kotest-framework-engine:<kotest-version>")
-        implementation("io.kotest:kotest-assertions-core:<kotest-version>")
+      // the JVM target still runs through JUnit Platform
+      jvmTest {
+         dependencies {
+            implementation("io.kotest:kotest-runner-junit5:${kotest.kotestVersion.get()}")
+         }
       }
-    }
-  }
-}
-```
-
-**Run**: `./gradlew wasmJsTest`
-
----
-
-## Kotlin/Native Setup
-
-```kotlin
-plugins {
-  kotlin("multiplatform") version "<kotlin-version>"
-  id("com.google.devtools.ksp") version "<ksp-version>"
-  id("io.kotest") version "<kotest-version>"
-}
-
-kotlin {
-  linuxX64()        // or any supported native target
-  macosX64()
-  macosArm64()
-  mingwX64()
-
-  sourceSets {
-    val commonTest by getting {
-      dependencies {
-        implementation("io.kotest:kotest-framework-engine:<kotest-version>")
-        implementation("io.kotest:kotest-assertions-core:<kotest-version>")
-      }
-    }
-  }
-}
-```
-
-**Run**: `./gradlew linuxX64Test` (or the appropriate target test task)
-
----
-
-## Kotlin Multiplatform (Full)
-
-```kotlin
-plugins {
-  kotlin("multiplatform") version "<kotlin-version>"
-  id("com.google.devtools.ksp") version "<ksp-version>"
-  id("io.kotest") version "<kotest-version>"
-}
-
-kotlin {
-  jvm()
-  js { browser(); nodejs() }
-  wasmJs { browser() }
-  linuxX64()
-  macosArm64()
-  iosArm64()
-  iosSimulatorArm64()
-
-  sourceSets {
-    commonTest {
-      dependencies {
-        implementation("io.kotest:kotest-framework-engine:<kotest-version>")
-        implementation("io.kotest:kotest-assertions-core:<kotest-version>")
-        implementation("io.kotest:kotest-property:<kotest-version>")
-      }
-    }
-    // JVM gets the JUnit5 runner additionally
-    jvmTest {
-      dependencies {
-        implementation("io.kotest:kotest-runner-junit5:<kotest-version>")
-      }
-    }
-  }
+   }
 }
 
 tasks.withType<Test>().configureEach {
-  useJUnitPlatform()
+   useJUnitPlatform()
 }
 ```
+
+| Target   | Test task                                    |
+|----------|----------------------------------------------|
+| JVM      | `jvmTest`                                    |
+| JS       | `jsTest` (or `jsNodeTest` / `jsBrowserTest`) |
+| WasmJS   | `wasmJsTest`                                 |
+| Native   | `<target>Test`, e.g. `linuxX64Test`, `macosArm64Test` |
+| All      | `check` / `allTests`                         |
+
+A JS-only, Wasm-only or Native-only project is the same build with just that target and no `jvmTest` block.
 
 ---
 
-## Android Setup
+## Android
 
-### Unit Tests (JVM-based, `test/`)
+### Unit (host) tests — `src/test`
 
 ```kotlin
-dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
-  testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
+android.testOptions {
+   unitTests.all { it.useJUnitPlatform() }
 }
 
-tasks.withType<Test>().configureEach {
-  useJUnitPlatform()
+dependencies {
+   testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
+   testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
 }
 ```
 
-### Instrumented Tests (`androidTest/`)
+### Instrumented (device) tests — `src/androidTest`
 
 ```kotlin
 dependencies {
-  androidTestImplementation("io.kotest:kotest-runner-junit4:<kotest-version>")
-  androidTestImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
+   androidTestImplementation("io.kotest:kotest-runner-junit4:<kotest-version>")
+   androidTestImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
 }
 ```
 
-Use `JUnit4` runner for instrumented tests since Android's test infrastructure is built on JUnit 4.
+Every instrumented spec must be annotated:
+
+```kotlin
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.runner.junit4.KotestTestRunner
+import org.junit.runner.RunWith
+
+@RunWith(KotestTestRunner::class)
+class MyDeviceTest : FreeSpec({
+   "runs on device" { }
+})
+```
 
 ---
 
@@ -258,7 +148,6 @@ kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5", version.ref 
 kotest-runner-junit4 = { module = "io.kotest:kotest-runner-junit4", version.ref = "kotest" }
 kotest-framework-engine = { module = "io.kotest:kotest-framework-engine", version.ref = "kotest" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core", version.ref = "kotest" }
-kotest-assertions-json = { module = "io.kotest:kotest-assertions-json", version.ref = "kotest" }
 kotest-property = { module = "io.kotest:kotest-property", version.ref = "kotest" }
 
 [plugins]
@@ -266,50 +155,40 @@ kotest = { id = "io.kotest", version.ref = "kotest" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 ```
 
----
-
-## Assertion Extension Modules
-
-| Module             | Artifact                             | Platform |
-|--------------------|--------------------------------------|----------|
-| Core matchers      | `kotest-assertions-core`             | All      |
-| JSON matchers      | `kotest-assertions-json`             | All      |
-| Ktor matchers      | `kotest-assertions-ktor`             | JVM      |
-| Arrow matchers     | `kotest-assertions-arrow`            | All      |
-| kotlinx-datetime   | `kotest-assertions-kotlinx-datetime` | All      |
-| Konform validation | `kotest-assertions-konform`          | All      |
-| Compiler testing   | `kotest-assertions-compiler`         | JVM      |
+Use `alias(libs.plugins.kotest)` / `alias(libs.plugins.ksp)` in `plugins {}`. Keep every Kotest artifact on the same version.
 
 ---
 
-## Extension Modules
+## Modules
 
-| Extension      | Artifact                           | Description                     |
-|----------------|------------------------------------|---------------------------------|
-| Spring         | `kotest-extensions-spring`         | Spring test context integration |
-| Testcontainers | `kotest-extensions-testcontainers` | Testcontainers lifecycle        |
-| Koin           | `kotest-extensions-koin`           | Koin DI integration             |
-| Allure         | `kotest-extensions-allure`         | Allure reporting                |
-| WireMock       | `kotest-extensions-wiremock`       | WireMock server integration     |
-| MockServer     | `kotest-extensions-mockserver`     | MockServer integration          |
-| Blockhound     | `kotest-extensions-blockhound`     | Blocking call detection         |
-| JUnit XML      | `kotest-extensions-junitxml`       | JUnit XML report output         |
-| HTML Reporter  | `kotest-extensions-htmlreporter`   | HTML test reports               |
+Assertion modules are listed in [ASSERTIONS-REFERENCE.md](ASSERTIONS-REFERENCE.md#modules); property modules in
+[PROPERTY-TESTING-REFERENCE.md](PROPERTY-TESTING-REFERENCE.md). Extension modules (all JVM, group `io.kotest`):
+
+| Extension      | Artifact                                                  |
+|----------------|-----------------------------------------------------------|
+| Spring         | `kotest-extensions-spring`                                |
+| Testcontainers | `kotest-extensions-testcontainers`                        |
+| Koin           | `kotest-extensions-koin`                                  |
+| Allure         | `kotest-extensions-allure`                                |
+| WireMock       | `kotest-extensions-wiremock`                              |
+| MockServer     | `kotest-extensions-mockserver`                            |
+| Blockhound     | `kotest-extensions-blockhound`                            |
+| HTML reporter  | `kotest-extensions-htmlreporter`                          |
+| JUnit XML      | `kotest-extensions-junitxml` (deprecated 6.2 — use Gradle's built-in XML in `build/test-results/`) |
+| Others         | `kotest-extensions-pitest`, `-decoroutinator`, `-now`     |
+
+Usage: [FRAMEWORK-REFERENCE.md#extensions](FRAMEWORK-REFERENCE.md#extensions).
 
 ---
 
 ## Platform Feature Matrix
 
-| Feature                      | JVM             | JS | WasmJS | Native |
-|------------------------------|-----------------|----|--------|--------|
-| All spec styles              | ✅               | ✅  | ✅      | ✅      |
-| All assertions               | ✅               | ✅  | ✅      | ✅      |
-| Property testing             | ✅               | ✅  | ✅      | ✅      |
-| Data-driven testing          | ✅               | ✅  | ✅      | ✅      |
-| ProjectConfig auto-discovery | ✅               | ❌  | ❌      | ❌      |
-| Annotation-based config      | ✅               | ❌  | ❌      | ❌      |
-| Classpath scanning           | ❌ (removed 6.0) | ❌  | ❌      | ❌      |
-| Coroutine debug probes       | ✅               | ❌  | ❌      | ❌      |
-| Blocking test mode           | ✅               | ❌  | ❌      | ❌      |
-| Extensions (Spring, etc.)    | ✅               | ❌  | ❌      | ❌      |
-
+| Feature                                  | JVM | JS / WasmJS | Native | WasmWASI |
+|------------------------------------------|-----|-------------|--------|----------|
+| All spec styles, assertions, data tests  | ✅   | ✅           | ✅      | ✅        |
+| Property testing                         | ✅   | ✅           | ✅      | ✅        |
+| ProjectConfig discovery                  | fixed FQN / sysprop / common package | anywhere (KSP) | anywhere (KSP), must be a `class` | anywhere (KSP) |
+| Annotation-based config (`@Tags`, `@EnabledIf`, `@ApplyExtension` …) | ✅ | ❌ | ❌ | ❌ |
+| Container data tests without a leaf      | ✅   | ❌           | ❌      | ❌        |
+| `blockingTest`, coroutine debug probes   | ✅   | ❌           | ❌      | ❌        |
+| Third-party extension modules            | ✅   | ❌           | ❌      | ❌        |

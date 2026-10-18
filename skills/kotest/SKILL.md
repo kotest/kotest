@@ -1,628 +1,170 @@
 ---
 name: kotest
 description: >
-  Helps write, migrate, and improve Kotlin tests using the Kotest testing framework.
-  Covers test spec styles (FunSpec, DescribeSpec, BehaviorSpec, etc.), assertions
-  (shouldBe, matchers, soft assertions), property-based testing (Arb, forAll, checkAll),
-  data-driven testing, lifecycle hooks, extensions, coroutine testing, project
-  configuration, and multiplatform setup. Use when the user mentions Kotest, kotest
-  matchers, property testing with Arb, Kotest spec styles, shouldBe assertions,
-  Kotlin test framework, or migrating from JUnit/TestNG/Spek to Kotest.
+  Write, review, migrate, and debug Kotlin tests with Kotest 6.x: spec styles (FunSpec, DescribeSpec,
+  BehaviorSpec, StringSpec, ...), matchers (shouldBe, shouldThrow, assertSoftly, eventually), data-driven
+  tests (withTests/withData), property-based testing (Arb, checkAll, forAll, permutations), lifecycle hooks,
+  extensions (Spring, Testcontainers, Koin), ProjectConfig, coroutine/virtual-time testing, tags, and
+  Kotlin Multiplatform setup. Use when a project depends on io.kotest, when editing *Spec/*Test.kt files that
+  import io.kotest, when the user mentions Kotest, kotest matchers, Arb or property testing in Kotlin, or
+  when migrating from JUnit 4/5, TestNG, or Spek to Kotest.
 license: Apache-2.0
 metadata:
   author: Kotest Team
-  version: "1.0.0"
 ---
 
-# Kotest — Kotlin Testing Framework
+# Kotest
 
-Kotest is a flexible and comprehensive testing framework for Kotlin with multiplatform support.
-It is split into three standalone sub-projects that can be used independently or together:
+This skill covers Kotest **6.2**. Kotest has three parts that can be used independently: the test
+framework, the assertions library (which works under any framework, including JUnit), and property testing.
 
-1. **Test Framework** — spec-based test definitions with 9 styles
-2. **Assertions Library** — rich matchers and assertion utilities
-3. **Property Testing** — generator-based property test support
+## Step 0: Read the Project Before Writing Anything
 
-## Step 0: Analyze the Project
+1. **Find the Kotest version** in `build.gradle.kts` or `gradle/libs.versions.toml`.
+   - 6.x needs Kotlin 2.2+ and JDK 11+.
+   - On **5.x** many APIs below differ, so check the project's existing tests before using them.
+2. **Find the targets**: JVM-only, Android, or KMP (`kotlin("multiplatform")`, `commonTest`).
+3. **Match the existing tests**: same spec style, package (`io.kotest` or `com.sksamuel.kotest` in old code),
+   indentation, and helpers. Don't introduce a second spec style into a module.
+4. Look for an existing `ProjectConfig` / `PackageConfig` and any registered extensions.
 
-Before writing tests or migrating an existing test suite, understand the project:
+With Bash available, `scripts/analyze-project.sh [dir]` prints a summary of all of this.
 
-1. Read `build.gradle.kts` (or `.gradle`) to identify the build system and existing test dependencies
-2. Check if the project uses a Gradle version catalog (`gradle/libs.versions.toml`)
-3. Determine the **Kotlin version** — Kotest 6.x requires Kotlin 2.2+
-4. Determine the **target platforms** — JVM, JS, WasmJS, Native, Android, or Multiplatform
-5. Check for existing test frameworks (JUnit 4/5, TestNG, Spek) that may need migration
-6. Look for the Kotest IntelliJ plugin configuration (recommended for all JVM Kotest users)
-7. Check for an existing `ProjectConfig` class (used for global test settings)
+## Pick the Path
 
-If Bash is available, run `scripts/analyze-project.sh` from this skill's directory to get a
-structured summary.
+| Task                                                    | Read                                                                         |
+|---------------------------------------------------------|------------------------------------------------------------------------------|
+| New project / add Kotest to a build                     | [SETUP-REFERENCE.md](references/SETUP-REFERENCE.md)                          |
+| Write tests in a style                                  | [SPEC-STYLES.md](references/SPEC-STYLES.md)                                  |
+| Choose a matcher, custom matchers, soft assertions      | [ASSERTIONS-REFERENCE.md](references/ASSERTIONS-REFERENCE.md)                |
+| Data-driven tests, config, coroutines, tags, extensions | [FRAMEWORK-REFERENCE.md](references/FRAMEWORK-REFERENCE.md)                  |
+| Property-based testing                                  | [PROPERTY-TESTING-REFERENCE.md](references/PROPERTY-TESTING-REFERENCE.md)    |
+| Migrate from JUnit / TestNG / Spek                      | [MIGRATION-GUIDE.md](references/MIGRATION-GUIDE.md)                          |
+| Tests not running, config ignored, hangs                | [KOTEST-DEBUGGING.md](references/KOTEST-DEBUGGING.md), [KNOWN-ISSUES.md](references/KNOWN-ISSUES.md) |
 
-### Classify the Task
+Load only the reference you need.
 
-| User Intent                                                 | Path                                |
-|-------------------------------------------------------------|-------------------------------------|
-| Start from scratch — new Kotest project                     | **Path A** — Setup & First Tests    |
-| Migrate from JUnit/TestNG/Spek                              | **Path B** — Migration              |
-| Add assertions to existing tests (any framework)            | **Path C** — Assertions Only        |
-| Add property-based testing                                  | **Path D** — Property Testing       |
-| Configure advanced features (concurrency, extensions, tags) | **Path E** — Advanced Configuration |
-| Writing tests for Kotlin Multiplatform                      | **Path F** — KMP Testing            |
-| Debugging Kotest Issues                                     | **Path G** - Kotest Troubleshooting |
-
-## Path A: Setup & First Tests
-
-### Step 1: Add Dependencies
-
-See [references/SETUP-REFERENCE.md](references/SETUP-REFERENCE.md) for full platform-specific setup.
-
-#### JVM (Gradle Kotlin DSL)
+## Minimal Setup
 
 ```kotlin
-// build.gradle.kts
-plugins {
-  id("io.kotest") version "<kotest-version>"  // optional but recommended
-}
-
+// JVM — build.gradle.kts
 dependencies {
-  testImplementation("io.kotest:kotest-runner-junit5:<kotest-version>")
-  testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
-  testImplementation("io.kotest:kotest-property:<kotest-version>")  // optional
+   testImplementation("io.kotest:kotest-runner-junit5:<version>")
+   testImplementation("io.kotest:kotest-assertions-core:<version>")
+   testImplementation("io.kotest:kotest-property:<version>")   // if needed
 }
-
-tasks.withType<Test>().configureEach {
-  useJUnitPlatform()
-}
+tasks.withType<Test>().configureEach { useJUnitPlatform() }
 ```
 
-#### Multiplatform
+For KMP, apply `id("com.google.devtools.ksp")` and `id("io.kotest")`, then put `kotest-framework-engine` and
+`kotest-assertions-core` in `commonTest`. Add `kotest-runner-junit5` and `useJUnitPlatform()` for the JVM target.
+See SETUP-REFERENCE for JS, Wasm, Native, and Android.
+
+## Writing Good Kotest Tests
 
 ```kotlin
-// build.gradle.kts
-plugins {
-  id("com.google.devtools.ksp") version "<ksp-version>"
-  id("io.kotest") version "<kotest-version>"
-}
-
-kotlin {
-  sourceSets {
-    commonTest {
-      dependencies {
-        implementation("io.kotest:kotest-framework-engine:<kotest-version>")
-        implementation("io.kotest:kotest-assertions-core:<kotest-version>")
-      }
-    }
-  }
-}
-```
-
-### Step 2: Choose a Spec Style
-
-Kotest offers 9 spec styles. All are functionally equivalent — pick one that fits the team:
-
-| Style          | Best For                              | Syntax                            |
-|----------------|---------------------------------------|-----------------------------------|
-| `FunSpec`      | General purpose (recommended default) | `test("name") { }`                |
-| `DescribeSpec` | JS/Ruby developers                    | `describe / it`                   |
-| `BehaviorSpec` | BDD / Gherkin                         | `given / when / then`             |
-| `StringSpec`   | Minimal boilerplate                   | `"name" { }`                      |
-| `FreeSpec`     | Arbitrary nesting depth               | `"name" - { } / "name" { }`       |
-| `WordSpec`     | ScalaTest users                       | `"subject" should { "verb" { } }` |
-| `FeatureSpec`  | Cucumber-style                        | `feature / scenario`              |
-| `ExpectSpec`   | Kotest original                       | `expect("name") { }`              |
-| `ShouldSpec`   | Kotest original                       | `should("name") { }`              |
-
-See [references/SPEC-STYLES.md](references/SPEC-STYLES.md) for complete examples of each style.
-
-### Step 3: Write Your First Test
-
-```kotlin
+import io.kotest.assertions.assertSoftly
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.datatest.withTests
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
-import io.kotest.matchers.string.shouldHaveLength
+import io.kotest.matchers.string.shouldContain
+import io.kotest.matchers.types.shouldBeInstanceOf
 
-class MyFirstTest : FunSpec({
-  test("string length") {
-    "hello".shouldHaveLength(5)
-  }
+class OrderServiceTest : FunSpec({
+   val repo = InMemoryOrderRepo()
+   val service = OrderService(repo)
 
-  context("arithmetic") {
-    test("addition") {
-      1 + 1 shouldBe 2
-    }
-    test("subtraction") {
-      10 - 3 shouldBe 7
-    }
-  }
+   beforeEach { repo.clear() }
+
+   context("placing an order") {
+      test("stores the order with its lines") {
+         val order = service.place(cart("apple", "pear"))
+         assertSoftly(repo.find(order.id)) {
+            status shouldBe Status.PLACED
+            lines.map { it.sku } shouldContainExactly listOf("apple", "pear")
+         }
+      }
+
+      test("rejects an empty cart") {
+         val e = shouldThrow<IllegalArgumentException> { service.place(cart()) }
+         e.message shouldContain "empty"
+      }
+
+      withTests(-1, 0) { qty ->
+         shouldThrow<IllegalArgumentException> { service.place(cart("apple" to qty)) }
+      }
+   }
+
+   test("returns a typed result") {
+      val result = service.lookup("A-1").shouldBeInstanceOf<Found>()   // smart-casts and returns Found
+      withClue("lookup A-1") { result.order.id shouldBe "A-1" }
+   }
 })
 ```
 
-### Step 4: Run Tests
+Rules:
 
-- **Gradle**: `./gradlew test`
-- **IntelliJ**: Click the gutter icon next to the test class or individual test
-- **Specific test**: `./gradlew test --tests "com.example.MyFirstTest"`
+- **Use the most specific matcher.** Write `list.shouldContain(x)`, `str.shouldStartWith("a")`, `n shouldBeGreaterThan 0`
+  rather than `(cond) shouldBe true`, so the failure message carries the actual values.
+- **Use the returned value from the matcher.** `shouldThrow`, `shouldNotBeNull`, `shouldBeInstanceOf`,
+  `shouldBeSingle`, and `shouldBeSuccess` return their subject, so you don't need `!!` or casts.
+- **Test bodies are `suspend`.** Never wrap them in `runBlocking`. For delays, use `coroutineTestScope = true` and
+  virtual time.
+- **Wait with `eventually`, not `Thread.sleep`.** Write `eventually(5.seconds) { ... }` to poll for an asynchronous
+  result, and `continually` to assert that something stays true.
+- **Group related assertions with `assertSoftly`** so one run reports every failure. Use `withClue` or `asClue` to add context.
+- **Use data-driven tests instead of loops or copy-paste.** In FunSpec and FreeSpec use `withTests` for leaf
+  tests and `withContexts` for groups. Each style has its own variant; see FRAMEWORK-REFERENCE.
+- **Use property tests for invariants.** `checkAll(Arb.int(), Arb.int()) { a, b -> (a + b) shouldBe (b + a) }`.
+- **Make tests independent.** If shared mutable spec fields leak between tests, reset them in `beforeEach` or use
+  `isolationMode = IsolationMode.InstancePerRoot`.
+- **Name tests by behaviour**, for example `"rejects an empty cart"`, not `"test1"`. Names must be unique within a scope.
 
-## Path B: Migration from JUnit / TestNG / Spek
+## 6.x Facts Agents Commonly Get Wrong
 
-See [references/MIGRATION-GUIDE.md](references/MIGRATION-GUIDE.md) for complete migration mappings.
+| Wrong (5.x / hallucinated)                              | Correct (6.2)                                                                    |
+|---------------------------------------------------------|----------------------------------------------------------------------------------|
+| `kotest-framework-datatest` dependency                  | Built into the engine; `import io.kotest.datatest.*`                             |
+| `withData` as the only data-test function               | `withTests` / `withContexts` / per-style variants (`withIts`, `withShoulds`, …)  |
+| `specConcurrencyMode`, `testConcurrencyMode`, `parallelism` | `specExecutionMode = SpecExecutionMode.Concurrent`, `testExecutionMode` (JVM only) |
+| `./gradlew test -Dkotest.tags=...`                      | `KOTEST_TAGS="A & !B" ./gradlew test`, or `systemProperty(...)` on the Test task  |
+| `@AutoScan` extensions                                  | Removed; register via `extension(...)` or `ProjectConfig.extensions`             |
+| `IsolationMode.InstancePerTest` / `InstancePerLeaf`     | `IsolationMode.InstancePerRoot`                                                  |
+| `TestContainerExtension(...)` / `ContainerExtension(...)` | `install(TestContainerSpecExtension(container))` (old ones removed in 6.3)     |
+| `forAll(row(...))` table tests from core               | `kotest-assertions-table` (`io.kotest.data`), or prefer data-driven tests        |
+| `import io.kotest.assertions.nondeterministic.retry`    | `import io.kotest.assertions.retry`; `retry(maxRetry, timeout, delay)`           |
+| `object ProjectConfig` everywhere                       | `class ProjectConfig : AbstractProjectConfig()` (Native requires a class)        |
+| `kotest-assertions-api`                                 | `kotest-assertions-shared`                                                       |
+| Constructor-injected Spring spec using `extension(SpringExtension())` | `@ApplyExtension(SpringExtension::class)` on the class            |
 
-### JUnit 5 → Kotest Quick Mapping
+## Recent Additions Worth Using (6.1 – 6.2)
 
-| JUnit 5               | Kotest (FunSpec)                                      |
-|-----------------------|-------------------------------------------------------|
-| `@Test fun myTest()`  | `test("my test") { }`                                 |
-| `@Nested inner class` | `context("group") { }`                                |
-| `@BeforeEach`         | `beforeEach { }`                                      |
-| `@AfterEach`          | `afterEach { }`                                       |
-| `@BeforeAll`          | `beforeSpec { }`                                      |
-| `@AfterAll`           | `afterSpec { }`                                       |
-| `@Disabled`           | `xtest("disabled") { }` or `.config(enabled = false)` |
-| `@Tag("slow")`        | `.config(tags = setOf(Slow))`                         |
-| `assertEquals(a, b)`  | `a shouldBe b`                                        |
-| `assertTrue(x)`       | `x.shouldBeTrue()`                                    |
-| `assertThrows<E> { }` | `shouldThrow<E> { }`                                  |
-| `@ParameterizedTest`  | `withTests(...)` (data-driven testing)                |
-| `@RepeatedTest(n)`    | `.config(invocations = n)`                            |
+- `a shouldEqual b` (`io.kotest.matchers.equals`): a type-safe `shouldBe`, so `1 shouldEqual "1"` doesn't compile.
+- `actual withEqs { register<BigDecimal>(myEq) } shouldBe expected` (`io.kotest.assertions.eq`), where `myEq` is
+  your own `Eq<BigDecimal>`: per-assertion equality overrides that apply recursively into collections and data
+  classes, and are safe under concurrency (unlike the global `DefaultEqResolver.register`).
+- `shouldBeEqualUsingFields { excludedProperties = setOf(Foo::updatedAt); expected }` (JVM): field-by-field diffs.
+- `list.shouldBeSingle()` returns the element; `result.shouldBeFailure<IOException> { }`; `x.shouldBeInstanceOf(Foo::class)` returns `Foo`.
+- `DefaultTestConfig`, `PackageConfig`, and `failfast` give layered configuration.
+- `coroutineTestScope = true` with `testCoroutineScheduler` gives virtual time. On Kotest ≤ 6.2.6 also add
+  `kotlinx-coroutines-test` to test deps to call scheduler methods.
+- Permutations DSL (`kotest-property-permutations`, experimental) is a property-testing alternative.
+- In the Gradle plugin `kotest { }` block: `kotestVersion` (aligns artifact versions), `enablePowerAssert`, and `alwaysRerunTests`.
+- Custom spec styles via `AbstractSpec` + `@TestRunnable`.
 
-### Migration Steps
+## Run and Verify
 
-1. **Keep JUnit on the classpath** — Kotest JVM runner uses JUnit Platform under the hood
-2. **Migrate one test class at a time** — JUnit and Kotest tests can coexist
-3. **Replace the class** — change `class MyTest` to `class MyTest : FunSpec({})` (or your chosen style)
-4. **Move `@Test` methods** into `test("name") { }` blocks inside the `init` lambda
-5. **Replace assertions** — `assertEquals` → `shouldBe`, `assertTrue` → `shouldBeTrue()`, etc.
-6. **Replace lifecycle** — `@BeforeEach` → `beforeEach { }`, etc.
-7. **Replace parameterized tests** — `@ParameterizedTest` → `withTests(...)` data-driven testing
-8. **Remove JUnit imports** — all Kotest imports are under `io.kotest.*`
-
-## Path C: Assertions Only
-
-Kotest assertions can be used with **any** test framework (JUnit, TestNG, etc.).
-
-### Setup (standalone)
-
-```kotlin
-testImplementation("io.kotest:kotest-assertions-core:<kotest-version>")
+```bash
+./gradlew test                                          # JVM
+./gradlew test --tests "com.example.OrderServiceTest"   # one spec
+./gradlew allTests                                      # KMP: every target (or jvmTest, jsTest, linuxX64Test, ...)
+KOTEST_DEBUG=true ./gradlew test --info                 # engine debug output (see KOTEST-DEBUGGING)
 ```
 
-### Core Assertions
-
-```kotlin
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
-import io.kotest.matchers.string.*
-import io.kotest.matchers.collections.*
-import io.kotest.matchers.maps.*
-
-// Equality
-result shouldBe expected
-result shouldNotBe unexpected
-
-// Strings
-name.shouldStartWith("J")
-name.shouldContain("oh")
-name.shouldHaveLength(4)
-
-// Collections
-list.shouldContain("a")
-list.shouldContainExactly("a", "b", "c")
-list.shouldHaveSize(3)
-list.shouldBeSorted()
-
-// Maps
-map.shouldContainKey("name")
-map.shouldContainValue("John")
-map.shouldContain("name", "John")
-
-// Types
-obj.shouldBeInstanceOf<String>()
-obj.shouldBeNull()
-nullable.shouldNotBeNull()
-
-// Exceptions
-shouldThrow<IllegalArgumentException> {
-  riskyOperation()
-}
-```
-
-### Soft Assertions
-
-Collect all assertion failures instead of stopping at the first:
-
-```kotlin
-assertSoftly {
-  name shouldBe "John"
-  age shouldBe 30
-  email.shouldContain("@")
-}
-// Reports ALL failures, not just the first
-```
-
-### Inspectors
-
-Test elements in collections:
-
-```kotlin
-val people = listOf(Person("Alice", 30), Person("Bob", 25), Person("Charlie", 35))
-
-people.forAll { it.age shouldBeGreaterThan (0) }
-people.forNone { it.name.shouldBeEmpty() }
-people.forAtLeast(2) { it.age shouldBeGreaterThan (25) }
-people.forExactly(1) { it.name shouldBe "Bob" }
-```
-
-### Custom Matchers
-
-```kotlin
-fun beValid() = Matcher<Email> { value ->
-  MatcherResult(
-    value.isValid(),
-    { "expected $value to be a valid email" },
-    { "expected $value to not be a valid email" }
-  )
-}
-
-// Usage:
-email should beValid()
-email.shouldBeValid() // with extension function
-```
-
-See [references/ASSERTIONS-REFERENCE.md](references/ASSERTIONS-REFERENCE.md) for the complete matcher catalog.
-
-## Path D: Property Testing
-
-Property testing generates hundreds/thousands of random inputs to harden test coverage.
-
-### Setup
-
-```kotlin
-testImplementation("io.kotest:kotest-property:<kotest-version>")
-```
-
-### Basic Usage
-
-```kotlin
-import io.kotest.property.forAll
-import io.kotest.property.checkAll
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.*
-
-class PropertyTests : FunSpec({
-  // forAll — return a Boolean
-  test("string concatenation length") {
-    forAll<String, String> { a, b ->
-      (a + b).length == a.length + b.length
-    }
-  }
-
-  // checkAll — use assertions
-  test("absolute value is non-negative") {
-    checkAll<Int> { n ->
-      abs(n) shouldBeGreaterThanOrEqualTo 0
-    }
-  }
-
-  // With specific generators
-  test("adults can vote") {
-    forAll(Arb.int(18..120)) { age ->
-      canVote(age)
-    }
-  }
-})
-```
-
-### Built-in Generators (Arbs)
-
-| Type       | Generator                                                               |
-|------------|-------------------------------------------------------------------------|
-| `Int`      | `Arb.int()`, `Arb.int(range)`, `Arb.positiveInt()`, `Arb.negativeInt()` |
-| `Long`     | `Arb.long()`, `Arb.long(range)`                                         |
-| `Double`   | `Arb.double()`, `Arb.numericDouble()`                                   |
-| `String`   | `Arb.string()`, `Arb.string(size)`, `Arb.email()`, `Arb.uuid()`         |
-| `Boolean`  | `Arb.boolean()`                                                         |
-| `List`     | `Arb.list(elementArb)`, `Arb.list(elementArb, range)`                   |
-| `Set`      | `Arb.set(elementArb)`                                                   |
-| `Map`      | `Arb.map(keyArb, valueArb)`                                             |
-| `Enum`     | `Arb.enum<MyEnum>()`                                                    |
-| `Nullable` | `arb.orNull()`                                                          |
-| `Pair`     | `Arb.pair(arbA, arbB)`                                                  |
-| Custom     | `Arb.bind(arb1, arb2, ...) { a, b, ... -> MyClass(a, b) }`              |
-
-### Custom Generators
-
-```kotlin
-val personArb = Arb.bind(
-  Arb.string(5..20),
-  Arb.int(1..120),
-  Arb.email()
-) { name, age, email ->
-  Person(name, age, email)
-}
-
-checkAll(personArb) { person ->
-  person.age shouldBeGreaterThan 0
-}
-```
-
-See [references/PROPERTY-TESTING-REFERENCE.md](references/PROPERTY-TESTING-REFERENCE.md) for the full
-generator catalog and advanced patterns.
-
-## Path E: Advanced Configuration
-
-### Project Config
-
-Create a global configuration class:
-
-```kotlin
-// src/test/kotlin/io/kotest/provided/ProjectConfig.kt
-package io.kotest.provided
-
-import io.kotest.core.config.AbstractProjectConfig
-
-object ProjectConfig : AbstractProjectConfig() {
-  // Global assertion mode — fail if no assertions in a test
-  override val assertionMode = AssertionMode.Error
-
-  // Global soft assertions — all tests use assertSoftly
-  override val globalAssertSoftly = true
-
-  // Default timeout for all tests
-  override val timeout = 10.seconds
-
-  // Parallelism
-  override val specConcurrencyMode = SpecConcurrencyMode.Concurrent
-  override val testConcurrencyMode = TestConcurrencyMode.Sequential
-
-  // Global extensions
-  override val extensions = listOf(
-    MyDatabaseExtension(),
-  )
-}
-```
-
-### Lifecycle Hooks
-
-```kotlin
-class DatabaseTest : FunSpec({
-  // Per-test hooks
-  beforeEach { println("Before each test") }
-  afterEach { println("After each test") }
-
-  // Per-spec hooks
-  beforeSpec { println("Before all tests in this spec") }
-  afterSpec { println("After all tests in this spec") }
-
-  // Per-container / per-leaf hooks
-  beforeContainer { println("Before each container test") }
-  afterContainer { println("After each container test") }
-
-  test("my test") { /* ... */ }
-})
-```
-
-### Tags & Filtering
-
-```kotlin
-object Slow : Tag()
-object Database : Tag()
-
-class MyTest : FunSpec({
-  test("slow integration test").config(tags = setOf(Slow, Database)) {
-    // ...
-  }
-})
-
-// Run only specific tags:
-// ./gradlew test -Dkotest.tags="Slow & Database"
-// ./gradlew test -Dkotest.tags="!Slow"  (exclude)
-```
-
-### Isolation Modes
-
-```kotlin
-class StateTest : FunSpec({
-  isolationMode = IsolationMode.InstancePerRoot  // fresh instance per root test
-
-  val counter = AtomicInteger(0)
-
-  test("first") { counter.incrementAndGet() shouldBe 1 }
-  test("second") { counter.incrementAndGet() shouldBe 1 }  // passes! fresh instance
-})
-```
-
-| Mode                       | Behavior                              |
-|----------------------------|---------------------------------------|
-| `SingleInstance` (default) | One spec instance for all tests       |
-| `InstancePerRoot`          | New spec instance per root-level test |
-
-### Coroutine Testing
-
-All Kotest tests run inside coroutines by default:
-
-```kotlin
-class CoroutineTest : FunSpec({
-  test("async operations") {
-    val deferred = async { fetchData() }
-    deferred.await() shouldBe expectedData
-  }
-
-  test("with timeout").config(timeout = 5.seconds) {
-    // will fail if takes longer than 5 seconds
-    longRunningOperation()
-  }
-})
-```
-
-### Non-Deterministic Testing
-
-```kotlin
-// Eventually — retry until passes or timeout
-eventually(5.seconds) {
-  eventStore.getById(id).status shouldBe "COMPLETED"
-}
-
-// Continually — assert remains true for duration
-continually(2.seconds) {
-  server.isHealthy().shouldBeTrue()
-}
-
-// Retry — with custom config
-retry(3, 1.seconds) {
-  api.call() shouldBe success
-}
-```
-
-### Data-Driven Testing
-
-```kotlin
-class ConversionTest : FunSpec({
-  context("celsius to fahrenheit") {
-    withTests(
-      Pair(0, 32),
-      Pair(100, 212),
-      Pair(-40, -40),
-    ) { (celsius, fahrenheit) ->
-      cToF(celsius) shouldBe fahrenheit
-    }
-  }
-})
-```
-
-For data classes with more fields, use `data class` rows:
-
-```kotlin
-data class PythagTriple(val a: Int, val b: Int, val c: Int)
-
-class PythagorasTest : FunSpec({
-  withTests(
-    PythagTriple(3, 4, 5),
-    PythagTriple(5, 12, 13),
-    PythagTriple(8, 15, 17),
-  ) { (a, b, c) ->
-    a * a + b * b shouldBe c * c
-  }
-})
-```
-
-### Extensions
-
-Create reusable test plugins:
-
-```kotlin
-class DatabaseExtension : BeforeSpecListener, AfterSpecListener {
-  override suspend fun beforeSpec(spec: Spec) {
-    Database.start()
-    Database.migrate()
-  }
-  override suspend fun afterSpec(spec: Spec) {
-    Database.stop()
-  }
-}
-
-// Register in a spec
-class MySpec : FunSpec({
-  extension(DatabaseExtension())
-  // tests ...
-})
-
-// Or register globally in ProjectConfig
-object ProjectConfig : AbstractProjectConfig() {
-  override val extensions = listOf(DatabaseExtension())
-}
-```
-
-### AutoClose
-
-Automatically close resources after a spec:
-
-```kotlin
-class ResourceTest : FunSpec({
-  val connection = autoClose(Database.connect())
-
-  test("query") {
-    connection.query("SELECT 1").shouldNotBeNull()
-  }
-  // connection is automatically closed after all tests
-})
-```
-
-## Path F: KMP Testing
-
-See [references/SETUP-REFERENCE.md](references/SETUP-REFERENCE.md) for platform-specific setup.
-
-### Key Points
-
-- **JVM**: Uses `kotest-runner-junit5` + JUnit Platform
-- **JS / WasmJS / Native**: Uses `kotest-framework-engine` + KSP + Kotest Gradle plugin
-- **Android**: Uses `kotest-runner-junit4` for instrumented tests, `kotest-runner-junit5` for unit tests
-- **commonTest**: Tests in `commonTest` run on all targets
-- Non-JVM engines are feature-limited (no annotation-based config, no classpath scanning)
-
-### Common Gotchas
-
-- Tests must be in a class extending a Spec style — top-level functions are not discovered
-- On JS/Native: `@AutoScan` does not work; register extensions explicitly
-- On Native: Data-driven tests require at least one non-data test in the spec
-- Android instrumented tests use JUnit4 runner: `kotest-runner-junit4`
-
-## Path G: Kotest Debugging
-
-See [references/KOTEST-DEBUGGING.md](references/KOTEST-DEBUGGING.md) for the full guide.
-
-### Quick Checklist
-
-1. **Enable debug logging** — set `KOTEST_DEBUG=true` to get verbose engine output
-2. **Collect versions** — Kotest, Kotlin, Gradle, JVM, and target platform
-3. **Capture full output** — `KOTEST_DEBUG=true ./gradlew test 2>&1 | tee kotest-debug.log`
-4. **Check test reports** — `build/reports/tests/test/index.html`
-5. **Isolate the failure** — `./gradlew test --tests "com.example.MyFailingTest"`
-6. **Verify ProjectConfig** — grep debug output for `projectconfig` if config changes have no effect
-7. **Reproduce minimally** — stripped-down spec with no external dependencies
-
-## Verification
-
-After setup or migration, verify with the [checklist](assets/checklist.md). Key checks:
-
-1. `./gradlew test` succeeds with no errors
-2. Tests are discovered and executed (check test report)
-3. IntelliJ shows gutter icons for running individual tests
-4. Assertions produce clear failure messages with diffs
-5. No stale JUnit imports remain (if migrated)
-
-## Common Issues
-
-See [references/KNOWN-ISSUES.md](references/KNOWN-ISSUES.md) for details. Key gotchas:
-
-### Framework Issues
-
-- **Tests not discovered** — ensure `useJUnitPlatform()` is in build config (JVM), or KSP + Kotest plugin applied (KMP)
-- **ProjectConfig not picked up** — must be at `io.kotest.provided.ProjectConfig` or set via system property
-  `kotest.framework.config.fqn`
-- **`@AutoScan` not working** — removed in Kotest 6.0; register extensions explicitly
-- **Coroutine timeout** — use `.config(timeout = ...)` on tests, or `blockingTest = true` for blocking code
-- **InstancePerTest deprecated** — use `InstancePerRoot` instead
-
-### Assertion Issues
-
-- **`assertSoftly` not catching errors** — only works with Kotest's own assertions; wrap others in
-  `shouldNotThrowAny { }`
-- **Matcher not found** — check the correct import; matchers are in type-specific packages like
-  `io.kotest.matchers.string.*`
-
-### Property Testing Issues
-
-- **Test too slow** — reduce iterations: `checkAll(100) { ... }`
-- **Flaky seed** — fix the seed: `checkAll(PropTestConfig(seed = 12345)) { ... }`
-- **Custom type** — use `Arb.bind()` to compose generators for data classes
-
-## Reference Files
-
-- [Setup Reference](references/SETUP-REFERENCE.md) — platform-specific dependency and configuration setup
-- [Spec Styles](references/SPEC-STYLES.md) — complete examples of all 9 spec styles
-- [Assertions Reference](references/ASSERTIONS-REFERENCE.md) — full matcher catalog with examples
-- [Property Testing Reference](references/PROPERTY-TESTING-REFERENCE.md) — generators, config, shrinking
-- [Migration Guide](references/MIGRATION-GUIDE.md) — JUnit 4/5, TestNG, Spek migration mappings
-- [Known Issues](references/KNOWN-ISSUES.md) — common problems and workarounds
-- [Kotest Debugging](references/KOTEST-DEBUGGING.md) — how to gather diagnostic info and reproduce issues
-
+After writing or migrating tests, run them and confirm they were **discovered**: the report shows a non-zero
+count, and "0 tests" usually means a missing `useJUnitPlatform()` or KSP plugin. If tests pass on the first
+run, deliberately break one assertion to check that it can fail. For full setup or migration work, go
+through [assets/checklist.md](assets/checklist.md).
