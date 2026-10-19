@@ -18,6 +18,7 @@ class KotestUnit(val kclass: KClass<out Spec>) : TestUnit {
    override fun getDescription(): Description = Description(kclass.java.name, kclass.java)
 
    override fun execute(rc: ResultCollector) = runBlocking {
+      val description = getDescription()
       val listener = object : AbstractTestEngineListener() {
 
          private val started = mutableSetOf<Descriptor.TestDescriptor>()
@@ -37,6 +38,14 @@ class KotestUnit(val kclass: KClass<out Spec>) : TestUnit {
                   else -> rc.notifyEnd(desc, result.errorOrNull)
                }
             }
+         }
+
+         // a spec that fails outside its tests (for example in beforeSpec, or when it cannot be
+         // instantiated) is only reported here, so pitest must hear about it under the spec itself
+         override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+            val error = result.errorOrNull ?: return
+            rc.notifyStart(description)
+            rc.notifyEnd(description, error)
          }
       }
 
