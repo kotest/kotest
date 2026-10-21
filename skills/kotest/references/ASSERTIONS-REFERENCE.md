@@ -107,7 +107,8 @@ import io.kotest.matchers.result.*
 
 val s: String = obj.shouldBeInstanceOf<String>()  // is T or subtype; returns T and smart-casts
 val s2 = obj shouldBeInstanceOf String::class      // KClass overload, returns T
-obj.shouldBeTypeOf<String>()                      // exactly T
+obj.shouldBeTypeOf<String>()                      // exactly T (runtime class), subclasses fail
+obj.shouldHaveConcreteType<String>()              // alias of shouldBeTypeOf with a more explicit name
 obj shouldBeSameInstanceAs other                  // reference equality
 obj.shouldBeNull()
 val nn = nullable.shouldNotBeNull()               // returns non-null T, smart-casts
