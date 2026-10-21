@@ -14,9 +14,11 @@ private suspend inline fun List<PropTestListener>.around(block: () -> Unit) {
    forEach { it.beforeTest() }
    try {
       block()
-   } finally {
-      forEach { it.afterTest() }
+   } catch (e: Throwable) {
+      afterTestAfterFailure(e)
+      throw e
    }
+   forEach { it.afterTest() }
 }
 
 /**

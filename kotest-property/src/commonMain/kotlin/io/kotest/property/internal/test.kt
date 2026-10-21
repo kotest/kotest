@@ -10,6 +10,7 @@ import io.kotest.property.AfterPropertyContextElement
 import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
+import io.kotest.property.PropTestListener
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
 import io.kotest.property.seed.writeFailedSeed
@@ -67,11 +68,12 @@ internal suspend fun test(
          null
       } catch (e: Throwable) {
          e
-      } finally {
-         // each shrink run is bracketed by the listeners too, so this iteration must be finished first
-         config.listeners.forEach { it.afterTest() }
       }
-      if (error != null) {
+      // each shrink run is bracketed by the listeners too, so this iteration must be finished first
+      if (error == null) {
+         config.listeners.forEach { it.afterTest() }
+      } else {
+         config.listeners.afterTestAfterFailure(error)
          // we track any throwables and try to shrink them
          context.markFailure()
          outputStatistics(context, inputs.size, false)
@@ -79,6 +81,21 @@ internal suspend fun test(
       }
    } else {
       printSkippedMessage(context, inputs)
+   }
+}
+
+/**
+ * Calls [PropTestListener.afterTest] on each listener after [error] failed the property. A listener whose
+ * [PropTestListener.afterTest] throws does not hide [error]: its exception is added to [error] as suppressed,
+ * and the remaining listeners still run.
+ */
+internal suspend fun List<PropTestListener>.afterTestAfterFailure(error: Throwable) {
+   forEach {
+      try {
+         it.afterTest()
+      } catch (t: Throwable) {
+         error.addSuppressed(t)
+      }
    }
 }
 
