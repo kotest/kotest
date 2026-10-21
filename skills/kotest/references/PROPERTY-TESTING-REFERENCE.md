@@ -1,375 +1,237 @@
 # Kotest Property Testing Reference
 
-Complete reference for property-based testing with Kotest.
+`kotest-property` runs on JVM, JS, WasmJS, WasmWASI and Native and can be used from any test framework.
+
+| Module                         | Package                          | Contents                                  |
+|--------------------------------|----------------------------------|-------------------------------------------|
+| `kotest-property`              | `io.kotest.property`, `io.kotest.property.arbitrary`, `io.kotest.property.exhaustive` | `forAll`, `checkAll`, `Arb`, `Exhaustive` |
+| `kotest-property-permutations` | `io.kotest.permutations`         | 6.2+ permutations DSL (experimental)       |
+| `kotest-property-datetime`     | `io.kotest.property.kotlinx.datetime` | kotlinx-datetime arbs                 |
+| `kotest-property-arrow`        | `io.kotest.property.arrow.core`  | Arrow arbs                                |
 
 ---
 
-## Core Concepts
-
-Property testing generates random inputs and verifies that properties (invariants) hold for all of them.
-
-- **Generator (Arb)** — produces random values of a given type
-- **Test Function** — `forAll` (returns Boolean) or `checkAll` (uses assertions)
-- **Iterations** — default 1000, configurable
-- **Shrinking** — on failure, finds the minimal failing input
-- **Seed** — deterministic replay of a failing test
-
----
-
-## Test Functions
-
-### forAll
-
-Returns a Boolean. Test passes if the function returns `true` for all generated inputs.
+## forAll / checkAll
 
 ```kotlin
-import io.kotest.property.forAll
-
-test("string concat length") {
-  forAll<String, String> { a, b ->
-    (a + b).length == a.length + b.length
-  }
-}
-```
-
-### checkAll
-
-Uses assertions. Test passes if no exception is thrown.
-
-```kotlin
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.longs.shouldBeGreaterThanOrEqual
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
+import io.kotest.property.forAll
+import kotlin.math.abs
 
-test("absolute value is non-negative") {
-  checkAll<Int> { n ->
-    abs(n) shouldBeGreaterThanOrEqualTo 0
-  }
-}
+class Props : FunSpec({
+   test("forAll returns a Boolean") {
+      forAll<String, String> { a, b -> (a + b).length == a.length + b.length }
+   }
+   test("checkAll uses assertions") {
+      checkAll<Int> { n -> abs(n.toLong()) shouldBeGreaterThanOrEqual 0L }
+   }
+   test("explicit generators") {
+      checkAll(Arb.int(1..100), Arb.string(5..20)) { age, name -> /* ... */ }
+   }
+})
 ```
 
-### Arity
+| Form                                    | Max arity |
+|-----------------------------------------|-----------|
+| type parameters only: `checkAll<A, B>`  | 12        |
+| explicit generators: `checkAll(arbA, …)`| 22        |
 
-Both `forAll` and `checkAll` support up to 14 type parameters:
-
-```kotlin
-forAll<String, Int, Boolean> { a, b, c -> /* ... */ }
-checkAll<String, Int, Boolean, Double> { a, b, c, d -> /* ... */ }
-```
+Iterations default to 1000 (`kotest.proptest.default.iteration.count` system property, or
+`PropertyTesting.defaultIterationCount`). Per call: `checkAll<Int>(10_000) { }`, `forAll(500, Arb.int()) { }`.
+A type argument or generator is always required — `checkAll(100) { }` does not compile.
 
 ---
 
-## Iterations
+## Generators
 
-Default is 1000. Customize per call:
+All in `io.kotest.property.arbitrary` unless noted.
 
-```kotlin
-checkAll<Int>(10_000) { n ->
-  // runs 10,000 iterations
-}
-
-forAll<String>(500) { s ->
-  s.reversed().reversed() == s
-}
-```
-
----
-
-## Built-in Generators (Arbs)
-
-### Primitives
-
-| Generator                  | Description                                                 |
-|----------------------------|-------------------------------------------------------------|
-| `Arb.int()`                | All integers including edge cases (0, MIN_VALUE, MAX_VALUE) |
-| `Arb.int(range)`           | Integers in range, e.g., `Arb.int(1..100)`                  |
-| `Arb.positiveInt()`        | Positive integers only                                      |
-| `Arb.negativeInt()`        | Negative integers only                                      |
-| `Arb.long()`               | All longs                                                   |
-| `Arb.long(range)`          | Longs in range                                              |
-| `Arb.double()`             | All doubles including NaN, infinities                       |
-| `Arb.numericDouble()`      | Doubles excluding NaN and infinities                        |
-| `Arb.numericDouble(range)` | Doubles in range                                            |
-| `Arb.float()`              | All floats                                                  |
-| `Arb.boolean()`            | true or false                                               |
-| `Arb.byte()`               | All bytes                                                   |
-| `Arb.short()`              | All shorts                                                  |
-| `Arb.char()`               | All chars                                                   |
-
-### Strings
-
-| Generator                  | Description                              |
-|----------------------------|------------------------------------------|
-| `Arb.string()`             | Random strings (0..100 chars, printable) |
-| `Arb.string(size)`         | Strings of exact size                    |
-| `Arb.string(range)`        | Strings with length in range             |
-| `Arb.stringPattern(regex)` | Strings matching a regex pattern         |
-| `Arb.email()`              | Valid email addresses                    |
-| `Arb.uuid()`               | Random UUIDs                             |
-| `Arb.ipAddressV4()`        | IPv4 addresses                           |
-
-### Collections
-
-| Generator                   | Description                      |
-|-----------------------------|----------------------------------|
-| `Arb.list(arb)`             | Lists of elements from `arb`     |
-| `Arb.list(arb, range)`      | Lists with size in range         |
-| `Arb.set(arb)`              | Sets of elements from `arb`      |
-| `Arb.set(arb, range)`       | Sets with size in range          |
-| `Arb.map(keyArb, valueArb)` | Maps with random keys and values |
-
-### Enums and Sealed Classes
-
-| Generator                | Description                       |
-|--------------------------|-----------------------------------|
-| `Arb.enum<MyEnum>()`     | Random enum values                |
-| `Arb.choice(arb1, arb2)` | Randomly picks from multiple arbs |
-
-### Combinators
-
-| Generator                                        | Description                            |
-|--------------------------------------------------|----------------------------------------|
-| `Arb.pair(arbA, arbB)`                           | Random Pair                            |
-| `Arb.triple(arbA, arbB, arbC)`                   | Random Triple                          |
-| `Arb.bind(arb1, arb2) { a, b -> MyClass(a, b) }` | Compose arbs into a custom type        |
-| `arb.orNull()`                                   | Makes any arb nullable                 |
-| `arb.orNull(probability)`                        | Nullable with configurable probability |
-
----
-
-## Specifying Generators Explicitly
-
-Instead of relying on type inference, pass generators as arguments:
-
-```kotlin
-test("custom generators") {
-  forAll(
-    Arb.int(1..100),
-    Arb.string(5..20)
-  ) { age, name ->
-    Person(name, age).isValid()
-  }
-}
-```
+| Generator                                      | Notes                                                    |
+|------------------------------------------------|----------------------------------------------------------|
+| `Arb.int()`, `Arb.int(1..100)`                 | edge cases: range ends plus -1, 0, 1 when in range       |
+| `Arb.positiveInt()`, `Arb.negativeInt()`, `Arb.nonNegativeInt()` |                                        |
+| `Arb.long()`, `Arb.long(range)`, `Arb.short()`, `Arb.byte()` |                                            |
+| `Arb.double()`                                 | includes NaN and ±Infinity (`includeNaNs = false` to drop NaN) |
+| `Arb.numericDouble(min, max)`                  | finite doubles only (no range overload)                  |
+| `Arb.float()`, `Arb.boolean()`, `Arb.char()`   |                                                          |
+| `Arb.string()`                                 | 0..100 printable ASCII chars                              |
+| `Arb.string(size)`, `Arb.string(5..20)`        |                                                          |
+| `Arb.stringPattern("[a-z]{3}\\d")`             | JVM only                                                 |
+| `Arb.email()`, `Arb.ipAddressV4()`             | `String`                                                 |
+| `Arb.uuid()`                                   | `PlatformUuid` (= `java.util.UUID` on JVM), not `String` |
+| `Arb.list(arb)`, `Arb.list(arb, 1..10)`        |                                                          |
+| `Arb.set(arb)`, `Arb.set(arb, 1..10)`          |                                                          |
+| `Arb.map(keyArb, valueArb)`                    |                                                          |
+| `Arb.enum<MyEnum>()`                           |                                                          |
+| `Arb.element(list)`, `Arb.of(a, b, c)`         | pick from values                                         |
+| `Arb.choice(arb1, arb2)`                       | pick from arbs                                           |
+| `Arb.pair(a, b)`, `Arb.triple(a, b, c)`        |                                                          |
+| `Arb.bind(a, b, …) { x, y -> T(x, y) }`        | compose into a class; `Arb.bind<T>()` reflects (JVM)     |
+| `arb.orNull()`, `arb.orNull(0.2)`              | nullable; arg is null probability                        |
+| `Arb.localDate()`, `Arb.localDateTime()`, `Arb.localTime()`, `Arb.period()` | `java.time`, core module, JVM only |
+| `Arb.duration()`                               | `kotlin.time.Duration`, core module                      |
+| `Arb.date()`, `Arb.datetime()`, `Arb.instant()` | `kotest-property-datetime` (kotlinx-datetime)           |
+| `Arb.either(l, r)`, `Arb.option(arb)`, `Arb.nonEmptyList(arb)` | `kotest-property-arrow`                  |
 
 ---
 
 ## Custom Generators
 
-### Using Arb.bind
-
-Compose existing arbs:
-
 ```kotlin
-val personArb = Arb.bind(
-  Arb.string(3..50),
-  Arb.int(1..120),
-  Arb.email()
-) { name, age, email ->
-  Person(name, age, email)
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.bind
+import io.kotest.property.arbitrary.email
+import io.kotest.property.arbitrary.int
+import io.kotest.property.arbitrary.string
+import io.kotest.property.arbitrary.IntShrinker
+
+val personArb = Arb.bind(Arb.string(3..50), Arb.int(1..120), Arb.email()) { name, age, email ->
+   Person(name, age, email)
+}
+
+val evenInt = arbitrary {
+   val n = Arb.int().bind()       // bind() draws from another arb
+   if (n % 2 == 0) n else n - 1
+}
+
+val percent = arbitrary(edgecases = listOf(0, 50, 100)) { Arb.int(0..100).bind() }
+
+val withShrinker = arbitrary(shrinker = IntShrinker(1..1000)) { rs -> rs.random.nextInt(1, 1000) }
+
+val lambdaShrinker = arbitrary(shrinker = { v: Int -> listOf(v / 2, v - 1).filter { it in 1..999 } }) { rs ->
+   rs.random.nextInt(1, 1000)
 }
 ```
 
-### Using arbitrary builder
-
-Full control with the `arbitrary` DSL:
+### Operations
 
 ```kotlin
-val evenIntArb = arbitrary { rs ->
-  val n = Arb.int().bind()  // generate a random int
-  if (n % 2 == 0) n else n + 1
-}
-
-// Simpler form
-val evenIntArb2 = arbitrary {
-  val n = Arb.int().bind()
-  if (n % 2 == 0) n else n + 1
-}
-```
-
-### Using arb builder with edge cases
-
-```kotlin
-val percentArb = arbitrary(
-  edgecases = listOf(0, 50, 100)
-) {
-  Arb.int(0..100).bind()
-}
-```
-
----
-
-## Generator Operations
-
-### map
-
-Transform generated values:
-
-```kotlin
-val positiveEvenArb = Arb.positiveInt().map { it * 2 }
-```
-
-### flatMap
-
-Chain generators:
-
-```kotlin
-val listWithElement = Arb.list(Arb.int(), 1..10).flatMap { list ->
-  Arb.element(list).map { element -> list to element }
-}
-```
-
-### filter
-
-Filter generated values (use sparingly — can be slow):
-
-```kotlin
-val oddArb = Arb.int().filter { it % 2 != 0 }
-```
-
-### merge
-
-Combine generators:
-
-```kotlin
-val mixedArb = Arb.positiveInt().merge(Arb.negativeInt())
+Arb.positiveInt().map { it * 2 }
+Arb.list(Arb.int(), 1..10).flatMap { list -> Arb.element(list).map { list to it } }
+Arb.int().filter { it % 2 != 0 }               // use sparingly
+Arb.positiveInt().merge(Arb.negativeInt())
 ```
 
 ---
 
 ## Configuration
 
-### PropTestConfig
-
 ```kotlin
+import io.kotest.property.EdgeConfig
+import io.kotest.property.PropTestConfig
+
 checkAll(
-  PropTestConfig(
-    seed = 12345,             // reproducible
-    minSuccess = 900,         // minimum passing iterations
-    maxFailure = 3,           // fail after this many failures
-    iterations = 5000,        // total iterations
-    edgeConfig = EdgeConfig(
-      edgecasesGenerationProbability = 0.1  // probability of edge cases
-    ),
-  ),
-  Arb.int(),
-  Arb.string()
-) { i, s ->
-  // test logic
-}
+   PropTestConfig(
+      seed = 12345L,
+      iterations = 5000,
+      minSuccess = 4900,
+      maxFailure = 3,
+      edgeConfig = EdgeConfig(edgecasesGenerationProbability = 0.1),
+   ),
+   Arb.int(),
+   Arb.string(),
+) { i, s -> /* ... */ }
 ```
 
-### Seed
-
-When a property test fails, Kotest prints the seed. Replay the failure:
-
-```kotlin
-checkAll(PropTestConfig(seed = 843297423L)) { /* ... */ }
-```
+On failure Kotest prints `Repeat this test by using seed <n>`; replay with
+`checkAll<Int>(PropTestConfig(seed = <n>)) { ... }`. Failed seeds are also written to disk and reused on the next run.
 
 ---
 
 ## Shrinking
 
-When a test fails, Kotest automatically shrinks the failing input to the minimal example.
-
-For example, if `Arb.list(Arb.int())` generates `[42, -17, 99, 0, 3]` and the test fails,
-Kotest might shrink it to `[0]` if that's the minimal failing case.
-
-Built-in shrinkers exist for all primitive types, strings, and collections.
-
-### Custom Shrinker
-
-```kotlin
-val myArb = arbitrary(shrinker = IntShrinker) { rs ->
-  rs.random.nextInt()
-}
-
-// Or use a lambda shrinker
-val myArb2 = arbitrary(
-  shrinker = { value -> listOf(0, value / 2, value - 1).filter { it != value } }
-) { rs ->
-  rs.random.nextInt(1, 1000)
-}
-```
+Failing inputs are shrunk automatically to a minimal counterexample. Built-in shrinkers cover primitives, strings and
+collections; custom arbs need a `Shrinker` (a `fun interface` with `shrink(value): List<A>`). Don't return the
+degenerate case first.
 
 ---
 
-## Assumptions
-
-Skip iterations that don't meet preconditions:
+## Assumptions and Statistics
 
 ```kotlin
 import io.kotest.property.assume
 
 checkAll<Int, Int> { a, b ->
-  assume(b != 0)  // skip if b is 0
-  (a * b) / b shouldBe a
+   assume(b != 0)                  // discard this iteration
+   (a * b) / b shouldBe a
+}
+
+checkAll<Int> { n ->
+   collect(if (n >= 0) "non-negative" else "negative")   // default label
+   collect("parity", if (n % 2 == 0) "even" else "odd")  // labelled
 }
 ```
 
+`collect` is a member of the `PropertyContext` receiver; the distribution is printed after the run.
+
 ---
 
-## Statistics
+## Permutations DSL (6.2+, experimental)
 
-Collect statistics about generated values:
+Add `kotest-property-permutations`. Generators are named delegates and the body goes in `check { }`.
 
 ```kotlin
-import io.kotest.property.statistics.statistics
+import io.kotest.common.ExperimentalKotest
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.permutations.permconfig
+import io.kotest.permutations.permutations
+import io.kotest.property.Arb
+import io.kotest.property.arbitrary.int
 
-checkAll<Int>(1000) { n ->
-  statistics("sign") {
-    when {
-      n > 0 -> "positive"
-      n < 0 -> "negative"
-      else -> "zero"
-    }
-  }
-  // test logic
+@OptIn(ExperimentalKotest::class)
+val defaults = permconfig {
+   iterations = 500
+   maxDiscardPercentage = 10
 }
-// Prints distribution: positive: 49.8%, negative: 49.9%, zero: 0.3%
+
+@OptIn(ExperimentalKotest::class)
+class CommutativityTest : FunSpec({
+   test("addition is commutative") {
+      permutations(defaults) {
+         val a by gen { Arb.int() }
+         val b by gen { Arb.int() }
+         iterations = 200                         // overrides the shared default
+         check {
+            assume(a != b)
+            classify(a % 2 == 0, "even", "odd")
+            (a + b) shouldBe (b + a)
+         }
+      }
+   }
+})
 ```
 
+| Option (`var` on `PermutationConfiguration`) | Default | Meaning                                      |
+|----------------------------------------------|---------|----------------------------------------------|
+| `iterations`                                 | 1000    | number of permutations                       |
+| `duration`                                   | null    | run until elapsed (overrides `iterations`)   |
+| `minSuccess` / `maxFailures`                 | — / 0   | success / failure thresholds                 |
+| `maxDiscardPercentage`                       | 20      | max % discarded by `assume`                  |
+| `seed`, `failOnSeed`, `writeFailedSeed`      | null, false, true | seed control                       |
+| `shouldPrintConfig`, `shouldPrintGeneratedValues`, `shouldPrintShrinkSteps` | false, false, true | output |
+| `statisticsReportMode`                       | `ON`    | `ON`, `SUCCESS`, `FAILED`, `OFF`             |
+
 ---
 
-## Using Property Tests Outside Kotest Framework
-
-Property tests can be used with any test framework:
+## Outside the Kotest Framework
 
 ```kotlin
-// With JUnit 5
+import kotlinx.coroutines.runBlocking
+import org.junit.jupiter.api.Test
+
 class MyJUnit5Test {
-  @Test
-  fun `string length property`() = runBlocking {
-    forAll<String, String> { a, b ->
-      (a + b).length == a.length + b.length
-    }
-  }
+   @Test
+   fun stringLength() {            // block body: a @Test that returns a value is silently skipped by JUnit
+      runBlocking {
+         forAll<String, String> { a, b -> (a + b).length == a.length + b.length }
+      }
+   }
 }
 ```
-
----
-
-## Date/Time Generators (`kotest-property-datetime`)
-
-```kotlin
-import io.kotest.property.datetime.*
-
-Arb.localDate()
-Arb.localDateTime()
-Arb.localTime()
-Arb.instant()
-Arb.period()
-Arb.duration()
-```
-
----
-
-## Arrow Generators (`kotest-property-arrow`)
-
-```kotlin
-import io.kotest.property.arrow.*
-
-Arb.either(Arb.string(), Arb.int())     // Either<String, Int>
-Arb.option(Arb.int())                    // Option<Int>
-Arb.nonEmptyList(Arb.string())           // NonEmptyList<String>
-```
-
