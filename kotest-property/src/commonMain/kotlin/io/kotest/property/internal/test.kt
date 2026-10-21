@@ -10,6 +10,7 @@ import io.kotest.property.AfterPropertyContextElement
 import io.kotest.property.BeforePropertyContextElement
 import io.kotest.property.Classifier
 import io.kotest.property.PropTestConfig
+import io.kotest.property.PropTestListener
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
 import io.kotest.property.seed.writeFailedSeed
@@ -25,6 +26,8 @@ import kotlinx.coroutines.currentCoroutineContext
  *
  * If registered, will invoke [io.kotest.property.lifecycle.beforeProperty] and
  * [io.kotest.property.lifecycle.afterProperty] lifecycle methods.
+ *
+ * Invokes the [PropTestConfig.listeners] around the evaluation, and completes them before any shrinking starts.
  */
 internal suspend fun test(
    context: PropertyContext,
@@ -40,7 +43,8 @@ internal suspend fun test(
    context.markEvaluation()
    context.setupContextual(RandomSource.seeded(contextualSeed))
    if (context.evals() >= config.skipTo) {
-      try {
+      config.listeners.forEach { it.beforeTest() }
+      val error = try {
 
          inputs.indices.forEach { k ->
             val classifier = classifiers[k]
@@ -58,16 +62,40 @@ internal suspend fun test(
          testFn()
          context.markSuccess()
          currentCoroutineContext()[AfterPropertyContextElement]?.after?.invoke()
+         null
       } catch (_: IterationSkippedException) {
          // we don't mark failed assumptions as errors
+         null
       } catch (e: Throwable) {
+         e
+      }
+      // each shrink run is bracketed by the listeners too, so this iteration must be finished first
+      if (error == null) {
+         config.listeners.forEach { it.afterTest() }
+      } else {
+         config.listeners.afterTestAfterFailure(error)
          // we track any throwables and try to shrink them
          context.markFailure()
          outputStatistics(context, inputs.size, false)
-         handleException(context, shrinkfn, inputs, seed, e, config)
+         handleException(context, shrinkfn, inputs, seed, error, config)
       }
    } else {
       printSkippedMessage(context, inputs)
+   }
+}
+
+/**
+ * Calls [PropTestListener.afterTest] on each listener after [error] failed the property. A listener whose
+ * [PropTestListener.afterTest] throws does not hide [error]: its exception is added to [error] as suppressed,
+ * and the remaining listeners still run.
+ */
+internal suspend fun List<PropTestListener>.afterTestAfterFailure(error: Throwable) {
+   forEach {
+      try {
+         it.afterTest()
+      } catch (t: Throwable) {
+         error.addSuppressed(t)
+      }
    }
 }
 

@@ -1,9 +1,25 @@
 package io.kotest.property.internal
 
+import io.kotest.property.PropTestListener
 import io.kotest.property.PropertyContext
 import io.kotest.property.RandomSource
 import io.kotest.property.Sample
 import io.kotest.property.ShrinkingMode
+
+/**
+ * Invokes [block] between the [PropTestListener.beforeTest] and [PropTestListener.afterTest] of each listener,
+ * calling [PropTestListener.afterTest] even if [block] throws, as a shrink run usually does.
+ */
+private suspend inline fun List<PropTestListener>.around(block: () -> Unit) {
+   forEach { it.beforeTest() }
+   try {
+      block()
+   } catch (e: Throwable) {
+      afterTestAfterFailure(e)
+      throw e
+   }
+   forEach { it.afterTest() }
+}
 
 /**
  * Returns a shrink function, which, when invoked, will shrink the inputs and attempt to return
@@ -13,13 +29,16 @@ fun <A> shrinkfn(
    a: Sample<A>,
    propertyFn: suspend PropertyContext.(A) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A) -> Unit = { a ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a)
+      }
    }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it) }
@@ -37,12 +56,15 @@ fun <A, B> shrinkfn(
    b: Sample<B>,
    propertyFn: suspend PropertyContext.(A, B) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B) -> Unit = { a, b ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b)
+      }
    }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value) }
@@ -62,13 +84,16 @@ fun <A, B, C> shrinkfn(
    c: Sample<C>,
    propertyFn: suspend PropertyContext.(A, B, C) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C) -> Unit = { a, b, c ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c)
+      }
    }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value) }
@@ -90,13 +115,16 @@ fun <A, B, C, D> shrinkfn(
    d: Sample<D>,
    propertyFn: suspend PropertyContext.(A, B, C, D) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D) -> Unit = { a, b, c, d ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d)
+      }
    }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value) }
@@ -120,13 +148,16 @@ fun <A, B, C, D, E> shrinkfn(
    e: Sample<E>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E) -> Unit = { a, b, c, d, e ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e)
+      }
    }
    with(context) {
       val smallestA = doShrinking(a.shrinks, shrinkingMode) { property(it, b.value, c.value, d.value, e.value) }
@@ -154,13 +185,16 @@ fun <A, B, C, D, E, F> shrinkfn(
    f: Sample<F>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F) -> Unit = { a, b, c, d, e, f ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f)
+      }
    }
    with(context) {
       val smallestA =
@@ -196,13 +230,16 @@ fun <A, B, C, D, E, F, G> shrinkfn(
    g: Sample<G>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G) -> Unit = { a, b, c, d, e, f, g ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f, g)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g)
+      }
    }
    with(context) {
       val smallestA =
@@ -244,13 +281,16 @@ fun <A, B, C, D, E, F, G, H> shrinkfn(
    h: Sample<H>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H) -> Unit = { a, b, c, d, e, f, g, h ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f, g, h)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h)
+      }
    }
    with(context) {
       val smallestA =
@@ -295,13 +335,16 @@ fun <A, B, C, D, E, F, G, H, I> shrinkfn(
    i: Sample<I>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I) -> Unit = { a, b, c, d, e, f, g, h, i ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f, g, h, i)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i)
+      }
    }
    with(context) {
       val smallestA =
@@ -349,13 +392,16 @@ fun <A, B, C, D, E, F, G, H, I, J> shrinkfn(
    j: Sample<J>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J) -> Unit = { a, b, c, d, e, f, g, h, i, j ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f, g, h, i, j)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j)
+      }
    }
    with(context) {
       val smallestA =
@@ -407,14 +453,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K> shrinkfn(
    k: Sample<K>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k)
+         }
       }
    with(context) {
       val smallestA =
@@ -468,14 +517,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L> shrinkfn(
    l: Sample<L>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l)
+         }
       }
    with(context) {
       val smallestA =
@@ -532,14 +584,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M> shrinkfn(
    m: Sample<M>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m)
+         }
       }
    with(context) {
       val smallestA =
@@ -600,14 +655,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N> shrinkfn(
    n: Sample<N>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m, n ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n)
+         }
       }
    with(context) {
       val smallestA =
@@ -671,14 +729,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O> shrinkfn(
    o: Sample<O>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
+         }
       }
    with(context) {
       val smallestA =
@@ -745,14 +806,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P> shrinkfn(
    p: Sample<P>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
+         }
       }
    with(context) {
       val smallestA =
@@ -822,13 +886,16 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q> shrinkfn(
    q: Sample<Q>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
       // we use a new context for the shrinks, as we don't want to affect classification etc
       val context = PropertyContext()
       val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q) -> Unit = { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
+         }
       }
       with(context) {
          val smallestA =
@@ -901,13 +968,16 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R> shrinkfn(
    r: Sample<R>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R) -> Unit = { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
+      }
    }
    with(context) {
       val smallestA =
@@ -983,13 +1053,16 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S> shrinkfn(
    s: Sample<S>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) -> Unit = { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s ->
-      setupContextual(RandomSource.seeded(contextualSeed))
-      propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
+      listeners.around {
+         setupContextual(RandomSource.seeded(contextualSeed))
+         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
+      }
    }
    with(context) {
       val smallestA =
@@ -1069,14 +1142,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T> shrinkfn(
    t: Sample<T>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
+         }
       }
    with(context) {
       val smallestA =
@@ -1159,14 +1235,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U> shrinkfn(
    u: Sample<U>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
+         }
       }
    with(context) {
       val smallestA =
@@ -1252,14 +1331,17 @@ fun <A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V> shrinkfn(
    v: Sample<V>,
    propertyFn: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit,
    shrinkingMode: ShrinkingMode,
-   contextualSeed: Long
+   contextualSeed: Long,
+   listeners: List<PropTestListener>,
 ): suspend () -> List<ShrinkResult<Any?>> = {
    // we use a new context for the shrinks, as we don't want to affect classification etc
    val context = PropertyContext()
    val property: suspend PropertyContext.(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) -> Unit =
       { a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v ->
-         setupContextual(RandomSource.seeded(contextualSeed))
-         propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
+         listeners.around {
+            setupContextual(RandomSource.seeded(contextualSeed))
+            propertyFn(a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
+         }
       }
    with(context) {
       val smallestA =
