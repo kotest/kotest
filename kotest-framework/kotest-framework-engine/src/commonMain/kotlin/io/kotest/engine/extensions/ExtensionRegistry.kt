@@ -1,7 +1,8 @@
 package io.kotest.engine.extensions
 
 import io.kotest.core.extensions.Extension
-import kotlin.concurrent.Volatile
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.reflect.KClass
 
 /**
@@ -40,11 +41,8 @@ interface ExtensionRegistry {
    fun isNotEmpty(): Boolean
 }
 
+@OptIn(ExperimentalAtomicApi::class)
 class DefaultExtensionRegistry : ExtensionRegistry {
-
-   private val extensions = mutableListOf<Pair<Extension, KClass<*>?>>()
-
-   private val synchronizer = Synchronizer()
 
    // get(kClass) is invoked twice per spec instantiation (once for constructor extensions, once
    // for post-instantiation extensions), which was previously an O(n) filter/allocation over every
@@ -52,64 +50,58 @@ class DefaultExtensionRegistry : ExtensionRegistry {
    // instantiated once, so this doesn't matter there, but under InstancePerTest/InstancePerLeaf/
    // InstancePerRoot the same spec class is instantiated fresh per test/leaf/root, so without this
    // cache the same class's extension list would be re-filtered from scratch on every single test.
-   // Extensions are normally all registered up front, before specs start executing, so we rebuild
-   // this snapshot on every mutation and let get() do a plain O(1) read. That also keeps get() safe
-   // to call concurrently (e.g. under SpecExecutionMode.Concurrent) without needing to synchronize
-   // reads, since add/remove are not expected to race with spec execution.
-   @Volatile
-   private var byClass: Map<KClass<*>?, List<Extension>> = emptyMap()
+   //
+   // add()/remove()/clear() can run concurrently with each other. Specs are inflated, and so
+   // register their annotation-driven extensions, on their own coroutine, so under
+   // SpecExecutionMode.Concurrent or TestExecutionMode.Concurrent, multiple calls can land on
+   // different real threads at once. Rather than mutating a shared list in place, both the list
+   // and its derived by-class index are held together in one immutable Snapshot and swapped
+   // atomically via compare-and-set, so a mutation either fully applies or is retried. There is
+   // no window where one thread can observe or corrupt a partially-updated list. get()/all() then
+   // read the current snapshot directly, with no locking needed.
+   private data class Snapshot(
+      val extensions: List<Pair<Extension, KClass<*>?>>,
+      val byClass: Map<KClass<*>?, List<Extension>>,
+   )
 
-   override fun all(): List<Extension> = synchronizer.synchronized {
-      extensions.map { it.first }
-   }
+   private val snapshot = AtomicReference(Snapshot(emptyList(), emptyMap()))
 
-   override fun get(kClass: KClass<*>): List<Extension> = synchronizer.synchronized {
-      byClass[kClass] ?: emptyList()
-   }
+   override fun all(): List<Extension> = snapshot.load().extensions.map { it.first }
+
+   override fun get(kClass: KClass<*>): List<Extension> = snapshot.load().byClass[kClass] ?: emptyList()
 
    override fun add(extension: Extension) {
-      synchronizer.synchronized {
-         extensions.add(Pair(extension, null))
-         rebuild()
-      }
+      update { it + Pair(extension, null) }
    }
 
    override fun add(extension: Extension, kclass: KClass<*>) {
-      synchronizer.synchronized {
-         extensions.add(Pair(extension, kclass))
-         rebuild()
-      }
+      update { it + Pair(extension, kclass) }
    }
 
    override fun remove(extension: Extension) {
-      synchronizer.synchronized {
-         extensions.remove(Pair(extension, null))
-         rebuild()
-      }
+      update { it - Pair(extension, null) }
    }
 
    override fun remove(extension: Extension, kclass: KClass<*>) {
-      synchronizer.synchronized {
-         extensions.remove(Pair(extension, kclass))
-         rebuild()
-      }
+      update { it - Pair(extension, kclass) }
    }
 
    override fun clear() {
-      synchronizer.synchronized {
-         extensions.clear()
-         rebuild()
+      update { emptyList() }
+   }
+
+   private tailrec fun update(transform: (List<Pair<Extension, KClass<*>?>>) -> List<Pair<Extension, KClass<*>?>>) {
+      val current = snapshot.load()
+      val extensions = transform(current.extensions)
+      val updated = Snapshot(extensions, extensions.groupBy({ it.second }, { it.first }))
+      if (!snapshot.compareAndSet(current, updated)) {
+         update(transform)
       }
    }
 
-   private fun rebuild() {
-      byClass = extensions.groupBy({ it.second }, { it.first })
-   }
-
-   override fun isEmpty(): Boolean = synchronizer.synchronized { extensions.isEmpty() }
-   override fun isNotEmpty(): Boolean = synchronizer.synchronized { extensions.isNotEmpty() }
-
-}   
+   override fun isEmpty(): Boolean = snapshot.load().extensions.isEmpty()
+   override fun isNotEmpty(): Boolean = snapshot.load().extensions.isNotEmpty()
+}
 
 object EmptyExtensionRegistry : ExtensionRegistry {
 
