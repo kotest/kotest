@@ -12,6 +12,7 @@ import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -38,6 +39,24 @@ class ShouldContainTest : WordSpec({
             col.shouldContain(2.0, verifier)
          }
          col should contain(2, verifier)
+      }
+
+      "stop invoking the verifier once an element has matched" {
+         var invocations = 0
+         val countingVerifier = object : Equality<Int> {
+            override fun name() = "counting equality"
+
+            override fun verify(actual: Int, expected: Int): EqualityResult {
+               invocations++
+               return if (actual == expected)
+                  EqualityResult.equal(actual, expected, this)
+               else
+                  EqualityResult.notEqual(actual, expected, this)
+            }
+         }
+         val col = List(100) { it }
+         col.shouldContain(0, countingVerifier)
+         invocations shouldBe 1
       }
 
       "support infix shouldContain" {
