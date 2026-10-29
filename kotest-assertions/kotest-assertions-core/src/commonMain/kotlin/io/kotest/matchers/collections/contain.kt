@@ -53,9 +53,33 @@ fun <T> Array<T>.shouldContain(t: T, comparator: Equality<T>): Array<T> = apply 
 // Matcher
 fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.default()) = object : Matcher<C> {
    override fun test(value: C) : MatcherResult {
-      // the verifier can be expensive, so the pass/fail decision must short-circuit on the first match;
-      // the full list of matching indexes is only needed by the negated failure message
-      val passed = value.any { verifier.verify(it, t).areEqual() }
+      // the verifier can be expensive, so a single pass over the collection is shared between
+      // the pass/fail decision and the negated failure message: the decision stops at the first
+      // match, and the negated message resumes the pass to collect the remaining indexes,
+      // so the verifier is invoked at most once per element in every scenario
+      val remaining = value.withIndex().iterator()
+      val passedAtIndexes = mutableListOf<Int>()
+
+      fun findFirstMatch(): Boolean {
+         while (remaining.hasNext()) {
+            val (index, element) = remaining.next()
+            if (verifier.verify(element, t).areEqual()) {
+               passedAtIndexes.add(index)
+               return true
+            }
+         }
+         return false
+      }
+
+      fun collectRemainingMatches(): List<Int> {
+         while (remaining.hasNext()) {
+            val (index, element) = remaining.next()
+            if (verifier.verify(element, t).areEqual()) passedAtIndexes.add(index)
+         }
+         return passedAtIndexes
+      }
+
+      val passed = findFirstMatch()
       val possibleMatches = {
          if (!passed && (verifier.name() == Equality.default<T>().name())) {
             val candidates = possibleMatchesDescription(value.toSet(), t)
@@ -69,10 +93,7 @@ fun <T, C : Collection<T>> contain(t: T, verifier: Equality<T> = Equality.defaul
                "but the collection is ${value.print().value}${possibleMatches()}"
          },
          {
-            val passedAtIndexes = value.mapIndexedNotNull {
-               index, it -> if(verifier.verify(it, t).areEqual()) index else null
-            }
-            "Collection should not contain element ${t.print().value} based on ${verifier.name()}, but it did at index(es):${passedAtIndexes.print().value}"
+            "Collection should not contain element ${t.print().value} based on ${verifier.name()}, but it did at index(es):${collectRemainingMatches().print().value}"
          }
       )
    }
