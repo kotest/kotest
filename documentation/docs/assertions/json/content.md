@@ -71,7 +71,7 @@ infix fun String.lenientShouldEqualJson(other: String) = this.shouldEqualJson(ot
 
 For comparisons that the options above can't express, `overrideMatchers` replaces the structural comparison of a JSON
 subtree with a custom matcher, keyed by a path into the document — analogous to the
-[field matching](field-matching.md) `overrideMatchers` for data classes.
+[field matching](../field-matching.md) `overrideMatchers` for data classes.
 
 Paths are dotted: `"users"` targets a top-level field, `"users[0].name"` a field of the first array element, and the
 empty string `""` targets the whole document.
