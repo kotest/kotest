@@ -1,4 +1,5 @@
 @file:OptIn(ExperimentalKotest::class)
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION")
 
 package io.kotest.property
 
@@ -122,7 +123,7 @@ suspend fun <A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(
+) = forAll(
    PropTestConfig(),
    genA,
    genB,
@@ -140,7 +141,7 @@ suspend fun <A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = proptest<A, B, C, D, E>(genA, genB, genC, genD, genE, config) { a, b, c, d, e ->
+) = proptest(genA, genB, genC, genD, genE, config) { a, b, c, d, e ->
    property(
       a,
       b,
@@ -158,7 +159,7 @@ suspend fun <A, B, C, D, E> forAll(
    genD: Gen<D>,
    genE: Gen<E>,
    property: suspend PropertyContext.(A, B, C, D, E) -> Boolean
-) = forAll<A, B, C, D, E>(PropTestConfig(constraints = Constraints.iterations(iterations)), genA, genB, genC, genD, genE, property)
+) = forAll(PropTestConfig(constraints = Constraints.iterations(iterations)), genA, genB, genC, genD, genE, property)
 
 suspend fun <A, B, C, D, E> forAll(
    iterations: Int,
