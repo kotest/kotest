@@ -12,6 +12,7 @@ import io.kotest.matchers.collections.contain
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldContainInOrder
 import io.kotest.matchers.throwable.shouldHaveMessage
@@ -38,6 +39,22 @@ class ShouldContainTest : WordSpec({
             col.shouldContain(2.0, verifier)
          }
          col should contain(2, verifier)
+      }
+
+      "stop invoking the verifier once an element has matched" {
+         val countingVerifier = CountingEquality()
+         val col = List(100) { it }
+         col.shouldContain(0, countingVerifier)
+         countingVerifier.invocations shouldBe 1
+      }
+
+      "invoke the verifier exactly once per element when the negated assertion fails" {
+         val countingVerifier = CountingEquality()
+         val col = List(100) { if (it == 99) 1000 else it } // single match at the last index
+         shouldThrow<AssertionError> {
+            col.shouldNotContain(1000, countingVerifier)
+         }
+         countingVerifier.invocations shouldBe 100
       }
 
       "support infix shouldContain" {
@@ -210,4 +227,19 @@ private object FruitEquality: Equality<Fruit> {
    override fun name() = "fruit equality"
    override fun verify(actual: Fruit, expected: Fruit): EqualityResult =
       SimpleEqualityResult(actual == expected, SimpleEqualityResultDetail { "Some Mesasge" })
+}
+
+private class CountingEquality : Equality<Int> {
+   var invocations = 0
+      private set
+
+   override fun name() = "counting equality"
+
+   override fun verify(actual: Int, expected: Int): EqualityResult {
+      invocations++
+      return if (actual == expected)
+         EqualityResult.equal(actual, expected, this)
+      else
+         EqualityResult.notEqual(actual, expected, this)
+   }
 }
