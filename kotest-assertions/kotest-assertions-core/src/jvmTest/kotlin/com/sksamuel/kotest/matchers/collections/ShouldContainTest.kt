@@ -229,7 +229,10 @@ private object FruitEquality: Equality<Fruit> {
       SimpleEqualityResult(actual == expected, SimpleEqualityResultDetail { "Some Mesasge" })
 }
 
-private class CountingEquality(var invocations: Int = 0) : Equality<Int> {
+private class CountingEquality : Equality<Int> {
+   var invocations = 0
+      private set
+
    override fun name() = "counting equality"
 
    override fun verify(actual: Int, expected: Int): EqualityResult {
