@@ -3,6 +3,7 @@ package io.kotest.assertions.json.comparisons
 import io.kotest.assertions.json.CompareJsonOptions
 import io.kotest.assertions.json.JsonError
 import io.kotest.assertions.json.JsonNode
+import io.kotest.assertions.json.toJsonPath
 
 /**
  * Compares two JSON trees, returning a detailed error message if they differ.
@@ -13,6 +14,16 @@ internal fun compare(
   actual: JsonNode,
   options: CompareJsonOptions
 ): List<JsonError> {
+
+   if (options.overrideMatchers.isNotEmpty()) {
+      val matcher = options.overrideMatchers[path.toJsonPath()]
+      if (matcher != null) {
+         val result = matcher.assert(expected, actual)
+         return if (result.passed()) emptyList()
+         else listOf(JsonError.CustomComparison(path, result.failureMessage()))
+      }
+   }
+
    return when (expected) {
       is JsonNode.ObjectNode -> when (actual) {
          is JsonNode.ObjectNode -> compareObjects(path, expected, actual, options)

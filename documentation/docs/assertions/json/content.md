@@ -67,6 +67,52 @@ infix fun String.lenientShouldEqualJson(other: String) = this.shouldEqualJson(ot
 | `NumberFormat`    | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal. | `NumberFormat.Strict`, `NumberFormat.Lenient`       | `NumberFormat.Lenient`, i.e. number formats *DON'T* matter            |
 | `TypeCoercion`    | Determines if types will try to be coerced, for instance when a string contains a number or boolean value                          | `TypeCoercion.Enabled`, `TypeCoercion.Disabled`     | `TypeCoercion.Disabled`, i.e. types will *NOT* be coerced             |
 
+### overrideMatchers
+
+For comparisons that the options above can't express, `overrideMatchers` replaces the structural comparison of a JSON
+subtree with a custom matcher, keyed by a path into the document — analogous to the
+[field matching](field-matching.md) `overrideMatchers` for data classes.
+
+Paths are dotted: `"users"` targets a top-level field, `"users[0].name"` a field of the first array element, and the
+empty string `""` targets the whole document.
+
+```kotlin
+// require the actual users array to contain everything from the expected one,
+// ignoring order and allowing extra elements
+"""{ "users": [{ "name": "sam" }, { "name": "bob" }] }""" shouldEqualJson {
+   overrideMatchers = mapOf("users" to matchArraysContainingAll())
+   """{ "users": [{ "name": "sam" }] }"""
+}
+```
+
+Ready-made matchers include:
+
+- `matchArraysContainingAll()` — every element of the expected array must be matched by some element of the actual
+  array, ignoring order and extra elements
+- `matchStringsIgnoringCase()` — string values are compared ignoring case
+
+Custom matchers implement `JsonSubtreeMatcher` and receive both the expected and the actual subtree:
+
+```kotlin
+val ignoreBuildMetadata = JsonSubtreeMatcher { expected, actual ->
+   val passed = expected is JsonNode.StringNode && actual is JsonNode.StringNode &&
+      actual.value.substringBefore('+') == expected.value
+   MatcherResult(
+      passed,
+      { "expected version ${show(expected)} but was ${show(actual)}" },
+      { "Expected values to not match" },
+   )
+}
+
+"""{ "version": "1.10.0+build.5" }""" shouldEqualJson {
+   overrideMatchers = mapOf("version" to ignoreBuildMetadata)
+   """{ "version": "1.10.0" }"""
+}
+```
+
+When a custom matcher fails, its failure message is reported at the subtree's path, e.g.
+`At 'version' expected version <expected> but was <actual>`.
+
 Targets: **Multiplatform**
 
 ## shouldEqualSpecifiedJson

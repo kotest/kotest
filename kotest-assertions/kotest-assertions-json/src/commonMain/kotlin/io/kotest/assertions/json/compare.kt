@@ -27,7 +27,19 @@ class CompareJsonOptions(
    /**
     *  Controls whether types should be coerced when possible. For instance, when strings contain bool or numeric values.
     */
-   var typeCoercion: TypeCoercion = TypeCoercion.Disabled
+   var typeCoercion: TypeCoercion = TypeCoercion.Disabled,
+
+   /**
+    * Custom matchers applied to JSON subtrees instead of the structural comparison, keyed by a
+    * path into the document, e.g. `"users"`, `"users[0].name"`; the empty string matches the
+    * whole document.
+    *
+    * When a matcher matches, the subtree is not compared structurally; when it doesn't, the
+    * matcher's failure message is reported at that path.
+    *
+    * Ready-made matchers are available, e.g. [matchArraysContainingAll] and [matchStringsIgnoringCase].
+    */
+   var overrideMatchers: Map<String, JsonSubtreeMatcher> = emptyMap()
 )
 
 enum class PropertyOrder {

@@ -8,16 +8,18 @@ public final class io/kotest/assertions/json/ArrayOrder : java/lang/Enum {
 
 public final class io/kotest/assertions/json/CompareJsonOptions {
 	public fun <init> ()V
-	public fun <init> (Lio/kotest/assertions/json/PropertyOrder;Lio/kotest/assertions/json/ArrayOrder;Lio/kotest/assertions/json/FieldComparison;Lio/kotest/assertions/json/NumberFormat;Lio/kotest/assertions/json/TypeCoercion;)V
-	public synthetic fun <init> (Lio/kotest/assertions/json/PropertyOrder;Lio/kotest/assertions/json/ArrayOrder;Lio/kotest/assertions/json/FieldComparison;Lio/kotest/assertions/json/NumberFormat;Lio/kotest/assertions/json/TypeCoercion;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lio/kotest/assertions/json/PropertyOrder;Lio/kotest/assertions/json/ArrayOrder;Lio/kotest/assertions/json/FieldComparison;Lio/kotest/assertions/json/NumberFormat;Lio/kotest/assertions/json/TypeCoercion;Ljava/util/Map;)V
+	public synthetic fun <init> (Lio/kotest/assertions/json/PropertyOrder;Lio/kotest/assertions/json/ArrayOrder;Lio/kotest/assertions/json/FieldComparison;Lio/kotest/assertions/json/NumberFormat;Lio/kotest/assertions/json/TypeCoercion;Ljava/util/Map;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public final fun getArrayOrder ()Lio/kotest/assertions/json/ArrayOrder;
 	public final fun getFieldComparison ()Lio/kotest/assertions/json/FieldComparison;
 	public final fun getNumberFormat ()Lio/kotest/assertions/json/NumberFormat;
+	public final fun getOverrideMatchers ()Ljava/util/Map;
 	public final fun getPropertyOrder ()Lio/kotest/assertions/json/PropertyOrder;
 	public final fun getTypeCoercion ()Lio/kotest/assertions/json/TypeCoercion;
 	public final fun setArrayOrder (Lio/kotest/assertions/json/ArrayOrder;)V
 	public final fun setFieldComparison (Lio/kotest/assertions/json/FieldComparison;)V
 	public final fun setNumberFormat (Lio/kotest/assertions/json/NumberFormat;)V
+	public final fun setOverrideMatchers (Ljava/util/Map;)V
 	public final fun setPropertyOrder (Lio/kotest/assertions/json/PropertyOrder;)V
 	public final fun setTypeCoercion (Lio/kotest/assertions/json/TypeCoercion;)V
 }
@@ -57,6 +59,19 @@ public final class io/kotest/assertions/json/FieldComparison : java/lang/Enum {
 
 public abstract class io/kotest/assertions/json/JsonError {
 	public abstract fun getPath ()Ljava/util/List;
+}
+
+public final class io/kotest/assertions/json/JsonError$CustomComparison : io/kotest/assertions/json/JsonError {
+	public fun <init> (Ljava/util/List;Ljava/lang/String;)V
+	public final fun component1 ()Ljava/util/List;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun copy (Ljava/util/List;Ljava/lang/String;)Lio/kotest/assertions/json/JsonError$CustomComparison;
+	public static synthetic fun copy$default (Lio/kotest/assertions/json/JsonError$CustomComparison;Ljava/util/List;Ljava/lang/String;ILjava/lang/Object;)Lio/kotest/assertions/json/JsonError$CustomComparison;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getMessage ()Ljava/lang/String;
+	public fun getPath ()Ljava/util/List;
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public final class io/kotest/assertions/json/JsonError$ExpectedArray : io/kotest/assertions/json/JsonError {
@@ -355,6 +370,10 @@ public final class io/kotest/assertions/json/JsonNode$StringNode$Companion {
 public abstract interface class io/kotest/assertions/json/JsonNode$ValueNode {
 }
 
+public abstract interface class io/kotest/assertions/json/JsonSubtreeMatcher {
+	public abstract fun assert (Lio/kotest/assertions/json/JsonNode;Lio/kotest/assertions/json/JsonNode;)Lio/kotest/matchers/MatcherResult;
+}
+
 public final class io/kotest/assertions/json/JsonTree {
 	public fun <init> (Lio/kotest/assertions/json/JsonNode;Ljava/lang/String;)V
 	public final fun component1 ()Lio/kotest/assertions/json/JsonNode;
@@ -394,6 +413,11 @@ public final class io/kotest/assertions/json/NumberFormat : java/lang/Enum {
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lio/kotest/assertions/json/NumberFormat;
 	public static fun values ()[Lio/kotest/assertions/json/NumberFormat;
+}
+
+public final class io/kotest/assertions/json/OverrideMatchersKt {
+	public static final fun matchArraysContainingAll ()Lio/kotest/assertions/json/JsonSubtreeMatcher;
+	public static final fun matchStringsIgnoringCase ()Lio/kotest/assertions/json/JsonSubtreeMatcher;
 }
 
 public final class io/kotest/assertions/json/PropertyOrder : java/lang/Enum {
