@@ -154,8 +154,11 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension, task: AbstractTestTask) {
 
       // this has to happen at configuration time as its a final property
-      if (task.hasProperty("failOnNoDiscoveredTests")) {
-         task.setProperty("failOnNoDiscoveredTests", false)
+      // Gradle's no-discovered-tests check false-positives on non-JVM targets, where Gradle's
+      // result counters stay at zero even when the whole suite ran successfully (#6257); on the
+      // JVM (Gradle's Test task) the check works correctly, so it is left enabled there
+      if (task !is Test && task.hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
+         task.setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
       }
 
       task.doFirst {
