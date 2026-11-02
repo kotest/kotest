@@ -49,6 +49,8 @@ class PropertyExample: FreeSpec({
 
 Sometimes in property test it is required to perform some setup and tear down in each iteration of test.
 For this purpose you can register a ```PropTestListener``` with ```PropTestConfig```.
+`beforeTest` and `afterTest` are called around every invocation of the property, including the invocations made while
+shrinking a failed input, and `afterTest` is called even when the property fails.
 ```kotlin
 class PropertyExample: FreeSpec({
    "some property test which require setup and tear down in each iteration" {

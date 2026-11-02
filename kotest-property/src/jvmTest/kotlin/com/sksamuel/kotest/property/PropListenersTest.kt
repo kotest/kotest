@@ -1,9 +1,14 @@
 package com.sksamuel.kotest.property
 
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.ints.shouldBeGreaterThan
+import io.kotest.matchers.ints.shouldBeLessThan
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import io.kotest.property.*
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.string
@@ -126,5 +131,126 @@ class PropListenersTest : FunSpec({
       previous shouldBe 9
       current shouldBe 10
       total shouldBe 10
+   }
+
+   context("listeners bracket every invocation of the property, including shrink runs") {
+
+      var befores = 0
+      var afters = 0
+      var invocations = 0
+      var overlapped = false
+
+      beforeTest {
+         befores = 0
+         afters = 0
+         invocations = 0
+         overlapped = false
+      }
+
+      val shrinkConfig = PropTestConfig(
+         seed = 4815162342,
+         edgeConfig = EdgeConfig(edgecasesGenerationProbability = 0.0),
+         listeners = listOf(object : PropTestListener {
+            override suspend fun beforeTest() {
+               ++befores
+            }
+
+            override suspend fun afterTest() {
+               ++afters
+            }
+         })
+      )
+
+      // records an invocation of the property, and whether exactly one beforeTest was open at the time
+      fun invoked() {
+         ++invocations
+         if (befores - afters != 1) overlapped = true
+      }
+
+      test("checkAll with param A") {
+         shouldThrowAny {
+            checkAll(shrinkConfig, Arb.int(100..1000)) { a ->
+               invoked()
+               a shouldBeLessThan 100
+            }
+         }
+         invocations shouldBeGreaterThan 1
+         overlapped shouldBe false
+         befores shouldBe invocations
+         afters shouldBe invocations
+      }
+
+      test("checkAll with params A, B") {
+         shouldThrowAny {
+            checkAll(shrinkConfig, Arb.int(100..1000), Arb.int(100..1000)) { a, b ->
+               invoked()
+               a + b shouldBeLessThan 200
+            }
+         }
+         invocations shouldBeGreaterThan 1
+         overlapped shouldBe false
+         befores shouldBe invocations
+         afters shouldBe invocations
+      }
+
+      test("forAll with params A, B, C") {
+         shouldThrowAny {
+            forAll(shrinkConfig, Arb.int(100..1000), Arb.int(100..1000), Arb.int(100..1000)) { a, b, c ->
+               invoked()
+               a + b + c < 300
+            }
+         }
+         invocations shouldBeGreaterThan 1
+         overlapped shouldBe false
+         befores shouldBe invocations
+         afters shouldBe invocations
+      }
+
+      test("a tolerated failure is still followed by afterTest") {
+         var failures = 0
+         checkAll(shrinkConfig.copy(iterations = 20, maxFailure = 20, minSuccess = 0), Arb.int(0..1000)) { a ->
+            invoked()
+            if (a >= 500) ++failures
+            a shouldBeLessThan 500
+         }
+         failures shouldBeGreaterThan 0
+         invocations shouldBe 20
+         overlapped shouldBe false
+         befores shouldBe 20
+         afters shouldBe 20
+      }
+   }
+
+   context("an afterTest that throws") {
+
+      val throwingConfig = PropTestConfig(
+         seed = 4815162342,
+         edgeConfig = EdgeConfig(edgecasesGenerationProbability = 0.0),
+         listeners = listOf(object : PropTestListener {
+            override suspend fun afterTest() = throw IllegalStateException("teardown failed")
+         })
+      )
+
+      test("does not hide the property failure, and the failure is still shrunk") {
+         val error = shouldThrowAny {
+            checkAll(throwingConfig, Arb.int(100..1000)) { a ->
+               a shouldBeLessThan 100
+            }
+         }
+         error.message shouldContain "Property failed"
+         error.message shouldContain "shrunk"
+         generateSequence(error) { it.cause }
+            .flatMap { it.suppressed.asSequence() }
+            .any { it is IllegalStateException && it.message == "teardown failed" } shouldBe true
+      }
+
+      test("still fails a property that passes") {
+         val error = shouldThrow<IllegalStateException> {
+            checkAll(throwingConfig.copy(iterations = 1), Arb.int(0..10)) { a ->
+               a shouldBeLessThan 100
+            }
+         }
+         error.message shouldBe "teardown failed"
+      }
    }
 })
