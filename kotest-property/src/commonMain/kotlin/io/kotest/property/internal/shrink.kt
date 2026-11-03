@@ -39,7 +39,7 @@ suspend fun <A> doShrinking(
    return if (stepResult == null) {
       ShrinkResult(initial.value(), initial.value(), null)
    } else {
-      ShrinkResult(initial.value(), stepResult.failed, stepResult.cause)
+      ShrinkResult(initial.value(), stepResult.failed, stepResult.cause, stepResult.path)
    }
 }
 
@@ -52,10 +52,24 @@ class Counter {
  * The result of shrinking a failed arg.
  * If no shrinking took place, shrink should be set to the same as the initial.
  * Each arg that was part of the failed test will have a [ShrinkResult] associated with it.
+ *
+ * [path] records the sequence of raw child indices (into [RTree.children]) traversed during the
+ * shrinking search. An empty path means no shrinking actually took place. Recording the path
+ * makes it possible for a follow-up to replay a known failure directly — see issue
+ * [#3076](https://github.com/kotest/kotest/issues/3076).
  */
-data class ShrinkResult<out A>(val initial: A, val shrink: A, val cause: Throwable?)
+data class ShrinkResult<out A> @JvmOverloads constructor(
+   val initial: A,
+   val shrink: A,
+   val cause: Throwable?,
+   val path: List<Int> = emptyList(),
+)
 
-data class StepResult<A>(val failed: A, val cause: Throwable)
+data class StepResult<A> @JvmOverloads constructor(
+   val failed: A,
+   val cause: Throwable,
+   val path: List<Int> = emptyList(),
+)
 
 /**
  * Performs shrinking on the given RTree. Recurses into the tree for failing cases.
@@ -74,28 +88,36 @@ suspend fun <A> doStep(
    if (!mode.isShrinking(counter.count)) return null
    val candidates = tree.children.value
 
-   candidates.asSequence()
+   // We iterate over raw indices (not the dedup-filtered sequence) so that the recorded
+   // [StepResult.path] uses positions in [RTree.children] directly. That keeps any future
+   // replay simple: walk `children[path[i]]` at each level without having to reconstruct
+   // the `tested` state we built up during the search.
+   for ((rawIdx, a) in candidates.withIndex()) {
+      val candidate = a.value()
       // shrinkers might generate duplicate candidates so we must filter them out to avoid infinite loops or slow shrinking
-      .filter { tested.add(it.value()) }
-      .forEach { a ->
-         val candidate = a.value()
-         counter.inc()
-         try {
-            test(candidate)
-            if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
-         } catch (_: IterationSkippedException) {
-            // A skipped iteration (from assume()) is not a failure — the shrunk value does not
-            // satisfy the precondition so it is not a valid counterexample. Treat it as a pass.
-            if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${candidate.print().value} skip\n")
-         } catch (t: Throwable) {
-            if (PropertyTesting.shouldPrintShrinkSteps)
-               sb.append("Shrink #${counter.count}: ${candidate.print().value} fail\n")
-            // this result failed, so we'll recurse in to find further failures otherwise return this candidate
-            return doStep(a, mode, tested, counter, test, sb) ?: StepResult(candidate, t)
+      if (!tested.add(candidate)) continue
+      counter.inc()
+      try {
+         test(candidate)
+         if (PropertyTesting.shouldPrintShrinkSteps)
+            sb.append("Shrink #${counter.count}: ${candidate.print().value} pass\n")
+      } catch (_: IterationSkippedException) {
+         // A skipped iteration (from assume()) is not a failure — the shrunk value does not
+         // satisfy the precondition so it is not a valid counterexample. Treat it as a pass.
+         if (PropertyTesting.shouldPrintShrinkSteps)
+            sb.append("Shrink #${counter.count}: ${candidate.print().value} skip\n")
+      } catch (t: Throwable) {
+         if (PropertyTesting.shouldPrintShrinkSteps)
+            sb.append("Shrink #${counter.count}: ${candidate.print().value} fail\n")
+         // this result failed, so we'll recurse in to find further failures otherwise return this candidate
+         val deeperResult = doStep(a, mode, tested, counter, test, sb)
+         return if (deeperResult != null) {
+            deeperResult.copy(path = listOf(rawIdx) + deeperResult.path)
+         } else {
+            StepResult(candidate, t, listOf(rawIdx))
          }
       }
+   }
 
    return null
 }

@@ -122,6 +122,7 @@ Caused by: Property passed 8 times (minSuccess rate was 9)"""
 	Arg 1: "r" (shrunk from "rDi")
 
 Repeat this test by using seed 1234
+Shrink paths: [[0], [0, 0]]
 
 Caused by IllegalArgumentException: something unexpected happened"""
    }
