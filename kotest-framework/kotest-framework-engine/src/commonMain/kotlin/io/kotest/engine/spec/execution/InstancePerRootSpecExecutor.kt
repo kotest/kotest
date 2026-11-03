@@ -6,6 +6,7 @@ import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.isRootTest
 import io.kotest.engine.TestEngineContext
+import io.kotest.engine.concurrency.concurrentExecutionContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.SpecExtensions
 import io.kotest.engine.spec.SpecRefInflator
@@ -64,6 +65,7 @@ internal class InstancePerRootSpecExecutor(
       // controls how many tests to execute concurrently
       val concurrency = ctx.specConfigResolver.testExecutionMode(seed).concurrency
       val semaphore = Semaphore(concurrency)
+      val dispatchContext = concurrentExecutionContext(concurrency)
 
       // all root test coroutines are launched immediately;
       // the semaphore will control how many can actually run concurrently
@@ -80,7 +82,7 @@ internal class InstancePerRootSpecExecutor(
                } else root
                // now all we have left are enabled tests so we can pass through them the full pipeline
             }.withIndex().toList().forEach { (index, root) ->
-               launch {
+               launch(dispatchContext) {
                   semaphore.withPermit {
                      if (index == 0) {
                         /**

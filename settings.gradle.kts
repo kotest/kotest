@@ -163,6 +163,7 @@ if (shouldRunJvmOnlyModules) {
 
       ":kotest-tests:kotest-tests-concurrency-tests",
       ":kotest-tests:kotest-tests-concurrency-specs",
+      ":kotest-tests:kotest-tests-blocking-concurrent-spec",
 
       ":kotest-tests:kotest-tests-config-project",
       // tests that we can look up a project config by extending from a shared module
