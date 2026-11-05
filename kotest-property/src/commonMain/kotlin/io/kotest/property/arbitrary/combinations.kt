@@ -2,6 +2,7 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import kotlin.jvm.JvmName
+import kotlin.random.Random
 
 /**
  * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
@@ -156,6 +157,61 @@ fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
       edgecaseFn = { arbs.edgecase(it) },
       sampleFn = { arbs.random(it.random).next(it) }
    )
+}
+
+/**
+ * Uses the [Arb]s provided to randomly generate the next element, in the spirit of swarm testing:
+ * for each property test run a random non-empty subset of the input arbs is activated and the rest
+ * are disabled for the whole run, each arb being disabled with probability 0.5.
+ *
+ * Counterintuitively, disabling generators can improve a test's capacity to catch bugs: a plain
+ * [choice] practically never generates e.g. a command sequence consisting solely of a single
+ * command type, while a swarm of those commands will, for some runs.
+ *
+ * The active subset is derived from the run's seed, so replaying a failing seed reproduces the
+ * same disabled arbs. The returned [Arb]'s edge cases contain the edge cases of all input [Arb]s.
+ *
+ * The input must be non-empty.
+ * The input [Arb]s must be infinite.
+ *
+ * @return A new [Arb]<A> that will randomly select values from the active subset of the provided
+ * [Arb]s, and combine all of the provided [Arb]s edge cases
+ */
+fun <A> Arb.Companion.swarm(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> = swarm(listOf(arb, *arbs))
+
+/**
+ * Uses the [Arb]s provided to randomly generate the next element, in the spirit of swarm testing:
+ * for each property test run a random non-empty subset of the input arbs is activated and the rest
+ * are disabled for the whole run, each arb being disabled with probability 0.5.
+ *
+ * Counterintuitively, disabling generators can improve a test's capacity to catch bugs: a plain
+ * [choice] practically never generates e.g. a command sequence consisting solely of a single
+ * command type, while a swarm of those commands will, for some runs.
+ *
+ * The active subset is derived from the run's seed, so replaying a failing seed reproduces the
+ * same disabled arbs. The returned [Arb]'s edge cases contain the edge cases of all input [Arb]s.
+ *
+ * @throws IllegalArgumentException if no arbs have been passed to this function
+ *
+ * @return A new [Arb]<A> that will randomly select values from the active subset of the provided
+ * [Arb]s, and combine all of the provided [Arb]s edge cases
+ */
+fun <A> Arb.Companion.swarm(arbs: List<Arb<A>>): Arb<A> {
+   require(arbs.isNotEmpty()) { "List of arbs provided to Arb.swarm must not be empty" }
+   return arbitrary(
+      edgecaseFn = { rs -> arbs.edgecase(rs) },
+      sampleFn = { rs -> arbs.swarmed(rs.seed).random(rs.random).next(rs) }
+   )
+}
+
+/**
+ * Returns a random non-empty subset of [arbs], derived deterministically from [seed] so that
+ * replaying a property test seed reproduces the same disabled arbs.
+ */
+private fun <A> List<Arb<A>>.swarmed(seed: Long): List<Arb<A>> {
+   val random = Random(seed)
+   val active = filter { random.nextBoolean() }
+   return if (active.isEmpty()) listOf(this[random.nextInt(size)]) else active
 }
 
 
