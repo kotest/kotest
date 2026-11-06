@@ -45,13 +45,41 @@ infix fun String.shouldEqualYaml(expected: String): String {
    return this
 }
 
+/**
+ * Verifies that the receiver matches the yaml string returned by the given block [configureAndProvideExpected].
+ * The function allows configuration of [CompareYamlOptions] before returning the expected yaml.
+ */
+infix fun String.shouldEqualYaml(configureAndProvideExpected: CompareYamlOptions.() -> String): String {
+   val options = CompareYamlOptions()
+   val expected = options.configureAndProvideExpected()
+   this should equalYaml(expected, options)
+   return this
+}
+
 infix fun String.shouldNotEqualYaml(expected: String): String {
    this shouldNot equalYaml(expected)
    return this
 }
 
+/**
+ * Configures [CompareYamlOptions] with the given block, which should also return the expected value
+ */
+infix fun String.shouldNotEqualYaml(configureAndProvideExpected: CompareYamlOptions.() -> String): String {
+   val options = CompareYamlOptions()
+   val expected = options.configureAndProvideExpected()
+   this shouldNot equalYaml(expected, options)
+   return this
+}
+
+/**
+ * Returns a [io.kotest.matchers.Matcher] that verifies that two YAML strings are equal.
+ *
+ * This matcher will consider two YAML strings matched if they have the same key-values pairs.
+ * The [CompareYamlOptions] parameter can be used to configure the matcher behavior.
+ */
 fun equalYaml(
    expected: String,
+   options: CompareYamlOptions,
 ): Matcher<String?> =
    Matcher { actual ->
       if (actual == null) {
@@ -78,20 +106,36 @@ fun equalYaml(
                .withNegatedFailureMessage { "expected: expected YAML to be invalid YAML: $expected" }
                .build()
          }
-         equalYamlNode(expectedYaml).test(actualYaml)
+         equalYamlNode(expectedYaml, options).test(actualYaml)
       }
    }
 
+/**
+ * Returns a [io.kotest.matchers.Matcher] that verifies that two YAML strings are equal,
+ * using the default [CompareYamlOptions].
+ *
+ * This matcher will consider two YAML strings matched if they have the same key-values pairs.
+ */
+fun equalYaml(
+   expected: String,
+): Matcher<String?> = equalYaml(expected, CompareYamlOptions())
+
 private fun equalYamlNode(
    expected: YamlNode,
+   options: CompareYamlOptions,
 ): Matcher<YamlNode> =
    Matcher { value ->
-      val passed = expected.equivalentContentTo(value)
-      MatcherResultBuilder.create(passed)
+      val errors = compare(
+         path = listOf(),
+         expectedNode = expected,
+         actualNode = value,
+         options,
+      )
+      MatcherResultBuilder.create(errors.isEmpty())
          .withValues(
             expected = { expected.contentToString().print() },
             actual = { value.contentToString().print() })
-         .withFailureMessage { "$passed\n" }
+         .withFailureMessage { "${errors.joinToString("\n") { it.asString() }}\n" }
          .withNegatedFailureMessage { "Expected values to not match" }
          .build()
    }
