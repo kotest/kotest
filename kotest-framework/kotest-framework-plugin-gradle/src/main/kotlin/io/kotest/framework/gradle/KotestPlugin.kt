@@ -73,6 +73,12 @@ abstract class KotestPlugin : Plugin<Project> {
       internal const val FAIL_ON_NO_DISCOVERED_TESTS = "failOnNoDiscoveredTests"
       internal const val JVM_TEST_SUITE = "JVM_TEST_SUITE"
 
+      // the com.android.kotlin.multiplatform.library plugin hosts the unit tests of its android
+      // target in the hostTest compilation, run by the androidHostTest task
+      internal const val HOST_TEST_COMPILATION = "hostTest"
+      internal const val ANDROID_HOST_TEST_TASK_NAME = "androidHostTest"
+      internal const val KOTEST_ANDROID_HOST_TEST_NAME = "kotestAndroidHostTest"
+
       const val POWER_ASSERT_PLUGIN_ID = "org.jetbrains.kotlin.plugin.power-assert"
    }
 
@@ -154,8 +160,11 @@ abstract class KotestPlugin : Plugin<Project> {
    private fun decorateGradleTestTask(project: Project, extension: KotestGradleExtension, task: AbstractTestTask) {
 
       // this has to happen at configuration time as its a final property
-      if (task.hasProperty("failOnNoDiscoveredTests")) {
-         task.setProperty("failOnNoDiscoveredTests", false)
+      // Gradle's no-discovered-tests check false-positives on non-JVM targets, where Gradle's
+      // result counters stay at zero even when the whole suite ran successfully (#6257); on the
+      // JVM (Gradle's Test task) the check works correctly, so it is left enabled there
+      if (task !is Test && task.hasProperty(FAIL_ON_NO_DISCOVERED_TESTS)) {
+         task.setProperty(FAIL_ON_NO_DISCOVERED_TESTS, false)
       }
 
       task.doFirst {
@@ -422,8 +431,82 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun handleMultiplatformAndroid(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
-      if (target is KotlinAndroidTarget) {
-         configureAndroid(target.project, target.compilations, "android", kotestExtension)
+      when (target) {
+         is KotlinAndroidTarget -> configureAndroid(target.project, target.compilations, "android", kotestExtension)
+
+         // the com.android.kotlin.multiplatform.library plugin, required for Android in KMP projects
+         // from AGP 9, registers an androidJvm target that is not a KotlinAndroidTarget (#6132);
+         // its unit tests live in the hostTest compilation, run by the androidHostTest task
+         else -> configureAndroidHostTest(target, kotestExtension)
+      }
+   }
+
+   /**
+    * Wires a kotest task into the [HOST_TEST_COMPILATION] compilation of an android target created
+    * by the `com.android.kotlin.multiplatform.library` plugin, which hosts the unit tests of that
+    * target. Device tests (instrumentation) are not supported by Kotest.
+    */
+   private fun configureAndroidHostTest(target: KotlinTarget, kotestExtension: KotestGradleExtension) {
+      val project = target.project
+      val compilation = target.compilations.findByName(HOST_TEST_COMPILATION)
+      if (compilation == null) {
+         // host tests are disabled by default in the android multiplatform library plugin
+         project.logger.info("> Skipping tests for ${target.name} because no $HOST_TEST_COMPILATION compilation found")
+         return
+      }
+
+      if (kotestExtension.customGradleTask.getOrElse(false)) {
+         val runtimeConfigurationName = compilation.runtimeDependencyConfigurationName
+            ?: error("No runtime dependency configuration found for compilation ${compilation.name}")
+
+         val runtimeConfiguration = project.configurations.findByName(runtimeConfigurationName)
+            ?: error("No configuration found for $runtimeConfigurationName")
+
+         // to run specs we need to include dependencies and the compiled output
+         val runtimeWithTests = project.objects.fileCollection()
+            .from(runtimeConfiguration)
+            .from(compilation.output.allOutputs)
+
+         val kotestTaskName = KOTEST_ANDROID_HOST_TEST_NAME
+
+         val task = project.tasks.register(kotestTaskName, KotestAndroidTask::class) {
+
+            group = JavaBasePlugin.VERIFICATION_GROUP
+            description = TASK_DESCRIPTION
+
+            // I don't know why this has to be set here and not inside the exec method
+            // it works for JVM but not KMP JVM
+            // I think the KMP version must be shadowing the mainClass variable somewhere
+            mainClass.set(LAUNCHER_MAIN_CLASS)
+            classpath = runtimeWithTests
+
+            // we don't want to abort test runs when we have test failures for one target
+            isIgnoreExitValue = true
+
+            // for specs we only care about what's outputted by this compilation
+            specsClasspath.set(compilation.output.allOutputs)
+
+            // we set the test reports dir to the standard android test reports dir
+            // this will result in something like build/test-results/kotestAndroidHostTest
+            moduleTestReportsDir.set(getModuleTestReportsDir(project, name))
+            rootTestReportsDir.set(getRootTestReportsDir(project, name))
+            compilationName.set(compilation.name)
+            targetName.set(target.name)
+
+            // we can execute check or test tasks with -Pkotest.include and this will then be
+            // passed to the kotest runtime as an environment variable to filter specs and tests
+            project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
+
+            // we depend on the standard android host test task to ensure compilation has happened
+            dependsOn(ANDROID_HOST_TEST_TASK_NAME)
+            inputs.files(project.tasks.named(ANDROID_HOST_TEST_TASK_NAME).map { it.outputs.files })
+         }
+
+         // this means that this kotest task will be run when the user runs "gradle kotest"
+         project.tasks.getByName(KOTEST_TASK_NAME) {
+            project.logger.info("> Configuring kotest task for $kotestTaskName")
+            dependsOn(task)
+         }
       }
    }
 
