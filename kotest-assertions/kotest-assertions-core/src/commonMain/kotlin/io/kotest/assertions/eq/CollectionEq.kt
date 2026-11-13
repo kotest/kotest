@@ -6,8 +6,42 @@ import io.kotest.assertions.AssertionsConfig
 import io.kotest.assertions.Expected
 import io.kotest.assertions.print.print
 
+/**
+ * An [Eq] typeclass that compares two [Collection]s for equality.
+ *
+ * The comparison strategy depends on the runtime types:
+ *
+ * - Two [Set]s are compared order-independently (element membership only), since `{1,2,3}` and
+ *   `{3,2,1}` denote the same set.
+ * - Non-[Set] collections (such as [List]s) are compared element by element, in iteration order.
+ * - A [Set] is compared in iteration order against a non-`Set` iterable only when [isOrderedSet] reports
+ *   it has a stable iteration order (a `LinkedHashSet` or single-element set on any platform, plus
+ *   `SortedSet` and Java sequenced sets on the JVM); otherwise the comparison is disallowed, because the
+ *   outcome would depend on undefined iteration order.
+ *
+ * Elements are themselves compared deeply via Kotest's [EqCompare], so nested collections, maps, arrays
+ * and data classes are matched structurally rather than by reference. Recursion is guarded against
+ * cyclic references: an `actual`/`expected` pair already on the comparison stack short-circuits to
+ * [EqResult.Success], and [EqContext] enforces a maximum depth.
+ *
+ * Iterables that are not [Collection]s and are nested inside another such iterable are disallowed: they
+ * short-circuit with a [DISALLOWED] message advising the use of custom test code. [ArrayEq] mirrors this
+ * mechanism for nested arrays.
+ */
 object CollectionEq : Eq<Collection<*>> {
 
+   /**
+    * Compares [actual] and [expected] for equality, dispatching on their runtime types.
+    *
+    * Returns early with [EqResult.Success] for reference-identical arguments and for pairs already on
+    * the comparison stack (cycle guard). Otherwise the pair is pushed onto [context] for the duration of
+    * the comparison so nested calls can detect cycles and enforce the depth limit.
+    *
+    * @param context carries strict numeric equality, the active [EqResolver] and the recursion/cycle
+    *                tracking state. See [EqContext].
+    * @return [EqResult.Success] when equal, otherwise an [EqResult.Failure] describing the differences or
+    *         reporting a disallowed comparison.
+    */
    override fun equals(actual: Collection<*>, expected: Collection<*>, context: EqContext): EqResult {
       if (actual === expected) return EqResult.Success
 
@@ -33,6 +67,11 @@ object CollectionEq : Eq<Collection<*>> {
       }
    }
 
+   /**
+    * Compares two [Set]s order-independently. Differing sizes fail immediately; otherwise membership is
+    * checked with [equalsIgnoringOrder]. A disallowed nested comparison surfaced during the scan is
+    * propagated as-is, while any other mismatch yields a generic expected/actual error.
+    */
    private fun checkSetEquality(actual: Set<*>, expected: Set<*>, context: EqContext): Throwable? {
       return if (actual.size != expected.size) generateError(actual, expected) else {
          val (isEqual, innerError) = equalsIgnoringOrder(actual, expected, context)
@@ -40,6 +79,11 @@ object CollectionEq : Eq<Collection<*>> {
       }
    }
 
+   /**
+    * Guards against comparing structurally incompatible iterables. The pair is compatible when both are
+    * [Collection]s, or when each is an instance of the other's runtime class. Returns `null` when
+    * compatible, otherwise a disallowed-comparison error from [errorWithTypeDetails].
+    */
    private fun checkIterableCompatibility(actual: Iterable<*>, expected: Iterable<*>): Throwable? {
       val isCompatible =
          ((actual is Collection) && (expected is Collection))
@@ -47,6 +91,15 @@ object CollectionEq : Eq<Collection<*>> {
       return if (isCompatible) null else errorWithTypeDetails(actual, expected)
    }
 
+   /**
+    * Determines whether two [Set]s contain matching elements regardless of order, returning whether every
+    * `actual` element has a counterpart in `expected`, together with the first disallowed-comparison error
+    * encountered (a message starting with [TRIGGER]).
+    *
+    * Collection-like elements (sets, maps, collections, arrays and other iterables) are matched with
+    * Kotest's [EqCompare] for deep equality and are only paired with expected elements of the same broad
+    * kind; scalar elements fall back to plain [Set.contains].
+    */
    // when comparing sets we need to consider that {1,2,3} is the same set as {3,2,1}.
    // but we can't just use the built in equality, because it won't work for nested arrays, eg
    // { [1,2,3], 4 } != { [1,2,3], 4 }
@@ -98,8 +151,24 @@ object CollectionEq : Eq<Collection<*>> {
       }, innerError)
    }
 
+   /**
+    * Token (`"Disallowed"`) prefixing every message that marks a comparison as disallowed rather than an
+    * ordinary mismatch. It is matched directly by [equalsIgnoringOrder] and also forms the start of both
+    * [errorWithTypeDetails]'s messages and the [DISALLOWED] nested-iterator prefix. [ArrayEq] declares an
+    * identical token.
+    */
    const val TRIGGER = "Disallowed"
 
+   /**
+    * Builds the disallowed-comparison error for incompatible iterable types, with a message tailored to
+    * the cause:
+    *
+    * - a [Set] compared with something that lacks a stable iteration order,
+    * - a [Collection] compared with an incompatible non-`Collection` ("typed contract"),
+    * - two otherwise-unrelated bare iterables ("promiscuous iterators").
+    *
+    * Every variant is prefixed with [TRIGGER].
+    */
    private fun errorWithTypeDetails(actual: Iterable<*>, expected: Iterable<*>): Throwable {
       val actualTypeName = actual::class.simpleName ?: actual::class
       val expectedTypeName = expected::class.simpleName ?: expected::class
@@ -120,8 +189,24 @@ object CollectionEq : Eq<Collection<*>> {
       return AssertionErrorBuilder.create().withMessage(detailErrorMessage).build()
    }
 
+   /**
+    * Full prefix of the message raised when a non-[Collection] iterable is found nested inside another
+    * such iterable. [checkEquality] matches on this prefix to short-circuit the comparison. Mirrors
+    * [ArrayEq]'s constant of the same name, which targets nested arrays.
+    */
    private const val DISALLOWED = "$TRIGGER nesting iterator"
 
+   /**
+    * Compares two ordered iterables element by element, in order, accruing every difference it can
+    * detect: indices whose elements differ, trailing unexpected elements (present in `actual` only) and
+    * trailing missing elements (present in `expected` only). For differing data-class pairs a per-property
+    * diff is appended, capped at [AssertionsConfig.maxCollectionDiffCount] with a summary of the rest.
+    *
+    * Elements are compared first by reference, then deeply via [EqCompare]. A non-[Collection] iterable
+    * nested inside another (detected via [DISALLOWED]) short-circuits the whole comparison.
+    *
+    * @return `null` when the iterables are equal, otherwise the built [Throwable].
+    */
    private fun checkEquality(actual: Iterable<*>, expected: Iterable<*>, context: EqContext): Throwable? {
 
       val iter1 = actual.iterator()
@@ -225,6 +310,10 @@ object CollectionEq : Eq<Collection<*>> {
          } else null
    }
 
+   /**
+    * Builds a bare assertion error carrying only the printed [expected] and [actual] values, with no
+    * element-level detail message.
+    */
    private fun generateError(actual: Any, expected: Any): Throwable = AssertionErrorBuilder.create()
       .withValues(Expected(expected.print()), Actual(actual.print()))
       .build()
