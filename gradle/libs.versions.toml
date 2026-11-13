@@ -27,7 +27,7 @@ byte-buddy = "1.18.11"
 classgraph = "4.8.186"
 
 commons-lang3 = "3.20.0"
-commons-beanutils = "1.11.0" # CVE-2025-48734 fix; pulled transitively by mockserver via json-path
+commons-beanutils = "1.11.0" # CVE-2025-48734 fix; pulled transitively by mockserver 6.x via velocity-tools-generic
 gradle-test-logger-plugin = "4.0.0"
 
 intellij-platform-gradle-plugin = "2.13.1"
@@ -72,7 +72,11 @@ spring = "5.3.39"
 dev-publish-plugin = "0.4.2"
 
 wiremock = "3.13.2"
-mockserver = "6.0.0"
+mockserver = "6.1.0"
+# patched versions of mockserver 6.x transitive deps, see #6258 (mockserver 7+ needs Java 17, so 6.1.0 is the newest usable)
+mockserver-netty-patch = "4.2.19.Final"
+mockserver-jackson-patch = "2.22.3"
+mockserver-bouncycastle-patch = "1.86"
 fuel = "2.3.1"
 konform = "0.11.1"
 jsoup = "1.21.1"
@@ -132,6 +136,12 @@ arrow-functions = { module = "io.arrow-kt:arrow-functions", version.ref = "arrow
 asm = { module = "org.ow2.asm:asm", version.ref = "asm" }
 apache-commons-lang = { module = "org.apache.commons:commons-lang3", version.ref = "commons-lang3" }
 apache-commons-beanutils = { module = "commons-beanutils:commons-beanutils", version.ref = "commons-beanutils" }
+mockserver-patch-netty-bom = { module = "io.netty:netty-bom", version.ref = "mockserver-netty-patch" }
+mockserver-patch-jackson-bom = { module = "com.fasterxml.jackson:jackson-bom", version.ref = "mockserver-jackson-patch" }
+mockserver-patch-asm-bom = { module = "org.ow2.asm:asm-bom", version.ref = "asm" }
+mockserver-patch-bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "mockserver-bouncycastle-patch" }
+mockserver-patch-bcpkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "mockserver-bouncycastle-patch" }
+mockserver-patch-bcutil = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "mockserver-bouncycastle-patch" }
 
 blockhound = { module = "io.projectreactor.tools:blockhound", version.ref = "blockhound" }
 byte-buddy = { group = "net.bytebuddy", name = "byte-buddy", version.ref = "byte-buddy" }
