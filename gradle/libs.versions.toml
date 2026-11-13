@@ -44,7 +44,7 @@ junit-platform6 = "6.0.3"
 junit-jupiter5 = "5.13.4"
 junit-jupiter6 = "6.0.3"
 
-jimfs = "1.3.1"
+jimfs = "1.3.2"
 
 kaml = "0.104.0"
 koin = "4.1.0" # 4.2.x requires Kotlin 2.3.x KLIB ABI; 4.1.0 is the last 2.2.x-compatible release
