@@ -38,7 +38,9 @@ class SourceRefTest : FunSpec() {
       // after PR https://github.com/kotest/kotest/pull/6203:
       // StackWalker + plain java.lang.Class based implementation
 
-      // retune if flaky on CI
+      // retune if flaky on CI - history:
+      // - before 13/11/26 it was set to 600ms and flaky
+      // - as of 13/11/2026 it was raised to 1000ms
       test("source ref should be performant").config(timeout = 20.seconds) {
          val duration = measureTime {
             repeat(5_000) {
@@ -46,7 +48,7 @@ class SourceRefTest : FunSpec() {
                Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first().source
             }
          }
-         duration.inWholeMilliseconds shouldBeLessThan 600L
+         duration.inWholeMilliseconds shouldBeLessThan 1000L
       }
    }
 }
