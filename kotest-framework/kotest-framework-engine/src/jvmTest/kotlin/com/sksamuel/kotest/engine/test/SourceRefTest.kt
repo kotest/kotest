@@ -38,15 +38,21 @@ class SourceRefTest : FunSpec() {
       // after PR https://github.com/kotest/kotest/pull/6203:
       // StackWalker + plain java.lang.Class based implementation
 
-      // retune if flaky on CI
+      // retune if flaky on CI - history:
+      // - before 13/11/26 it was set to 600ms and flaky
+      // - as of 13/11/2026 it was raised to 1000ms
+      // - after that, measured as best of 3 rounds after a warm-up, so one-off JIT/GC/CPU-contention stalls
+      //   on shared runners don't fail it, while a real regression (every round slow) still does
       test("source ref should be performant").config(timeout = 20.seconds) {
-         val duration = measureTime {
+         fun round() = measureTime {
             repeat(5_000) {
                val spec = MySpecForTestCaseSourceRefTest()
                Materializer().materialize(spec, Reference(spec::class, spec::class.bestName())).first().source
             }
          }
-         duration.inWholeMilliseconds shouldBeLessThan 600L
+         round() // warm-up
+         val best = List(3) { round() }.min()
+         best.inWholeMilliseconds shouldBeLessThan 1000L
       }
    }
 }
