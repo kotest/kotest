@@ -1,5 +1,3 @@
-@file:Suppress("unused")
-
 package io.kotest.engine.launcher
 
 import io.kotest.core.config.AbstractProjectConfig
@@ -12,6 +10,7 @@ import io.kotest.engine.js.isJavaScriptTestFrameworkAvailable
 import io.kotest.engine.js.isNodeJsRuntime
 import io.kotest.engine.js.kotlinJsTestFramework
 import io.kotest.engine.js.printStderr
+import io.kotest.engine.listener.PinnedTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.await
@@ -24,7 +23,7 @@ actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjec
    val listener = if (isJavaScriptTestFrameworkAvailable())
       JsTestFrameworkTestEngineListener(kotlinJsTestFramework)
    else
-      TeamCityTestEngineListener()
+      PinnedTestEngineListener(TeamCityTestEngineListener())
 
    val launcher = TestEngineLauncher()
       .withSpecRefs(specs)

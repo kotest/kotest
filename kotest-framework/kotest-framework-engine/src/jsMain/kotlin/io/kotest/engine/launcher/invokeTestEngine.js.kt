@@ -8,16 +8,15 @@ import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.js.JsTestFrameworkTestEngineListener
 import io.kotest.engine.js.isJavaScriptTestFrameworkAvailable
 import io.kotest.engine.js.kotlinJsTestFramework
+import io.kotest.engine.listener.PinnedTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
-import kotlinx.coroutines.DelicateCoroutinesApi
 
-@OptIn(DelicateCoroutinesApi::class)
 actual suspend fun invokeTestEngine(specs: List<SpecRef>, config: AbstractProjectConfig?) {
 
    val listener = if (isJavaScriptTestFrameworkAvailable())
       JsTestFrameworkTestEngineListener(kotlinJsTestFramework)
    else
-      TeamCityTestEngineListener()
+      PinnedTestEngineListener(TeamCityTestEngineListener())
 
    val launcher = TestEngineLauncher()
       .withSpecRefs(specs)
