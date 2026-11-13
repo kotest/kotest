@@ -89,7 +89,7 @@ class OverrideMatchersTest : FunSpec(
       }
 
       test("a custom matcher can target the whole document") {
-         val anyDocument = JsonSubtreeMatcher { _, _ ->
+         val anyDocument = JsonSubtreeMatcher { _, _, _ ->
             MatcherResult(true, { "Expected values to not match" }, { "Expected values to not match" })
          }
 
@@ -108,7 +108,7 @@ class OverrideMatchersTest : FunSpec(
       }
 
       test("a custom matcher can compare subtrees with its own logic") {
-         val compareVersions = JsonSubtreeMatcher { expected, actual ->
+         val compareVersions = JsonSubtreeMatcher { expected, actual, _ ->
             val passed = expected is JsonNode.StringNode && actual is JsonNode.StringNode &&
                expected.value.toDouble() == actual.value.toDouble()
             MatcherResult(passed, { "expected version ${show(expected)} but was ${show(actual)}" }, { "Expected values to not match" })
@@ -117,6 +117,14 @@ class OverrideMatchersTest : FunSpec(
          """{ "version": "1.10" }""" shouldEqualJson {
             overrideMatchers = mapOf("version" to compareVersions)
             """{ "version": "1.1" }"""
+         }
+      }
+
+      test("matchArraysContainingAll compares elements with the enclosing options") {
+         """{ "users": [ { "name": "sam", "age": 3 } ] }""" shouldEqualJson {
+            fieldComparison = FieldComparison.Lenient
+            overrideMatchers = mapOf("users" to matchArraysContainingAll())
+            """{ "users": [ { "name": "sam" } ] }"""
          }
       }
    }

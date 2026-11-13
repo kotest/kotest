@@ -18,7 +18,7 @@ internal fun compare(
    if (options.overrideMatchers.isNotEmpty()) {
       val matcher = options.overrideMatchers[path.toJsonPath()]
       if (matcher != null) {
-         val result = matcher.assert(expected, actual)
+         val result = matcher.assert(expected, actual, options)
          return if (result.passed()) emptyList()
          else listOf(JsonError.CustomComparison(path, result.failureMessage()))
       }

@@ -91,15 +91,16 @@ Ready-made matchers include:
   array, ignoring order and extra elements
 - `matchStringsIgnoringCase()` — string values are compared ignoring case
 
-Custom matchers implement `JsonSubtreeMatcher` and receive both the expected and the actual subtree:
+Custom matchers implement `JsonSubtreeMatcher` and receive the expected and the actual subtree, plus the active
+`CompareJsonOptions`, so a matcher can reuse the options configured on the enclosing comparison:
 
 ```kotlin
-val ignoreBuildMetadata = JsonSubtreeMatcher { expected, actual ->
+val ignoreBuildMetadata = JsonSubtreeMatcher { expected, actual, _ ->
    val passed = expected is JsonNode.StringNode && actual is JsonNode.StringNode &&
       actual.value.substringBefore('+') == expected.value
    MatcherResult(
       passed,
-      { "expected version ${show(expected)} but was ${show(actual)}" },
+      { "expected version ${expected.value} but was ${actual.value}" },
       { "Expected values to not match" },
    )
 }

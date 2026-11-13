@@ -6,19 +6,22 @@ import io.kotest.matchers.MatcherResult
 /**
  * Custom comparison for a JSON subtree, registered in [CompareJsonOptions.overrideMatchers].
  *
- * The matcher receives both the expected and the actual subtree and decides whether they match;
- * when it matches, structural comparison of the subtree is skipped entirely.
+ * The matcher receives both the expected and the actual subtree, plus the active
+ * [CompareJsonOptions], and decides whether they match; when it matches, structural
+ * comparison of the subtree is skipped entirely.
  */
 fun interface JsonSubtreeMatcher {
 
    /**
-    * Compares the [expected] and [actual] subtrees.
+    * Compares the [expected] and [actual] subtrees. The [options] are the ones configured
+    * on the enclosing comparison, so a matcher can compare nested values consistently
+    * with the surrounding assertion (or deliberately deviate from them).
     *
     * @return a [MatcherResult]; [MatcherResult.passed] decides the outcome and
     * [MatcherResult.failureMessage] is rendered, prefixed with the subtree path,
     * when the overall assertion fails.
     */
-   fun assert(expected: JsonNode, actual: JsonNode): MatcherResult
+   fun assert(expected: JsonNode, actual: JsonNode, options: CompareJsonOptions): MatcherResult
 }
 
 /**
@@ -41,19 +44,21 @@ internal fun List<String>.toJsonPath(): String = buildString {
  * is matched by some element of the actual array, ignoring order and allowing the actual
  * array to contain extra elements.
  *
- * Elements are compared as JSON subtrees with the default [CompareJsonOptions].
+ * Elements are compared as JSON subtrees with the options of the enclosing comparison,
+ * so e.g. an outer `fieldComparison = FieldComparison.Lenient` also applies to the elements.
  *
  * This is the "partial array match" — the actual array must cover the expected one,
  * but may contain more:
  *
  * ```kotlin
  * """{ "users": [{ "name": "sam" }, { "name": "bob" }] }""" shouldEqualJson {
+ *    fieldComparison = FieldComparison.Lenient
  *    overrideMatchers = mapOf("users" to matchArraysContainingAll())
- *    """{ "users": [{ "name": "sam" }] }"""
+ *    """{ "users": [{ "name": "sam", "age": 3 }] }"""
  * }
  * ```
  */
-fun matchArraysContainingAll(): JsonSubtreeMatcher = JsonSubtreeMatcher { expected, actual ->
+fun matchArraysContainingAll(): JsonSubtreeMatcher = JsonSubtreeMatcher { expected, actual, options ->
    if (expected !is JsonNode.ArrayNode || actual !is JsonNode.ArrayNode) {
       MatcherResult(
          false,
@@ -64,7 +69,7 @@ fun matchArraysContainingAll(): JsonSubtreeMatcher = JsonSubtreeMatcher { expect
       val remaining = actual.elements.toMutableList()
       val missing = expected.elements.filter { expectedElement ->
          val index = remaining.indexOfFirst { actualElement ->
-            compare(listOf(), expectedElement, actualElement, CompareJsonOptions()).isEmpty()
+            compare(listOf(), expectedElement, actualElement, options).isEmpty()
          }
          if (index == -1) true else {
             remaining.removeAt(index)
@@ -98,7 +103,7 @@ fun matchArraysContainingAll(): JsonSubtreeMatcher = JsonSubtreeMatcher { expect
  * }
  * ```
  */
-fun matchStringsIgnoringCase(): JsonSubtreeMatcher = JsonSubtreeMatcher { expected, actual ->
+fun matchStringsIgnoringCase(): JsonSubtreeMatcher = JsonSubtreeMatcher { expected, actual, _ ->
    if (expected !is JsonNode.StringNode || actual !is JsonNode.StringNode) {
       MatcherResult(
          false,

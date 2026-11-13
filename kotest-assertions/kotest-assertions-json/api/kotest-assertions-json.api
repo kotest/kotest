@@ -371,7 +371,7 @@ public abstract interface class io/kotest/assertions/json/JsonNode$ValueNode {
 }
 
 public abstract interface class io/kotest/assertions/json/JsonSubtreeMatcher {
-	public abstract fun assert (Lio/kotest/assertions/json/JsonNode;Lio/kotest/assertions/json/JsonNode;)Lio/kotest/matchers/MatcherResult;
+	public abstract fun assert (Lio/kotest/assertions/json/JsonNode;Lio/kotest/assertions/json/JsonNode;Lio/kotest/assertions/json/CompareJsonOptions;)Lio/kotest/matchers/MatcherResult;
 }
 
 public final class io/kotest/assertions/json/JsonTree {
