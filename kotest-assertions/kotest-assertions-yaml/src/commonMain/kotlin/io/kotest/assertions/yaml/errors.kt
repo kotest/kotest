@@ -39,6 +39,12 @@ internal sealed class YamlError {
       val expected: String,
       val actual: String
    ) : YamlError()
+
+   data class TagMismatch(
+      override val path: List<String>,
+      val expected: String?,
+      val actual: String?
+   ) : YamlError()
 }
 
 internal fun YamlError.asString(): String {
@@ -54,6 +60,7 @@ internal fun YamlError.asString(): String {
       is YamlError.IncompatibleTypes -> "$dotpath expected ${a} but was ${b}"
       is YamlError.ExpectedNull -> "$dotpath expected null but was ${b.type()}"
       is YamlError.NameOrderDiff -> "$dotpath object expected field $index to be '$expected' but was '$actual'"
+      is YamlError.TagMismatch -> "$dotpath expected tag '${expected ?: "<none>"}' but was '${actual ?: "<none>"}'"
       is YamlError.UnequalArrayContent -> "$dotpath has extra element '${show(missing)}' not found (or too few) in '${show(expected)}'"
    }
 }

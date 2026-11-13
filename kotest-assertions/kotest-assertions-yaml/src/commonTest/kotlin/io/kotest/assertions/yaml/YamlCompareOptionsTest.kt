@@ -190,18 +190,44 @@ class YamlCompareOptionsTest : FunSpec({
 
    context("number format") {
 
-      test("NumberFormat.Lenient is the default and compares parsed values") {
+      test("NumberFormat.Strict is the default and compares contents verbatim") {
+         val e = shouldFail {
+            """
+               value: 1.0
+            """.trimIndent() shouldEqualYaml """
+               value: 1.00
+            """.trimIndent()
+         }
+         e.message shouldContain "At 'value' expected '1.00' but was '1.0'"
+
+         val e2 = shouldFail {
+            """
+               value: 1E2
+            """.trimIndent() shouldEqualYaml """
+               value: 100
+            """.trimIndent()
+         }
+         e2.message shouldContain "At 'value' expected '100' but was '1E2'"
+      }
+
+      test("NumberFormat.Lenient compares parsed values") {
          """
             value: 1.0
-         """.trimIndent() shouldEqualYaml """
-            value: 1.00
-         """.trimIndent()
+         """.trimIndent() shouldEqualYaml {
+            numberFormat = NumberFormat.Lenient
+            """
+               value: 1.00
+            """.trimIndent()
+         }
 
          """
             value: 1E2
-         """.trimIndent() shouldEqualYaml """
-            value: 100
-         """.trimIndent()
+         """.trimIndent() shouldEqualYaml {
+            numberFormat = NumberFormat.Lenient
+            """
+               value: 100
+            """.trimIndent()
+         }
       }
 
       test("NumberFormat.Strict requires identical formatting") {
@@ -227,6 +253,52 @@ class YamlCompareOptionsTest : FunSpec({
             """.trimIndent()
          }
          e.message shouldContain "At 'value' expected '31' but was '0x1F'"
+      }
+   }
+
+   context("tags") {
+
+      test("same tags on both sides are equal") {
+         """
+            value: !!str 5
+         """.trimIndent() shouldEqualYaml """
+            value: !!str 5
+         """.trimIndent()
+      }
+
+      test("a tag present on one side only is a difference") {
+         val e = shouldFail {
+            """
+               value: !!str 5
+            """.trimIndent() shouldEqualYaml """
+               value: 5
+            """.trimIndent()
+         }
+         e.message shouldContain "At 'value' expected tag '<none>' but was 'tag:yaml.org,2002:str'"
+      }
+
+      test("different tags are a difference") {
+         val e = shouldFail {
+            """
+               value: !!str 5
+            """.trimIndent() shouldEqualYaml """
+               value: !!int 5
+            """.trimIndent()
+         }
+         e.message shouldContain "At 'value' expected tag 'tag:yaml.org,2002:int' but was 'tag:yaml.org,2002:str'"
+      }
+
+      test("tag mismatches are reported at the nested path") {
+         val e = shouldFail {
+            """
+               outer:
+                 inner: !!str 5
+            """.trimIndent() shouldEqualYaml """
+               outer:
+                 inner: 5
+            """.trimIndent()
+         }
+         e.message shouldContain "At 'outer.inner' expected tag '<none>' but was 'tag:yaml.org,2002:str'"
       }
    }
 

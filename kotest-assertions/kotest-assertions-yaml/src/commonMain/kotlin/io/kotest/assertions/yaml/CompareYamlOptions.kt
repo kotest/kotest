@@ -22,10 +22,13 @@ class CompareYamlOptions(
     *
     * For instance, comparing `1.00` to `1.0`, or `1E2` to `100`.
     *
+    * Defaults to [NumberFormat.Strict], matching the previous matcher, which compared
+    * scalar contents verbatim; set [NumberFormat.Lenient] to compare parsed values.
+    *
     * Note: YAML-specific numeric forms that are not valid JSON numbers,
     * such as `0x1F`, `0o17`, `1_000` or `.5`, are always compared literally.
     */
-   var numberFormat: NumberFormat = NumberFormat.Lenient,
+   var numberFormat: NumberFormat = NumberFormat.Strict,
 )
 
 enum class PropertyOrder {
@@ -92,12 +95,13 @@ enum class FieldComparison {
 
 enum class NumberFormat {
    /**
-    * Default. Numbers will be interpreted before being compared. Meaning we can compare `0E3` to `1000` without fail.
+    * Numbers will be interpreted before being compared. Meaning we can compare `0E3` to `1000` without fail.
     */
    Lenient,
 
    /**
-    * Numbers must also be formatted the same way to be considered equal.
+    * Default. Numbers must also be formatted the same way to be considered equal,
+    * mirroring the previous matcher, which compared scalar contents verbatim.
     */
    Strict
 }

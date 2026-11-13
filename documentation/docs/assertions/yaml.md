@@ -65,10 +65,14 @@ infix fun String.lenientShouldEqualYaml(other: String) = this.shouldEqualYaml(ot
 | `PropertyOrder`   | Determines if the order of properties in YAML mappings are considered when comparing                                                | `PropertyOrder.Strict`, `PropertyOrder.Lenient`     | `PropertyOrder.Lenient`, i.e. order of properties *DON'T* matter      |
 | `ArrayOrder`      | Determines if the order of elements in YAML arrays are considered when comparing                                                    | `ArrayOrder.Strict`, `ArrayOrder.Lenient`           | `ArrayOrder.Strict`, i.e. order of elements *DO* matter               |
 | `FieldComparison` | Determines if comparison will fail if YAML mappings in `actual` contain extra properties, when compared to `expected`               | `FieldComparison.Strict`, `FieldComparison.Lenient` | `FieldComparison.Strict`, i.e. extra properties will cause inequality |
-| `NumberFormat`    | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal. | `NumberFormat.Strict`, `NumberFormat.Lenient`       | `NumberFormat.Lenient`, i.e. number formats *DON'T* matter            |
+| `NumberFormat`    | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal. | `NumberFormat.Strict`, `NumberFormat.Lenient`       | `NumberFormat.Strict`, i.e. number formats *DO* matter (matching the previous matcher's verbatim scalar comparison) |
 
 Targets: **Multiplatform**
 
 Note: unlike the JSON matchers there is no `TypeCoercion` option, because the YAML parser retains only the content of a
 scalar, not whether it was quoted, so a scalar such as `"1"` and `1` cannot be distinguished after parsing. YAML-specific
 numeric forms that are not valid JSON numbers, such as `0x1F` or `1_000`, are always compared literally.
+
+Note: YAML tags are part of the comparison, as they were before the `CompareYamlOptions` options were introduced: a node
+carrying a tag only matches a node carrying the same tag (`!!str 5` is not equal to `5`), mirroring the underlying
+parser's node equivalence.

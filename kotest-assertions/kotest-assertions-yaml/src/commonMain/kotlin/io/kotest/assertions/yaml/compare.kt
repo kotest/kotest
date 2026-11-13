@@ -12,7 +12,8 @@ import com.charleskorn.kaml.YamlTaggedNode
  *
  * The comparison semantics mirror the JSON matchers' engine (see `kotest-assertions-json`),
  * driven by [CompareYamlOptions]: property order, array order, field comparison strictness
- * and number format leniency.
+ * and number format leniency. Tags are compared as in kaml's node equivalence: a tagged
+ * node only matches a node carrying the same tag.
  */
 internal fun compare(
    path: List<String>,
@@ -20,9 +21,15 @@ internal fun compare(
    actualNode: YamlNode,
    options: CompareYamlOptions,
 ): List<YamlError> {
-   // tags are metadata only, content equality ignores them
-   val expected = if (expectedNode is YamlTaggedNode) expectedNode.innerNode else expectedNode
-   val actual = if (actualNode is YamlTaggedNode) actualNode.innerNode else actualNode
+   // kaml's equivalence treats a tag as part of node identity: a tagged node only matches
+   // a node carrying the same tag, and a tag on one side only is a difference (this also
+   // preserves the behaviour of the previous matcher, which delegated to
+   // YamlNode.equivalentContentTo). After the tag check, comparison proceeds on inner nodes.
+   val expectedTag = (expectedNode as? YamlTaggedNode)?.tag
+   val actualTag = (actualNode as? YamlTaggedNode)?.tag
+   if (expectedTag != actualTag) return listOf(YamlError.TagMismatch(path, expectedTag, actualTag))
+   val expected = (expectedNode as? YamlTaggedNode)?.innerNode ?: expectedNode
+   val actual = (actualNode as? YamlTaggedNode)?.innerNode ?: actualNode
 
    return when {
       expected is YamlMap -> when (actual) {
@@ -80,14 +87,11 @@ private fun compareYamlLists(
           */
          ArrayOrder.Lenient -> {
 
-            val consumedIndexes = BooleanArray(expected.items.size) { false }
-
-            fun availableIndexes() = consumedIndexes
-               .mapIndexed { index, isConsumed -> if (!isConsumed) index else null }
-               .filterNotNull()
+            val consumedIndexes = BooleanArray(expected.items.size)
 
             fun findMatchingIndex(element: YamlNode): Int? {
-               for (i in availableIndexes()) {
+               for (i in expected.items.indices) {
+                  if (consumedIndexes[i]) continue
                   // Comparison with no error -> matching element
                   val isMatch = compare(path + "[$i]", expected.items[i], element, options).isEmpty()
 
