@@ -40,6 +40,18 @@ Groovy DSL is identical apart from syntax (`id 'io.kotest' version '...'`, `task
 **Maven**: use the `-jvm` artifacts (`kotest-runner-junit5-jvm`, `kotest-assertions-core-jvm`, `kotest-property-jvm`)
 with `<scope>test</scope>`; Surefire runs them via JUnit Platform.
 
+**Kotlin Toolchain** (JetBrains' build tool, named Amper until 0.11): no plugin or task config; JUnit 5 is the default
+for JVM tests. List the normal (non `-jvm`) artifacts under `test-dependencies` in `module.yaml`, put tests in `test/`,
+and run `./kotlin test` (`./amper test` on Amper ≤ 0.10):
+
+```yaml
+product: jvm/lib
+
+test-dependencies:
+  - io.kotest:kotest-runner-junit5:<kotest-version>
+  - io.kotest:kotest-assertions-core:<kotest-version>
+```
+
 ---
 
 ## Kotlin Multiplatform (JVM + JS + Wasm + Native)

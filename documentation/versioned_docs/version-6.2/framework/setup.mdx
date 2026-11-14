@@ -61,6 +61,25 @@ dependencies {
 
 And then execute the `test` task in gradle, or run tests directly from the IDE.
 
+#### Kotlin Toolchain (formerly Amper)
+
+Kotest also works with the [Kotlin Toolchain](https://github.com/JetBrains/kotlin-toolchain), JetBrains' build tool
+previously known as Amper. JVM tests run on the JUnit Platform (JUnit 5 is the default), so adding the Kotest JUnit5
+runner to `test-dependencies` in your `module.yaml` is enough:
+
+```yaml
+product: jvm/lib
+
+test-dependencies:
+  - io.kotest:kotest-runner-junit5:<kotest-version>
+  - io.kotest:kotest-assertions-core:<kotest-version>
+```
+
+Place tests in the `test/` folder and run them with `./kotlin test`. Projects still on Amper (0.10 and earlier) use
+the same `module.yaml` and run `./amper test` instead.
+
+A working example can be found here: https://github.com/kotest/kotest-examples/tree/master/kotest-kotlin-toolchain
+
    </TabItem>
    <TabItem value="JS">
 

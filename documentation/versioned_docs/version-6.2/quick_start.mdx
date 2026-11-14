@@ -42,6 +42,7 @@ For example, the JDBC matchers are only provided for the JVM since JDBC is a Jav
    values={[
       {label: 'JVM/Gradle', value: 'JVM/Gradle'},
       {label: 'JVM/Maven', value: 'JVM/Maven'},
+      {label: 'JVM/Kotlin Toolchain', value: 'JVM/KotlinToolchain'},
       {label: 'Multiplatform', value: 'Multiplatform'},
    ]}>
    <TabItem value="JVM/Gradle">
@@ -67,6 +68,16 @@ Add the following dependency to your build.
 ```
 
    </TabItem>
+   <TabItem value="JVM/KotlinToolchain">
+
+Add the following dependency to the `test-dependencies` section of your `module.yaml`:
+
+```yaml
+test-dependencies:
+  - io.kotest:kotest-assertions-core:$version
+```
+
+   </TabItem>
    <TabItem value="Multiplatform">
 
 Add the following dependency to your `commonTest` or target specific dependencies block:
@@ -89,6 +100,7 @@ The property test framework is supported on all targets.
    values={[
       {label: 'JVM/Gradle', value: 'JVM/Gradle'},
       {label: 'JVM/Maven', value: 'JVM/Maven'},
+      {label: 'JVM/Kotlin Toolchain', value: 'JVM/KotlinToolchain'},
       {label: 'Multiplatform', value: 'Multiplatform'},
    ]}>
    <TabItem value="JVM/Gradle">
@@ -112,6 +124,16 @@ Add the following dependency to your build.
    <version>${version}</version>
    <scope>test</scope>
 </dependency>
+```
+
+   </TabItem>
+   <TabItem value="JVM/KotlinToolchain">
+
+Add the following dependency to the `test-dependencies` section of your `module.yaml`:
+
+```yaml
+test-dependencies:
+  - io.kotest:kotest-property:$version
 ```
 
    </TabItem>
