@@ -81,6 +81,40 @@ actual shouldBeEqualUsingFields {
 Other options on the config block: `ignorePrivateFields` (default `true`), `ignoreComputedFields` (default `true`),
 `useDefaultShouldBeForFields`.
 
+### JSON content comparison (`shouldEqualJson`)
+
+```kotlin
+import io.kotest.assertions.json.*
+
+json shouldEqualJson """{ "a": 1, "b": [1, 2] }"""  // tolerant of formatting and key order by default
+
+json shouldEqualJson {
+   arrayOrder = ArrayOrder.Lenient                  // CompareJsonOptions flags
+   fieldComparison = FieldComparison.Lenient
+   """{ "a": 1 }"""                                 // the expected document
+}
+```
+
+Flags: `propertyOrder`, `arrayOrder`, `fieldComparison`, `numberFormat`, `typeCoercion`.
+
+For comparisons the flags can't express, `overrideMatchers` replaces the structural comparison of a subtree with a
+`JsonSubtreeMatcher`:
+
+```kotlin
+"""{ "users": [{ "name": "sam" }, { "name": "bob" }] }""" shouldEqualJson {
+   overrideMatchers = mapOf("users" to matchArraysContainingAll())
+   """{ "users": [{ "name": "sam" }] }"""           // passes: partial array, any order
+}
+```
+
+- Keys are dotted paths in the same format as the paths in comparison error messages: `"users"` targets a top-level
+  field, `"users.[0].name"` a field of the first array element, `""` the whole document.
+- Ready-made matchers: `matchArraysContainingAll()` (every expected element matched by some actual element, ignoring
+  order and extra elements; elements are compared structurally, override rules do not apply inside them) and
+  `matchStringsIgnoringCase()`.
+- Custom matchers implement `JsonSubtreeMatcher { expected, actual, options -> MatcherResult }`; a failing result is
+  reported at the subtree's path, e.g. `At 'users' expected element(s) ... not found in ...`.
+
 ---
 
 ## Exceptions
