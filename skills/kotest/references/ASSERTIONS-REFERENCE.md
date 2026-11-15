@@ -362,6 +362,9 @@ document shouldHaveElementWithId "main"
 import io.kotest.assertions.arrow.core.*
 val r = either.shouldBeRight()                    // returns the right value
 either.shouldBeLeft()
+val e = either.shouldBeLeft<HttpError>()          // also asserts the left value is an HttpError (6.3+)
+either.shouldBeLeft<HttpError> { it.code shouldBe 404 }
+either.shouldBeRight<Person> { it.age shouldBe 30 }
 val v = option.shouldBeSome()
 option.shouldBeNone()
 

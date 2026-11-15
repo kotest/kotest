@@ -8,8 +8,11 @@ import io.kotest.assertions.AssertionErrorBuilder
 import io.kotest.assertions.arrow.shouldBe
 import io.kotest.assertions.arrow.shouldNotBe
 import io.kotest.assertions.assertionCounter
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.types.shouldBeInstanceOf
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
 
 /**
  * smart casts to [Either.Right] and fails with [failureMessage] otherwise.
@@ -50,6 +53,31 @@ public infix fun <A, B> Either<A, B>.shouldNotBeRight(b: B): B =
    shouldBeRight().shouldNotBe(b)
 
 /**
+ * Asserts that this is an [Either.Right] whose value is an instance of [T], returning the value cast to [T].
+ * ```kotlin
+ * val person: Person = either.shouldBeRight<Person>()
+ * ```
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun <reified T : Any> Either<*, *>?.shouldBeRight(): T {
+   contract {
+      returns() implies (this@shouldBeRight is Right<*>)
+   }
+   return shouldNotBeNull().shouldBeRight().shouldBeInstanceOf<T>()
+}
+
+/**
+ * Asserts that this is an [Either.Right] whose value is an instance of [T], then runs [block]
+ * against the value cast to [T], returning it.
+ * ```kotlin
+ * either.shouldBeRight<Person> { person -> person.name shouldBe "sam" }
+ * ```
+ */
+@JvmName("shouldBeRightOfType")
+public inline fun <reified T : Any> Either<*, *>?.shouldBeRight(block: (T) -> Any?): T =
+   shouldBeRight<T>().also { block(it) }
+
+/**
  * smart casts to [Either.Left] and fails with [failureMessage] otherwise.
  * ```kotlin
  * import arrow.core.Either.Left
@@ -84,6 +112,31 @@ public infix fun <A, B> Either<A, B>.shouldBeLeft(a: A): A =
 
 public infix fun <A, B> Either<A, B>.shouldNotBeLeft(a: A): A =
    shouldBeLeft().shouldNotBe(a)
+
+/**
+ * Asserts that this is an [Either.Left] whose value is an instance of [T], returning the value cast to [T].
+ * ```kotlin
+ * val error: HttpError = either.shouldBeLeft<HttpError>()
+ * ```
+ */
+@OptIn(ExperimentalContracts::class)
+public inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(): T {
+   contract {
+      returns() implies (this@shouldBeLeft is Left<*>)
+   }
+   return shouldNotBeNull().shouldBeLeft().shouldBeInstanceOf<T>()
+}
+
+/**
+ * Asserts that this is an [Either.Left] whose value is an instance of [T], then runs [block]
+ * against the value cast to [T], returning it.
+ * ```kotlin
+ * either.shouldBeLeft<HttpError> { error -> error.code shouldBe 404 }
+ * ```
+ */
+@JvmName("shouldBeLeftOfType")
+public inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(block: (T) -> Any?): T =
+   shouldBeLeft<T>().also { block(it) }
 
 /** for testing success & error scenarios with an [Either] generator **/
 public fun <A> Either<Throwable, A>.rethrow(): A =
