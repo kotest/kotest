@@ -91,6 +91,10 @@ Ready-made matchers include:
   array, ignoring order and extra elements
 - `matchStringsIgnoringCase()` — string values are compared ignoring case
 
+`matchArraysContainingAll()` compares the array elements structurally with the options of the enclosing comparison, but
+`overrideMatchers` rules do not apply inside those elements — elements match in any order, so a nested override path
+would have no stable meaning.
+
 Custom matchers implement `JsonSubtreeMatcher` and receive the expected and the actual subtree, plus the active
 `CompareJsonOptions`, so a matcher can reuse the options configured on the enclosing comparison:
 

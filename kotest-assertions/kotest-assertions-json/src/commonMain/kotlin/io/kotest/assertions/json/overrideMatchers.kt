@@ -46,6 +46,9 @@ internal fun List<String>.toJsonPath(): String = buildString {
  *
  * Elements are compared as JSON subtrees with the options of the enclosing comparison,
  * so e.g. an outer `fieldComparison = FieldComparison.Lenient` also applies to the elements.
+ * The [CompareJsonOptions.overrideMatchers] of the enclosing options are not applied inside
+ * the elements — they are compared structurally, since elements match in any order and so a
+ * nested path has no stable meaning.
  *
  * This is the "partial array match" — the actual array must cover the expected one,
  * but may contain more:
@@ -66,10 +69,21 @@ fun matchArraysContainingAll(): JsonSubtreeMatcher = JsonSubtreeMatcher { expect
          { "Expected values to not match" }
       )
    } else {
+      // Elements are compared with the path reset to the root, so keeping the override rules
+      // here would re-apply them to every element as if it were the whole document — e.g. the
+      // "" rule would demand each object element be an array. Elements match in any order, so
+      // nested override keys have no stable meaning; they are dropped for element comparison.
+      val elementOptions = CompareJsonOptions(
+         options.propertyOrder,
+         options.arrayOrder,
+         options.fieldComparison,
+         options.numberFormat,
+         options.typeCoercion,
+      )
       val remaining = actual.elements.toMutableList()
       val missing = expected.elements.filter { expectedElement ->
          val index = remaining.indexOfFirst { actualElement ->
-            compare(listOf(), expectedElement, actualElement, options).isEmpty()
+            compare(listOf(), expectedElement, actualElement, elementOptions).isEmpty()
          }
          if (index == -1) true else {
             remaining.removeAt(index)

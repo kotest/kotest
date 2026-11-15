@@ -127,5 +127,44 @@ class OverrideMatchersTest : FunSpec(
             """{ "users": [ { "name": "sam" } ] }"""
          }
       }
+
+      test("override rules other than the array rule do not leak into matchArraysContainingAll elements") {
+         shouldFail {
+            """{ "name": "sam", "users": [ { "name": "BOB" } ] }""" shouldEqualJson {
+               overrideMatchers = mapOf(
+                  "name" to matchStringsIgnoringCase(),
+                  "users" to matchArraysContainingAll(),
+               )
+               """{ "name": "SAM", "users": [ { "name": "bob" } ] }"""
+            }
+         }.shouldHaveMessage(
+            """
+               At 'users' expected element(s) {"name": bob} not found in [{"name": BOB}]
+
+               expected:<{
+                 "name": "SAM",
+                 "users": [
+                   {
+                     "name": "bob"
+                   }
+                 ]
+               }> but was:<{
+                 "name": "sam",
+                 "users": [
+                   {
+                     "name": "BOB"
+                   }
+                 ]
+               }>
+            """.trimIndent()
+         )
+      }
+
+      test("the root override rule is not re-applied to matchArraysContainingAll elements") {
+         """[ { "name": "sam" }, { "name": "bob" } ]""" shouldEqualJson {
+            overrideMatchers = mapOf("" to matchArraysContainingAll())
+            """[ { "name": "sam" } ]"""
+         }
+      }
    }
 )
