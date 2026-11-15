@@ -73,8 +73,8 @@ For comparisons that the options above can't express, `overrideMatchers` replace
 subtree with a custom matcher, keyed by a path into the document — analogous to the
 [field matching](../field-matching.md) `overrideMatchers` for data classes.
 
-Paths are dotted: `"users"` targets a top-level field, `"users[0].name"` a field of the first array element, and the
-empty string `""` targets the whole document.
+Paths use the same dotted format as the paths in comparison error messages: `"users"` targets a top-level field,
+`"users.[0].name"` a field of the first array element, and the empty string `""` targets the whole document.
 
 ```kotlin
 // require the actual users array to contain everything from the expected one,

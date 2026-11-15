@@ -31,8 +31,8 @@ class CompareJsonOptions(
 
    /**
     * Custom matchers applied to JSON subtrees instead of the structural comparison, keyed by a
-    * path into the document, e.g. `"users"`, `"users[0].name"`; the empty string matches the
-    * whole document.
+    * path into the document in the same format used by comparison error messages, e.g. `"users"`,
+    * `"users.[0].name"`; the empty string matches the whole document.
     *
     * When a matcher matches, the subtree is not compared structurally; when it doesn't, the
     * matcher's failure message is reported at that path.

@@ -83,7 +83,7 @@ class OverrideMatchersTest : FunSpec(
 
       test("a custom matcher can target a single array element") {
          """{ "users": [ { "name": "sam" } ] }""" shouldEqualJson {
-            overrideMatchers = mapOf("users[0].name" to matchStringsIgnoringCase())
+            overrideMatchers = mapOf("users.[0].name" to matchStringsIgnoringCase())
             """{ "users": [ { "name": "SAM" } ] }"""
          }
       }

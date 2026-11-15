@@ -26,18 +26,12 @@ fun interface JsonSubtreeMatcher {
 
 /**
  * Renders a comparison path — a list of object keys and bracketed array indexes — in the
- * dotted form used as the key of [CompareJsonOptions.overrideMatchers].
+ * dotted form used as the key of [CompareJsonOptions.overrideMatchers], matching the format
+ * of the paths in comparison error messages.
  *
- * E.g. `listOf("users", "[0]", "name")` becomes `users[0].name`; the empty path becomes "".
+ * E.g. `listOf("users", "[0]", "name")` becomes `users.[0].name`; the empty path becomes "".
  */
-internal fun List<String>.toJsonPath(): String = buildString {
-   for (segment in this@toJsonPath) {
-      if (segment.startsWith("[")) append(segment) else {
-         if (isNotEmpty()) append('.')
-         append(segment)
-      }
-   }
-}
+internal fun List<String>.toJsonPath(): String = joinToString(".")
 
 /**
  * Returns a [JsonSubtreeMatcher] that passes when every element of the expected array
