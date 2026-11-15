@@ -138,4 +138,20 @@ class EitherMatchers : StringSpec({
         either.shouldBeRight<Person> { it.age shouldBe 31 }
      }.message shouldBe "expected:<31> but was:<30>"
   }
+
+  "shouldBeLeft with type argument accepts a nullable receiver and fails on null" {
+     val either: Either<Failure, Int>? = null
+     shouldThrow<AssertionError> { either.shouldBeLeft<HttpError>() }
+     shouldThrow<AssertionError> { either.shouldBeLeft<HttpError> { it.code shouldBe 404 } }
+     val nonNull: Either<Failure, Int>? = HttpError(404).left()
+     nonNull.shouldBeLeft<HttpError>() shouldBe HttpError(404)
+  }
+
+  "shouldBeRight with type argument accepts a nullable receiver and fails on null" {
+     val either: Either<Failure, Any>? = null
+     shouldThrow<AssertionError> { either.shouldBeRight<Person>() }
+     shouldThrow<AssertionError> { either.shouldBeRight<Person> { it.age shouldBe 30 } }
+     val nonNull: Either<Failure, Any>? = Person("sam", 30).right()
+     nonNull.shouldBeRight<Person>() shouldBe Person("sam", 30)
+  }
 })

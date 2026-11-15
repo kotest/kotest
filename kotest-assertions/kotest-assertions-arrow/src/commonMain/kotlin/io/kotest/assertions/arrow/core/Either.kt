@@ -52,14 +52,15 @@ public infix fun <A, B> Either<A, B>.shouldBeRight(b: B): B =
 public infix fun <A, B> Either<A, B>.shouldNotBeRight(b: B): B =
    shouldBeRight().shouldNotBe(b)
 
+// The typed overloads take a nullable receiver and a `(T) -> Any?` block so that untyped calls like
+// `shouldBeLeft()` and `shouldBeLeft { "msg" }` still resolve to the original overloads.
 /**
  * Asserts that this is an [Either.Right] whose value is an instance of [T], returning the value cast to [T].
  * ```kotlin
  * val person: Person = either.shouldBeRight<Person>()
  * ```
  */
-@OptIn(ExperimentalContracts::class)
-public inline fun <reified T : Any> Either<*, *>?.shouldBeRight(): T {
+inline fun <reified T : Any> Either<*, *>?.shouldBeRight(): T {
    contract {
       returns() implies (this@shouldBeRight is Right<*>)
    }
@@ -74,7 +75,7 @@ public inline fun <reified T : Any> Either<*, *>?.shouldBeRight(): T {
  * ```
  */
 @JvmName("shouldBeRightOfType")
-public inline fun <reified T : Any> Either<*, *>?.shouldBeRight(block: (T) -> Any?): T =
+inline fun <reified T : Any> Either<*, *>?.shouldBeRight(block: (T) -> Any?): T =
    shouldBeRight<T>().also { block(it) }
 
 /**
@@ -119,8 +120,7 @@ public infix fun <A, B> Either<A, B>.shouldNotBeLeft(a: A): A =
  * val error: HttpError = either.shouldBeLeft<HttpError>()
  * ```
  */
-@OptIn(ExperimentalContracts::class)
-public inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(): T {
+inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(): T {
    contract {
       returns() implies (this@shouldBeLeft is Left<*>)
    }
@@ -135,7 +135,7 @@ public inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(): T {
  * ```
  */
 @JvmName("shouldBeLeftOfType")
-public inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(block: (T) -> Any?): T =
+inline fun <reified T : Any> Either<*, *>?.shouldBeLeft(block: (T) -> Any?): T =
    shouldBeLeft<T>().also { block(it) }
 
 /** for testing success & error scenarios with an [Either] generator **/
