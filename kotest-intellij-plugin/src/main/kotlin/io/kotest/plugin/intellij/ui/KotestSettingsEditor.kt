@@ -2,7 +2,6 @@
 
 package io.kotest.plugin.intellij.ui
 
-import com.intellij.execution.ExecutionBundle
 import com.intellij.execution.application.JavaSettingsEditorBase
 import com.intellij.execution.ui.*
 import com.intellij.openapi.ui.LabeledComponent
@@ -36,7 +35,7 @@ class KotestSettingsEditor(runConfiguration: KotestRunConfiguration) :
       if (!project.isDefault) {
          val fragment = SettingsEditorFragment.createTag(
             "test.use.module.path",
-            ExecutionBundle.message("do.not.use.module.path.tag"),
+            KotestBundle().getMessage("do.not.use.module.path.tag"),
             "Java",
             { !it.isUseModulePath },
             BiConsumer<KotestRunConfiguration, Boolean> { config, value -> config.isUseModulePath = !value }

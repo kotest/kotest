@@ -11,7 +11,8 @@ kotlin {
             implementation(libs.testcontainers.core)
             implementation(libs.testcontainers.jdbc)
             implementation(libs.testcontainers.kafka)
-            implementation(libs.hikari)
+            // api because the JDBC container extensions expose HikariConfig and HikariDataSource to users
+            api(libs.hikari)
             implementation(libs.kafka.client)
          }
       }

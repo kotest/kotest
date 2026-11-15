@@ -27,9 +27,21 @@ marketplace hosted in the Kotest repository. Add the marketplace once, then inst
 Claude Code will pick up the skill automatically whenever you're working on Kotest-related code -- no
 further configuration needed.
 
+## Installing with the skills CLI
+
+Use Vercel's [skills CLI](https://github.com/vercel-labs/skills) to install the skill for supported
+agents, including Claude Code, Codex, Cursor, and GitHub Copilot. With Node.js installed, run:
+
+```bash
+npx skills add kotest/kotest
+```
+
+Follow the prompts to select the agents and installation scope. Using `npx` means you don't need to
+install the CLI globally first.
+
 ## Installing manually
 
-If you use a different tool, or don't want to use the plugin marketplace, you can copy the skill
+If you prefer not to use either installer, you can copy the skill
 directory directly into any location your tool loads skills from, for example:
 
 ```bash

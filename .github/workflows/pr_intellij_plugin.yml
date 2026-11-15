@@ -38,6 +38,11 @@ jobs:
             env:
                PRODUCT_NAME: ${{ matrix.product }}
 
+         -  name: Verify plugin against compatible IDEs
+            run: ./gradlew :kotest-intellij-plugin:verifyPlugin
+            env:
+               PRODUCT_NAME: ${{ matrix.product }}
+
          -  name: Bundle the build report
             if: failure()
             run: find . -type d -name 'reports' | zip -@ -r build-reports.zip

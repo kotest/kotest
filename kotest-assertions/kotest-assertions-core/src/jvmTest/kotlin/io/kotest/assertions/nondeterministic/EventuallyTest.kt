@@ -254,7 +254,9 @@ class EventuallyTest : FunSpec() {
          var count = 0
          val config = eventuallyConfig {
             interval = 1.milliseconds
-            duration = 10.milliseconds
+            // bound by retries, not time, so a slow runner still gets a second ("last") attempt
+            duration = 10.seconds
+            retries = 3
          }
          val message = shouldFail {
             eventually(config) {

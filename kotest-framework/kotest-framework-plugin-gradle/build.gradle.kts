@@ -61,7 +61,7 @@ gradlePlugin {
          implementationClass = "io.kotest.framework.gradle.KotestPlugin"
          displayName = "Kotest Gradle Plugin"
          description = "Adds support for running Kotest tests in gradle"
-         tags.addAll("kotest", "kotlin", "testing", "integration testing")
+         tags.addAll("kotest", "kotlin", "testing")
       }
    }
 }

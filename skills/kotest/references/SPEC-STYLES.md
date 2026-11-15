@@ -1,6 +1,6 @@
 # Kotest Spec Styles Reference
 
-Complete examples of all 9 Kotest spec styles with nesting, lifecycle hooks, and disabling tests.
+Examples of all 9 Kotest spec styles: nesting, disabling (`x`-prefix) and per-test config. All are equivalent; pick one per project.
 
 ---
 
@@ -9,41 +9,45 @@ Complete examples of all 9 Kotest spec styles with nesting, lifecycle hooks, and
 General-purpose style. Recommended default. Uses `test` for tests and `context` for grouping.
 
 ```kotlin
+import io.kotest.core.Tag
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import kotlin.time.Duration.Companion.seconds
+
+object Slow : Tag()
 
 class FunSpecExample : FunSpec({
 
-  test("simple test") {
-    1 + 1 shouldBe 2
-  }
+   test("simple test") {
+      1 + 1 shouldBe 2
+   }
 
-  context("a group of tests") {
-    test("nested test 1") {
-      "hello".length shouldBe 5
-    }
-    test("nested test 2") {
-      "world".length shouldBe 5
-    }
-    context("deeper nesting") {
-      test("deeply nested") {
-        true shouldBe true
+   context("a group of tests") {
+      test("nested test 1") {
+         "hello".length shouldBe 5
       }
-    }
-  }
+      test("nested test 2") {
+         "world".length shouldBe 5
+      }
+      context("deeper nesting") {
+         test("deeply nested") {
+            true shouldBe true
+         }
+      }
+   }
 
-  // Disabled tests
-  xtest("this test is disabled") {
-    // not executed
-  }
-  xcontext("this group is disabled") {
-    test("also disabled by inheritance") { }
-  }
+   // Disabled tests
+   xtest("this test is disabled") {
+      // not executed
+   }
+   xcontext("this group is disabled") {
+      test("also disabled by inheritance") { }
+   }
 
-  // Config
-  test("with config").config(timeout = 5.seconds, tags = setOf(Slow)) {
-    // ...
-  }
+   // Config
+   test("with config").config(timeout = 5.seconds, tags = setOf(Slow)) {
+      // ...
+   }
 })
 ```
 
@@ -55,32 +59,33 @@ Familiar to JavaScript/Ruby developers. Uses `describe` / `it`. `context` is an 
 
 ```kotlin
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 
 class DescribeSpecExample : DescribeSpec({
 
-  describe("a calculator") {
-    it("should add correctly") {
-      1 + 1 shouldBe 2
-    }
-    describe("subtraction") {
-      it("should subtract correctly") {
-        10 - 3 shouldBe 7
+   describe("a calculator") {
+      it("should add correctly") {
+         1 + 1 shouldBe 2
       }
-    }
-    context("multiplication") {
-      it("should multiply correctly") {
-        3 * 4 shouldBe 12
+      describe("subtraction") {
+         it("should subtract correctly") {
+            10 - 3 shouldBe 7
+         }
       }
-    }
-  }
+      context("multiplication") {
+         it("should multiply correctly") {
+            3 * 4 shouldBe 12
+         }
+      }
+   }
 
-  // Disabled
-  xdescribe("disabled group") {
-    it("disabled by inheritance") { }
-  }
-  describe("active group") {
-    xit("disabled individual test") { }
-  }
+   // Disabled
+   xdescribe("disabled group") {
+      it("disabled by inheritance") { }
+   }
+   describe("active group") {
+      xit("disabled individual test") { }
+   }
 })
 ```
 
@@ -92,43 +97,44 @@ BDD style using `given` / `when` / `then`. Since `when` is a Kotlin keyword, use
 
 ```kotlin
 import io.kotest.core.spec.style.BehaviorSpec
+import io.kotest.matchers.shouldBe
 
 class BehaviorSpecExample : BehaviorSpec({
 
-  context("a user service") {
-    given("a registered user") {
-      `when`("logging in with correct credentials") {
-        then("should return a valid token") {
-          // test here
-        }
+   context("a user service") {
+      given("a registered user") {
+         `when`("logging in with correct credentials") {
+            then("should return a valid token") {
+               // test here
+            }
+         }
+         `when`("logging in with wrong password") {
+            then("should throw AuthenticationException") {
+               // test here
+            }
+         }
       }
-      `when`("logging in with wrong password") {
-        then("should throw AuthenticationException") {
-          // test here
-        }
-      }
-    }
-  }
+   }
 
-  // Uppercase variants (no backticks needed)
-  Given("a shopping cart") {
-    and("it has items") {
-      When("checkout is called") {
-        and("payment succeeds") {
-          Then("order should be created") {
-            // test here
-          }
-        }
+   // Uppercase variants (no backticks needed)
+   Given("a shopping cart") {
+      and("it has items") {
+         When("checkout is called") {
+            and("payment succeeds") {
+               Then("order should be created") {
+                  // test here
+               }
+            }
+         }
       }
-    }
-  }
+   }
 
-  // Disabled
-  xgiven("disabled given") {
-    When("also disabled") {
-      then("also disabled") { }
-    }
-  }
+   // Disabled
+   xgiven("disabled given") {
+      When("also disabled") {
+         then("also disabled") { }
+      }
+   }
 })
 ```
 
@@ -140,21 +146,24 @@ Most minimal style. Just a string and a lambda. No nesting support (use FreeSpec
 
 ```kotlin
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldBeEqualIgnoringCase
+import kotlin.time.Duration.Companion.seconds
 
 class StringSpecExample : StringSpec({
 
-  "string length should return the length" {
-    "hello".length shouldBe 5
-  }
+   "string length should return the length" {
+      "hello".length shouldBe 5
+   }
 
-  "string should be equal ignoring case" {
-    "Hello" shouldBeEqualIgnoringCase "hello"
-  }
+   "string should be equal ignoring case" {
+      "Hello" shouldBeEqualIgnoringCase "hello"
+   }
 
-  // With config
-  "a configured test".config(timeout = 5.seconds) {
-    // ...
-  }
+   // With config
+   "a configured test".config(timeout = 5.seconds) {
+      // ...
+   }
 })
 ```
 
@@ -166,27 +175,28 @@ Arbitrary nesting depth using `-` for containers and no `-` for leaf tests.
 
 ```kotlin
 import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
 
 class FreeSpecExample : FreeSpec({
 
-  "String.length" - {
-    "should return the length of the string" {
-      "hello".length shouldBe 5
-    }
-    "should return 0 for empty string" {
-      "".length shouldBe 0
-    }
-  }
-
-  "containers can nest arbitrarily deep" - {
-    "level 2" - {
-      "level 3" - {
-        "leaf test" {
-          1 + 1 shouldBe 2
-        }
+   "String.length" - {
+      "should return the length of the string" {
+         "hello".length shouldBe 5
       }
-    }
-  }
+      "should return 0 for empty string" {
+         "".length shouldBe 0
+      }
+   }
+
+   "containers can nest arbitrarily deep" - {
+      "level 2" - {
+         "level 3" - {
+            "leaf test" {
+               1 + 1 shouldBe 2
+            }
+         }
+      }
+   }
 })
 ```
 
@@ -200,30 +210,31 @@ Uses `should` keyword. Inspired by ScalaTest's WordSpec. Optional `When` for ext
 
 ```kotlin
 import io.kotest.core.spec.style.WordSpec
+import io.kotest.matchers.shouldBe
 
 class WordSpecExample : WordSpec({
 
-  "String.length" should {
-    "return the length of the string" {
-      "hello".length shouldBe 5
-    }
-    "return 0 for empty strings" {
-      "".length shouldBe 0
-    }
-  }
+   "String.length" should {
+      "return the length of the string" {
+         "hello".length shouldBe 5
+      }
+      "return 0 for empty strings" {
+         "".length shouldBe 0
+      }
+   }
 
-  "Hello" When {
-    "asked for length" should {
-      "return 5" {
-        "Hello".length shouldBe 5
+   "Hello" When {
+      "asked for length" should {
+         "return 5" {
+            "Hello".length shouldBe 5
+         }
       }
-    }
-    "appended to Bob" should {
-      "return Hello Bob" {
-        "Hello " + "Bob" shouldBe "Hello Bob"
+      "appended to Bob" should {
+         "return Hello Bob" {
+            "Hello " + "Bob" shouldBe "Hello Bob"
+         }
       }
-    }
-  }
+   }
 })
 ```
 
@@ -235,30 +246,31 @@ Cucumber-inspired. Uses `feature` and `scenario`.
 
 ```kotlin
 import io.kotest.core.spec.style.FeatureSpec
+import io.kotest.matchers.shouldBe
 
 class FeatureSpecExample : FeatureSpec({
 
-  feature("user registration") {
-    scenario("should accept valid email") {
-      // test here
-    }
-    scenario("should reject invalid email") {
-      // test here
-    }
-  }
+   feature("user registration") {
+      scenario("should accept valid email") {
+         // test here
+      }
+      scenario("should reject invalid email") {
+         // test here
+      }
+   }
 
-  feature("login") {
-    scenario("should authenticate valid credentials") {
-      // test here
-    }
-    xscenario("this scenario is disabled") {
-      // not executed
-    }
-  }
+   feature("login") {
+      scenario("should authenticate valid credentials") {
+         // test here
+      }
+      xscenario("this scenario is disabled") {
+         // not executed
+      }
+   }
 
-  xfeature("this entire feature is disabled") {
-    scenario("disabled by inheritance") { }
-  }
+   xfeature("this entire feature is disabled") {
+      scenario("disabled by inheritance") { }
+   }
 })
 ```
 
@@ -270,27 +282,28 @@ Uses `expect` keyword. Supports `context` for grouping.
 
 ```kotlin
 import io.kotest.core.spec.style.ExpectSpec
+import io.kotest.matchers.shouldBe
 
 class ExpectSpecExample : ExpectSpec({
 
-  context("a calculator") {
-    expect("simple addition") {
-      1 + 1 shouldBe 2
-    }
-    expect("integer overflow") {
-      // test here
-    }
-  }
+   context("a calculator") {
+      expect("simple addition") {
+         1 + 1 shouldBe 2
+      }
+      expect("integer overflow") {
+         // test here
+      }
+   }
 
-  expect("standalone expect") {
-    true shouldBe true
-  }
+   expect("standalone expect") {
+      true shouldBe true
+   }
 
-  // Disabled
-  xexpect("disabled test") { }
-  xcontext("disabled group") {
-    expect("disabled by inheritance") { }
-  }
+   // Disabled
+   xexpect("disabled test") { }
+   xcontext("disabled group") {
+      expect("disabled by inheritance") { }
+   }
 })
 ```
 
@@ -302,27 +315,28 @@ Uses `should` keyword. Supports `context` for grouping.
 
 ```kotlin
 import io.kotest.core.spec.style.ShouldSpec
+import io.kotest.matchers.shouldBe
 
 class ShouldSpecExample : ShouldSpec({
 
-  should("return the length of the string") {
-    "hello".length shouldBe 5
-  }
+   should("return the length of the string") {
+      "hello".length shouldBe 5
+   }
 
-  context("String operations") {
-    should("concatenate strings") {
-      "hello" + " " + "world" shouldBe "hello world"
-    }
-    should("convert to uppercase") {
-      "hello".uppercase() shouldBe "HELLO"
-    }
-  }
+   context("String operations") {
+      should("concatenate strings") {
+         "hello" + " " + "world" shouldBe "hello world"
+      }
+      should("convert to uppercase") {
+         "hello".uppercase() shouldBe "HELLO"
+      }
+   }
 
-  // Disabled
-  xshould("disabled test") { }
-  xcontext("disabled group") {
-    should("disabled by inheritance") { }
-  }
+   // Disabled
+   xshould("disabled test") { }
+   xcontext("disabled group") {
+      should("disabled by inheritance") { }
+   }
 })
 ```
 
@@ -342,6 +356,7 @@ class ShouldSpecExample : ShouldSpec({
 | `should` keyword with grouping                  | `ShouldSpec`   |
 | `expect` keyword with grouping                  | `ExpectSpec`   |
 
-All styles support the same configuration options (tags, timeouts, enabled/disabled, invocations, etc.) via
-`.config(...)`.
+All styles support the same `.config(...)` options (tags, timeout, enabled, invocations, …) and the same lifecycle
+hooks; see [FRAMEWORK-REFERENCE.md](FRAMEWORK-REFERENCE.md). Each style has its own data-driven `withXXX` functions
+(e.g. `withIts` for DescribeSpec, `withScenarios` for FeatureSpec), listed there too.
 

@@ -74,7 +74,10 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
          .withSpec(testref.spec)
          .withTest(testref.test)
          .build()
-      configuration.settings.externalProjectPath = ExternalSystemApiUtil.getExternalProjectPath(element.module)
+      // the chooser's tasks are full paths that IntelliJ runs from this directory: the root of the build, or of the
+      // composite build for an included build, so the root wrapper and settings are used
+      configuration.settings.externalProjectPath = element.module?.let { resolveProjectPath(it) }
+         ?: ExternalSystemApiUtil.getExternalProjectPath(element.module)
       configuration.settings.scriptParameters = ""
       // if we are running a single test, we want to ignore any disabled flags because we're explicitly running the single test
       if (testref.test != null) EnvVarUtil.setKotestTestEnabledOverride(configuration.settings)

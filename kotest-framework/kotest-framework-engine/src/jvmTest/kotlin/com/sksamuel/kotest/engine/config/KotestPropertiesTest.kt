@@ -14,11 +14,16 @@ class KotestPropertiesTest : FunSpec() {
       test("properties file should be applied") {
          // override the kotest.properties filename so it's only applied to this test
          withSystemProperty(KotestEngineProperties.PROPERTIES_FILENAME, "/test.kotest.properties") {
-            TestEngineLauncher()
-               .withListener(NoopTestEngineListener)
-               .withSpecRefs(SpecRef.Reference(C::class))
-               .execute()
-            value shouldBe 123
+            try {
+               TestEngineLauncher()
+                  .withListener(NoopTestEngineListener)
+                  .withSpecRefs(SpecRef.Reference(C::class))
+                  .execute()
+               value shouldBe 123456
+            } finally {
+               // the loader applies the file as system properties, so don't leak the timeout into later engine runs
+               System.clearProperty(KotestEngineProperties.PROJECT_TIMEOUT)
+            }
          }
       }
    }

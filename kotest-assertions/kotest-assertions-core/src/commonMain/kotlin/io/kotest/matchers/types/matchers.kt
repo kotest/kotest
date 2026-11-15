@@ -162,6 +162,8 @@ infix fun Any?.shouldNotBeInstanceOf(expected: KClass<*>) {
  *
  * If you want to verify including inheritance, use [shouldBeInstanceOf]
  *
+ * Also available under the more explicit name [shouldHaveConcreteType].
+ *
  * ```
  * val list: List<Int> = arrayListOf(1, 2, 3)
  *
@@ -270,6 +272,56 @@ infix fun Any?.shouldNotBeTypeOf(expected: KClass<*>) {
    val matcher = beOfType(expected)
    this shouldNotBe matcher
 }
+
+/**
+ * Verifies that this is exactly of type T, where no inheritance is verified.
+ *
+ * Alias for [shouldBeTypeOf]. The name makes the distinction from [shouldBeInstanceOf] explicit.
+ */
+inline fun <reified T : Any> Any?.shouldHaveConcreteType(block: (T) -> Unit = { }): T =
+   shouldBeTypeOf<T>(block)
+
+/**
+ * Verifies that this is exactly of type T, where no inheritance is verified, and smart casts the receiver to T.
+ *
+ * Alias for [shouldBeTypeOf].
+ */
+inline fun <reified T : Any> Any?.shouldHaveConcreteType(): T {
+   contract {
+      returns() implies (this@shouldHaveConcreteType is T)
+   }
+   return shouldBeTypeOf<T>()
+}
+
+/**
+ * Verifies that this is NOT exactly of type T.
+ *
+ * Alias for [shouldNotBeTypeOf].
+ */
+inline fun <reified T : Any> Any?.shouldNotHaveConcreteType() = shouldNotBeTypeOf<T>()
+
+/**
+ * Verifies that this is exactly of type [expected], where no inheritance is verified.
+ *
+ * Alias for [shouldBeTypeOf].
+ */
+infix fun <T : Any> Any?.shouldHaveConcreteType(expected: KClass<T>): T = shouldBeTypeOf(expected)
+
+/**
+ * Verifies that this is exactly of type [expected], where no inheritance is verified, and executes [block]
+ * with the typecasted value.
+ *
+ * Alias for [shouldBeTypeOf].
+ */
+fun <T : Any> Any?.shouldHaveConcreteType(expected: KClass<T>, block: (T) -> Unit): T =
+   shouldBeTypeOf(expected, block)
+
+/**
+ * Verifies that this is NOT exactly of type [expected].
+ *
+ * Alias for [shouldNotBeTypeOf].
+ */
+infix fun Any?.shouldNotHaveConcreteType(expected: KClass<*>) = shouldNotBeTypeOf(expected)
 
 infix fun Any?.shouldBeSameInstanceAs(ref: Any?) = this should beTheSameInstanceAs(ref)
 infix fun Any?.shouldNotBeSameInstanceAs(ref: Any?) = this shouldNotBe beTheSameInstanceAs(ref)

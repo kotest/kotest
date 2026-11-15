@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 
 class Kotest : FunSpec() {
 
@@ -34,6 +35,14 @@ class Kotest : FunSpec() {
          resultCollector.ended.shouldHaveSize(7)
          resultCollector.failures.shouldHaveSize(2)
       }
+
+      test("a spec that fails before its tests is reported as a failure") {
+         val resultCollector = findTestsIn(FailingBeforeSpec::class.java)
+         resultCollector.started.shouldHaveSize(1)
+         resultCollector.ended.shouldHaveSize(1)
+         resultCollector.failures.shouldHaveSize(1)
+         resultCollector.failures.single().message shouldContain "boom"
+      }
    }
 
    private fun findTestsIn(clazz: Class<*>): TestResultCollector {
@@ -49,6 +58,13 @@ private class FunSpecs : FunSpec() {
    init {
       test("passing test") { 1 shouldBe 1 }
       test("failing test") { 1 shouldBe 2 }
+   }
+}
+
+private class FailingBeforeSpec : FunSpec() {
+   init {
+      beforeSpec { error("boom") }
+      test("never runs") { 1 shouldBe 1 }
    }
 }
 

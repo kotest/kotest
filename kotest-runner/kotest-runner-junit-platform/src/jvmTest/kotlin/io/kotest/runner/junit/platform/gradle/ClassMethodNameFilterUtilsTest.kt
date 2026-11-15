@@ -97,4 +97,40 @@ class ClassMethodNameFilterUtilsTest : FunSpec({
       ClassMethodNameFilterUtils.extractIncludePatterns(listOf(filter)).shouldBeEmpty()
    }
 
+   test("unwraps ClassMethodNameFilter from DelegatingByTypeFilter.defaultDelegate (Gradle 9.9+)") {
+      val filter = newClassMethodNameFilter(setOf("FlakyTest.flaky"))
+      val wrapper = Gradle99.DelegatingByTypeFilter(emptyMap<Any, Any>(), filter)
+
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(wrapper)) shouldBe listOf("\\QFlakyTest.flaky\\E")
+
+      ClassMethodNameFilterUtils.reset(listOf(wrapper))
+
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(wrapper)).shouldBeEmpty()
+   }
+
+   test("unwraps ClassMethodNameFilter from DelegatingByTypeFilter.delegates (Gradle 9.4-9.8)") {
+      val filter = newClassMethodNameFilter(setOf("FlakyTest.flaky"))
+      val wrapper = Gradle94.DelegatingByTypeFilter(mapOf("ClassSource" to filter, "MethodSource" to filter))
+
+      ClassMethodNameFilterUtils.extractIncludePatterns(listOf(wrapper)) shouldBe listOf("\\QFlakyTest.flaky\\E")
+   }
+
 })
+
+private fun newClassMethodNameFilter(includes: Set<String>): Any =
+   resolveClassMethodNameFilterClass()
+      .declaredConstructors.first { it.parameterCount == 1 }.let {
+         it.isAccessible = true
+         it.newInstance(TestSelectionMatcher(TestFilterSpec(includes, emptySet(), emptySet())))
+      }
+
+// Mimic the layouts of Gradle's DelegatingByTypeFilter, which is matched by simple name
+@Suppress("unused")
+private object Gradle94 {
+   class DelegatingByTypeFilter(private val delegates: Map<Any, Any>)
+}
+
+@Suppress("unused")
+private object Gradle99 {
+   class DelegatingByTypeFilter(private val delegates: Map<Any, Any>, private val defaultDelegate: Any)
+}

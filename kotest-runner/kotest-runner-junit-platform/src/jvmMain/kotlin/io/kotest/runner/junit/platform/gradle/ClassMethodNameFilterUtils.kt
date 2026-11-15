@@ -102,30 +102,27 @@ internal object ClassMethodNameFilterUtils {
     * Finds all `ClassMethodNameFilter` instances from the post-discovery filters list.
     *
     * In Gradle < 9.4, `ClassMethodNameFilter` appears directly in the list.
-    * In Gradle >= 9.4, `ClassMethodNameFilter` is wrapped inside a `DelegatingByTypeFilter`
-    * which has a `delegates` map of `TestSource` type → `PostDiscoveryFilter`. We extract
-    * the `ClassMethodNameFilter` instances from those delegate maps.
+    * In Gradle 9.4–9.8, `ClassMethodNameFilter` is wrapped inside a `DelegatingByTypeFilter`
+    * which has a `delegates` map of `TestSource` type → `PostDiscoveryFilter`.
+    * In Gradle >= 9.9, it is stored in the `defaultDelegate` field of `DelegatingByTypeFilter`
+    * instead, and `delegates` only contains filters for directory selectors.
     */
    private fun resolveClassMethodNameFilters(filters: List<Any>): List<Any> {
       val result = mutableListOf<Any>()
 
       for (filter in filters) {
-         when (filter.javaClass.simpleName) {
-            "ClassMethodNameFilter" -> result.add(filter)
-            "DelegatingByTypeFilter" -> {
-               // Gradle >= 9.4: unwrap ClassMethodNameFilter from the DelegatingByTypeFilter's delegates map
-               runCatching {
-                  val delegatesField = filter::class.java.getDeclaredField("delegates")
-                  delegatesField.isAccessible = true
-                  val delegates = delegatesField.get(filter) as? Map<*, *> ?: emptyMap<Any, Any>()
-                  for ((_, delegate) in delegates) {
-                     if (delegate != null && delegate.javaClass.simpleName == "ClassMethodNameFilter") {
-                        result.add(delegate)
-                     }
-                  }
-               }.onFailure { e ->
-                  logger.log { "Failed to unwrap DelegatingByTypeFilter via reflection: $e" }
-               }
+         when {
+            filter.isClassMethodNameFilter() -> result.add(filter)
+            filter.javaClass.simpleName == "DelegatingByTypeFilter" -> {
+               // Gradle 9.4–9.8: ClassMethodNameFilter registered per TestSource type in `delegates`
+               (filter.fieldValue("delegates") as? Map<*, *>)
+                  ?.values
+                  ?.filterNotNull()
+                  ?.filterTo(result) { it.isClassMethodNameFilter() }
+               // Gradle 9.9+: passed to the constructor as `defaultDelegate`; `delegates` only holds directory selectors
+               filter.fieldValue("defaultDelegate")
+                  ?.takeIf { it.isClassMethodNameFilter() }
+                  ?.let(result::add)
             }
          }
       }
@@ -134,6 +131,14 @@ internal object ClassMethodNameFilterUtils {
       // as a delegate for both ClassSource and MethodSource types
       return result.distinct()
    }
+
+   /** Reads the declared field [name], or returns null if this class has no such field. */
+   private fun Any.fieldValue(name: String): Any? =
+      javaClass.declaredFields.firstOrNull { it.name == name }
+         ?.apply { isAccessible = true }
+         ?.get(this)
+
+   private fun Any.isClassMethodNameFilter() = javaClass.simpleName == "ClassMethodNameFilter"
 
    private fun testMatcher(obj: Any): Any {
       val field = obj::class.java.getDeclaredField("matcher")

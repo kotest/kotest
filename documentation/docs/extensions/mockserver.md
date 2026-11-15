@@ -16,6 +16,40 @@ Requires the `io.kotest:kotest-extensions-mockserver` module to be added to your
 Since Kotest 6.0, all extensions are published under the `io.kotest` group, with version cadence tied to main Kotest releases.
 :::
 
+:::note[Maven users]
+MockServer 6.x pulls netty, jackson and asm versions with known CVEs. From 6.2.7+ onwards, Kotest overrides them with patched
+versions through BOMs, but Maven does not apply a dependency's imported BOMs, so Maven builds still get the old versions.
+Import the BOMs in your own `<dependencyManagement>`:
+
+```xml
+<dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-bom</artifactId>
+      <version>{version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson</groupId>
+      <artifactId>jackson-bom</artifactId>
+      <version>{version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-bom</artifactId>
+      <version>{version}</version>
+      <type>pom</type>
+      <scope>import</scope>
+    </dependency>
+  </dependencies>
+</dependencyManagement>
+```
+:::
+
 
 [<img src="https://img.shields.io/maven-central/v/io.kotest/kotest-extensions-mockserver.svg?label=latest%20release"/>](https://central.sonatype.com/artifact/io.kotest/kotest-extensions-mockserver)
 [<img src="https://img.shields.io/maven-metadata/v?metadataUrl=https%3A%2F%2Fcentral.sonatype.com%2Frepository%2Fmaven-snapshots%2Fio%2Fkotest%2Fkotest-extensions-mockserver%2Fmaven-metadata.xml"/>](https://central.sonatype.com/repository/maven-snapshots/io/kotest/kotest-extensions-mockserver/maven-metadata.xml)

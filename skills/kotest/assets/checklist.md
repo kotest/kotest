@@ -1,67 +1,57 @@
 # Kotest Setup Verification Checklist
 
-Use this checklist after setting up Kotest or migrating from another test framework.
+Use after setting up Kotest or migrating from another framework.
 
 ## Build & Dependencies
-- [ ] `./gradlew test` succeeds with no errors
-- [ ] `./gradlew test` reports tests discovered and executed (not 0 tests)
-- [ ] No dependency conflicts between Kotest and other test frameworks
-- [ ] All Kotest module versions match (don't mix 5.x and 6.x)
-- [ ] Kotlin version is 2.2+ (required for Kotest 6.x)
+- [ ] `./gradlew test` (or `check` for KMP) succeeds and reports a non-zero test count
+- [ ] Every `io.kotest` artifact uses the same version (no 5.x / 6.x mix)
+- [ ] Kotlin 2.2+ and JDK 11+
+- [ ] No removed artifacts (`kotest-framework-datatest`, `kotest-assertions-api`)
 
-## JVM Setup
-- [ ] `useJUnitPlatform()` present in `tasks.withType<Test>()` configuration
-- [ ] `kotest-runner-junit5` dependency added to `testImplementation`
-- [ ] Kotest Gradle plugin applied (optional but recommended for enhanced IDE support)
+## JVM
+- [ ] `useJUnitPlatform()` on the test tasks
+- [ ] `kotest-runner-junit5` in `testImplementation` (KMP: in `jvmTest`)
+- [ ] `io.kotest` Gradle plugin applied if enhanced IntelliJ support / power-assert / `kotest {}` options are wanted
 
-## Multiplatform Setup
-- [ ] KSP plugin applied before Kotest plugin in `plugins {}` block
-- [ ] `kotest-framework-engine` added to `commonTest` dependencies
-- [ ] Kotest Gradle plugin applied (`id("io.kotest")`)
-- [ ] Tests placed in `commonTest` or platform-specific test source sets
+## Multiplatform / Non-JVM
+- [ ] `com.google.devtools.ksp` and `io.kotest` plugins applied (KSP first)
+- [ ] `kotest-framework-engine` in `commonTest`
+- [ ] Data tests end in a leaf scope (e.g. `withTests`) on JS / Wasm / Native
+- [ ] ProjectConfig on Native is a `class`, not an `object`
 
 ## Test Discovery
-- [ ] Test classes extend a Kotest Spec style (e.g., `FunSpec`, `DescribeSpec`)
-- [ ] Tests are inside `init {}` block or class body lambda
-- [ ] Test report shows correct test names and hierarchy
+- [ ] Specs extend a Kotest style and are not abstract
+- [ ] Tests are declared in the constructor lambda or `init {}`
+- [ ] Report shows the expected names and nesting
 
 ## Assertions
-- [ ] `kotest-assertions-core` dependency added
-- [ ] Assertions produce clear failure messages with expected vs actual diffs
-- [ ] IntelliJ click-to-diff works on assertion failures
-- [ ] `assertSoftly` collects multiple failures when used
+- [ ] `kotest-assertions-core` added
+- [ ] Failures show expected vs actual; IntelliJ click-to-diff works
+- [ ] `assertSoftly` collects multiple failures (non-Kotest assertions wrapped in `shouldNotThrowAnyUnit`)
 
-## Property Testing (if applicable)
-- [ ] `kotest-property` dependency added
-- [ ] Custom generators produce expected value ranges
-- [ ] Shrinking produces minimal failing examples
+## Property Testing (if used)
+- [ ] `kotest-property` added
+- [ ] Custom arbs produce the expected range; shrinking yields small counterexamples
 
 ## Project Configuration
-- [ ] `ProjectConfig` class (if used) is at `io.kotest.provided.ProjectConfig` or configured via `kotest.framework.config.fqn`
-- [ ] Global settings (timeout, assertion mode, etc.) applied correctly
-- [ ] Extensions registered explicitly (not via `@AutoScan` which is removed in 6.0)
+- [ ] ProjectConfig is discoverable ([KNOWN-ISSUES.md §2](../references/KNOWN-ISSUES.md#2-projectconfig-not-picked-up)); `KOTEST_DEBUG=true` log shows it was loaded
+- [ ] Extensions registered explicitly (config `extensions`, `extension(...)`, or `@ApplyExtension`)
+- [ ] Concurrency uses `specExecutionMode` / `testExecutionMode`
 
 ## Migration (if applicable)
-- [ ] No stale JUnit/TestNG imports in migrated test files
-- [ ] All `@Test` methods converted to Kotest test DSL
-- [ ] `@BeforeEach`/`@AfterEach` converted to `beforeEach`/`afterEach`
-- [ ] `@BeforeAll`/`@AfterAll` converted to `beforeSpec`/`afterSpec`
-- [ ] `assertEquals`/`assertTrue` replaced with `shouldBe`/`shouldBeTrue()`
-- [ ] `@ParameterizedTest` replaced with `withXXX(...)` data-driven testing
-- [ ] `@Disabled` replaced with `xtest` or `.config(enabled = false)`
-- [ ] `@Tag` replaced with Kotest `Tag` objects and `.config(tags = ...)`
+- [ ] No stale JUnit / TestNG imports in migrated files
+- [ ] `@Test` → test DSL, `@BeforeEach`/`@AfterEach` → `beforeEach`/`afterEach`, `@BeforeAll`/`@AfterAll` → `beforeSpec`/`afterSpec`
+- [ ] `@ParameterizedTest` → data tests (`withTests` / style-specific `withXXX`)
+- [ ] `@Disabled` → `xtest` or `.config(enabled = false)`; `@Tag` → `Tag` objects + `.config(tags = ...)`
+- [ ] Test count before and after migration matches
 
-## IDE Support
-- [ ] Kotest IntelliJ plugin installed (recommended)
-- [ ] Individual tests can be run from gutter icons
-- [ ] Test results tree shows proper hierarchy
-- [ ] Failed test output shows clickable diffs
+## IDE
+- [ ] Kotest IntelliJ plugin installed; gutter icons run individual tests
+- [ ] Results tree shows the spec hierarchy
 
-## Advanced Features (if used)
-- [ ] Tags filter correctly via `-Dkotest.tags="..."` or `KOTEST_TAGS` env var
-- [ ] Isolation mode behaves as expected (`SingleInstance` vs `InstancePerRoot`)
-- [ ] Timeouts applied correctly (test-level and project-level)
-- [ ] Concurrency settings work as expected (`SpecConcurrencyMode`, `TestConcurrencyMode`)
-- [ ] Data-driven tests generate individual test entries in the report
-- [ ] Non-deterministic helpers (`eventually`, `continually`, `retry`) work as expected
-
+## Advanced (if used)
+- [ ] Tag filtering via `KOTEST_TAGS="..."` or `systemProperty("kotest.tags", ...)` on the test task (`-D` alone is not forwarded)
+- [ ] Isolation mode behaves as expected (`SingleInstance` or `InstancePerRoot`)
+- [ ] Test- and project-level timeouts applied; blocking code uses `blockingTest = true`
+- [ ] Each data-test row appears as its own test in the report
+- [ ] `eventually` / `continually` / `retry` durations are realistic (`eventually` always uses wall-clock time)

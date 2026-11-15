@@ -16,6 +16,8 @@ import io.kotest.matchers.types.instanceOf
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.kotest.matchers.types.shouldBeSameInstanceAs
 import io.kotest.matchers.types.shouldBeTypeOf
+import io.kotest.matchers.types.shouldHaveConcreteType
+import io.kotest.matchers.types.shouldNotHaveConcreteType
 import io.kotest.matchers.types.shouldHaveAnnotation
 import io.kotest.matchers.types.shouldNotBeInstanceOf
 import io.kotest.matchers.types.shouldNotBeTypeOf
@@ -48,6 +50,46 @@ class TypeMatchersTest : WordSpec() {
            arrayList.shouldBeTypeOf(ArrayList::class) { it.size shouldBe 3 }
            shouldThrow<AssertionError> { arrayList.shouldBeTypeOf(List::class) }
            shouldThrow<AssertionError> { arrayList.shouldNotBeTypeOf(ArrayList::class) }
+        }
+     }
+
+     "shouldHaveConcreteType" should {
+        "test for exact type" {
+           val arrayList: List<Int> = arrayListOf(1, 2, 3)
+           arrayList.shouldHaveConcreteType<ArrayList<*>>()
+           arrayList.shouldNotHaveConcreteType<List<*>>()
+
+           arrayList.shouldHaveConcreteType(ArrayList::class)
+           arrayList shouldHaveConcreteType ArrayList::class
+           arrayList.shouldNotHaveConcreteType(List::class)
+           arrayList shouldNotHaveConcreteType List::class
+
+           shouldThrow<AssertionError> { arrayList.shouldHaveConcreteType<List<*>>() }
+           shouldThrow<AssertionError> { arrayList.shouldHaveConcreteType(List::class) }
+           shouldThrow<AssertionError> { arrayList.shouldNotHaveConcreteType<ArrayList<*>>() }
+           shouldThrow<AssertionError> { arrayList.shouldNotHaveConcreteType(ArrayList::class) }
+        }
+
+        "return the typecasted value and accept a block" {
+           val list: Any = arrayListOf(1, 2, 3)
+
+           list.shouldHaveConcreteType<ArrayList<Int>> { it[0] shouldBe 1 }
+           list.shouldHaveConcreteType(ArrayList::class) { it.size shouldBe 3 }
+
+           list.shouldHaveConcreteType<ArrayList<Int>>().shouldHaveSize(3)
+           list.shouldHaveConcreteType(ArrayList::class).shouldHaveSize(3)
+
+           // smart cast via contract
+           list.shouldHaveConcreteType<ArrayList<Int>>()
+           list[0] shouldBe 1
+        }
+
+        "accept null values" {
+           val arrayList: List<Int>? = null
+           shouldThrow<AssertionError> { arrayList.shouldHaveConcreteType<List<*>>() }
+           shouldThrow<AssertionError> { arrayList.shouldHaveConcreteType(List::class) }
+           shouldThrow<AssertionError> { arrayList.shouldNotHaveConcreteType<List<*>>() }
+           shouldThrow<AssertionError> { arrayList.shouldNotHaveConcreteType(List::class) }
         }
      }
 
