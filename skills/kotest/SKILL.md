@@ -147,6 +147,9 @@ Rules:
   your own `Eq<BigDecimal>`: per-assertion equality overrides that apply recursively into collections and data
   classes, and are safe under concurrency (unlike the global `DefaultEqResolver.register`).
 - `shouldBeEqualUsingFields { excludedProperties = setOf(Foo::updatedAt); expected }` (JVM): field-by-field diffs.
+- `shouldEqualJson { overrideMatchers = mapOf("users" to matchArraysContainingAll()); expected }`: custom matchers for
+  JSON subtrees, keyed by dotted paths like `"users.[0].name"` — e.g. partial array matching with
+  `matchArraysContainingAll()` (see ASSERTIONS-REFERENCE).
 - `list.shouldBeSingle()` returns the element; `result.shouldBeFailure<IOException> { }`; `x.shouldBeInstanceOf(Foo::class)` returns `Foo`.
 - `DefaultTestConfig`, `PackageConfig`, and `failfast` give layered configuration.
 - `coroutineTestScope = true` with `testCoroutineScheduler` gives virtual time. On Kotest ≤ 6.2.6 also add

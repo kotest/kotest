@@ -33,6 +33,11 @@ sealed class JsonError {
       val expected: String,
       val actual: String
    ) : JsonError()
+
+   data class CustomComparison(
+      override val path: List<String>,
+      val message: String
+   ) : JsonError()
 }
 
 fun JsonError.asString(): String {
@@ -51,5 +56,6 @@ fun JsonError.asString(): String {
       is JsonError.ExpectedNull -> "$dotpath expected null but was ${b.type()}"
       is JsonError.NameOrderDiff -> "$dotpath object expected field $index to be '$expected' but was '$actual'"
       is JsonError.UnequalArrayContent -> "$dotpath has extra element '${show(missing)}' not found (or too few) in '${show(expected)}'"
+      is JsonError.CustomComparison -> "$dotpath $message"
    }
 }
