@@ -359,6 +359,15 @@ class DateMatchersTest : StringSpec() {
       }
     }
 
+    "between() matcher should compare instants when the value and the range bounds are in different timezones" {
+      ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo")) shouldBe between(ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("Asia/Kolkata")))
+      OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)) shouldBe between(OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.UTC), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(5)))
+      shouldFail {
+        // the value's instant is equal to the start of the range, so it is not between
+        ZonedDateTime.of(2019, 2, 15, 9, 0, 0, 0, ZoneId.of("America/Sao_Paulo")) shouldBe between(ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("UTC")), ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("Asia/Kolkata")))
+      }
+    }
+
     "ZonedDateTime and OffsetDateTime shouldNotBeToday with explicit zones (pins the corrected KDoc examples)" {
       ZonedDateTime.of(2009, 4, 2, 2, 2, 0, 0, ZoneId.of("America/Sao_Paulo")).shouldNotBeToday()
       OffsetDateTime.of(2009, 4, 2, 2, 2, 0, 0, ZoneOffset.ofHours(-3)).shouldNotBeToday()
