@@ -414,6 +414,12 @@ class DateMatchersTest : StringSpec() {
     "LocalDateTime should have nano" {
       LocalDateTime.of(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
     }
+    "LocalDateTime shouldHaveNano should fail on a different nano (pins the corrected KDoc example)" {
+      LocalDateTime.of(2019, 2, 15, 12, 10, 0, 12) shouldHaveNano 12
+      shouldFail {
+        LocalDateTime.of(2019, 2, 15, 12, 10, 0, 12).shouldHaveNano(10)
+      }
+    }
 
     "ZonedDateTime should be have same instant of the given ZonedDateTime irrespective of their timezone" {
        ZonedDateTime.of(2019, 2, 16, 11, 0, 0, 0, ZoneOffset.ofHours(-1)) should haveSameInstantAs(ZonedDateTime.of(2019, 2, 16, 9, 0, 0, 0, ZoneOffset.ofHours(-3)))

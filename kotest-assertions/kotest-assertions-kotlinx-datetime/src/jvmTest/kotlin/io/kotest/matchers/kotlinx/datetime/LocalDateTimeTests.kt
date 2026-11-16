@@ -157,5 +157,11 @@ class LocalDateTimeTests : StringSpec({
     "LocalDateTime should have nano" {
         LocalDateTime(2019, 2, 16, 12, 10, 0, 14) shouldHaveNano  14
     }
+    "LocalDateTime shouldHaveNano should fail on a different nano (pins the corrected KDoc example)" {
+        LocalDateTime(2019, 2, 15, 12, 10, 0, 12) shouldHaveNano 12
+        shouldFail {
+            LocalDateTime(2019, 2, 15, 12, 10, 0, 12).shouldHaveNano(10)
+        }
+    }
 
 })
