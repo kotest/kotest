@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.date.after
 import io.kotest.matchers.date.atSameZone
 import io.kotest.matchers.date.before
+import io.kotest.matchers.date.between
 import io.kotest.matchers.date.haveSameDay
 import io.kotest.matchers.date.haveSameHours
 import io.kotest.matchers.date.haveSameInstantAs
@@ -346,6 +347,21 @@ class DateMatchersTest : StringSpec() {
     "OffsetDateTime shouldBe between" {
       OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)).shouldBeBetween(OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
       OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)).shouldNotBeBetween(OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
+    }
+
+    "between() matcher should pass for in-range values and fail otherwise (pins the corrected KDoc examples)" {
+      LocalDate.of(2019, 2, 16) shouldBe between(LocalDate.of(2019, 2, 15), LocalDate.of(2019, 2, 17))
+      LocalDateTime.of(2019, 2, 16, 12, 0, 0) shouldBe between(LocalDateTime.of(2019, 2, 15, 12, 0, 0), LocalDateTime.of(2019, 2, 17, 12, 0, 0))
+      ZonedDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo")) shouldBe between(ZonedDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo")), ZonedDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneId.of("America/Sao_Paulo")))
+      OffsetDateTime.of(2019, 2, 16, 12, 0, 0, 0, ZoneOffset.ofHours(-3)) shouldBe between(OffsetDateTime.of(2019, 2, 15, 12, 0, 0, 0, ZoneOffset.ofHours(-3)), OffsetDateTime.of(2019, 2, 17, 12, 0, 0, 0, ZoneOffset.ofHours(-3)))
+      shouldFail {
+        LocalDate.of(2019, 2, 15) shouldBe between(LocalDate.of(2019, 2, 16), LocalDate.of(2019, 2, 17))
+      }
+    }
+
+    "ZonedDateTime and OffsetDateTime shouldNotBeToday with explicit zones (pins the corrected KDoc examples)" {
+      ZonedDateTime.of(2009, 4, 2, 2, 2, 0, 0, ZoneId.of("America/Sao_Paulo")).shouldNotBeToday()
+      OffsetDateTime.of(2009, 4, 2, 2, 2, 0, 0, ZoneOffset.ofHours(-3)).shouldNotBeToday()
     }
 
     "LocalDate.shouldBeToday() should match today" {

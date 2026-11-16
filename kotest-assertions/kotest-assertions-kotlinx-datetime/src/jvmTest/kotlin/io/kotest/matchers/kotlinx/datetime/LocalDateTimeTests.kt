@@ -90,6 +90,14 @@ class LocalDateTimeTests : StringSpec({
         LocalDateTime(2019, 2, 16, 12, 0, 0).shouldNotBeBetween(LocalDateTime(2019, 2, 16, 18, 0, 0), LocalDateTime(2019, 2, 16, 20, 0, 0))
     }
 
+    "between() matcher should pass for in-range values and fail otherwise (pins the corrected KDoc examples)" {
+        LocalDate(2019, 2, 16) shouldBe between(LocalDate(2019, 2, 15), LocalDate(2019, 2, 17))
+        LocalDateTime(2019, 2, 16, 12, 0, 0) shouldBe between(LocalDateTime(2019, 2, 15, 12, 0, 0), LocalDateTime(2019, 2, 17, 12, 0, 0))
+        shouldFail {
+            LocalDate(2019, 2, 15) shouldBe between(LocalDate(2019, 2, 16), LocalDate(2019, 2, 17))
+        }
+    }
+
 
     "LocalDate.shouldBeToday() should match today" {
         Clock.System.todayIn(TimeZone.UTC).shouldBeToday(TimeZone.UTC)
