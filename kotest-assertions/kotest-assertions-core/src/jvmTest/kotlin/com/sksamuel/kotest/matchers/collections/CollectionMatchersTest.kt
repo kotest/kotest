@@ -739,6 +739,30 @@ expected:<2> but was:<3>""")
             """.trimIndent()
          }
 
+         "collection shorter than the assertions list reports a clear failure" {
+            shouldFail {
+               listOf(1, 2) should matchInOrder(
+                  { it shouldBe 1 },
+                  { it shouldBe 2 },
+                  { it shouldBe 3 }
+               )
+            }.message shouldBe """
+               Expected a sequence of elements to pass the assertions, but failed to match all assertions
+
+               The collection has fewer elements (2) than the number of assertions (3), so the assertions cannot all match.
+            """.trimIndent()
+         }
+
+         "empty assertions are rejected like in containsInOrder / existInOrder" {
+            shouldThrow<IllegalArgumentException> {
+               listOf(1, 2, 3) should matchInOrder<Int>()
+            }.message shouldBe "assertions must not be empty"
+
+            shouldThrow<IllegalArgumentException> {
+               listOf(1, 2, 3) should matchInOrderSubset<Int>()
+            }.message shouldBe "assertions must not be empty"
+         }
+
 
          "Non existing element causes error" {
             shouldThrow<AssertionError> {
@@ -834,6 +858,18 @@ expected:<2> but was:<3>""")
                3 => expected:<6> but was:<2>
                4 => expected:<6> but was:<3>
                5 => expected:<6> but was:<3>
+            """.trimIndent()
+         }
+
+         "empty collection with assertions reports a clear failure" {
+            shouldFail {
+               emptyList<Int>() should matchInOrderSubset(
+                  { it shouldBe 1 }
+               )
+            }.message shouldBe """
+               Expected a sequence of elements to pass the assertions, possibly with gaps between but failed to match all assertions
+
+               The collection has fewer elements (0) than the number of assertions (1), so the assertions cannot all match.
             """.trimIndent()
          }
 
