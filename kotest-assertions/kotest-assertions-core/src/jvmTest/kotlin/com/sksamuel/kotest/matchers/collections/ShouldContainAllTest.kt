@@ -82,6 +82,20 @@ class ShouldContainAllTest : WordSpec() {
             }
          }
 
+         "test that the order of elements is not significant" {
+            // pins the documented contract: elements are matched in any order
+            listOf(3, 2, 1).shouldContainAll(1, 2, 3)
+            arrayOf(3, 2, 1).shouldContainAll(1, 2, 3)
+
+            shouldThrow<AssertionError> {
+               listOf(1, 2, 3).shouldNotContainAll(3, 2, 1)
+            }
+
+            shouldThrow<AssertionError> {
+               arrayOf(1, 2, 3).shouldNotContainAll(3, 2, 1)
+            }
+         }
+
          "test that a array contains all the elements but in any order" {
             val arr = arrayOf(1, 2, 3, 4, 5)
 
