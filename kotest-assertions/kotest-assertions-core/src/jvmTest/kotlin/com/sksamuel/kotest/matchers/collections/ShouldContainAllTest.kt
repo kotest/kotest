@@ -82,7 +82,7 @@ class ShouldContainAllTest : WordSpec() {
             }
          }
 
-         "test that the order of elements is not significant" {
+         "test that the order of elements is ignored" {
             // pins the documented contract: elements are matched in any order
             listOf(3, 2, 1).shouldContainAll(1, 2, 3)
             arrayOf(3, 2, 1).shouldContainAll(1, 2, 3)
