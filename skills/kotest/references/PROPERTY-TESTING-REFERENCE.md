@@ -70,6 +70,7 @@ All in `io.kotest.property.arbitrary` unless noted.
 | `Arb.enum<MyEnum>()`                           |                                                          |
 | `Arb.element(list)`, `Arb.of(a, b, c)`         | pick from values                                         |
 | `Arb.choice(arb1, arb2)`                       | pick from arbs                                           |
+| `Arb.swarm(arb1, arb2)`                        | swarm testing: a random non-empty subset of arbs is active for the whole run, the rest disabled |
 | `Arb.pair(a, b)`, `Arb.triple(a, b, c)`        |                                                          |
 | `Arb.bind(a, b, …) { x, y -> T(x, y) }`        | compose into a class; `Arb.bind<T>()` reflects (JVM)     |
 | `arb.orNull()`, `arb.orNull(0.2)`              | nullable; arg is null probability                        |
