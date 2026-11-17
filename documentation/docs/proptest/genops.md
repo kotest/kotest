@@ -77,11 +77,11 @@ For merging more than two arbitraries, `Arb.choice` or `Arb.choose` might be mor
   In this example `arbA`, `arbB`, and `arbC` will be sampled 40%, 10%, and 50% of the time, respectively.
 
 A variation on `Arb.choice` is `Arb.swarm(arbA, arbB, arbC)`, based on the idea of [swarm testing](https://www.cs.utah.edu/~regehr/papers/swarm12.pdf):
-for each property test run, a random non-empty subset of the given arbs is active for the whole run and the rest are
-disabled. Counterintuitively, disabling generators can improve a test's capacity to catch bugs — e.g. when generating a
-sequence of commands with `Arb.list(Arb.swarm(pushArb, popArb))`, some runs will generate sequences consisting solely of
-`push`es (or solely of `pop`s), which plain `Arb.choice` would practically never produce. The active subset is derived
-from the run's seed, so replaying a failing seed reproduces the same disabled arbs.
+for each generated sample, a random non-empty subset of the given arbs is activated and the rest are disabled.
+Counterintuitively, disabling generators can improve a test's capacity to catch bugs — e.g. when generating a sequence of
+commands with `Arb.swarm(pushArb, popArb).flatMap { Arb.list(it, 0..100) }`, some test cases will generate sequences
+consisting solely of `push`es (or solely of `pop`s), which plain `Arb.choice` would practically never produce. The active
+subsets are drawn from the run's random source, so replaying a failing seed reproduces the same subsets.
 
 ## Bind
 

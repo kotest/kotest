@@ -2,7 +2,6 @@ package io.kotest.property.arbitrary
 
 import io.kotest.property.Arb
 import kotlin.jvm.JvmName
-import kotlin.random.Random
 
 /**
  * An alias to [choose] to aid in discoverability for those used to Haskell's QuickCheck.
@@ -161,57 +160,56 @@ fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
 
 /**
  * Uses the [Arb]s provided to randomly generate the next element, in the spirit of swarm testing:
- * for each property test run a random non-empty subset of the input arbs is activated and the rest
- * are disabled for the whole run, each arb being disabled with probability 0.5.
+ * for each generated sample a random non-empty subset of the input arbs is activated and the
+ * remaining arbs are disabled for that sample, each arb being activated with probability 0.5.
  *
  * Counterintuitively, disabling generators can improve a test's capacity to catch bugs: a plain
  * [choice] practically never generates e.g. a command sequence consisting solely of a single
- * command type, while a swarm of those commands will, for some runs.
+ * command type, while a swarm of those commands will, for some samples.
  *
- * The active subset is derived from the run's seed, so replaying a failing seed reproduces the
- * same disabled arbs. The returned [Arb]'s edge cases contain the edge cases of all input [Arb]s.
+ * The returned [Arb] is intended to be composed with [flatMap], so that every test case of a
+ * property test activates a fresh subset, for example:
+ * `Arb.swarm(putArb, popArb).flatMap { Arb.list(it, 0..100) }`.
+ *
+ * The active subsets are drawn from the caller's random source, so replaying a failing seed
+ * reproduces the same subsets. The returned [Arb]'s edge cases are the input [Arb]s themselves,
+ * so when composed with [flatMap] each edge case is generated from a single input arb.
  *
  * The input must be non-empty.
  * The input [Arb]s must be infinite.
  *
- * @return A new [Arb]<A> that will randomly select values from the active subset of the provided
- * [Arb]s, and combine all of the provided [Arb]s edge cases
+ * @return A new [Arb] that will produce a randomly selected non-empty subset of the provided
+ * [Arb]s on each sample
  */
-fun <A> Arb.Companion.swarm(arb: Arb<A>, vararg arbs: Arb<A>): Arb<A> = swarm(listOf(arb, *arbs))
+fun <A> Arb.Companion.swarm(arb: Arb<A>, vararg arbs: Arb<A>): Arb<Arb<A>> = swarm(listOf(arb, *arbs))
 
 /**
  * Uses the [Arb]s provided to randomly generate the next element, in the spirit of swarm testing:
- * for each property test run a random non-empty subset of the input arbs is activated and the rest
- * are disabled for the whole run, each arb being disabled with probability 0.5.
+ * for each generated sample a random non-empty subset of the input arbs is activated and the
+ * remaining arbs are disabled for that sample, each arb being activated with probability 0.5.
  *
  * Counterintuitively, disabling generators can improve a test's capacity to catch bugs: a plain
  * [choice] practically never generates e.g. a command sequence consisting solely of a single
- * command type, while a swarm of those commands will, for some runs.
+ * command type, while a swarm of those commands will, for some samples.
  *
- * The active subset is derived from the run's seed, so replaying a failing seed reproduces the
- * same disabled arbs. The returned [Arb]'s edge cases contain the edge cases of all input [Arb]s.
+ * The returned [Arb] is intended to be composed with [flatMap], so that every test case of a
+ * property test activates a fresh subset, for example:
+ * `Arb.swarm(putArb, popArb).flatMap { Arb.list(it, 0..100) }`.
+ *
+ * The active subsets are drawn from the caller's random source, so replaying a failing seed
+ * reproduces the same subsets. The returned [Arb]'s edge cases are the input [Arb]s themselves,
+ * so when composed with [flatMap] each edge case is generated from a single input arb.
  *
  * @throws IllegalArgumentException if no arbs have been passed to this function
  *
- * @return A new [Arb]<A> that will randomly select values from the active subset of the provided
- * [Arb]s, and combine all of the provided [Arb]s edge cases
+ * @return A new [Arb] that will produce a randomly selected non-empty subset of the provided
+ * [Arb]s on each sample
  */
-fun <A> Arb.Companion.swarm(arbs: List<Arb<A>>): Arb<A> {
+fun <A> Arb.Companion.swarm(arbs: List<Arb<A>>): Arb<Arb<A>> {
    require(arbs.isNotEmpty()) { "List of arbs provided to Arb.swarm must not be empty" }
-   return arbitrary(
-      edgecaseFn = { rs -> arbs.edgecase(rs) },
-      sampleFn = { rs -> arbs.swarmed(rs.seed).random(rs.random).next(rs) }
-   )
-}
-
-/**
- * Returns a random non-empty subset of [arbs], derived deterministically from [seed] so that
- * replaying a property test seed reproduces the same disabled arbs.
- */
-private fun <A> List<Arb<A>>.swarmed(seed: Long): List<Arb<A>> {
-   val random = Random(seed)
-   val active = filter { random.nextBoolean() }
-   return if (active.isEmpty()) listOf(this[random.nextInt(size)]) else active
+   return arbitrary(edgecases = arbs) { rs ->
+      Arb.choice(arbs.filter { rs.random.nextBoolean() }.ifEmpty { listOf(arbs.random(rs.random)) })
+   }
 }
 
 
