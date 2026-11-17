@@ -22,8 +22,8 @@ class CompareYamlOptions(
     *
     * For instance, comparing `1.00` to `1.0`, or `1E2` to `100`.
     *
-    * Defaults to [NumberFormat.Strict], matching the previous matcher, which compared
-    * scalar contents verbatim; set [NumberFormat.Lenient] to compare parsed values.
+    * Defaults to [NumberFormat.Strict], comparing scalar contents verbatim;
+    * set [NumberFormat.Lenient] to compare parsed values.
     *
     * Note: YAML-specific numeric forms that are not valid JSON numbers,
     * such as `0x1F`, `0o17`, `1_000` or `.5`, are always compared literally.
@@ -101,7 +101,7 @@ enum class NumberFormat {
 
    /**
     * Default. Numbers must also be formatted the same way to be considered equal,
-    * mirroring the previous matcher, which compared scalar contents verbatim.
+    * i.e. scalar contents are compared verbatim.
     */
    Strict
 }

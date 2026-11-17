@@ -65,7 +65,7 @@ infix fun String.lenientShouldEqualYaml(other: String) = this.shouldEqualYaml(ot
 | `PropertyOrder`   | Determines if the order of properties in YAML mappings are considered when comparing                                                | `PropertyOrder.Strict`, `PropertyOrder.Lenient`     | `PropertyOrder.Lenient`, i.e. order of properties *DON'T* matter      |
 | `ArrayOrder`      | Determines if the order of elements in YAML arrays are considered when comparing                                                    | `ArrayOrder.Strict`, `ArrayOrder.Lenient`           | `ArrayOrder.Strict`, i.e. order of elements *DO* matter               |
 | `FieldComparison` | Determines if comparison will fail if YAML mappings in `actual` contain extra properties, when compared to `expected`               | `FieldComparison.Strict`, `FieldComparison.Lenient` | `FieldComparison.Strict`, i.e. extra properties will cause inequality |
-| `NumberFormat`    | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal. | `NumberFormat.Strict`, `NumberFormat.Lenient`       | `NumberFormat.Strict`, i.e. number formats *DO* matter (matching the previous matcher's verbatim scalar comparison) |
+| `NumberFormat`    | Determines if comparison of numbers are strict with regards to number format. For instance, if 100.0 and 100 are considered equal. | `NumberFormat.Strict`, `NumberFormat.Lenient`       | `NumberFormat.Strict`, i.e. number formats *DO* matter |
 
 Targets: **Multiplatform**
 
