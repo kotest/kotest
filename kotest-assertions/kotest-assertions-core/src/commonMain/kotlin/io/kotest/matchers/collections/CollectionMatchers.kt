@@ -67,6 +67,8 @@ fun <T> matchInOrderSubset(vararg fns: (T) -> Unit): Matcher<Collection<T>?> =
  */
 fun <T> matchInOrder(assertions: List<(T) -> Unit>, allowGaps: Boolean): Matcher<Collection<T>?> =
    neverNullMatcher { actual ->
+      require(assertions.isNotEmpty()) { "assertions must not be empty" }
+
       val originalMode = errorCollector.getCollectionMode()
       try {
          data class MatchInOrderSubsetProblem(
@@ -126,17 +128,27 @@ fun <T> matchInOrder(assertions: List<(T) -> Unit>, allowGaps: Boolean): Matcher
          MatcherResult(
             allPassed,
             {
-               """
+               val result = bestResult
+               if (result == null) {
+                  // the actual collection is shorter than the assertions list, so the loop above never ran
+                  """
             |Expected a sequence of elements to pass the assertions, ${if (allowGaps) "possibly with gaps between " else ""}but failed to match all assertions
             |
-            |Best result when comparing from index [${bestResult?.startIndex}], where ${bestResult?.elementsPassed} elements passed, but the following elements failed:
+            |The collection has fewer elements (${actual.size}) than the number of assertions (${assertions.size}), so the assertions cannot all match.
+            """.trimMargin()
+               } else {
+                  """
+            |Expected a sequence of elements to pass the assertions, ${if (allowGaps) "possibly with gaps between " else ""}but failed to match all assertions
+            |
+            |Best result when comparing from index [${result.startIndex}], where ${result.elementsPassed} elements passed, but the following elements failed:
             |
             ${
-                  bestResult?.problems?.joinToString("\n") { problem ->
-                     "|${problem.atIndex} => ${problem.problem}"
+                     result.problems.joinToString("\n") { problem ->
+                        "|${problem.atIndex} => ${problem.problem}"
+                     }
                   }
-               }
             """.trimMargin()
+               }
             },
             { "Expected some assertion to fail but all passed" }
          )
