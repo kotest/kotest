@@ -379,8 +379,13 @@ json.shouldContainJsonKey("$.user.name")          // JVM
 json.shouldContainJsonKeyValue("$.user.age", 30)  // JVM
 
 // YAML
-import io.kotest.assertions.yaml.shouldEqualYaml
+import io.kotest.assertions.yaml.*
 yaml shouldEqualYaml expectedYaml
+yaml shouldEqualYaml {                     // block configures CompareYamlOptions and returns the expected yaml
+   arrayOrder = ArrayOrder.Lenient
+   expectedYaml
+}
+equalYaml(expectedYaml, yamlCompareOptions { propertyOrder = PropertyOrder.Strict })
 
 // Ktor client
 import io.kotest.assertions.ktor.client.*
