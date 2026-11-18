@@ -295,6 +295,25 @@ class StringMatchersTest : FreeSpec() {
             }.message shouldBe "\"apples and oranges\" should not contain the substring \"ORANGE\" (case insensitive), but contained it at index 11"
          }
 
+         "should use Kotlin case-insensitive comparison for Unicode letters" {
+            listOf("İ" to "i", "ı" to "I", "ΟΣ" to "σ").forEach { (value, substring) ->
+               value shouldContainIgnoringCase substring
+               shouldThrow<AssertionError> {
+                  value shouldNotContainIgnoringCase substring
+               }
+            }
+         }
+
+         "should not match a combining dot introduced by lowercasing" {
+            "İ" shouldNotContainIgnoringCase "\u0307"
+         }
+
+         "should report the match index in the original string" {
+            shouldThrow<AssertionError> {
+               "İx" shouldNotContainIgnoringCase "X"
+            }.message shouldBe "\"İx\" should not contain the substring \"X\" (case insensitive), but contained it at index 1"
+         }
+
          "should fail if value is null" {
             shouldThrow<AssertionError> {
                null shouldNot containIgnoringCase("")
