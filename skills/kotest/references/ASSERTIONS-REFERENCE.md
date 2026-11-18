@@ -172,6 +172,9 @@ d shouldBe (3.14 plusOrMinus 0.01)     // floating-point tolerance
 d.shouldBeNaN(); d.shouldBePositiveInfinity()
 ```
 
+`Int.shouldBeOdd()` and `Long.shouldBeOdd()` accept negative odd values on the development branch.
+In 6.2.7, these assertions incorrectly reject negative odd values.
+
 ---
 
 ## Strings
