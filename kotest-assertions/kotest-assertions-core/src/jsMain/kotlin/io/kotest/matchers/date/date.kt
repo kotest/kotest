@@ -257,7 +257,7 @@ fun after(other: Date): Matcher<Date> = object : Matcher<Date> {
  * ```
  *    val date = Date(2019, 2, 15, 12, 0, 0, 0)
  *
- *    date.shouldHaveDayOfWeek(2019) // Assertion passes
+ *    date.shouldHaveYear(2019) // Assertion passes
  * ```
  */
 infix fun Date.shouldHaveYear(year: Int) = this.getFullYear() shouldBe year
@@ -280,7 +280,7 @@ infix fun Date.shouldHaveDayOfWeek(day: Int) = this.getDay() shouldBe day
  * ```
  *    val date = Date(2019, 2, 15, 12, 0, 0, 0)
  *
- *    date.shouldHaveDayOfWeek(5) // Assertion passes
+ *    date.shouldHaveDayOfMonth(15) // Assertion passes
  * ```
  */
 infix fun Date.shouldHaveDayOfMonth(day: Int) = this.getDate() shouldBe day

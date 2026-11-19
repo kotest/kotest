@@ -34,7 +34,7 @@ fun OffsetDateTime.shouldBeToday() = this should beInTodayODT()
  * Asserts that the OffsetDateTime does not have a date component of today
  *
  * ```
- *      OffsetDateTime.of(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
+ *      OffsetDateTime.of(2009, 4, 2, 2, 2, 0, 0, ZoneOffset.ofHours(-3)).shouldNotBeToday() // Assertion passes
  * ```
  */
 fun OffsetDateTime.shouldNotBeToday() = this shouldNot beInTodayODT()

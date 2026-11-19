@@ -26,7 +26,7 @@ fun beInTodayZDT() = object : Matcher<ZonedDateTime> {
  * Asserts that the ZonedDateTime does not have a date component of today
  *
  * ```
- *      ZonedDateTime.of(2009, Month.APRIL, 2,2,2).shouldNotBeToday() // Assertion passes
+ *      ZonedDateTime.of(2009, 4, 2, 2, 2, 0, 0, ZoneId.of("America/Sao_Paulo")).shouldNotBeToday() // Assertion passes
  * ```
  */
 fun ZonedDateTime.shouldNotBeToday() = this shouldNot beInTodayZDT()
