@@ -29,14 +29,12 @@ import io.kotest.matchers.longs.shouldNotBeAtMost
 class LongMatchersTest : StringSpec() {
   init {
 
-    "odd assertions accept positive and negative odd values" {
+    "isOdd" {
       listOf(1L, 3L, -1L, -3L, Long.MIN_VALUE + 1L, Long.MAX_VALUE).forEach { value ->
         value.shouldBeOdd()
         shouldThrow<AssertionError> { value.shouldNotBeOdd() }
       }
-    }
 
-    "odd assertions reject zero and positive and negative even values" {
       listOf(0L, 2L, -2L, Long.MIN_VALUE).forEach { value ->
         shouldThrow<AssertionError> { value.shouldBeOdd() }
         value.shouldNotBeOdd()

@@ -164,7 +164,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `int.shouldBeGreaterThanOrEqual(n)` | Asserts that the integer is greater than or equal to the given value n |
 | `int.shouldBeAtLeast(n)`            | Asserts that the integer is greater than or equal to the given value n |
 | `int.shouldBeEven()`                | Asserts that the integer is even.                                      |
-| `int.shouldBeOdd()`                 | Asserts that the integer is odd, including negative odd values.        |
+| `int.shouldBeOdd()`                 | Asserts that the integer is odd.                                       |
 | `int.shouldBeInRange(range)`        | Asserts that the integer is included in the given range.               |
 | `int.shouldBeZero()`                | Asserts that the integer is zero                                       |
 
@@ -179,7 +179,7 @@ Collections: also see [inspectors](inspectors.md) which are useful ways to test 
 | `long.shouldBeAtLeast(n)`            | Asserts that the long is greater than or equal to the given value n |
 | `long.shouldBeInRange(range)`        | Asserts that the long is included in the given range.               |
 | `long.shouldBeEven()`                | Asserts that the long is even.                                      |
-| `long.shouldBeOdd()`                 | Asserts that the long is odd, including negative odd values.        |
+| `long.shouldBeOdd()`                 | Asserts that the long is odd.                                       |
 | `long.shouldBeZero()`                | Asserts that the long is zero                                       |
 
 | Doubles or Floats                               |                                                                                                                                           |

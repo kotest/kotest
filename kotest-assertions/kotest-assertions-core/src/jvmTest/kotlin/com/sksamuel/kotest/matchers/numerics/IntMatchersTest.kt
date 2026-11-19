@@ -36,19 +36,6 @@ import io.kotest.matchers.ints.shouldNotBeAtMost
 
 class IntMatchersTest : StringSpec() {
    init {
-      "odd assertions accept positive and negative odd values" {
-         listOf(1, 3, -1, -3, Int.MIN_VALUE + 1, Int.MAX_VALUE).forEach { value ->
-            value.shouldBeOdd()
-            shouldThrow<AssertionError> { value.shouldNotBeOdd() }
-         }
-      }
-
-      "odd assertions reject zero and positive and negative even values" {
-         listOf(0, 2, -2, Int.MIN_VALUE).forEach { value ->
-            shouldThrow<AssertionError> { value.shouldBeOdd() }
-            value.shouldNotBeOdd()
-         }
-      }
 
       "be positive" {
          1.shouldBePositive()
@@ -93,6 +80,16 @@ class IntMatchersTest : StringSpec() {
       "isOdd" {
          3 shouldBe beOdd()
          4 shouldNotBe beOdd()
+
+         listOf(1, 3, -1, -3, Int.MIN_VALUE + 1, Int.MAX_VALUE).forEach { value ->
+            value.shouldBeOdd()
+            shouldThrow<AssertionError> { value.shouldNotBeOdd() }
+         }
+
+         listOf(0, 2, -2, Int.MIN_VALUE).forEach { value ->
+            shouldThrow<AssertionError> { value.shouldBeOdd() }
+            value.shouldNotBeOdd()
+         }
       }
 
       "inRange" {
