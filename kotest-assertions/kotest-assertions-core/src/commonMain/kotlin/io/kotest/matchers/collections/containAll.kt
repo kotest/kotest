@@ -10,13 +10,13 @@ import io.kotest.matchers.shouldNot
 import kotlin.jvm.JvmName
 
 /**
- * Verifies that the given [Iterable] contains all the specified elements in given order.
+ * Verifies that the given [Iterable] contains all the specified elements, in any order.
  * The collection may additionally contain other elements.
  */
 fun <T> Iterable<T>.shouldContainAll(vararg ts: T) = toList().shouldContainAll(*ts)
 
 /**
- * Verifies that the given [Array] contains all the specified elements in given order.
+ * Verifies that the given [Array] contains all the specified elements, in any order.
  * The collection may additionally contain other elements.
  */
 fun <T> Array<T>.shouldContainAll(vararg ts: T): Array<T> {
@@ -25,7 +25,7 @@ fun <T> Array<T>.shouldContainAll(vararg ts: T): Array<T> {
 }
 
 /**
- * Verifies that the given [Collection] contains all the specified elements in given order.
+ * Verifies that the given [Collection] contains all the specified elements, in any order.
  * The collection may additionally contain other elements.
  */
 fun <T> Collection<T>.shouldContainAll(vararg ts: T): Collection<T> {
@@ -34,13 +34,13 @@ fun <T> Collection<T>.shouldContainAll(vararg ts: T): Collection<T> {
 }
 
 /**
- * Verifies that the given [Iterable] contains all the specified elements in given order.
+ * Verifies that the given [Iterable] contains all the specified elements, in any order.
  * The collection may additionally contain other elements.
  */
 infix fun <T> Iterable<T>.shouldContainAll(ts: Collection<T>) = toList().shouldContainAll(ts)
 
 /**
- * Verifies that the given [Array] contains all the specified elements in given order.
+ * Verifies that the given [Array] contains all the specified elements, in any order.
  * The collection may additionally contain other elements.
  */
 infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>): Array<T> {
@@ -49,7 +49,7 @@ infix fun <T> Array<T>.shouldContainAll(ts: Collection<T>): Array<T> {
 }
 
 /**
- * Verifies that the given [Collection] contains all the specified elements in given order.
+ * Verifies that the given [Collection] contains all the specified elements, in any order.
  * The collection may additionally contain other elements.
  */
 infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>): Collection<T> {
@@ -58,7 +58,7 @@ infix fun <T> Collection<T>.shouldContainAll(ts: Collection<T>): Collection<T> {
 }
 
 /**
- * Verifies that the given [Iterable] does not contain all the specified elements in given order.
+ * Verifies that the given [Iterable] does not contain all of the specified elements, regardless of order.
  * The collection may additionally contain other elements.
  */
 fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T): Iterable<T> {
@@ -67,7 +67,7 @@ fun <T> Iterable<T>.shouldNotContainAll(vararg ts: T): Iterable<T> {
 }
 
 /**
- * Verifies that the given [Array] does not contain all the specified elements in given order.
+ * Verifies that the given [Array] does not contain all of the specified elements, regardless of order.
  * The collection may additionally contain other elements.
  */
 fun <T> Array<T>.shouldNotContainAll(vararg ts: T): Array<T> {
@@ -76,7 +76,7 @@ fun <T> Array<T>.shouldNotContainAll(vararg ts: T): Array<T> {
 }
 
 /**
- * Verifies that the given [Collection] does not contain all the specified elements in given order.
+ * Verifies that the given [Collection] does not contain all of the specified elements, regardless of order.
  * The collection may additionally contain other elements.
  */
 fun <T> Collection<T>.shouldNotContainAll(vararg ts: T): Collection<T> {
@@ -85,13 +85,13 @@ fun <T> Collection<T>.shouldNotContainAll(vararg ts: T): Collection<T> {
 }
 
 /**
- * Verifies that the given [Iterable] does not contain all the specified elements in given order.
+ * Verifies that the given [Iterable] does not contain all of the specified elements, regardless of order.
  * The collection may additionally contain other elements.
  */
 infix fun <T> Iterable<T>.shouldNotContainAll(ts: Collection<T>) = toList().shouldNotContainAll(ts)
 
 /**
- * Verifies that the given [Array] does not contain all the specified elements in given order.
+ * Verifies that the given [Array] does not contain all of the specified elements, regardless of order.
  * The collection may additionally contain other elements.
  */
 infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>): Array<T> {
@@ -100,7 +100,7 @@ infix fun <T> Array<T>.shouldNotContainAll(ts: Collection<T>): Array<T> {
 }
 
 /**
- * Verifies that the given [Collection] does not contain all the specified elements in given order.
+ * Verifies that the given [Collection] does not contain all of the specified elements, regardless of order.
  * The collection may additionally contain other elements.
  */
 infix fun <T> Collection<T>.shouldNotContainAll(ts: Collection<T>): Collection<T> {
