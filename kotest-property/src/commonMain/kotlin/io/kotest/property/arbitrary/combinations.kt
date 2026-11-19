@@ -158,4 +158,58 @@ fun <A> Arb.Companion.choice(arbs: List<Arb<A>>): Arb<A> {
    )
 }
 
+/**
+ * Uses the [Arb]s provided to randomly generate the next element, in the spirit of swarm testing:
+ * for each generated sample a random non-empty subset of the input arbs is activated and the
+ * remaining arbs are disabled for that sample, each arb being activated with probability 0.5.
+ *
+ * Counterintuitively, disabling generators can improve a test's capacity to catch bugs: a plain
+ * [choice] practically never generates e.g. a command sequence consisting solely of a single
+ * command type, while a swarm of those commands will, for some samples.
+ *
+ * The returned [Arb] is intended to be composed with [flatMap], so that every test case of a
+ * property test activates a fresh subset, for example:
+ * `Arb.swarm(putArb, popArb).flatMap { Arb.list(it, 0..100) }`.
+ *
+ * The active subsets are drawn from the caller's random source, so replaying a failing seed
+ * reproduces the same subsets. The returned [Arb]'s edge cases are the input [Arb]s themselves,
+ * so when composed with [flatMap] each edge case is generated from a single input arb.
+ *
+ * The input must be non-empty.
+ * The input [Arb]s must be infinite.
+ *
+ * @return A new [Arb] that will produce a randomly selected non-empty subset of the provided
+ * [Arb]s on each sample
+ */
+fun <A> Arb.Companion.swarm(arb: Arb<A>, vararg arbs: Arb<A>): Arb<Arb<A>> = swarm(listOf(arb, *arbs))
+
+/**
+ * Uses the [Arb]s provided to randomly generate the next element, in the spirit of swarm testing:
+ * for each generated sample a random non-empty subset of the input arbs is activated and the
+ * remaining arbs are disabled for that sample, each arb being activated with probability 0.5.
+ *
+ * Counterintuitively, disabling generators can improve a test's capacity to catch bugs: a plain
+ * [choice] practically never generates e.g. a command sequence consisting solely of a single
+ * command type, while a swarm of those commands will, for some samples.
+ *
+ * The returned [Arb] is intended to be composed with [flatMap], so that every test case of a
+ * property test activates a fresh subset, for example:
+ * `Arb.swarm(putArb, popArb).flatMap { Arb.list(it, 0..100) }`.
+ *
+ * The active subsets are drawn from the caller's random source, so replaying a failing seed
+ * reproduces the same subsets. The returned [Arb]'s edge cases are the input [Arb]s themselves,
+ * so when composed with [flatMap] each edge case is generated from a single input arb.
+ *
+ * @throws IllegalArgumentException if no arbs have been passed to this function
+ *
+ * @return A new [Arb] that will produce a randomly selected non-empty subset of the provided
+ * [Arb]s on each sample
+ */
+fun <A> Arb.Companion.swarm(arbs: List<Arb<A>>): Arb<Arb<A>> {
+   require(arbs.isNotEmpty()) { "List of arbs provided to Arb.swarm must not be empty" }
+   return arbitrary(edgecases = arbs) { rs ->
+      Arb.choice(arbs.filter { rs.random.nextBoolean() }.ifEmpty { listOf(arbs.random(rs.random)) })
+   }
+}
+
 
