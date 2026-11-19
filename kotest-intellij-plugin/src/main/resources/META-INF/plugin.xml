@@ -72,7 +72,10 @@
 
       <backgroundPostStartupActivity implementation="io.kotest.plugin.intellij.KotestProjectActivity"/>
 
-      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer"/>
+      <!-- first: Gradle's default TestClassGradleConfigurationProducer also claims specs carrying @ExtendWith (e.g. via @SpringBootTest),
+           both producers prefer and replace each other, so the IntelliJ comparator falls back to registration order -->
+      <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.gradle.GradleMultiplatformJvmTestTaskRunProducer"
+                                order="first"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.SpecPlatformRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.TestPlatformRunConfigurationProducer"/>
       <runConfigurationProducer implementation="io.kotest.plugin.intellij.run.idea.PackageRunConfigurationProducer"/>

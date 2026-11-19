@@ -2,6 +2,7 @@ package io.kotest.plugin.intellij.run.gradle
 
 import com.intellij.execution.PsiLocation
 import com.intellij.execution.actions.ConfigurationContext
+import com.intellij.execution.actions.RunConfigurationProducer
 import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.externalSystem.ExternalSystemModulePropertyManager
 import com.intellij.openapi.roots.ModuleRootModificationUtil
@@ -11,6 +12,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 import io.kotest.matchers.shouldBe
 import io.kotest.plugin.intellij.psi.elementAtLine
+import org.jetbrains.plugins.gradle.execution.test.runner.TestClassGradleConfigurationProducer
 import org.jetbrains.plugins.gradle.service.execution.GradleRunConfiguration
 import org.jetbrains.plugins.gradle.settings.GradleProjectSettings
 import org.jetbrains.plugins.gradle.settings.GradleSettings
@@ -51,6 +53,19 @@ class GradleMultiplatformJvmTestTaskRunProducerTest : BasePlatformTestCase() {
     * sets `KOTEST_IDEA_PLUGIN=true` in the configuration's environment so the Kotest engine
     * knows it is running inside the IntelliJ plugin.
     */
+   /**
+    * Gradle's test class producer also claims a spec carrying JUnit's `@ExtendWith` (e.g. through `@SpringBootTest`).
+    * Both producers prefer and replace each other, so IntelliJ keeps whichever is registered first. If Gradle's
+    * wins, the gutter of a single test runs `--tests <spec>` and the whole spec executes.
+    */
+   fun testIsRegisteredBeforeGradleTestClassProducer() {
+      val producers = RunConfigurationProducer.getProducers(project)
+      val kotest = producers.indexOfFirst { it is GradleMultiplatformJvmTestTaskRunProducer }
+      val gradleTestClass = producers.indexOfFirst { it is TestClassGradleConfigurationProducer }
+      (gradleTestClass >= 0) shouldBe true
+      (kotest in 0 until gradleTestClass) shouldBe true
+   }
+
    fun testSetsKotestIdeaPluginEnvVar() {
       setupGradleTestTaskMode()
 
