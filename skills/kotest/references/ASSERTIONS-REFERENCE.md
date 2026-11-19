@@ -182,7 +182,7 @@ import io.kotest.matchers.string.*
 str.shouldBeEmpty(); str.shouldBeBlank()
 str.shouldBeLowerCase(); str.shouldBeUpperCase()
 str shouldContain "sub"; str shouldContain Regex("a+")
-str.shouldContainIgnoringCase("SUB")
+str.shouldContainIgnoringCase("SUB")  // 6.2.7 searches lowercased copies, so Unicode match indices can shift
 str.shouldContainOnlyDigits(); str.shouldContainADigit()
 str.shouldContainOnlyOnce("sub")
 str.shouldContainInOrder("a", "b", "c")
@@ -194,10 +194,6 @@ str shouldBeEqualIgnoringCase "OTHER"
 val i: Int = str.shouldBeInteger()     // returns parsed Int
 str.shouldBeTruthy()                   // "true", "yes", "y", "1"; shouldBeFalsy for the opposite
 ```
-
-On the development branch, `shouldContainIgnoringCase` uses Kotlin's `ignoreCase` comparison
-and reports match positions in the original string. In 6.2.7, it searches lowercased copies,
-which can change Unicode string lengths and report an incorrect index.
 
 ---
 
