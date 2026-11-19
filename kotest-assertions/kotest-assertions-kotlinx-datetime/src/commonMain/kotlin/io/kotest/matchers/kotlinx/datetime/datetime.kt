@@ -1048,7 +1048,7 @@ infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe sec
  * ```
  *    val date = LocalDateTime(2019, 2, 15, 12, 10, 0, 12)
  *
- *    date.shouldHaveNano(10) // Assertion passes
+ *    date.shouldHaveNano(12) // Assertion passes
  * ```
  */
 infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nanosecond shouldBe nano
