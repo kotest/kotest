@@ -92,7 +92,7 @@ fun Int.shouldNotBeOdd(): Int {
 fun beOdd() = object : Matcher<Int> {
    override fun test(value: Int): MatcherResult =
       MatcherResult(
-         value % 2 == 1,
+         value % 2 != 0,
          { "$value should be odd" },
          { "$value should be even" })
 }

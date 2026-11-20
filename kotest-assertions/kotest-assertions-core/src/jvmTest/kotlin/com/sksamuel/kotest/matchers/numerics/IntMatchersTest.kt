@@ -11,6 +11,8 @@ import io.kotest.matchers.ints.shouldBeNegative
 import io.kotest.matchers.ints.shouldBePositive
 import io.kotest.matchers.ints.shouldBeZero
 import io.kotest.matchers.ints.shouldNotBeZero
+import io.kotest.matchers.ints.shouldBeOdd
+import io.kotest.matchers.ints.shouldNotBeOdd
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
@@ -78,6 +80,16 @@ class IntMatchersTest : StringSpec() {
       "isOdd" {
          3 shouldBe beOdd()
          4 shouldNotBe beOdd()
+
+         listOf(1, 3, -1, -3, Int.MIN_VALUE + 1, Int.MAX_VALUE).forEach { value ->
+            value.shouldBeOdd()
+            shouldThrow<AssertionError> { value.shouldNotBeOdd() }
+         }
+
+         listOf(0, 2, -2, Int.MIN_VALUE).forEach { value ->
+            shouldThrow<AssertionError> { value.shouldBeOdd() }
+            value.shouldNotBeOdd()
+         }
       }
 
       "inRange" {

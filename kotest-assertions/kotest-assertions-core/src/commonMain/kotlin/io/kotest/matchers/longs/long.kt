@@ -94,7 +94,7 @@ fun Long.shouldNotBeOdd(): Long {
 fun lbeOdd() = object : Matcher<Long> {
    override fun test(value: Long): MatcherResult =
       MatcherResult(
-         value % 2 == 1L,
+         value % 2 != 0L,
          { "$value should be odd" },
          { "$value should be even" })
 }

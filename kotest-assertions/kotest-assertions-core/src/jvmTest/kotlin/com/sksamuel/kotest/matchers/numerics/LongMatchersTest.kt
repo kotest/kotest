@@ -7,6 +7,8 @@ import io.kotest.matchers.comparables.beLessThan
 import io.kotest.matchers.comparables.beLessThanOrEqualTo
 import io.kotest.matchers.longs.shouldBeNegative
 import io.kotest.matchers.longs.shouldBePositive
+import io.kotest.matchers.longs.shouldBeOdd
+import io.kotest.matchers.longs.shouldNotBeOdd
 import io.kotest.matchers.longs.shouldBeZero
 import io.kotest.matchers.longs.shouldNotBeZero
 import io.kotest.core.spec.style.StringSpec
@@ -26,6 +28,18 @@ import io.kotest.matchers.longs.shouldNotBeAtMost
 
 class LongMatchersTest : StringSpec() {
   init {
+
+    "isOdd" {
+      listOf(1L, 3L, -1L, -3L, Long.MIN_VALUE + 1L, Long.MAX_VALUE).forEach { value ->
+        value.shouldBeOdd()
+        shouldThrow<AssertionError> { value.shouldNotBeOdd() }
+      }
+
+      listOf(0L, 2L, -2L, Long.MIN_VALUE).forEach { value ->
+        shouldThrow<AssertionError> { value.shouldBeOdd() }
+        value.shouldNotBeOdd()
+      }
+    }
 
     "be positive" {
       1L.shouldBePositive()
