@@ -182,7 +182,7 @@ import io.kotest.matchers.string.*
 str.shouldBeEmpty(); str.shouldBeBlank()
 str.shouldBeLowerCase(); str.shouldBeUpperCase()
 str shouldContain "sub"; str shouldContain Regex("a+")
-str.shouldContainIgnoringCase("SUB")
+str.shouldContainIgnoringCase("SUB")  // 6.2.7 searches lowercased copies, so Unicode match indices can shift
 str.shouldContainOnlyDigits(); str.shouldContainADigit()
 str.shouldContainOnlyOnce("sub")
 str.shouldContainInOrder("a", "b", "c")
