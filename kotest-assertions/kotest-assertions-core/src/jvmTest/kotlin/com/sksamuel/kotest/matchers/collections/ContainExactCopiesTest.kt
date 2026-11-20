@@ -38,6 +38,14 @@ class ContainExactCopiesTest : WordSpec() {
                listOf(1, 2, 3).shouldContainExactCopies(element = 4, copies = 0)
             }.message shouldBe "Copies must be at least 1, was 0."
          }
+         "fail for an empty collection" {
+            shouldThrow<AssertionError> {
+               listOf<Int>().shouldContainExactCopies(element = 1, copies = 1)
+               arrayOf<Int>().shouldContainExactCopies(element = 1, copies = 1)
+            }.message.shouldContain(
+               "Collection should contain 1 copies of element 1; but contained 0 copies but the collection is []"
+            )
+         }
          "find similar element" {
             shouldThrow<AssertionError> {
                listOf(sweetRedApple, sweetRedCherry).shouldContainExactCopies(
@@ -71,6 +79,12 @@ class ContainExactCopiesTest : WordSpec() {
             shortArrayOf(1, 2, 3).shouldNotContainExactCopies(element = 2, copies = 2)
             floatArrayOf(1f, 2f, 3f).shouldNotContainExactCopies(element = 2f, copies = 2)
             doubleArrayOf(1.0, 2.0, 3.0).shouldNotContainExactCopies(element = 2.0, copies = 2)
+         }
+         "pass vacuously for an empty collection" {
+            listOf<Int>().shouldNotContainExactCopies(element = 1, copies = 1)
+            listOf<String>().shouldNotContainExactCopies(element = "a", copies = 2)
+            arrayOf<Int>().shouldNotContainExactCopies(element = 1, copies = 1)
+            arrayOf<String>().shouldNotContainExactCopies(element = "a", copies = 2)
          }
       }
    }

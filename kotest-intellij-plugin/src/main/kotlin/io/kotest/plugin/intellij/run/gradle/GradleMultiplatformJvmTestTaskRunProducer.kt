@@ -144,6 +144,10 @@ class GradleMultiplatformJvmTestTaskRunProducer : GradleTestRunConfigurationProd
       return other.configuration::class.java.name != "com.android.tools.idea.testartifacts.instrumented.AndroidTestRunConfiguration"
    }
 
+   // the inherited implementation replaces everything when Gradle is the test runner, including Android instrumented tests
+   override fun shouldReplace(self: ConfigurationFromContext, other: ConfigurationFromContext): Boolean =
+      isPreferredConfiguration(self, other)
+
    /**
     * This executes the first time the configuration is created/executed and is used to populate extra
     * information that may require user input. In our case we show a task (target) chooser so the user

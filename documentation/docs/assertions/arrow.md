@@ -22,12 +22,16 @@ In the case `io.arrow-kt:arrow-core:arrow-version` is not in your classpath, ple
 | `option.shouldBeSome(v)` | Asserts that the option is of type Some with value v      |
 | `option.shouldBeNone()`  | Asserts that the option is of type None                   |
 
-| Either                    |                                                                      |
-|---------------------------|----------------------------------------------------------------------|
-| `either.shouldBeRight()`  | Asserts that the either is of type Right and returns the Right value |
-| `either.shouldBeRight(v)` | Asserts that the either is of type Right with specified value v      |
-| `either.shouldBeLeft()`   | Asserts that the either is of type Left and returns the Left value   |
-| `either.shouldBeLeft(v)`  | Asserts that the either is of type Left with specific value v        |
+| Either                            |                                                                                                      |
+|-----------------------------------|------------------------------------------------------------------------------------------------------|
+| `either.shouldBeRight()`          | Asserts that the either is of type Right and returns the Right value                                 |
+| `either.shouldBeRight(v)`         | Asserts that the either is of type Right with specified value v                                      |
+| `either.shouldBeRight<T>()`       | Asserts that the either is of type Right with a value of type T and returns the value as T           |
+| `either.shouldBeRight<T> { ... }` | Asserts that the either is of type Right with a value of type T and runs the assertions on the value |
+| `either.shouldBeLeft()`           | Asserts that the either is of type Left and returns the Left value                                   |
+| `either.shouldBeLeft(v)`          | Asserts that the either is of type Left with specific value v                                        |
+| `either.shouldBeLeft<T>()`        | Asserts that the either is of type Left with a value of type T and returns the value as T            |
+| `either.shouldBeLeft<T> { ... }`  | Asserts that the either is of type Left with a value of type T and runs the assertions on the value  |
 
 | NonEmptyList                         |                                                                            |
 |--------------------------------------|----------------------------------------------------------------------------|

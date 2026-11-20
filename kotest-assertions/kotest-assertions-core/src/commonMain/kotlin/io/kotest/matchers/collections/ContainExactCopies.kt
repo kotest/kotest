@@ -28,7 +28,8 @@ fun DoubleArray.shouldNotContainExactCopies(element: Double, copies: Int): Doubl
  * Verifies that this element is not in [array] by comparing value in
  * exactly the specified number of copies
  *
- * An empty collection will always fail.
+ * An empty collection will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [containExactCopies]
  */
@@ -40,7 +41,8 @@ fun <T, I : Iterable<T>> I.shouldNotContainExactCopies(element: T, copies: Int):
  * Verifies that this element is not in [array] by comparing value in
  * exactly the specified number of copies
  *
- * An empty collection will always fail.
+ * An empty collection will always pass (vacuous truth).
+ * See: https://en.wikipedia.org/wiki/Vacuous_truth
  *
  * @see [containExactCopies]
  */

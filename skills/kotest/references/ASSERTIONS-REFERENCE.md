@@ -81,6 +81,40 @@ actual shouldBeEqualUsingFields {
 Other options on the config block: `ignorePrivateFields` (default `true`), `ignoreComputedFields` (default `true`),
 `useDefaultShouldBeForFields`.
 
+### JSON content comparison (`shouldEqualJson`)
+
+```kotlin
+import io.kotest.assertions.json.*
+
+json shouldEqualJson """{ "a": 1, "b": [1, 2] }"""  // tolerant of formatting and key order by default
+
+json shouldEqualJson {
+   arrayOrder = ArrayOrder.Lenient                  // CompareJsonOptions flags
+   fieldComparison = FieldComparison.Lenient
+   """{ "a": 1 }"""                                 // the expected document
+}
+```
+
+Flags: `propertyOrder`, `arrayOrder`, `fieldComparison`, `numberFormat`, `typeCoercion`.
+
+For comparisons the flags can't express, `overrideMatchers` replaces the structural comparison of a subtree with a
+`JsonSubtreeMatcher`:
+
+```kotlin
+"""{ "users": [{ "name": "sam" }, { "name": "bob" }] }""" shouldEqualJson {
+   overrideMatchers = mapOf("users" to matchArraysContainingAll())
+   """{ "users": [{ "name": "sam" }] }"""           // passes: partial array, any order
+}
+```
+
+- Keys are dotted paths in the same format as the paths in comparison error messages: `"users"` targets a top-level
+  field, `"users.[0].name"` a field of the first array element, `""` the whole document.
+- Ready-made matchers: `matchArraysContainingAll()` (every expected element matched by some actual element, ignoring
+  order and extra elements; elements are compared structurally, override rules do not apply inside them) and
+  `matchStringsIgnoringCase()`.
+- Custom matchers implement `JsonSubtreeMatcher { expected, actual, options -> MatcherResult }`; a failing result is
+  reported at the subtree's path, e.g. `At 'users' expected element(s) ... not found in ...`.
+
 ---
 
 ## Exceptions
@@ -148,7 +182,7 @@ import io.kotest.matchers.string.*
 str.shouldBeEmpty(); str.shouldBeBlank()
 str.shouldBeLowerCase(); str.shouldBeUpperCase()
 str shouldContain "sub"; str shouldContain Regex("a+")
-str.shouldContainIgnoringCase("SUB")
+str.shouldContainIgnoringCase("SUB")  // 6.2.7 searches lowercased copies, so Unicode match indices can shift
 str.shouldContainOnlyDigits(); str.shouldContainADigit()
 str.shouldContainOnlyOnce("sub")
 str.shouldContainInOrder("a", "b", "c")
@@ -345,8 +379,13 @@ json.shouldContainJsonKey("$.user.name")          // JVM
 json.shouldContainJsonKeyValue("$.user.age", 30)  // JVM
 
 // YAML
-import io.kotest.assertions.yaml.shouldEqualYaml
+import io.kotest.assertions.yaml.*
 yaml shouldEqualYaml expectedYaml
+yaml shouldEqualYaml {                     // block configures CompareYamlOptions and returns the expected yaml
+   arrayOrder = ArrayOrder.Lenient
+   expectedYaml
+}
+equalYaml(expectedYaml, yamlCompareOptions { propertyOrder = PropertyOrder.Strict })
 
 // Ktor client
 import io.kotest.assertions.ktor.client.*
@@ -362,6 +401,9 @@ document shouldHaveElementWithId "main"
 import io.kotest.assertions.arrow.core.*
 val r = either.shouldBeRight()                    // returns the right value
 either.shouldBeLeft()
+val e = either.shouldBeLeft<HttpError>()          // also asserts the left value is an HttpError (6.3+)
+either.shouldBeLeft<HttpError> { it.code shouldBe 404 }
+either.shouldBeRight<Person> { it.age shouldBe 30 }
 val v = option.shouldBeSome()
 option.shouldBeNone()
 

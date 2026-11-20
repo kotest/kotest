@@ -850,7 +850,7 @@ fun LocalDate.shouldNotBeBetween(a: LocalDate, b: LocalDate) = this shouldNotBe 
  *    val firstDate = LocalDate(2019, 2, 15)
  *    val secondDate = LocalDate(2019, 2, 17)
  *
- *    date shouldBe after(firstDate, secondDate) // Assertion passes
+ *    date shouldBe between(firstDate, secondDate) // Assertion passes
  *
  *
  *    val date = LocalDate(2019, 2, 15)
@@ -937,7 +937,7 @@ fun LocalDateTime.shouldNotBeBetween(a: LocalDateTime, b: LocalDateTime) = this 
  *    val firstDate = LocalDateTime(2019, 2, 15, 12, 0, 0)
  *    val secondDate = LocalDateTime(2019, 2, 17, 12, 0, 0)
  *
- *    date shouldBe after(firstDate, secondDate) // Assertion passes
+ *    date shouldBe between(firstDate, secondDate) // Assertion passes
  *
  *
  *    val date = LocalDateTime(2019, 2, 15, 12, 0, 0)
@@ -1048,7 +1048,7 @@ infix fun LocalDateTime.shouldHaveSecond(second: Int) = this.second shouldBe sec
  * ```
  *    val date = LocalDateTime(2019, 2, 15, 12, 10, 0, 12)
  *
- *    date.shouldHaveNano(10) // Assertion passes
+ *    date.shouldHaveNano(12) // Assertion passes
  * ```
  */
 infix fun LocalDateTime.shouldHaveNano(nano: Int) = this.nanosecond shouldBe nano
