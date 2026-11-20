@@ -123,7 +123,10 @@ internal class SpecRefExecutor(
    /**
     * Executes the engine callbacks for the spec.
     *
-    * Any errors here will be swallowed and logged as we cannot do anything about them.
+    * Any errors here will be swallowed and logged as we cannot do anything about them,
+    * except fatal errors such as [OutOfMemoryError], which are rethrown so they are not
+    * silently lost -- otherwise the engine keeps running with listeners that never
+    * receive another event and the overall run can still report success.
     */
    private suspend fun invokeEngineListeners(ref: SpecRef) {
       try {
@@ -135,6 +138,7 @@ internal class SpecRefExecutor(
          // not much we can do here because if we failed to notify junit of starting or finishing,
          // we can't very well notify it again that we failed
          t.printStackTrace()
+         if (t is OutOfMemoryError || t is StackOverflowError) throw t
       }
    }
 

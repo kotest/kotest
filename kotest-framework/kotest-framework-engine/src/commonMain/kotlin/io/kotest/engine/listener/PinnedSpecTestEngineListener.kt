@@ -49,7 +49,16 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
    override suspend fun specStarted(ref: SpecRef) {
       if (runningSpec == null) {
          runningSpec = ref.descriptor().path().value
-         listener.specStarted(ref)
+         try {
+            listener.specStarted(ref)
+         } catch (t: Throwable) {
+            // the downstream listener failed to process the start event, and since the
+            // executor will not invoke specFinished for a spec that failed to start, we
+            // must release the pin here or every subsequent spec would be queued forever
+            runningSpec = null
+            replay()
+            throw t
+         }
       } else {
          queue {
             specStarted(ref)
@@ -59,9 +68,14 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
 
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
       if (runningSpec == ref.descriptor().path().value) {
-         listener.specFinished(ref, result)
-         runningSpec = null
-         replay()
+         try {
+            listener.specFinished(ref, result)
+         } finally {
+            // if the downstream listener throws, we must still release the pin and replay
+            // the queued callbacks, otherwise every subsequent spec is queued and never reported
+            runningSpec = null
+            replay()
+         }
       } else {
          queue {
             specFinished(ref, result)

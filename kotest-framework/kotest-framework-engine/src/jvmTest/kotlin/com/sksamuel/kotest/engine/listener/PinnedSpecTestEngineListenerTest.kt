@@ -1,13 +1,16 @@
 package com.sksamuel.kotest.engine.listener
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.annotation.EnabledIf
 import io.kotest.core.annotation.LinuxOnlyGithubCondition
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.test.TestResult
+import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
+import io.kotest.matchers.shouldBe
 import io.mockk.mockk
 import io.mockk.verify
 import io.mockk.verifyOrder
@@ -105,6 +108,68 @@ class PinnedSpecTestEngineListenerTest : WordSpec({
                mock.specIgnored(spec2::class, "disabled")
             }
          }
+      }
+
+      "reset the pinned spec when the downstream listener throws from specFinished" {
+
+         val log = mutableListOf<String>()
+         val downstream = object : AbstractTestEngineListener() {
+            override suspend fun specStarted(ref: SpecRef) {
+               log.add("started " + ref.kclass.simpleName)
+            }
+
+            override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+               if (ref.kclass == IsolationTestSpec1::class) throw OutOfMemoryError("kaboom")
+               log.add("finished " + ref.kclass.simpleName)
+            }
+         }
+         val listener = PinnedSpecTestEngineListener(downstream)
+
+         listener.specStarted(SpecRef.Reference(IsolationTestSpec1::class))
+         shouldThrow<OutOfMemoryError> {
+            listener.specFinished(SpecRef.Reference(IsolationTestSpec1::class), TestResult.Success(0.seconds))
+         }
+
+         // the downstream listener failed on the first spec, but the pinned listener must not
+         // remain stuck on it, otherwise every subsequent spec is queued and never reported
+         listener.specStarted(SpecRef.Reference(IsolationTestSpec2::class))
+         listener.specFinished(SpecRef.Reference(IsolationTestSpec2::class), TestResult.Success(0.seconds))
+
+         log shouldBe listOf(
+            "started IsolationTestSpec1",
+            "started IsolationTestSpec2",
+            "finished IsolationTestSpec2",
+         )
+      }
+
+      "reset the pinned spec when the downstream listener throws from specStarted" {
+
+         val log = mutableListOf<String>()
+         val downstream = object : AbstractTestEngineListener() {
+            override suspend fun specStarted(ref: SpecRef) {
+               if (ref.kclass == IsolationTestSpec1::class) throw OutOfMemoryError("kaboom")
+               log.add("started " + ref.kclass.simpleName)
+            }
+
+            override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+               log.add("finished " + ref.kclass.simpleName)
+            }
+         }
+         val listener = PinnedSpecTestEngineListener(downstream)
+
+         shouldThrow<OutOfMemoryError> {
+            listener.specStarted(SpecRef.Reference(IsolationTestSpec1::class))
+         }
+
+         // the spec was never started downstream, so its specFinished will never arrive,
+         // the pin must be released here or every subsequent spec is queued and never reported
+         listener.specStarted(SpecRef.Reference(IsolationTestSpec2::class))
+         listener.specFinished(SpecRef.Reference(IsolationTestSpec2::class), TestResult.Success(0.seconds))
+
+         log shouldBe listOf(
+            "started IsolationTestSpec2",
+            "finished IsolationTestSpec2",
+         )
       }
 
       "run all callbacks without race conditions" {
