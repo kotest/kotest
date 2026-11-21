@@ -1,5 +1,6 @@
 package com.sksamuel.kotest.engine.spec.execution
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.common.KotestTesting
 import io.kotest.common.Platform
 import io.kotest.core.annotation.AlwaysFalseCondition
@@ -143,6 +144,19 @@ class SpecRefExecutorTest : FunSpec() {
          val e = SpecRefExecutor(TestEngineContext(c, listener))
          e.execute(SpecRef.Reference(FooSpec::class))
          specListenerOrder shouldBe "abc"
+      }
+
+      test("SpecRefExecutor should rethrow fatal errors thrown while notifying the engine listeners") {
+         val listener = object : AbstractTestEngineListener() {
+            override suspend fun specFinished(ref: SpecRef, result: TestResult) {
+               throw OutOfMemoryError("kaboom")
+            }
+         }
+         val c = object : AbstractProjectConfig() {}
+         val e = SpecRefExecutor(TestEngineContext(c, listener))
+         shouldThrow<OutOfMemoryError> {
+            e.execute(SpecRef.Reference(BasicSpec::class))
+         }
       }
    }
 }
