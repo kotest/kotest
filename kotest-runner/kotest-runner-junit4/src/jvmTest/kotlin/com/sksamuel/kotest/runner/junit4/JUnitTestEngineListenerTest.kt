@@ -7,6 +7,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResultBuilder
 import io.kotest.matchers.shouldBe
 import io.kotest.runner.junit4.JUnitTestEngineListener
@@ -14,11 +15,36 @@ import org.junit.runner.Description
 import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunListener
 import org.junit.runner.notification.RunNotifier
+import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.io.PrintStream
 
 class JUnitTestEngineListenerTest : FunSpec({
 
    val ref = SpecRef.Reference(JUnitTestEngineListenerTest::class)
+
+   test("captured output is written to the standard streams") {
+      val tc = TestCase(
+         JUnitTestEngineListenerTest::class.toDescriptor().append("foo"),
+         TestNameBuilder.builder("foo").build(),
+         JUnitTestEngineListenerTest(),
+         {},
+         SourceRef.None,
+         TestType.Test,
+      )
+      val buffer = ByteArrayOutputStream()
+      val previous = System.out
+      System.setOut(PrintStream(buffer, true))
+      try {
+         JUnitTestEngineListener(RunNotifier()).testOutputCaptured(
+            tc,
+            CapturedOutput(listOf(CapturedOutput.Chunk(CapturedOutput.Stream.Out, "hello\n")), truncated = false),
+         )
+      } finally {
+         System.setOut(previous)
+      }
+      buffer.toString() shouldBe "hello\n"
+   }
 
    test("specStarted should be a no-op") {
       val notifier = RunNotifier()

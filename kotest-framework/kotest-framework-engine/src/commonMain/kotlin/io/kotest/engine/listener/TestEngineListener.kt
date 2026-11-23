@@ -10,6 +10,7 @@ import io.kotest.engine.TestEngine
 import io.kotest.engine.extensions.EmptyExtensionRegistry
 import io.kotest.engine.extensions.ExtensionRegistry
 import io.kotest.engine.tags.TagExpression
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -75,6 +76,12 @@ interface TestEngineListener {
     * This function will only be invoked if a test case was enabled.
     */
    suspend fun testFinished(testCase: TestCase, result: TestResult)
+
+   /**
+    * Invoked with the output a [TestCase] wrote to the standard streams, when output capture is enabled
+    * and that output is to be reported. Always invoked before [testFinished] for the same test.
+    */
+   suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {}
 }
 
 /**

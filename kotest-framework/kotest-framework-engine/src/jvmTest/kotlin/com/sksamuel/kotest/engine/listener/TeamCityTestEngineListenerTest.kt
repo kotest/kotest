@@ -10,6 +10,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.listener.TeamCityTestEngineListener
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import io.kotest.extensions.system.captureStandardOut
 import io.kotest.matchers.shouldBe
@@ -74,6 +75,25 @@ a[testSuiteStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineL
 a[testStarted name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' locationHint='kotest://foo.bar.Test:33']
 a[testFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' duration='123' result_status='Success']
 a[testSuiteFinished name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest']
+"""
+      }
+
+      test("captured output is attached to its leaf test, and not to containers") {
+         val captured = CapturedOutput(
+            listOf(
+               CapturedOutput.Chunk(CapturedOutput.Stream.Out, "hello\n"),
+               CapturedOutput.Chunk(CapturedOutput.Stream.Err, "oops\n"),
+            ),
+            truncated = false,
+         )
+         val output = captureStandardOut {
+            val listener = TeamCityTestEngineListener("a")
+            listener.specStarted(SpecRef.Reference(TeamCityTestEngineListenerTest::class))
+            listener.testOutputCaptured(a, captured)
+            listener.testOutputCaptured(c, captured)
+         }
+         output.lines().filter { it.contains("testStd") }.joinToString("\n", postfix = "\n") shouldBe """a[testStdOut name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' out='hello|n']
+a[testStdErr name='com.sksamuel.kotest.engine.listener.TeamCityTestEngineListenerTest.a ⇢ b ⇢ c' out='oops|n']
 """
       }
 

@@ -5,6 +5,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import java.io.File
 import kotlin.reflect.KClass
@@ -24,6 +25,7 @@ class JunitXmlReportTestEngineListener(
    )
 
    private val results = mutableMapOf<TestCase, TestResult>()
+   private val outputs = mutableMapOf<TestCase, CapturedOutput>()
 
    override suspend fun engineStarted() {}
 
@@ -38,10 +40,11 @@ class JunitXmlReportTestEngineListener(
    override suspend fun specFinished(ref: SpecRef, result: TestResult) {
       val specName = ref.kclass.bestName()
       val testFile = "TEST-${specName}.xml"
-      val xml = generator.xml(ref.kclass, results)
+      val xml = generator.xml(ref.kclass, results, outputs)
       writeFile(testReportsDir, testFile, xml)
       // clear the accumulated results so the next spec's report only contains its own tests
       results.clear()
+      outputs.clear()
    }
 
    override suspend fun testStarted(testCase: TestCase) {}
@@ -52,6 +55,10 @@ class JunitXmlReportTestEngineListener(
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       results[testCase] = result
+   }
+
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      outputs[testCase] = output
    }
 
    fun writeFile(baseDir: String, filename: String, contents: String) {

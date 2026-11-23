@@ -30,6 +30,7 @@ import io.kotest.engine.test.interceptors.TestNameContextInterceptor
 import io.kotest.engine.test.interceptors.TimeoutInterceptor
 import io.kotest.engine.test.interceptors.blockedThreadTimeoutInterceptor
 import io.kotest.engine.test.interceptors.coroutineErrorCollectorInterceptor
+import io.kotest.engine.test.interceptors.currentTestCaseInterceptor
 import io.kotest.engine.test.interceptors.testInterceptorsForPlatform
 import io.kotest.engine.test.listener.TestCaseExecutionListenerToTestEngineListenerAdapter
 import kotlinx.coroutines.withContext
@@ -72,6 +73,9 @@ internal class TestCaseExecutor(
          TestNameContextInterceptor,
          FailFastInterceptor(context),
          TestFinishedInterceptor(listener, context.testExtensions()),
+         // inside TestFinishedInterceptor, so captured output is reported before the test is finished,
+         // and outside everything else, so output from callbacks and extensions is attributed to the test
+         currentTestCaseInterceptor(listener, context.projectConfigResolver, context.testConfigResolver),
          InvocationCountCheckInterceptor(context.testConfigResolver),
          SupervisorScopeInterceptor,
          // the dispatcher factory should run before the before/after callbacks, so they are executed in the right context

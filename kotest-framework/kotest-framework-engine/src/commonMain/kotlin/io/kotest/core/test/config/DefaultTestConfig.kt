@@ -1,6 +1,7 @@
 package io.kotest.core.test.config
 
 import io.kotest.core.Tag
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
@@ -42,4 +43,5 @@ data class DefaultTestConfig(
    var retries: Int? = null,
    var retryDelay: Duration? = null,
    val metadata: Map<MetadataKey<*>, Any> = emptyMap(),
+   val outputCapture: OutputCapture? = null,
 )

@@ -179,6 +179,26 @@ class ProjectConfigResolver(
          ?: systemPropertyConfiguration?.projectTimeout()
    }
 
+   /**
+    * Returns the maximum number of bytes of captured output kept for each test.
+    */
+   fun outputCaptureMaxBytes(): Int {
+      val maxBytes = config?.outputCaptureMaxBytes
+         ?: systemPropertyConfiguration?.outputCaptureMaxBytes()
+         ?: Defaults.OUTPUT_CAPTURE_MAX_BYTES
+      require(maxBytes >= 0) { "outputCaptureMaxBytes must not be negative, but was $maxBytes" }
+      return maxBytes
+   }
+
+   /**
+    * Returns true if output from threads created while a spec runs is attributed to that spec's running test.
+    */
+   fun outputCaptureSpecThreads(): Boolean {
+      return config?.outputCaptureSpecThreads
+         ?: systemPropertyConfiguration?.outputCaptureSpecThreads()
+         ?: Defaults.OUTPUT_CAPTURE_SPEC_THREADS
+   }
+
    fun dumpConfig(): Boolean {
       return config?.dumpConfig
          ?: systemPropertyConfiguration?.dumpConfig()

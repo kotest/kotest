@@ -5,6 +5,7 @@ package io.kotest.engine.config
 import io.kotest.common.ExperimentalKotest
 import io.kotest.core.Tag
 import io.kotest.core.config.AbstractProjectConfig
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.extensions.Extension
 import io.kotest.core.extensions.InvocationCountExtension
 import io.kotest.core.spec.functionOverrideCallbacks
@@ -117,6 +118,16 @@ class TestConfigResolver(
          ?: projectConfig?.coroutineDebugProbes
          ?: systemPropertyConfiguration?.coroutineDebugProbes()
          ?: Defaults.COROUTINE_DEBUG_PROBES
+   }
+
+   fun outputCapture(testCase: TestCase): OutputCapture {
+      return testConfigs(testCase).firstNotNullOfOrNull { it.outputCapture }
+         ?: testCase.spec.outputCapture
+         ?: testCase.spec.defaultTestConfig?.outputCapture
+         ?: loadPackageConfigs(testCase.spec).firstNotNullOfOrNull { it.outputCapture }
+         ?: projectConfig?.outputCapture
+         ?: systemPropertyConfiguration?.outputCapture()
+         ?: Defaults.OUTPUT_CAPTURE
    }
 
    fun coroutineTestScope(testCase: TestCase): Boolean {

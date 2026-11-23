@@ -4,6 +4,7 @@ import io.kotest.core.Logger
 import io.kotest.core.test.TestCase
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.test.TestCaseExecutionListener
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 
 /**
@@ -18,6 +19,11 @@ class TestCaseExecutionListenerToTestEngineListenerAdapter(
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       logger.log { Pair(testCase.name.name, "Adapting testFinished to engine event $result") }
       listener.testFinished(testCase, result)
+   }
+
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      logger.log { Pair(testCase.name.name, "Adapting testOutputCaptured to engine event") }
+      listener.testOutputCaptured(testCase, output)
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {

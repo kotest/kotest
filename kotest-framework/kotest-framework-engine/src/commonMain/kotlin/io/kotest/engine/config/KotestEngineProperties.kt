@@ -103,6 +103,21 @@ object KotestEngineProperties {
    internal const val COROUTINE_DEBUG_PROBES = "kotest.framework.coroutine.debug.probes"
 
    /**
+    * Sets [io.kotest.core.config.AbstractProjectConfig.outputCapture]: one of `Never`, `OnFailure` or `Always`.
+    */
+   internal const val OUTPUT_CAPTURE = "kotest.framework.output.capture"
+
+   /**
+    * Sets [io.kotest.core.config.AbstractProjectConfig.outputCaptureMaxBytes].
+    */
+   internal const val OUTPUT_CAPTURE_MAX_BYTES = "kotest.framework.output.capture.max.bytes"
+
+   /**
+    * Sets [io.kotest.core.config.AbstractProjectConfig.outputCaptureSpecThreads].
+    */
+   internal const val OUTPUT_CAPTURE_SPEC_THREADS = "kotest.framework.output.capture.spec.threads"
+
+   /**
     * Appends all tags associated with a test case to its display name.
     * */
    internal const val TEST_NAME_APPEND_TAGS = "kotest.framework.testname.append.tags"

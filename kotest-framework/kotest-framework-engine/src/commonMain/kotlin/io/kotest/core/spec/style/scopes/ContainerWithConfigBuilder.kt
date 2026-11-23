@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.TestDefinitionBuilder
 import io.kotest.core.spec.style.TestXMethod
@@ -37,6 +38,7 @@ class ContainerWithConfigBuilder<T>(
       failfast: Boolean? = null,
       blockingTest: Boolean? = null,
       metadata: Map<MetadataKey<*>, Any> = emptyMap(),
+      outputCapture: OutputCapture? = null,
       test: suspend T.() -> Unit
    ) {
       val config = TestConfig(
@@ -48,6 +50,7 @@ class ContainerWithConfigBuilder<T>(
          failfast = failfast,
          blockingTest = blockingTest,
          metadata = metadata,
+         outputCapture = outputCapture,
       )
       config(config, test)
    }

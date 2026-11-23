@@ -62,6 +62,8 @@ class TeamCityMessage(
       const val TEST_FINISHED = "testFinished"
       const val TEST_IGNORED = "testIgnored"
       const val TEST_FAILED = "testFailed"
+      const val TEST_STD_OUT = "testStdOut"
+      const val TEST_STD_ERR = "testStdErr"
    }
 
    private val attributes = mutableListOf<Pair<String, String>>()

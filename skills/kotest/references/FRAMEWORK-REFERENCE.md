@@ -92,6 +92,38 @@ Discovery:
 - Prefer `class` over `object`: Native requires a class.
 - Spec/test concurrency is JVM only; other platforms always run sequentially.
 
+### Output capture (6.3+, JVM)
+
+Quiet console, but a failing test's output is still shown, including under concurrent specs:
+
+```kotlin
+import io.kotest.core.config.OutputCapture
+
+class ProjectConfig : AbstractProjectConfig() {
+   override val outputCapture = OutputCapture.OnFailure   // Never (default) | OnFailure | Always
+   override val outputCaptureMaxBytes = 1024 * 1024        // per test; oldest output dropped beyond this
+}
+```
+
+- Captures `System.out`/`System.err`, so it works for `println` and any console logger. No logging dependency or
+  logback/log4j config changes needed.
+- Writes are attributed by the test's coroutine (across `withContext`, child coroutines, dispatcher switches), not
+  by thread, so neighbouring concurrent tests never leak into each other's output.
+- Reported as JUnit Platform `stdout`/`stderr` report entries plus console output just before the test finishes, so
+  Gradle attaches it to the right test.
+- Threads the test doesn't run on (app thread pools) aren't attributed and pass straight through. Carry the test
+  with `CurrentTestCase.wrap(runnable)` / `CurrentTestCase.asContextElement()` (`io.kotest.engine.test`,
+  `@ExperimentalKotest`).
+- Also settable per spec (`outputCapture = OutputCapture.OnFailure` in the spec), per package, or per test
+  (`test("x").config(outputCapture = OutputCapture.Always) { }`).
+- `override val outputCaptureSpecThreads = true` also attributes threads created while a spec runs (e.g. its
+  server's worker pool) to the spec's running test, while the spec runs one test at a time. Opt-in: a pool
+  shared across specs hands its new threads to whichever spec submitted work. For such pools pass
+  `CurrentTestCase.unownedThreadFactory()` as the `ThreadFactory` (e.g.
+  `Executors.newCachedThreadPool(CurrentTestCase.unownedThreadFactory())`, or any library option taking a
+  `ThreadFactory`); its threads never belong to a spec.
+- System property / env var: `kotest.framework.output.capture` / `KOTEST_FRAMEWORK_OUTPUT_CAPTURE`.
+
 ### Package Config (JVM)
 
 ```kotlin

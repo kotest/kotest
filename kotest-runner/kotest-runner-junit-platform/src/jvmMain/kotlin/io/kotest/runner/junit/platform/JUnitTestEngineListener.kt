@@ -17,12 +17,15 @@ import io.kotest.engine.listener.AbstractTestEngineListener
 import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.names.UniqueNames
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.TestResultBuilder
 import io.kotest.engine.test.names.DisplayNameFormatting
+import io.kotest.engine.test.output.StandardStreamCapture
 import org.junit.platform.engine.EngineExecutionListener
 import org.junit.platform.engine.TestDescriptor
 import org.junit.platform.engine.TestExecutionResult
+import org.junit.platform.engine.reporting.ReportEntry
 import org.junit.platform.engine.support.descriptor.EngineDescriptor
 import kotlin.reflect.KClass
 
@@ -80,6 +83,10 @@ import kotlin.reflect.KClass
  * TestDescriptor.Type.CONTAINER that does not contain TESTs is ignored in intellij's tree output
  *
  */
+// the keys the JUnit Platform launcher uses when it captures output itself
+private const val STDOUT_REPORT_ENTRY_KEY = "stdout"
+private const val STDERR_REPORT_ENTRY_KEY = "stderr"
+
 @KotestInternal
 class JUnitTestEngineListener(
    private val listener: EngineExecutionListener,
@@ -103,6 +110,9 @@ class JUnitTestEngineListener(
    private var anyTestIgnored = false
 
    private val results = mutableMapOf<Descriptor, TestResult>()
+
+   // output captured for a test, held until the test is finished so it is reported against that test
+   private val outputs = mutableMapOf<Descriptor, CapturedOutput>()
 
    private val dummies = hashSetOf<String>()
 
@@ -195,6 +205,7 @@ class JUnitTestEngineListener(
 
    private fun reset() {
       results.clear()
+      outputs.clear()
       descriptors.clear()
       startedTests.clear()
       placeholderNames.clear()
@@ -271,8 +282,31 @@ class JUnitTestEngineListener(
       val descriptor = descriptors[testCase.descriptor]
          ?: error("No descriptor found for test case ${testCase.descriptor}")
 
+      val output = outputs.remove(testCase.descriptor)
+      if (output != null) publishOutput(descriptor, output)
+
       logger.log { Pair(testCase.name.name, "executionFinished: $descriptor") }
       listener.executionFinished(descriptor, result.toTestExecutionResult())
+   }
+
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      logger.log { Pair(testCase.name.name, "test output captured") }
+      outputs[testCase.descriptor] = output
+   }
+
+   /**
+    * Reports captured output the way the JUnit Platform's own output capture does: as `stdout` and `stderr`
+    * report entries, published immediately before the test is finished. It is also written to the standard
+    * streams at this point, when the launcher sees this test as the running one, so that build tools that
+    * attribute console output to the running test attribute it to this one.
+    */
+   private fun publishOutput(descriptor: TestDescriptor, output: CapturedOutput) {
+      val entries = buildMap {
+         output.stdout.takeIf { it.isNotEmpty() }?.let { put(STDOUT_REPORT_ENTRY_KEY, it) }
+         output.stderr.takeIf { it.isNotEmpty() }?.let { put(STDERR_REPORT_ENTRY_KEY, it) }
+      }
+      if (entries.isNotEmpty()) listener.reportingEntryPublished(descriptor, ReportEntry.from(entries))
+      StandardStreamCapture.writeThrough(output)
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {

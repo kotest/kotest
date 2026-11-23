@@ -2,6 +2,7 @@ package io.kotest.engine.config
 
 import io.kotest.common.JVMOnly
 import io.kotest.core.config.LogLevel
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
@@ -36,4 +37,7 @@ interface SystemPropertyConfiguration {
    fun dumpConfig(): Boolean?
    fun concurrencyOrder(): ConcurrencyOrder?
    fun specExecutionOrder(): SpecExecutionOrder?
+   fun outputCapture(): OutputCapture? = null
+   fun outputCaptureMaxBytes(): Int? = null
+   fun outputCaptureSpecThreads(): Boolean? = null
 }

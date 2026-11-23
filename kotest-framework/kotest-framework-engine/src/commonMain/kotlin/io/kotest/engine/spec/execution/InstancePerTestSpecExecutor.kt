@@ -17,6 +17,7 @@ import io.kotest.engine.spec.SpecRefInflator
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.FailFastScopeTracker
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -270,6 +271,10 @@ internal class InstancePerTestSpecExecutor(
 
       override suspend fun testFinished(testCase: TestCase, result: TestResult) {
          if (target == testCase.descriptor) delegate.testFinished(testCase, result)
+      }
+
+      override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+         if (target == testCase.descriptor) delegate.testOutputCaptured(testCase, output)
       }
    }
 }

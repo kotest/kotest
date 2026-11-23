@@ -4,6 +4,7 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.descriptors.Descriptor
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -105,6 +106,17 @@ class PinnedTestEngineListener(val listener: TestEngineListener) : TestEngineLis
       } else {
          queue {
             testFinished(testCase, result)
+         }
+      }
+   }
+
+   // output belongs between its test's start and finish, so it is held back with them while that test isn't open
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      if (openStack.lastOrNull() == testCase.descriptor) {
+         listener.testOutputCaptured(testCase, output)
+      } else {
+         queue {
+            testOutputCaptured(testCase, output)
          }
       }
    }

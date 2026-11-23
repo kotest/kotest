@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.core.test.TestCase
 import io.kotest.core.test.TestType
 import io.kotest.engine.reports.JUnitXmlReportGenerator
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import io.kotest.matchers.string.shouldContain
 import io.kotest.matchers.string.shouldNotContain
@@ -41,6 +42,34 @@ class JUnitXmlReportGeneratorTest : FunSpec() {
          val xml = generator.xml(JUnitXmlReportGeneratorTest::class, tests)
          xml shouldContain """<testsuite name="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest" tests="1" failures="0" errors="0" skipped="0" timestamp="2023-01-01T12:00:00Z" hostname="localhost" time="1.0">"""
          xml shouldContain """<testcase name="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest/successful test" classname="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest" time="1.0" />"""
+      }
+
+      test("should write captured output as the test's system-out and system-err") {
+
+         val generator = JUnitXmlReportGenerator(
+            clock = FixedClock(),
+            includeStackTraces = false,
+            hostname = "localhost",
+            target = null
+         )
+
+         val withOutput = createTestCase("with output")
+         val withoutOutput = createTestCase("without output")
+         val tests = mapOf(withOutput to TestResult.Success(1.seconds), withoutOutput to TestResult.Success(1.seconds))
+         val outputs = mapOf(
+            withOutput to CapturedOutput(
+               listOf(
+                  CapturedOutput.Chunk(CapturedOutput.Stream.Out, "out <1>\n"),
+                  CapturedOutput.Chunk(CapturedOutput.Stream.Err, "err 1\n"),
+               ),
+               truncated = false,
+            )
+         )
+
+         val xml = generator.xml(JUnitXmlReportGeneratorTest::class, tests, outputs)
+         xml shouldContain "<system-out>out &lt;1&gt;\n</system-out>"
+         xml shouldContain "<system-err>err 1\n</system-err>"
+         xml shouldContain """<testcase name="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest/without output" classname="com.sksamuel.kotest.engine.reports.JUnitXmlReportGeneratorTest" time="1.0" />"""
       }
 
       test("should drop fractional seconds but keep the ISO-8601 Z designator in the timestamp") {

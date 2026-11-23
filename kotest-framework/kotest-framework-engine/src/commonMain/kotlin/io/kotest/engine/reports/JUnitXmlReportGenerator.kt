@@ -2,6 +2,7 @@ package io.kotest.engine.reports
 
 import io.kotest.common.reflection.bestName
 import io.kotest.core.test.TestCase
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import nl.adaptivity.xmlutil.core.XmlVersion
 import nl.adaptivity.xmlutil.serialization.XML
@@ -24,12 +25,21 @@ class JUnitXmlReportGenerator(
       xmlVersion = XmlVersion.XML10
    }
 
-   fun xml(spec: KClass<*>, tests: Map<TestCase, TestResult>): String {
-      val testsuite = generate(spec, tests)
+   fun xml(spec: KClass<*>, tests: Map<TestCase, TestResult>): String = xml(spec, tests, emptyMap())
+
+   /**
+    * @param outputs the captured output of tests, written as each test's `system-out` and `system-err`.
+    */
+   fun xml(spec: KClass<*>, tests: Map<TestCase, TestResult>, outputs: Map<TestCase, CapturedOutput>): String {
+      val testsuite = generate(spec, tests, outputs)
       return xml.encodeToString(TestSuite.serializer(), testsuite)
    }
 
-   private fun generate(spec: KClass<*>, tests: Map<TestCase, TestResult>): TestSuite {
+   private fun generate(
+      spec: KClass<*>,
+      tests: Map<TestCase, TestResult>,
+      outputs: Map<TestCase, CapturedOutput>,
+   ): TestSuite {
       val now = clock.now()
       // Instant.toString() is ISO-8601 in UTC, always ending in 'Z', and only contains a '.' when there
       // is a sub-second component. Drop fractional seconds while preserving the 'Z' UTC designator.
@@ -52,6 +62,8 @@ class JUnitXmlReportGenerator(
                error = errorElementOrNull(result),
                failure = failureElementOrNull(result),
                skipped = skippedElementOrNull(result),
+               systemOut = outputs[test]?.stdout?.takeIf { it.isNotEmpty() }?.let { SystemOutElement(it) },
+               systemErr = outputs[test]?.stderr?.takeIf { it.isNotEmpty() }?.let { SystemErrElement(it) },
             )
          }
       )

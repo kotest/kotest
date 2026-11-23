@@ -1,7 +1,9 @@
 package io.kotest.engine.test.interceptors
 
 import io.kotest.common.JVMOnly
+import io.kotest.engine.config.ProjectConfigResolver
 import io.kotest.engine.config.TestConfigResolver
+import io.kotest.engine.test.TestCaseExecutionListener
 import kotlin.time.TimeMark
 
 /**
@@ -22,3 +24,15 @@ internal expect fun blockedThreadTimeoutInterceptor(
  */
 @JVMOnly
 internal expect fun coroutineErrorCollectorInterceptor(): TestExecutionInterceptor
+
+/**
+ * Returns a [TestExecutionInterceptor] that makes the test available through `CurrentTestCase` on every
+ * thread its coroutines run on, and captures its output if enabled, or null on platforms without threads
+ * to track.
+ */
+@JVMOnly
+internal expect fun currentTestCaseInterceptor(
+   listener: TestCaseExecutionListener,
+   projectConfigResolver: ProjectConfigResolver,
+   testConfigResolver: TestConfigResolver,
+): TestExecutionInterceptor?

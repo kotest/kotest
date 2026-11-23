@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.TestDefinitionBuilder
@@ -51,6 +52,7 @@ class RootTestWithConfigBuilder(
       retries: Int? = null,
       retryDelay: Duration? = null,
       metadata: Map<MetadataKey<*>, Any> = emptyMap(),
+      outputCapture: OutputCapture? = null,
       test: suspend TestScope.() -> Unit,
    ) {
       val config = TestConfig(
@@ -69,6 +71,7 @@ class RootTestWithConfigBuilder(
          retries = retries,
          retryDelay = retryDelay,
          metadata = metadata,
+         outputCapture = outputCapture,
       )
       config(config, test)
    }

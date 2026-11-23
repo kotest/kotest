@@ -1,6 +1,7 @@
 package io.kotest.core.test.config
 
 import io.kotest.core.Tag
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.extensions.Extension
 import io.kotest.core.test.AssertionMode
 import io.kotest.core.test.Enabled
@@ -117,6 +118,12 @@ data class TestConfig(
     * Use [MetadataKey] to define keys.
     */
    val metadata: Map<MetadataKey<*>, Any> = emptyMap(),
+
+   /**
+    * Controls whether this test's output to the standard streams is captured, and when it is reported.
+    * See [OutputCapture]. JVM only.
+    */
+   val outputCapture: OutputCapture? = null,
 ) {
    init {
       require(invocations == null || invocations > 0) { "Number of invocations must be greater than 0" }

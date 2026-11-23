@@ -127,6 +127,7 @@ module.exports = {
     },
     "framework/isolation_mode",
     "framework/concurrency6",
+    "framework/output_capture",
     "framework/lifecycle_hooks",
     {
       "type": "category",

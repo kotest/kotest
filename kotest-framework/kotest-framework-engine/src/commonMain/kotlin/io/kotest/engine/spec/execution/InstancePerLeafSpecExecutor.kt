@@ -22,6 +22,7 @@ import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLe
 import io.kotest.engine.spec.execution.InstancePerLeafSpecExecutor.InstancePerLeafOperation.TestListenerOperation.SendIgnoredNotification
 import io.kotest.engine.spec.interceptor.SpecContext
 import io.kotest.engine.spec.interceptor.SpecInterceptorPipeline
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.FailFastScopeTracker
 import io.kotest.engine.test.TestCaseExecutionListener
 import io.kotest.engine.test.TestCaseExecutor
@@ -129,7 +130,10 @@ internal class InstancePerLeafSpecExecutor(
                }
 
                is SendIgnoredNotification -> context.listener.testIgnored(ops.testCase, ops.reason)
-               is SendFinishedNotification -> context.listener.testFinished(ops.testCase, ops.result)
+               is SendFinishedNotification -> {
+                  ops.output?.let { context.listener.testOutputCaptured(ops.testCase, it) }
+                  context.listener.testFinished(ops.testCase, ops.result)
+               }
             }
          }
       }
@@ -295,6 +299,9 @@ internal class InstancePerLeafSpecExecutor(
       ) : TestCaseExecutionListener {
          var testListenerOperation: TestListenerOperation? = null
 
+         // a container's output arrives before its finished notification, which is deferred, so it is held until then
+         private var containerOutput: CapturedOutput? = null
+
          override suspend fun testStarted(testCase: TestCase) {
             if (target == null || testCase.type == TestType.Test) delegate.testStarted(testCase)
          }
@@ -306,7 +313,17 @@ internal class InstancePerLeafSpecExecutor(
 
          override suspend fun testFinished(testCase: TestCase, result: TestResult) {
             if (testCase.type == TestType.Test) delegate.testFinished(testCase, result)
-            else if (target == null) testListenerOperation = SendFinishedNotification(testCase, result)
+            else if (target == null) {
+               testListenerOperation = SendFinishedNotification(testCase, result, containerOutput)
+               containerOutput = null
+            }
+         }
+
+         // like the finished notification, a container's output is only reported from the run that discovers it,
+         // not from the runs that re-execute it on the way to each leaf
+         override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+            if (testCase.type == TestType.Test) delegate.testOutputCaptured(testCase, output)
+            else if (target == null) containerOutput = output
          }
       }
    }
@@ -316,7 +333,11 @@ internal class InstancePerLeafSpecExecutor(
 
       sealed interface TestListenerOperation : InstancePerLeafOperation {
          data class SendIgnoredNotification(val testCase: TestCase, val reason: String?) : TestListenerOperation
-         data class SendFinishedNotification(val testCase: TestCase, val result: TestResult) : TestListenerOperation
+         data class SendFinishedNotification(
+            val testCase: TestCase,
+            val result: TestResult,
+            val output: CapturedOutput? = null,
+         ) : TestListenerOperation
       }
    }
 }
