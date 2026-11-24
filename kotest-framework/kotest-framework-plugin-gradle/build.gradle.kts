@@ -1,3 +1,5 @@
+import org.gradle.api.artifacts.Configuration
+import org.gradle.plugin.devel.tasks.PluginUnderTestMetadata
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.nio.file.Files
@@ -12,19 +14,31 @@ plugins {
 group = "io.kotest"
 version = Ci.gradleRelease
 
+// plugins applied by the sample project of the functional tests; the Kotlin Gradle plugin is only a
+// compileOnly dependency of this plugin, so it must be added to the TestKit plugin classpath explicitly
+val functionalTestPlugins: Configuration = configurations.create("functionalTestPlugins") {
+   isCanBeConsumed = false
+}
+
 dependencies {
    compileOnly(libs.kotlin.gradle.plugin)
    compileOnly(projects.kotestFramework.kotestFrameworkEngine)
    implementation(libs.power.assert.plugin)
    implementation(libs.asm) // used to poke into classes to see if they are specs when running JVM tests
    testImplementation(libs.kotlin.gradle.plugin)
+   testImplementation(gradleTestKit())
    testImplementation(projects.kotestRunner.kotestRunnerJunit5)
    testImplementation(projects.kotestAssertions.kotestAssertionsCore)
+   add("functionalTestPlugins", libs.kotlin.gradle.plugin)
 }
 
 tasks.test {
    useJUnitPlatform()
    systemProperty("kotestVersion", version)
+}
+
+tasks.withType<PluginUnderTestMetadata>().configureEach {
+   pluginClasspath.from(functionalTestPlugins)
 }
 
 //tasks.withType<Test>().configureEach {

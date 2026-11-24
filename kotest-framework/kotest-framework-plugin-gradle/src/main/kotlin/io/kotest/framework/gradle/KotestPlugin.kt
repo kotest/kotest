@@ -308,7 +308,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
          // we can execute check or test tasks with -Pkotest.include and this will then be
          // passed to the kotest runtime as an environment variable to filter specs and tests
-         project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
+         project.providers.gradleProperty(KOTEST_INCLUDE_PROPERTY).orNull?.let { include.set(it) }
 
          // these are the JVM compile tasks that produce the classes we want to test
          inputs.files(project.tasks.withType<KotlinCompile>().map { it.outputs.files })
@@ -495,7 +495,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
             // we can execute check or test tasks with -Pkotest.include and this will then be
             // passed to the kotest runtime as an environment variable to filter specs and tests
-            project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
+            project.providers.gradleProperty(KOTEST_INCLUDE_PROPERTY).orNull?.let { include.set(it) }
 
             // we depend on the standard android host test task to ensure compilation has happened
             dependsOn(ANDROID_HOST_TEST_TASK_NAME)
@@ -589,7 +589,7 @@ abstract class KotestPlugin : Plugin<Project> {
 
                // we can execute check or test tasks with -Pkotest.include and this will then be
                // passed to the kotest runtime as an environment variable to filter specs and tests
-               project.findProperty(KOTEST_INCLUDE_PROPERTY)?.let { include.set(it.toString()) }
+               project.providers.gradleProperty(KOTEST_INCLUDE_PROPERTY).orNull?.let { include.set(it) }
 
                // we depend on the standard android test task to ensure compilation has happened
                dependsOn(androidTestTaskName(compilation))
@@ -678,7 +678,10 @@ abstract class KotestPlugin : Plugin<Project> {
    }
 
    private fun getRootTestReportsDir(project: Project, taskName: String): Provider<Directory> {
-      val baseDirectory = project.rootProject.layout.buildDirectory
+      // reading the layout of the root project is not allowed with Gradle isolated projects,
+      // so the default build directory of the root project is used instead
+      val rootBuildDirectory = project.rootDir.resolve(Project.DEFAULT_BUILD_DIR_NAME)
+      val baseDirectory = project.objects.directoryProperty().fileValue(rootBuildDirectory)
       return baseDirectory.dir("$TESTS_DIR_NAME/$taskName")
    }
 }
