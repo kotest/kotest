@@ -1,3 +1,5 @@
+@file:Suppress("RETURN_VALUE_NOT_USED_COERCION", "RETURN_VALUE_NOT_USED")
+
 package io.kotest.assertions.nondeterministic
 
 import io.kotest.assertions.AssertionErrorBuilder
@@ -315,6 +317,17 @@ class EventuallyTest : FunSpec() {
          count.shouldBeLessThan(3)
       }
 
+      test("support inline configuration") {
+         var count = 0
+         eventually({
+            duration = 250.milliseconds
+            interval = 100.milliseconds
+         }) {
+            count += 1
+         }
+         count.shouldBeLessThan(3)
+      }
+
       test("handle shouldNotBeNull") {
          val start = TimeSource.Monotonic.markNow()
          val duration = 100.milliseconds
@@ -544,7 +557,7 @@ class EventuallyTest : FunSpec() {
          ) {
             shouldThrow<AssertionError> {
                eventually(100.milliseconds) {
-                  delay(10)
+                  delay(10.milliseconds)
                   "error" shouldBe "ok"
                }
             }
@@ -568,7 +581,7 @@ class EventuallyTest : FunSpec() {
          ) {
             shouldThrow<AssertionError> {
                eventually(100.milliseconds) {
-                  delay(10)
+                  delay(10.milliseconds)
                   "error" shouldBe "ok"
                }
             }
