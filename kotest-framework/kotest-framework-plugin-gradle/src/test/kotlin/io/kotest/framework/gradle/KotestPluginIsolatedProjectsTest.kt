@@ -7,12 +7,20 @@ import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import java.io.File
 import java.nio.file.Files
+import java.util.concurrent.CopyOnWriteArrayList
 
 class KotestPluginIsolatedProjectsTest : FunSpec({
+
+   // the sample projects are deleted when the spec is done
+   afterSpec {
+      tempDirs.forEach { it.deleteRecursively() }
+      tempDirs.clear()
+   }
 
    // a multi-project build with Gradle isolated projects enabled, the plugin is applied by the :app subproject
    fun sample(): File {
       val projectDir = Files.createTempDirectory("kotest-isolated-projects").toFile()
+      tempDirs.add(projectDir)
       projectDir.resolve("settings.gradle.kts").writeText(
          """
          rootProject.name = "sample"
@@ -85,5 +93,8 @@ class KotestPluginIsolatedProjectsTest : FunSpec({
    companion object {
       private const val INCLUDE_PREFIX = "kotestTaskInclude="
       private const val ROOT_REPORTS_PREFIX = "kotestTaskRootReports="
+
+      // shared across the spec instances, one per test
+      private val tempDirs = CopyOnWriteArrayList<File>()
    }
 }
