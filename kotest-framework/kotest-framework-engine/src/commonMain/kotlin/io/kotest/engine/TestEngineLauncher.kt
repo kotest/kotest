@@ -17,6 +17,7 @@ import io.kotest.engine.listener.CompositeTestEngineListener
 import io.kotest.engine.listener.ConsoleTestEngineListener
 import io.kotest.engine.listener.NoopTestEngineListener
 import io.kotest.engine.listener.PinnedSpecTestEngineListener
+import io.kotest.engine.listener.PinnedTestEngineListener
 import io.kotest.engine.listener.TeamCityTestEngineListener
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.listener.ThreadSafeTestEngineListener
@@ -54,7 +55,11 @@ data class TestEngineLauncher(
     * Returns a copy of this launcher with the listener added.
     */
    fun withTeamCityListener(): TestEngineLauncher {
-      return withListener(TeamCityTestEngineListener())
+      // TeamCity service messages assume strict LIFO nesting of start/finish pairs; genuinely
+      // concurrent sibling tests within a spec (see TestExecutionMode.Concurrent) can interleave
+      // out of that order, so we serialize test-level notifications ahead of the spec-level
+      // PinnedSpecTestEngineListener that execute() already wraps every listener with below.
+      return withListener(PinnedTestEngineListener(TeamCityTestEngineListener()))
    }
 
    /**

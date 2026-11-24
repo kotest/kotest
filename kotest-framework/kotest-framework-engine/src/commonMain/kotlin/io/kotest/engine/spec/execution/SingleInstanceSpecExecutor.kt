@@ -5,6 +5,7 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.DefaultTestScope
 import io.kotest.core.test.TestCase
 import io.kotest.engine.TestEngineContext
+import io.kotest.engine.concurrency.concurrentExecutionContext
 import io.kotest.engine.spec.Materializer
 import io.kotest.engine.spec.TestResults
 import io.kotest.engine.spec.interceptor.SpecContext
@@ -47,12 +48,13 @@ internal class SingleInstanceSpecExecutor(private val context: TestEngineContext
       // controls how many tests to execute concurrently
       val concurrency = context.specConfigResolver.testExecutionMode(spec).concurrency
       val semaphore = Semaphore(concurrency)
+      val dispatchContext = concurrentExecutionContext(concurrency)
 
       // all root test coroutines are launched immediately;
       // the semaphore will control how many can actually run concurrently
       coroutineScope { // will wait for all tests to complete
          rootTests.forEach { root ->
-            launch {
+            launch(dispatchContext) {
                semaphore.withPermit {
                   executeTest(root, specContext)
                }
