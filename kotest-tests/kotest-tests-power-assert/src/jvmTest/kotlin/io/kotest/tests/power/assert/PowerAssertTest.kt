@@ -3,6 +3,7 @@ package io.kotest.tests.power.assert
 import io.kotest.assertions.shouldFail
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 
 class PowerAssertTest : FunSpec() {
    init {
@@ -22,6 +23,19 @@ hello.substring(1, 3) shouldBe world.substring(1, 4)
 Hello
 
 expected:<orl> but was:<el>""".trim()
+      }
+
+      test("power assert should work with shouldNotBe") {
+         val error = shouldFail {
+            "apple".substring(1, 4) shouldNotBe "apples".substring(1, 4)
+         }
+         error.message!!.trim() shouldBe """
+"apple".substring(1, 4) shouldNotBe "apples".substring(1, 4)
+        |                                    |
+        |                                    ppl
+        ppl
+
+"ppl" should not equal "ppl" """.trim()
       }
    }
 }

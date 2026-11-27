@@ -51,11 +51,46 @@ fun <T> T.shouldBe(expected: T?, msg: String): T {
    return this
 }
 
+/**
+ * Verifies that this value is not equal to the expected value.
+ *
+ * If the argument is a [io.kotest.matchers.Matcher] then the inverted matcher is invoked using the left hand side
+ * as the input.
+ *
+ * Otherwise, comparison is done using [EqMatcher] to compare actual and expected.
+ *
+ * When the power-assert plugin is enabled, this invocation is replaced by shouldNotBe(expected, msg).
+ *
+ * @see [io.kotest.assertions.eq.Eq]
+ */
 @Suppress("UNCHECKED_CAST")
 infix fun <T> T.shouldNotBe(expected: Any?): T {
    when (expected) {
       is Matcher<*> -> shouldNot(expected as Matcher<T>)
       else -> this shouldNot be(expected)
+   }
+   return this
+}
+
+/**
+ * Verifies that this value is not equal to the expected value.
+ *
+ * If the expected value is a [io.kotest.matchers.Matcher] then the inverted matcher is invoked using the left hand
+ * side as the input.
+ *
+ * Otherwise, comparison is done using [EqMatcher] to compare actual and expected.
+ *
+ * This version is used by the power-assert plugin to add extra information to the error message.
+ *
+ * @see [io.kotest.assertions.eq.Eq]
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> T.shouldNotBe(expected: Any?, msg: String): T {
+   when (expected) {
+      is Matcher<*> -> shouldNot(expected as Matcher<T>)
+      else -> withClue(msg) {
+         this shouldNot be(expected)
+      }
    }
    return this
 }
