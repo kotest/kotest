@@ -30,9 +30,11 @@ internal class BeforeAfterSpecCallbacksInterceptor(
    ): Result<Map<TestCase, TestResult>> {
 
       // any errors in user callbacks cause us to abort the spec
+      // next.invoke must be unwrapped here, otherwise a failure Result would be wrapped in
+      // another success Result and its exception lost when combined with the after callbacks
       val result = runCatching {
          specExtensions.beforeSpec(spec)
-         next.invoke(spec)
+         next.invoke(spec).getOrThrow()
       }
 
       // the after callbacks must run even if the before callbacks failed, so that
@@ -43,7 +45,7 @@ internal class BeforeAfterSpecCallbacksInterceptor(
          .flatMap { ExtensionExceptionExtractor.flatten(it) }
 
       return when (errors.size) {
-         0 -> result.getOrThrow()
+         0 -> result
          1 -> Result.failure(errors.first())
          else -> Result.failure(MultipleExceptions(errors))
       }
