@@ -3,6 +3,7 @@ package io.kotest.engine.listener
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -43,6 +44,12 @@ class ThreadSafeTestEngineListener(private val listener: TestEngineListener) : T
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       mutex.withLock {
          listener.testFinished(testCase, result)
+      }
+   }
+
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      mutex.withLock {
+         listener.testOutputCaptured(testCase, output)
       }
    }
 

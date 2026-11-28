@@ -11,6 +11,7 @@ import io.kotest.engine.extensions.MultipleExceptions
 import io.kotest.engine.teamcity.Locations
 import io.kotest.engine.teamcity.TeamCityMessage
 import io.kotest.engine.teamcity.TeamCityPathRenderer
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import io.kotest.engine.test.names.DisplayNameFormatting
 import kotlin.reflect.KClass
@@ -121,6 +122,27 @@ class TeamCityTestEngineListener(
          message(reason)
          result(TestResult.Ignored(reason))
       }.output()
+   }
+
+   /**
+    * Attaches captured output to the test it belongs to. TeamCity attributes output by test name, so this is
+    * correct whatever the concurrency. Containers are not always reported as nodes, so only leaf tests are.
+    */
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      if (testCase.type != TestType.Test) return
+      val testName = if (nestContainers) renderer.localName(testCase) else renderer.testPath(testCase)
+      output.stdout.takeIf { it.isNotEmpty() }?.let { text ->
+         TeamCityMessage(prefix, TeamCityMessage.Types.TEST_STD_OUT) {
+            name(testName)
+            out(text)
+         }.output()
+      }
+      output.stderr.takeIf { it.isNotEmpty() }?.let { text ->
+         TeamCityMessage(prefix, TeamCityMessage.Types.TEST_STD_ERR) {
+            name(testName)
+            out(text)
+         }.output()
+      }
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {

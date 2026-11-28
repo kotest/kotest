@@ -1,6 +1,7 @@
 package io.kotest.engine.config
 
 import io.kotest.core.config.LogLevel
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.names.TestNameCase
 import io.kotest.core.spec.IsolationMode
@@ -77,6 +78,12 @@ object Defaults {
    val CONCURRENCY_MODE_ORDER = ConcurrencyOrder.IsolateFirst
 
    const val ALLOW_OUT_OF_ORDER_CALLBACKS = false
+
+   val OUTPUT_CAPTURE = OutputCapture.Never
+
+   const val OUTPUT_CAPTURE_MAX_BYTES = 1024 * 1024
+
+   const val OUTPUT_CAPTURE_SPEC_THREADS = false
 }
 
 enum class IncludeTestScopeAffixes {

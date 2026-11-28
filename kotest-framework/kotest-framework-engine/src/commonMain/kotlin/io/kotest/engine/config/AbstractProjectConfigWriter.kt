@@ -17,6 +17,9 @@ internal object AbstractProjectConfigWriter {
       projectConfig.testExecutionMode?.let { sb.buildOutput("Test execution mode", it::class.simpleName) }
 
       projectConfig.coroutineDebugProbes?.let { sb.buildOutput("Coroutine debug probe", it.toString()) }
+      projectConfig.outputCapture?.let { sb.buildOutput("Output capture", it.name) }
+      projectConfig.outputCaptureMaxBytes?.let { sb.buildOutput("Output capture max bytes", it.toString()) }
+      projectConfig.outputCaptureSpecThreads?.let { sb.buildOutput("Output capture spec threads", it.toString()) }
       projectConfig.specExecutionOrder?.let { sb.buildOutput("Spec execution order", it.name) }
       projectConfig.testCaseOrder?.let { sb.buildOutput("Test case order", it.name) }
 

@@ -284,6 +284,14 @@ abstract class Spec : TestConfiguration() {
    var coroutineDebugProbes: Boolean? = null
 
    /**
+    * Controls whether the output of this spec's tests to the standard streams is captured, and when it is
+    * reported. See [io.kotest.core.config.OutputCapture]. JVM only.
+    *
+    * This value overrides the global configuration value.
+    */
+   var outputCapture: io.kotest.core.config.OutputCapture? = null
+
+   /**
     * Controls what to do when a duplicated test name is discovered.
     * See possible settings in [DuplicateTestNameMode].
     *

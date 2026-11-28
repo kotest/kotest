@@ -3,6 +3,7 @@ package io.kotest.engine.listener
 import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -39,6 +40,10 @@ class CompositeTestEngineListener(private val listeners: List<TestEngineListener
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {
       // some listeners swallow std out, so we need to ensure that start/finish events happen in FILO style
       listeners.reversed().forEach { it.testFinished(testCase, result) }
+   }
+
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      listeners.forEach { it.testOutputCaptured(testCase, output) }
    }
 
    override suspend fun testIgnored(testCase: TestCase, reason: String?) {

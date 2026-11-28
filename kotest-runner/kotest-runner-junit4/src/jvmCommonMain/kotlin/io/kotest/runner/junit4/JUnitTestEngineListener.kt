@@ -5,7 +5,9 @@ import io.kotest.core.spec.SpecRef
 import io.kotest.core.test.TestCase
 import io.kotest.engine.errors.ExtensionExceptionExtractor
 import io.kotest.engine.listener.AbstractTestEngineListener
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
+import io.kotest.engine.test.output.StandardStreamCapture
 import org.junit.runner.Description
 import org.junit.runner.notification.Failure
 import org.junit.runner.notification.RunNotifier
@@ -56,6 +58,14 @@ internal class JUnitTestEngineListener(
       // if we forward the event explicitly here.
       val desc = Descriptions.createTestDescription(testCase)
       notifier.fireTestIgnored(desc)
+   }
+
+   /**
+    * JUnit 4 has no per-test output channel, so captured output is written to the standard streams just before
+    * the test is reported finished, while the runner reports this test as the running one.
+    */
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      StandardStreamCapture.writeThrough(output)
    }
 
    override suspend fun testFinished(testCase: TestCase, result: TestResult) {

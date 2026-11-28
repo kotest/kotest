@@ -80,6 +80,14 @@ abstract class AbstractPackageConfig {
     */
    open val coroutineDebugProbes: Boolean? = null
 
+   /**
+    * Controls whether test output to the standard streams is captured, and when it is reported.
+    * See [OutputCapture]. JVM only.
+    *
+    * This value overrides the global configuration value.
+    */
+   open val outputCapture: OutputCapture? = null
+
    open val coroutineTestScope: Boolean? = null
 
    /**

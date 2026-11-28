@@ -16,6 +16,8 @@ import io.kotest.engine.extensions.ProjectExtensions
 import io.kotest.engine.listener.TestEngineInitializedContext
 import io.kotest.engine.listener.TestEngineListener
 import io.kotest.engine.tags.TagExpression
+import io.kotest.engine.test.output.excludeFromOutputCapture
+import io.kotest.engine.test.output.withOutputCapture
 import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withTimeout
 
@@ -55,7 +57,8 @@ class TestEngine(private val config: TestEngineConfig) {
          tags = tags,
          registry = config.registry,
          projectConfig = resolveProjectConfig(config.projectConfig, suite.specs.map { it.fqn }.toSet()),
-         listener = config.listener,
+         // any spec or test may enable output capture, and listener output must never be captured
+         listener = excludeFromOutputCapture(config.listener),
       )
 
       ProjectConfigDumper.dumpConfigIfEnabled(context)
@@ -70,7 +73,9 @@ class TestEngine(private val config: TestEngineConfig) {
 
       context.listener.engineStarted()
 
-      val result = executeWithProjectTimeout(context)
+      val result = withOutputCapture {
+         executeWithProjectTimeout(context)
+      }
       result.errors.forEach {
          logger.log { "Error during test engine run: $it" }
          it.printStackTrace()
@@ -126,6 +131,10 @@ class TestEngine(private val config: TestEngineConfig) {
       context: TestEngineContext,
       projectConfigResolver: ProjectConfigResolver,
    ): EngineResult {
+
+      // invalid configuration fails the run up front, rather than in the middle of a test
+      val configErrors = listOfNotNull(runCatching { projectConfigResolver.outputCaptureMaxBytes() }.exceptionOrNull())
+      if (configErrors.isNotEmpty()) return EngineResult(configErrors)
 
       val extensions = ProjectExtensions(projectConfigResolver)
       val beforeErrors = extensions.beforeProject()

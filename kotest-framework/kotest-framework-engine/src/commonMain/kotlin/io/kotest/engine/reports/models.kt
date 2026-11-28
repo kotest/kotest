@@ -44,7 +44,17 @@ data class TestCaseElement(
    val failure: FailureElement? = null,
    val error: ErrorElement? = null,
    val skipped: SkippedElement? = null, // must be a nested element if present
+   val systemOut: SystemOutElement? = null,
+   val systemErr: SystemErrElement? = null,
 )
+
+@Serializable
+@XmlSerialName("system-out", "", "")
+data class SystemOutElement(@XmlValue val text: String)
+
+@Serializable
+@XmlSerialName("system-err", "", "")
+data class SystemErrElement(@XmlValue val text: String)
 
 @Serializable
 @XmlSerialName("failure", "", "")

@@ -6,6 +6,7 @@ import io.kotest.common.KotestInternal
 import io.kotest.core.spec.SpecRef
 import io.kotest.core.spec.descriptor
 import io.kotest.core.test.TestCase
+import io.kotest.engine.test.CapturedOutput
 import io.kotest.engine.test.TestResult
 import kotlin.reflect.KClass
 
@@ -109,6 +110,16 @@ class PinnedSpecTestEngineListener(val listener: TestEngineListener) : TestEngin
       } else {
          queue {
             testFinished(testCase, result)
+         }
+      }
+   }
+
+   override suspend fun testOutputCaptured(testCase: TestCase, output: CapturedOutput) {
+      if (runningSpec == testCase.descriptor.spec().path().value) {
+         listener.testOutputCaptured(testCase, output)
+      } else {
+         queue {
+            testOutputCaptured(testCase, output)
          }
       }
    }

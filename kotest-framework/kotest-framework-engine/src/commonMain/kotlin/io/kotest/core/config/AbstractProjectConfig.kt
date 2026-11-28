@@ -234,6 +234,33 @@ abstract class AbstractProjectConfig {
    open val coroutineDebugProbes: Boolean? = null
 
    /**
+    * Controls whether output written to `System.out` and `System.err` while a test runs is captured
+    * per test, and when it is reported. See [OutputCapture]. JVM only; ignored on other platforms.
+    *
+    * Defaults to [OutputCapture.Never]. Can be overridden per package, spec or test. The standard streams are
+    * only replaced once a test that captures output runs.
+    */
+   open val outputCapture: OutputCapture? = null
+
+   /**
+    * The maximum number of bytes of output kept for each test when [outputCapture] is enabled.
+    * When a test writes more, its oldest output is dropped and the report says so.
+    * Must not be negative: a negative value fails the test run before any test runs.
+    */
+   open val outputCaptureMaxBytes: Int? = null
+
+   /**
+    * When [outputCapture] is enabled, also attributes output from threads that were created while a spec was
+    * running, such as the worker threads of a server the spec started, to that spec's running test. This is only
+    * done while the spec runs one test at a time; otherwise that output is written through, as it is when this is
+    * disabled. JVM only. Defaults to false.
+    *
+    * Threads of pools shared by the whole JVM that are created lazily, by whichever spec first uses them, can be
+    * misattributed, apart from the JVM's common pool and the kotlinx.coroutines dispatchers, which are excluded.
+    */
+   open val outputCaptureSpecThreads: Boolean? = null
+
+   /**
     * Returns true if the test name should be the full name including parent names.
     */
    @Deprecated("This option is incompatible with reporting tests. It is ignored in 6.2+ and will be removed in 7.0.")

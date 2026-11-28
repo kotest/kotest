@@ -1,6 +1,7 @@
 package io.kotest.core.spec.style.scopes
 
 import io.kotest.core.Tag
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.extensions.TestCaseExtension
 import io.kotest.core.names.TestName
 import io.kotest.core.spec.TestDefinitionBuilder
@@ -40,6 +41,7 @@ class TestWithConfigBuilder(
       blockingTest: Boolean? = null,
       coroutineTestScope: Boolean? = null,
       metadata: Map<MetadataKey<*>, Any> = emptyMap(),
+      outputCapture: OutputCapture? = null,
       test: suspend TestScope.() -> Unit
    ) {
       TestDslState.clear(name)
@@ -56,6 +58,7 @@ class TestWithConfigBuilder(
          blockingTest = blockingTest,
          coroutineTestScope = coroutineTestScope,
          metadata = metadata,
+         outputCapture = outputCapture,
       )
       config(config, test)
    }

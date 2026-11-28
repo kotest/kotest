@@ -4,6 +4,7 @@ import io.kotest.common.JVMOnly
 import io.kotest.common.sysprop
 import io.kotest.common.syspropOrEnv
 import io.kotest.core.config.LogLevel
+import io.kotest.core.config.OutputCapture
 import io.kotest.core.names.DuplicateTestNameMode
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.SpecExecutionOrder
@@ -73,6 +74,15 @@ internal object JvmSystemPropertyConfiguration : SystemPropertyConfiguration {
       return sysprop(KotestEngineProperties.TEST_SEVERITY)
          ?.let { TestCaseSeverityLevel.valueOf(it) }
    }
+
+   override fun outputCapture(): OutputCapture? =
+      syspropOrEnv(KotestEngineProperties.OUTPUT_CAPTURE)?.let { OutputCapture.valueOf(it) }
+
+   override fun outputCaptureMaxBytes(): Int? =
+      syspropOrEnv(KotestEngineProperties.OUTPUT_CAPTURE_MAX_BYTES)?.toInt()
+
+   override fun outputCaptureSpecThreads(): Boolean? =
+      syspropOrEnv(KotestEngineProperties.OUTPUT_CAPTURE_SPEC_THREADS)?.let { it.uppercase() == "TRUE" }
 
    override fun coroutineDebugProbes(): Boolean? =
       syspropOrEnv(KotestEngineProperties.COROUTINE_DEBUG_PROBES)?.let { it.uppercase() == "TRUE" }
