@@ -21,5 +21,8 @@ kotlin {
 
 @OptIn(ExperimentalKotlinGradlePluginApi::class)
 powerAssert {
-   functions = listOf("io.kotest.matchers.shouldBe")
+   functions = listOf(
+      "io.kotest.matchers.shouldBe",
+      "io.kotest.matchers.shouldNotBe",
+   )
 }

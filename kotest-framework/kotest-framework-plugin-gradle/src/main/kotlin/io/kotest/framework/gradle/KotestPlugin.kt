@@ -133,6 +133,7 @@ abstract class KotestPlugin : Plugin<Project> {
          project.extensions.configure(PowerAssertGradleExtension::class.java) {
             // we can add new functions to this later without requiring users to make changes
             functions.add("io.kotest.matchers.shouldBe")
+            functions.add("io.kotest.matchers.shouldNotBe")
          }
 
          // we add the assertions library for users to simplify configuration

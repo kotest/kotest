@@ -1091,6 +1091,7 @@ public final class io/kotest/matchers/ShouldKt {
 	public static final fun shouldHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun shouldNot (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 	public static final fun shouldNotBe (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public static final fun shouldNotBe (Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/String;)Ljava/lang/Object;
 	public static final fun shouldNotHave (Ljava/lang/Object;Lio/kotest/matchers/Matcher;)V
 }
 
