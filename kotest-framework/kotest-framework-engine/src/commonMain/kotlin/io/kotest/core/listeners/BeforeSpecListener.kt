@@ -12,9 +12,9 @@ interface BeforeSpecListener : Extension {
     * This callback is only invoked if the spec has active tests. If all tests in a spec
     * are disabled, or the spec has no tests defined, then this listener will NOT be invoked.
     *
-    * Any errors in this listener will be propagated to the engine and further execution, including
-    * [AfterSpecListener]s will be skipped. If you wish have before/after control even in the
-    * case of exceptions, then consider using the [io.kotest.core.extensions.SpecExtension].
+    * Any errors in this listener will be propagated to the engine and the tests in the spec
+    * will not be executed. The [AfterSpecListener]s are still invoked, so any resources
+    * acquired here can be released.
     *
     * If a spec is instantiated multiple times - for example, if
     * [io.kotest.core.spec.IsolationMode.InstancePerRoot] isolation mode is used,
